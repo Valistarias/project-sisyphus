@@ -1,7 +1,8 @@
 {
-  "name": "my-project-name",
-  "private": true,
-  "version": "0.0.0",
+  "name": "project-sisyphus",
+  "version": "0.0.1",
+  "description": "This is the project sisyphus website, for the role playing game qith the same name",
+  "main": "index.tsx",
   "scripts": {
     "build:server": "webpack -c webpack.node.config.ts",
     "build:client": "vite build",
@@ -10,6 +11,16 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "node dist/server.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Valistarias/project-sisyphus.git"
+  },
+  "author": "Victor Mallet",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Valistarias/project-sisyphus/issues"
+  },
+  "homepage": "https://github.com/Valistarias/project-sisyphus#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cookie-session": "^2.0.0",
