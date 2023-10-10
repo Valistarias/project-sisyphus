@@ -54,6 +54,15 @@ const isAdmin = async (userId: string): Promise<boolean> => await new Promise((r
     .catch((err) => { reject(err); });
 });
 
+const generateVerificationMailToken = (userId: string): string => {
+  const verificationToken = jwt.sign(
+    { ID: userId },
+    config.secret(process.env),
+    { expiresIn: '7d' }
+  );
+  return verificationToken;
+};
+
 const adminNeeded = (req: IAdminNeededRequest, res: Response, next: () => void): void => {
   isAdmin(req.userId)
     .then((boolCheck) => {
@@ -69,5 +78,6 @@ const adminNeeded = (req: IAdminNeededRequest, res: Response, next: () => void):
 export default {
   verifyToken,
   adminNeeded,
+  generateVerificationMailToken,
   isAdmin
 };

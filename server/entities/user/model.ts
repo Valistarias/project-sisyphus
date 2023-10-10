@@ -14,6 +14,8 @@ interface IUser {
   theme: string
   /** The scale of the UI */
   scale: number
+  /** Is the user verified */
+  verified: boolean
   /** The user roles */
   roles: string[] | ObjectId[]
 }
@@ -29,6 +31,10 @@ const userSchema = new Schema<IUser>({
   lang: String,
   theme: String,
   scale: Number,
+  verified: {
+    type: Boolean,
+    default: false
+  },
   roles: [
     {
       type: Schema.Types.ObjectId,

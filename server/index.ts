@@ -5,6 +5,8 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import path from 'path';
 import cookieSession from 'cookie-session';
+import formData from 'form-data';
+import Mailgun from 'mailgun.js';
 import * as dotenv from 'dotenv';
 
 import DBConfig from './config/db.config';
@@ -12,12 +14,17 @@ import DBConfig from './config/db.config';
 import AuthRoutes from './entities/auth/routes';
 import UserRoutes from './entities/user/routes';
 
+dotenv.config();
+
 export const app = express();
 const router = express.Router();
 
-dotenv.config();
 const port = process.env.PORT ?? 3000;
+const mailgunApi = process.env.MAILGUN_API_KEY ?? '';
 const cookieSecret = process.env.COOKIE_SECRET;
+
+const mailgun = new Mailgun(formData);
+const mg = mailgun.client({ username: 'api', key: mailgunApi });
 
 const corsOptions = {
   origin: `http://localhost:${port}`
@@ -51,7 +58,7 @@ mongoose
   });
 
 // Global routes
-AuthRoutes(router);
+AuthRoutes(router, mg);
 UserRoutes(router);
 
 if (process.env.VITE !== 'true') {

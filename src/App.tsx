@@ -1,23 +1,43 @@
 import React, { type FC } from 'react';
 import {
   createBrowserRouter,
+  Outlet,
   RouterProvider
 } from 'react-router-dom';
 
+import { HeaderBar } from './organisms';
+import { HomePage, ErrorPage, LoginPage, SignupPage } from './pages';
 import Providers from './providers';
 
-import { HomePage, ErrorPage } from './routes';
-import Test from './routes/test';
+import './assets/scss/index.scss';
 
 const router = createBrowserRouter([
   {
-    path: '/',
-    element: <HomePage />,
-    errorElement: <ErrorPage />
-  },
-  {
-    path: '/test',
-    element: <Test />
+    element: (
+      <div className='app'>
+        <HeaderBar />
+        <Outlet />
+      </div>
+    ),
+    children: [
+      {
+        path: '/',
+        element: <HomePage />,
+        errorElement: <ErrorPage />
+      },
+      {
+        path: '/signup',
+        element: <SignupPage />
+      },
+      {
+        path: '/login',
+        element: <LoginPage />
+      }
+      // {
+      //   path: '/verify/:id',
+      //   element: <verifyMailPage />
+      // }
+    ]
   }
 ]);
 

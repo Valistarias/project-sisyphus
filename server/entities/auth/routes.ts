@@ -1,6 +1,7 @@
-import { type Router } from 'express';
+import { type Request, type Response, type Router } from 'express';
 
 import { verifySignUp } from '../../middlewares';
+import { type IMailgunClient } from 'mailgun.js/Interfaces';
 import {
   signup,
   signinUser,
@@ -8,7 +9,7 @@ import {
   signout
 } from './controller';
 
-export default (app: Router): void => {
+export default (app: Router, mg: IMailgunClient): void => {
   app.use((req, res, next) => {
     res.header(
       'Access-Control-Allow-Headers',
@@ -23,7 +24,7 @@ export default (app: Router): void => {
       verifySignUp.checkDuplicateUsername,
       verifySignUp.checkRolesExisted
     ],
-    signup
+    (req: Request, res: Response) => { signup(req, res, mg); }
   );
 
   app.post('/auth/signinuser', signinUser);

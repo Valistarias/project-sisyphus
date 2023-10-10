@@ -1,11 +1,13 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+
 import config from '../../config/db.config';
 import db from '../../models';
 
 import { type HydratedIUser, type IRole, type IUser } from '../index';
 import { type Request, type Response } from 'express';
 import { type Error, type HydratedDocument } from 'mongoose';
+import { type IMailgunClient } from 'mailgun.js/Interfaces';
 
 const { User, Role } = db;
 
@@ -15,7 +17,7 @@ interface ISigninRequest extends Request {
   } | null
 }
 
-const signup = (req: Request, res: Response): void => {
+const signup = (req: Request, res: Response, mg: IMailgunClient): void => {
   const user = new User({
     username: req.body.username,
     password: bcrypt.hashSync(req.body.password, 8),
@@ -27,41 +29,69 @@ const signup = (req: Request, res: Response): void => {
   user
     .save()
     .then((userRes: HydratedDocument<IUser>) => {
-      if (Array.isArray(req.body.roles)) {
-        Role.find({ name: { $in: req.body.roles } })
-          .then((roles) => {
-            userRes.roles = roles.map((role) => role._id.toString());
-            userRes.save()
-              .then(() => { res.send({ message: 'User was registered successfully!' }); })
-              .catch((err) => {
-                res.status(418).send({ message: err });
-              });
-          })
-          .catch((err: Error) => {
-            res.status(418).send({ message: err });
-          });
-      } else {
-        Role
-          .findOne({ name: 'user' })
-          .then((role) => {
-            if (role !== null) {
-              user.roles = [role._id.toString()];
-              user.save()
-                .then(() => { res.send({ message: 'User was registered successfully!' }); })
+      registerRoleByName(req.body.roles)
+        .then((rolesId) => {
+          user.roles = rolesId;
+          user.save()
+            .then(() => {
+              const verifToken = jwt.sign(
+                { ID: user._id },
+                config.secret(process.env),
+                { expiresIn: '7d' }
+              );
+              const url = `http://localhost:3000/api/verify/${verifToken}`;
+              mg.messages.create('sandboxc0904a9e4c234e1d8f885c0c93a61e6f.mailgun.org', {
+                from: 'Excited User <mailgun@sandboxc0904a9e4c234e1d8f885c0c93a61e6f.mailgun.org>',
+                to: ['mallet.victor.france@gmail.com'],
+                subject: 'Hello, this is a Singin attempt',
+                text: 'Click to confirm your email!',
+                html: `Click <a href = '${url}'>here</a> to confirm your email.`
+              })
+                .then(msg => {
+                  console.log(msg);
+                  res.send({ message: 'User was registered successfully!' });
+                }) // logs response data
                 .catch((err: Error) => {
                   res.status(418).send({ message: err });
                 });
-            }
-          })
-          .catch((error) => {
-            res.status(418).send({ message: error });
-          });
-      }
+            })
+            .catch((err: Error) => {
+              res.status(418).send({ message: err });
+            });
+        })
+        .catch((err: Error) => {
+          res.status(418).send({ message: err });
+        });
     })
     .catch((err: Error) => {
       res.status(418).send({ message: err });
     });
 };
+
+const registerRoleByName = async (roles: string[] | undefined): Promise<string[]> => await new Promise((resolve, reject) => {
+  if (Array.isArray(roles)) {
+    // Attribute multiple roles
+    Role.find({ name: { $in: roles } })
+      .then((roles) => {
+        resolve(roles.map((role) => role._id.toString()));
+      })
+      .catch((err: Error) => {
+        reject(err);
+      });
+  } else {
+    // Attribute only user
+    Role
+      .findOne({ name: 'user' })
+      .then((role) => {
+        if (role !== null) {
+          resolve([role._id.toString()]);
+        }
+      })
+      .catch((err: Error) => {
+        reject(err);
+      });
+  }
+});
 
 const signinUser = (req: ISigninRequest, res: Response): void => {
   User
