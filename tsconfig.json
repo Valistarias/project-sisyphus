@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "none",
+    "jsx": "react",
+    "moduleResolution": "node",
+    "target": "es6",
+    "lib": ["es2015", "dom", "dom.iterable"],
+    "sourceMap": true,
+    "outFile": "dist/bundle.js",
+    "strictNullChecks": true,
+    "types": ["node"],
+    "esModuleInterop": true
+  },
+  "include": ["./"]
+}

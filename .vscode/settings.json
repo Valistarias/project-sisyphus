@@ -1,0 +1,16 @@
+{
+  "files.eol": "\n",
+  "editor.detectIndentation": false,
+  "editor.indentSize": 2,
+  "workbench.activityBar.visible": true,
+  "css.validate": false,
+  "less.validate": false,
+  "scss.validate": false,
+  "stylelint.enable": true,
+  "stylelint.validate": ["css", "scss"],
+  "editor.tabSize": 2,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.stylelint": true,
+    "source.fixAll.eslint": true
+  }
+}
