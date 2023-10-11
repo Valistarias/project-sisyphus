@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import mongoose from 'mongoose';
-import express from 'express';
+import express, { type Request, type Response } from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import path from 'path';
@@ -10,6 +10,8 @@ import Mailgun from 'mailgun.js';
 import * as dotenv from 'dotenv';
 
 import DBConfig from './config/db.config';
+
+import { verifyTokenSingIn } from './entities/auth/controller';
 
 import AuthRoutes from './entities/auth/routes';
 import UserRoutes from './entities/user/routes';
@@ -60,6 +62,26 @@ mongoose
 // Global routes
 AuthRoutes(router, mg);
 UserRoutes(router);
+
+app.use('/api/', router);
+
+// router.get('/verify/:id', UserController.verify);
+app.get('/verify/:id', function (req: Request, res: Response) {
+  const { id } = req.params;
+  // Check we have an id
+  if (id === undefined) {
+    return res.status(422).send({
+      message: 'Missing Token'
+    });
+  }
+  verifyTokenSingIn(id)
+    .then(() => {
+      res.redirect('/login?success=true');
+    })
+    .catch(() => {
+      res.redirect('/error');
+    });
+});
 
 if (process.env.VITE !== 'true') {
   const frontendFiles = __dirname;

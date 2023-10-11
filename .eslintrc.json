@@ -13,12 +13,15 @@
         "sourceType": "module"
     },
     "plugins": [
-        "react"
+        "react",
+        "react-hooks"
     ],
     "rules": {
-      "no-console": 2,
+      "no-console": 1,
       "semi": ["error", "always"],
       "@typescript-eslint/semi": ["error", "always"],
-      "@typescript-eslint/strict-boolean-expressions": "warn"
+      "@typescript-eslint/strict-boolean-expressions": "warn",
+      "@typescript-eslint/no-extraneous-class": 0,
+      "react-hooks/exhaustive-deps": "error"
     }
 }

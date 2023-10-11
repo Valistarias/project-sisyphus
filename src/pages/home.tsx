@@ -1,6 +1,6 @@
 import React, { type FC } from 'react';
 
-import { Aa, Aicon } from '../atoms';
+import { Aicon } from '../atoms';
 
 import './home.scss';
 
@@ -9,7 +9,6 @@ const Home: FC = () => {
     <div className="home">
       <p>Coucou</p>
       <Aicon type="edit" />
-      <Aa href="/contacts/1">Your Name</Aa>
     </div>
   );
 };

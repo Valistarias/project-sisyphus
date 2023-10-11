@@ -2,9 +2,9 @@ import { model, type Model, Schema, type HydratedDocument, type ObjectId } from 
 import { type IRole } from '../index';
 
 interface IUser {
-  /** The username of the user */
-  username: string
-  /** The username password (encrypted) */
+  /** The mail of the user */
+  mail: string
+  /** The user password (encrypted) */
   password: string
   /** The name of the user */
   name: string
@@ -25,7 +25,7 @@ interface HydratedIUser extends Omit<HydratedDocument<IUser>, 'roles'> {
 }
 
 const userSchema = new Schema<IUser>({
-  username: String,
+  mail: String,
   password: String,
   name: String,
   lang: String,

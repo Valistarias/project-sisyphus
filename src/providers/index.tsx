@@ -1,6 +1,7 @@
 import React, { type FC } from 'react';
 
 import { GlobalVarsProvider } from './GlobalVars';
+import { ApiProvider } from './api';
 
 interface ProviderProps {
   /** The childrens of the Providers element */
@@ -8,9 +9,11 @@ interface ProviderProps {
 }
 
 const Providers: FC<ProviderProps> = ({ children }) => (
-  <GlobalVarsProvider>
-    {children}
-  </GlobalVarsProvider>
+  <ApiProvider>
+    <GlobalVarsProvider>
+      {children}
+    </GlobalVarsProvider>
+  </ApiProvider>
 );
 
 export default Providers;

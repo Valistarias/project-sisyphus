@@ -19,11 +19,11 @@ const router = createBrowserRouter([
         <Outlet />
       </div>
     ),
+    errorElement: <ErrorPage />,
     children: [
       {
         path: '/',
-        element: <HomePage />,
-        errorElement: <ErrorPage />
+        element: <HomePage />
       },
       {
         path: '/signup',
@@ -33,10 +33,6 @@ const router = createBrowserRouter([
         path: '/login',
         element: <LoginPage />
       }
-      // {
-      //   path: '/verify/:id',
-      //   element: <verifyMailPage />
-      // }
     ]
   }
 ]);

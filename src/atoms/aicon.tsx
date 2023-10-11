@@ -52,4 +52,4 @@ const Aicon: FC<IAicon> = ({
   return icoDom;
 };
 
-export { Aicon, type IAicon };
+export { Aicon, type IAicon, type typeIcons };

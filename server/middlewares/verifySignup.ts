@@ -9,7 +9,7 @@ const checkDuplicateUsername = (req: Request, res: Response, next: () => void): 
     username: req.body.username
   })
     .then((user) => {
-      if (user !== undefined) {
+      if (user !== null) {
         res.status(400).send({ message: 'Failed! Username is already in use!' });
         return;
       }
@@ -31,9 +31,10 @@ const checkRolesExisted = (req: Request, res: Response, next: () => void): void 
         return;
       }
     }
+    next();
+  } else {
+    next();
   }
-
-  next();
 };
 
 export default {

@@ -2,7 +2,7 @@ import React, {
   type FC, useState, useMemo, useContext
 } from 'react';
 
-interface GlobalVarsContextTypes {
+interface IGlobalVarsContext {
   /** The childrens of the Providers element */
   vars?: Record<string, number>
 }
@@ -12,7 +12,7 @@ interface GlobalVarsProviderProps {
   children: React.JSX.Element
 }
 
-const GlobalVarsContext = React.createContext<GlobalVarsContextTypes | null>(null);
+const GlobalVarsContext = React.createContext<IGlobalVarsContext | null>(null);
 
 export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) => {
   // Numeral values
@@ -40,6 +40,6 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
   );
 };
 
-export const useGlobalVars = (): GlobalVarsContextTypes => {
-  return useContext(GlobalVarsContext) as GlobalVarsContextTypes;
+export const useGlobalVars = (): IGlobalVarsContext => {
+  return useContext(GlobalVarsContext) as IGlobalVarsContext;
 };

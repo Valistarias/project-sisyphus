@@ -28,7 +28,7 @@ const update = (req: Request, res: Response): void => {
   const {
     id,
     lang = null,
-    username = null,
+    mail = null,
     oldPass = null,
     newPass = null,
     theme = null,
@@ -41,7 +41,7 @@ const update = (req: Request, res: Response): void => {
   findUserById(id)
     .then((user) => {
       if (lang !== null) { user.lang = lang; }
-      if (username !== null) { user.username = username; }
+      if (mail !== null) { user.mail = mail; }
       if (newPass !== null) {
         const passwordIsValid = bcrypt.compareSync(
           oldPass,
@@ -67,7 +67,7 @@ const update = (req: Request, res: Response): void => {
           }
           const responsePayload = {
             id: user._id,
-            username: user.username,
+            mail: user.mail,
             roles: authorities,
             lang: user.lang,
             theme: user.theme,

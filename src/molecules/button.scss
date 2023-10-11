@@ -1,0 +1,26 @@
+.button {
+  align-items: center;
+  background: var(--white);
+  border: 1px solid var(--boneless);
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  font-size: 15px;
+  gap: 10px;
+  padding: 8px 20px;
+  transition: border .15s ease;
+
+  &__content {
+    position: relative;
+    // Taking the border in consideration (not included in the display flex)
+    top: 2px;
+  }
+
+  .aicon {
+    pointer-events: none;
+  }
+
+  &:hover {
+    border: 1px solid var(--bone);
+  }
+}
