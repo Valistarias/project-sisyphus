@@ -2,40 +2,41 @@ import React, { type FC } from 'react';
 
 import { classTrim } from '../utils';
 
+import { type ChangeHandler } from 'react-hook-form';
+
 import './ainput.scss';
 
 interface IAinput {
-  /** The id of the Textarea element */
-  id: string
+  /** The controlled element for react hook form */
+  registered: {
+    onChange: ChangeHandler
+    onBlur: ChangeHandler
+    ref: React.Ref<any>
+    name: string
+  }
   /** The type of input */
-  type?: 'text'
+  type?: 'text' | 'password' | 'email'
   /** The class of the Textarea element */
   className?: string
   /** The placeholder of the Textarea element */
   placeholder?: string
-  /** The value of the Textarea element */
-  value: string
   /** Is the field editable */
   readOnly?: boolean
-  /** When the field changes */
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  /** Allow the user's password manager to automatically enter the password */
+  autoComplete?: string
 }
 
 const Ainput: FC<IAinput> = ({
-  id,
+  registered,
   type = 'text',
   className,
-  value,
   placeholder,
-  onChange,
-  readOnly
+  readOnly,
+  autoComplete
 }) => (
   <input
     type={type}
-    id={id}
-    name={id}
     readOnly={readOnly}
-    onChange={onChange}
     placeholder={placeholder}
     className={
       classTrim(`
@@ -44,7 +45,8 @@ const Ainput: FC<IAinput> = ({
         ${className ?? ''}
       `)
     }
-    value={value}
+    autoComplete={autoComplete ?? undefined}
+    { ...registered}
   />
 );
 

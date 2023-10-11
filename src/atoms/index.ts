@@ -7,6 +7,7 @@ import Atextarea from './atextarea';
 import Atitle from './atitle';
 import { Aicon } from './aicon';
 import Ainput from './ainput';
+import Aerror from './aerror';
 
 export {
   Aul,
@@ -17,5 +18,6 @@ export {
   Aicon,
   Atextarea,
   Atitle,
-  Ainput
+  Ainput,
+  Aerror
 };
