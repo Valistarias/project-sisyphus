@@ -1,6 +1,6 @@
-import React, { type FC, useEffect } from 'react';
+import React, { type FC } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
-import { redirect, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { useGlobalVars } from '../providers/GlobalVars';
 

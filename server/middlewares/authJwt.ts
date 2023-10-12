@@ -123,13 +123,13 @@ const getUserRolesFromToken = async (req: IVerifyTokenRequest): Promise<IRole[]>
   }
 });
 
-const checkRouteRights = (req: IVerifyTokenRequest, res: Response, next: () => void): void => {
+const checkRouteRights = (req: Request, res: Response, next: () => void): void => {
   const urlMatch = routes.find((route) => route.url === req.path);
   let rights = ['unlogged'];
   if (urlMatch === undefined || urlMatch.role === 'all') {
     next();
   } else {
-    getUserRolesFromToken(req)
+    getUserRolesFromToken(req as IVerifyTokenRequest)
       .then((roles) => {
         if (roles.length > 0) {
           rights = ['logged'];
