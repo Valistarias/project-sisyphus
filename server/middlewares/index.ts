@@ -1,2 +1,8 @@
 export { default as verifySignUp } from './verifySignup';
-export { default as authJwt } from './authJwt';
+export {
+  verifyToken,
+  adminNeeded,
+  generateVerificationMailToken,
+  isAdmin,
+  type IVerifyTokenRequest
+} from './authJwt';

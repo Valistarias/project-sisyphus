@@ -1,15 +1,18 @@
 import axios from 'axios';
 import Entity from './entity';
 
+import { type IUser } from '../../interfaces';
+
 interface ISignUserPayload {
   mail: string
   password: string
-};;
+};
 
 export default class Auth extends Entity {
   signup: (payload: ISignUserPayload) => Promise<Record<string, string>>;
-  signin: (payload: ISignUserPayload) => Promise<Record<string, string>>;
+  signin: (payload: ISignUserPayload) => Promise<IUser | Record<string, unknown>>;
   signout: () => Promise<Record<string, string>>;
+  check: () => Promise<IUser | Record<string, unknown>>;
 
   constructor () {
     super('auth');
@@ -43,6 +46,16 @@ export default class Auth extends Entity {
 
     this.signout = async () => await new Promise((resolve, reject) => {
       axios.post(`${this.url}/signout/`)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+
+    this.check = async () => await new Promise((resolve, reject) => {
+      axios.get(`${this.url}/check/`)
         .then((res) => {
           resolve(res.data);
         })

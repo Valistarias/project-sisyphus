@@ -1,6 +1,6 @@
-import { type Router } from 'express';
+import { type Router, type Response } from 'express';
 
-import { authJwt } from '../../middlewares';
+import { type IVerifyTokenRequest, verifyToken } from '../../middlewares';
 
 import {
   update
@@ -17,7 +17,11 @@ export default (app: Router): void => {
 
   app.post(
     '/users/update',
-    [authJwt.verifyToken],
+    [
+      (req: IVerifyTokenRequest, res: Response, next: () => void) => {
+        verifyToken(req, res, next);
+      }
+    ],
     update
   );
 };

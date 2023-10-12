@@ -86,5 +86,6 @@ const update = (req: Request, res: Response): void => {
 };
 
 export {
+  findUserById,
   update
 };

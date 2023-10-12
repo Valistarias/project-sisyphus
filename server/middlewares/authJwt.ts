@@ -18,17 +18,17 @@ interface IAdminNeededRequest extends Request {
   userId: string
 }
 
-const verifyToken = (req: IVerifyTokenRequest, res: Response, next: () => void): void => {
+const verifyToken = (req: IVerifyTokenRequest, res: Response, next: () => void, mute?: boolean): void => {
   const { token } = req.session;
 
   if (token === undefined) {
-    res.status(403).send({ message: 'No token provided!' });
+    res.status(mute !== undefined ? 200 : 403).send(mute !== undefined ? {} : { message: 'No token provided!' });
     return;
   }
 
   jwt.verify(token, config.secret(process.env), (err, decoded) => {
-    if (err !== undefined) {
-      res.status(401).send({ message: 'Unauthorized!' });
+    if (err !== null) {
+      res.status(mute !== undefined ? 200 : 401).send(mute !== undefined ? {} : { message: 'Unauthorized!' });
       return;
     }
     req.userId = decoded.id;
@@ -56,7 +56,7 @@ const isAdmin = async (userId: string): Promise<boolean> => await new Promise((r
 
 const generateVerificationMailToken = (userId: string): string => {
   const verificationToken = jwt.sign(
-    { ID: userId },
+    { IdMail: userId },
     config.secret(process.env),
     { expiresIn: '7d' }
   );
@@ -75,9 +75,10 @@ const adminNeeded = (req: IAdminNeededRequest, res: Response, next: () => void):
     .catch((err) => res.status(418).send({ message: err }));
 };
 
-export default {
+export {
   verifyToken,
   adminNeeded,
   generateVerificationMailToken,
-  isAdmin
+  isAdmin,
+  type IVerifyTokenRequest
 };

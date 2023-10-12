@@ -1,4 +1,4 @@
-import React, { type FC } from 'react';
+import React, { useMemo, type FC } from 'react';
 import {
   createBrowserRouter,
   Outlet,
@@ -7,40 +7,46 @@ import {
 
 import { HeaderBar } from './organisms';
 import { HomePage, ErrorPage, LoginPage, SignupPage } from './pages';
-import Providers from './providers';
+import { useGlobalVars } from './providers/GlobalVars';
 
 import './assets/scss/index.scss';
 
-const router = createBrowserRouter([
-  {
-    element: (
-      <div className='app'>
-        <HeaderBar />
-        <Outlet />
-      </div>
-    ),
-    errorElement: <ErrorPage />,
-    children: [
-      {
-        path: '/',
-        element: <HomePage />
-      },
-      {
-        path: '/signup',
-        element: <SignupPage />
-      },
-      {
-        path: '/login',
-        element: <LoginPage />
-      }
-    ]
-  }
-]);
+const App: FC = () => {
+  const { loading } = useGlobalVars();
 
-const App: FC = () => (
-  <Providers>
+  const router = useMemo(() => createBrowserRouter([
+    {
+      element: (
+          <>
+            <HeaderBar />
+            <Outlet />
+          </>
+      ),
+      errorElement: <ErrorPage />,
+      children: [
+        {
+          path: '/',
+          element: <HomePage />
+        },
+        {
+          path: '/signup',
+          element: <SignupPage />
+        },
+        {
+          path: '/login',
+          element: <LoginPage />
+        }
+      ]
+    }
+  ]), []);
+
+  return (
+  <div className={`app${loading ? ' app--loading' : ''}`}>
+    <div className="app__loader">
+    </div>
     <RouterProvider router={router} />
-  </Providers>
-);
+  </div>
+  );
+};
 
 export default App;

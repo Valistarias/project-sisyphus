@@ -7,5 +7,23 @@ body {
 }
 
 .app {
+  position: relative;
   width: 100%;
+
+  &__loader {
+    background: white;
+    height: 100%;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    transition: opacity .3s ease;
+    width: 100%;
+  }
+
+  &--loading .app__loader {
+    opacity: 1;
+    pointer-events: all;
+  }
 }

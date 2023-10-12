@@ -1,10 +1,16 @@
 import React, {
-  type FC, useState, useMemo, useContext
+  type FC, useState, useMemo, useContext, useEffect
 } from 'react';
+import { useApi } from './api';
+import { type IUser } from '../interfaces';
 
 interface IGlobalVarsContext {
-  /** The childrens of the Providers element */
-  vars?: Record<string, number>
+  /** The logged user */
+  user: IUser | null
+  /** Setting the user */
+  setUser: React.Dispatch<React.SetStateAction<IUser | null>>
+  /** Is the provider loading */
+  loading: boolean
 }
 
 interface GlobalVarsProviderProps {
@@ -15,22 +21,32 @@ interface GlobalVarsProviderProps {
 const GlobalVarsContext = React.createContext<IGlobalVarsContext | null>(null);
 
 export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) => {
-  // Numeral values
-  const [vars] = useState<Record<string, number>>({
-    nectar: 3,
-    flower: 3,
-    timeBlock: 3,
-    day: 0,
-    stepCycle: 3,
-    dryadTier: 1,
-    tribeTier: 1,
-    usedNectar: 0
-  });
+  const { api } = useApi();
+
+  const [user, setUser] = useState<IUser | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (api === undefined) { return; }
+    api.auth.check()
+      .then((data: IUser) => {
+        setUser(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log('Error', err);
+        setLoading(false);
+      });
+  }, [api]);
 
   const providerValues = useMemo(() => ({
-    vars
+    user,
+    setUser,
+    loading
   }), [
-    vars
+    user,
+    setUser,
+    loading
   ]);
 
   return (

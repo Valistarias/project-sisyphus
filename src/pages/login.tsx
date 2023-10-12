@@ -1,10 +1,15 @@
-import React, { type FC } from 'react';
+import React, { type FC, useEffect } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
+import { redirect, useNavigate } from 'react-router-dom';
+
+import { useGlobalVars } from '../providers/GlobalVars';
 
 import { useApi } from '../providers/api';
 import { Aerror, Ainput } from '../atoms';
 import { Button } from '../molecules';
 import { regexMail } from '../utils';
+
+import { type IUser } from '../interfaces';
 
 import './login.scss';
 
@@ -15,6 +20,8 @@ interface FormValues {
 
 const Login: FC = () => {
   const { api } = useApi();
+  const { user, setUser, loading } = useGlobalVars();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -24,18 +31,25 @@ const Login: FC = () => {
 
   const onSubmit: SubmitHandler<FormValues> = ({ mail, password }) => {
     if (api !== undefined) {
-      api.auth.signup({
+      api.auth.signin({
         mail,
         password
       })
-        .then(() => {
-          console.log('Connected!');
+        .then((data: IUser) => {
+          setUser(data);
+          navigate('/');
         })
         .catch((err) => {
           console.log('Cannot connect to the database!', err);
         });
     }
   };
+
+  useEffect(() => {
+    if (!loading && user?.mail !== undefined) {
+      navigate('/');
+    }
+  }, [loading, user, navigate]);
 
   return (
     <div className="login">

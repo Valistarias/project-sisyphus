@@ -9,8 +9,16 @@ import { type Request, type Response } from 'express';
 import { type Error, type HydratedDocument } from 'mongoose';
 import { type IMailgunClient } from 'mailgun.js/Interfaces';
 import { gM404, gM405 } from '../../utils/globalMessage';
+import { findUserById } from '../user/controller';
 
 const { User, Role } = db;
+
+interface IVerifyTokenRequest extends Request {
+  userId: string
+  session: {
+    token: string
+  }
+}
 
 interface ISigninRequest extends Request {
   session: {
@@ -113,15 +121,14 @@ const signIn = (req: ISigninRequest, res: Response): void => {
         return;
       }
 
+      if (!user.verified) {
+        res.status(401).send({ message: 'User Not Verified' });
+        return;
+      }
+
       const token = jwt.sign({ id: user.id }, config.secret(process.env), {
         expiresIn: 86400 // 24 hours
       });
-
-      const authorities: string[] = [];
-
-      for (let i = 0; i < user.roles.length; i += 1) {
-        authorities.push(`ROLE_${user.roles[i].name.toUpperCase()}`);
-      }
 
       if (req.session === null || req.session === undefined) {
         req.session = {
@@ -131,14 +138,7 @@ const signIn = (req: ISigninRequest, res: Response): void => {
         req.session.token = token;
       }
 
-      res.status(200).send({
-        id: user._id,
-        mail: user.mail,
-        lang: user.lang,
-        theme: user.theme,
-        scale: user.scale,
-        roles: authorities
-      });
+      res.status(200).send(user);
     })
     .catch((error) => {
       res.status(418).send({ message: error });
@@ -165,7 +165,7 @@ const verifyTokenSingIn = async (token: string): Promise<boolean> => await new P
       reject(gM404('Token'));
     } else {
       User.findOne({
-        _id: payload.ID
+        _id: payload.IdMail
       })
         .then((user) => {
           if (user === null) {
@@ -192,9 +192,20 @@ const verifyTokenSingIn = async (token: string): Promise<boolean> => await new P
   }
 });
 
+const getLogged = (req: IVerifyTokenRequest, res: Response): void => {
+  findUserById(req.userId)
+    .then((user) => {
+      res.send(user);
+    })
+    .catch(() => {
+      res.status(404).send({ message: 'User Not found.' });
+    });
+};
+
 export {
   signUp,
   signIn,
   signOut,
-  verifyTokenSingIn
+  verifyTokenSingIn,
+  getLogged
 };
