@@ -207,5 +207,6 @@ export {
   signIn,
   signOut,
   verifyTokenSingIn,
-  getLogged
+  getLogged,
+  findUserById
 };

@@ -15,11 +15,12 @@ import { verifyTokenSingIn } from './entities/auth/controller';
 
 import AuthRoutes from './entities/auth/routes';
 import UserRoutes from './entities/user/routes';
+import { checkRouteRights } from './middlewares/authJwt';
 
 dotenv.config();
 
 export const app = express();
-const router = express.Router();
+const apiRouter = express.Router();
 
 const port = process.env.PORT ?? 3000;
 const mailgunApi = process.env.MAILGUN_API_KEY ?? '';
@@ -60,12 +61,11 @@ mongoose
   });
 
 // Global routes
-AuthRoutes(router, mg);
-UserRoutes(router);
+AuthRoutes(apiRouter, mg);
+UserRoutes(apiRouter);
 
-app.use('/api/', router);
+app.use('/api/', apiRouter);
 
-// router.get('/verify/:id', UserController.verify);
 app.get('/verify/:id', function (req: Request, res: Response) {
   const { id } = req.params;
   // Check we have an id
@@ -81,6 +81,10 @@ app.get('/verify/:id', function (req: Request, res: Response) {
     .catch(() => {
       res.redirect('/error');
     });
+});
+
+app.get('/*', (req: Request, res: Response, next: () => void) => {
+  checkRouteRights(req, res, next);
 });
 
 if (process.env.VITE !== 'true') {

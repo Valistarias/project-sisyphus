@@ -20,7 +20,7 @@ interface FormValues {
 
 const Login: FC = () => {
   const { api } = useApi();
-  const { user, setUser, loading } = useGlobalVars();
+  const { setUser } = useGlobalVars();
   const navigate = useNavigate();
 
   const {
@@ -44,12 +44,6 @@ const Login: FC = () => {
         });
     }
   };
-
-  useEffect(() => {
-    if (!loading && user?.mail !== undefined) {
-      navigate('/');
-    }
-  }, [loading, user, navigate]);
 
   return (
     <div className="login">

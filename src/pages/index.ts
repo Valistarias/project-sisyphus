@@ -2,10 +2,12 @@ import HomePage from './home';
 import ErrorPage from './error';
 import LoginPage from './login';
 import SignupPage from './signup';
+import DashboardPage from './dashboard';
 
 export {
   HomePage,
   ErrorPage,
   LoginPage,
-  SignupPage
+  SignupPage,
+  DashboardPage
 };

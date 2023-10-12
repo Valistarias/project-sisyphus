@@ -30,7 +30,9 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
     if (api === undefined) { return; }
     api.auth.check()
       .then((data: IUser) => {
-        setUser(data);
+        if (data.mail !== undefined) {
+          setUser(data);
+        }
         setLoading(false);
       })
       .catch((err) => {

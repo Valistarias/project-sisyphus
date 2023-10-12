@@ -4,6 +4,8 @@ import config from '../config/db.config';
 
 import { type Request, type Response } from 'express';
 import { type HydratedIUser, type IRole } from '../entities';
+import { findUserById } from '../entities/auth/controller';
+import { gM404 } from '../utils/globalMessage';
 
 const { User } = db;
 
@@ -17,6 +19,29 @@ interface IVerifyTokenRequest extends Request {
 interface IAdminNeededRequest extends Request {
   userId: string
 }
+
+const routes = [
+  {
+    url: '/',
+    role: 'all'
+  },
+  {
+    url: '/signup',
+    role: 'unlogged'
+  },
+  {
+    url: '/login',
+    role: 'unlogged'
+  },
+  {
+    url: '/dashboard',
+    role: 'logged'
+  },
+  {
+    url: '/back',
+    role: 'admin'
+  }
+];
 
 const verifyToken = (req: IVerifyTokenRequest, res: Response, next: () => void, mute?: boolean): void => {
   const { token } = req.session;
@@ -75,10 +100,69 @@ const adminNeeded = (req: IAdminNeededRequest, res: Response, next: () => void):
     .catch((err) => res.status(418).send({ message: err }));
 };
 
+const getUserRolesFromToken = async (req: IVerifyTokenRequest): Promise<IRole[]> => await new Promise((resolve, reject) => {
+  const { token } = req.session;
+  if (token !== undefined) {
+    jwt.verify(token, config.secret(process.env), (err, decoded) => {
+      if (err !== null) {
+        reject(err);
+      }
+      findUserById(decoded.id)
+        .then((user) => {
+          if (user === undefined) {
+            reject(gM404('User'));
+          }
+          resolve(user.roles);
+        })
+        .catch((errFindUser) => {
+          reject(errFindUser);
+        });
+    });
+  } else {
+    resolve([]);
+  }
+});
+
+const checkRouteRights = (req: IVerifyTokenRequest, res: Response, next: () => void): void => {
+  const urlMatch = routes.find((route) => route.url === req.path);
+  let rights = ['unlogged'];
+  if (urlMatch === undefined || urlMatch.role === 'all') {
+    next();
+  } else {
+    getUserRolesFromToken(req)
+      .then((roles) => {
+        if (roles.length > 0) {
+          rights = ['logged'];
+          if (roles.some((role) => role.name === 'admin')) {
+            rights.push('admin');
+          }
+        }
+        if (urlMatch.role === 'logged' || urlMatch.role === 'admin') {
+          if (rights.includes(urlMatch.role)) {
+            next();
+          } else {
+            res.redirect('/login');
+          }
+        } else if (urlMatch.role === 'unlogged') {
+          if (rights.includes(urlMatch.role)) {
+            next();
+          } else {
+            res.redirect('/');
+          }
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        next();
+      });
+  }
+};
+
 export {
   verifyToken,
   adminNeeded,
   generateVerificationMailToken,
   isAdmin,
+  checkRouteRights,
   type IVerifyTokenRequest
 };

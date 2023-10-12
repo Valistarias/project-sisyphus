@@ -6,7 +6,7 @@ import {
 } from 'react-router-dom';
 
 import { HeaderBar } from './organisms';
-import { HomePage, ErrorPage, LoginPage, SignupPage } from './pages';
+import { HomePage, ErrorPage, LoginPage, SignupPage, DashboardPage } from './pages';
 import { useGlobalVars } from './providers/GlobalVars';
 
 import './assets/scss/index.scss';
@@ -35,6 +35,10 @@ const App: FC = () => {
         {
           path: '/login',
           element: <LoginPage />
+        },
+        {
+          path: '/dashboard',
+          element: <DashboardPage />
         }
       ]
     }
