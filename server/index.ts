@@ -15,6 +15,7 @@ import { verifyTokenSingIn } from './entities/auth/controller';
 
 import AuthRoutes from './entities/auth/routes';
 import UserRoutes from './entities/user/routes';
+import MailTokenRoutes from './entities/mailToken/routes';
 import { checkRouteRights } from './middlewares/authJwt';
 
 dotenv.config();
@@ -63,6 +64,7 @@ mongoose
 // Global routes
 AuthRoutes(apiRouter, mg);
 UserRoutes(apiRouter);
+MailTokenRoutes(apiRouter, mg);
 
 app.use('/api/', apiRouter);
 

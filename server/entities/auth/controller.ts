@@ -52,7 +52,7 @@ const signUp = (req: Request, res: Response, mg: IMailgunClient): void => {
               mg.messages.create('sandboxc0904a9e4c234e1d8f885c0c93a61e6f.mailgun.org', {
                 from: 'Excited User <mailgun@sandboxc0904a9e4c234e1d8f885c0c93a61e6f.mailgun.org>',
                 to: ['mallet.victor.france@gmail.com'],
-                subject: 'Hello, this is a Singin attempt',
+                subject: 'Project Sisyphus - Registration',
                 text: 'Click to confirm your email!',
                 html: `Click <a href = '${url}'>here</a> to confirm your email.`
               })
