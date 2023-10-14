@@ -10,6 +10,7 @@ import { type Error, type HydratedDocument } from 'mongoose';
 import { type IMailgunClient } from 'mailgun.js/Interfaces';
 import { gM404, gM405 } from '../../utils/globalMessage';
 import { findUserById } from '../user/controller';
+import { removeToken } from '../mailToken/controller';
 
 const { User, Role } = db;
 
@@ -202,11 +203,47 @@ const getLogged = (req: IVerifyTokenRequest, res: Response): void => {
     });
 };
 
+const updatePassword = (req: Request, res: Response): void => {
+  const {
+    userId,
+    pass,
+    confirmPass
+  } = req.body;
+  if (pass !== confirmPass || pass === undefined || confirmPass === undefined) {
+    res.status(404).send(gM404('Password'));
+  } else {
+    findUserById(userId)
+      .then((user) => {
+        removeToken(req)
+          .then((isTokenDelete) => {
+            if (!isTokenDelete) {
+              res.status(404).send({ message: 'Token Not found.' });
+            } else {
+              user.password = bcrypt.hashSync(pass, 8);
+              user.save()
+                .then(() => {
+                  res.send({ message: 'User was updated successfully!', user });
+                })
+                .catch((err) => {
+                  res.status(418).send({ message: err });
+                });
+            }
+          })
+          .catch(() => {
+            res.status(404).send({ message: 'Token Not found.' });
+          });
+      })
+      .catch(() => {
+        res.status(404).send({ message: 'User Not found.' });
+      });
+  }
+};
+
 export {
   signUp,
   signIn,
   signOut,
   verifyTokenSingIn,
   getLogged,
-  findUserById
+  updatePassword
 };

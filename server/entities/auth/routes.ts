@@ -6,7 +6,8 @@ import {
   signUp,
   signIn,
   signOut,
-  getLogged
+  getLogged,
+  updatePassword
 } from './controller';
 
 export default (app: Router, mg: IMailgunClient): void => {
@@ -39,4 +40,6 @@ export default (app: Router, mg: IMailgunClient): void => {
     ], getLogged);
 
   app.post('/auth/signout', signOut);
+
+  app.post('/auth/pass-update', updatePassword);
 };

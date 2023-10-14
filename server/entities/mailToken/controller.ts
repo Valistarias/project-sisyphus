@@ -95,20 +95,37 @@ const checkToken = (req: Request, res: Response, mg: IMailgunClient): void => {
       if (token === null) {
         res.status(404).send({ message: { message: gM404('Token') } });
       } else {
-        token.delete()
-          .then(() => {
-            res.send({ message: 'Ok' });
-          })
-          .catch((err: Error) => {
-            res.status(418).send(err);
-          });
+        res.send({ message: 'Token Found' });
       }
-      // res.send({ message: 'Ok' });
     })
     .catch(() => {
       res.status(404).send({ message: { message: gM404('Token') } });
     });
 };
+
+const removeToken = async (req: Request): Promise<boolean> => await new Promise((resolve, reject) => {
+  const {
+    userId,
+    token
+  } = req.body;
+  verifyToken({ userId, token })
+    .then((token) => {
+      if (token === null) {
+        resolve(false);
+      } else {
+        MailToken.deleteMany({ userId })
+          .then(() => {
+            resolve(true);
+          })
+          .catch((err: Error) => {
+            reject(err);
+          });
+      }
+    })
+    .catch((err) => {
+      reject(err);
+    });
+});
 
 export {
   createToken,
