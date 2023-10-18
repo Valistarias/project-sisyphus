@@ -3,8 +3,8 @@ import db from '../../models';
 
 import { type Request, type Response } from 'express';
 import { type IMailgunClient } from 'mailgun.js/Interfaces';
-import { type IMailToken } from './model';
 import { type HydratedDocument, type Error } from 'mongoose';
+import { type IUser } from '../user/model';
 
 import { gM404 } from '../../utils/globalMessage';
 
@@ -30,7 +30,7 @@ const createToken = (req: Request, res: Response, mg: IMailgunClient): void => {
         mailToken
           .save()
           .then(() => {
-            const url = `http://localhost:3000/forgot/${String(user._id)}/${mailToken.token}`;
+            const url = `http://localhost:3000/reset/password/${String(user._id)}/${mailToken.token}`;
             mg.messages.create('sandboxc0904a9e4c234e1d8f885c0c93a61e6f.mailgun.org', {
               from: 'Excited User <mailgun@sandboxc0904a9e4c234e1d8f885c0c93a61e6f.mailgun.org>',
               to: ['mallet.victor.france@gmail.com'],
@@ -55,16 +55,16 @@ const createToken = (req: Request, res: Response, mg: IMailgunClient): void => {
     });
 };
 
-const verifyToken = async ({
+const verifyMailToken = async ({
   userId,
   token
-}): Promise<HydratedDocument<IMailToken> | null> => await new Promise((resolve) => {
+}): Promise<HydratedDocument<IUser> | null> => await new Promise((resolve, reject) => {
   if (userId === undefined || token === undefined) {
     resolve(null);
     return;
   }
   User.findById(userId)
-    .then(async (user) => {
+    .then((user) => {
       if (user === undefined || user === null) {
         resolve(null);
       } else {
@@ -72,53 +72,11 @@ const verifyToken = async ({
           userId,
           token
         })
-          .then((token) => {
-            resolve(token);
+          .then(() => {
+            resolve(user);
           })
           .catch(() => {
             resolve(null);
-          });
-      }
-    })
-    .catch(() => {
-      resolve(null);
-    });
-});
-
-const checkToken = (req: Request, res: Response, mg: IMailgunClient): void => {
-  const {
-    userId,
-    token
-  } = req.body;
-  verifyToken({ userId, token })
-    .then((token) => {
-      if (token === null) {
-        res.status(404).send({ message: { message: gM404('Token') } });
-      } else {
-        res.send({ message: 'Token Found' });
-      }
-    })
-    .catch(() => {
-      res.status(404).send({ message: { message: gM404('Token') } });
-    });
-};
-
-const removeToken = async (req: Request): Promise<boolean> => await new Promise((resolve, reject) => {
-  const {
-    userId,
-    token
-  } = req.body;
-  verifyToken({ userId, token })
-    .then((token) => {
-      if (token === null) {
-        resolve(false);
-      } else {
-        MailToken.deleteMany({ userId })
-          .then(() => {
-            resolve(true);
-          })
-          .catch((err: Error) => {
-            reject(err);
           });
       }
     })
@@ -127,8 +85,51 @@ const removeToken = async (req: Request): Promise<boolean> => await new Promise(
     });
 });
 
+const removeToken = async (req: Request): Promise<boolean> => await new Promise((resolve, reject) => {
+  const {
+    userId,
+    token
+  } = req.body;
+  verifyMailToken({ userId, token })
+    .then((user) => {
+      if (user !== undefined && user !== null) {
+        MailToken.deleteMany({ userId })
+          .then(() => {
+            resolve(true);
+          })
+          .catch((err: Error) => {
+            reject(err);
+          });
+      } else {
+        reject(gM404('Token'));
+      }
+    })
+    .catch((err) => {
+      reject(err);
+    });
+});
+
+const getUserMailByRequest = (req: Request, res: Response): void => {
+  const {
+    userId,
+    token
+  } = req.query;
+  verifyMailToken({ userId, token })
+    .then((user) => {
+      if (user !== undefined && user !== null) {
+        res.status(200).send(user.mail);
+      } else {
+        res.status(404).send({ message: gM404('Token') });
+      }
+    })
+    .catch((err: Error) => {
+      res.status(418).send({ message: err });
+    });
+};
+
 export {
   createToken,
-  checkToken,
-  removeToken
+  verifyMailToken,
+  removeToken,
+  getUserMailByRequest
 };

@@ -4,8 +4,7 @@ import { type IMailgunClient } from 'mailgun.js/Interfaces';
 
 import {
   createToken,
-  checkToken,
-  removeToken
+  getUserMailByRequest
 } from './controller';
 
 export default (app: Router, mg: IMailgunClient): void => {
@@ -20,6 +19,6 @@ export default (app: Router, mg: IMailgunClient): void => {
   app.post('/forgot/create', (req: Request, res: Response) => {
     createToken(req, res, mg);
   });
-  app.post('/forgot/check', checkToken);
-  app.post('/forgot/delete', removeToken);
+
+  app.get('/forgot/getmail', getUserMailByRequest);
 };

@@ -1,6 +1,6 @@
 import React, { type FC } from 'react';
 
-import { Aicon } from '../atoms';
+import { Aicon } from '../../atoms';
 
 import './home.scss';
 

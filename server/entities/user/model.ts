@@ -18,6 +18,8 @@ interface IUser {
   verified: boolean
   /** The user roles */
   roles: string[] | ObjectId[]
+  /** When the user was created */
+  createdAt: Date
 }
 
 interface HydratedIUser extends Omit<HydratedDocument<IUser>, 'roles'> {
@@ -40,7 +42,11 @@ const userSchema = new Schema<IUser>({
       type: Schema.Types.ObjectId,
       ref: 'Role'
     }
-  ]
+  ],
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
 const UserModel = (): Model<IUser> => model('User', userSchema);

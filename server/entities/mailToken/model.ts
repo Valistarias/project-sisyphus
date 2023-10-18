@@ -1,11 +1,11 @@
 import { model, type Model, Schema, type ObjectId, type Date } from 'mongoose';
 
 interface IMailToken {
-  /** The mail of the user */
+  /** The user ID linked to this forgot password request */
   userId: ObjectId
-  /** The user password (encrypted) */
+  /** The security token */
   token: string
-  /** The name of the user */
+  /** When the security token was created */
   createdAt: Date
 }
 

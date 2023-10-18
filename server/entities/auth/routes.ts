@@ -41,5 +41,5 @@ export default (app: Router, mg: IMailgunClient): void => {
 
   app.post('/auth/signout', signOut);
 
-  app.post('/auth/pass-update', updatePassword);
+  app.post('/auth/passupdate', updatePassword);
 };

@@ -45,7 +45,7 @@ const signUp = (req: Request, res: Response, mg: IMailgunClient): void => {
           user.save()
             .then(() => {
               const verifToken = jwt.sign(
-                { ID: user._id },
+                { IdMail: user._id },
                 config.secret(process.env),
                 { expiresIn: '7d' }
               );

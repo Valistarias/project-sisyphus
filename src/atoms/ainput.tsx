@@ -22,6 +22,8 @@ interface IAinput {
   placeholder?: string
   /** Is the field editable */
   readOnly?: boolean
+  /** Is the field hidden */
+  hidden?: boolean
   /** Allow the user's password manager to automatically enter the password */
   autoComplete?: string
 }
@@ -32,11 +34,13 @@ const Ainput: FC<IAinput> = ({
   className,
   placeholder,
   readOnly,
+  hidden,
   autoComplete
 }) => (
   <input
     type={type}
     readOnly={readOnly}
+    hidden={hidden}
     placeholder={placeholder}
     className={
       classTrim(`

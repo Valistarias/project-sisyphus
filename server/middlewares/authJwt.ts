@@ -4,7 +4,7 @@ import config from '../config/db.config';
 
 import { type Request, type Response } from 'express';
 import { type HydratedIUser, type IRole } from '../entities';
-import { findUserById } from '../entities/auth/controller';
+import { findUserById } from '../entities/user/controller';
 import { gM404 } from '../utils/globalMessage';
 
 const { User } = db;
@@ -26,11 +26,19 @@ const routes = [
     role: 'all'
   },
   {
-    url: '/signup',
+    url: '/login',
     role: 'unlogged'
   },
   {
-    url: '/login',
+    url: '/reset/password',
+    role: 'unlogged'
+  },
+  {
+    url: '/reset/password/*/*',
+    role: 'unlogged'
+  },
+  {
+    url: '/signup',
     role: 'unlogged'
   },
   {
@@ -124,7 +132,20 @@ const getUserRolesFromToken = async (req: IVerifyTokenRequest): Promise<IRole[]>
 });
 
 const checkRouteRights = (req: Request, res: Response, next: () => void): void => {
-  const urlMatch = routes.find((route) => route.url === req.path);
+  const urlMatch = routes.find((route) => {
+    const checkedRoutePaths = route.url.split('/');
+    const urlPaths = req.path.split('/');
+    if (checkedRoutePaths.length !== urlPaths.length) {
+      return false;
+    }
+    let sameUrl = true;
+    urlPaths.forEach((urlPath, index) => {
+      if (urlPath !== '*' && sameUrl) {
+        sameUrl = urlPath === checkedRoutePaths[index];
+      }
+    });
+    return sameUrl;
+  });
   let rights = ['unlogged'];
   if (urlMatch === undefined || urlMatch.role === 'all') {
     next();

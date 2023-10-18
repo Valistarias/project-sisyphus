@@ -1,20 +1,21 @@
 import React, { type FC } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 
-import { useApi } from '../providers/api';
-import { Aerror, Ainput } from '../atoms';
-import { Button } from '../molecules';
-import { regexMail } from '../utils';
+import { useApi } from '../../providers/api';
+import { Aerror, Ainput } from '../../atoms';
+import { Button } from '../../molecules';
+import { regexMail } from '../../utils';
 
-import './signup.scss';
+import './forgotPass.scss';
 
 interface FormValues {
   mail: string
-  password: string
 }
 
-const Signup: FC = () => {
+const ForgotPassword: FC = () => {
   const { api } = useApi();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -22,14 +23,13 @@ const Signup: FC = () => {
     formState: { errors }
   } = useForm<FormValues>();
 
-  const onSubmit: SubmitHandler<FormValues> = ({ mail, password }) => {
+  const onSubmit: SubmitHandler<FormValues> = ({ mail }) => {
     if (api !== undefined) {
-      api.auth.signup({
-        mail,
-        password
+      api.mailToken.create({
+        mail
       })
         .then(() => {
-          console.log('Connected!');
+          navigate('/login');
         })
         .catch((err) => {
           console.log('Cannot connect to the database!', err);
@@ -38,8 +38,8 @@ const Signup: FC = () => {
   };
 
   return (
-    <div className="signup">
-      <h1>Signup</h1>
+    <div className="forgot-pass">
+      <h1>Forgot Password</h1>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Ainput
           type="email"
@@ -51,25 +51,15 @@ const Signup: FC = () => {
             }
           })}
           placeholder="Mail..."
-          autoComplete="email"
+          autoComplete="username"
         />
         {errors.mail?.message !== undefined ? (<Aerror>{errors.mail.message}</Aerror>) : null}
-        <Ainput
-          type="password"
-          registered={register('password', {
-            required: 'Password is required'
-          })}
-          placeholder="Password..."
-          autoComplete="new-password"
-        />
-        {errors.password?.message !== undefined ? (<Aerror>{errors.password.message}</Aerror>) : null}
         <Button type="submit">
-          Sign Me Up
+          Send Email
         </Button>
       </form>
-
     </div>
   );
 };
 
-export default Signup;
+export default ForgotPassword;

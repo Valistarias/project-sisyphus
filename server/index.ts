@@ -12,11 +12,12 @@ import * as dotenv from 'dotenv';
 import DBConfig from './config/db.config';
 
 import { verifyTokenSingIn } from './entities/auth/controller';
+import { checkRouteRights } from './middlewares/authJwt';
+import { verifyMailToken } from './entities/mailToken/controller';
 
 import AuthRoutes from './entities/auth/routes';
 import UserRoutes from './entities/user/routes';
 import MailTokenRoutes from './entities/mailToken/routes';
-import { checkRouteRights } from './middlewares/authJwt';
 
 dotenv.config();
 
@@ -81,12 +82,29 @@ app.get('/verify/:id', function (req: Request, res: Response) {
       res.redirect('/login?success=true');
     })
     .catch(() => {
-      res.redirect('/error');
+      res.redirect('/');
     });
 });
 
 app.get('/*', (req: Request, res: Response, next: () => void) => {
   checkRouteRights(req, res, next);
+});
+
+app.get('/reset/password/:userId/:token', function (req: Request, res: Response, next: () => void) {
+  const { userId, token } = req.params;
+  // Check we have an id and token
+  if (userId === undefined || token === undefined) {
+    return res.status(422).send({
+      message: 'Missing Token or UserId'
+    });
+  }
+  verifyMailToken({ userId, token })
+    .then(() => {
+      next();
+    })
+    .catch(() => {
+      res.redirect('/');
+    });
 });
 
 if (process.env.VITE !== 'true') {

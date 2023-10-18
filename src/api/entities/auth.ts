@@ -8,11 +8,19 @@ interface ISignUserPayload {
   password: string
 };
 
+interface INewPassPayload {
+  userId: string
+  token: string
+  pass: string
+  confirmPass: string
+};
+
 export default class Auth extends Entity {
   signup: (payload: ISignUserPayload) => Promise<Record<string, string>>;
   signin: (payload: ISignUserPayload) => Promise<IUser | Record<string, unknown>>;
   signout: () => Promise<Record<string, string>>;
   check: () => Promise<IUser | Record<string, unknown>>;
+  passUpdate: (payload: INewPassPayload) => Promise<IUser | Record<string, unknown>>;
 
   constructor () {
     super('auth');
@@ -56,6 +64,16 @@ export default class Auth extends Entity {
 
     this.check = async () => await new Promise((resolve, reject) => {
       axios.get(`${this.url}/check/`)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+
+    this.passUpdate = async (payload) => await new Promise((resolve, reject) => {
+      axios.post(`${this.url}/passupdate/`, payload)
         .then((res) => {
           resolve(res.data);
         })
