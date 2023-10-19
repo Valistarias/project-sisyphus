@@ -48,7 +48,7 @@ const update = (req: Request, res: Response): void => {
           user.password
         );
         if (!passwordIsValid) {
-          res.status(400).send(gemInvalidField('Password'));
+          res.status(400).send(gemInvalidField('password'));
           return;
         }
         user.password = bcrypt.hashSync(newPass, 8);

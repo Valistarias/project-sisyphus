@@ -1,10 +1,12 @@
 import React, { type FC } from 'react';
+import i18next from 'i18next';
+
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-
 import { useGlobalVars } from '../../providers/globalVars';
-
 import { useApi } from '../../providers/api';
+import { useTranslation } from 'react-i18next';
+
 import { Aa, Aerror, Ainput } from '../../atoms';
 import { Button } from '../../molecules';
 import { regexMail } from '../../utils';
@@ -20,12 +22,14 @@ interface FormValues {
 
 const Login: FC = () => {
   const { api } = useApi();
+  const { t } = useTranslation('common');
   const { setUser } = useGlobalVars();
   const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors }
   } = useForm<FormValues>();
 
@@ -39,8 +43,23 @@ const Login: FC = () => {
           setUser(data);
           navigate('/');
         })
-        .catch((err) => {
-          console.log('Cannot connect to the database!', err);
+        .catch(({ response }) => {
+          const { data } = response;
+          if (data.code === 'CYPU-102') {
+            setError(data.sent, {
+              type: 'server',
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`user.${data.sent}`), 'capitalize')
+              })
+            });
+          } else {
+            setError('root.serverError', {
+              type: 'server',
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`user.${data.sent}`), 'capitalize')
+              })
+            });
+          }
         });
     }
   };

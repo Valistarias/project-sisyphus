@@ -55,7 +55,7 @@ const verifyToken = (req: IVerifyTokenRequest, res: Response, next: () => void, 
   const { token } = req.session;
 
   if (token === undefined) {
-    res.status(mute !== undefined ? 200 : 403).send(mute !== undefined ? {} : gemInvalidField('Token'));
+    res.status(mute !== undefined ? 200 : 403).send(mute !== undefined ? {} : gemInvalidField('token'));
     return;
   }
 

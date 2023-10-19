@@ -14,7 +14,7 @@ const createToken = (req: Request, res: Response, mg: IMailgunClient): void => {
     mail = null
   } = req.body;
   if (mail === undefined) {
-    res.status(400).send(gemInvalidField('User Mail'));
+    res.status(400).send(gemInvalidField('mail'));
     return;
   }
   User.findOne({ mail })

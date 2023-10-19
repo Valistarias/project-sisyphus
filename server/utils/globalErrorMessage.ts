@@ -33,7 +33,7 @@ const gemEmpty = (type: string): IGemRes => ({
 });
 const gemInvalidField = (field: string, req?: Request): IGemRes => ({
   message: `Invalid ${field}`,
-  sent: req !== null && req !== undefined ? (req.body ?? req.params) : null,
+  sent: req ?? field,
   code: 'CYPU-102'
 });
 const gemUnverifiedUser = (): IGemRes => ({

@@ -118,7 +118,7 @@ const signIn = (req: ISigninRequest, res: Response): void => {
       );
 
       if (!passwordIsValid) {
-        res.status(400).send(gemInvalidField('Password'));
+        res.status(400).send(gemInvalidField('password'));
         return;
       }
 
