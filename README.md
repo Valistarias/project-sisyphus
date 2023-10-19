@@ -13,7 +13,6 @@ TBD
 ## Todo List
 
 About Loggin In
-- [ ] Handle forgotten password request
 - [ ] When successfully register, go to home with succes message (successfully creating user, check the mail xxx@xxx.xx)
 - [ ] When user verified, go to login with succes message (user verified, you can now log in)
 - [ ] Add message for send again verification mail

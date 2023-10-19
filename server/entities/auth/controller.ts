@@ -8,7 +8,7 @@ import { type HydratedIUser, type IRole, type IUser } from '../index';
 import { type Request, type Response } from 'express';
 import { type Error, type HydratedDocument } from 'mongoose';
 import { type IMailgunClient } from 'mailgun.js/Interfaces';
-import { gM404, gM405 } from '../../utils/globalMessage';
+import { gemInvalidField, gemNotAllowed, gemNotFound, gemServerError, gemUnverifiedUser } from '../../utils/globalErrorMessage';
 import { findUserById } from '../user/controller';
 import { removeToken } from '../mailToken/controller';
 
@@ -57,23 +57,23 @@ const signUp = (req: Request, res: Response, mg: IMailgunClient): void => {
                 text: 'Click to confirm your email!',
                 html: `Click <a href = '${url}'>here</a> to confirm your email.`
               })
-                .then(msg => {
+                .then(() => {
                   res.send({ message: 'User was registered successfully!' });
-                }) // logs response data
+                })
                 .catch((err: Error) => {
-                  res.status(418).send({ message: err });
+                  res.status(500).send(gemServerError(err));
                 });
             })
             .catch((err: Error) => {
-              res.status(418).send({ message: err });
+              res.status(500).send(gemServerError(err));
             });
         })
         .catch((err: Error) => {
-          res.status(418).send({ message: err });
+          res.status(500).send(gemServerError(err));
         });
     })
     .catch((err: Error) => {
-      res.status(418).send({ message: err });
+      res.status(500).send(gemServerError(err));
     });
 };
 
@@ -108,7 +108,7 @@ const signIn = (req: ISigninRequest, res: Response): void => {
     .populate<{ roles: IRole[] }>('roles', '-__v')
     .then((user: HydratedIUser) => {
       if (user === null) {
-        res.status(404).send({ message: 'User Not found.' });
+        res.status(404).send(gemNotFound('User'));
         return;
       }
 
@@ -118,12 +118,12 @@ const signIn = (req: ISigninRequest, res: Response): void => {
       );
 
       if (!passwordIsValid) {
-        res.status(401).send({ message: 'Invalid Password!' });
+        res.status(400).send(gemInvalidField('Password'));
         return;
       }
 
       if (!user.verified) {
-        res.status(401).send({ message: 'User Not Verified' });
+        res.status(401).send(gemUnverifiedUser());
         return;
       }
 
@@ -141,8 +141,8 @@ const signIn = (req: ISigninRequest, res: Response): void => {
 
       res.status(200).send(user);
     })
-    .catch((error) => {
-      res.status(418).send({ message: error });
+    .catch((err) => {
+      res.status(500).send(gemServerError(err));
     });
 };
 
@@ -163,16 +163,16 @@ const verifyTokenSingIn = async (token: string): Promise<boolean> => await new P
   }
   try {
     if (payload === null || typeof payload === 'string') {
-      reject(gM404('Token'));
+      reject(gemNotFound('Token'));
     } else {
       User.findOne({
         _id: payload.IdMail
       })
         .then((user) => {
           if (user === null) {
-            reject(gM404('User'));
+            reject(gemNotFound('User'));
           } else if (user.verified) {
-            reject(gM405());
+            reject(gemNotAllowed());
           } else {
             user.verified = true;
             user.save()
@@ -199,7 +199,7 @@ const getLogged = (req: IVerifyTokenRequest, res: Response): void => {
       res.send(user);
     })
     .catch(() => {
-      res.status(404).send({ message: 'User Not found.' });
+      res.status(404).send(gemNotFound('User'));
     });
 };
 
@@ -210,14 +210,14 @@ const updatePassword = (req: Request, res: Response): void => {
     confirmPass
   } = req.body;
   if (pass !== confirmPass || pass === undefined || confirmPass === undefined) {
-    res.status(404).send(gM404('Password'));
+    res.status(404).send(gemNotFound('Password'));
   } else {
     findUserById(userId)
       .then((user) => {
         removeToken(req)
           .then((isTokenDelete) => {
             if (!isTokenDelete) {
-              res.status(404).send({ message: 'Token Not found.' });
+              res.status(404).send(gemNotFound('Token'));
             } else {
               user.password = bcrypt.hashSync(pass, 8);
               user.save()
@@ -225,16 +225,16 @@ const updatePassword = (req: Request, res: Response): void => {
                   res.send({ message: 'User was updated successfully!', user });
                 })
                 .catch((err) => {
-                  res.status(418).send({ message: err });
+                  res.status(500).send(gemServerError(err));
                 });
             }
           })
           .catch(() => {
-            res.status(404).send({ message: 'Token Not found.' });
+            res.status(404).send(gemNotFound('Token'));
           });
       })
       .catch(() => {
-        res.status(404).send({ message: 'User Not found.' });
+        res.status(404).send(gemNotFound('User'));
       });
   }
 };

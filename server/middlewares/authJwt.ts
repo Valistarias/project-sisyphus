@@ -5,7 +5,7 @@ import config from '../config/db.config';
 import { type Request, type Response } from 'express';
 import { type HydratedIUser, type IRole } from '../entities';
 import { findUserById } from '../entities/user/controller';
-import { gM404 } from '../utils/globalMessage';
+import { gemInvalidField, gemNotAdmin, gemNotFound, gemServerError, gemUnauthorized } from '../utils/globalErrorMessage';
 
 const { User } = db;
 
@@ -55,13 +55,13 @@ const verifyToken = (req: IVerifyTokenRequest, res: Response, next: () => void, 
   const { token } = req.session;
 
   if (token === undefined) {
-    res.status(mute !== undefined ? 200 : 403).send(mute !== undefined ? {} : { message: 'No token provided!' });
+    res.status(mute !== undefined ? 200 : 403).send(mute !== undefined ? {} : gemInvalidField('Token'));
     return;
   }
 
   jwt.verify(token, config.secret(process.env), (err, decoded) => {
     if (err !== null) {
-      res.status(mute !== undefined ? 200 : 401).send(mute !== undefined ? {} : { message: 'Unauthorized!' });
+      res.status(mute !== undefined ? 200 : 401).send(mute !== undefined ? {} : gemUnauthorized());
       return;
     }
     req.userId = decoded.id;
@@ -102,10 +102,10 @@ const adminNeeded = (req: IAdminNeededRequest, res: Response, next: () => void):
       if (boolCheck) {
         next();
       } else {
-        res.status(403).send({ message: 'Require Admin Role!' });
+        res.status(403).send(gemNotAdmin());
       }
     })
-    .catch((err) => res.status(418).send({ message: err }));
+    .catch((err) => res.status(500).send(gemServerError(err)));
 };
 
 const getUserRolesFromToken = async (req: IVerifyTokenRequest): Promise<IRole[]> => await new Promise((resolve, reject) => {
@@ -118,7 +118,7 @@ const getUserRolesFromToken = async (req: IVerifyTokenRequest): Promise<IRole[]>
       findUserById(decoded.id)
         .then((user) => {
           if (user === undefined) {
-            reject(gM404('User'));
+            reject(gemNotFound('User'));
           }
           resolve(user.roles);
         })

@@ -5,7 +5,7 @@ import { type Request, type Response } from 'express';
 import { type HydratedIUser } from './model';
 import { type IRole } from '../role/model';
 
-import { gM404 } from '../../utils/globalMessage';
+import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
 const { User } = db;
 
@@ -14,7 +14,7 @@ const findUserById = async (id: string): Promise<HydratedIUser> => await new Pro
     .populate<{ roles: IRole[] }>('roles')
     .then(async (res) => {
       if (res === undefined || res === null) {
-        reject(new Error(gM404('User')));
+        reject(gemNotFound('User'));
       } else {
         resolve(res as HydratedIUser);
       }
@@ -35,7 +35,7 @@ const update = (req: Request, res: Response): void => {
     scale = null
   } = req.body;
   if (id === undefined) {
-    res.status(418).send({ message: 'User ID Not found.' });
+    res.status(400).send(gemInvalidField('User ID', req));
     return;
   }
   findUserById(id)
@@ -48,7 +48,7 @@ const update = (req: Request, res: Response): void => {
           user.password
         );
         if (!passwordIsValid) {
-          res.status(401).send({ message: 'Invalid Password!' });
+          res.status(400).send(gemInvalidField('Password'));
           return;
         }
         user.password = bcrypt.hashSync(newPass, 8);
@@ -77,11 +77,11 @@ const update = (req: Request, res: Response): void => {
           res.send({ message: 'User was updated successfully!', responsePayload });
         })
         .catch((err) => {
-          res.status(418).send({ message: err });
+          res.status(500).send(gemServerError(err));
         });
     })
     .catch(() => {
-      res.status(404).send({ message: 'User Not found.' });
+      res.status(404).send(gemNotFound('User'));
     });
 };
 

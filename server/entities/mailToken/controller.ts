@@ -5,8 +5,7 @@ import { type Request, type Response } from 'express';
 import { type IMailgunClient } from 'mailgun.js/Interfaces';
 import { type HydratedDocument, type Error } from 'mongoose';
 import { type IUser } from '../user/model';
-
-import { gM404 } from '../../utils/globalMessage';
+import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
 const { User, MailToken } = db;
 
@@ -15,7 +14,7 @@ const createToken = (req: Request, res: Response, mg: IMailgunClient): void => {
     mail = null
   } = req.body;
   if (mail === undefined) {
-    res.status(418).send({ message: 'User mail Not found.' });
+    res.status(400).send(gemInvalidField('User Mail'));
     return;
   }
   User.findOne({ mail })
@@ -42,11 +41,11 @@ const createToken = (req: Request, res: Response, mg: IMailgunClient): void => {
                 res.send({ message: 'Mail sent' });
               })
               .catch((err: Error) => {
-                res.status(418).send({ message: err });
+                res.status(500).send(gemServerError(err));
               });
           })
           .catch((err: Error) => {
-            res.status(418).send({ message: err });
+            res.status(500).send(gemServerError(err));
           });
       }
     })
@@ -101,7 +100,7 @@ const removeToken = async (req: Request): Promise<boolean> => await new Promise(
             reject(err);
           });
       } else {
-        reject(gM404('Token'));
+        reject(gemNotFound('Token'));
       }
     })
     .catch((err) => {
@@ -119,11 +118,11 @@ const getUserMailByRequest = (req: Request, res: Response): void => {
       if (user !== undefined && user !== null) {
         res.status(200).send(user.mail);
       } else {
-        res.status(404).send({ message: gM404('Token') });
+        res.status(404).send(gemNotFound('Token'));
       }
     })
     .catch((err: Error) => {
-      res.status(418).send({ message: err });
+      res.status(500).send(gemServerError(err));
     });
 };
 

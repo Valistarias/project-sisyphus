@@ -22,7 +22,7 @@ export default (app: Router, mg: IMailgunClient): void => {
   app.post(
     '/auth/signup',
     [
-      verifySignUp.checkDuplicateUsername,
+      verifySignUp.checkDuplicateMail,
       verifySignUp.checkRolesExisted
     ],
     (req: Request, res: Response) => {
