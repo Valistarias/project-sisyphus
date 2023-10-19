@@ -2,7 +2,7 @@ import React, { type FC } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
-import { useGlobalVars } from '../../providers/GlobalVars';
+import { useGlobalVars } from '../../providers/globalVars';
 
 import { useApi } from '../../providers/api';
 import { Aa, Aerror, Ainput } from '../../atoms';

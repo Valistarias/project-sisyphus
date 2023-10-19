@@ -1,4 +1,6 @@
 import React, { useEffect, type FC } from 'react';
+import i18next from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -16,6 +18,7 @@ interface FormValues {
 
 const NewPassword: FC = () => {
   const { api } = useApi();
+  const { t } = useTranslation('common');
   const { userId, token } = useParams();
   const navigate = useNavigate();
 
@@ -24,6 +27,7 @@ const NewPassword: FC = () => {
     watch,
     handleSubmit,
     setValue,
+    setError,
     formState: { errors }
   } = useForm<FormValues>();
 
@@ -38,8 +42,14 @@ const NewPassword: FC = () => {
         .then(() => {
           navigate('/login');
         })
-        .catch((err) => {
-          console.log('Cannot connect to the database!', err);
+        .catch(({ response }) => {
+          const { data } = response;
+          setError('root.serverError', {
+            type: 'server',
+            message: t(`serverErrors.${data.code}`, {
+              field: i18next.format(t(`user.${data.sent}`), 'capitalize')
+            })
+          });
         });
     }
   };
@@ -62,6 +72,7 @@ const NewPassword: FC = () => {
     <div className="new-pass">
       <h1>New Password</h1>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        {errors.root?.serverError?.message !== undefined ? (<Aerror>{errors.root.serverError.message}</Aerror>) : null}
         <Ainput
           type="email"
           registered={register('mail')}

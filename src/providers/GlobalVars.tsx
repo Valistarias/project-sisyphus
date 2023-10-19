@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 import { useApi } from './api';
 import { type IUser } from '../interfaces';
+import { useTranslation } from 'react-i18next';
 
 interface IGlobalVarsContext {
   /** The logged user */
@@ -22,6 +23,7 @@ const GlobalVarsContext = React.createContext<IGlobalVarsContext | null>(null);
 
 export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) => {
   const { api } = useApi();
+  const { i18n } = useTranslation();
 
   const [user, setUser] = useState<IUser | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -40,6 +42,14 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
         setLoading(false);
       });
   }, [api]);
+
+  useEffect(() => {
+    if (user !== null) {
+      void i18n.changeLanguage(user.lang);
+    } else {
+      void i18n.changeLanguage('en');
+    }
+  }, [user, i18n]);
 
   const providerValues = useMemo(() => ({
     user,

@@ -4,7 +4,7 @@ import { type Error } from 'mongoose';
 interface IGemRes {
   message: string
   code: string
-  sent?: Record<string, any> | null
+  sent?: Record<string, any> | string | null
   err?: Error
 }
 
@@ -42,6 +42,7 @@ const gemUnverifiedUser = (): IGemRes => ({
 });
 const gemDuplicate = (field: string): IGemRes => ({
   message: `${field} already used`,
+  sent: field,
   code: 'CYPU-104'
 });
 // Error 401

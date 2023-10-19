@@ -7,7 +7,7 @@ import {
 
 import { HeaderBar } from './organisms';
 import { HomePage, ErrorPage, LoginPage, SignupPage, DashboardPage, ForgotPassPage, NewPassPage } from './pages';
-import { useGlobalVars } from './providers/GlobalVars';
+import { useGlobalVars } from './providers/globalVars';
 
 import './assets/scss/index.scss';
 

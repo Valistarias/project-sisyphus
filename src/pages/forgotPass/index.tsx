@@ -1,4 +1,6 @@
 import React, { type FC } from 'react';
+import i18next from 'i18next';
+import { useTranslation } from 'react-i18next';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
@@ -15,11 +17,13 @@ interface FormValues {
 
 const ForgotPassword: FC = () => {
   const { api } = useApi();
+  const { t } = useTranslation('common');
   const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors }
   } = useForm<FormValues>();
 
@@ -31,8 +35,14 @@ const ForgotPassword: FC = () => {
         .then(() => {
           navigate('/login');
         })
-        .catch((err) => {
-          console.log('Cannot connect to the database!', err);
+        .catch(({ response }) => {
+          const { data } = response;
+          setError('root.serverError', {
+            type: 'server',
+            message: t(`serverErrors.${data.code}`, {
+              field: i18next.format(t(`user.${data.sent}`), 'capitalize')
+            })
+          });
         });
     }
   };
@@ -41,6 +51,7 @@ const ForgotPassword: FC = () => {
     <div className="forgot-pass">
       <h1>Forgot Password</h1>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        {errors.root?.serverError?.message !== undefined ? (<Aerror>{errors.root.serverError.message}</Aerror>) : null}
         <Ainput
           type="email"
           registered={register('mail', {

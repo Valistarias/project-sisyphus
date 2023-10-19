@@ -2,7 +2,7 @@ import React, { useCallback, type FC } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 import { useApi } from '../providers/api';
-import { useGlobalVars } from '../providers/GlobalVars';
+import { useGlobalVars } from '../providers/globalVars';
 
 import { Aa } from '../atoms';
 

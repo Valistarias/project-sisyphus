@@ -31,7 +31,7 @@ const signUp = (req: Request, res: Response, mg: IMailgunClient): void => {
   const user = new User({
     mail: req.body.mail,
     password: bcrypt.hashSync(req.body.password, 8),
-    lang: 'en-US',
+    lang: 'en',
     theme: 'dark',
     scale: 1
   });

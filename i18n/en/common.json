@@ -1,0 +1,28 @@
+{
+  "app": {
+   "title": "Project Sisyphus"
+  },
+  "user": {
+    "mail": "email",
+    "password": "password",
+    "name": "username",
+    "lang": "language",
+    "theme": "theme",
+    "scale": "scale",
+    "role": "role"
+  },
+  "serverErrors": {
+    "unspecific": "Something went wrong.",
+    "CYPU-001": "Request Not Allowed",
+    "CYPU-002": "Administrator Role Needed",
+    "CYPU-003": "I'm a teapot",
+    "CYPU-101": "Content of the {{field}} object can not be empty",
+    "CYPU-102": "Invalid {{field}}",
+    "CYPU-103": "User not verified",
+    "CYPU-104": "{{field}} already used",
+    "CYPU-105": "You need to log in to do this request",
+    "CYPU-201": "Some error occurred while creating the {{field}}",
+    "CYPU-202": "{{field}} not found",
+    "CYPU-301": "Internal server error"
+  }
+}

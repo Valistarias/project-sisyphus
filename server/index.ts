@@ -18,6 +18,7 @@ import { verifyMailToken } from './entities/mailToken/controller';
 import AuthRoutes from './entities/auth/routes';
 import UserRoutes from './entities/user/routes';
 import MailTokenRoutes from './entities/mailToken/routes';
+import { gemInvalidField } from './utils/globalErrorMessage';
 
 dotenv.config();
 
@@ -73,9 +74,7 @@ app.get('/verify/:id', function (req: Request, res: Response) {
   const { id } = req.params;
   // Check we have an id
   if (id === undefined) {
-    return res.status(422).send({
-      message: 'Missing Token'
-    });
+    return res.status(422).send(gemInvalidField('UserId', req));
   }
   verifyTokenSingIn(id)
     .then(() => {
@@ -94,9 +93,7 @@ app.get('/reset/password/:userId/:token', function (req: Request, res: Response,
   const { userId, token } = req.params;
   // Check we have an id and token
   if (userId === undefined || token === undefined) {
-    return res.status(422).send({
-      message: 'Missing Token or UserId'
-    });
+    return res.status(422).send(gemInvalidField('Token or UserId', req));
   }
   verifyMailToken({ userId, token })
     .then(() => {

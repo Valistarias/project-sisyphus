@@ -1,4 +1,5 @@
 import React, { type FC } from 'react';
+import i18next from 'i18next';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 
 import { useApi } from '../../providers/api';
@@ -8,6 +9,7 @@ import { regexMail } from '../../utils';
 
 import './signup.scss';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface FormValues {
   mail: string
@@ -17,12 +19,14 @@ interface FormValues {
 
 const Signup: FC = () => {
   const { api } = useApi();
+  const { t } = useTranslation('common');
   const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     watch,
+    setError,
     formState: { errors }
   } = useForm<FormValues>();
 
@@ -35,8 +39,23 @@ const Signup: FC = () => {
         .then(() => {
           navigate('/');
         })
-        .catch((err) => {
-          console.log('Cannot connect to the database!', err);
+        .catch(({ response }) => {
+          const { data } = response;
+          if (data.code === 'CYPU-104') {
+            setError(data.sent, {
+              type: 'server',
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`user.${data.sent}`), 'capitalize')
+              })
+            });
+          } else {
+            setError('root.serverError', {
+              type: 'server',
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`user.${data.sent}`), 'capitalize')
+              })
+            });
+          }
         });
     }
   };
@@ -45,6 +64,7 @@ const Signup: FC = () => {
     <div className="signup">
       <h1>Signup</h1>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        {errors.root?.serverError?.message !== undefined ? (<Aerror>{errors.root.serverError.message}</Aerror>) : null}
         <Ainput
           type="email"
           registered={register('mail', {

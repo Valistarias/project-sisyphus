@@ -1,14 +1,15 @@
 import React, { type FC } from 'react';
 
-import { Aicon } from '../../atoms';
+import { useTranslation } from 'react-i18next';
 
 import './home.scss';
 
 const Home: FC = () => {
+  const { t } = useTranslation('common');
+
   return (
     <div className="home">
-      <p>Coucou</p>
-      <Aicon type="edit" />
+      <h1>{t('app.title')}</h1>
     </div>
   );
 };

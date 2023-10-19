@@ -12,14 +12,14 @@ const checkDuplicateMail = (req: Request, res: Response, next: () => void): void
   })
     .then((user) => {
       if (user !== null) {
-        res.status(400).send(gemDuplicate('Mail'));
+        res.status(400).send(gemDuplicate('mail'));
         return;
       }
 
       next();
     })
     .catch(() => {
-      res.status(400).send(gemDuplicate('Mail'));
+      res.status(400).send(gemDuplicate('mail'));
     });
 };
 
