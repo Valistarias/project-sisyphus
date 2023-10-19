@@ -18,7 +18,7 @@ interface FormValues {
 
 const NewPassword: FC = () => {
   const { api } = useApi();
-  const { t } = useTranslation('common');
+  const { t } = useTranslation();
   const { userId, token } = useParams();
   const navigate = useNavigate();
 
@@ -47,7 +47,7 @@ const NewPassword: FC = () => {
           setError('root.serverError', {
             type: 'server',
             message: t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`user.${data.sent}`), 'capitalize')
+              field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize')
             })
           });
         });
@@ -62,21 +62,20 @@ const NewPassword: FC = () => {
         .then((mail) => {
           setValue('mail', mail);
         })
-        .catch((err) => {
-          console.error('Cannot connect to the database!', err);
+        .catch(() => {
+          navigate('/');
         });
     }
-  }, [userId, token, api, setValue]);
+  }, [userId, token, api, setValue, navigate]);
 
   return (
     <div className="new-pass">
-      <h1>New Password</h1>
+      <h1>{t('newPass.title', { ns: 'pages' })}</h1>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         {errors.root?.serverError?.message !== undefined ? (<Aerror>{errors.root.serverError.message}</Aerror>) : null}
         <Ainput
           type="email"
           registered={register('mail')}
-          placeholder="Mail..."
           autoComplete="username"
           hidden
           readOnly
@@ -84,28 +83,28 @@ const NewPassword: FC = () => {
         <Ainput
           type="password"
           registered={register('password', {
-            required: 'Password is required'
+            required: t('password.required', { ns: 'fields' })
           })}
-          placeholder="New Password..."
+          placeholder={t('password.placeholder', { ns: 'fields' })}
           autoComplete="new-password"
         />
         {errors.password?.message !== undefined ? (<Aerror>{errors.password.message}</Aerror>) : null}
         <Ainput
           type="password"
           registered={register('confirmPassword', {
-            required: 'Password is required',
+            required: t('confirmPassword.required', { ns: 'fields' }),
             validate: (val: string) => {
               if (watch('password') !== val) {
-                return 'Your passwords do no match';
+                return t('confirmPassword.validate', { ns: 'fields' });
               }
             }
           })}
-          placeholder="Confirm Password..."
+          placeholder={t('confirmPassword.placeholder', { ns: 'fields' })}
           autoComplete="new-password"
         />
         {errors.confirmPassword?.message !== undefined ? (<Aerror>{errors.confirmPassword.message}</Aerror>) : null}
         <Button type="submit">
-          Change Password
+        {t('newPass.formCTA', { ns: 'pages' })}
         </Button>
       </form>
 

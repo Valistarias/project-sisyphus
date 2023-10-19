@@ -6,7 +6,12 @@ import { I18nextProvider, initReactI18next } from 'react-i18next';
 import i18next from 'i18next';
 
 import common_fr from '../../i18n/fr/common.json';
+import fields_fr from '../../i18n/fr/fields.json';
+import pages_fr from '../../i18n/fr/pages.json';
+
 import common_en from '../../i18n/en/common.json';
+import fields_en from '../../i18n/en/fields.json';
+import pages_en from '../../i18n/en/pages.json';
 
 interface ILangContext {
   /** Is the provider loading */
@@ -21,6 +26,8 @@ interface LangProviderProps {
 void i18next
   .use(initReactI18next)
   .init({
+    ns: ['common', 'fields'],
+    defaultNS: 'common',
     interpolation: {
       escapeValue: false,
       format: function (value, format, lng) {
@@ -33,10 +40,14 @@ void i18next
     lng: 'en',
     resources: {
       en: {
-        common: common_en
+        common: common_en,
+        fields: fields_en,
+        pages: pages_en
       },
       fr: {
-        common: common_fr
+        common: common_fr,
+        fields: fields_fr,
+        pages: pages_fr
       }
     }
   });

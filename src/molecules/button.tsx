@@ -6,7 +6,7 @@ import { classTrim } from '../utils';
 
 import './button.scss';
 
-interface ButtonProps {
+interface IButton {
   /** The type of the Button element */
   type?: 'button' | 'submit'
   /** The class of the Button element */
@@ -19,7 +19,7 @@ interface ButtonProps {
   onClick?: (e: React.MouseEvent<HTMLElement>) => void
 }
 
-const Button: FC<ButtonProps> = ({
+const Button: FC<IButton> = ({
   type = 'button',
   className,
   children,

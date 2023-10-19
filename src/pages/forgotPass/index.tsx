@@ -17,7 +17,7 @@ interface FormValues {
 
 const ForgotPassword: FC = () => {
   const { api } = useApi();
-  const { t } = useTranslation('common');
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const {
@@ -40,7 +40,7 @@ const ForgotPassword: FC = () => {
           setError('root.serverError', {
             type: 'server',
             message: t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`user.${data.sent}`), 'capitalize')
+              field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize')
             })
           });
         });
@@ -49,24 +49,24 @@ const ForgotPassword: FC = () => {
 
   return (
     <div className="forgot-pass">
-      <h1>Forgot Password</h1>
+      <h1>{t('forgotPass.title', { ns: 'pages' })}</h1>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         {errors.root?.serverError?.message !== undefined ? (<Aerror>{errors.root.serverError.message}</Aerror>) : null}
         <Ainput
           type="email"
           registered={register('mail', {
-            required: 'Email Address is required',
+            required: t('mail.required', { ns: 'fields' }),
             pattern: {
               value: regexMail,
-              message: 'Mail not Ok'
+              message: t('mail.pattern', { ns: 'fields' })
             }
           })}
-          placeholder="Mail..."
+          placeholder={t('mail.placeholder', { ns: 'fields' })}
           autoComplete="username"
         />
         {errors.mail?.message !== undefined ? (<Aerror>{errors.mail.message}</Aerror>) : null}
         <Button type="submit">
-          Send Email
+        {t('forgotPass.formCTA', { ns: 'pages' })}
         </Button>
       </form>
     </div>

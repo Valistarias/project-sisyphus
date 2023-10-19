@@ -1,11 +1,15 @@
 import React, { type FC } from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import './dashboard.scss';
 
 const Dashboard: FC = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="dashboard">
-      <p>Dashboard</p>
+      <h1>{t('dashboard.title', { ns: 'pages' })}</h1>
     </div>
   );
 };

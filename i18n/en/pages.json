@@ -1,0 +1,27 @@
+{
+  "dashboard": {
+    "title": "Dashboard"
+  },
+  "error": {
+    "title": "Error"
+  },
+  "forgotPass": {
+    "title": "Forgot Password",
+    "formCTA": "Send Email"
+  },
+  "home": {
+    "title": "Welcome to project Sisyphus"
+  },
+  "login": {
+    "title": "Login",
+    "formCTA": "Log In"
+  },
+  "newPass": {
+    "title": "New Password",
+    "formCTA": "Change Password"
+  },
+  "signup": {
+    "title": "Sign Up",
+    "formCTA": "Sign Me Up"
+  }
+}

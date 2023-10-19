@@ -2,14 +2,16 @@
   "app": {
    "title": "Project Sisyphus"
   },
-  "user": {
-    "mail": "email",
-    "password": "password",
-    "name": "username",
-    "lang": "language",
-    "theme": "theme",
-    "scale": "scale",
-    "role": "role"
+  "terms": {
+    "user": {
+      "mail": "email",
+      "password": "password",
+      "name": "username",
+      "lang": "language",
+      "theme": "theme",
+      "scale": "scale",
+      "role": "role"
+    }
   },
   "serverErrors": {
     "unspecific": "Something went wrong.",

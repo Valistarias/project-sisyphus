@@ -19,7 +19,7 @@ interface FormValues {
 
 const Signup: FC = () => {
   const { api } = useApi();
-  const { t } = useTranslation('common');
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const {
@@ -45,14 +45,14 @@ const Signup: FC = () => {
             setError(data.sent, {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`user.${data.sent}`), 'capitalize')
+                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize')
               })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`user.${data.sent}`), 'capitalize')
+                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize')
               })
             });
           }
@@ -62,47 +62,47 @@ const Signup: FC = () => {
 
   return (
     <div className="signup">
-      <h1>Signup</h1>
+      <h1>{t('signup.title', { ns: 'pages' })}</h1>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         {errors.root?.serverError?.message !== undefined ? (<Aerror>{errors.root.serverError.message}</Aerror>) : null}
         <Ainput
           type="email"
           registered={register('mail', {
-            required: 'Email Address is required',
+            required: t('mail.required', { ns: 'fields' }),
             pattern: {
               value: regexMail,
-              message: 'Mail not Ok'
+              message: t('mail.pattern', { ns: 'fields' })
             }
           })}
-          placeholder="Mail..."
+          placeholder={t('mail.placeholder', { ns: 'fields' })}
           autoComplete="email"
         />
         {errors.mail?.message !== undefined ? (<Aerror>{errors.mail.message}</Aerror>) : null}
         <Ainput
           type="password"
           registered={register('password', {
-            required: 'Password is required'
+            required: t('password.required', { ns: 'fields' })
           })}
-          placeholder="Password..."
+          placeholder={t('password.placeholder', { ns: 'fields' })}
           autoComplete="new-password"
         />
         {errors.password?.message !== undefined ? (<Aerror>{errors.password.message}</Aerror>) : null}
         <Ainput
           type="password"
           registered={register('confirmPassword', {
-            required: 'Password is required',
+            required: t('confirmPassword.required', { ns: 'fields' }),
             validate: (val: string) => {
               if (watch('password') !== val) {
-                return 'Your passwords do no match';
+                return t('confirmPassword.validate', { ns: 'fields' });
               }
             }
           })}
-          placeholder="Confirm Password..."
+          placeholder={t('confirmPassword.placeholder', { ns: 'fields' })}
           autoComplete="new-password"
         />
         {errors.confirmPassword?.message !== undefined ? (<Aerror>{errors.confirmPassword.message}</Aerror>) : null}
         <Button type="submit">
-          Sign Me Up
+          {t('signup.formCTA', { ns: 'pages' })}
         </Button>
       </form>
 

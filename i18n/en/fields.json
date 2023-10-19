@@ -1,0 +1,16 @@
+{
+  "mail": {
+    "required": "Email address is required",
+    "pattern": "The email format isn't right (xxx@yyy.zz)",
+    "placeholder": "Email..."
+  },
+  "password": {
+    "required": "Password is required",
+    "placeholder": "Password..."
+  },
+  "confirmPassword": {
+    "required": "Password is required",
+    "validate": "Your passwords do no match",
+    "placeholder": "Confirm Password..."
+  }
+}

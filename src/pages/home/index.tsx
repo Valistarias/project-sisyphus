@@ -5,11 +5,11 @@ import { useTranslation } from 'react-i18next';
 import './home.scss';
 
 const Home: FC = () => {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation();
 
   return (
     <div className="home">
-      <h1>{t('app.title')}</h1>
+      <h1>{t('home.title', { ns: 'pages' })}</h1>
     </div>
   );
 };
