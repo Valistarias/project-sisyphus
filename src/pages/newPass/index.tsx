@@ -3,10 +3,12 @@ import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
-
+import { useSystemAlerts } from '../../providers/systemAlerts';
 import { useApi } from '../../providers/api';
-import { Aerror, Ainput } from '../../atoms';
+
+import { Aerror, Ainput, Ap } from '../../atoms';
 import { Button } from '../../molecules';
+import { Alert } from '../../organisms';
 
 import './newPass.scss';
 
@@ -20,6 +22,7 @@ const NewPassword: FC = () => {
   const { api } = useApi();
   const { t } = useTranslation();
   const { userId, token } = useParams();
+  const { createAlert, getNewId } = useSystemAlerts();
   const navigate = useNavigate();
 
   const {
@@ -40,6 +43,19 @@ const NewPassword: FC = () => {
         confirmPass: confirmPassword
       })
         .then(() => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert
+                key={newId}
+                id={newId}
+                timer={5}
+              >
+                <Ap>{t('newPass.success', { ns: 'pages' })}</Ap>
+              </Alert>
+            )
+          });
           navigate('/login');
         })
         .catch(({ response }) => {

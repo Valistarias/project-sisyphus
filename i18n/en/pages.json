@@ -7,18 +7,21 @@
   },
   "forgotPass": {
     "title": "Forgot Password",
-    "formCTA": "Send Email"
+    "formCTA": "Send Email",
+    "successSent": "An email has been sent at {{mail}} for resetting your password. Check your inbox."
   },
   "home": {
     "title": "Welcome to project Sisyphus"
   },
   "login": {
     "title": "Login",
-    "formCTA": "Log In"
+    "formCTA": "Log In",
+    "successRegister": "Mail sucessfully verified. You can log in"
   },
   "newPass": {
     "title": "New Password",
-    "formCTA": "Change Password"
+    "formCTA": "Change Password",
+    "success": "Password sucessfully modified. You can log in"
   },
   "signup": {
     "title": "Sign Up",

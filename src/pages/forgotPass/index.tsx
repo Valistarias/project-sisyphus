@@ -3,10 +3,13 @@ import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-
+import { useSystemAlerts } from '../../providers/systemAlerts';
 import { useApi } from '../../providers/api';
-import { Aerror, Ainput } from '../../atoms';
+
+import { Aerror, Ainput, Ap } from '../../atoms';
 import { Button } from '../../molecules';
+import { Alert } from '../../organisms';
+
 import { regexMail } from '../../utils';
 
 import './forgotPass.scss';
@@ -18,6 +21,7 @@ interface FormValues {
 const ForgotPassword: FC = () => {
   const { api } = useApi();
   const { t } = useTranslation();
+  const { createAlert, getNewId } = useSystemAlerts();
   const navigate = useNavigate();
 
   const {
@@ -33,6 +37,19 @@ const ForgotPassword: FC = () => {
         mail
       })
         .then(() => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert
+                key={newId}
+                id={newId}
+                timer={5}
+              >
+                <Ap>{t('forgotPass.successSent', { ns: 'pages', mail })}</Ap>
+              </Alert>
+            )
+          });
           navigate('/login');
         })
         .catch(({ response }) => {

@@ -1,17 +1,19 @@
-import React, { type FC } from 'react';
+import React, { type FC, useMemo, useEffect } from 'react';
 import i18next from 'i18next';
 
 import { useForm, type SubmitHandler } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useGlobalVars } from '../../providers/globalVars';
 import { useApi } from '../../providers/api';
 import { useTranslation } from 'react-i18next';
+import { useSystemAlerts } from '../../providers/systemAlerts';
 
-import { Aa, Aerror, Ainput } from '../../atoms';
+import { Aa, Aerror, Ainput, Ap } from '../../atoms';
 import { Button } from '../../molecules';
-import { regexMail } from '../../utils';
+import { Alert } from '../../organisms';
 
 import { type IUser } from '../../interfaces';
+import { regexMail } from '../../utils';
 
 import './login.scss';
 
@@ -25,6 +27,8 @@ const Login: FC = () => {
   const { t } = useTranslation();
   const { setUser } = useGlobalVars();
   const navigate = useNavigate();
+  const { search } = useLocation();
+  const { createAlert, getNewId } = useSystemAlerts();
 
   const {
     register,
@@ -32,6 +36,26 @@ const Login: FC = () => {
     setError,
     formState: { errors }
   } = useForm<FormValues>();
+
+  const params = useMemo(() => new URLSearchParams(search), [search]);
+
+  useEffect(() => {
+    if (params.get('success') === 'true') {
+      const newId = getNewId();
+      createAlert({
+        key: newId,
+        dom: (
+          <Alert
+            key={newId}
+            id={newId}
+            timer={5}
+          >
+            <Ap>{t('login.successRegister', { ns: 'pages' })}</Ap>
+          </Alert>
+        )
+      });
+    }
+  }, [params, createAlert, getNewId, t]);
 
   const onSubmit: SubmitHandler<FormValues> = ({ mail, password }) => {
     if (api !== undefined) {

@@ -15,9 +15,7 @@ TBD
 About Loggin In
 - [ ] When successfully register, go to home with succes message (successfully creating user, check the mail xxx@xxx.xx)
 - [ ] When user verified, go to login with succes message (user verified, you can now log in)
-- [ ] Add message for send again verification mail
-- [ ] Add error message when register fail (for all the cases)
-- [ ] Add error message when login fail
+- [ ] Add the possibility to send again the mail for verify the email
 
 ## License
 
