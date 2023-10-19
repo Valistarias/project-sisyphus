@@ -5,16 +5,24 @@ This project is a character sheet generator for a brand new tabletop role-playin
 ## Features
 
 ### For Players
+
 TBD
 
 ### For Game Masters
+
 TBD
 
 ## Todo List
 
+### Main Tasks
+
+- [ ] Work on backoffice for creating the rulebook
+- [ ] Work on the dice system
+- [ ] Work on the shared dice history (with pagination and events for real time)
+
+### Side Tasks
+
 About Loggin In
-- [ ] When successfully register, go to home with succes message (successfully creating user, check the mail xxx@xxx.xx)
-- [ ] When user verified, go to login with succes message (user verified, you can now log in)
 - [ ] Add the possibility to send again the mail for verify the email
 
 ## License
