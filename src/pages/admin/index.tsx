@@ -1,6 +1,6 @@
 import React, { useState, type FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Editor, EditorState, RichUtils } from 'draft-js';
+import { Editor, EditorState, RichUtils, convertFromRaw, convertToRaw } from 'draft-js';
 
 import './admin.scss';
 
@@ -10,8 +10,15 @@ const Admin: FC = () => {
     () => EditorState.createEmpty()
   );
 
+  console.log('editorState', editorState);
+
   const onBoldClick = useCallback(() => {
     setEditorState(RichUtils.toggleInlineStyle(editorState, 'BOLD'));
+  }, [editorState]);
+
+  const onTest = useCallback(() => {
+    const raw = convertToRaw(editorState.getCurrentContent()).blocks;
+    console.log(convertToRaw(editorState.getCurrentContent()));
   }, [editorState]);
 
   const onHandleKeyCommand = useCallback((command, editorState) => {
@@ -34,6 +41,7 @@ const Admin: FC = () => {
         handleKeyCommand={onHandleKeyCommand}
         onChange={setEditorState}
       />
+      <button onClick={onTest}>Test</button>
     </div>
   );
 };
