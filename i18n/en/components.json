@@ -1,5 +1,8 @@
 {
   "alert": {
     "close": "Close Alert"
+  },
+  "headerBar": {
+    "logout": "Log out"
   }
 }

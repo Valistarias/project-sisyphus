@@ -8,7 +8,8 @@
     "strictNullChecks": true,
     "types": ["node"],
     "esModuleInterop": true,
-    "resolveJsonModule":true
+    "resolveJsonModule":true,
+    "moduleResolution": "Bundler"
   },
   "include": ["./"]
 }

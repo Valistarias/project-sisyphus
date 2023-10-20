@@ -46,7 +46,7 @@ const routes = [
     role: 'logged'
   },
   {
-    url: '/back',
+    url: '/admin',
     role: 'admin'
   }
 ];

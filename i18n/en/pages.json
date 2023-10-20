@@ -1,6 +1,7 @@
 {
-  "dashboard": {
-    "title": "Dashboard"
+  "home": {
+    "title": "Home",
+    "text": "Welcome to project Sisyphus"
   },
   "error": {
     "title": "Error"
@@ -9,9 +10,6 @@
     "title": "Forgot Password",
     "formCTA": "Send Email",
     "successSent": "An email has been sent at {{mail}} for resetting your password. Check your inbox."
-  },
-  "home": {
-    "title": "Welcome to project Sisyphus"
   },
   "login": {
     "title": "Login",
@@ -25,6 +23,13 @@
   },
   "signup": {
     "title": "Sign Up",
-    "formCTA": "Sign Me Up"
+    "formCTA": "Sign Me Up",
+    "successSent": "An email has been sent at {{mail}} for verifying your account. Check your inbox."
+  },
+  "dashboard": {
+    "title": "Dashboard"
+  },
+  "admin": {
+    "title": "Administration"
   }
 }

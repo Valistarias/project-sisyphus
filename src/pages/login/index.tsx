@@ -1,4 +1,4 @@
-import React, { type FC, useMemo, useEffect } from 'react';
+import React, { type FC, useMemo, useEffect, useRef } from 'react';
 import i18next from 'i18next';
 
 import { useForm, type SubmitHandler } from 'react-hook-form';
@@ -30,6 +30,8 @@ const Login: FC = () => {
   const { search } = useLocation();
   const { createAlert, getNewId } = useSystemAlerts();
 
+  const alertSent = useRef(false);
+
   const {
     register,
     handleSubmit,
@@ -40,7 +42,7 @@ const Login: FC = () => {
   const params = useMemo(() => new URLSearchParams(search), [search]);
 
   useEffect(() => {
-    if (params.get('success') === 'true') {
+    if (params.get('success') === 'true' && !alertSent.current) {
       const newId = getNewId();
       createAlert({
         key: newId,
@@ -54,6 +56,7 @@ const Login: FC = () => {
           </Alert>
         )
       });
+      alertSent.current = true;
     }
   }, [params, createAlert, getNewId, t]);
 
@@ -69,6 +72,7 @@ const Login: FC = () => {
         })
         .catch(({ response }) => {
           const { data } = response;
+          console.log('data', data);
           if (data.code === 'CYPU-102') {
             setError(data.sent, {
               type: 'server',
@@ -92,6 +96,7 @@ const Login: FC = () => {
     <div className="login">
       <h1>{t('login.title', { ns: 'pages' })}</h1>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        {errors.root?.serverError?.message !== undefined ? (<Aerror>{errors.root.serverError.message}</Aerror>) : null}
         <Ainput
           type="email"
           registered={register('mail', {

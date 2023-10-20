@@ -1,15 +1,19 @@
 import React, { type FC } from 'react';
 import i18next from 'i18next';
-import { useForm, type SubmitHandler } from 'react-hook-form';
 
+import { useForm, type SubmitHandler } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { useSystemAlerts } from '../../providers/systemAlerts';
 import { useApi } from '../../providers/api';
-import { Aerror, Ainput } from '../../atoms';
+
+import { Aerror, Ainput, Ap } from '../../atoms';
 import { Button } from '../../molecules';
+import { Alert } from '../../organisms';
+
 import { regexMail } from '../../utils';
 
 import './signup.scss';
-import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 
 interface FormValues {
   mail: string
@@ -21,6 +25,7 @@ const Signup: FC = () => {
   const { api } = useApi();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { createAlert, getNewId } = useSystemAlerts();
 
   const {
     register,
@@ -37,6 +42,19 @@ const Signup: FC = () => {
         password
       })
         .then(() => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert
+                key={newId}
+                id={newId}
+                timer={5}
+              >
+                <Ap>{t('signup.successSent', { ns: 'pages', mail })}</Ap>
+              </Alert>
+            )
+          });
           navigate('/');
         })
         .catch(({ response }) => {

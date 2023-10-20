@@ -5,6 +5,7 @@ import SignupPage from './signup';
 import DashboardPage from './dashboard';
 import ForgotPassPage from './forgotPass';
 import NewPassPage from './newPass';
+import AdminPage from './admin';
 
 export {
   HomePage,
@@ -13,5 +14,6 @@ export {
   SignupPage,
   DashboardPage,
   ForgotPassPage,
-  NewPassPage
+  NewPassPage,
+  AdminPage
 };

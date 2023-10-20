@@ -1,4 +1,5 @@
-import React, { useCallback, type FC } from 'react';
+import React, { useCallback, type FC, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useNavigate } from 'react-router-dom';
 import { useApi } from '../providers/api';
@@ -12,7 +13,18 @@ import { Button } from '../molecules';
 const HeaderBar: FC = () => {
   const { api } = useApi();
   const { user, setUser } = useGlobalVars();
+  const { t } = useTranslation();
   const navigate = useNavigate();
+
+  const userState = useMemo(() => {
+    if (user === null) {
+      return 'unlogged';
+    }
+    if (user.roles.find((role) => role.name === 'admin') !== undefined) {
+      return 'admin';
+    }
+    return 'logged';
+  }, [user]);
 
   const onLogout = useCallback(() => {
     if (api !== undefined) {
@@ -26,22 +38,27 @@ const HeaderBar: FC = () => {
         });
     }
   }, [api, navigate, setUser]);
+
   return (
     <div className="headerbar">
-      <Aa href="/">Home</Aa>
-      { user !== null
-        ? (
+      <Aa href="/">{t('home.title', { ns: 'pages' })}</Aa>
+      {
+        userState === 'unlogged' ?? (
           <>
-            <Aa href="/dashboard">Dashboard</Aa>
-            <Button onClick={onLogout}>Log out</Button>
+            <Aa href="/login">{t('login.title', { ns: 'pages' })}</Aa>
+            <Aa href="/signup">{t('signup.title', { ns: 'pages' })}</Aa>
           </>
-          )
-        : (
-          <>
-            <Aa href="/login">Login</Aa>
-            <Aa href="/signup">Register</Aa>
-          </>
-          )}
+        )
+      }
+      {
+        userState !== 'unlogged' ? (<Aa href="/dashboard">{t('dashboard.title', { ns: 'pages' })}</Aa>) : null
+      }
+      {
+        userState === 'admin' ? (<Aa href="/admin">{t('admin.title', { ns: 'pages' })}</Aa>) : null
+      }
+      {
+        userState !== 'unlogged' ? (<Button onClick={onLogout}>{t('headerBar.logout', { ns: 'components' })}</Button>) : null
+      }
     </div>
   );
 };

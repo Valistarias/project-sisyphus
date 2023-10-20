@@ -6,7 +6,7 @@ import {
 } from 'react-router-dom';
 
 import { HeaderBar } from './organisms';
-import { HomePage, ErrorPage, LoginPage, SignupPage, DashboardPage, ForgotPassPage, NewPassPage } from './pages';
+import { HomePage, ErrorPage, LoginPage, SignupPage, DashboardPage, ForgotPassPage, NewPassPage, AdminPage } from './pages';
 import { useGlobalVars } from './providers/globalVars';
 
 import './assets/scss/index.scss';
@@ -24,6 +24,7 @@ const App: FC = () => {
       ),
       errorElement: <ErrorPage />,
       children: [
+        // Unlogged
         {
           path: '/',
           element: <HomePage />
@@ -37,16 +38,22 @@ const App: FC = () => {
           element: <LoginPage />
         },
         {
-          path: '/dashboard',
-          element: <DashboardPage />
-        },
-        {
           path: '/reset/password',
           element: <ForgotPassPage />
         },
         {
           path: '/reset/password/:userId/:token',
           element: <NewPassPage />
+        },
+        // Logged
+        {
+          path: '/dashboard',
+          element: <DashboardPage />
+        },
+        // Admin
+        {
+          path: '/admin',
+          element: <AdminPage />
         }
       ]
     }
