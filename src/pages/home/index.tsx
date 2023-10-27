@@ -3,7 +3,7 @@ import React, { useCallback, type FC } from 'react';
 import { useSystemAlerts } from '../../providers/systemAlerts';
 import { useTranslation } from 'react-i18next';
 
-import { Ap } from '../../atoms';
+import { Ap, Atitle } from '../../atoms';
 import { Button } from '../../molecules';
 import { Alert } from '../../organisms';
 
@@ -32,7 +32,7 @@ const Home: FC = () => {
 
   return (
     <div className="home">
-      <h1>{t('home.title', { ns: 'pages' })}</h1>
+      <Atitle level={1}>{t('home.title', { ns: 'pages' })}</Atitle>
       <Button
         onClick={onAddAlert}
       >

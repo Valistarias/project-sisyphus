@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useSystemAlerts } from '../../providers/systemAlerts';
 import { useApi } from '../../providers/api';
 
-import { Aerror, Ainput, Ap } from '../../atoms';
+import { Aerror, Ainput, Ap, Atitle } from '../../atoms';
 import { Button } from '../../molecules';
 import { Alert } from '../../organisms';
 
@@ -86,7 +86,7 @@ const NewPassword: FC = () => {
 
   return (
     <div className="new-pass">
-      <h1>{t('newPass.title', { ns: 'pages' })}</h1>
+      <Atitle level={1}>{t('newPass.title', { ns: 'pages' })}</Atitle>
       <form className="new-pass__form" onSubmit={handleSubmit(onSubmit)} noValidate>
         {errors.root?.serverError?.message !== undefined ? (<Aerror>{errors.root.serverError.message}</Aerror>) : null}
         <Ainput

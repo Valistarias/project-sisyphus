@@ -30,6 +30,8 @@ interface DBType {
   RuleBookType: mongoose.Model<IRuleBookType>
   /** The Mail Token Model (for forgotten password) */
   MailToken: mongoose.Model<IMailToken>
+  /** The possible Roles */
+  ROLES: string[]
 }
 
 const db: DBType = {
@@ -37,6 +39,7 @@ const db: DBType = {
   User: UserModel(),
   Role: RoleModel(),
   MailToken: MailTokenModel(),
+  ROLES: ['user', 'admin'],
   // Rulebook models
   Notion: NotionModel(),
   RuleBook: RuleBookModel(),

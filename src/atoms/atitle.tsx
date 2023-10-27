@@ -16,12 +16,13 @@ interface IAtitle {
 const Atitle: FC<IAtitle> = ({
   className,
   children,
-  level
+  level = 1
 }) => {
   const classes = useMemo(() => classTrim(`
     atitle
+    atitle--h${level}
     ${className ?? ''}
-  `), [className]);
+  `), [className, level]);
 
   const titleDom = useMemo(() => {
     switch (level) {

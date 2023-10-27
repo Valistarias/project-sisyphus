@@ -2,6 +2,8 @@ import React, { type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
+import { Atitle } from '../../atoms';
+
 import './error.scss';
 
 const Error: FC = () => {
@@ -9,7 +11,7 @@ const Error: FC = () => {
 
   return (
     <div className="error">
-      <h1>{t('error.title', { ns: 'pages' })}</h1>
+      <Atitle level={1}>{t('error.title', { ns: 'pages' })}</Atitle>
     </div>
   );
 };

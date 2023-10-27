@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useSystemAlerts } from '../../providers/systemAlerts';
 import { useApi } from '../../providers/api';
 
-import { Aerror, Ainput, Ap } from '../../atoms';
+import { Aerror, Ainput, Ap, Atitle } from '../../atoms';
 import { Button } from '../../molecules';
 import { Alert } from '../../organisms';
 
@@ -80,7 +80,7 @@ const Signup: FC = () => {
 
   return (
     <div className="signup">
-      <h1>{t('signup.title', { ns: 'pages' })}</h1>
+      <Atitle level={1}>{t('signup.title', { ns: 'pages' })}</Atitle>
       <form className="signup__form" onSubmit={handleSubmit(onSubmit)} noValidate>
         {errors.root?.serverError?.message !== undefined ? (<Aerror>{errors.root.serverError.message}</Aerror>) : null}
         <Ainput
@@ -123,7 +123,6 @@ const Signup: FC = () => {
           {t('signup.formCTA', { ns: 'pages' })}
         </Button>
       </form>
-
     </div>
   );
 };

@@ -12,5 +12,9 @@
     "required": "Password is required",
     "validate": "Your passwords do no match",
     "placeholder": "Confirm Password..."
+  },
+  "nameRuleBookType": {
+    "required": "A Rulebook Type Name is required",
+    "placeholder": "Rulebook Type Name..."
   }
 }

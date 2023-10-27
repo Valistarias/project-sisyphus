@@ -33,6 +33,11 @@
     "title": "Administration"
   },
   "adminRuleBooks": {
-    "title": "Rulebooks"
+    "title": "Rulebooks",
+    "list": "List",
+    "createType": "Create Rulebook Type",
+    "saveType": "Save Rulebook Type",
+    "abortSaveType": "Abort",
+    "successCreateType": "Rulebook Type successfully created !"
   }
 }

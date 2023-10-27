@@ -1,4 +1,46 @@
-.dashboard {
+.adminRuleBooks {
   height: 100%;
   width: 100%;
+
+  &__content {
+    display: flex;
+    margin-top: 2rem;
+  }
+
+  &__books {
+    width: 100%;
+  }
+
+  &__types {
+    border-left: 1px solid var(--primary);
+    flex-shrink: 0;
+    padding-left: 2rem;
+    width: 250px;
+
+    .atitle {
+      margin-bottom: 2rem;
+    }
+
+    &__list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    &__create {
+      border-top: 1px solid var(--primary-dark);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding-top: 2rem;
+
+      &__buttons {
+        display: flex;
+        flex-direction: row;
+        gap: 2rem;
+        justify-content: space-between;
+      }
+    }
+  }
 }

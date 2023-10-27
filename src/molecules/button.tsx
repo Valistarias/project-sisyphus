@@ -11,6 +11,8 @@ interface IButton {
   type?: 'button' | 'submit'
   /** The theme of the button */
   theme?: 'primary' | 'secondary' | 'tertiary'
+  /** The size of the button */
+  size?: 'medium' | 'small'
   /** The class of the Button element */
   className?: string
   /** The text inside the button */
@@ -24,6 +26,7 @@ interface IButton {
 const Button: FC<IButton> = ({
   type = 'button',
   theme = 'primary',
+  size = 'medium',
   className,
   children,
   icon,
@@ -34,6 +37,7 @@ const Button: FC<IButton> = ({
       classTrim(`
         button
         button--${theme}
+        button--${size}
         ${className ?? ''}
       `)
     }

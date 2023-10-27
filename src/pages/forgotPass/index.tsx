@@ -1,12 +1,13 @@
 import React, { type FC } from 'react';
 import i18next from 'i18next';
+
 import { useTranslation } from 'react-i18next';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useSystemAlerts } from '../../providers/systemAlerts';
 import { useApi } from '../../providers/api';
 
-import { Aerror, Ainput, Ap } from '../../atoms';
+import { Aerror, Ainput, Ap, Atitle } from '../../atoms';
 import { Button } from '../../molecules';
 import { Alert } from '../../organisms';
 
@@ -66,7 +67,7 @@ const ForgotPassword: FC = () => {
 
   return (
     <div className="forgot-pass">
-      <h1>{t('forgotPass.title', { ns: 'pages' })}</h1>
+      <Atitle level={1}>{t('forgotPass.title', { ns: 'pages' })}</Atitle>
       <form className="forgot-pass__form" onSubmit={handleSubmit(onSubmit)} noValidate>
         {errors.root?.serverError?.message !== undefined ? (<Aerror>{errors.root.serverError.message}</Aerror>) : null}
         <Ainput

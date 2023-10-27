@@ -1,24 +1,17 @@
 import jwt from 'jsonwebtoken';
-import db from '../models';
 import config from '../config/db.config';
 
 import { type Request, type Response } from 'express';
-import { type HydratedIUser, type IRole } from '../entities';
+import { type IRole } from '../entities';
 import { findUserById } from '../entities/user/controller';
 import { gemInvalidField, gemNotAdmin, gemNotFound, gemServerError, gemUnauthorized } from '../utils/globalErrorMessage';
 import { pathToRegexp } from 'path-to-regexp';
-
-const { User } = db;
 
 interface IVerifyTokenRequest extends Request {
   userId: string
   session: {
     token: string
   }
-}
-
-interface IAdminNeededRequest extends Request {
-  userId: string
 }
 
 const routes = [
@@ -74,16 +67,10 @@ const verifyToken = (req: IVerifyTokenRequest, res: Response, next: () => void, 
   });
 };
 
-const isAdmin = async (userId: string): Promise<boolean> => await new Promise((resolve, reject) => {
-  User.findById(userId)
-    .populate<{ roles: IRole[] }>({
-    path: 'roles',
-    match: {
-      name: 'admin'
-    }
-  })
-    .then((user: HydratedIUser) => {
-      if (user !== null && user.roles.length > 0) {
+const isAdmin = async (req: Request): Promise<boolean> => await new Promise((resolve, reject) => {
+  getUserRolesFromToken(req as IVerifyTokenRequest)
+    .then((roles) => {
+      if (roles.length > 0 && roles.some((role) => role.name === 'admin')) {
         resolve(true);
       } else {
         resolve(false);
@@ -101,8 +88,8 @@ const generateVerificationMailToken = (userId: string): string => {
   return verificationToken;
 };
 
-const adminNeeded = (req: IAdminNeededRequest, res: Response, next: () => void): void => {
-  isAdmin(req.userId)
+const adminNeeded = (req: Request, res: Response, next: () => void): void => {
+  isAdmin(req)
     .then((boolCheck) => {
       if (boolCheck) {
         next();

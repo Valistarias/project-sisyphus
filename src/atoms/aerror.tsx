@@ -2,7 +2,7 @@ import React, { type FC } from 'react';
 
 import { classTrim } from '../utils';
 
-import './ap.scss';
+import './aerror.scss';
 
 interface IAerror {
   /** The class of the P element */

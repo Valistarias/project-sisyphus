@@ -1,4 +1,4 @@
-import React, { type FC, useCallback, useMemo } from 'react';
+import React, { type FC, useMemo } from 'react';
 
 import AddLogo from '../assets/icons/add.svg?react';
 import EditLogo from '../assets/icons/edit.svg?react';
@@ -28,24 +28,18 @@ const Aicon: FC<IAicon> = ({
   className,
   onClick
 }) => {
-  const classes = useMemo(() => classTrim(`
+  const classes = useMemo<string>(() => classTrim(`
     aicon
     aicon--${size}
     ${className ?? ''}
-  `), [className]);
-
-  const onClickEvt = useCallback((e: React.MouseEvent<HTMLElement>) => {
-    if (onClick === undefined) { return; }
-    e.stopPropagation();
-    onClick(e);
-  }, []);
+  `), [className, size]);
 
   const icoDom = useMemo(() => {
     switch (type) {
-      case 'add': return <AddLogo className={classes} onClick={onClickEvt} />;
-      case 'edit': return <EditLogo className={classes} onClick={onClickEvt} />;
-      case 'check': return <CheckLogo className={classes} onClick={onClickEvt} />;
-      default: return <DeleteLogo className={classes} onClick={onClickEvt} />;
+      case 'add': return <AddLogo className={classes} />;
+      case 'edit': return <EditLogo className={classes} />;
+      case 'check': return <CheckLogo className={classes} />;
+      default: return <DeleteLogo className={classes} />;
     }
   }, [type, classes]);
 

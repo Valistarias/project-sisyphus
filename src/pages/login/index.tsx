@@ -8,7 +8,7 @@ import { useApi } from '../../providers/api';
 import { useTranslation } from 'react-i18next';
 import { useSystemAlerts } from '../../providers/systemAlerts';
 
-import { Aa, Aerror, Ainput, Ap } from '../../atoms';
+import { Aa, Aerror, Ainput, Ap, Atitle } from '../../atoms';
 import { Button } from '../../molecules';
 import { Alert } from '../../organisms';
 
@@ -93,7 +93,7 @@ const Login: FC = () => {
 
   return (
     <div className="login">
-      <h1>{t('login.title', { ns: 'pages' })}</h1>
+      <Atitle level={1}>{t('login.title', { ns: 'pages' })}</Atitle>
       <form className="login__form" onSubmit={handleSubmit(onSubmit)} noValidate>
         {errors.root?.serverError?.message !== undefined ? (<Aerror>{errors.root.serverError.message}</Aerror>) : null}
         <Ainput

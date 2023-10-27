@@ -4,7 +4,7 @@ import { type Request, type Response } from 'express';
 import { type HydratedDocument } from 'mongoose';
 import { type IRuleBookType } from './model';
 
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import { gemDuplicate, gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
 const { RuleBookType } = db;
 
@@ -44,18 +44,26 @@ const create = (req: Request, res: Response): void => {
     res.status(400).send(gemInvalidField('RuleBookType', req));
     return;
   }
-  const ruleBookType = new RuleBookType({
-    name
-  });
+  findRuleBookTypes()
+    .then((ruleBooks) => {
+      if (ruleBooks.find((ruleBook) => ruleBook.name === name) === undefined) {
+        const ruleBookType = new RuleBookType({
+          name
+        });
 
-  ruleBookType
-    .save()
-    .then(() => {
-      res.send({ message: 'RuleBookType was registered successfully!' });
+        ruleBookType
+          .save()
+          .then(() => {
+            res.send({ message: 'RuleBookType was registered successfully!' });
+          })
+          .catch((err: Error) => {
+            res.status(500).send(gemServerError(err));
+          });
+      } else {
+        res.status(400).send(gemDuplicate('Name'));
+      }
     })
-    .catch((err: Error) => {
-      res.status(500).send(gemServerError(err));
-    });
+    .catch((err) => res.status(500).send(gemServerError(err)));
 };
 
 const update = (req: Request, res: Response): void => {
@@ -67,20 +75,23 @@ const update = (req: Request, res: Response): void => {
     res.status(400).send(gemInvalidField('RuleBookType ID', req));
     return;
   }
-  findRuleBookTypeById(id)
-    .then((ruleBookType) => {
-      if (name !== null) { ruleBookType.name = name; }
-      ruleBookType.save()
-        .then(() => {
-          res.send({ message: 'RuleBookType was updated successfully!', ruleBookType });
-        })
-        .catch((err) => {
-          res.status(500).send(gemServerError(err));
-        });
+  findRuleBookTypes()
+    .then((ruleBooks) => {
+      const actualRuleBookType = ruleBooks.find((ruleBook) => String(ruleBook._id) === id);
+      if (actualRuleBookType !== undefined) {
+        if (name !== null && name !== actualRuleBookType.name) { actualRuleBookType.name = name; }
+        actualRuleBookType.save()
+          .then(() => {
+            res.send({ message: 'RuleBookType was updated successfully!', actualRuleBookType });
+          })
+          .catch((err) => {
+            res.status(500).send(gemServerError(err));
+          });
+      } else {
+        res.status(404).send(gemNotFound('RuleBookType'));
+      }
     })
-    .catch(() => {
-      res.status(404).send(gemNotFound('RuleBookType'));
-    });
+    .catch((err) => res.status(500).send(gemServerError(err)));
 };
 
 const deleteRuleBookType = (req: Request, res: Response): void => {

@@ -8,7 +8,7 @@ interface IAul {
   /** The class of the UL element */
   className?: string
   /** The childrens of the UL element */
-  children: React.JSX.Element[]
+  children: React.JSX.Element[] | null
 }
 
 const Aul: FC<IAul> = ({

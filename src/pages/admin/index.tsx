@@ -2,7 +2,7 @@ import React, { useState, type FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { type CharacterMetadata, CompositeDecorator, Editor, EditorState, RichUtils, convertToRaw, type ContentBlock, type ContentState } from 'draft-js';
 
-import { Aa, Ainput } from '../../atoms';
+import { Aa, Ainput, Atitle } from '../../atoms';
 
 import './admin.scss';
 
@@ -107,7 +107,7 @@ const Admin: FC = () => {
 
   return (
     <div className="admin">
-      <h1>{t('admin.title', { ns: 'pages' })}</h1>
+      <Atitle level={1}>{t('admin.title', { ns: 'pages' })}</Atitle>
       <Aa href="/admin/rulebooks">{t('adminRuleBooks.title', { ns: 'pages' })}</Aa>
       <div className="admin__testEditor">
         <button onClick={onBoldClick}>Bold</button>

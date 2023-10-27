@@ -32,3 +32,10 @@ export interface IRuleBook {
   /** When the rulebook was created */
   createdAt: string
 }
+
+export interface IRuleBookType {
+  /** The ID of the rulebook type */
+  _id: string
+  /** The name of the rulebook type */
+  name: string
+}

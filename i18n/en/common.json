@@ -11,6 +11,15 @@
       "theme": "theme",
       "scale": "scale",
       "role": "role"
+    },
+    "ruleBook": {
+      "title": "title",
+      "summary": "summary",
+      "type_one": "rulebook type",
+      "type_other": "rulebook types"
+    },
+    "ruleBookType": {
+      "name": "name"
     }
   },
   "serverErrors": {
@@ -21,7 +30,7 @@
     "CYPU-101": "Content of the {{field}} object can not be empty",
     "CYPU-102": "Invalid {{field}}",
     "CYPU-103": "User not verified",
-    "CYPU-104": "{{field}} already used",
+    "CYPU-104": "This {{field}} is already used",
     "CYPU-105": "You need to log in to do this request",
     "CYPU-201": "Some error occurred while creating the {{field}}",
     "CYPU-202": "{{field}} not found",
