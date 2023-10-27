@@ -2,17 +2,36 @@
   align-items: center;
   background: transparent;
   border: 1px solid var(--boneless);
+  border: 1px solid var(--button-border);
   border-radius: 4px;
   color: var(--tertiary);
   cursor: pointer;
   display: flex;
+  fill: var(--button-fill);
   gap: 10px;
-  padding: 8px 20px;
+  padding: 0;
   transition: border .15s ease;
+
+  &.button--notext {
+    border: 1px solid transparent;
+  }
+
+  &:hover {
+    border: 1px solid var(--button-border-hover);
+
+    .button__content {
+      color: var(--button-text-hover);
+    }
+  }
 
   &__content {
     font-family: var(--mono-font);
     transition: color .15s ease;
+  }
+
+  &__icon {
+    fill: inherit;
+    transition: fill .15s ease;
   }
 
   .aicon {
@@ -21,55 +40,64 @@
 
   // Sizes -----------------------------------
   &--medium {
-    padding: .8rem 2rem;
-
     .button__content {
       font-size: 1.2rem;
+      padding: .8rem 1rem;
+      padding-right: .5rem;
+    }
+
+    &.button--noicon .button__content {
+      padding-right: 1rem;
+    }
+
+    &.button--notext {
+      padding: .4rem;
     }
   }
 
   &--small {
-    padding: .6rem 1.5rem;
-
     .button__content {
       font-size: 1rem;
+      padding: .6rem .5rem;
+      padding-right: .2rem;
+    }
+
+    &.button--noicon .button__content {
+      padding-right: .5rem;
+    }
+
+    &.button--notext {
+      padding: .4rem;
+    }
+
+    .button__icon {
+      height: 2rem;
+      width: 2rem;
     }
   }
 
   // Themes ----------------------------------
   &--primary {
-    border: 1px solid var(--primary-dark);
-
-    &:hover {
-      border: 1px solid var(--primary);
-
-      .button__content {
-        color: var(--tertiary-dark);
-      }
-    }
+    --button-border: var(--primary-dark);
+    --button-fill: var(--primary);
+    --button-border-hover: var(--primary);
+    --button-fill-hover: var(--tertiary);
+    --button-text-hover: var(--tertiary-dark);
   }
 
   &--secondary {
-    border: 1px solid var(--secondary-dark);
-
-    &:hover {
-      border: 1px solid var(--secondary);
-
-      .button__content {
-        color: var(--tertiary-dark);
-      }
-    }
+    --button-border: var(--secondary-dark);
+    --button-fill: var(--secondary);
+    --button-border-hover: var(--secondary);
+    --button-fill-hover: var(--tertiary);
+    --button-text-hover: var(--tertiary-dark);
   }
 
   &--tertiary {
-    border: 1px solid var(--tertiary-dark);
-
-    &:hover {
-      border: 1px solid var(--tertiary);
-
-      .button__content {
-        color: var(--tertiary-dark);
-      }
-    }
+    --button-border: var(--tertiary-dark);
+    --button-fill: var(--tertiary);
+    --button-border-hover: var(--tertiary);
+    --button-fill-hover: var(--tertiary);
+    --button-text-hover: var(--tertiary-dark);
   }
 }

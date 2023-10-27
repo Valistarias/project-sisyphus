@@ -22,6 +22,14 @@
       "name": "name"
     }
   },
+  "ruleBookTypeNames": {
+    "core_one": "Main Book",
+    "core_other": "Main Books",
+    "addon_one": "Sourcebook",
+    "addon_other": "Sourcebooks",
+    "adventure_one": "Adventure",
+    "adventure_other": "Adventures"
+  },
   "serverErrors": {
     "unspecific": "Something went wrong.",
     "CYPU-001": "Request Not Allowed",

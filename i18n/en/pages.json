@@ -37,7 +37,11 @@
     "list": "List",
     "createType": "Create Rulebook Type",
     "saveType": "Save Rulebook Type",
+    "updateType": "Update Rulebook Type",
     "abortSaveType": "Abort",
-    "successCreateType": "Rulebook Type successfully created !"
+    "successCreateType": "Rulebook Type successfully created !",
+    "successUpdateType": "Rulebook Type successfully updated !",
+    "successDeleteType": "Rulebook Type successfully deleted !",
+    "deleteRuleBookTypeMessage": "You have clicked the delete button on a Rulebook type. Click on the same element to confirm the deletion."
   }
 }

@@ -1,0 +1,50 @@
+.adminRuleBooktypes {
+  border-left: 1px solid var(--primary);
+  flex-shrink: 0;
+  padding-left: 2rem;
+  width: 250px;
+
+  .atitle {
+    margin-bottom: 2rem;
+  }
+
+  &__alert {
+    color: var(--fail);
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+
+    &__elt {
+      align-items: center;
+      display: flex;
+      justify-content: space-between;
+
+      &__buttons {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;      
+      }
+    }
+  }
+
+  &__create {
+    border-top: 1px solid var(--primary-dark);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-top: 2rem;
+
+    &__buttons {
+      display: flex;
+      flex-direction: row;
+      gap: 2rem;
+      justify-content: space-between;
+    }
+  }
+}

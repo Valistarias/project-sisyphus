@@ -45,7 +45,7 @@ const create = (req: Request, res: Response): void => {
     ruleBook
   } = req.body;
   if (id === undefined || title === undefined || short === undefined || text === undefined || ruleBook === undefined) {
-    res.status(400).send(gemInvalidField('Notion', req));
+    res.status(400).send(gemInvalidField('Notion'));
     return;
   }
   const notion = new Notion({
@@ -75,7 +75,7 @@ const update = (req: Request, res: Response): void => {
     ruleBook = null
   } = req.body;
   if (id === undefined) {
-    res.status(400).send(gemInvalidField('Notion ID', req));
+    res.status(400).send(gemInvalidField('Notion ID'));
     return;
   }
   findNotionById(id)
@@ -102,7 +102,7 @@ const deleteNotion = (req: Request, res: Response): void => {
     id
   } = req.body;
   if (id === undefined) {
-    res.status(400).send(gemInvalidField('Notion ID', req));
+    res.status(400).send(gemInvalidField('Notion ID'));
     return;
   }
   Notion.findByIdAndDelete(id)
@@ -119,7 +119,7 @@ const deleteNotionByRuleBookId = (req: Request, res: Response): void => {
     id
   } = req.body;
   if (id === undefined) {
-    res.status(400).send(gemInvalidField('Rulebook ID', req));
+    res.status(400).send(gemInvalidField('Rulebook ID'));
     return;
   }
   Notion.deleteMany({ ruleBook: id })
@@ -136,7 +136,7 @@ const findSingle = (req: Request, res: Response): void => {
     notionId
   } = req.query;
   if (notionId === undefined || typeof notionId !== 'string') {
-    res.status(400).send(gemInvalidField('Notion ID', req));
+    res.status(400).send(gemInvalidField('Notion ID'));
     return;
   }
   findNotionById(notionId)

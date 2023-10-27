@@ -8,7 +8,7 @@ interface IAli {
   /** The class of the LI element */
   className?: string
   /** The childrens of the LI element */
-  children: React.JSX.Element
+  children: React.JSX.Element | React.JSX.Element[]
 }
 
 const Ali: FC<IAli> = ({

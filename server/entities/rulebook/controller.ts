@@ -44,7 +44,7 @@ const create = (req: Request, res: Response): void => {
     summary
   } = req.body;
   if (title === undefined || summary === undefined) {
-    res.status(400).send(gemInvalidField('RuleBook', req));
+    res.status(400).send(gemInvalidField('RuleBook'));
     return;
   }
   const ruleBook = new RuleBook({
@@ -69,7 +69,7 @@ const update = (req: Request, res: Response): void => {
     summary = null
   } = req.body;
   if (id === undefined) {
-    res.status(400).send(gemInvalidField('RuleBook ID', req));
+    res.status(400).send(gemInvalidField('RuleBook ID'));
     return;
   }
   findRuleBookById(id)
@@ -94,7 +94,7 @@ const deleteRuleBook = (req: Request, res: Response): void => {
     id
   } = req.body;
   if (id === undefined) {
-    res.status(400).send(gemInvalidField('RuleBook ID', req));
+    res.status(400).send(gemInvalidField('RuleBook ID'));
     return;
   }
   RuleBook.findByIdAndDelete(id)
@@ -111,7 +111,7 @@ const findSingle = (req: Request, res: Response): void => {
     ruleBookId
   } = req.query;
   if (ruleBookId === undefined || typeof ruleBookId !== 'string') {
-    res.status(400).send(gemInvalidField('RuleBook ID', req));
+    res.status(400).send(gemInvalidField('RuleBook ID'));
     return;
   }
   findRuleBookById(ruleBookId)

@@ -83,7 +83,7 @@ app.get('/verify/:id', function (req: Request, res: Response) {
   const { id } = req.params;
   // Check we have an id
   if (id === undefined) {
-    return res.status(422).send(gemInvalidField('UserId', req));
+    return res.status(422).send(gemInvalidField('UserId'));
   }
   verifyTokenSingIn(id)
     .then(() => {
@@ -102,7 +102,7 @@ app.get('/reset/password/:userId/:token', function (req: Request, res: Response,
   const { userId, token } = req.params;
   // Check we have an id and token
   if (userId === undefined || token === undefined) {
-    return res.status(422).send(gemInvalidField('Token or UserId', req));
+    return res.status(422).send(gemInvalidField('Token or UserId'));
   }
   verifyMailToken({ userId, token })
     .then(() => {

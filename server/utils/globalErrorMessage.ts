@@ -1,4 +1,3 @@
-import { type Request } from 'express';
 import { type Error } from 'mongoose';
 
 interface IGemRes {
@@ -31,9 +30,9 @@ const gemEmpty = (type: string): IGemRes => ({
   message: `Content of the ${type} object can not be empty`,
   code: 'CYPU-101'
 });
-const gemInvalidField = (field: string, req?: Request): IGemRes => ({
+const gemInvalidField = (field: string): IGemRes => ({
   message: `Invalid ${field}`,
-  sent: req ?? field,
+  sent: field,
   code: 'CYPU-102'
 });
 const gemUnverifiedUser = (): IGemRes => ({

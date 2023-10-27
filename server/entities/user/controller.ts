@@ -35,7 +35,7 @@ const update = (req: Request, res: Response): void => {
     scale = null
   } = req.body;
   if (id === undefined) {
-    res.status(400).send(gemInvalidField('User ID', req));
+    res.status(400).send(gemInvalidField('User ID'));
     return;
   }
   findUserById(id)

@@ -41,7 +41,7 @@ const create = (req: Request, res: Response): void => {
     name
   } = req.body;
   if (name === undefined) {
-    res.status(400).send(gemInvalidField('RuleBookType', req));
+    res.status(400).send(gemInvalidField('RuleBookType'));
     return;
   }
   findRuleBookTypes()
@@ -72,7 +72,7 @@ const update = (req: Request, res: Response): void => {
     name = null
   } = req.body;
   if (id === undefined) {
-    res.status(400).send(gemInvalidField('RuleBookType ID', req));
+    res.status(400).send(gemInvalidField('RuleBookType ID'));
     return;
   }
   findRuleBookTypes()
@@ -99,7 +99,7 @@ const deleteRuleBookType = (req: Request, res: Response): void => {
     id
   } = req.body;
   if (id === undefined) {
-    res.status(400).send(gemInvalidField('RuleBookType ID', req));
+    res.status(400).send(gemInvalidField('RuleBookType ID'));
     return;
   }
   RuleBookType.findByIdAndDelete(id)
@@ -116,7 +116,7 @@ const findSingle = (req: Request, res: Response): void => {
     ruleBookTypeId
   } = req.query;
   if (ruleBookTypeId === undefined || typeof ruleBookTypeId !== 'string') {
-    res.status(400).send(gemInvalidField('RuleBookType ID', req));
+    res.status(400).send(gemInvalidField('RuleBookType ID'));
     return;
   }
   findRuleBookTypeById(ruleBookTypeId)

@@ -16,7 +16,7 @@ interface IButton {
   /** The class of the Button element */
   className?: string
   /** The text inside the button */
-  children: string
+  children?: string
   /** The icon (if any) of the button */
   icon?: typeIcons
   /** When the input is clicked */
@@ -38,6 +38,8 @@ const Button: FC<IButton> = ({
         button
         button--${theme}
         button--${size}
+        ${icon === undefined ? 'button--noicon' : ''}
+        ${children === undefined ? 'button--notext' : ''}
         ${className ?? ''}
       `)
     }
@@ -49,7 +51,13 @@ const Button: FC<IButton> = ({
     }}
     type={type}
   >
-    <span className="button__content">{children}</span>
+    {
+      children !== undefined
+        ? (
+        <span className="button__content">{children}</span>
+          )
+        : null
+    }
     {icon !== undefined ? (<Aicon className="button__icon" type={icon} />) : null}
   </button>
 );
