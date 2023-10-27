@@ -1,0 +1,35 @@
+import { model, type Model, Schema, type ObjectId } from 'mongoose';
+
+interface INotion {
+  /** The title of the notion */
+  title: string
+  /** The content of the notion, shortened */
+  short: string
+  /** The content of the notion */
+  text: string
+  /**
+   * The rulebook associated with this notion
+   * (you need to have unlocked this rulebook to see this notion)
+  */
+  ruleBook: ObjectId
+  /** When the notion was created */
+  createdAt: Date
+}
+
+const notionSchema = new Schema<INotion>({
+  title: String,
+  short: String,
+  text: String,
+  ruleBook: {
+    type: Schema.Types.ObjectId,
+    ref: 'RuleBook'
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
+});
+
+const NotionModel = (): Model<INotion> => model('Notion', notionSchema);
+
+export { type INotion, NotionModel };

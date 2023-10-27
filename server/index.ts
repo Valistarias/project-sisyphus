@@ -18,6 +18,9 @@ import { verifyMailToken } from './entities/mailToken/controller';
 import AuthRoutes from './entities/auth/routes';
 import UserRoutes from './entities/user/routes';
 import MailTokenRoutes from './entities/mailToken/routes';
+import NotionRoutes from './entities/notion/routes';
+import RuleBookRoutes from './entities/rulebook/routes';
+
 import { gemInvalidField } from './utils/globalErrorMessage';
 
 dotenv.config();
@@ -67,6 +70,10 @@ mongoose
 AuthRoutes(apiRouter, mg);
 UserRoutes(apiRouter);
 MailTokenRoutes(apiRouter, mg);
+
+// Rulebook routes
+NotionRoutes(apiRouter);
+RuleBookRoutes(apiRouter);
 
 app.use('/api/', apiRouter);
 

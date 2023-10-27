@@ -43,12 +43,14 @@ const HeaderBar: FC = () => {
     <div className="headerbar">
       <Aa href="/">{t('home.title', { ns: 'pages' })}</Aa>
       {
-        userState === 'unlogged' ?? (
+        userState === 'unlogged'
+          ? (
           <>
             <Aa href="/login">{t('login.title', { ns: 'pages' })}</Aa>
             <Aa href="/signup">{t('signup.title', { ns: 'pages' })}</Aa>
           </>
-        )
+            )
+          : null
       }
       {
         userState !== 'unlogged' ? (<Aa href="/dashboard">{t('dashboard.title', { ns: 'pages' })}</Aa>) : null

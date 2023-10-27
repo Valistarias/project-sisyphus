@@ -8,7 +8,7 @@ import './ainput.scss';
 
 interface IAinput {
   /** The controlled element for react hook form */
-  registered: {
+  registered?: {
     onChange: ChangeHandler
     onBlur: ChangeHandler
     ref: React.Ref<any>
@@ -26,6 +26,10 @@ interface IAinput {
   hidden?: boolean
   /** Allow the user's password manager to automatically enter the password */
   autoComplete?: string
+  /** On field change */
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  /** The field value */
+  value?: string
 }
 
 const Ainput: FC<IAinput> = ({
@@ -35,7 +39,9 @@ const Ainput: FC<IAinput> = ({
   placeholder,
   readOnly,
   hidden,
-  autoComplete
+  autoComplete,
+  onChange,
+  value
 }) => (
   <input
     type={type}
@@ -50,7 +56,9 @@ const Ainput: FC<IAinput> = ({
       `)
     }
     autoComplete={autoComplete ?? undefined}
-    { ...registered}
+    onChange={onChange}
+    value={value}
+    { ...registered }
   />
 );
 

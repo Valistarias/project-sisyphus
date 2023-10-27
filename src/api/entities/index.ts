@@ -1,9 +1,11 @@
-import Users from './users';
 import Auth from './auth';
 import MailToken from './mailToken';
+import Notion from './notions';
+import Users from './users';
 
 export {
-  Users,
   Auth,
-  MailToken
+  MailToken,
+  Notion,
+  Users
 };

@@ -6,6 +6,7 @@ import { type Request, type Response } from 'express';
 import { type HydratedIUser, type IRole } from '../entities';
 import { findUserById } from '../entities/user/controller';
 import { gemInvalidField, gemNotAdmin, gemNotFound, gemServerError, gemUnauthorized } from '../utils/globalErrorMessage';
+import { pathToRegexp } from 'path-to-regexp';
 
 const { User } = db;
 
@@ -30,11 +31,7 @@ const routes = [
     role: 'unlogged'
   },
   {
-    url: '/reset/password',
-    role: 'unlogged'
-  },
-  {
-    url: '/reset/password/*/*',
+    url: '/reset/:param*',
     role: 'unlogged'
   },
   {
@@ -46,7 +43,15 @@ const routes = [
     role: 'logged'
   },
   {
-    url: '/admin',
+    url: '/rulebooks',
+    role: 'logged'
+  },
+  {
+    url: '/rulebook/:param*',
+    role: 'logged'
+  },
+  {
+    url: '/admin/:param*',
     role: 'admin'
   }
 ];
@@ -132,20 +137,7 @@ const getUserRolesFromToken = async (req: IVerifyTokenRequest): Promise<IRole[]>
 });
 
 const checkRouteRights = (req: Request, res: Response, next: () => void): void => {
-  const urlMatch = routes.find((route) => {
-    const checkedRoutePaths = route.url.split('/');
-    const urlPaths = req.path.split('/');
-    if (checkedRoutePaths.length !== urlPaths.length) {
-      return false;
-    }
-    let sameUrl = true;
-    urlPaths.forEach((urlPath, index) => {
-      if (urlPath !== '*' && sameUrl) {
-        sameUrl = urlPath === checkedRoutePaths[index];
-      }
-    });
-    return sameUrl;
-  });
+  const urlMatch = routes.find((route) => pathToRegexp(route.url).exec(req.path) !== null);
   let rights = ['unlogged'];
   if (urlMatch === undefined || urlMatch.role === 'all') {
     next();
@@ -158,13 +150,13 @@ const checkRouteRights = (req: Request, res: Response, next: () => void): void =
             rights.push('admin');
           }
         }
-        if (urlMatch.role === 'logged' || urlMatch.role === 'admin') {
+        if (urlMatch.role === 'logged') {
           if (rights.includes(urlMatch.role)) {
             next();
           } else {
             res.redirect('/login');
           }
-        } else if (urlMatch.role === 'unlogged') {
+        } else if (urlMatch.role === 'unlogged' || urlMatch.role === 'admin') {
           if (rights.includes(urlMatch.role)) {
             next();
           } else {

@@ -1,24 +1,96 @@
 import React, { useState, type FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Editor, EditorState, RichUtils, convertFromRaw, convertToRaw } from 'draft-js';
+import { type CharacterMetadata, CompositeDecorator, Editor, EditorState, RichUtils, convertToRaw, type ContentBlock, type ContentState } from 'draft-js';
 
 import './admin.scss';
+import { Ainput } from '../../atoms';
+
+const findLinkEntities = (contentBlock: ContentBlock, callback: (start: number, end: number) => void, contentState: ContentState): void => {
+  contentBlock.findEntityRanges(
+    (character: CharacterMetadata) => {
+      const entityKey = character.getEntity();
+      return (
+        entityKey !== null &&
+        contentState.getEntity(entityKey).getType() === 'LINK'
+      );
+    },
+    callback
+  );
+};
+
+interface IEditorLink {
+  /** The content state of the alert */
+  contentState: ContentState
+  /** The key used for the entity */
+  entityKey: string
+  /** The content of the link */
+  children: string
+}
+
+const Link: FC<IEditorLink> = ({ contentState, entityKey, children }) => {
+  const { url } = contentState.getEntity(entityKey).getData();
+  return (
+    <a href={url} className="test-link">
+      {children}
+    </a>
+  );
+};
 
 const Admin: FC = () => {
   const { t } = useTranslation();
   const [editorState, setEditorState] = useState(
-    () => EditorState.createEmpty()
+    () => {
+      const decorator = new CompositeDecorator([
+        {
+          strategy: findLinkEntities,
+          component: Link
+        }
+      ]);
+
+      return EditorState.createEmpty(decorator);
+    }
   );
 
-  console.log('editorState', editorState);
+  const [urlInputVisible, setUrlInputVisible] = useState(false);
+  const [urlValue, setUrlInputValue] = useState('');
 
   const onBoldClick = useCallback(() => {
     setEditorState(RichUtils.toggleInlineStyle(editorState, 'BOLD'));
   }, [editorState]);
 
+  const onLinkClick = useCallback(() => {
+    const selection = editorState.getSelection();
+    if (!selection.isCollapsed()) {
+      setUrlInputVisible(true);
+    }
+    // setEditorState(RichUtils.toggleInlineStyle(editorState, 'BOLD'));
+  }, [editorState]);
+
+  const onConfirmLink = useCallback(() => {
+    if (urlValue !== '') {
+      const contentState = editorState.getCurrentContent();
+      const contentStateWithEntity = contentState.createEntity(
+        'LINK',
+        'MUTABLE',
+        { url: urlValue, type: 'item', method: 'hover' }
+      );
+      const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
+
+      const nextEditorState = EditorState.set(editorState,
+        { currentContent: contentStateWithEntity }
+      );
+
+      setEditorState(RichUtils.toggleLink(nextEditorState,
+        nextEditorState.getSelection(), entityKey
+      ));
+      setUrlInputValue('');
+      setUrlInputVisible(false);
+    }
+  }, [editorState, urlValue]);
+
   const onTest = useCallback(() => {
-    const raw = convertToRaw(editorState.getCurrentContent()).blocks;
-    console.log(convertToRaw(editorState.getCurrentContent()));
+    const raw = convertToRaw(editorState.getCurrentContent());
+    console.log('raw', raw);
   }, [editorState]);
 
   const onHandleKeyCommand = useCallback((command, editorState) => {
@@ -36,6 +108,20 @@ const Admin: FC = () => {
     <div className="admin">
       <h1>{t('admin.title', { ns: 'pages' })}</h1>
       <button onClick={onBoldClick}>Bold</button>
+      <button onClick={onLinkClick}>Link</button>
+      {
+        urlInputVisible
+          ? (
+            <>
+              <Ainput
+                onChange={(e) => { setUrlInputValue(e.target.value); }}
+                value={urlValue}
+              />
+              <button onClick={onConfirmLink}>Confirm</button>
+            </>
+            )
+          : null
+      }
       <Editor
         editorState={editorState}
         handleKeyCommand={onHandleKeyCommand}

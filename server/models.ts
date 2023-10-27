@@ -5,8 +5,12 @@ import {
   RoleModel,
   type IUser,
   UserModel,
+  type INotion,
+  NotionModel,
   type IMailToken,
-  MailTokenModel
+  MailTokenModel,
+  type IRuleBook,
+  RuleBookModel
 } from './entities';
 
 mongoose.Promise = global.Promise;
@@ -16,6 +20,10 @@ interface DBType {
   User: mongoose.Model<IUser>
   /** The Role Model */
   Role: mongoose.Model<IRole>
+  /** The Notion Model */
+  Notion: mongoose.Model<INotion>
+  /** The RuleBook Model */
+  RuleBook: mongoose.Model<IRuleBook>
   /** The Mail Token Model (for forgotten password) */
   MailToken: mongoose.Model<IMailToken>
   /** The possible Roles */
@@ -27,7 +35,10 @@ const db: DBType = {
   User: UserModel(),
   Role: RoleModel(),
   MailToken: MailTokenModel(),
-  ROLES: ['user', 'admin']
+  ROLES: ['user', 'admin'],
+  // Rulebook models
+  Notion: NotionModel(),
+  RuleBook: RuleBookModel()
 };
 
 export default db;
