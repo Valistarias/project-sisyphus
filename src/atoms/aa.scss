@@ -1,4 +1,6 @@
 .aa {
-  color: red;
+  color: var(--primary);
+  font-family: var(--mono-font);
+  font-size: 1.4rem;
   margin: 0;
 }

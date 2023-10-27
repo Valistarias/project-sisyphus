@@ -6,11 +6,18 @@ import { useApi } from '../providers/api';
 import { useGlobalVars } from '../providers/globalVars';
 
 import { Aa } from '../atoms';
-
-import './headerBar.scss';
 import { Button } from '../molecules';
 
-const HeaderBar: FC = () => {
+import { classTrim } from '../utils';
+
+import './headerBar.scss';
+
+interface IHeaderBar {
+  /** The class of the HeaderBar */
+  className?: string
+}
+
+const HeaderBar: FC<IHeaderBar> = ({ className }) => {
   const { api } = useApi();
   const { user, setUser } = useGlobalVars();
   const { t } = useTranslation();
@@ -40,27 +47,44 @@ const HeaderBar: FC = () => {
   }, [api, navigate, setUser]);
 
   return (
-    <div className="headerbar">
-      <Aa href="/">{t('home.title', { ns: 'pages' })}</Aa>
-      {
-        userState === 'unlogged'
-          ? (
-          <>
-            <Aa href="/login">{t('login.title', { ns: 'pages' })}</Aa>
-            <Aa href="/signup">{t('signup.title', { ns: 'pages' })}</Aa>
-          </>
-            )
-          : null
+    <div
+      className={
+        classTrim(`
+        headerbar
+          ${className ?? ''}
+        `)
       }
-      {
-        userState !== 'unlogged' ? (<Aa href="/dashboard">{t('dashboard.title', { ns: 'pages' })}</Aa>) : null
-      }
-      {
-        userState === 'admin' ? (<Aa href="/admin">{t('admin.title', { ns: 'pages' })}</Aa>) : null
-      }
-      {
-        userState !== 'unlogged' ? (<Button onClick={onLogout}>{t('headerBar.logout', { ns: 'components' })}</Button>) : null
-      }
+    >
+      <div className="headerbar__content">
+        <div className="headerbar__content__left">
+          <Aa href="/">{t('home.title', { ns: 'pages' })}</Aa>
+          {
+            userState === 'unlogged'
+              ? (
+              <>
+                <Aa href="/login">{t('login.title', { ns: 'pages' })}</Aa>
+                <Aa href="/signup">{t('signup.title', { ns: 'pages' })}</Aa>
+              </>
+                )
+              : null
+          }
+          {
+            userState !== 'unlogged' ? (<Aa href="/dashboard">{t('dashboard.title', { ns: 'pages' })}</Aa>) : null
+          }
+          {
+            userState === 'admin' ? (<Aa href="/admin">{t('admin.title', { ns: 'pages' })}</Aa>) : null
+          }
+        </div>
+        {
+          userState !== 'unlogged'
+            ? (
+              <div className="headerbar__content__right">
+                <Button onClick={onLogout}>{t('headerBar.logout', { ns: 'components' })}</Button>
+              </div>
+              )
+            : null
+        }
+      </div>
     </div>
   );
 };

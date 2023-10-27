@@ -1,26 +1,61 @@
 .button {
   align-items: center;
-  background: var(--white);
+  background: transparent;
   border: 1px solid var(--boneless);
   border-radius: 4px;
+  color: var(--tertiary);
   cursor: pointer;
   display: flex;
-  font-size: 15px;
   gap: 10px;
   padding: 8px 20px;
   transition: border .15s ease;
 
   &__content {
-    position: relative;
-    // Taking the border in consideration (not included in the display flex)
-    top: 2px;
+    font-family: var(--mono-font);
+    font-size: 1.2rem;
+    transition: color .15s ease;
   }
 
   .aicon {
     pointer-events: none;
   }
 
-  &:hover {
-    border: 1px solid var(--bone);
+  &--primary {
+    border: 1px solid var(--primary-dark);
+
+    &:hover {
+      border: 1px solid var(--primary);
+
+      .button__content {
+        color: var(--tertiary-dark);
+      }
+      
+    }
+  }
+
+  &--secondary {
+    border: 1px solid var(--secondary-dark);
+
+    &:hover {
+      border: 1px solid var(--secondary);
+
+      .button__content {
+        color: var(--tertiary-dark);
+      }
+      
+    }
+  }
+
+  &--tertiary {
+    border: 1px solid var(--tertiary-dark);
+
+    &:hover {
+      border: 1px solid var(--tertiary);
+
+      .button__content {
+        color: var(--tertiary-dark);
+      }
+      
+    }
   }
 }

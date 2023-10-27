@@ -1,11 +1,15 @@
 import Auth from './auth';
 import MailToken from './mailToken';
-import Notion from './notions';
+import Notions from './notions';
+import RuleBooks from './ruleBooks';
+import RuleBookTypes from './ruleBookTypes';
 import Users from './users';
 
 export {
   Auth,
   MailToken,
-  Notion,
+  Notions,
+  RuleBooks,
+  RuleBookTypes,
   Users
 };

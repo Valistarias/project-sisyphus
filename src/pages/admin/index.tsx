@@ -2,8 +2,9 @@ import React, { useState, type FC, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { type CharacterMetadata, CompositeDecorator, Editor, EditorState, RichUtils, convertToRaw, type ContentBlock, type ContentState } from 'draft-js';
 
+import { Aa, Ainput } from '../../atoms';
+
 import './admin.scss';
-import { Ainput } from '../../atoms';
 
 const findLinkEntities = (contentBlock: ContentBlock, callback: (start: number, end: number) => void, contentState: ContentState): void => {
   contentBlock.findEntityRanges(
@@ -107,27 +108,30 @@ const Admin: FC = () => {
   return (
     <div className="admin">
       <h1>{t('admin.title', { ns: 'pages' })}</h1>
-      <button onClick={onBoldClick}>Bold</button>
-      <button onClick={onLinkClick}>Link</button>
-      {
-        urlInputVisible
-          ? (
-            <>
-              <Ainput
-                onChange={(e) => { setUrlInputValue(e.target.value); }}
-                value={urlValue}
-              />
-              <button onClick={onConfirmLink}>Confirm</button>
-            </>
-            )
-          : null
-      }
-      <Editor
-        editorState={editorState}
-        handleKeyCommand={onHandleKeyCommand}
-        onChange={setEditorState}
-      />
-      <button onClick={onTest}>Test</button>
+      <Aa href="/admin/rulebooks">{t('adminRuleBooks.title', { ns: 'pages' })}</Aa>
+      <div className="admin__testEditor">
+        <button onClick={onBoldClick}>Bold</button>
+        <button onClick={onLinkClick}>Link</button>
+        {
+          urlInputVisible
+            ? (
+              <>
+                <Ainput
+                  onChange={(e) => { setUrlInputValue(e.target.value); }}
+                  value={urlValue}
+                />
+                <button onClick={onConfirmLink}>Confirm</button>
+              </>
+              )
+            : null
+        }
+        <Editor
+          editorState={editorState}
+          handleKeyCommand={onHandleKeyCommand}
+          onChange={setEditorState}
+        />
+        <button onClick={onTest}>Test</button>
+      </div>
     </div>
   );
 };

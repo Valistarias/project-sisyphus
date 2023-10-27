@@ -1,8 +1,19 @@
 @import './colors';
 @import './fonts';
+@import './vars';
+
+/* stylelint-disable-next-line selector-max-id */
+html, body, #root, .main {
+  height: 100%;
+}
 
 body {
-  background: var(--white);
+  margin: 0;
+}
+
+.main {
+  background: var(--background-color);
+  font-size: 1.6rem;
   margin: 0;
 }
 
@@ -10,8 +21,16 @@ body {
   position: relative;
   width: 100%;
 
+  &__content {
+    margin: 0 auto;
+    margin-top: 6rem;
+    max-width: 1200px;
+    padding: 0 40px;
+    width: 100%;
+  }
+
   &__loader {
-    background: white;
+    background: var(--background-color);
     height: 100%;
     left: 0;
     opacity: 0;

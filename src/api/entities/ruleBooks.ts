@@ -2,12 +2,12 @@ import Entity from './entity';
 
 import axios from 'axios';
 
-interface IRuleBookPayload {
+interface IRuleBooksPayload {
   ruleBookId: string
 };
 
-export default class RuleBook extends Entity {
-  get: (payload: IRuleBookPayload) => Promise<string>;
+export default class RuleBooks extends Entity {
+  get: (payload: IRuleBooksPayload) => Promise<string>;
 
   constructor () {
     super('rulebooks');

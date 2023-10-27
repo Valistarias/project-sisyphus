@@ -9,6 +9,8 @@ import './button.scss';
 interface IButton {
   /** The type of the Button element */
   type?: 'button' | 'submit'
+  /** The theme of the button */
+  theme?: 'primary' | 'secondary' | 'tertiary'
   /** The class of the Button element */
   className?: string
   /** The text inside the button */
@@ -21,6 +23,7 @@ interface IButton {
 
 const Button: FC<IButton> = ({
   type = 'button',
+  theme = 'primary',
   className,
   children,
   icon,
@@ -30,6 +33,7 @@ const Button: FC<IButton> = ({
     className={
       classTrim(`
         button
+        button--${theme}
         ${className ?? ''}
       `)
     }

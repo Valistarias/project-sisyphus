@@ -7,7 +7,7 @@ import { Button } from '../molecules';
 
 import { classTrim } from '../utils';
 
-import './headerBar.scss';
+import './alert.scss';
 
 interface IAlert {
   /** The ID used on the alert provider */
@@ -40,7 +40,7 @@ const Alert: FC<IAlert> = ({ id, children, timer, closable }) => {
     }
     timerDelete.current = setTimeout(() => {
       deleteAlert({ key: id });
-    }, 1000);
+    }, 410);
   }, [deleteAlert, id]);
 
   const closeDom = useMemo(() => closable === true
@@ -64,7 +64,7 @@ const Alert: FC<IAlert> = ({ id, children, timer, closable }) => {
           setClosing(true);
           timerDelete.current = setTimeout(() => {
             deleteAlert({ key: id });
-          }, 1000);
+          }, 410);
         }, timer * 1000);
       }
       return () => {
@@ -85,13 +85,14 @@ const Alert: FC<IAlert> = ({ id, children, timer, closable }) => {
       className={
         classTrim(`
           alert
-          ${!isAlertVisible ? ' alert--close' : ''}
-          ${closing ? ' alert--closing' : ''}
+          ${!isAlertVisible || closing ? ' alert--close' : ''}
         `)
       }
     >
-      {children}
-      {closeDom}
+      <div className="alert__content">
+        {children}
+        {closeDom}
+      </div>
     </div>
   );
 };

@@ -81,7 +81,7 @@ const Signup: FC = () => {
   return (
     <div className="signup">
       <h1>{t('signup.title', { ns: 'pages' })}</h1>
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      <form className="signup__form" onSubmit={handleSubmit(onSubmit)} noValidate>
         {errors.root?.serverError?.message !== undefined ? (<Aerror>{errors.root.serverError.message}</Aerror>) : null}
         <Ainput
           type="email"

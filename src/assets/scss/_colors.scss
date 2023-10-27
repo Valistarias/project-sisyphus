@@ -1,19 +1,41 @@
 $black: #000;
-$vanta: #2e2e2e;
+$vanta: #131313;
+$dark: #1d1d1d;
 $grey: #555;
 $bone: #999;
 $boneless: #ebebeb;
 $white: #fff;
-$green: #3cd74f;
-$red: #d73c3c;
+$green: #6cdd79;
+$red: #eb6868;
+$purple1: #D762D9;
+$purple2: #4F0259;
+$purple3: #220126;
+$purple4: #260273;
+$purple5: #0528F2;
 
 :root {
   --black:#{$black};
   --vanta:#{$vanta};
+  --dark:#{$dark};
   --white:#{$white};
   --grey:#{$grey};
   --bone:#{$bone};
   --boneless:#{$boneless};
   --green:#{$green};
   --red:#{$red};
+  --success:#{$green};
+  --fail:#{$red};
+}
+
+.dark-theme {
+  --background-color: #{$vanta};
+  --background-header: #{$dark};
+  --font-color: #{$white};
+  --primary: #{$purple1};
+  --primary-dark: #{$purple2};
+  --primary-darker: #{$purple3};
+  --secondary: #{$purple5};
+  --secondary-dark: #{$purple4};
+  --tertiary: #{$white};
+  --tertiary-dark: #{$boneless};
 }

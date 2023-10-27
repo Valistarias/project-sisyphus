@@ -39,7 +39,7 @@ const signUp = (req: Request, res: Response, mg: IMailgunClient): void => {
   user
     .save()
     .then((userRes: HydratedDocument<IUser>) => {
-      registerRoleByName(req.body.roles)
+      registerRoleByName()
         .then((rolesId) => {
           user.roles = rolesId;
           user.save()
@@ -77,29 +77,17 @@ const signUp = (req: Request, res: Response, mg: IMailgunClient): void => {
     });
 };
 
-const registerRoleByName = async (roles: string[] | undefined): Promise<string[]> => await new Promise((resolve, reject) => {
-  if (Array.isArray(roles)) {
-    // Attribute multiple roles
-    Role.find({ name: { $in: roles } })
-      .then((roles) => {
-        resolve(roles.map((role) => role._id.toString()));
-      })
-      .catch((err: Error) => {
-        reject(err);
-      });
-  } else {
-    // Attribute only user
-    Role
-      .findOne({ name: 'user' })
-      .then((role) => {
-        if (role !== null) {
-          resolve([role._id.toString()]);
-        }
-      })
-      .catch((err: Error) => {
-        reject(err);
-      });
-  }
+const registerRoleByName = async (): Promise<string[]> => await new Promise((resolve, reject) => {
+  Role
+    .findOne({ name: 'user' })
+    .then((role) => {
+      if (role !== null) {
+        resolve([role._id.toString()]);
+      }
+    })
+    .catch((err: Error) => {
+      reject(err);
+    });
 });
 
 const signIn = (req: ISigninRequest, res: Response): void => {

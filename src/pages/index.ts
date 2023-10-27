@@ -6,6 +6,7 @@ import DashboardPage from './dashboard';
 import ForgotPassPage from './forgotPass';
 import NewPassPage from './newPass';
 import AdminPage from './admin';
+import AdminRuleBooksPage from './adminRuleBooks';
 
 export {
   HomePage,
@@ -15,5 +16,6 @@ export {
   DashboardPage,
   ForgotPassPage,
   NewPassPage,
-  AdminPage
+  AdminPage,
+  AdminRuleBooksPage
 };

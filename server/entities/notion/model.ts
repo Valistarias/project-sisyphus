@@ -10,8 +10,9 @@ interface INotion {
   /**
    * The rulebook associated with this notion
    * (you need to have unlocked this rulebook to see this notion)
+   * (if no rulebook defined, this is a global notion)
   */
-  ruleBook: ObjectId
+  ruleBook: ObjectId | null
   /** When the notion was created */
   createdAt: Date
 }
@@ -22,7 +23,8 @@ const notionSchema = new Schema<INotion>({
   text: String,
   ruleBook: {
     type: Schema.Types.ObjectId,
-    ref: 'RuleBook'
+    ref: 'RuleBook',
+    default: null
   },
   createdAt: {
     type: Date,

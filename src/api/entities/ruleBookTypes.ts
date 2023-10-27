@@ -2,15 +2,15 @@ import Entity from './entity';
 
 import axios from 'axios';
 
-interface INotionsPayload {
-  notionId: string
+interface IRuleBooksTypesPayload {
+  ruleBookTypeId: string
 };
 
-export default class Notions extends Entity {
-  get: (payload: INotionsPayload) => Promise<string>;
+export default class RuleBooksTypes extends Entity {
+  get: (payload: IRuleBooksTypesPayload) => Promise<string>;
 
   constructor () {
-    super('notions');
+    super('rulebooktypes');
 
     this.get = async (payload) => await new Promise((resolve, reject) => {
       axios.get(`${this.url}/single/`, { params: payload })

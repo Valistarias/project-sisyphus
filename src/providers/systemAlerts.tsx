@@ -2,6 +2,8 @@ import React, {
   type FC, useState, useMemo, useContext, useRef, useCallback
 } from 'react';
 
+import './systemAlerts.scss';
+
 interface IAlert {
   /** The alert number on the list (id only resets on full refresh) */
   key: number

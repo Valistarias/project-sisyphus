@@ -19,14 +19,14 @@ export default (app: Router): void => {
     next();
   });
 
-  app.get('/api/notions/',
+  app.get('/notions/',
     [
       verifyToken,
       adminNeeded
     ], findAll);
 
   app.get(
-    '/api/notions/single',
+    '/notions/single',
     [
       verifyToken
     ],
@@ -34,7 +34,7 @@ export default (app: Router): void => {
   );
 
   app.post(
-    '/api/notions/create',
+    '/notions/create',
     [
       verifyToken,
       adminNeeded
@@ -43,7 +43,7 @@ export default (app: Router): void => {
   );
 
   app.post(
-    '/api/notions/update',
+    '/notions/update',
     [
       verifyToken,
       adminNeeded
@@ -52,7 +52,7 @@ export default (app: Router): void => {
   );
 
   app.post(
-    '/api/notions/delete',
+    '/notions/delete',
     [
       verifyToken,
       adminNeeded

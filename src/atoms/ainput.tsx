@@ -16,6 +16,8 @@ interface IAinput {
   }
   /** The type of input */
   type?: 'text' | 'password' | 'email'
+  /** The theme of the button */
+  theme?: 'primary' | 'secondary' | 'tertiary'
   /** The class of the Textarea element */
   className?: string
   /** The placeholder of the Textarea element */
@@ -35,6 +37,7 @@ interface IAinput {
 const Ainput: FC<IAinput> = ({
   registered,
   type = 'text',
+  theme = 'primary',
   className,
   placeholder,
   readOnly,
@@ -51,6 +54,7 @@ const Ainput: FC<IAinput> = ({
     className={
       classTrim(`
         ainput
+        ainput--${theme}
         ${readOnly === true ? 'ainput--readonly' : ''}
         ${className ?? ''}
       `)

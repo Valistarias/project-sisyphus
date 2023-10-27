@@ -4,7 +4,7 @@ type IBasicRequests = (payload: any) => Promise<Record<string, string>>;
 
 export default class Entity {
   url: string;
-  getAll: () => Promise<Record<string, string>>;
+  getAll: () => Promise<Record<string, any>>;
   create: IBasicRequests;
   update: IBasicRequests;
   delete: IBasicRequests;

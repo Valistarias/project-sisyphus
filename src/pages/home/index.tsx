@@ -3,11 +3,11 @@ import React, { useCallback, type FC } from 'react';
 import { useSystemAlerts } from '../../providers/systemAlerts';
 import { useTranslation } from 'react-i18next';
 
+import { Ap } from '../../atoms';
 import { Button } from '../../molecules';
 import { Alert } from '../../organisms';
 
 import './home.scss';
-import { Ap } from '../../atoms';
 
 const Home: FC = () => {
   const { t } = useTranslation();
@@ -21,7 +21,7 @@ const Home: FC = () => {
         <Alert
           key={newId}
           id={newId}
-          timer={5}
+          // timer={5}
           closable
         >
           <Ap>Lorem Ipsum</Ap>

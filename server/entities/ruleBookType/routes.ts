@@ -5,7 +5,7 @@ import { verifyToken, adminNeeded } from '../../middlewares';
 import {
   create,
   update,
-  deleteRuleBook,
+  deleteRuleBookType,
   findAll,
   findSingle
 } from './controller';
@@ -19,13 +19,13 @@ export default (app: Router): void => {
     next();
   });
 
-  app.get('/rulebooks/',
+  app.get('/rulebooktypes/',
     [
       verifyToken
     ], findAll);
 
   app.get(
-    '/rulebooks/single',
+    '/rulebooktypes/single',
     [
       verifyToken
     ],
@@ -33,7 +33,7 @@ export default (app: Router): void => {
   );
 
   app.post(
-    '/rulebooks/create',
+    '/rulebooktypes/create',
     [
       verifyToken,
       adminNeeded
@@ -42,7 +42,7 @@ export default (app: Router): void => {
   );
 
   app.post(
-    '/rulebooks/update',
+    '/rulebooktypes/update',
     [
       verifyToken,
       adminNeeded
@@ -51,11 +51,11 @@ export default (app: Router): void => {
   );
 
   app.post(
-    '/rulebooks/delete',
+    '/rulebooktypes/delete',
     [
       verifyToken,
       adminNeeded
     ],
-    deleteRuleBook
+    deleteRuleBookType
   );
 };

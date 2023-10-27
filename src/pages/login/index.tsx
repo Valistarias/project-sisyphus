@@ -72,7 +72,6 @@ const Login: FC = () => {
         })
         .catch(({ response }) => {
           const { data } = response;
-          console.log('data', data);
           if (data.code === 'CYPU-102') {
             setError(data.sent, {
               type: 'server',
@@ -95,7 +94,7 @@ const Login: FC = () => {
   return (
     <div className="login">
       <h1>{t('login.title', { ns: 'pages' })}</h1>
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      <form className="login__form" onSubmit={handleSubmit(onSubmit)} noValidate>
         {errors.root?.serverError?.message !== undefined ? (<Aerror>{errors.root.serverError.message}</Aerror>) : null}
         <Ainput
           type="email"

@@ -31,5 +31,8 @@
   },
   "admin": {
     "title": "Administration"
+  },
+  "adminRuleBooks": {
+    "title": "Rulebooks"
   }
 }

@@ -1,20 +1,21 @@
 import db from '../../models';
 
 import { type Request, type Response } from 'express';
-import { type HydratedDocument } from 'mongoose';
-import { type IRuleBook } from './model';
+import { type HydratedIRuleBook } from './model';
+import { type IRuleBookType } from '../index';
 
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
 const { RuleBook } = db;
 
-const findRuleBooks = async (): Promise<Array<HydratedDocument<IRuleBook>>> => await new Promise((resolve, reject) => {
+const findRuleBooks = async (): Promise<HydratedIRuleBook[]> => await new Promise((resolve, reject) => {
   RuleBook.find()
+    .populate<{ type: IRuleBookType }>('type')
     .then(async (res) => {
       if (res === undefined || res === null) {
         reject(gemNotFound('RuleBooks'));
       } else {
-        resolve(res);
+        resolve(res as HydratedIRuleBook[]);
       }
     })
     .catch(async (err) => {
@@ -22,13 +23,14 @@ const findRuleBooks = async (): Promise<Array<HydratedDocument<IRuleBook>>> => a
     });
 });
 
-const findRuleBookById = async (id: string): Promise<HydratedDocument<IRuleBook>> => await new Promise((resolve, reject) => {
+const findRuleBookById = async (id: string): Promise<HydratedIRuleBook> => await new Promise((resolve, reject) => {
   RuleBook.findById(id)
+    .populate<{ type: IRuleBookType }>('type')
     .then(async (res) => {
       if (res === undefined || res === null) {
         reject(gemNotFound('RuleBook'));
       } else {
-        resolve(res);
+        resolve(res as HydratedIRuleBook);
       }
     })
     .catch(async (err) => {
@@ -38,21 +40,19 @@ const findRuleBookById = async (id: string): Promise<HydratedDocument<IRuleBook>
 
 const create = (req: Request, res: Response): void => {
   const {
-    id,
     title,
     summary
   } = req.body;
-  if (id === undefined || title === undefined || summary === undefined) {
+  if (title === undefined || summary === undefined) {
     res.status(400).send(gemInvalidField('RuleBook', req));
     return;
   }
-  const notion = new RuleBook({
-    id,
+  const ruleBook = new RuleBook({
     title,
     summary
   });
 
-  notion
+  ruleBook
     .save()
     .then(() => {
       res.send({ message: 'RuleBook was registered successfully!' });
@@ -73,12 +73,12 @@ const update = (req: Request, res: Response): void => {
     return;
   }
   findRuleBookById(id)
-    .then((notion) => {
-      if (title !== null) { notion.title = title; }
-      if (summary !== null) { notion.summary = summary; }
-      notion.save()
+    .then((ruleBook) => {
+      if (title !== null) { ruleBook.title = title; }
+      if (summary !== null) { ruleBook.summary = summary; }
+      ruleBook.save()
         .then(() => {
-          res.send({ message: 'RuleBook was updated successfully!', notion });
+          res.send({ message: 'RuleBook was updated successfully!', ruleBook });
         })
         .catch((err) => {
           res.status(500).send(gemServerError(err));

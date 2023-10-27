@@ -1,4 +1,6 @@
 export interface IUser {
+  /** The ID of the user */
+  _id: string
   /** The mail of the user */
   mail: string
   /** The user password (encrypted) */
@@ -18,4 +20,15 @@ export interface IUser {
     _id: string
     name: string
   }>
+}
+
+export interface IRuleBook {
+  /** The ID of the rulebook */
+  _id: string
+  /** The title of the rulebook */
+  title: string
+  /** The summary of the rulebook */
+  summary: string
+  /** When the rulebook was created */
+  createdAt: string
 }

@@ -19,7 +19,8 @@ import AuthRoutes from './entities/auth/routes';
 import UserRoutes from './entities/user/routes';
 import MailTokenRoutes from './entities/mailToken/routes';
 import NotionRoutes from './entities/notion/routes';
-import RuleBookRoutes from './entities/rulebook/routes';
+import RuleBookRoutes from './entities/ruleBook/routes';
+import RuleBookTypeRoutes from './entities/ruleBookType/routes';
 
 import { gemInvalidField } from './utils/globalErrorMessage';
 
@@ -74,6 +75,7 @@ MailTokenRoutes(apiRouter, mg);
 // Rulebook routes
 NotionRoutes(apiRouter);
 RuleBookRoutes(apiRouter);
+RuleBookTypeRoutes(apiRouter);
 
 app.use('/api/', apiRouter);
 

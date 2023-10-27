@@ -6,7 +6,7 @@ import {
 } from 'react-router-dom';
 
 import { HeaderBar } from './organisms';
-import { HomePage, ErrorPage, LoginPage, SignupPage, DashboardPage, ForgotPassPage, NewPassPage, AdminPage } from './pages';
+import { HomePage, ErrorPage, LoginPage, SignupPage, DashboardPage, ForgotPassPage, NewPassPage, AdminPage, AdminRuleBooksPage } from './pages';
 import { useGlobalVars } from './providers/globalVars';
 
 import './assets/scss/index.scss';
@@ -18,8 +18,12 @@ const App: FC = () => {
     {
       element: (
           <>
-            <HeaderBar />
-            <Outlet />
+            <HeaderBar
+              className="app__headerbar"
+            />
+            <div className="app__content">
+              <Outlet />
+            </div>
           </>
       ),
       errorElement: <ErrorPage />,
@@ -54,6 +58,10 @@ const App: FC = () => {
         {
           path: '/admin',
           element: <AdminPage />
+        },
+        {
+          path: '/admin/rulebooks',
+          element: <AdminRuleBooksPage />
         }
       ]
     }
