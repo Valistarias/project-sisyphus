@@ -11,6 +11,8 @@ interface IAA {
   className?: string
   /** The link to another page */
   href: string
+  /** If the target is different to this page */
+  target?: string
   /** The childrens of the P element */
   children: React.JSX.Element | string | string[]
 }
@@ -18,10 +20,12 @@ interface IAA {
 const AA: FC<IAA> = ({
   className,
   children,
-  href
+  href,
+  target
 }) => (
   <Link
     to={href}
+    target={target}
     className={
       classTrim(`
         aa

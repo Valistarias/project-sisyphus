@@ -9,6 +9,7 @@ import { Atitle } from '../../atoms';
 
 import './adminRuleBooks.scss';
 import AdminRuleBookTypes from './adminRuleBookTypes';
+import { Button } from '../../molecules';
 
 const AdminRuleBooks: FC = () => {
   const { t } = useTranslation();
@@ -34,6 +35,7 @@ const AdminRuleBooks: FC = () => {
       <div className="adminRuleBooks__content">
         <div className="adminRuleBooks__books">
           <Atitle level={2}>{t('adminRuleBooks.list', { ns: 'pages' })}</Atitle>
+          <Button href="/admin/rulebook/new">{t('adminNewRuleBook.title', { ns: 'pages' })}</Button>
         </div>
         <AdminRuleBookTypes />
       </div>

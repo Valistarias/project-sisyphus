@@ -1,5 +1,7 @@
 import React, { type FC } from 'react';
 
+import { useNavigate } from 'react-router-dom';
+
 import { Aicon, type typeIcons } from '../atoms/aicon';
 
 import { classTrim } from '../utils';
@@ -19,6 +21,8 @@ interface IButton {
   children?: string
   /** The icon (if any) of the button */
   icon?: typeIcons
+  /** The redirect (if there is) on a button click */
+  href?: string
   /** When the input is clicked */
   onClick?: (e: React.MouseEvent<HTMLElement>) => void
 }
@@ -27,11 +31,15 @@ const Button: FC<IButton> = ({
   type = 'button',
   theme = 'primary',
   size = 'medium',
+  href,
   className,
   children,
   icon,
   onClick
-}) => (
+}) => {
+  const navigate = useNavigate();
+
+  return (
   <button
     className={
       classTrim(`
@@ -44,8 +52,10 @@ const Button: FC<IButton> = ({
       `)
     }
     onClick={(e) => {
-      if (onClick !== undefined) {
-        e.stopPropagation();
+      e.stopPropagation();
+      if (href !== undefined) {
+        navigate(href);
+      } else if (onClick !== undefined) {
         onClick(e);
       }
     }}
@@ -60,6 +70,6 @@ const Button: FC<IButton> = ({
     }
     {icon !== undefined ? (<Aicon className="button__icon" type={icon} />) : null}
   </button>
-);
-
+  );
+};
 export default Button;

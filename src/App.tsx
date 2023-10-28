@@ -6,7 +6,18 @@ import {
 } from 'react-router-dom';
 
 import { HeaderBar } from './organisms';
-import { HomePage, ErrorPage, LoginPage, SignupPage, DashboardPage, ForgotPassPage, NewPassPage, AdminPage, AdminRuleBooksPage } from './pages';
+import {
+  HomePage,
+  ErrorPage,
+  LoginPage,
+  SignupPage,
+  DashboardPage,
+  ForgotPassPage,
+  NewPassPage,
+  AdminPage,
+  AdminRuleBooksPage,
+  AdminNewRuleBooksPage
+} from './pages';
 import { useGlobalVars } from './providers/globalVars';
 
 import './assets/scss/index.scss';
@@ -62,6 +73,10 @@ const App: FC = () => {
         {
           path: '/admin/rulebooks',
           element: <AdminRuleBooksPage />
+        },
+        {
+          path: '/admin/rulebook/new',
+          element: <AdminNewRuleBooksPage />
         }
       ]
     }

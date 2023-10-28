@@ -7,6 +7,7 @@ import ForgotPassPage from './forgotPass';
 import NewPassPage from './newPass';
 import AdminPage from './admin';
 import AdminRuleBooksPage from './adminRuleBooks';
+import AdminNewRuleBooksPage from './adminNewRuleBook';
 
 export {
   HomePage,
@@ -17,5 +18,6 @@ export {
   ForgotPassPage,
   NewPassPage,
   AdminPage,
-  AdminRuleBooksPage
+  AdminRuleBooksPage,
+  AdminNewRuleBooksPage
 };

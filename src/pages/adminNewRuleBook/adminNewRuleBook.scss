@@ -1,0 +1,13 @@
+.adminRuleBooks {
+  height: 100%;
+  width: 100%;
+
+  &__content {
+    display: flex;
+    margin-top: 2rem;
+  }
+
+  &__books {
+    width: 100%;
+  }
+}
