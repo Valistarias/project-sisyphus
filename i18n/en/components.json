@@ -4,5 +4,25 @@
   },
   "headerBar": {
     "logout": "Log out"
+  },
+  "richTextElement": {
+    "textTitle": "Text",
+    "bold": "b",
+    "italic": "i",
+    "paragraph": "p",
+    "h1": "h1",
+    "h2": "h2",
+    "h3": "h3",
+    "list": "list",
+    "table": {
+      "new": "New Table",
+      "del": "Del. table",
+      "newcol": "New Col.",
+      "delcol": "Del. Col.",
+      "newrow": "New Row",
+      "delrow": "Del. Row",
+      "merge": "Merge",
+      "split": "Split"
+    }
   }
 }

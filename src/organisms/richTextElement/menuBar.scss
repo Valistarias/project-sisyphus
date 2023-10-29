@@ -14,15 +14,15 @@
       display: flex;
       gap: 10px;
     }
-  }
 
-  &__marks {
-    &__bold {
-      font-weight: bold;
-    }
-
-    &__italic {
-      font-style: italic;
+    &__marks {
+      &__bold {
+        font-weight: bold;
+      }
+  
+      &__italic {
+        font-style: italic;
+      }
     }
   }
 

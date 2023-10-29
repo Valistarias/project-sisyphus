@@ -1,6 +1,8 @@
 import React, { useCallback, useState, type ReactElement, useMemo } from 'react';
 import { type Editor } from '@tiptap/react';
 
+import { useTranslation } from 'react-i18next';
+
 import { classTrim } from '../../utils';
 
 import { Ainput, Ap } from '../../atoms';
@@ -19,6 +21,8 @@ interface IMenuBar {
 
 export const MenuBar = ({ editor, complete, className }: IMenuBar): ReactElement | null => {
   if (editor === undefined) { return null; }
+
+  const { t } = useTranslation();
 
   const [testBarValue, setTestBarValue] = useState('');
   const [testBarOpened, testBarOpen] = useState(false);
@@ -85,7 +89,7 @@ export const MenuBar = ({ editor, complete, className }: IMenuBar): ReactElement
     }>
       <div className="menubar__basics">
         <div className="menubar__basics__marks">
-          <Ap className="menubar__titles">Texts</Ap>
+          <Ap className="menubar__titles">{t('richTextElement.textTitle', { ns: 'components' })}</Ap>
           <Button
             onClick={() => editor.chain().focus().toggleBold().run()}
             disabled={
@@ -98,7 +102,7 @@ export const MenuBar = ({ editor, complete, className }: IMenuBar): ReactElement
             active={editor.isActive('bold')}
             className="menubar__basics__marks__bold"
           >
-            b
+            {t('richTextElement.bold', { ns: 'components' })}
           </Button>
           <Button
             onClick={() => editor.chain().focus().toggleItalic().run()}
@@ -112,7 +116,7 @@ export const MenuBar = ({ editor, complete, className }: IMenuBar): ReactElement
             active={editor.isActive('italic')}
             className="menubar__basics__marks__italic"
           >
-            i
+            {t('richTextElement.italic', { ns: 'components' })}
           </Button>
         </div>
         <div className="menubar__basics__nodes">
@@ -121,31 +125,31 @@ export const MenuBar = ({ editor, complete, className }: IMenuBar): ReactElement
               onClick={() => editor.chain().focus().setParagraph().run()}
               active={editor.isActive('paragraph')}
             >
-            p
+            {t('richTextElement.paragraph', { ns: 'components' })}
           </Button>
           <Button
             onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
             active={editor.isActive('heading', { level: 1 })}
           >
-            h1
+            {t('richTextElement.h1', { ns: 'components' })}
           </Button>
           <Button
             onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
             active={editor.isActive('heading', { level: 2 })}
           >
-            h2
+            {t('richTextElement.h2', { ns: 'components' })}
           </Button>
           <Button
             onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
             active={editor.isActive('heading', { level: 3 })}
           >
-            h3
+            {t('richTextElement.h3', { ns: 'components' })}
           </Button>
           <Button
             onClick={() => editor.chain().focus().toggleBulletList().run()}
             active={editor.isActive('bulletList')}
           >
-            list
+            {t('richTextElement.list', { ns: 'components' })}
           </Button>
         </div>
         <div className="menubar__basics__nodes">
@@ -153,42 +157,42 @@ export const MenuBar = ({ editor, complete, className }: IMenuBar): ReactElement
           <Button
             onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
           >
-            New table
+            {t('richTextElement.table.new', { ns: 'components' })}
           </Button>
           <Button
             onClick={() => editor.chain().focus().deleteTable().run()}
           >
-            Delete table
+            {t('richTextElement.table.del', { ns: 'components' })}
           </Button>
           <Button
             onClick={() => editor.chain().focus().addColumnAfter().run()}
           >
-            New Col.
+            {t('richTextElement.table.newcol', { ns: 'components' })}
           </Button>
           <Button
             onClick={() => editor.chain().focus().deleteColumn().run()}
           >
-            Del. Col.
+            {t('richTextElement.table.delcol', { ns: 'components' })}
           </Button>
           <Button
             onClick={() => editor.chain().focus().addRowAfter().run()}
           >
-            New Row
+            {t('richTextElement.table.newrow', { ns: 'components' })}
           </Button>
           <Button
             onClick={() => editor.chain().focus().deleteRow().run()}
           >
-            Del. Row
+            {t('richTextElement.table.delrow', { ns: 'components' })}
           </Button>
           <Button
             onClick={() => editor.chain().focus().mergeCells().run()}
           >
-            Merge
+            {t('richTextElement.table.merge', { ns: 'components' })}
           </Button>
           <Button
             onClick={() => editor.chain().focus().splitCell().run()}
           >
-            Split
+            {t('richTextElement.table.split', { ns: 'components' })}
           </Button>
         </div>
       </div>
