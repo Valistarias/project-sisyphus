@@ -8,6 +8,10 @@ import Atitle from './atitle';
 import { Aicon } from './aicon';
 import Ainput from './ainput';
 import Aerror from './aerror';
+import Atable from './atable';
+import Atd from './atd';
+import Ath from './ath';
+import Atr from './atr';
 
 export {
   Aul,
@@ -19,5 +23,9 @@ export {
   Atextarea,
   Atitle,
   Ainput,
-  Aerror
+  Aerror,
+  Atable,
+  Atd,
+  Ath,
+  Atr
 };

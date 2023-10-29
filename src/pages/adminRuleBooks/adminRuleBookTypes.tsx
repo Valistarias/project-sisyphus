@@ -242,7 +242,7 @@ const AdminRuleBookTypes: FC = () => {
             )
           : null
       }
-      <Aul className="adminRuleBooktypes__list">
+      <Aul className="adminRuleBooktypes__list" noPoints>
         {
           ruleBookTypes.length > 0 ? rulebookTypesDom : null
         }

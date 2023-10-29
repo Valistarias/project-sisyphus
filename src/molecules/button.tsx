@@ -1,6 +1,6 @@
 import React, { type FC } from 'react';
 
-import { useNavigate } from 'react-router-dom';
+import { type NavigateFunction, useNavigate } from 'react-router-dom';
 
 import { Aicon, type typeIcons } from '../atoms/aicon';
 
@@ -25,6 +25,8 @@ interface IButton {
   href?: string
   /** Is the button disabled ? */
   disabled?: boolean
+  /** Is the button activated by any means ? */
+  active?: boolean
   /** When the input is clicked */
   onClick?: (e: React.MouseEvent<HTMLElement>) => void
 }
@@ -33,14 +35,18 @@ const Button: FC<IButton> = ({
   type = 'button',
   theme = 'primary',
   size = 'medium',
-  disabled,
-  href,
+  disabled = false,
+  active = false,
+  href = null,
   className,
   children,
   icon,
   onClick
 }) => {
-  const navigate = useNavigate();
+  let navigate: NavigateFunction | null = null;
+  if (href !== null) {
+    navigate = useNavigate();
+  }
 
   return (
   <button
@@ -51,13 +57,14 @@ const Button: FC<IButton> = ({
         button--${size}
         ${icon === undefined ? 'button--noicon' : ''}
         ${children === undefined ? 'button--notext' : ''}
-        ${disabled !== undefined && disabled ? 'button--disabled' : ''}
+        ${disabled ? 'button--disabled' : ''}
+        ${active ? 'button--active' : ''}
         ${className ?? ''}
       `)
     }
     onClick={(e) => {
       e.stopPropagation();
-      if (href !== undefined) {
+      if (href !== null && navigate !== null) {
         navigate(href);
       } else if (onClick !== undefined) {
         onClick(e);
@@ -77,4 +84,5 @@ const Button: FC<IButton> = ({
   </button>
   );
 };
+
 export default Button;

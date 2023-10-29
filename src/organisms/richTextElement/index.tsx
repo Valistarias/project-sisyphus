@@ -1,19 +1,28 @@
 import React, { type FC, useEffect } from 'react';
-import { type Editor, EditorContent } from '@tiptap/react';
+import { type Editor, EditorContent, mergeAttributes } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Paragraph from '@tiptap/extension-paragraph';
+import Heading from '@tiptap/extension-heading';
 
 import { MenuBar } from './menuBar';
-import ReactComponent from './test.jsx';
+import ReactComponent from './test';
+
+import { Ap } from '../../atoms';
 
 import { classTrim } from '../../utils';
 
+import './../../atoms/atitle.scss';
 import './richTextElement.scss';
+import Table from '@tiptap/extension-table';
+import TableRow from '@tiptap/extension-table-row';
+import TableHeader from '@tiptap/extension-table-header';
+import TableCell from '@tiptap/extension-table-cell';
 
 const completeRichTextElementExtentions = [
   StarterKit.configure({
     // Disable an included extension
     paragraph: false,
+    heading: false,
 
     // Configure an included extension
     bold: {
@@ -25,11 +34,55 @@ const completeRichTextElementExtentions = [
       HTMLAttributes: {
         class: 'richTextElt--italic'
       }
+    },
+    bulletList: {
+      HTMLAttributes: {
+        class: 'aul'
+      }
+    },
+    listItem: {
+      HTMLAttributes: {
+        class: 'ali'
+      }
     }
   }),
   Paragraph.configure({
     HTMLAttributes: {
-      class: 'richTextElt__p ap'
+      class: 'ap'
+    }
+  }),
+  Table.configure({
+    HTMLAttributes: {
+      class: 'atable'
+    }
+  }),
+  TableRow.configure({
+    HTMLAttributes: {
+      class: 'atr'
+    }
+  }),
+  TableHeader.configure({
+    HTMLAttributes: {
+      class: 'ath'
+    }
+  }),
+  TableCell.configure({
+    HTMLAttributes: {
+      class: 'atd'
+    }
+  }),
+  Heading.configure({ levels: [1, 2, 3] }).extend({
+    renderHTML ({ node, HTMLAttributes }) {
+      const hasLevel = this.options.levels.includes(node.attrs.level);
+      const level = hasLevel ? node.attrs.level : this.options.levels[0];
+
+      return [
+        `h${level}`,
+        mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
+          class: `atitle atitle--h${level}`
+        }),
+        0
+      ];
     }
   }),
   ReactComponent
@@ -54,7 +107,7 @@ const basicRichTextElementExtentions = [
   }),
   Paragraph.configure({
     HTMLAttributes: {
-      class: 'richTextElt__p ap'
+      class: 'ap'
     }
   })
 ];
@@ -64,6 +117,8 @@ interface IRichTextElement {
   editor: Editor | null
   /** Is there raw content (stringified) to be displayed */
   rawStringContent?: string
+  /** The title of the editor, if any */
+  title?: string
   /** Is the text element readOnly */
   readOnly?: boolean
   /** Is the text editor with all options ? */
@@ -72,6 +127,7 @@ interface IRichTextElement {
 
 const RichTextElement: FC<IRichTextElement> = ({
   editor,
+  title,
   rawStringContent,
   readOnly = false,
   complete = false
@@ -94,13 +150,20 @@ const RichTextElement: FC<IRichTextElement> = ({
       }
     >
       {
+      title !== undefined && title !== null && !readOnly
+        ? (
+        <Ap className="richTextElt__title">{title}</Ap>
+          )
+        : null
+      }
+      {
         !readOnly
           ? (
-          <MenuBar editor={editor ?? undefined} complete={complete} />
+          <MenuBar editor={editor ?? undefined} complete={complete} className="richTextElt__menu" />
             )
           : null
       }
-      <EditorContent editor={editor} />
+      <EditorContent editor={editor} className="richTextElt__editor" autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck="false" />
     </div>
   );
 };

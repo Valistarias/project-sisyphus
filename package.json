@@ -23,7 +23,12 @@
   },
   "homepage": "https://github.com/Valistarias/project-sisyphus#readme",
   "dependencies": {
+    "@tiptap/extension-heading": "^2.1.12",
     "@tiptap/extension-paragraph": "^2.1.12",
+    "@tiptap/extension-table": "^2.1.12",
+    "@tiptap/extension-table-cell": "^2.1.12",
+    "@tiptap/extension-table-header": "^2.1.12",
+    "@tiptap/extension-table-row": "^2.1.12",
     "@tiptap/pm": "^2.1.12",
     "@tiptap/react": "^2.1.12",
     "@tiptap/starter-kit": "^2.1.12",

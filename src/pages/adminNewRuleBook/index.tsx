@@ -38,7 +38,7 @@ const AdminNewRuleBooks: FC = () => {
   return (
     <div className="adminNewRuleBook">
       <Atitle level={1}>{t('adminNewRuleBook.title', { ns: 'pages' })}</Atitle>
-      <RichTextElement editor={introEditor} rawStringContent={content} complete />
+      <RichTextElement title="Test" editor={introEditor} rawStringContent={content} complete />
       <Button
         onClick={onSaveTextElt}
       >

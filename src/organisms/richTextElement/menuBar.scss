@@ -1,6 +1,46 @@
 .menubar {
+  border: 1px solid var(--primary-dark);
+  padding: 1rem 2rem;
+
   &__basics {
     display: flex;
-    gap: 10px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0 4rem;
+  
+    &__marks,
+    &__nodes {
+      align-items: center;
+      display: flex;
+      gap: 10px;
+    }
+  }
+
+  &__marks {
+    &__bold {
+      font-weight: bold;
+    }
+
+    &__italic {
+      font-style: italic;
+    }
+  }
+
+  &__titles {
+    align-items: center;
+    display: flex;
+    font-size: 1.8rem;
+    margin-right: .5rem;
+  }
+
+  .button {
+    display: flex;
+    justify-content: center;
+    min-height: 3.5rem;
+    min-width: 3.5rem;
+
+    &__content {
+      font-size: 1.3rem;
+    }
   }
 }

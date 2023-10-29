@@ -3,7 +3,7 @@
   background: transparent;
   border: 1px solid var(--boneless);
   border: 1px solid var(--button-border);
-  border-radius: 4px;
+  border-radius: 3px;
   color: var(--tertiary);
   cursor: pointer;
   display: flex;
@@ -83,6 +83,14 @@
     --button-border-hover: var(--primary);
     --button-fill-hover: var(--tertiary);
     --button-text-hover: var(--tertiary-dark);
+
+    &.button--active {
+      --button-border: var(--primary);
+      --button-fill: var(--primary);
+      --button-border-hover: var(--primary);
+      --button-fill-hover: var(--tertiary);
+      --button-text-hover: var(--tertiary);
+    }
   }
 
   &--secondary {
