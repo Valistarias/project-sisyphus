@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "description": "This is the project sisyphus website, for the role playing game qith the same name",
   "main": "index.tsx",
-  "type": "module",
   "scripts": {
     "build:server": "webpack -c webpack.node.config.ts",
     "build:client": "vite build",

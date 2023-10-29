@@ -92,6 +92,7 @@ const basicRichTextElementExtentions = [
   StarterKit.configure({
     // Disable an included extension
     paragraph: false,
+    heading: false,
 
     // Configure an included extension
     bold: {
@@ -103,11 +104,55 @@ const basicRichTextElementExtentions = [
       HTMLAttributes: {
         class: 'richTextElt--italic'
       }
+    },
+    bulletList: {
+      HTMLAttributes: {
+        class: 'aul'
+      }
+    },
+    listItem: {
+      HTMLAttributes: {
+        class: 'ali'
+      }
     }
   }),
   Paragraph.configure({
     HTMLAttributes: {
       class: 'ap'
+    }
+  }),
+  Table.configure({
+    HTMLAttributes: {
+      class: 'atable'
+    }
+  }),
+  TableRow.configure({
+    HTMLAttributes: {
+      class: 'atr'
+    }
+  }),
+  TableHeader.configure({
+    HTMLAttributes: {
+      class: 'ath'
+    }
+  }),
+  TableCell.configure({
+    HTMLAttributes: {
+      class: 'atd'
+    }
+  }),
+  Heading.configure({ levels: [1, 2, 3] }).extend({
+    renderHTML ({ node, HTMLAttributes }) {
+      const hasLevel = this.options.levels.includes(node.attrs.level);
+      const level = hasLevel ? node.attrs.level : this.options.levels[0];
+
+      return [
+        `h${level}`,
+        mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
+          class: `atitle atitle--h${level}`
+        }),
+        0
+      ];
     }
   })
 ];

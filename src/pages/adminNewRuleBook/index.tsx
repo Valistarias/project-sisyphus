@@ -1,13 +1,15 @@
-import React, { useCallback, type FC } from 'react';
+import React, { useCallback, type FC, useEffect, useState } from 'react';
 import { useEditor } from '@tiptap/react';
 
 import { useTranslation } from 'react-i18next';
 import { useApi } from '../../providers/api';
+import { useSystemAlerts } from '../../providers/systemAlerts';
 
-import { Atitle } from '../../atoms';
+import { Ap, Atitle } from '../../atoms';
 import { Button } from '../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
 
-import { RichTextElement, completeRichTextElementExtentions } from '../../organisms';
+import { type IRuleBookType } from '../../interfaces';
 
 import './adminNewRuleBook.scss';
 
@@ -24,6 +26,11 @@ const content = `
 const AdminNewRuleBooks: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
+  const { createAlert, getNewId } = useSystemAlerts();
+
+  const [ruleBookTypes, setRuleBookTypes] = useState<IRuleBookType[]>([]);
+
+  console.log('ruleBookTypes', ruleBookTypes);
 
   const introEditor = useEditor({
     extensions: completeRichTextElementExtentions
@@ -34,6 +41,30 @@ const AdminNewRuleBooks: FC = () => {
     const html = introEditor.getHTML();
     console.log('html', html);
   }, [introEditor]);
+
+  useEffect(() => {
+    if (api !== undefined) {
+      api.ruleBookTypes.getAll()
+        .then((data: IRuleBookType[]) => {
+          setRuleBookTypes(data);
+        })
+        .catch(({ response }) => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert
+                key={newId}
+                id={newId}
+                timer={5}
+              >
+                <Ap>{t('serverErrors.CYPU-301')}</Ap>
+              </Alert>
+            )
+          });
+        });
+    }
+  }, [api, createAlert, getNewId, t]);
 
   return (
     <div className="adminNewRuleBook">

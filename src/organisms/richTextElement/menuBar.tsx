@@ -1,4 +1,4 @@
-import React, { useCallback, useState, type ReactElement, useMemo } from 'react';
+import React, { useCallback, useState, type FC, useMemo } from 'react';
 import { type Editor } from '@tiptap/react';
 
 import { useTranslation } from 'react-i18next';
@@ -19,9 +19,7 @@ interface IMenuBar {
   className: string
 }
 
-export const MenuBar = ({ editor, complete, className }: IMenuBar): ReactElement | null => {
-  if (editor === undefined) { return null; }
-
+export const MenuBar: FC<IMenuBar> = ({ editor, complete, className }) => {
   const { t } = useTranslation();
 
   const [testBarValue, setTestBarValue] = useState('');
@@ -32,6 +30,7 @@ export const MenuBar = ({ editor, complete, className }: IMenuBar): ReactElement
   }, []);
 
   const onConfirmTestBar = useCallback(() => {
+    if (editor === undefined) { return null; }
     editor.chain().insertContentAt(editor.state.selection.head, {
       type: 'reactComponentTest',
       attrs: { text: testBarValue }
@@ -41,7 +40,7 @@ export const MenuBar = ({ editor, complete, className }: IMenuBar): ReactElement
   }, [editor, testBarValue]);
 
   const completeOptns = useMemo(() => {
-    if (!complete) { return null; }
+    if (!complete || editor === undefined) { return null; }
     return (
       <div className="menubar__advanced">
         <Button
@@ -79,6 +78,8 @@ export const MenuBar = ({ editor, complete, className }: IMenuBar): ReactElement
     testBarOpened,
     testBarValue
   ]);
+
+  if (editor === undefined) { return null; }
 
   return (
     <div className={
