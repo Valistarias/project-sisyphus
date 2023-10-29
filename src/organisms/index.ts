@@ -1,9 +1,11 @@
 import HeaderBar from './headerBar';
 import Alert from './alert';
-import RichTextElement from './richTextElement';
+import { RichTextElement, completeRichTextElementExtentions, basicRichTextElementExtentions } from './richTextElement';
 
 export {
   HeaderBar,
   Alert,
-  RichTextElement
+  RichTextElement,
+  completeRichTextElementExtentions,
+  basicRichTextElementExtentions
 };

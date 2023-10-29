@@ -17,6 +17,7 @@ const TestReact: FC<ITest> = ({ node, updateAttributes }) => {
   return (
     <NodeViewWrapper className="react-component-test">
       <button onClick={onClickMore}>
+        {node.attrs.text}
         This button has been clicked {node.attrs.count} times.
       </button>
     </NodeViewWrapper>
@@ -30,6 +31,9 @@ export default Node.create({
 
   addAttributes () {
     return {
+      text: {
+        default: 'This is a test'
+      },
       count: {
         default: 0
       }

@@ -23,6 +23,8 @@ interface IButton {
   icon?: typeIcons
   /** The redirect (if there is) on a button click */
   href?: string
+  /** Is the button disabled ? */
+  disabled?: boolean
   /** When the input is clicked */
   onClick?: (e: React.MouseEvent<HTMLElement>) => void
 }
@@ -31,6 +33,7 @@ const Button: FC<IButton> = ({
   type = 'button',
   theme = 'primary',
   size = 'medium',
+  disabled,
   href,
   className,
   children,
@@ -48,6 +51,7 @@ const Button: FC<IButton> = ({
         button--${size}
         ${icon === undefined ? 'button--noicon' : ''}
         ${children === undefined ? 'button--notext' : ''}
+        ${disabled !== undefined && disabled ? 'button--disabled' : ''}
         ${className ?? ''}
       `)
     }
@@ -60,6 +64,7 @@ const Button: FC<IButton> = ({
       }
     }}
     type={type}
+    disabled={disabled}
   >
     {
       children !== undefined
