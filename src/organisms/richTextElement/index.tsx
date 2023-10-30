@@ -23,6 +23,7 @@ const completeRichTextElementExtentions = [
     // Disable an included extension
     paragraph: false,
     heading: false,
+    code: false,
 
     // Configure an included extension
     bold: {

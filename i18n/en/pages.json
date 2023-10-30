@@ -45,6 +45,15 @@
     "deleteRuleBookTypeMessage": "You have clicked the delete button on a Rulebook type. Click on the same element to confirm the deletion."
   },
   "adminNewRuleBook": {
-    "title": "New Rulebook"
+    "title": "New Rulebook",
+    "i18n": "Internationalization - French",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill all of them in the long run",
+    "successCreate": "Rulebook successfully created !"
+  },
+  "adminEditRuleBook": {
+    "title": "Edit Rulebook",
+    "i18n": "Internationalization - French",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill all of them in the long run",
+    "successUpdate": "Rulebook successfully updated !"
   }
 }

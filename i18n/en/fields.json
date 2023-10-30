@@ -16,5 +16,16 @@
   "nameRuleBookType": {
     "required": "A Rulebook Type Name is required",
     "placeholder": "Rulebook Type Name..."
+  },
+  "nameRuleBook": {
+    "required": "A Rulebook Name is required",
+    "placeholder": "Rulebook Name..."
+  },
+  "typeRuleBook": {
+    "required": "A Rulebook Type is required",
+    "placeholder": "Rulebook Type..."
+  },
+  "ruleBookSummary": {
+    "title": "RuleBook Intro"
   }
 }

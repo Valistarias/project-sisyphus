@@ -1,0 +1,51 @@
+.smartselect {
+  .smartselect__control {
+    background: var(--background-color);
+    border-color: var(--primary);
+    transition: none;
+
+    &--is-focused {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 .1rem var(--primary);
+    }
+
+    &:hover {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 0;
+    }
+  }
+
+  .smartselect__menu {
+    background: var(--background-header);
+  }
+
+  .smartselect__option{
+    &.smartselect__option--is-focused  {
+      background: var(--background-color);
+      cursor: pointer;
+    }
+
+    &.smartselect__option.smartselect__option--is-selected  {
+      background: var(--primary-dark);
+    }
+
+    &.smartselect__option--double  {
+      display: inline-flex;
+      justify-content: space-between;
+
+      .smartselect__option{
+        &__details {
+          opacity: .5;
+        }
+      }
+    }
+  }
+
+  .smartselect__input-container {
+    color: var(--font-color);
+  }
+
+  .smartselect__single-value {
+    color: var(--font-color);
+  }
+}

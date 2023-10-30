@@ -27,10 +27,20 @@ export interface IRuleBook {
   _id: string
   /** The title of the rulebook */
   title: string
+  /** The type of the rulebook */
+  type: {
+    _id: string
+    name: string
+  }
   /** The summary of the rulebook */
   summary: string
   /** When the rulebook was created */
   createdAt: string
+}
+
+export interface ICuratedRuleBook {
+  i18n: Record<string, any> | null
+  ruleBook: IRuleBook
 }
 
 export interface IRuleBookType {

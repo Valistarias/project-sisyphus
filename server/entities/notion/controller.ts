@@ -42,7 +42,8 @@ const create = (req: Request, res: Response): void => {
     title,
     short,
     text,
-    ruleBook
+    ruleBook,
+    i18n = null
   } = req.body;
   if (id === undefined || title === undefined || short === undefined || text === undefined || ruleBook === undefined) {
     res.status(400).send(gemInvalidField('Notion'));
@@ -55,6 +56,8 @@ const create = (req: Request, res: Response): void => {
     text,
     ruleBook
   });
+
+  if (i18n !== null) { ruleBook.i18n = JSON.stringify(i18n); }
 
   notion
     .save()
@@ -72,7 +75,8 @@ const update = (req: Request, res: Response): void => {
     title = null,
     short = null,
     text = null,
-    ruleBook = null
+    ruleBook = null,
+    i18n = null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Notion ID'));
@@ -84,6 +88,15 @@ const update = (req: Request, res: Response): void => {
       if (short !== null) { notion.short = short; }
       if (text !== null) { notion.text = text; }
       if (ruleBook !== null) { notion.ruleBook = ruleBook; }
+      if (i18n !== null) {
+        const newIntl = { ...(notion.i18n !== null ? JSON.parse(notion.i18n) : {}) };
+
+        Object.keys(i18n).forEach((lang) => {
+          newIntl[lang] = i18n[lang].contentString;
+        });
+
+        notion.i18n = JSON.stringify(newIntl);
+      }
       notion.save()
         .then(() => {
           res.send({ message: 'Notion was updated successfully!', notion });
@@ -131,6 +144,19 @@ const deleteNotionByRuleBookId = (req: Request, res: Response): void => {
     });
 };
 
+interface CuratedINotion {
+  i18n: Record<string, any> | null
+  ruleBook: INotion
+}
+
+const curateNotion = (notion: INotion): Record<string, any> => {
+  if (notion.i18n === null) { return notion; }
+  return {
+    ...notion,
+    i18n: JSON.parse(notion.i18n)
+  };
+};
+
 const findSingle = (req: Request, res: Response): void => {
   const {
     notionId
@@ -140,13 +166,30 @@ const findSingle = (req: Request, res: Response): void => {
     return;
   }
   findNotionById(notionId)
-    .then((notion) => res.send(notion))
+    .then((notion) => {
+      const sentObj = {
+        notion,
+        i18n: curateNotion(notion)
+      };
+      res.send(sentObj);
+    })
     .catch((err) => res.status(404).send(err));
 };
 
 const findAll = (req: Request, res: Response): void => {
   findNotions()
-    .then((notions) => res.send(notions))
+    .then((notions) => {
+      const curatedRuleBooks: CuratedINotion[] = [];
+
+      notions.forEach((ruleBook) => {
+        curatedRuleBooks.push({
+          ruleBook,
+          i18n: curateNotion(ruleBook)
+        });
+      });
+
+      res.send(curatedRuleBooks);
+    })
     .catch((err) => res.status(500).send(gemServerError(err)));
 };
 

@@ -92,6 +92,7 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className }) => {
         <div className="menubar__basics__marks">
           <Ap className="menubar__titles">{t('richTextElement.textTitle', { ns: 'components' })}</Ap>
           <Button
+            size="small"
             onClick={() => editor.chain().focus().toggleBold().run()}
             disabled={
               !editor.can()
@@ -106,6 +107,7 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className }) => {
             {t('richTextElement.bold', { ns: 'components' })}
           </Button>
           <Button
+            size="small"
             onClick={() => editor.chain().focus().toggleItalic().run()}
             disabled={
               !editor.can()
@@ -123,30 +125,35 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className }) => {
         <div className="menubar__basics__nodes">
           <Ap className="menubar__titles">Paragraphs</Ap>
           <Button
+              size="small"
               onClick={() => editor.chain().focus().setParagraph().run()}
               active={editor.isActive('paragraph')}
             >
             {t('richTextElement.paragraph', { ns: 'components' })}
           </Button>
           <Button
+            size="small"
             onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
             active={editor.isActive('heading', { level: 1 })}
           >
             {t('richTextElement.h1', { ns: 'components' })}
           </Button>
           <Button
+            size="small"
             onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
             active={editor.isActive('heading', { level: 2 })}
           >
             {t('richTextElement.h2', { ns: 'components' })}
           </Button>
           <Button
+            size="small"
             onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
             active={editor.isActive('heading', { level: 3 })}
           >
             {t('richTextElement.h3', { ns: 'components' })}
           </Button>
           <Button
+            size="small"
             onClick={() => editor.chain().focus().toggleBulletList().run()}
             active={editor.isActive('bulletList')}
           >
@@ -156,41 +163,49 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className }) => {
         <div className="menubar__basics__nodes">
           <Ap className="menubar__titles">Table</Ap>
           <Button
+            size="small"
             onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
           >
             {t('richTextElement.table.new', { ns: 'components' })}
           </Button>
           <Button
+            size="small"
             onClick={() => editor.chain().focus().deleteTable().run()}
           >
             {t('richTextElement.table.del', { ns: 'components' })}
           </Button>
           <Button
+            size="small"
             onClick={() => editor.chain().focus().addColumnAfter().run()}
           >
             {t('richTextElement.table.newcol', { ns: 'components' })}
           </Button>
           <Button
+            size="small"
             onClick={() => editor.chain().focus().deleteColumn().run()}
           >
             {t('richTextElement.table.delcol', { ns: 'components' })}
           </Button>
           <Button
+            size="small"
             onClick={() => editor.chain().focus().addRowAfter().run()}
           >
             {t('richTextElement.table.newrow', { ns: 'components' })}
           </Button>
           <Button
+            size="small"
             onClick={() => editor.chain().focus().deleteRow().run()}
           >
             {t('richTextElement.table.delrow', { ns: 'components' })}
           </Button>
           <Button
+            size="small"
             onClick={() => editor.chain().focus().mergeCells().run()}
           >
             {t('richTextElement.table.merge', { ns: 'components' })}
           </Button>
           <Button
+            size="small"
             onClick={() => editor.chain().focus().splitCell().run()}
           >
             {t('richTextElement.table.split', { ns: 'components' })}

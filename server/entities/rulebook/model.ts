@@ -6,6 +6,8 @@ interface IRuleBook {
   title: string
   /** A summary of the ruleBook */
   summary: string
+  /** The internationnal content, as a json, stringified */
+  i18n: string
   /** The rulebook type */
   type: ObjectId | null
   /** When the ruleBook was created */
@@ -19,6 +21,7 @@ interface HydratedIRuleBook extends Omit<HydratedDocument<IRuleBook>, 'type'> {
 const ruleBookSchema = new Schema<IRuleBook>({
   title: String,
   summary: String,
+  i18n: String,
   type: {
     type: Schema.Types.ObjectId,
     ref: 'RuleBookType'

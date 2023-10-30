@@ -40,14 +40,16 @@
 
   // Sizes -----------------------------------
   &--medium {
+    height: 40px;
+
     .button__content {
-      font-size: 1.2rem;
-      padding: .8rem 1rem;
+      font-size: 1.4rem;
+      padding: .8rem 2rem;
       padding-right: .5rem;
     }
 
     &.button--noicon .button__content {
-      padding-right: 1rem;
+      padding-right: 2rem;
     }
 
     &.button--notext {
@@ -56,14 +58,16 @@
   }
 
   &--small {
+    height: 30px;
+
     .button__content {
-      font-size: 1rem;
-      padding: .6rem .5rem;
+      font-size: 1.2rem;
+      padding: .6rem 1rem;
       padding-right: .2rem;
     }
 
     &.button--noicon .button__content {
-      padding-right: .5rem;
+      padding-right: 1rem;
     }
 
     &.button--notext {
@@ -107,5 +111,11 @@
     --button-border-hover: var(--tertiary);
     --button-fill-hover: var(--tertiary);
     --button-text-hover: var(--tertiary-dark);
+  }
+
+  // Others ----------------------------------
+  &--disabled {
+    opacity: .6;
+    pointer-events: none;
   }
 }

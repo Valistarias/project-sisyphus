@@ -48,6 +48,7 @@
     "react-hook-form": "^7.47.0",
     "react-i18next": "^13.3.1",
     "react-router-dom": "^6.17.0",
+    "react-select": "^5.7.7",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4"
   },

@@ -41,7 +41,9 @@ const findRuleBookById = async (id: string): Promise<HydratedIRuleBook> => await
 const create = (req: Request, res: Response): void => {
   const {
     title,
-    summary
+    summary,
+    type,
+    i18n = null
   } = req.body;
   if (title === undefined || summary === undefined) {
     res.status(400).send(gemInvalidField('RuleBook'));
@@ -49,13 +51,16 @@ const create = (req: Request, res: Response): void => {
   }
   const ruleBook = new RuleBook({
     title,
-    summary
+    summary,
+    type
   });
+
+  if (i18n !== null) { ruleBook.i18n = JSON.stringify(i18n); }
 
   ruleBook
     .save()
     .then(() => {
-      res.send({ message: 'RuleBook was registered successfully!' });
+      res.send(ruleBook);
     })
     .catch((err: Error) => {
       res.status(500).send(gemServerError(err));
@@ -66,7 +71,8 @@ const update = (req: Request, res: Response): void => {
   const {
     id,
     title = null,
-    summary = null
+    summary = null,
+    i18n
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('RuleBook ID'));
@@ -76,6 +82,17 @@ const update = (req: Request, res: Response): void => {
     .then((ruleBook) => {
       if (title !== null) { ruleBook.title = title; }
       if (summary !== null) { ruleBook.summary = summary; }
+
+      if (i18n !== null) {
+        const newIntl = { ...(ruleBook.i18n !== null ? JSON.parse(ruleBook.i18n) : {}) };
+
+        Object.keys(i18n).forEach((lang) => {
+          newIntl[lang] = i18n[lang].contentString;
+        });
+
+        ruleBook.i18n = JSON.stringify(newIntl);
+      }
+
       ruleBook.save()
         .then(() => {
           res.send({ message: 'RuleBook was updated successfully!', ruleBook });
@@ -106,6 +123,16 @@ const deleteRuleBook = (req: Request, res: Response): void => {
     });
 };
 
+interface CuratedIRuleBook {
+  i18n: Record<string, any> | null
+  ruleBook: HydratedIRuleBook
+}
+
+const curateRuleBook = (ruleBook: HydratedIRuleBook): Record<string, any> => {
+  if (ruleBook.i18n === null) { return {}; }
+  return JSON.parse(ruleBook.i18n);
+};
+
 const findSingle = (req: Request, res: Response): void => {
   const {
     ruleBookId
@@ -115,13 +142,30 @@ const findSingle = (req: Request, res: Response): void => {
     return;
   }
   findRuleBookById(ruleBookId)
-    .then((ruleBook) => res.send(ruleBook))
+    .then((ruleBook) => {
+      const sentObj = {
+        ruleBook,
+        i18n: curateRuleBook(ruleBook)
+      };
+      res.send(sentObj);
+    })
     .catch((err) => res.status(404).send(err));
 };
 
 const findAll = (req: Request, res: Response): void => {
   findRuleBooks()
-    .then((ruleBooks) => res.send(ruleBooks))
+    .then((ruleBooks) => {
+      const curatedRuleBooks: CuratedIRuleBook[] = [];
+
+      ruleBooks.forEach((ruleBook) => {
+        curatedRuleBooks.push({
+          ruleBook,
+          i18n: curateRuleBook(ruleBook)
+        });
+      });
+
+      res.send(curatedRuleBooks);
+    })
     .catch((err) => res.status(500).send(gemServerError(err)));
 };
 

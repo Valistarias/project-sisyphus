@@ -4,6 +4,11 @@
 
 /* stylelint-disable-next-line selector-max-id */
 html, body, #root, .main {
+  min-height: 100%;
+}
+
+/* stylelint-disable-next-line selector-max-id */
+html, body, #root {
   height: 100%;
 }
 
@@ -23,9 +28,10 @@ body {
 
   &__content {
     margin: 0 auto;
-    margin-top: 6rem;
+    margin-top: 10rem;
     max-width: 1200px;
     padding: 0 40px;
+    padding-bottom: 6rem;
     width: 100%;
   }
 

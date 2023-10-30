@@ -13,6 +13,8 @@ interface INotion {
    * (if no rulebook defined, this is a global notion)
   */
   ruleBook: ObjectId | null
+  /** The internationnal content, as a json, stringified */
+  i18n: string
   /** When the notion was created */
   createdAt: Date
 }
@@ -21,6 +23,7 @@ const notionSchema = new Schema<INotion>({
   title: String,
   short: String,
   text: String,
+  i18n: String,
   ruleBook: {
     type: Schema.Types.ObjectId,
     ref: 'RuleBook',

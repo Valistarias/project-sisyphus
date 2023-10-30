@@ -16,7 +16,8 @@ import {
   NewPassPage,
   AdminPage,
   AdminRuleBooksPage,
-  AdminNewRuleBooksPage
+  AdminNewRuleBookPage,
+  AdminEditRuleBookPage
 } from './pages';
 import { useGlobalVars } from './providers/globalVars';
 
@@ -76,7 +77,11 @@ const App: FC = () => {
         },
         {
           path: '/admin/rulebook/new',
-          element: <AdminNewRuleBooksPage />
+          element: <AdminNewRuleBookPage />
+        },
+        {
+          path: '/admin/rulebook/:id',
+          element: <AdminEditRuleBookPage />
         }
       ]
     }
