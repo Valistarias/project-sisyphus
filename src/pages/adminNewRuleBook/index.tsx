@@ -70,7 +70,7 @@ const AdminNewRuleBooks: FC = () => {
         summary: html,
         i18n
       })
-        .then((rulebook) => {
+        .then((ruleBook) => {
           const newId = getNewId();
           createAlert({
             key: newId,
@@ -80,11 +80,11 @@ const AdminNewRuleBooks: FC = () => {
                 id={newId}
                 timer={5}
               >
-                <Ap>{t('adminRuleBooks.successCreate', { ns: 'pages' })}</Ap>
+                <Ap>{t('adminNewRuleBook.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
             )
           });
-          navigate(`/admin/rulebook/${rulebook._id}`);
+          navigate(`/admin/ruleBook/${ruleBook._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;
@@ -197,7 +197,7 @@ const AdminNewRuleBooks: FC = () => {
         onClick={onSaveRuleBook}
         disabled={error !== ''}
       >
-        Create Book
+        {t('adminNewRuleBook.button', { ns: 'pages' })}
       </Button>
     </div>
   );

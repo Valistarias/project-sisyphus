@@ -17,7 +17,9 @@ import {
   AdminPage,
   AdminRuleBooksPage,
   AdminNewRuleBookPage,
-  AdminEditRuleBookPage
+  AdminEditRuleBookPage,
+  AdminNewNotionPage,
+  AdminEditNotionPage
 } from './pages';
 import { useGlobalVars } from './providers/globalVars';
 
@@ -82,6 +84,14 @@ const App: FC = () => {
         {
           path: '/admin/rulebook/:id',
           element: <AdminEditRuleBookPage />
+        },
+        {
+          path: '/admin/notion/new',
+          element: <AdminNewNotionPage />
+        },
+        {
+          path: '/admin/notion/:id',
+          element: <AdminEditNotionPage />
         }
       ]
     }

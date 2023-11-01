@@ -71,6 +71,7 @@ const update = (req: Request, res: Response): void => {
   const {
     id,
     title = null,
+    type = null,
     summary = null,
     i18n
   } = req.body;
@@ -82,12 +83,13 @@ const update = (req: Request, res: Response): void => {
     .then((ruleBook) => {
       if (title !== null) { ruleBook.title = title; }
       if (summary !== null) { ruleBook.summary = summary; }
+      if (type !== null) { ruleBook.type = type; }
 
       if (i18n !== null) {
-        const newIntl = { ...(ruleBook.i18n !== null ? JSON.parse(ruleBook.i18n) : {}) };
+        const newIntl = { ...(ruleBook.i18n !== null && ruleBook.i18n !== '' ? JSON.parse(ruleBook.i18n) : {}) };
 
         Object.keys(i18n).forEach((lang) => {
-          newIntl[lang] = i18n[lang].contentString;
+          newIntl[lang] = i18n[lang];
         });
 
         ruleBook.i18n = JSON.stringify(newIntl);
@@ -129,7 +131,7 @@ interface CuratedIRuleBook {
 }
 
 const curateRuleBook = (ruleBook: HydratedIRuleBook): Record<string, any> => {
-  if (ruleBook.i18n === null) { return {}; }
+  if (ruleBook.i18n === null || ruleBook.i18n === '') { return {}; }
   return JSON.parse(ruleBook.i18n);
 };
 
@@ -149,7 +151,9 @@ const findSingle = (req: Request, res: Response): void => {
       };
       res.send(sentObj);
     })
-    .catch((err) => res.status(404).send(err));
+    .catch((err) => {
+      res.status(404).send(err);
+    });
 };
 
 const findAll = (req: Request, res: Response): void => {

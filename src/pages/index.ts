@@ -9,6 +9,8 @@ import AdminPage from './admin';
 import AdminRuleBooksPage from './adminRuleBooks';
 import AdminNewRuleBookPage from './adminNewRuleBook';
 import AdminEditRuleBookPage from './adminEditRuleBook';
+import AdminNewNotionPage from './adminNewNotion';
+import AdminEditNotionPage from './adminEditNotion';
 
 export {
   HomePage,
@@ -21,5 +23,7 @@ export {
   AdminPage,
   AdminRuleBooksPage,
   AdminNewRuleBookPage,
-  AdminEditRuleBookPage
+  AdminEditRuleBookPage,
+  AdminNewNotionPage,
+  AdminEditNotionPage
 };

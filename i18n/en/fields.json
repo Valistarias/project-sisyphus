@@ -27,5 +27,19 @@
   },
   "ruleBookSummary": {
     "title": "RuleBook Intro"
+  },
+  "nameNotion": {
+    "required": "A Notion Name is required",
+    "placeholder": "Notion Name..."
+  },
+  "typeNotion": {
+    "required": "A Rulebook need to be linked to this Notion",
+    "placeholder": "Linked Rulebook..."
+  },
+  "notionShort": {
+    "title": "Notion Summary"
+  },
+  "notionText": {
+    "title": "Notion Content"
   }
 }

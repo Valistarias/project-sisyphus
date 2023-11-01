@@ -1,4 +1,5 @@
-import { model, type Model, Schema, type ObjectId } from 'mongoose';
+import { model, type Model, Schema, type ObjectId, type HydratedDocument } from 'mongoose';
+import { type IRuleBook } from '../ruleBook/model';
 
 interface INotion {
   /** The title of the notion */
@@ -10,13 +11,16 @@ interface INotion {
   /**
    * The rulebook associated with this notion
    * (you need to have unlocked this rulebook to see this notion)
-   * (if no rulebook defined, this is a global notion)
   */
-  ruleBook: ObjectId | null
+  ruleBook: ObjectId
   /** The internationnal content, as a json, stringified */
   i18n: string
   /** When the notion was created */
   createdAt: Date
+}
+
+interface HydratedNotion extends Omit<HydratedDocument<INotion>, 'ruleBook'> {
+  ruleBook: IRuleBook
 }
 
 const notionSchema = new Schema<INotion>({
@@ -26,8 +30,7 @@ const notionSchema = new Schema<INotion>({
   i18n: String,
   ruleBook: {
     type: Schema.Types.ObjectId,
-    ref: 'RuleBook',
-    default: null
+    ref: 'RuleBook'
   },
   createdAt: {
     type: Date,
@@ -37,4 +40,4 @@ const notionSchema = new Schema<INotion>({
 
 const NotionModel = (): Model<INotion> => model('Notion', notionSchema);
 
-export { type INotion, NotionModel };
+export { type INotion, type HydratedNotion, NotionModel };

@@ -1,13 +1,14 @@
-import Entity from './entity';
-
 import axios from 'axios';
+
+import { type ICuratedNotion } from '../../interfaces';
+import Entity from './entity';
 
 interface INotionsPayload {
   notionId: string
 };
 
 export default class Notions extends Entity {
-  get: (payload: INotionsPayload) => Promise<string>;
+  get: (payload: INotionsPayload) => Promise<ICuratedNotion>;
 
   constructor () {
     super('notions');

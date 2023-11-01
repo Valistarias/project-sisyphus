@@ -22,6 +22,13 @@ export interface IUser {
   }>
 }
 
+export interface IRuleBookType {
+  /** The ID of the rulebook type */
+  _id: string
+  /** The name of the rulebook type */
+  name: string
+}
+
 export interface IRuleBook {
   /** The ID of the rulebook */
   _id: string
@@ -43,9 +50,24 @@ export interface ICuratedRuleBook {
   ruleBook: IRuleBook
 }
 
-export interface IRuleBookType {
-  /** The ID of the rulebook type */
+export interface INotion {
+  /** The ID of the notion */
   _id: string
-  /** The name of the rulebook type */
-  name: string
+  /** The title of the notion */
+  title: string
+  /** The short version of the notion */
+  short: string
+  /** The content of the notion */
+  text: string
+  /** The rulebook associated with this notion */
+  ruleBook: IRuleBook
+  /** The internationalization of the notion */
+  i18n: string
+  /** When the notion was created */
+  createdAt: string
+}
+
+export interface ICuratedNotion {
+  i18n: Record<string, any> | null
+  notion: INotion
 }

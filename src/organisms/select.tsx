@@ -1,4 +1,4 @@
-import React, { type FC } from 'react';
+import React, { type FC, useState, useEffect } from 'react';
 import Select, { components, type OptionProps } from 'react-select';
 
 import { useTranslation } from 'react-i18next';
@@ -19,7 +19,7 @@ interface IAp {
   /** The options for the select */
   options: ISingleValueSelect[]
   /** When an optiojn is selected */
-  selected?: ISingleValueSelect
+  selected?: ISingleValueSelect | null
   /** When the select change his value */
   onChange: (elt: ISingleValueSelect) => void
   /** Define the placeholder for this field */
@@ -64,11 +64,22 @@ const SmartSelect: FC<IAp> = ({
 }) => {
   const { t } = useTranslation();
 
+  const [selectedElt, setSelectedElt] = useState<ISingleValueSelect | null>(null);
+
+  useEffect(() => {
+    if (selected !== null) {
+      setSelectedElt(selected);
+    }
+  }, [selected]);
+
   return (
     <Select
+      onChange={(choice: ISingleValueSelect) => {
+        setSelectedElt(choice);
+        onChange(choice);
+      }}
+      value={selectedElt}
       options={options}
-      onChange={onChange}
-      defaultValue={selected}
       className={
         classTrim(`
         smartselect

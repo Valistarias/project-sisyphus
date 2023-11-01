@@ -2,19 +2,22 @@ import db from '../../models';
 
 import { type Request, type Response } from 'express';
 import { type HydratedDocument } from 'mongoose';
-import { type INotion } from './model';
+import { type HydratedNotion, type INotion } from './model';
 
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
+import { type IRuleBook } from '../ruleBook/model';
+
 const { Notion } = db;
 
-const findNotions = async (): Promise<Array<HydratedDocument<INotion>>> => await new Promise((resolve, reject) => {
+const findNotions = async (): Promise<HydratedNotion[]> => await new Promise((resolve, reject) => {
   Notion.find()
+    .populate<{ ruleBook: IRuleBook }>('ruleBook')
     .then(async (res) => {
       if (res === undefined || res === null) {
         reject(gemNotFound('Notions'));
       } else {
-        resolve(res);
+        resolve(res as HydratedNotion[]);
       }
     })
     .catch(async (err) => {
@@ -57,7 +60,7 @@ const create = (req: Request, res: Response): void => {
     ruleBook
   });
 
-  if (i18n !== null) { ruleBook.i18n = JSON.stringify(i18n); }
+  if (i18n !== null) { notion.i18n = JSON.stringify(i18n); }
 
   notion
     .save()
@@ -92,7 +95,7 @@ const update = (req: Request, res: Response): void => {
         const newIntl = { ...(notion.i18n !== null ? JSON.parse(notion.i18n) : {}) };
 
         Object.keys(i18n).forEach((lang) => {
-          newIntl[lang] = i18n[lang].contentString;
+          newIntl[lang] = i18n[lang];
         });
 
         notion.i18n = JSON.stringify(newIntl);
@@ -146,10 +149,10 @@ const deleteNotionByRuleBookId = (req: Request, res: Response): void => {
 
 interface CuratedINotion {
   i18n: Record<string, any> | null
-  ruleBook: INotion
+  notion: HydratedNotion
 }
 
-const curateNotion = (notion: INotion): Record<string, any> => {
+const curateNotion = (notion: HydratedNotion | HydratedDocument<INotion>): Record<string, any> => {
   if (notion.i18n === null) { return notion; }
   return {
     ...notion,
@@ -181,10 +184,10 @@ const findAll = (req: Request, res: Response): void => {
     .then((notions) => {
       const curatedRuleBooks: CuratedINotion[] = [];
 
-      notions.forEach((ruleBook) => {
+      notions.forEach((notion) => {
         curatedRuleBooks.push({
-          ruleBook,
-          i18n: curateNotion(ruleBook)
+          notion,
+          i18n: curateNotion(notion)
         });
       });
 

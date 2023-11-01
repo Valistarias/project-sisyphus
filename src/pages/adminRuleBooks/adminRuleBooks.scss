@@ -4,10 +4,23 @@
 
   &__content {
     display: flex;
+    gap: 2rem;
     margin-top: 2rem;
   }
 
   &__books {
     width: 100%;
+
+    &__list {
+      margin-bottom: 2rem;
+    }
+  }
+
+  &__rulebook-list {
+    &__elt {
+      border: 1px solid var(--primary-dark);
+      box-sizing: border-box;
+      padding: 2rem;
+    }
   }
 }

@@ -1,8 +1,8 @@
-import React, { useCallback, type FC, useEffect, useState, useRef } from 'react';
+import React, { useCallback, type FC, useEffect, useState, useRef, useMemo } from 'react';
 import i18next from 'i18next';
 
 import { useEditor } from '@tiptap/react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useApi } from '../../providers/api';
 import { useSystemAlerts } from '../../providers/systemAlerts';
@@ -18,7 +18,6 @@ import './adminEditRuleBook.scss';
 const AdminEditRuleBooks: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const navigate = useNavigate();
   const { createAlert, getNewId } = useSystemAlerts();
   const { id } = useParams();
 
@@ -31,6 +30,7 @@ const AdminEditRuleBooks: FC = () => {
   const [ruleBookSummaryFr, setRuleBookSummaryFr] = useState('');
 
   const [ruleBookTypes, setRuleBookTypes] = useState<ISingleValueSelect[]>([]);
+  const [sentApiType, setSentApiType] = useState<string | null>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
 
   const [error, setError] = useState('');
@@ -56,20 +56,21 @@ const AdminEditRuleBooks: FC = () => {
         html = null;
       }
 
-      let i18n: string | null = null;
+      let i18n: any | null = null;
 
       if (ruleBookNameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        const i18nContentFr = JSON.stringify({
-          title: ruleBookNameFr,
-          summary: htmlFr
-        });
-
-        i18n = JSON.stringify({
-          fr: i18nContentFr
-        });
+        i18n = {
+          fr: {
+            title: ruleBookNameFr,
+            summary: htmlFr
+          }
+        };
       }
 
+      console.log('selectedType', selectedType);
+
       api.ruleBooks.update({
+        id,
         title: ruleBookName,
         type: selectedType,
         summary: html,
@@ -85,14 +86,14 @@ const AdminEditRuleBooks: FC = () => {
                 id={newId}
                 timer={5}
               >
-                <Ap>{t('adminRuleBooks.successUpdate', { ns: 'pages' })}</Ap>
+                <Ap>{t('adminEditRuleBook.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
             )
           });
-          navigate(`/admin/rulebook/${rulebook._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;
+          console.log('data', data);
           if (data.code === 'CYPU-104') {
             setError(t(`serverErrors.${data.code}`, {
               field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize')
@@ -105,6 +106,7 @@ const AdminEditRuleBooks: FC = () => {
         });
     }
   }, [
+    id,
     introEditor,
     introFrEditor,
     api,
@@ -113,8 +115,7 @@ const AdminEditRuleBooks: FC = () => {
     t,
     ruleBookNameFr,
     getNewId,
-    createAlert,
-    navigate
+    createAlert
   ]);
 
   useEffect(() => {
@@ -154,6 +155,7 @@ const AdminEditRuleBooks: FC = () => {
         .then(({ ruleBook, i18n }: ICuratedRuleBook) => {
           setRuleBookName(ruleBook.title);
           setRuleBookSummary(ruleBook.summary);
+          setSentApiType(ruleBook.type._id);
           setSelectedType(ruleBook.type._id);
           if (i18n !== null) {
             setRuleBookNameFr(i18n.fr.title ?? '');
@@ -161,6 +163,7 @@ const AdminEditRuleBooks: FC = () => {
           }
         })
         .catch(({ response }) => {
+          console.log('response', response);
           const newId = getNewId();
           createAlert({
             key: newId,
@@ -176,7 +179,16 @@ const AdminEditRuleBooks: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, id, t]);
+  }, [api, createAlert, getNewId, ruleBookTypes, id, t]);
+
+  const sentApiTypeChoice = useMemo(() => {
+    if (sentApiType === null || ruleBookTypes.length === 0) { return null; }
+    const selectedfield = ruleBookTypes.find((ruleBookType) => ruleBookType.value === sentApiType);
+    if (selectedfield !== undefined) {
+      return selectedfield;
+    }
+    return null;
+  }, [sentApiType, ruleBookTypes]);
 
   return (
     <div className="adminEditRuleBook">
@@ -202,6 +214,7 @@ const AdminEditRuleBooks: FC = () => {
         <SmartSelect
           options={ruleBookTypes}
           placeholder={t('typeRuleBook.placeholder', { ns: 'fields' })}
+          selected={sentApiTypeChoice}
           onChange={(choice) => {
             setSelectedType(choice.value);
             setError('');
@@ -233,7 +246,7 @@ const AdminEditRuleBooks: FC = () => {
         onClick={onSaveRuleBook}
         disabled={error !== ''}
       >
-        Create Book
+        {t('adminEditRuleBook.button', { ns: 'pages' })}
       </Button>
     </div>
   );

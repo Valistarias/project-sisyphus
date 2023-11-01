@@ -39,6 +39,7 @@
     "saveType": "Save Rulebook Type",
     "updateType": "Update Rulebook Type",
     "abortSaveType": "Abort",
+    "editRuleBook": "Edit",
     "successCreateType": "Rulebook Type successfully created !",
     "successUpdateType": "Rulebook Type successfully updated !",
     "successDeleteType": "Rulebook Type successfully deleted !",
@@ -47,13 +48,29 @@
   "adminNewRuleBook": {
     "title": "New Rulebook",
     "i18n": "Internationalization - French",
+    "button": "Create Book",
     "i18nInfo": "Internationalization is optionnal, but we will need to fill all of them in the long run",
     "successCreate": "Rulebook successfully created !"
   },
   "adminEditRuleBook": {
     "title": "Edit Rulebook",
     "i18n": "Internationalization - French",
+    "button": "Update",
     "i18nInfo": "Internationalization is optionnal, but we will need to fill all of them in the long run",
     "successUpdate": "Rulebook successfully updated !"
+  },
+  "adminNewNotion": {
+    "title": "New Notion",
+    "i18n": "Internationalization - French",
+    "button": "Create Notion",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill all of them in the long run",
+    "successCreate": "Notion successfully created !"
+  },
+  "adminEditNotion": {
+    "title": "Edit Notion",
+    "i18n": "Internationalization - French",
+    "button": "Update",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill all of them in the long run",
+    "successUpdate": "Notion successfully updated !"
   }
 }
