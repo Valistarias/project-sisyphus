@@ -8,8 +8,8 @@ import { useApi } from '../../providers/api';
 import { useSystemAlerts } from '../../providers/systemAlerts';
 import { useConfirmMessage } from '../../providers/confirmMessage';
 
-import { Aerror, Ainput, Ap, Atitle } from '../../atoms';
-import { Button } from '../../molecules';
+import { Aerror, Ap, Atitle } from '../../atoms';
+import { Button, Input } from '../../molecules';
 import { Alert, type ISingleValueSelect, RichTextElement, SmartSelect, completeRichTextElementExtentions } from '../../organisms';
 
 import { type ICuratedRuleBook, type IRuleBookType } from '../../interfaces';
@@ -256,9 +256,10 @@ const AdminEditRuleBooks: FC = () => {
               : null
           }
           <div className="adminEditRuleBook__basics">
-            <Ainput
+            <Input
               type="text"
               placeholder={t('nameRuleBook.placeholder', { ns: 'fields' })}
+              label={t('nameRuleBook.placeholder', { ns: 'fields' })}
               onChange={(e) => {
                 setRuleBookName(e.target.value);
                 setError('');
@@ -284,9 +285,10 @@ const AdminEditRuleBooks: FC = () => {
           <Atitle className="adminEditRuleBook__intl" level={2}>{t('adminEditRuleBook.i18n', { ns: 'pages' })}</Atitle>
           <Ap className="adminEditRuleBook__intl-info">{t('adminEditRuleBook.i18nInfo', { ns: 'pages' })}</Ap>
           <div className="adminEditRuleBook__basics">
-            <Ainput
+            <Input
               type="text"
               placeholder={`${t('nameRuleBook.placeholder', { ns: 'fields' })} (FR)`}
+              label={`${t('nameRuleBook.placeholder', { ns: 'fields' })} (FR)`}
               onChange={(e) => {
                 setRuleBookNameFr(e.target.value);
               }}

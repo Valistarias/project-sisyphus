@@ -6,12 +6,12 @@ import Aimg from './aimg';
 import Atextarea from './atextarea';
 import Atitle from './atitle';
 import { Aicon } from './aicon';
-import Ainput from './ainput';
 import Aerror from './aerror';
 import Atable from './atable';
 import Atd from './atd';
 import Ath from './ath';
 import Atr from './atr';
+import Alabel from './alabel';
 
 export {
   Aul,
@@ -22,10 +22,10 @@ export {
   Aicon,
   Atextarea,
   Atitle,
-  Ainput,
   Aerror,
   Atable,
   Atd,
   Ath,
-  Atr
+  Atr,
+  Alabel
 };

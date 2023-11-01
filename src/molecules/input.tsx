@@ -5,8 +5,9 @@ import { classTrim } from '../utils';
 import { type ChangeHandler } from 'react-hook-form';
 
 import './ainput.scss';
+import { Alabel } from '../atoms';
 
-interface IAinput {
+interface IInput {
   /** The controlled element for react hook form */
   registered?: {
     onChange: ChangeHandler
@@ -24,6 +25,8 @@ interface IAinput {
   className?: string
   /** The placeholder of the Textarea element */
   placeholder?: string
+  /** The label, if any */
+  label?: string
   /** Is the field editable */
   readOnly?: boolean
   /** Is the field hidden */
@@ -36,38 +39,50 @@ interface IAinput {
   value?: string
 }
 
-const Ainput: FC<IAinput> = ({
+const Input: FC<IInput> = ({
   registered,
   type = 'text',
   theme = 'primary',
   size = 'medium',
   className,
   placeholder,
+  label,
   readOnly,
   hidden,
   autoComplete,
   onChange,
   value
 }) => (
-  <input
-    type={type}
-    readOnly={readOnly}
-    hidden={hidden}
-    placeholder={placeholder}
-    className={
-      classTrim(`
-        ainput
-        ainput--${theme}
-        ainput--${size}
-        ${readOnly === true ? 'ainput--readonly' : ''}
-        ${className ?? ''}
-      `)
-    }
-    autoComplete={autoComplete ?? undefined}
-    onChange={onChange}
-    value={value}
-    { ...registered }
-  />
+  <>
+    {label !== undefined
+      ? (
+      <Alabel
+        htmlFor={registered?.name}
+      >
+        {label}
+      </Alabel>
+        )
+      : null}
+    <input
+      type={type}
+      readOnly={readOnly}
+      hidden={hidden}
+      placeholder={placeholder}
+      className={
+        classTrim(`
+          ainput
+          ainput--${theme}
+          ainput--${size}
+          ${readOnly === true ? 'ainput--readonly' : ''}
+          ${className ?? ''}
+        `)
+      }
+      autoComplete={autoComplete ?? undefined}
+      onChange={onChange}
+      value={value}
+      { ...registered }
+    />
+  </>
 );
 
-export default Ainput;
+export default Input;
