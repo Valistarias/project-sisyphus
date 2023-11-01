@@ -27,6 +27,7 @@ body {
   width: 100%;
 
   &__content {
+    box-sizing: border-box;
     margin: 0 auto;
     margin-top: 10rem;
     max-width: 1200px;

@@ -37,6 +37,13 @@
     }
   }
 
+  &--small {
+    .richTextElt__editor{
+      max-height: 30rem;
+      overflow-y: auto;
+    }
+  }
+
   .ProseMirror-gapcursor::after {
     border-top: 1px solid var(--tertiary);
   }

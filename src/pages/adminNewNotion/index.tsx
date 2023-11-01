@@ -197,7 +197,7 @@ const AdminNewNotions: FC = () => {
         />
       </div>
       <div className="adminNewNotion__details">
-        <RichTextElement title={t('notionShort.title', { ns: 'fields' })} editor={shortEditor} rawStringContent={notionShort} />
+        <RichTextElement title={t('notionShort.title', { ns: 'fields' })} editor={shortEditor} rawStringContent={notionShort} small />
         <RichTextElement title={t('notionText.title', { ns: 'fields' })} editor={textEditor} rawStringContent={notionText} />
       </div>
 
@@ -215,7 +215,7 @@ const AdminNewNotions: FC = () => {
         />
       </div>
       <div className="adminNewNotion__details">
-        <RichTextElement title={`${t('notionShort.title', { ns: 'fields' })} (FR)`} editor={shortFrEditor} rawStringContent={notionShortFr} />
+        <RichTextElement title={`${t('notionShort.title', { ns: 'fields' })} (FR)`} editor={shortFrEditor} rawStringContent={notionShortFr} small />
         <RichTextElement title={`${t('notionText.title', { ns: 'fields' })} (FR)`} editor={textFrEditor} rawStringContent={notionTextFr} />
       </div>
       <Button

@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useApi } from '../../providers/api';
 import { useSystemAlerts } from '../../providers/systemAlerts';
+import { useConfirmMessage } from '../../providers/confirmMessage';
 
 import { Aerror, Ainput, Ap, Atitle } from '../../atoms';
 import { Button } from '../../molecules';
@@ -20,6 +21,7 @@ const AdminEditRuleBooks: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { id } = useParams();
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage();
 
   const calledApi = useRef(false);
 
@@ -66,8 +68,6 @@ const AdminEditRuleBooks: FC = () => {
           }
         };
       }
-
-      console.log('selectedType', selectedType);
 
       api.ruleBooks.update({
         id,
@@ -118,6 +118,22 @@ const AdminEditRuleBooks: FC = () => {
     createAlert
   ]);
 
+  const onAskDelete = useCallback(() => {
+    setConfirmContent({
+      title: 'Humm',
+      text: 'Are you sure you wanna do this ?',
+      confirmCta: 'Yeah'
+    }, (evtId: string) => {
+      const confirmDelete = ({ detail }): void => {
+        if (detail.proceed) {
+          console.log('proceeding...');
+        }
+        ConfMessageEvent.removeEventListener(evtId, confirmDelete);
+      };
+      ConfMessageEvent.addEventListener(evtId, confirmDelete);
+    });
+  }, [setConfirmContent, ConfMessageEvent]);
+
   useEffect(() => {
     if (api !== undefined && id !== undefined) {
       api.ruleBookTypes.getAll()
@@ -163,7 +179,6 @@ const AdminEditRuleBooks: FC = () => {
           }
         })
         .catch(({ response }) => {
-          console.log('response', response);
           const newId = getNewId();
           createAlert({
             key: newId,
@@ -192,7 +207,15 @@ const AdminEditRuleBooks: FC = () => {
 
   return (
     <div className="adminEditRuleBook">
-      <Atitle level={1}>{t('adminEditRuleBook.title', { ns: 'pages' })}</Atitle>
+      <div className="adminEditRuleBook__head">
+        <Atitle level={1}>{t('adminEditRuleBook.title', { ns: 'pages' })}</Atitle>
+        <Button
+          onClick={onAskDelete}
+          theme="error"
+        >
+          {t('adminEditRuleBook.delete', { ns: 'pages' })}
+        </Button>
+      </div>
       {
         error !== ''
           ? (
@@ -223,7 +246,7 @@ const AdminEditRuleBooks: FC = () => {
         />
       </div>
       <div className="adminEditRuleBook__details">
-        <RichTextElement title={t('ruleBookSummary.title', { ns: 'fields' })} editor={introEditor} rawStringContent={ruleBookSummary} />
+        <RichTextElement title={t('ruleBookSummary.title', { ns: 'fields' })} editor={introEditor} rawStringContent={ruleBookSummary} small />
       </div>
 
       <Atitle className="adminEditRuleBook__intl" level={2}>{t('adminEditRuleBook.i18n', { ns: 'pages' })}</Atitle>
@@ -240,7 +263,7 @@ const AdminEditRuleBooks: FC = () => {
         />
       </div>
       <div className="adminEditRuleBook__details">
-        <RichTextElement title={`${t('ruleBookSummary.title', { ns: 'fields' })} (FR)`} editor={introFrEditor} rawStringContent={ruleBookSummaryFr} />
+        <RichTextElement title={`${t('ruleBookSummary.title', { ns: 'fields' })} (FR)`} editor={introFrEditor} rawStringContent={ruleBookSummaryFr} small />
       </div>
       <Button
         onClick={onSaveRuleBook}

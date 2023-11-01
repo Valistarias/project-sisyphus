@@ -169,6 +169,8 @@ interface IRichTextElement {
   readOnly?: boolean
   /** Is the text editor with all options ? */
   complete?: boolean
+  /** Is the text editor small in height ? */
+  small?: boolean
 }
 
 const RichTextElement: FC<IRichTextElement> = ({
@@ -176,7 +178,8 @@ const RichTextElement: FC<IRichTextElement> = ({
   title,
   rawStringContent,
   readOnly = false,
-  complete = false
+  complete = false,
+  small = false
 }) => {
   useEffect(() => {
     if (editor === null || rawStringContent === undefined) { return; }
@@ -191,6 +194,7 @@ const RichTextElement: FC<IRichTextElement> = ({
       className={
         classTrim(`
           richTextElt
+          ${small ? 'richTextElt--small' : ''}
           ${readOnly !== undefined && readOnly ? ' richTextElt--readOnly' : ''}
         `)
       }

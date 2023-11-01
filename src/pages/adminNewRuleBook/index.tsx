@@ -174,7 +174,7 @@ const AdminNewRuleBooks: FC = () => {
         />
       </div>
       <div className="adminNewRuleBook__details">
-        <RichTextElement title={t('ruleBookSummary.title', { ns: 'fields' })} editor={introEditor} rawStringContent={ruleBookSummary} />
+        <RichTextElement title={t('ruleBookSummary.title', { ns: 'fields' })} editor={introEditor} rawStringContent={ruleBookSummary} small />
       </div>
 
       <Atitle className="adminNewRuleBook__intl" level={2}>{t('adminNewRuleBook.i18n', { ns: 'pages' })}</Atitle>
@@ -191,7 +191,7 @@ const AdminNewRuleBooks: FC = () => {
         />
       </div>
       <div className="adminNewRuleBook__details">
-        <RichTextElement title={`${t('ruleBookSummary.title', { ns: 'fields' })} (FR)`} editor={introFrEditor} rawStringContent={ruleBookSummaryFr} />
+        <RichTextElement title={`${t('ruleBookSummary.title', { ns: 'fields' })} (FR)`} editor={introFrEditor} rawStringContent={ruleBookSummaryFr} small />
       </div>
       <Button
         onClick={onSaveRuleBook}

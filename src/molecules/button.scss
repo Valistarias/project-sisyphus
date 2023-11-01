@@ -1,22 +1,23 @@
 .button {
   align-items: center;
-  background: transparent;
+  background: var(--button-background);
   border: 1px solid var(--boneless);
   border: 1px solid var(--button-border);
   border-radius: 3px;
-  color: var(--tertiary);
+  color: var(--button-text-color);
   cursor: pointer;
   display: flex;
   fill: var(--button-fill);
   gap: 10px;
   padding: 0;
-  transition: border .15s ease;
+  transition: border .15s ease, background .15s ease;
 
   &.button--notext {
     border: 1px solid transparent;
   }
 
   &:hover {
+    background: var(--button-background-hover);
     border: 1px solid var(--button-border-hover);
 
     .button__content {
@@ -83,8 +84,11 @@
   // Themes ----------------------------------
   &--primary {
     --button-border: var(--primary-dark);
+    --button-background: transparent;
     --button-fill: var(--primary);
+    --button-text-color: var(--tertiary);
     --button-border-hover: var(--primary);
+    --button-background-hover: transparent;
     --button-fill-hover: var(--tertiary);
     --button-text-hover: var(--tertiary-dark);
 
@@ -99,18 +103,36 @@
 
   &--secondary {
     --button-border: var(--secondary-dark);
+    --button-background: transparent;
     --button-fill: var(--secondary);
+    --button-text-color: var(--tertiary);
     --button-border-hover: var(--secondary);
+    --button-background-hover: transparent;
     --button-fill-hover: var(--tertiary);
     --button-text-hover: var(--tertiary-dark);
   }
 
   &--tertiary {
     --button-border: var(--tertiary-dark);
+    --button-background: transparent;
     --button-fill: var(--tertiary);
+    --button-text-color: var(--tertiary);
     --button-border-hover: var(--tertiary);
+    --button-background-hover: transparent;
     --button-fill-hover: var(--tertiary);
     --button-text-hover: var(--tertiary-dark);
+  }
+
+  &--error {
+    --button-border: var(--red);
+    --button-background: var(--red);
+    --button-fill: var(--tertiary);
+    --button-text-color: var(--background-color);
+    --button-border-hover: var(--red);
+    --button-background-hover: transparent;
+    --button-fill-hover: var(--tertiary);
+    --button-text-hover: var(--red);
+    font-weight: bold;
   }
 
   // Others ----------------------------------

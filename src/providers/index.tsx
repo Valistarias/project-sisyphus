@@ -5,6 +5,7 @@ import { GlobalVarsProvider } from './globalVars';
 import { LangProvider } from './lang';
 import { ThemeProvider } from './theme';
 import { SystemAlertsProvider } from './systemAlerts';
+import { ConfirmMessageProvider } from './confirmMessage';
 
 interface ProviderProps {
   /** The childrens of the Providers element */
@@ -17,7 +18,9 @@ const Providers: FC<ProviderProps> = ({ children }) => (
         <GlobalVarsProvider>
           <ThemeProvider>
             <SystemAlertsProvider>
-              {children}
+              <ConfirmMessageProvider>
+                {children}
+              </ConfirmMessageProvider>
             </SystemAlertsProvider>
           </ThemeProvider>
         </GlobalVarsProvider>

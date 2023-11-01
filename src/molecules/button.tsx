@@ -12,7 +12,7 @@ interface IButton {
   /** The type of the Button element */
   type?: 'button' | 'submit'
   /** The theme of the button */
-  theme?: 'primary' | 'secondary' | 'tertiary'
+  theme?: 'primary' | 'secondary' | 'tertiary' | 'error'
   /** The size of the button */
   size?: 'medium' | 'small'
   /** The class of the Button element */
