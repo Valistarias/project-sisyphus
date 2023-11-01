@@ -46,7 +46,7 @@ export interface IRuleBook {
 }
 
 export interface ICuratedRuleBook {
-  i18n: Record<string, any> | null
+  i18n: Record<string, any> | Record<string, unknown>
   ruleBook: IRuleBook
 }
 
@@ -61,13 +61,11 @@ export interface INotion {
   text: string
   /** The rulebook associated with this notion */
   ruleBook: IRuleBook
-  /** The internationalization of the notion */
-  i18n: string
   /** When the notion was created */
   createdAt: string
 }
 
 export interface ICuratedNotion {
-  i18n: Record<string, any> | null
+  i18n: Record<string, any> | Record<string, unknown>
   notion: INotion
 }

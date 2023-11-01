@@ -17,6 +17,10 @@
   }
 
   &__rulebook-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
     &__elt {
       border: 1px solid var(--primary-dark);
       box-sizing: border-box;

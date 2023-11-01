@@ -14,7 +14,7 @@ interface INotion {
   */
   ruleBook: ObjectId
   /** The internationnal content, as a json, stringified */
-  i18n: string
+  i18n?: string
   /** When the notion was created */
   createdAt: Date
 }

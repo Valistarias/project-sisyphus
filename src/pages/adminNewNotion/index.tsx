@@ -1,8 +1,8 @@
-import React, { useCallback, type FC, useEffect, useState } from 'react';
+import React, { useCallback, type FC, useEffect, useState, useMemo, useRef } from 'react';
 import i18next from 'i18next';
 
 import { useEditor } from '@tiptap/react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useApi } from '../../providers/api';
 import { useSystemAlerts } from '../../providers/systemAlerts';
@@ -11,15 +11,20 @@ import { Aerror, Ainput, Ap, Atitle } from '../../atoms';
 import { Button } from '../../molecules';
 import { Alert, type ISingleValueSelect, RichTextElement, SmartSelect, completeRichTextElementExtentions } from '../../organisms';
 
-import { type IRuleBook } from '../../interfaces';
+import { type ICuratedRuleBook } from '../../interfaces';
 
 import './adminNewNotion.scss';
 
 const AdminNewNotions: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
+  const { search } = useLocation();
   const navigate = useNavigate();
   const { createAlert, getNewId } = useSystemAlerts();
+
+  const params = useMemo(() => new URLSearchParams(search), [search]);
+
+  const calledApi = useRef(false);
 
   const [notionName, setNotionName] = useState('');
   const [notionNameFr, setNotionNameFr] = useState('');
@@ -135,19 +140,20 @@ const AdminNewNotions: FC = () => {
   ]);
 
   useEffect(() => {
-    if (api !== undefined) {
+    if (api !== undefined && !calledApi.current) {
+      calledApi.current = true;
       api.ruleBooks.getAll()
-        .then((data: IRuleBook[]) => {
+        .then((data: ICuratedRuleBook[]) => {
           setRulebooks(
-            data.map((rulebook) => ({
-              value: rulebook._id,
+            data.map(({ ruleBook }) => ({
+              value: ruleBook._id,
               // TODO : Handle Internationalization
-              label: rulebook.title,
-              details: t(`rulebookNames.${rulebook.type.name}`, { count: 1 })
+              label: ruleBook.title,
+              details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 })
             }))
           );
         })
-        .catch(({ response }) => {
+        .catch((response) => {
           const newId = getNewId();
           createAlert({
             key: newId,
@@ -164,6 +170,15 @@ const AdminNewNotions: FC = () => {
         });
     }
   }, [api, createAlert, getNewId, t]);
+
+  const sentApiTypeChoice = useMemo(() => {
+    if (params.get('ruleBookId') === undefined || ruleBooks.length === 0) { return null; }
+    const selectedfield = ruleBooks.find((ruleBook) => ruleBook.value === params.get('ruleBookId'));
+    if (selectedfield !== undefined) {
+      return selectedfield;
+    }
+    return null;
+  }, [params, ruleBooks]);
 
   return (
     <div className="adminNewNotion">
@@ -189,10 +204,15 @@ const AdminNewNotions: FC = () => {
         <SmartSelect
           options={ruleBooks}
           placeholder={t('typeNotion.placeholder', { ns: 'fields' })}
+          selected={sentApiTypeChoice}
           onChange={(choice) => {
             setSelectedType(choice.value);
             setError('');
           }}
+          // onChange={(choice) => {
+          //   setSelectedType(choice.value);
+          //   setError('');
+          // }}
           className="adminNewNotion__basics__type"
         />
       </div>

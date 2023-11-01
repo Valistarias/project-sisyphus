@@ -92,7 +92,7 @@ const update = (req: Request, res: Response): void => {
       if (text !== null) { notion.text = text; }
       if (ruleBook !== null) { notion.ruleBook = ruleBook; }
       if (i18n !== null) {
-        const newIntl = { ...(notion.i18n !== null ? JSON.parse(notion.i18n) : {}) };
+        const newIntl = { ...(notion.i18n !== undefined ? JSON.parse(notion.i18n) : {}) };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -148,12 +148,12 @@ const deleteNotionByRuleBookId = (req: Request, res: Response): void => {
 };
 
 interface CuratedINotion {
-  i18n: Record<string, any> | null
+  i18n: Record<string, any> | Record<string, unknown>
   notion: HydratedNotion
 }
 
 const curateNotion = (notion: HydratedNotion | HydratedDocument<INotion>): Record<string, any> => {
-  if (notion.i18n === null) { return notion; }
+  if (notion.i18n === undefined) { return notion; }
   return {
     ...notion,
     i18n: JSON.parse(notion.i18n)

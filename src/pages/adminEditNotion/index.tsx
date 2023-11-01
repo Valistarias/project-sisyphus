@@ -187,7 +187,7 @@ const AdminEditNotions: FC = () => {
           setNotionShort(notion.short);
           setNotionText(notion.text);
           setSentApiRuleBook(notion.ruleBook._id);
-          if (i18n !== null) {
+          if (i18n.fr !== undefined) {
             setNotionNameFr(i18n.fr.title ?? '');
             setNotionShortFr(i18n.fr.short ?? '');
             setNotionTextFr(notion.text);

@@ -86,7 +86,7 @@ const update = (req: Request, res: Response): void => {
       if (type !== null) { ruleBook.type = type; }
 
       if (i18n !== null) {
-        const newIntl = { ...(ruleBook.i18n !== null && ruleBook.i18n !== '' ? JSON.parse(ruleBook.i18n) : {}) };
+        const newIntl = { ...(ruleBook.i18n !== null && ruleBook.i18n !== undefined && ruleBook.i18n !== '' ? JSON.parse(ruleBook.i18n) : {}) };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -126,12 +126,12 @@ const deleteRuleBook = (req: Request, res: Response): void => {
 };
 
 interface CuratedIRuleBook {
-  i18n: Record<string, any> | null
+  i18n: Record<string, any> | Record<string, unknown>
   ruleBook: HydratedIRuleBook
 }
 
 const curateRuleBook = (ruleBook: HydratedIRuleBook): Record<string, any> => {
-  if (ruleBook.i18n === null || ruleBook.i18n === '') { return {}; }
+  if (ruleBook.i18n === null || ruleBook.i18n === '' || ruleBook.i18n === undefined) { return {}; }
   return JSON.parse(ruleBook.i18n);
 };
 

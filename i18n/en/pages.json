@@ -55,6 +55,10 @@
   "adminEditRuleBook": {
     "title": "Edit Rulebook",
     "delete": "Delete Rulebook",
+    "notions": "Notions",
+    "createNotion": "New Notion",
+    "chapters": "Chapters",
+    "createChapter": "New Chapter",
     "i18n": "Internationalization - French",
     "button": "Update",
     "i18nInfo": "Internationalization is optionnal, but we will need to fill all of them in the long run",

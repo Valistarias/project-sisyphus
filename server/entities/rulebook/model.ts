@@ -7,7 +7,7 @@ interface IRuleBook {
   /** A summary of the ruleBook */
   summary: string
   /** The internationnal content, as a json, stringified */
-  i18n: string
+  i18n?: string
   /** The rulebook type */
   type: ObjectId | null
   /** When the ruleBook was created */

@@ -13,6 +13,20 @@
     }
   }
 
+  &__content {
+    display: flex;
+    flex-direction: row;
+    gap: 4rem;
+
+    &__right {
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      gap: 4rem;
+      width: 30rem;
+    }
+  }
+
   &__basics {
     display: flex;
     flex-direction: row;
@@ -44,5 +58,11 @@
 
   &__intl-info {
     margin-bottom: 4rem;
+  }
+
+  &__block-children {
+    .atitle {
+      margin-top: 0;
+    }
   }
 }

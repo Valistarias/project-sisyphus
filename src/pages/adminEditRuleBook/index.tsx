@@ -203,12 +203,12 @@ const AdminEditRuleBooks: FC = () => {
           setRuleBookSummary(ruleBook.summary);
           setSentApiType(ruleBook.type._id);
           setSelectedType(ruleBook.type._id);
-          if (i18n !== null) {
+          if (i18n.fr !== undefined) {
             setRuleBookNameFr(i18n.fr.title ?? '');
             setRuleBookSummaryFr(i18n.fr.summary ?? '');
           }
         })
-        .catch(({ response }) => {
+        .catch((res) => {
           const newId = getNewId();
           createAlert({
             key: newId,
@@ -246,61 +246,78 @@ const AdminEditRuleBooks: FC = () => {
           {t('adminEditRuleBook.delete', { ns: 'pages' })}
         </Button>
       </div>
-      {
-        error !== ''
-          ? (
-          <Aerror className="adminEditRuleBook__error">{error}</Aerror>
-            )
-          : null
-      }
-      <div className="adminEditRuleBook__basics">
-        <Ainput
-          type="text"
-          placeholder={t('nameRuleBook.placeholder', { ns: 'fields' })}
-          onChange={(e) => {
-            setRuleBookName(e.target.value);
-            setError('');
-          }}
-          value={ruleBookName}
-          className="adminEditRuleBook__basics__name"
-        />
-        <SmartSelect
-          options={ruleBookTypes}
-          placeholder={t('typeRuleBook.placeholder', { ns: 'fields' })}
-          selected={sentApiTypeChoice}
-          onChange={(choice) => {
-            setSelectedType(choice.value);
-            setError('');
-          }}
-          className="adminEditRuleBook__basics__type"
-        />
-      </div>
-      <div className="adminEditRuleBook__details">
-        <RichTextElement title={t('ruleBookSummary.title', { ns: 'fields' })} editor={introEditor} rawStringContent={ruleBookSummary} small />
-      </div>
+      <div className="adminEditRuleBook__content">
+        <div className="adminEditRuleBook__content__left">
+          {
+            error !== ''
+              ? (
+              <Aerror className="adminEditRuleBook__error">{error}</Aerror>
+                )
+              : null
+          }
+          <div className="adminEditRuleBook__basics">
+            <Ainput
+              type="text"
+              placeholder={t('nameRuleBook.placeholder', { ns: 'fields' })}
+              onChange={(e) => {
+                setRuleBookName(e.target.value);
+                setError('');
+              }}
+              value={ruleBookName}
+              className="adminEditRuleBook__basics__name"
+            />
+            <SmartSelect
+              options={ruleBookTypes}
+              placeholder={t('typeRuleBook.placeholder', { ns: 'fields' })}
+              selected={sentApiTypeChoice}
+              onChange={(choice) => {
+                setSelectedType(choice.value);
+                setError('');
+              }}
+              className="adminEditRuleBook__basics__type"
+            />
+          </div>
+          <div className="adminEditRuleBook__details">
+            <RichTextElement title={t('ruleBookSummary.title', { ns: 'fields' })} editor={introEditor} rawStringContent={ruleBookSummary} small />
+          </div>
 
-      <Atitle className="adminEditRuleBook__intl" level={2}>{t('adminEditRuleBook.i18n', { ns: 'pages' })}</Atitle>
-      <Ap className="adminEditRuleBook__intl-info">{t('adminEditRuleBook.i18nInfo', { ns: 'pages' })}</Ap>
-      <div className="adminEditRuleBook__basics">
-        <Ainput
-          type="text"
-          placeholder={`${t('nameRuleBook.placeholder', { ns: 'fields' })} (FR)`}
-          onChange={(e) => {
-            setRuleBookNameFr(e.target.value);
-          }}
-          value={ruleBookNameFr}
-          className="adminEditRuleBook__basics__name"
-        />
+          <Atitle className="adminEditRuleBook__intl" level={2}>{t('adminEditRuleBook.i18n', { ns: 'pages' })}</Atitle>
+          <Ap className="adminEditRuleBook__intl-info">{t('adminEditRuleBook.i18nInfo', { ns: 'pages' })}</Ap>
+          <div className="adminEditRuleBook__basics">
+            <Ainput
+              type="text"
+              placeholder={`${t('nameRuleBook.placeholder', { ns: 'fields' })} (FR)`}
+              onChange={(e) => {
+                setRuleBookNameFr(e.target.value);
+              }}
+              value={ruleBookNameFr}
+              className="adminEditRuleBook__basics__name"
+            />
+          </div>
+          <div className="adminEditRuleBook__details">
+            <RichTextElement title={`${t('ruleBookSummary.title', { ns: 'fields' })} (FR)`} editor={introFrEditor} rawStringContent={ruleBookSummaryFr} small />
+          </div>
+          <Button
+            onClick={onSaveRuleBook}
+            disabled={error !== ''}
+          >
+            {t('adminEditRuleBook.button', { ns: 'pages' })}
+          </Button>
+        </div>
+        <div className="adminEditRuleBook__content__right">
+          < div className="adminEditRuleBook__block-children">
+            <Atitle className="adminEditRuleBook__intl" level={2}>{t('adminEditRuleBook.notions', { ns: 'pages' })}</Atitle>
+            <Button
+              href={`/admin/notion/new?ruleBookId=${id}`}
+            >
+              {t('adminEditRuleBook.createNotion', { ns: 'pages' })}
+            </Button>
+          </div>
+          < div className="adminEditRuleBook__block-children">
+            <Atitle className="adminEditRuleBook__intl" level={2}>{t('adminEditRuleBook.chapters', { ns: 'pages' })}</Atitle>
+          </div>
+        </div>
       </div>
-      <div className="adminEditRuleBook__details">
-        <RichTextElement title={`${t('ruleBookSummary.title', { ns: 'fields' })} (FR)`} editor={introFrEditor} rawStringContent={ruleBookSummaryFr} small />
-      </div>
-      <Button
-        onClick={onSaveRuleBook}
-        disabled={error !== ''}
-      >
-        {t('adminEditRuleBook.button', { ns: 'pages' })}
-      </Button>
     </div>
   );
 };
