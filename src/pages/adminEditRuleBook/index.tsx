@@ -2,7 +2,7 @@ import React, { useCallback, type FC, useEffect, useState, useRef, useMemo } fro
 import i18next from 'i18next';
 
 import { useEditor } from '@tiptap/react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useApi } from '../../providers/api';
 import { useSystemAlerts } from '../../providers/systemAlerts';
@@ -22,6 +22,7 @@ const AdminEditRuleBooks: FC = () => {
   const { createAlert, getNewId } = useSystemAlerts();
   const { id } = useParams();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage();
+  const navigate = useNavigate();
 
   const calledApi = useRef(false);
 
@@ -119,20 +120,49 @@ const AdminEditRuleBooks: FC = () => {
   ]);
 
   const onAskDelete = useCallback(() => {
+    if (api === undefined) { return; }
     setConfirmContent({
-      title: 'Humm',
-      text: 'Are you sure you wanna do this ?',
-      confirmCta: 'Yeah'
+      title: t('adminEditRuleBook.confirmDeletion.title', { ns: 'pages' }),
+      text: t('adminEditRuleBook.confirmDeletion.text', { ns: 'pages', elt: ruleBookName }),
+      confirmCta: t('adminEditRuleBook.confirmDeletion.confirmCta', { ns: 'pages' })
     }, (evtId: string) => {
       const confirmDelete = ({ detail }): void => {
-        if (detail.proceed) {
-          console.log('proceeding...');
+        if (detail.proceed === true) {
+          api.ruleBooks.delete({ id })
+            .then(() => {
+              const newId = getNewId();
+              createAlert({
+                key: newId,
+                dom: (
+                  <Alert
+                    key={newId}
+                    id={newId}
+                    timer={5}
+                  >
+                    <Ap>{t('adminEditRuleBook.successDelete', { ns: 'pages' })}</Ap>
+                  </Alert>
+                )
+              });
+              navigate('/admin/rulebooks');
+            })
+            .catch(({ response }) => {
+              const { data } = response;
+              if (data.code === 'CYPU-104') {
+                setError(t(`serverErrors.${data.code}`, {
+                  field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize')
+                }));
+              } else {
+                setError(t(`serverErrors.${data.code}`, {
+                  field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize')
+                }));
+              }
+            });
         }
         ConfMessageEvent.removeEventListener(evtId, confirmDelete);
       };
       ConfMessageEvent.addEventListener(evtId, confirmDelete);
     });
-  }, [setConfirmContent, ConfMessageEvent]);
+  }, [api, setConfirmContent, ConfMessageEvent, id, getNewId, createAlert, t, navigate, ruleBookName]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined) {

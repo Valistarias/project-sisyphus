@@ -58,7 +58,13 @@
     "i18n": "Internationalization - French",
     "button": "Update",
     "i18nInfo": "Internationalization is optionnal, but we will need to fill all of them in the long run",
-    "successUpdate": "Rulebook successfully updated !"
+    "successUpdate": "Rulebook successfully updated !",
+    "successDelete": "Rulebook successfully deleted !",
+    "confirmDeletion": {
+      "title": "Rulebook Deletion",
+      "text": "Are you sure you want to delete {{elt}} ? All of the related pages and Notions will be deleted as well.",
+      "confirmCta": "Delete Rulebook"
+    }
   },
   "adminNewNotion": {
     "title": "New Notion",
