@@ -43,6 +43,8 @@ export interface IRuleBook {
   summary: string;
   /** When the rulebook was created */
   createdAt: string;
+  /** All the related Notions */
+  notions: INotion[];
 }
 
 export interface ICuratedRuleBook {

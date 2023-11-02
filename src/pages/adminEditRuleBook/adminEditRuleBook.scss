@@ -65,4 +65,17 @@
       margin-top: 0;
     }
   }
+
+  &__notion-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 2rem;
+
+    &__elt {
+      border: 1px solid var(--primary-dark);
+      box-sizing: border-box;
+      padding: 1rem;
+    }
+  }
 }

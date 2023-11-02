@@ -29,9 +29,8 @@ const findRuleBookById = async (id: string): Promise<HydratedIRuleBook> =>
     RuleBook.findById(id)
       .populate<{ type: IRuleBookType }>('type')
       .populate<{ notions: INotion[] }>({
-        path: 'jobs',
-        select: '_id job character value',
-        populate: 'job',
+        path: 'notions',
+        select: '_id title ruleBook',
       })
       .then(async (res) => {
         if (res === undefined || res === null) {

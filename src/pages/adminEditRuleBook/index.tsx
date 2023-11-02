@@ -8,7 +8,7 @@ import { useApi } from '../../providers/api';
 import { useSystemAlerts } from '../../providers/systemAlerts';
 import { useConfirmMessage } from '../../providers/confirmMessage';
 
-import { Aerror, Ap, Atitle } from '../../atoms';
+import { Aerror, Ali, Ap, Atitle, Aul } from '../../atoms';
 import { Button, Input } from '../../molecules';
 import {
   Alert,
@@ -18,7 +18,7 @@ import {
   completeRichTextElementExtentions,
 } from '../../organisms';
 
-import { type ICuratedRuleBook, type IRuleBookType } from '../../interfaces';
+import { type INotion, type ICuratedRuleBook, type IRuleBookType } from '../../interfaces';
 
 import './adminEditRuleBook.scss';
 
@@ -42,6 +42,8 @@ const AdminEditRuleBooks: FC = () => {
   const [sentApiType, setSentApiType] = useState<string | null>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
 
+  const [notionsData, setNotionsData] = useState<INotion[] | null>(null);
+
   const [error, setError] = useState('');
 
   const introEditor = useEditor({
@@ -51,6 +53,24 @@ const AdminEditRuleBooks: FC = () => {
   const introFrEditor = useEditor({
     extensions: completeRichTextElementExtentions,
   });
+
+  const notionsListDom = useMemo(() => {
+    if (notionsData === null || (notionsData.length === 0) === null) {
+      return null;
+    }
+    return (
+      <Aul className="adminEditRuleBook__notion-list" noPoints>
+        {notionsData.map((notion) => (
+          <Ali className="adminEditRuleBook__notion-list__elt" key={notion._id}>
+            <Atitle level={4}>{notion.title}</Atitle>
+            <Button size="small" href={`/admin/notion/${notion._id}`}>
+              {t('adminEditRuleBook.editNotion', { ns: 'pages' })}
+            </Button>
+          </Ali>
+        ))}
+      </Aul>
+    );
+  }, [notionsData, t]);
 
   const onSaveRuleBook = useCallback(
     (elt) => {
@@ -100,7 +120,6 @@ const AdminEditRuleBooks: FC = () => {
           })
           .catch(({ response }) => {
             const { data } = response;
-            console.log('data', data);
             if (data.code === 'CYPU-104') {
               setError(
                 t(`serverErrors.${data.code}`, {
@@ -193,7 +212,32 @@ const AdminEditRuleBooks: FC = () => {
   ]);
 
   useEffect(() => {
-    if (api !== undefined && id !== undefined) {
+    if (api !== undefined && id !== undefined && !calledApi.current) {
+      calledApi.current = true;
+      api.ruleBooks
+        .get({ ruleBookId: id })
+        .then(({ ruleBook, i18n }: ICuratedRuleBook) => {
+          setRuleBookName(ruleBook.title);
+          setRuleBookSummary(ruleBook.summary);
+          setSentApiType(ruleBook.type._id);
+          setSelectedType(ruleBook.type._id);
+          setNotionsData(ruleBook.notions);
+          if (i18n.fr !== undefined) {
+            setRuleBookNameFr(i18n.fr.title ?? '');
+            setRuleBookSummaryFr(i18n.fr.summary ?? '');
+          }
+        })
+        .catch((res) => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert key={newId} id={newId} timer={5}>
+                <Ap>{t('serverErrors.CYPU-301')}</Ap>
+              </Alert>
+            ),
+          });
+        });
       api.ruleBookTypes
         .getAll()
         .then((data: IRuleBookType[]) => {
@@ -206,35 +250,6 @@ const AdminEditRuleBooks: FC = () => {
           );
         })
         .catch(({ response }) => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
-        });
-    }
-  }, [api, createAlert, getNewId, id, t]);
-
-  useEffect(() => {
-    if (api !== undefined && id !== undefined && !calledApi.current) {
-      calledApi.current = true;
-      api.ruleBooks
-        .get({ ruleBookId: id })
-        .then(({ ruleBook, i18n }: ICuratedRuleBook) => {
-          setRuleBookName(ruleBook.title);
-          setRuleBookSummary(ruleBook.summary);
-          setSentApiType(ruleBook.type._id);
-          setSelectedType(ruleBook.type._id);
-          if (i18n.fr !== undefined) {
-            setRuleBookNameFr(i18n.fr.title ?? '');
-            setRuleBookSummaryFr(i18n.fr.summary ?? '');
-          }
-        })
-        .catch((res) => {
           const newId = getNewId();
           createAlert({
             key: newId,
@@ -333,16 +348,17 @@ const AdminEditRuleBooks: FC = () => {
         <div className="adminEditRuleBook__content__right">
           <div className="adminEditRuleBook__block-children">
             <Atitle className="adminEditRuleBook__intl" level={2}>
-              {t('adminEditRuleBook.notions', { ns: 'pages' })}
+              {t('adminEditRuleBook.chapters', { ns: 'pages' })}
             </Atitle>
-            <Button href={`/admin/notion/new?ruleBookId=${id}`}>
-              {t('adminEditRuleBook.createNotion', { ns: 'pages' })}
-            </Button>
           </div>
           <div className="adminEditRuleBook__block-children">
             <Atitle className="adminEditRuleBook__intl" level={2}>
-              {t('adminEditRuleBook.chapters', { ns: 'pages' })}
+              {t('adminEditRuleBook.notions', { ns: 'pages' })}
             </Atitle>
+            {notionsListDom ?? null}
+            <Button href={`/admin/notion/new?ruleBookId=${id}`}>
+              {t('adminEditRuleBook.createNotion', { ns: 'pages' })}
+            </Button>
           </div>
         </div>
       </div>
