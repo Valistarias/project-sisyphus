@@ -9,7 +9,13 @@ import { useSystemAlerts } from '../../providers/systemAlerts';
 
 import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input } from '../../molecules';
-import { Alert, type ISingleValueSelect, RichTextElement, SmartSelect, completeRichTextElementExtentions } from '../../organisms';
+import {
+  Alert,
+  type ISingleValueSelect,
+  RichTextElement,
+  SmartSelect,
+  completeRichTextElementExtentions,
+} from '../../organisms';
 
 import { type IRuleBookType } from '../../interfaces';
 
@@ -33,94 +39,101 @@ const AdminNewRuleBooks: FC = () => {
   const [error, setError] = useState('');
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions
+    extensions: completeRichTextElementExtentions,
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
+    extensions: completeRichTextElementExtentions,
   });
 
-  const onSaveRuleBook = useCallback((elt) => {
-    if (introEditor === null || introFrEditor === null || api === undefined) { return; }
-    if (ruleBookName === '') {
-      setError(t('nameRuleBook.required', { ns: 'fields' }));
-    } else if (selectedType === null) {
-      setError(t('typeRuleBook.required', { ns: 'fields' }));
-    } else {
-      let html: string | null = introEditor.getHTML();
-      const htmlFr = introFrEditor.getHTML();
-      if (html === '<p class="ap"></p>') {
-        html = null;
+  const onSaveRuleBook = useCallback(
+    (elt) => {
+      if (introEditor === null || introFrEditor === null || api === undefined) {
+        return;
       }
+      if (ruleBookName === '') {
+        setError(t('nameRuleBook.required', { ns: 'fields' }));
+      } else if (selectedType === null) {
+        setError(t('typeRuleBook.required', { ns: 'fields' }));
+      } else {
+        let html: string | null = introEditor.getHTML();
+        const htmlFr = introFrEditor.getHTML();
+        if (html === '<p class="ap"></p>') {
+          html = null;
+        }
 
-      let i18n: any | null = null;
+        let i18n: any | null = null;
 
-      if (ruleBookNameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: ruleBookNameFr,
-            summary: htmlFr
-          }
-        };
-      }
+        if (ruleBookNameFr !== '' || htmlFr !== '<p class="ap"></p>') {
+          i18n = {
+            fr: {
+              title: ruleBookNameFr,
+              summary: htmlFr,
+            },
+          };
+        }
 
-      api.ruleBooks.create({
-        title: ruleBookName,
-        type: selectedType,
-        summary: html,
-        i18n
-      })
-        .then((ruleBook) => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert
-                key={newId}
-                id={newId}
-                timer={5}
-              >
-                <Ap>{t('adminNewRuleBook.successCreate', { ns: 'pages' })}</Ap>
-              </Alert>
-            )
+        api.ruleBooks
+          .create({
+            title: ruleBookName,
+            type: selectedType,
+            summary: html,
+            i18n,
+          })
+          .then((ruleBook) => {
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{t('adminNewRuleBook.successCreate', { ns: 'pages' })}</Ap>
+                </Alert>
+              ),
+            });
+            navigate(`/admin/ruleBook/${ruleBook._id}`);
+          })
+          .catch(({ response }) => {
+            const { data } = response;
+            if (data.code === 'CYPU-104') {
+              setError(
+                t(`serverErrors.${data.code}`, {
+                  field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
+                })
+              );
+            } else {
+              setError(
+                t(`serverErrors.${data.code}`, {
+                  field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
+                })
+              );
+            }
           });
-          navigate(`/admin/ruleBook/${ruleBook._id}`);
-        })
-        .catch(({ response }) => {
-          const { data } = response;
-          if (data.code === 'CYPU-104') {
-            setError(t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize')
-            }));
-          } else {
-            setError(t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize')
-            }));
-          }
-        });
-    }
-  }, [
-    introEditor,
-    introFrEditor,
-    api,
-    ruleBookName,
-    selectedType,
-    t,
-    ruleBookNameFr,
-    getNewId,
-    createAlert,
-    navigate
-  ]);
+      }
+    },
+    [
+      introEditor,
+      introFrEditor,
+      api,
+      ruleBookName,
+      selectedType,
+      t,
+      ruleBookNameFr,
+      getNewId,
+      createAlert,
+      navigate,
+    ]
+  );
 
   useEffect(() => {
     if (api !== undefined) {
-      api.ruleBookTypes.getAll()
+      api.ruleBookTypes
+        .getAll()
         .then((data: IRuleBookType[]) => {
           setRuleBookTypes(
             data.map((ruleBookType) => ({
               value: ruleBookType._id,
               label: t(`ruleBookTypeNames.${ruleBookType.name}`, { count: 1 }),
-              details: ruleBookType.name
+              details: ruleBookType.name,
             }))
           );
         })
@@ -129,14 +142,10 @@ const AdminNewRuleBooks: FC = () => {
           createAlert({
             key: newId,
             dom: (
-              <Alert
-                key={newId}
-                id={newId}
-                timer={5}
-              >
+              <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
@@ -145,13 +154,7 @@ const AdminNewRuleBooks: FC = () => {
   return (
     <div className="adminNewRuleBook">
       <Atitle level={1}>{t('adminNewRuleBook.title', { ns: 'pages' })}</Atitle>
-      {
-        error !== ''
-          ? (
-          <Aerror className="adminNewRuleBook__error">{error}</Aerror>
-            )
-          : null
-      }
+      {error !== '' ? <Aerror className="adminNewRuleBook__error">{error}</Aerror> : null}
       <div className="adminNewRuleBook__basics">
         <Input
           type="text"
@@ -174,11 +177,20 @@ const AdminNewRuleBooks: FC = () => {
         />
       </div>
       <div className="adminNewRuleBook__details">
-        <RichTextElement label={t('ruleBookSummary.title', { ns: 'fields' })} editor={introEditor} rawStringContent={ruleBookSummary} small />
+        <RichTextElement
+          label={t('ruleBookSummary.title', { ns: 'fields' })}
+          editor={introEditor}
+          rawStringContent={ruleBookSummary}
+          small
+        />
       </div>
 
-      <Atitle className="adminNewRuleBook__intl" level={2}>{t('adminNewRuleBook.i18n', { ns: 'pages' })}</Atitle>
-      <Ap className="adminNewRuleBook__intl-info">{t('adminNewRuleBook.i18nInfo', { ns: 'pages' })}</Ap>
+      <Atitle className="adminNewRuleBook__intl" level={2}>
+        {t('adminNewRuleBook.i18n', { ns: 'pages' })}
+      </Atitle>
+      <Ap className="adminNewRuleBook__intl-info">
+        {t('adminNewRuleBook.i18nInfo', { ns: 'pages' })}
+      </Ap>
       <div className="adminNewRuleBook__basics">
         <Input
           type="text"
@@ -191,12 +203,14 @@ const AdminNewRuleBooks: FC = () => {
         />
       </div>
       <div className="adminNewRuleBook__details">
-        <RichTextElement label={`${t('ruleBookSummary.title', { ns: 'fields' })} (FR)`} editor={introFrEditor} rawStringContent={ruleBookSummaryFr} small />
+        <RichTextElement
+          label={`${t('ruleBookSummary.title', { ns: 'fields' })} (FR)`}
+          editor={introFrEditor}
+          rawStringContent={ruleBookSummaryFr}
+          small
+        />
       </div>
-      <Button
-        onClick={onSaveRuleBook}
-        disabled={error !== ''}
-      >
+      <Button onClick={onSaveRuleBook} disabled={error !== ''}>
         {t('adminNewRuleBook.button', { ns: 'pages' })}
       </Button>
     </div>

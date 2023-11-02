@@ -9,7 +9,13 @@ import { useSystemAlerts } from '../../providers/systemAlerts';
 
 import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input } from '../../molecules';
-import { Alert, type ISingleValueSelect, RichTextElement, SmartSelect, completeRichTextElementExtentions } from '../../organisms';
+import {
+  Alert,
+  type ISingleValueSelect,
+  RichTextElement,
+  SmartSelect,
+  completeRichTextElementExtentions,
+} from '../../organisms';
 
 import { type ICuratedRuleBook } from '../../interfaces';
 
@@ -41,115 +47,130 @@ const AdminNewNotions: FC = () => {
   const [error, setError] = useState('');
 
   const shortEditor = useEditor({
-    extensions: completeRichTextElementExtentions
+    extensions: completeRichTextElementExtentions,
   });
 
   const shortFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
+    extensions: completeRichTextElementExtentions,
   });
 
   const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions
+    extensions: completeRichTextElementExtentions,
   });
 
   const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
+    extensions: completeRichTextElementExtentions,
   });
 
-  const onSaveNotion = useCallback((elt) => {
-    if (shortEditor === null || shortFrEditor === null || textEditor === null || textFrEditor === null || api === undefined) { return; }
-    if (notionName === '') {
-      setError(t('nameNotion.required', { ns: 'fields' }));
-    } else if (selectedType === null) {
-      setError(t('typeNotion.required', { ns: 'fields' }));
-    } else {
-      let htmlShort: string | null = shortEditor.getHTML();
-      let htmlText: string | null = textEditor.getHTML();
+  console.log('selectedType', selectedType);
 
-      const htmlShortFr = shortFrEditor.getHTML();
-      const htmlTextFr = textFrEditor.getHTML();
-      if (htmlShort === '<p class="ap"></p>') {
-        htmlShort = null;
+  const onSaveNotion = useCallback(
+    (elt) => {
+      if (
+        shortEditor === null ||
+        shortFrEditor === null ||
+        textEditor === null ||
+        textFrEditor === null ||
+        api === undefined
+      ) {
+        return;
       }
+      if (notionName === '') {
+        setError(t('nameNotion.required', { ns: 'fields' }));
+      } else if (selectedType === null) {
+        setError(t('typeNotion.required', { ns: 'fields' }));
+      } else {
+        let htmlShort: string | null = shortEditor.getHTML();
+        let htmlText: string | null = textEditor.getHTML();
 
-      if (htmlText === '<p class="ap"></p>') {
-        htmlText = null;
-      }
+        const htmlShortFr = shortFrEditor.getHTML();
+        const htmlTextFr = textFrEditor.getHTML();
+        if (htmlShort === '<p class="ap"></p>') {
+          htmlShort = null;
+        }
 
-      let i18n: any | null = null;
+        if (htmlText === '<p class="ap"></p>') {
+          htmlText = null;
+        }
 
-      if (notionNameFr !== '' || htmlShortFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: notionNameFr,
-            short: htmlShortFr,
-            text: htmlTextFr
-          }
-        };
-      }
+        let i18n: any | null = null;
 
-      api.notions.create({
-        title: notionName,
-        ruleBook: selectedType,
-        short: htmlShort,
-        text: htmlText,
-        i18n
-      })
-        .then((notion) => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert
-                key={newId}
-                id={newId}
-                timer={5}
-              >
-                <Ap>{t('adminNewNotion.successCreate', { ns: 'pages' })}</Ap>
-              </Alert>
-            )
+        if (notionNameFr !== '' || htmlShortFr !== '<p class="ap"></p>') {
+          i18n = {
+            fr: {
+              title: notionNameFr,
+              short: htmlShortFr,
+              text: htmlTextFr,
+            },
+          };
+        }
+
+        api.notions
+          .create({
+            title: notionName,
+            ruleBook: selectedType,
+            short: htmlShort,
+            text: htmlText,
+            i18n,
+          })
+          .then((notion) => {
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{t('adminNewNotion.successCreate', { ns: 'pages' })}</Ap>
+                </Alert>
+              ),
+            });
+            navigate(`/admin/notion/${notion._id}`);
+          })
+          .catch(({ response }) => {
+            const { data } = response;
+            if (data.code === 'CYPU-104') {
+              setError(
+                t(`serverErrors.${data.code}`, {
+                  field: i18next.format(t(`terms.notionType.${data.sent}`), 'capitalize'),
+                })
+              );
+            } else {
+              setError(
+                t(`serverErrors.${data.code}`, {
+                  field: i18next.format(t(`terms.notionType.${data.sent}`), 'capitalize'),
+                })
+              );
+            }
           });
-          navigate(`/admin/notion/${notion._id}`);
-        })
-        .catch(({ response }) => {
-          const { data } = response;
-          if (data.code === 'CYPU-104') {
-            setError(t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.notionType.${data.sent}`), 'capitalize')
-            }));
-          } else {
-            setError(t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.notionType.${data.sent}`), 'capitalize')
-            }));
-          }
-        });
-    }
-  }, [
-    shortEditor,
-    shortFrEditor,
-    textEditor,
-    textFrEditor,
-    api,
-    notionName,
-    selectedType,
-    t,
-    notionNameFr,
-    getNewId,
-    createAlert,
-    navigate
-  ]);
+      }
+    },
+    [
+      shortEditor,
+      shortFrEditor,
+      textEditor,
+      textFrEditor,
+      api,
+      notionName,
+      selectedType,
+      t,
+      notionNameFr,
+      getNewId,
+      createAlert,
+      navigate,
+    ]
+  );
 
   useEffect(() => {
     if (api !== undefined && !calledApi.current) {
       calledApi.current = true;
-      api.ruleBooks.getAll()
+      api.ruleBooks
+        .getAll()
         .then((data: ICuratedRuleBook[]) => {
           setRulebooks(
             data.map(({ ruleBook }) => ({
               value: ruleBook._id,
               // TODO : Handle Internationalization
               label: ruleBook.title,
-              details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 })
+              details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 }),
             }))
           );
         })
@@ -158,23 +179,22 @@ const AdminNewNotions: FC = () => {
           createAlert({
             key: newId,
             dom: (
-              <Alert
-                key={newId}
-                id={newId}
-                timer={5}
-              >
+              <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
   }, [api, createAlert, getNewId, t]);
 
   const sentApiTypeChoice = useMemo(() => {
-    if (params.get('ruleBookId') === undefined || ruleBooks.length === 0) { return null; }
+    if (params.get('ruleBookId') === undefined || ruleBooks.length === 0) {
+      return null;
+    }
     const selectedfield = ruleBooks.find((ruleBook) => ruleBook.value === params.get('ruleBookId'));
     if (selectedfield !== undefined) {
+      setSelectedType(selectedfield.value);
       return selectedfield;
     }
     return null;
@@ -183,13 +203,7 @@ const AdminNewNotions: FC = () => {
   return (
     <div className="adminNewNotion">
       <Atitle level={1}>{t('adminNewNotion.title', { ns: 'pages' })}</Atitle>
-      {
-        error !== ''
-          ? (
-          <Aerror className="adminNewNotion__error">{error}</Aerror>
-            )
-          : null
-      }
+      {error !== '' ? <Aerror className="adminNewNotion__error">{error}</Aerror> : null}
       <div className="adminNewNotion__basics">
         <Input
           type="text"
@@ -213,11 +227,22 @@ const AdminNewNotions: FC = () => {
         />
       </div>
       <div className="adminNewNotion__details">
-        <RichTextElement label={t('notionShort.title', { ns: 'fields' })} editor={shortEditor} rawStringContent={notionShort} small />
-        <RichTextElement label={t('notionText.title', { ns: 'fields' })} editor={textEditor} rawStringContent={notionText} />
+        <RichTextElement
+          label={t('notionShort.title', { ns: 'fields' })}
+          editor={shortEditor}
+          rawStringContent={notionShort}
+          small
+        />
+        <RichTextElement
+          label={t('notionText.title', { ns: 'fields' })}
+          editor={textEditor}
+          rawStringContent={notionText}
+        />
       </div>
 
-      <Atitle className="adminNewNotion__intl" level={2}>{t('adminNewNotion.i18n', { ns: 'pages' })}</Atitle>
+      <Atitle className="adminNewNotion__intl" level={2}>
+        {t('adminNewNotion.i18n', { ns: 'pages' })}
+      </Atitle>
       <Ap className="adminNewNotion__intl-info">{t('adminNewNotion.i18nInfo', { ns: 'pages' })}</Ap>
       <div className="adminNewNotion__basics">
         <Input
@@ -231,13 +256,19 @@ const AdminNewNotions: FC = () => {
         />
       </div>
       <div className="adminNewNotion__details">
-        <RichTextElement label={`${t('notionShort.title', { ns: 'fields' })} (FR)`} editor={shortFrEditor} rawStringContent={notionShortFr} small />
-        <RichTextElement label={`${t('notionText.title', { ns: 'fields' })} (FR)`} editor={textFrEditor} rawStringContent={notionTextFr} />
+        <RichTextElement
+          label={`${t('notionShort.title', { ns: 'fields' })} (FR)`}
+          editor={shortFrEditor}
+          rawStringContent={notionShortFr}
+          small
+        />
+        <RichTextElement
+          label={`${t('notionText.title', { ns: 'fields' })} (FR)`}
+          editor={textFrEditor}
+          rawStringContent={notionTextFr}
+        />
       </div>
-      <Button
-        onClick={onSaveNotion}
-        disabled={error !== ''}
-      >
+      <Button onClick={onSaveNotion} disabled={error !== ''}>
         {t('adminNewNotion.button', { ns: 'pages' })}
       </Button>
     </div>

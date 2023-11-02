@@ -6,22 +6,17 @@ import './aerror.scss';
 
 interface IAerror {
   /** The class of the P element */
-  className?: string
+  className?: string;
   /** The childrens of the P element */
-  children: React.JSX.Element | string | string[]
+  children: React.JSX.Element | string | string[];
 }
 
-const Aerror: FC<IAerror> = ({
-  className,
-  children
-}) => (
+const Aerror: FC<IAerror> = ({ className, children }) => (
   <p
-    className={
-      classTrim(`
+    className={classTrim(`
         aerror
         ${className ?? ''}
-      `)
-    }
+      `)}
   >
     {children}
   </p>

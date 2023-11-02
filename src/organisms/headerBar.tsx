@@ -14,7 +14,7 @@ import './headerBar.scss';
 
 interface IHeaderBar {
   /** The class of the HeaderBar */
-  className?: string
+  className?: string;
 }
 
 const HeaderBar: FC<IHeaderBar> = ({ className }) => {
@@ -35,7 +35,8 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
 
   const onLogout = useCallback(() => {
     if (api !== undefined) {
-      api.auth.signout()
+      api.auth
+        .signout()
         .then((res) => {
           setUser(null);
           navigate('/');
@@ -48,42 +49,32 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
 
   return (
     <div
-      className={
-        classTrim(`
+      className={classTrim(`
         headerbar
           ${className ?? ''}
-        `)
-      }
+        `)}
     >
       <div className="headerbar__content">
         <div className="headerbar__content__left">
           <Aa href="/">{t('home.title', { ns: 'pages' })}</Aa>
-          {
-            userState === 'unlogged'
-              ? (
-              <>
-                <Aa href="/login">{t('login.title', { ns: 'pages' })}</Aa>
-                <Aa href="/signup">{t('signup.title', { ns: 'pages' })}</Aa>
-              </>
-                )
-              : null
-          }
-          {
-            userState !== 'unlogged' ? (<Aa href="/dashboard">{t('dashboard.title', { ns: 'pages' })}</Aa>) : null
-          }
-          {
-            userState === 'admin' ? (<Aa href="/admin">{t('admin.title', { ns: 'pages' })}</Aa>) : null
-          }
+          {userState === 'unlogged' ? (
+            <>
+              <Aa href="/login">{t('login.title', { ns: 'pages' })}</Aa>
+              <Aa href="/signup">{t('signup.title', { ns: 'pages' })}</Aa>
+            </>
+          ) : null}
+          {userState !== 'unlogged' ? (
+            <Aa href="/dashboard">{t('dashboard.title', { ns: 'pages' })}</Aa>
+          ) : null}
+          {userState === 'admin' ? (
+            <Aa href="/admin">{t('admin.title', { ns: 'pages' })}</Aa>
+          ) : null}
         </div>
-        {
-          userState !== 'unlogged'
-            ? (
-              <div className="headerbar__content__right">
-                <Button onClick={onLogout}>{t('headerBar.logout', { ns: 'components' })}</Button>
-              </div>
-              )
-            : null
-        }
+        {userState !== 'unlogged' ? (
+          <div className="headerbar__content__right">
+            <Button onClick={onLogout}>{t('headerBar.logout', { ns: 'components' })}</Button>
+          </div>
+        ) : null}
       </div>
     </div>
   );

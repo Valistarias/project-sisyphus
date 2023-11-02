@@ -4,9 +4,9 @@ import { ReactNodeViewRenderer, NodeViewWrapper } from '@tiptap/react';
 
 interface ITest {
   /** The Node element */
-  node: any
+  node: any;
   /** The function used to change attributes dynamically */
-  updateAttributes: any
+  updateAttributes: any;
 }
 
 const TestReact: FC<ITest> = ({ node, updateAttributes }) => {
@@ -29,32 +29,32 @@ export default Node.create({
   group: 'block',
   atom: true,
 
-  addAttributes () {
+  addAttributes() {
     return {
       text: {
-        default: 'This is a test'
+        default: 'This is a test',
       },
       count: {
-        default: 0
-      }
+        default: 0,
+      },
     };
   },
 
-  parseHTML () {
+  parseHTML() {
     return [
       {
-        tag: 'react-component-test'
-      }
+        tag: 'react-component-test',
+      },
     ];
   },
 
-  renderHTML ({ HTMLAttributes }) {
+  renderHTML({ HTMLAttributes }) {
     return ['react-component-test', mergeAttributes(HTMLAttributes)];
   },
 
-  addNodeView () {
+  addNodeView() {
     return ReactNodeViewRenderer(TestReact);
-  }
+  },
 });
 
 // export default TestReact;

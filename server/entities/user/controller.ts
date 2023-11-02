@@ -9,20 +9,21 @@ import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/global
 
 const { User } = db;
 
-const findUserById = async (id: string): Promise<HydratedIUser> => await new Promise((resolve, reject) => {
-  User.findById(id)
-    .populate<{ roles: IRole[] }>('roles')
-    .then(async (res) => {
-      if (res === undefined || res === null) {
-        reject(gemNotFound('User'));
-      } else {
-        resolve(res as HydratedIUser);
-      }
-    })
-    .catch(async (err) => {
-      reject(err);
-    });
-});
+const findUserById = async (id: string): Promise<HydratedIUser> =>
+  await new Promise((resolve, reject) => {
+    User.findById(id)
+      .populate<{ roles: IRole[] }>('roles')
+      .then(async (res) => {
+        if (res === undefined || res === null) {
+          reject(gemNotFound('User'));
+        } else {
+          resolve(res as HydratedIUser);
+        }
+      })
+      .catch(async (err) => {
+        reject(err);
+      });
+  });
 
 const update = (req: Request, res: Response): void => {
   const {
@@ -32,7 +33,7 @@ const update = (req: Request, res: Response): void => {
     oldPass = null,
     newPass = null,
     theme = null,
-    scale = null
+    scale = null,
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('User ID'));
@@ -40,23 +41,29 @@ const update = (req: Request, res: Response): void => {
   }
   findUserById(id)
     .then((user) => {
-      if (lang !== null) { user.lang = lang; }
-      if (mail !== null) { user.mail = mail; }
+      if (lang !== null) {
+        user.lang = lang;
+      }
+      if (mail !== null) {
+        user.mail = mail;
+      }
       if (newPass !== null) {
-        const passwordIsValid = bcrypt.compareSync(
-          oldPass,
-          user.password
-        );
+        const passwordIsValid = bcrypt.compareSync(oldPass, user.password);
         if (!passwordIsValid) {
           res.status(400).send(gemInvalidField('password'));
           return;
         }
         user.password = bcrypt.hashSync(newPass, 8);
       }
-      if (theme !== null) { user.theme = theme; }
-      if (scale !== null) { user.scale = scale; }
+      if (theme !== null) {
+        user.theme = theme;
+      }
+      if (scale !== null) {
+        user.scale = scale;
+      }
 
-      user.save()
+      user
+        .save()
         .then(() => {
           const authorities: string[] = [];
 
@@ -71,7 +78,7 @@ const update = (req: Request, res: Response): void => {
             roles: authorities,
             lang: user.lang,
             theme: user.theme,
-            scale: user.scale
+            scale: user.scale,
           };
 
           res.send({ message: 'User was updated successfully!', responsePayload });
@@ -85,7 +92,4 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-export {
-  findUserById,
-  update
-};
+export { findUserById, update };

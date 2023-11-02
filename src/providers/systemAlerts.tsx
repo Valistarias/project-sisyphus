@@ -1,28 +1,26 @@
-import React, {
-  type FC, useState, useMemo, useContext, useRef, useCallback
-} from 'react';
+import React, { type FC, useState, useMemo, useContext, useRef, useCallback } from 'react';
 
 import './systemAlerts.scss';
 
 interface IAlert {
   /** The alert number on the list (id only resets on full refresh) */
-  key: number
+  key: number;
   /** Setting the user */
-  dom: React.JSX.Element
+  dom: React.JSX.Element;
 }
 
 interface ISystemAlertsContext {
   /** Delete an alert with the id "key" */
-  deleteAlert: (req: { key: number }) => void
+  deleteAlert: (req: { key: number }) => void;
   /** Create an alert with the id "key" and the DOM */
-  createAlert: (req: { key: number, dom: React.JSX.Element }) => void
+  createAlert: (req: { key: number; dom: React.JSX.Element }) => void;
   /** Get a fresh new ID */
-  getNewId: () => number
+  getNewId: () => number;
 }
 
 interface SystemAlertsProviderProps {
   /** The childrens of the Providers element */
-  children: React.JSX.Element
+  children: React.JSX.Element;
 }
 
 const SystemAlertsContext = React.createContext<ISystemAlertsContext | null>(null);
@@ -46,7 +44,7 @@ export const SystemAlertsProvider: FC<SystemAlertsProviderProps> = ({ children }
       if (foundAlertId === -1) {
         next.push({
           key,
-          dom
+          dom,
         });
       }
 
@@ -74,21 +72,18 @@ export const SystemAlertsProvider: FC<SystemAlertsProviderProps> = ({ children }
     });
   }, []);
 
-  const providerValues = useMemo(() => ({
-    deleteAlert,
-    createAlert,
-    getNewId
-  }), [
-    deleteAlert,
-    createAlert,
-    getNewId
-  ]);
+  const providerValues = useMemo(
+    () => ({
+      deleteAlert,
+      createAlert,
+      getNewId,
+    }),
+    [deleteAlert, createAlert, getNewId]
+  );
 
   return (
     <SystemAlertsContext.Provider value={providerValues}>
-      <div className="alerts">
-        {alertsElts.map((window) => window.dom)}
-      </div>
+      <div className="alerts">{alertsElts.map((window) => window.dom)}</div>
       {children}
     </SystemAlertsContext.Provider>
   );

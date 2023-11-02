@@ -6,26 +6,20 @@ import './aul.scss';
 
 interface IAul {
   /** The class of the UL element */
-  className?: string
+  className?: string;
   /** The childrens of the UL element */
-  children: React.JSX.Element[] | null
+  children: React.JSX.Element[] | null;
   /** Is the decoration to be removed ? */
-  noPoints?: boolean
+  noPoints?: boolean;
 }
 
-const Aul: FC<IAul> = ({
-  className,
-  children,
-  noPoints = false
-}) => (
+const Aul: FC<IAul> = ({ className, children, noPoints = false }) => (
   <ul
-    className={
-      classTrim(`
+    className={classTrim(`
         aul
         ${className ?? ''}
         ${noPoints ? 'aul--nodecor' : ''}
-      `)
-    }
+      `)}
   >
     {children}
   </ul>

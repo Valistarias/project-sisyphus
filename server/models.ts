@@ -12,26 +12,26 @@ import {
   type IRuleBook,
   RuleBookModel,
   type IRuleBookType,
-  RuleBookTypeModel
+  RuleBookTypeModel,
 } from './entities';
 
 mongoose.Promise = global.Promise;
 
 interface DBType {
   /** The User Model */
-  User: mongoose.Model<IUser>
+  User: mongoose.Model<IUser>;
   /** The Role Model */
-  Role: mongoose.Model<IRole>
+  Role: mongoose.Model<IRole>;
   /** The Notion Model */
-  Notion: mongoose.Model<INotion>
+  Notion: mongoose.Model<INotion>;
   /** The RuleBook Model */
-  RuleBook: mongoose.Model<IRuleBook>
+  RuleBook: mongoose.Model<IRuleBook>;
   /** The RuleBook Types Model */
-  RuleBookType: mongoose.Model<IRuleBookType>
+  RuleBookType: mongoose.Model<IRuleBookType>;
   /** The Mail Token Model (for forgotten password) */
-  MailToken: mongoose.Model<IMailToken>
+  MailToken: mongoose.Model<IMailToken>;
   /** The possible Roles */
-  ROLES: string[]
+  ROLES: string[];
 }
 
 const db: DBType = {
@@ -43,7 +43,7 @@ const db: DBType = {
   // Rulebook models
   Notion: NotionModel(),
   RuleBook: RuleBookModel(),
-  RuleBookType: RuleBookTypeModel()
+  RuleBookType: RuleBookTypeModel(),
 };
 
 export default db;

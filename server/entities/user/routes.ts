@@ -2,16 +2,11 @@ import { type Router, type Response } from 'express';
 
 import { type IVerifyTokenRequest, verifyToken } from '../../middlewares';
 
-import {
-  update
-} from './controller';
+import { update } from './controller';
 
 export default (app: Router): void => {
   app.use((req, res, next) => {
-    res.header(
-      'Access-Control-Allow-Headers',
-      'Origin, Content-Type, Accept'
-    );
+    res.header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept');
     next();
   });
 
@@ -20,7 +15,7 @@ export default (app: Router): void => {
     [
       (req: IVerifyTokenRequest, res: Response, next: () => void) => {
         verifyToken(req, res, next);
-      }
+      },
     ],
     update
   );

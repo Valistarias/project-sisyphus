@@ -3,27 +3,27 @@ import { type IRole } from '../index';
 
 interface IUser {
   /** The mail of the user */
-  mail: string
+  mail: string;
   /** The user password (encrypted) */
-  password: string
+  password: string;
   /** The name of the user */
-  name: string
+  name: string;
   /** The chosen language for the UI */
-  lang: string
+  lang: string;
   /** The chosen theme for the UI */
-  theme: string
+  theme: string;
   /** The scale of the UI */
-  scale: number
+  scale: number;
   /** Is the user verified */
-  verified: boolean
+  verified: boolean;
   /** The user roles */
-  roles: string[] | ObjectId[]
+  roles: string[] | ObjectId[];
   /** When the user was created */
-  createdAt: Date
+  createdAt: Date;
 }
 
 interface HydratedIUser extends Omit<HydratedDocument<IUser>, 'roles'> {
-  roles: IRole[]
+  roles: IRole[];
 }
 
 const userSchema = new Schema<IUser>({
@@ -35,18 +35,18 @@ const userSchema = new Schema<IUser>({
   scale: Number,
   verified: {
     type: Boolean,
-    default: false
+    default: false,
   },
   roles: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'Role'
-    }
+      ref: 'Role',
+    },
   ],
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 const UserModel = (): Model<IUser> => model('User', userSchema);

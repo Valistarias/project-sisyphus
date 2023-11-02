@@ -6,22 +6,17 @@ import './aimg.scss';
 
 interface IAimg {
   /** The class of the IMG element */
-  className?: string
+  className?: string;
   /** The url of the image */
-  src: string
+  src: string;
 }
 
-const Aimg: FC<IAimg> = ({
-  className,
-  src
-}) => (
+const Aimg: FC<IAimg> = ({ className, src }) => (
   <img
-    className={
-      classTrim(`
+    className={classTrim(`
         aimg
         ${className ?? ''}
-      `)
-    }
+      `)}
     src={src}
   />
 );

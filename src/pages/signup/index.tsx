@@ -16,9 +16,9 @@ import { regexMail } from '../../utils';
 import './signup.scss';
 
 interface FormValues {
-  mail: string
-  password: string
-  confirmPassword: string
+  mail: string;
+  password: string;
+  confirmPassword: string;
 }
 
 const Signup: FC = () => {
@@ -32,28 +32,25 @@ const Signup: FC = () => {
     handleSubmit,
     watch,
     setError,
-    formState: { errors }
+    formState: { errors },
   } = useForm<FormValues>();
 
   const onSubmit: SubmitHandler<FormValues> = ({ mail, password }) => {
     if (api !== undefined) {
-      api.auth.signup({
-        mail,
-        password
-      })
+      api.auth
+        .signup({
+          mail,
+          password,
+        })
         .then(() => {
           const newId = getNewId();
           createAlert({
             key: newId,
             dom: (
-              <Alert
-                key={newId}
-                id={newId}
-                timer={5}
-              >
+              <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('signup.successSent', { ns: 'pages', mail })}</Ap>
               </Alert>
-            )
+            ),
           });
           navigate('/');
         })
@@ -63,15 +60,15 @@ const Signup: FC = () => {
             setError(data.sent, {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize')
-              })
+                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
+              }),
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize')
-              })
+                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
@@ -82,29 +79,31 @@ const Signup: FC = () => {
     <div className="signup">
       <Atitle level={1}>{t('signup.title', { ns: 'pages' })}</Atitle>
       <form className="signup__form" onSubmit={handleSubmit(onSubmit)} noValidate>
-        {errors.root?.serverError?.message !== undefined ? (<Aerror>{errors.root.serverError.message}</Aerror>) : null}
+        {errors.root?.serverError?.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <Input
           type="email"
           registered={register('mail', {
             required: t('mail.required', { ns: 'fields' }),
             pattern: {
               value: regexMail,
-              message: t('mail.pattern', { ns: 'fields' })
-            }
+              message: t('mail.pattern', { ns: 'fields' }),
+            },
           })}
           label={t('mail.label', { ns: 'fields' })}
           autoComplete="email"
         />
-        {errors.mail?.message !== undefined ? (<Aerror>{errors.mail.message}</Aerror>) : null}
+        {errors.mail?.message !== undefined ? <Aerror>{errors.mail.message}</Aerror> : null}
         <Input
           type="password"
           registered={register('password', {
-            required: t('password.required', { ns: 'fields' })
+            required: t('password.required', { ns: 'fields' }),
           })}
           label={t('password.label', { ns: 'fields' })}
           autoComplete="new-password"
         />
-        {errors.password?.message !== undefined ? (<Aerror>{errors.password.message}</Aerror>) : null}
+        {errors.password?.message !== undefined ? <Aerror>{errors.password.message}</Aerror> : null}
         <Input
           type="password"
           registered={register('confirmPassword', {
@@ -113,15 +112,15 @@ const Signup: FC = () => {
               if (watch('password') !== val) {
                 return t('confirmPassword.validate', { ns: 'fields' });
               }
-            }
+            },
           })}
           label={t('confirmPassword.label', { ns: 'fields' })}
           autoComplete="new-password"
         />
-        {errors.confirmPassword?.message !== undefined ? (<Aerror>{errors.confirmPassword.message}</Aerror>) : null}
-        <Button type="submit">
-          {t('signup.formCTA', { ns: 'pages' })}
-        </Button>
+        {errors.confirmPassword?.message !== undefined ? (
+          <Aerror>{errors.confirmPassword.message}</Aerror>
+        ) : null}
+        <Button type="submit">{t('signup.formCTA', { ns: 'pages' })}</Button>
       </form>
     </div>
   );

@@ -9,22 +9,20 @@ import { ConfirmMessageProvider } from './confirmMessage';
 
 interface ProviderProps {
   /** The childrens of the Providers element */
-  children: React.JSX.Element
+  children: React.JSX.Element;
 }
 
 const Providers: FC<ProviderProps> = ({ children }) => (
   <ApiProvider>
-      <LangProvider>
-        <GlobalVarsProvider>
-          <ThemeProvider>
-            <SystemAlertsProvider>
-              <ConfirmMessageProvider>
-                {children}
-              </ConfirmMessageProvider>
-            </SystemAlertsProvider>
-          </ThemeProvider>
-        </GlobalVarsProvider>
-      </LangProvider>
+    <LangProvider>
+      <GlobalVarsProvider>
+        <ThemeProvider>
+          <SystemAlertsProvider>
+            <ConfirmMessageProvider>{children}</ConfirmMessageProvider>
+          </SystemAlertsProvider>
+        </ThemeProvider>
+      </GlobalVarsProvider>
+    </LangProvider>
   </ApiProvider>
 );
 

@@ -12,11 +12,11 @@ import './menuBar.scss';
 
 interface IMenuBar {
   /** The text Editor */
-  editor?: Editor | undefined
+  editor?: Editor | undefined;
   /** Is the text editor with all options ? */
-  complete: boolean
+  complete: boolean;
   /** The className of the menubar */
-  className: string
+  className: string;
 }
 
 export const MenuBar: FC<IMenuBar> = ({ editor, complete, className }) => {
@@ -30,77 +30,78 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className }) => {
   }, []);
 
   const onConfirmTestBar = useCallback(() => {
-    if (editor === undefined) { return null; }
-    editor.chain().insertContentAt(editor.state.selection.head, {
-      type: 'reactComponentTest',
-      attrs: { text: testBarValue }
-    }).focus().run();
+    if (editor === undefined) {
+      return null;
+    }
+    editor
+      .chain()
+      .insertContentAt(editor.state.selection.head, {
+        type: 'reactComponentTest',
+        attrs: { text: testBarValue },
+      })
+      .focus()
+      .run();
     testBarOpen(false);
     setTestBarValue('');
   }, [editor, testBarValue]);
 
   const completeOptns = useMemo(() => {
-    if (!complete || editor === undefined) { return null; }
+    if (!complete || editor === undefined) {
+      return null;
+    }
     return (
       <div className="menubar__advanced">
         <Button
-          onClick={() => editor.chain().command(() => {
-            onTest();
+          onClick={() =>
+            editor
+              .chain()
+              .command(() => {
+                onTest();
 
-            return true;
-          }).run()}
+                return true;
+              })
+              .run()
+          }
         >
           test element
         </Button>
-        { testBarOpened
-          ? (
-            <div className="menubar__advanced__testbar">
-              <Input
-                type="text"
-                placeholder="Text"
-                onChange={(e) => { setTestBarValue(e.target.value); }}
-                value={testBarValue}
-              />
-              <Button
-                onClick={onConfirmTestBar}
-              >confirm
-              </Button>
-            </div>
-            )
-          : null}
+        {testBarOpened ? (
+          <div className="menubar__advanced__testbar">
+            <Input
+              type="text"
+              placeholder="Text"
+              onChange={(e) => {
+                setTestBarValue(e.target.value);
+              }}
+              value={testBarValue}
+            />
+            <Button onClick={onConfirmTestBar}>confirm</Button>
+          </div>
+        ) : null}
       </div>
     );
-  }, [
-    complete,
-    editor,
-    onConfirmTestBar,
-    onTest,
-    testBarOpened,
-    testBarValue
-  ]);
+  }, [complete, editor, onConfirmTestBar, onTest, testBarOpened, testBarValue]);
 
-  if (editor === undefined) { return null; }
+  if (editor === undefined) {
+    return null;
+  }
 
   return (
-    <div className={
-      classTrim(`
+    <div
+      className={classTrim(`
         menubar
         ${className ?? ''}
-      `)
-    }>
+      `)}
+    >
       <div className="menubar__basics">
         <div className="menubar__basics__marks">
-          <Ap className="menubar__titles">{t('richTextElement.textTitle', { ns: 'components' })}</Ap>
+          <Ap className="menubar__titles">
+            {t('richTextElement.textTitle', { ns: 'components' })}
+          </Ap>
           <Button
             size="small"
             onClick={() => editor.chain().focus().toggleBold().run()}
-            disabled={
-              !editor.can()
-                .chain()
-                .focus()
-                .toggleBold()
-                .run()
-            }
+            disabled={!editor.can().chain().focus().toggleBold().run()}
             active={editor.isActive('bold')}
             className="menubar__basics__marks__bold"
           >
@@ -109,13 +110,7 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className }) => {
           <Button
             size="small"
             onClick={() => editor.chain().focus().toggleItalic().run()}
-            disabled={
-              !editor.can()
-                .chain()
-                .focus()
-                .toggleItalic()
-                .run()
-            }
+            disabled={!editor.can().chain().focus().toggleItalic().run()}
             active={editor.isActive('italic')}
             className="menubar__basics__marks__italic"
           >
@@ -125,10 +120,10 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className }) => {
         <div className="menubar__basics__nodes">
           <Ap className="menubar__titles">Paragraphs</Ap>
           <Button
-              size="small"
-              onClick={() => editor.chain().focus().setParagraph().run()}
-              active={editor.isActive('paragraph')}
-            >
+            size="small"
+            onClick={() => editor.chain().focus().setParagraph().run()}
+            active={editor.isActive('paragraph')}
+          >
             {t('richTextElement.paragraph', { ns: 'components' })}
           </Button>
           <Button
@@ -164,50 +159,31 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className }) => {
           <Ap className="menubar__titles">Table</Ap>
           <Button
             size="small"
-            onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
+            onClick={() =>
+              editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
+            }
           >
             {t('richTextElement.table.new', { ns: 'components' })}
           </Button>
-          <Button
-            size="small"
-            onClick={() => editor.chain().focus().deleteTable().run()}
-          >
+          <Button size="small" onClick={() => editor.chain().focus().deleteTable().run()}>
             {t('richTextElement.table.del', { ns: 'components' })}
           </Button>
-          <Button
-            size="small"
-            onClick={() => editor.chain().focus().addColumnAfter().run()}
-          >
+          <Button size="small" onClick={() => editor.chain().focus().addColumnAfter().run()}>
             {t('richTextElement.table.newcol', { ns: 'components' })}
           </Button>
-          <Button
-            size="small"
-            onClick={() => editor.chain().focus().deleteColumn().run()}
-          >
+          <Button size="small" onClick={() => editor.chain().focus().deleteColumn().run()}>
             {t('richTextElement.table.delcol', { ns: 'components' })}
           </Button>
-          <Button
-            size="small"
-            onClick={() => editor.chain().focus().addRowAfter().run()}
-          >
+          <Button size="small" onClick={() => editor.chain().focus().addRowAfter().run()}>
             {t('richTextElement.table.newrow', { ns: 'components' })}
           </Button>
-          <Button
-            size="small"
-            onClick={() => editor.chain().focus().deleteRow().run()}
-          >
+          <Button size="small" onClick={() => editor.chain().focus().deleteRow().run()}>
             {t('richTextElement.table.delrow', { ns: 'components' })}
           </Button>
-          <Button
-            size="small"
-            onClick={() => editor.chain().focus().mergeCells().run()}
-          >
+          <Button size="small" onClick={() => editor.chain().focus().mergeCells().run()}>
             {t('richTextElement.table.merge', { ns: 'components' })}
           </Button>
-          <Button
-            size="small"
-            onClick={() => editor.chain().focus().splitCell().run()}
-          >
+          <Button size="small" onClick={() => editor.chain().focus().splitCell().run()}>
             {t('richTextElement.table.split', { ns: 'components' })}
           </Button>
         </div>

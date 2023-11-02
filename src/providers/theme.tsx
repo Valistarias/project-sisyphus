@@ -1,16 +1,14 @@
-import React, {
-  type FC, useState, useMemo, useContext, useEffect
-} from 'react';
+import React, { type FC, useState, useMemo, useContext, useEffect } from 'react';
 import { useGlobalVars } from './globalVars';
 
 interface IThemeContext {
   /** The chosen theme */
-  colorMode: string
+  colorMode: string;
 }
 
 interface ThemeProviderProps {
   /** The childrens of the Providers element */
-  children: React.JSX.Element
+  children: React.JSX.Element;
 }
 
 const ThemeContext = React.createContext<IThemeContext | null>(null);
@@ -21,12 +19,16 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
   const { user } = useGlobalVars();
 
   const chosenTheme = useMemo(() => {
-    if (user?.theme === undefined) { return 'dark-theme'; }
+    if (user?.theme === undefined) {
+      return 'dark-theme';
+    }
     return `${user.theme}-theme`;
   }, [user]);
 
   const chosenScale = useMemo(() => {
-    if (user?.scale === undefined) { return 100; }
+    if (user?.scale === undefined) {
+      return 100;
+    }
     return user.scale * 100;
   }, [user]);
 
@@ -53,17 +55,16 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
     }
   }, [chosenScale]);
 
-  const providerValues = useMemo(() => ({
-    colorMode
-  }), [
-    colorMode
-  ]);
+  const providerValues = useMemo(
+    () => ({
+      colorMode,
+    }),
+    [colorMode]
+  );
 
   return (
     <ThemeContext.Provider value={providerValues}>
-      <div className={`main ${chosenTheme}`}>
-        {children}
-      </div>
+      <div className={`main ${chosenTheme}`}>{children}</div>
     </ThemeContext.Provider>
   );
 };

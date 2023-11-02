@@ -18,8 +18,8 @@ import { regexMail } from '../../utils';
 import './login.scss';
 
 interface FormValues {
-  mail: string
-  password: string
+  mail: string;
+  password: string;
 }
 
 const Login: FC = () => {
@@ -36,7 +36,7 @@ const Login: FC = () => {
     register,
     handleSubmit,
     setError,
-    formState: { errors }
+    formState: { errors },
   } = useForm<FormValues>();
 
   const params = useMemo(() => new URLSearchParams(search), [search]);
@@ -47,14 +47,10 @@ const Login: FC = () => {
       createAlert({
         key: newId,
         dom: (
-          <Alert
-            key={newId}
-            id={newId}
-            timer={5}
-          >
+          <Alert key={newId} id={newId} timer={5}>
             <Ap>{t('login.successRegister', { ns: 'pages' })}</Ap>
           </Alert>
-        )
+        ),
       });
       alertSent.current = true;
     }
@@ -62,10 +58,11 @@ const Login: FC = () => {
 
   const onSubmit: SubmitHandler<FormValues> = ({ mail, password }) => {
     if (api !== undefined) {
-      api.auth.signin({
-        mail,
-        password
-      })
+      api.auth
+        .signin({
+          mail,
+          password,
+        })
         .then((data: IUser) => {
           setUser(data);
           navigate('/');
@@ -76,15 +73,15 @@ const Login: FC = () => {
             setError(data.sent, {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize')
-              })
+                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
+              }),
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize')
-              })
+                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
@@ -95,33 +92,33 @@ const Login: FC = () => {
     <div className="login">
       <Atitle level={1}>{t('login.title', { ns: 'pages' })}</Atitle>
       <form className="login__form" onSubmit={handleSubmit(onSubmit)} noValidate>
-        {errors.root?.serverError?.message !== undefined ? (<Aerror>{errors.root.serverError.message}</Aerror>) : null}
+        {errors.root?.serverError?.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <Input
           type="email"
           registered={register('mail', {
             required: t('mail.required', { ns: 'fields' }),
             pattern: {
               value: regexMail,
-              message: t('mail.pattern', { ns: 'fields' })
-            }
+              message: t('mail.pattern', { ns: 'fields' }),
+            },
           })}
           label={t('mail.label', { ns: 'fields' })}
           autoComplete="username"
         />
-        {errors.mail?.message !== undefined ? (<Aerror>{errors.mail.message}</Aerror>) : null}
+        {errors.mail?.message !== undefined ? <Aerror>{errors.mail.message}</Aerror> : null}
         <Input
           type="password"
           registered={register('password', {
-            required: t('password.required', { ns: 'fields' })
+            required: t('password.required', { ns: 'fields' }),
           })}
           label={t('password.label', { ns: 'fields' })}
           autoComplete="current-password"
         />
-        {errors.password?.message !== undefined ? (<Aerror>{errors.password.message}</Aerror>) : null}
+        {errors.password?.message !== undefined ? <Aerror>{errors.password.message}</Aerror> : null}
         <Aa href="/reset/password">Forgot Password ?</Aa>
-        <Button type="submit">
-          {t('login.formCTA', { ns: 'pages' })}
-        </Button>
+        <Button type="submit">{t('login.formCTA', { ns: 'pages' })}</Button>
       </form>
     </div>
   );

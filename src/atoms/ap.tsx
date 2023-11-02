@@ -6,22 +6,17 @@ import './ap.scss';
 
 interface IAp {
   /** The class of the P element */
-  className?: string
+  className?: string;
   /** The childrens of the P element */
-  children: React.JSX.Element | string | string[]
+  children: React.JSX.Element | string | string[];
 }
 
-const AP: FC<IAp> = ({
-  className,
-  children
-}) => (
+const AP: FC<IAp> = ({ className, children }) => (
   <p
-    className={
-      classTrim(`
+    className={classTrim(`
         ap
         ${className ?? ''}
-      `)
-    }
+      `)}
   >
     {children}
   </p>

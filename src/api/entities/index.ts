@@ -5,11 +5,4 @@ import RuleBooks from './ruleBooks';
 import RuleBookTypes from './ruleBookTypes';
 import Users from './users';
 
-export {
-  Auth,
-  MailToken,
-  Notions,
-  RuleBooks,
-  RuleBookTypes,
-  Users
-};
+export { Auth, MailToken, Notions, RuleBooks, RuleBookTypes, Users };

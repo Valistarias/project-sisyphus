@@ -6,22 +6,17 @@ import './ali.scss';
 
 interface IAli {
   /** The class of the LI element */
-  className?: string
+  className?: string;
   /** The childrens of the LI element */
-  children: React.JSX.Element | React.JSX.Element[]
+  children: React.JSX.Element | React.JSX.Element[];
 }
 
-const Ali: FC<IAli> = ({
-  className,
-  children
-}) => (
+const Ali: FC<IAli> = ({ className, children }) => (
   <li
-    className={
-      classTrim(`
+    className={classTrim(`
         ali
         ${className ?? ''}
-      `)
-    }
+      `)}
   >
     {children}
   </li>

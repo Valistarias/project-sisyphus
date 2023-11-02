@@ -8,30 +8,23 @@ import './aa.scss';
 
 interface IAA {
   /** The class of the P element */
-  className?: string
+  className?: string;
   /** The link to another page */
-  href: string
+  href: string;
   /** If the target is different to this page */
-  target?: string
+  target?: string;
   /** The childrens of the P element */
-  children: React.JSX.Element | string | string[]
+  children: React.JSX.Element | string | string[];
 }
 
-const AA: FC<IAA> = ({
-  className,
-  children,
-  href,
-  target
-}) => (
+const AA: FC<IAA> = ({ className, children, href, target }) => (
   <Link
     to={href}
     target={target}
-    className={
-      classTrim(`
+    className={classTrim(`
         aa
         ${className ?? ''}
-      `)
-    }
+      `)}
   >
     {children}
   </Link>

@@ -26,18 +26,14 @@ const Home: FC = () => {
         >
           <Ap>Lorem Ipsum</Ap>
         </Alert>
-      )
+      ),
     });
   }, [createAlert, getNewId]);
 
   return (
     <div className="home">
       <Atitle level={1}>{t('home.title', { ns: 'pages' })}</Atitle>
-      <Button
-        onClick={onAddAlert}
-      >
-        Add alert
-      </Button>
+      <Button onClick={onAddAlert}>Add alert</Button>
     </div>
   );
 };

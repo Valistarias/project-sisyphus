@@ -4,56 +4,69 @@ import config from '../config/db.config';
 import { type Request, type Response } from 'express';
 import { type IRole } from '../entities';
 import { findUserById } from '../entities/user/controller';
-import { gemInvalidField, gemNotAdmin, gemNotFound, gemServerError, gemUnauthorized } from '../utils/globalErrorMessage';
+import {
+  gemInvalidField,
+  gemNotAdmin,
+  gemNotFound,
+  gemServerError,
+  gemUnauthorized,
+} from '../utils/globalErrorMessage';
 import { pathToRegexp } from 'path-to-regexp';
 
 interface IVerifyTokenRequest extends Request {
-  userId: string
+  userId: string;
   session: {
-    token: string
-  }
+    token: string;
+  };
 }
 
 const routes = [
   {
     url: '/',
-    role: 'all'
+    role: 'all',
   },
   {
     url: '/login',
-    role: 'unlogged'
+    role: 'unlogged',
   },
   {
     url: '/reset/:param*',
-    role: 'unlogged'
+    role: 'unlogged',
   },
   {
     url: '/signup',
-    role: 'unlogged'
+    role: 'unlogged',
   },
   {
     url: '/dashboard',
-    role: 'logged'
+    role: 'logged',
   },
   {
     url: '/rulebooks',
-    role: 'logged'
+    role: 'logged',
   },
   {
     url: '/rulebook/:param*',
-    role: 'logged'
+    role: 'logged',
   },
   {
     url: '/admin/:param*',
-    role: 'admin'
-  }
+    role: 'admin',
+  },
 ];
 
-const verifyToken = (req: IVerifyTokenRequest, res: Response, next: () => void, mute?: boolean): void => {
+const verifyToken = (
+  req: IVerifyTokenRequest,
+  res: Response,
+  next: () => void,
+  mute?: boolean
+): void => {
   const { token } = req.session;
 
   if (token === undefined) {
-    res.status(mute !== undefined ? 200 : 403).send(mute !== undefined ? {} : gemInvalidField('token'));
+    res
+      .status(mute !== undefined ? 200 : 403)
+      .send(mute !== undefined ? {} : gemInvalidField('token'));
     return;
   }
 
@@ -67,24 +80,25 @@ const verifyToken = (req: IVerifyTokenRequest, res: Response, next: () => void, 
   });
 };
 
-const isAdmin = async (req: Request): Promise<boolean> => await new Promise((resolve, reject) => {
-  getUserRolesFromToken(req as IVerifyTokenRequest)
-    .then((roles) => {
-      if (roles.length > 0 && roles.some((role) => role.name === 'admin')) {
-        resolve(true);
-      } else {
-        resolve(false);
-      }
-    })
-    .catch((err) => { reject(err); });
-});
+const isAdmin = async (req: Request): Promise<boolean> =>
+  await new Promise((resolve, reject) => {
+    getUserRolesFromToken(req as IVerifyTokenRequest)
+      .then((roles) => {
+        if (roles.length > 0 && roles.some((role) => role.name === 'admin')) {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
 
 const generateVerificationMailToken = (userId: string): string => {
-  const verificationToken = jwt.sign(
-    { IdMail: userId },
-    config.secret(process.env),
-    { expiresIn: '7d' }
-  );
+  const verificationToken = jwt.sign({ IdMail: userId }, config.secret(process.env), {
+    expiresIn: '7d',
+  });
   return verificationToken;
 };
 
@@ -100,28 +114,29 @@ const adminNeeded = (req: Request, res: Response, next: () => void): void => {
     .catch((err) => res.status(500).send(gemServerError(err)));
 };
 
-const getUserRolesFromToken = async (req: IVerifyTokenRequest): Promise<IRole[]> => await new Promise((resolve, reject) => {
-  const { token } = req.session;
-  if (token !== undefined) {
-    jwt.verify(token, config.secret(process.env), (err, decoded) => {
-      if (err !== null) {
-        reject(err);
-      }
-      findUserById(decoded.id)
-        .then((user) => {
-          if (user === undefined) {
-            reject(gemNotFound('User'));
-          }
-          resolve(user.roles);
-        })
-        .catch((errFindUser) => {
-          reject(errFindUser);
-        });
-    });
-  } else {
-    resolve([]);
-  }
-});
+const getUserRolesFromToken = async (req: IVerifyTokenRequest): Promise<IRole[]> =>
+  await new Promise((resolve, reject) => {
+    const { token } = req.session;
+    if (token !== undefined) {
+      jwt.verify(token, config.secret(process.env), (err, decoded) => {
+        if (err !== null) {
+          reject(err);
+        }
+        findUserById(decoded.id)
+          .then((user) => {
+            if (user === undefined) {
+              reject(gemNotFound('User'));
+            }
+            resolve(user.roles);
+          })
+          .catch((errFindUser) => {
+            reject(errFindUser);
+          });
+      });
+    } else {
+      resolve([]);
+    }
+  });
 
 const checkRouteRights = (req: Request, res: Response, next: () => void): void => {
   const urlMatch = routes.find((route) => pathToRegexp(route.url).exec(req.path) !== null);
@@ -164,5 +179,5 @@ export {
   generateVerificationMailToken,
   isAdmin,
   checkRouteRights,
-  type IVerifyTokenRequest
+  type IVerifyTokenRequest,
 };

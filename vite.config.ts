@@ -8,6 +8,6 @@ export default defineConfig({
   plugins: [react(), express('server'), svgr()],
   server: {
     host: true,
-    port: 3000
-  }
+    port: 3000,
+  },
 });

@@ -6,40 +6,31 @@ import './atextarea.scss';
 
 interface IAtextarea {
   /** The id of the Textarea element */
-  id: string
+  id: string;
   /** The class of the Textarea element */
-  className?: string
+  className?: string;
   /** The placeholder of the Textarea element */
-  placeholder?: string
+  placeholder?: string;
   /** The value of the Textarea element */
-  value: string
+  value: string;
   /** Is the field editable */
-  readOnly?: boolean
+  readOnly?: boolean;
   /** When the field changes */
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
-const Atextarea: FC<IAtextarea> = ({
-  id,
-  className,
-  value,
-  placeholder,
-  onChange,
-  readOnly
-}) => (
+const Atextarea: FC<IAtextarea> = ({ id, className, value, placeholder, onChange, readOnly }) => (
   <textarea
     id={id}
     name={id}
     readOnly={readOnly}
     onChange={onChange}
     placeholder={placeholder}
-    className={
-      classTrim(`
+    className={classTrim(`
         atextarea
         ${readOnly === true ? 'atextarea--readonly' : ''}
         ${className ?? ''}
-      `)
-    }
+      `)}
     value={value}
   />
 );

@@ -6,25 +6,19 @@ import './hoverlink.scss';
 
 interface IHoverlink {
   /** The class of the P element */
-  className?: string
+  className?: string;
   /** The link to another page */
-  href: string
+  href: string;
   /** The childrens of the P element */
-  children: React.JSX.Element | string | string[]
+  children: React.JSX.Element | string | string[];
 }
 
-const Hoverlink: FC<IHoverlink> = ({
-  className,
-  children,
-  href
-}) => (
+const Hoverlink: FC<IHoverlink> = ({ className, children, href }) => (
   <p
-    className={
-      classTrim(`
+    className={classTrim(`
         hoverlink
         ${className ?? ''}
-      `)
-    }
+      `)}
   >
     {children}
   </p>

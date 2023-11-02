@@ -4,42 +4,47 @@ import { type Request, type Response } from 'express';
 import { type HydratedDocument } from 'mongoose';
 import { type IRuleBookType } from './model';
 
-import { gemDuplicate, gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemDuplicate,
+  gemInvalidField,
+  gemNotFound,
+  gemServerError,
+} from '../../utils/globalErrorMessage';
 
 const { RuleBookType } = db;
 
-const findRuleBookTypes = async (): Promise<Array<HydratedDocument<IRuleBookType>>> => await new Promise((resolve, reject) => {
-  RuleBookType.find()
-    .then(async (res) => {
-      if (res === undefined || res === null) {
-        reject(gemNotFound('RuleBookTypes'));
-      } else {
-        resolve(res);
-      }
-    })
-    .catch(async (err) => {
-      reject(err);
-    });
-});
+const findRuleBookTypes = async (): Promise<Array<HydratedDocument<IRuleBookType>>> =>
+  await new Promise((resolve, reject) => {
+    RuleBookType.find()
+      .then(async (res) => {
+        if (res === undefined || res === null) {
+          reject(gemNotFound('RuleBookTypes'));
+        } else {
+          resolve(res);
+        }
+      })
+      .catch(async (err) => {
+        reject(err);
+      });
+  });
 
-const findRuleBookTypeById = async (id: string): Promise<HydratedDocument<IRuleBookType>> => await new Promise((resolve, reject) => {
-  RuleBookType.findById(id)
-    .then(async (res) => {
-      if (res === undefined || res === null) {
-        reject(gemNotFound('RuleBookType'));
-      } else {
-        resolve(res);
-      }
-    })
-    .catch(async (err) => {
-      reject(err);
-    });
-});
+const findRuleBookTypeById = async (id: string): Promise<HydratedDocument<IRuleBookType>> =>
+  await new Promise((resolve, reject) => {
+    RuleBookType.findById(id)
+      .then(async (res) => {
+        if (res === undefined || res === null) {
+          reject(gemNotFound('RuleBookType'));
+        } else {
+          resolve(res);
+        }
+      })
+      .catch(async (err) => {
+        reject(err);
+      });
+  });
 
 const create = (req: Request, res: Response): void => {
-  const {
-    name
-  } = req.body;
+  const { name } = req.body;
   if (name === undefined) {
     res.status(400).send(gemInvalidField('RuleBookType'));
     return;
@@ -48,7 +53,7 @@ const create = (req: Request, res: Response): void => {
     .then((ruleBooks) => {
       if (ruleBooks.find((ruleBook) => ruleBook.name === name) === undefined) {
         const ruleBookType = new RuleBookType({
-          name
+          name,
         });
 
         ruleBookType
@@ -67,10 +72,7 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const {
-    id,
-    name = null
-  } = req.body;
+  const { id, name = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('RuleBookType ID'));
     return;
@@ -79,8 +81,11 @@ const update = (req: Request, res: Response): void => {
     .then((ruleBooks) => {
       const actualRuleBookType = ruleBooks.find((ruleBook) => String(ruleBook._id) === id);
       if (actualRuleBookType !== undefined) {
-        if (name !== null && name !== actualRuleBookType.name) { actualRuleBookType.name = name; }
-        actualRuleBookType.save()
+        if (name !== null && name !== actualRuleBookType.name) {
+          actualRuleBookType.name = name;
+        }
+        actualRuleBookType
+          .save()
           .then(() => {
             res.send({ message: 'RuleBookType was updated successfully!', actualRuleBookType });
           })
@@ -95,9 +100,7 @@ const update = (req: Request, res: Response): void => {
 };
 
 const deleteRuleBookType = (req: Request, res: Response): void => {
-  const {
-    id
-  } = req.body;
+  const { id } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('RuleBookType ID'));
     return;
@@ -112,9 +115,7 @@ const deleteRuleBookType = (req: Request, res: Response): void => {
 };
 
 const findSingle = (req: Request, res: Response): void => {
-  const {
-    ruleBookTypeId
-  } = req.query;
+  const { ruleBookTypeId } = req.query;
   if (ruleBookTypeId === undefined || typeof ruleBookTypeId !== 'string') {
     res.status(400).send(gemInvalidField('RuleBookType ID'));
     return;
@@ -130,10 +131,4 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err) => res.status(500).send(gemServerError(err)));
 };
 
-export {
-  create,
-  update,
-  deleteRuleBookType,
-  findSingle,
-  findAll
-};
+export { create, update, deleteRuleBookType, findSingle, findAll };

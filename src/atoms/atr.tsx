@@ -6,22 +6,17 @@ import './atr.scss';
 
 interface IAtr {
   /** The class of the Table Row element */
-  className?: string
+  className?: string;
   /** The childrens of the Table Row element */
-  children: React.JSX.Element
+  children: React.JSX.Element;
 }
 
-const ATr: FC<IAtr> = ({
-  className,
-  children
-}) => (
+const ATr: FC<IAtr> = ({ className, children }) => (
   <tr
-    className={
-      classTrim(`
+    className={classTrim(`
         atr
         ${className ?? ''}
-      `)
-    }
+      `)}
   >
     {children}
   </tr>

@@ -13,19 +13,4 @@ import Ath from './ath';
 import Atr from './atr';
 import Alabel from './alabel';
 
-export {
-  Aul,
-  Ali,
-  Ap,
-  Aa,
-  Aimg,
-  Aicon,
-  Atextarea,
-  Atitle,
-  Aerror,
-  Atable,
-  Atd,
-  Ath,
-  Atr,
-  Alabel
-};
+export { Aul, Ali, Ap, Aa, Aimg, Aicon, Atextarea, Atitle, Aerror, Atable, Atd, Ath, Atr, Alabel };

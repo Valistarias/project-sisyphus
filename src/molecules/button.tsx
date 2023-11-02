@@ -10,25 +10,25 @@ import './button.scss';
 
 interface IButton {
   /** The type of the Button element */
-  type?: 'button' | 'submit'
+  type?: 'button' | 'submit';
   /** The theme of the button */
-  theme?: 'primary' | 'secondary' | 'tertiary' | 'error'
+  theme?: 'primary' | 'secondary' | 'tertiary' | 'error';
   /** The size of the button */
-  size?: 'medium' | 'small'
+  size?: 'medium' | 'small';
   /** The class of the Button element */
-  className?: string
+  className?: string;
   /** The text inside the button */
-  children?: string
+  children?: string;
   /** The icon (if any) of the button */
-  icon?: typeIcons
+  icon?: typeIcons;
   /** The redirect (if there is) on a button click */
-  href?: string
+  href?: string;
   /** Is the button disabled ? */
-  disabled?: boolean
+  disabled?: boolean;
   /** Is the button activated by any means ? */
-  active?: boolean
+  active?: boolean;
   /** When the input is clicked */
-  onClick?: (e: React.MouseEvent<HTMLElement>) => void
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
 const Button: FC<IButton> = ({
@@ -41,7 +41,7 @@ const Button: FC<IButton> = ({
   className,
   children,
   icon,
-  onClick
+  onClick,
 }) => {
   let navigate: NavigateFunction | null = null;
   if (href !== null) {
@@ -49,9 +49,8 @@ const Button: FC<IButton> = ({
   }
 
   return (
-  <button
-    className={
-      classTrim(`
+    <button
+      className={classTrim(`
         button
         button--${theme}
         button--${size}
@@ -60,28 +59,21 @@ const Button: FC<IButton> = ({
         ${disabled ? 'button--disabled' : ''}
         ${active ? 'button--active' : ''}
         ${className ?? ''}
-      `)
-    }
-    onClick={(e) => {
-      e.stopPropagation();
-      if (href !== null && navigate !== null) {
-        navigate(href);
-      } else if (onClick !== undefined) {
-        onClick(e);
-      }
-    }}
-    type={type}
-    disabled={disabled}
-  >
-    {
-      children !== undefined
-        ? (
-        <span className="button__content">{children}</span>
-          )
-        : null
-    }
-    {icon !== undefined ? (<Aicon className="button__icon" type={icon} />) : null}
-  </button>
+      `)}
+      onClick={(e) => {
+        e.stopPropagation();
+        if (href !== null && navigate !== null) {
+          navigate(href);
+        } else if (onClick !== undefined) {
+          onClick(e);
+        }
+      }}
+      type={type}
+      disabled={disabled}
+    >
+      {children !== undefined ? <span className="button__content">{children}</span> : null}
+      {icon !== undefined ? <Aicon className="button__icon" type={icon} /> : null}
+    </button>
   );
 };
 

@@ -1,6 +1,10 @@
 import HeaderBar from './headerBar';
 import Alert from './alert';
-import { RichTextElement, completeRichTextElementExtentions, basicRichTextElementExtentions } from './richTextElement';
+import {
+  RichTextElement,
+  completeRichTextElementExtentions,
+  basicRichTextElementExtentions,
+} from './richTextElement';
 import { SmartSelect, type ISingleValueSelect } from './select';
 
 export {
@@ -10,5 +14,5 @@ export {
   completeRichTextElementExtentions,
   basicRichTextElementExtentions,
   SmartSelect,
-  type ISingleValueSelect
+  type ISingleValueSelect,
 };

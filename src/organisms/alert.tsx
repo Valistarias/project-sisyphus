@@ -11,19 +11,17 @@ import './alert.scss';
 
 interface IAlert {
   /** The ID used on the alert provider */
-  id: number
+  id: number;
   /** The content of the alert */
-  children: React.JSX.Element
+  children: React.JSX.Element;
   /** If the timer is provided, the alert will close automatically after the timer (in seconds) */
-  timer?: number
+  timer?: number;
   /** Is the alert self closable */
-  closable?: boolean
+  closable?: boolean;
 }
 
 const Alert: FC<IAlert> = ({ id, children, timer, closable }) => {
-  const {
-    deleteAlert
-  } = useSystemAlerts();
+  const { deleteAlert } = useSystemAlerts();
 
   const { t } = useTranslation();
 
@@ -43,51 +41,44 @@ const Alert: FC<IAlert> = ({ id, children, timer, closable }) => {
     }, 410);
   }, [deleteAlert, id]);
 
-  const closeDom = useMemo(() => closable === true
-    ? (
-      <Button
-        onClick={onCloseAlert}
-      >
-        {t('alert.close', { ns: 'components' })}
-      </Button>
-      )
-    : null, [closable, onCloseAlert, t]);
-
-  useEffect(
-    () => {
-      setTimeout(() => {
-        setAlertVisible(true);
-      }, 100);
-
-      if (timer !== undefined) {
-        timerCountdown.current = setTimeout(() => {
-          setClosing(true);
-          timerDelete.current = setTimeout(() => {
-            deleteAlert({ key: id });
-          }, 410);
-        }, timer * 1000);
-      }
-      return () => {
-        if (timerDelete.current !== null) {
-          clearTimeout(timerDelete.current);
-        }
-
-        if (timerCountdown.current !== null) {
-          clearTimeout(timerCountdown.current);
-        }
-      };
-    },
-    [timer, deleteAlert, id]
+  const closeDom = useMemo(
+    () =>
+      closable === true ? (
+        <Button onClick={onCloseAlert}>{t('alert.close', { ns: 'components' })}</Button>
+      ) : null,
+    [closable, onCloseAlert, t]
   );
+
+  useEffect(() => {
+    setTimeout(() => {
+      setAlertVisible(true);
+    }, 100);
+
+    if (timer !== undefined) {
+      timerCountdown.current = setTimeout(() => {
+        setClosing(true);
+        timerDelete.current = setTimeout(() => {
+          deleteAlert({ key: id });
+        }, 410);
+      }, timer * 1000);
+    }
+    return () => {
+      if (timerDelete.current !== null) {
+        clearTimeout(timerDelete.current);
+      }
+
+      if (timerCountdown.current !== null) {
+        clearTimeout(timerCountdown.current);
+      }
+    };
+  }, [timer, deleteAlert, id]);
 
   return (
     <div
-      className={
-        classTrim(`
+      className={classTrim(`
           alert
           ${!isAlertVisible || closing ? ' alert--close' : ''}
-        `)
-      }
+        `)}
     >
       <div className="alert__content">
         {children}

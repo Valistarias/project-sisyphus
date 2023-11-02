@@ -1,11 +1,4 @@
-import {
-  Auth,
-  MailToken,
-  Notions,
-  Users,
-  RuleBooks,
-  RuleBookTypes
-} from './entities/index';
+import { Auth, MailToken, Notions, Users, RuleBooks, RuleBookTypes } from './entities/index';
 
 export default class Api {
   auth: Auth;
@@ -15,7 +8,7 @@ export default class Api {
   ruleBookTypes: RuleBookTypes;
   users: Users;
 
-  constructor () {
+  constructor() {
     this.auth = new Auth();
     this.mailToken = new MailToken();
     this.notions = new Notions();

@@ -6,26 +6,20 @@ import './alabel.scss';
 
 interface IALabel {
   /** The class of the P element */
-  className?: string
+  className?: string;
   /** Is the label connected to any field */
-  htmlFor?: string
+  htmlFor?: string;
   /** The childrens of the P element */
-  children: string
+  children: string;
 }
 
-const ALabel: FC<IALabel> = ({
-  className,
-  children,
-  htmlFor
-}) => (
+const ALabel: FC<IALabel> = ({ className, children, htmlFor }) => (
   <label
     htmlFor={htmlFor}
-    className={
-      classTrim(`
+    className={classTrim(`
         alabel
         ${className ?? ''}
-      `)
-    }
+      `)}
   >
     {children}
   </label>

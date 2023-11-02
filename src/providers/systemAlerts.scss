@@ -12,7 +12,7 @@
     overflow: hidden;
     position: relative;
     top: var(--header-height);
-    transition: height .4s ease;
+    transition: height 0.4s ease;
 
     &--close {
       height: 0;

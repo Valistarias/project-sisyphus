@@ -6,22 +6,17 @@ import './atable.scss';
 
 interface IAtable {
   /** The class of the Table element */
-  className?: string
+  className?: string;
   /** The childrens of the Table element */
-  children: React.JSX.Element
+  children: React.JSX.Element;
 }
 
-const ATable: FC<IAtable> = ({
-  className,
-  children
-}) => (
+const ATable: FC<IAtable> = ({ className, children }) => (
   <table
-    className={
-      classTrim(`
+    className={classTrim(`
         atable
         ${className ?? ''}
-      `)
-    }
+      `)}
   >
     {children}
   </table>

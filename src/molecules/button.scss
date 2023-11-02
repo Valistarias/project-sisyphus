@@ -10,7 +10,9 @@
   fill: var(--button-fill);
   gap: 10px;
   padding: 0;
-  transition: border .15s ease, background .15s ease;
+  transition:
+    border 0.15s ease,
+    background 0.15s ease;
 
   &.button--notext {
     border: 1px solid transparent;
@@ -27,12 +29,12 @@
 
   &__content {
     font-family: var(--mono-font);
-    transition: color .15s ease;
+    transition: color 0.15s ease;
   }
 
   &__icon {
     fill: inherit;
-    transition: fill .15s ease;
+    transition: fill 0.15s ease;
   }
 
   .aicon {
@@ -45,8 +47,8 @@
 
     .button__content {
       font-size: 1.4rem;
-      padding: .8rem 2rem;
-      padding-right: .5rem;
+      padding: 0.8rem 2rem;
+      padding-right: 0.5rem;
     }
 
     &.button--noicon .button__content {
@@ -54,7 +56,7 @@
     }
 
     &.button--notext {
-      padding: .4rem;
+      padding: 0.4rem;
     }
   }
 
@@ -63,8 +65,8 @@
 
     .button__content {
       font-size: 1.2rem;
-      padding: .6rem 1rem;
-      padding-right: .2rem;
+      padding: 0.6rem 1rem;
+      padding-right: 0.2rem;
     }
 
     &.button--noicon .button__content {
@@ -72,7 +74,7 @@
     }
 
     &.button--notext {
-      padding: .4rem;
+      padding: 0.4rem;
     }
 
     .button__icon {
@@ -137,7 +139,7 @@
 
   // Others ----------------------------------
   &--disabled {
-    opacity: .6;
+    opacity: 0.6;
     pointer-events: none;
   }
 }

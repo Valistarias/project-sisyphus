@@ -8,7 +8,7 @@ const { ROLES, User } = db;
 
 const checkDuplicateMail = (req: Request, res: Response, next: () => void): void => {
   User.findOne({
-    mail: req.body.mail
+    mail: req.body.mail,
   })
     .then((user) => {
       if (user !== null) {
@@ -39,5 +39,5 @@ const checkRolesExisted = (req: Request, res: Response, next: () => void): void 
 
 export default {
   checkDuplicateMail,
-  checkRolesExisted
+  checkRolesExisted,
 };

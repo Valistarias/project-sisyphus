@@ -25,5 +25,5 @@ export {
   AdminNewRuleBookPage,
   AdminEditRuleBookPage,
   AdminNewNotionPage,
-  AdminEditNotionPage
+  AdminEditNotionPage,
 };

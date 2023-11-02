@@ -11,33 +11,33 @@ import './input.scss';
 interface IInput {
   /** The controlled element for react hook form */
   registered?: {
-    onChange: ChangeHandler
-    onBlur: ChangeHandler
-    ref: React.Ref<any>
-    name: string
-  }
+    onChange: ChangeHandler;
+    onBlur: ChangeHandler;
+    ref: React.Ref<any>;
+    name: string;
+  };
   /** The type of input */
-  type?: 'text' | 'password' | 'email'
+  type?: 'text' | 'password' | 'email';
   /** The theme of the button */
-  theme?: 'primary' | 'secondary' | 'tertiary'
+  theme?: 'primary' | 'secondary' | 'tertiary';
   /** The size of the input */
-  size?: 'medium' | 'small'
+  size?: 'medium' | 'small';
   /** The class of the Textarea element */
-  className?: string
+  className?: string;
   /** The placeholder of the Textarea element */
-  placeholder?: string
+  placeholder?: string;
   /** The label, if any */
-  label?: string
+  label?: string;
   /** Is the field editable */
-  readOnly?: boolean
+  readOnly?: boolean;
   /** Is the field hidden */
-  hidden?: boolean
+  hidden?: boolean;
   /** Allow the user's password manager to automatically enter the password */
-  autoComplete?: string
+  autoComplete?: string;
   /** On field change */
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   /** The field value */
-  value?: string
+  value?: string;
 }
 
 const Input: FC<IInput> = ({
@@ -52,26 +52,18 @@ const Input: FC<IInput> = ({
   hidden,
   autoComplete,
   onChange,
-  value
+  value,
 }) => (
-  <div className={
-    classTrim(`
+  <div
+    className={classTrim(`
       input
       input--${theme}
       input--${size}
       ${readOnly === true ? 'input--readonly' : ''}
       ${className ?? ''}
-    `)
-  }>
-    {label !== undefined
-      ? (
-      <Alabel
-        htmlFor={registered?.name}
-      >
-        {label}
-      </Alabel>
-        )
-      : null}
+    `)}
+  >
+    {label !== undefined ? <Alabel htmlFor={registered?.name}>{label}</Alabel> : null}
     <input
       type={type}
       readOnly={readOnly}
@@ -81,7 +73,7 @@ const Input: FC<IInput> = ({
       autoComplete={autoComplete ?? undefined}
       onChange={onChange}
       value={value}
-      { ...registered }
+      {...registered}
     />
   </div>
 );

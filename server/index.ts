@@ -37,7 +37,7 @@ const mailgun = new Mailgun(formData);
 const mg = mailgun.client({ username: 'api', key: mailgunApi });
 
 const corsOptions = {
-  origin: `http://localhost:${port}`
+  origin: `http://localhost:${port}`,
 };
 
 app.use(cors(corsOptions));
@@ -53,7 +53,7 @@ app.use(
   cookieSession({
     name: 'sisyphus-charsheet-session',
     secret: cookieSecret, // should use as secret environment variable
-    httpOnly: true
+    httpOnly: true,
   })
 );
 

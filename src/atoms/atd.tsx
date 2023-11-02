@@ -6,22 +6,17 @@ import './atd.scss';
 
 interface IAtd {
   /** The class of the Table Cell element */
-  className?: string
+  className?: string;
   /** The childrens of the Table Cell element */
-  children: React.JSX.Element
+  children: React.JSX.Element;
 }
 
-const ATd: FC<IAtd> = ({
-  className,
-  children
-}) => (
+const ATd: FC<IAtd> = ({ className, children }) => (
   <td
-    className={
-      classTrim(`
+    className={classTrim(`
         atd
         ${className ?? ''}
-      `)
-    }
+      `)}
   >
     {children}
   </td>

@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default function express (path: string) {
+export default function express(path: string) {
   return {
     name: 'vite3-plugin-express',
     configureServer: async (server: any) => {
@@ -13,6 +13,6 @@ export default function express (path: string) {
           console.error(err);
         }
       });
-    }
+    },
   };
 }
