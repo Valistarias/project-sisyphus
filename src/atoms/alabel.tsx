@@ -2,7 +2,7 @@ import React, { type FC } from 'react';
 
 import { classTrim } from '../utils';
 
-import './aa.scss';
+import './alabel.scss';
 
 interface IALabel {
   /** The class of the P element */

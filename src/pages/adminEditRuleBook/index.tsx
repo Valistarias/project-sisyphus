@@ -258,8 +258,7 @@ const AdminEditRuleBooks: FC = () => {
           <div className="adminEditRuleBook__basics">
             <Input
               type="text"
-              placeholder={t('nameRuleBook.placeholder', { ns: 'fields' })}
-              label={t('nameRuleBook.placeholder', { ns: 'fields' })}
+              label={t('nameRuleBook.label', { ns: 'fields' })}
               onChange={(e) => {
                 setRuleBookName(e.target.value);
                 setError('');
@@ -268,8 +267,8 @@ const AdminEditRuleBooks: FC = () => {
               className="adminEditRuleBook__basics__name"
             />
             <SmartSelect
+              label={t('typeRuleBook.select', { ns: 'fields' })}
               options={ruleBookTypes}
-              placeholder={t('typeRuleBook.placeholder', { ns: 'fields' })}
               selected={sentApiTypeChoice}
               onChange={(choice) => {
                 setSelectedType(choice.value);
@@ -279,7 +278,7 @@ const AdminEditRuleBooks: FC = () => {
             />
           </div>
           <div className="adminEditRuleBook__details">
-            <RichTextElement title={t('ruleBookSummary.title', { ns: 'fields' })} editor={introEditor} rawStringContent={ruleBookSummary} small />
+            <RichTextElement label={t('ruleBookSummary.title', { ns: 'fields' })} editor={introEditor} rawStringContent={ruleBookSummary} small />
           </div>
 
           <Atitle className="adminEditRuleBook__intl" level={2}>{t('adminEditRuleBook.i18n', { ns: 'pages' })}</Atitle>
@@ -287,8 +286,7 @@ const AdminEditRuleBooks: FC = () => {
           <div className="adminEditRuleBook__basics">
             <Input
               type="text"
-              placeholder={`${t('nameRuleBook.placeholder', { ns: 'fields' })} (FR)`}
-              label={`${t('nameRuleBook.placeholder', { ns: 'fields' })} (FR)`}
+              label={`${t('nameRuleBook.label', { ns: 'fields' })} (FR)`}
               onChange={(e) => {
                 setRuleBookNameFr(e.target.value);
               }}
@@ -297,7 +295,7 @@ const AdminEditRuleBooks: FC = () => {
             />
           </div>
           <div className="adminEditRuleBook__details">
-            <RichTextElement title={`${t('ruleBookSummary.title', { ns: 'fields' })} (FR)`} editor={introFrEditor} rawStringContent={ruleBookSummaryFr} small />
+            <RichTextElement label={`${t('ruleBookSummary.title', { ns: 'fields' })} (FR)`} editor={introFrEditor} rawStringContent={ruleBookSummaryFr} small />
           </div>
           <Button
             onClick={onSaveRuleBook}

@@ -7,8 +7,8 @@ import { useTranslation } from 'react-i18next';
 import { useApi } from '../../providers/api';
 import { useSystemAlerts } from '../../providers/systemAlerts';
 
-import { Aerror, Ainput, Ap, Atitle } from '../../atoms';
-import { Button } from '../../molecules';
+import { Aerror, Ap, Atitle } from '../../atoms';
+import { Button, Input } from '../../molecules';
 import { Alert, type ISingleValueSelect, RichTextElement, SmartSelect, completeRichTextElementExtentions } from '../../organisms';
 
 import { type ICuratedNotion, type IRuleBook } from '../../interfaces';
@@ -231,9 +231,9 @@ const AdminEditNotions: FC = () => {
           : null
       }
       <div className="adminEditNotion__basics">
-        <Ainput
+        <Input
           type="text"
-          placeholder={t('nameNotion.placeholder', { ns: 'fields' })}
+          label={t('nameNotion.label', { ns: 'fields' })}
           onChange={(e) => {
             setNotionName(e.target.value);
             setError('');
@@ -243,8 +243,8 @@ const AdminEditNotions: FC = () => {
         />
         <SmartSelect
           options={ruleBooks}
-          placeholder={t('typeNotion.placeholder', { ns: 'fields' })}
           selected={sentApiRuleBookChoice}
+          label={t('notionRuleBookType.title', { ns: 'fields' })}
           onChange={(choice) => {
             setSelectedType(choice.value);
             setError('');
@@ -253,16 +253,16 @@ const AdminEditNotions: FC = () => {
         />
       </div>
       <div className="adminEditNotion__details">
-        <RichTextElement title={t('notionShort.title', { ns: 'fields' })} editor={shortEditor} rawStringContent={notionShort} small />
-        <RichTextElement title={t('notionText.title', { ns: 'fields' })} editor={textEditor} rawStringContent={notionText} />
+        <RichTextElement label={t('notionShort.title', { ns: 'fields' })} editor={shortEditor} rawStringContent={notionShort} small />
+        <RichTextElement label={t('notionText.title', { ns: 'fields' })} editor={textEditor} rawStringContent={notionText} />
       </div>
 
       <Atitle className="adminEditNotion__intl" level={2}>{t('adminEditNotion.i18n', { ns: 'pages' })}</Atitle>
       <Ap className="adminEditNotion__intl-info">{t('adminEditNotion.i18nInfo', { ns: 'pages' })}</Ap>
       <div className="adminEditNotion__basics">
-        <Ainput
+        <Input
           type="text"
-          placeholder={`${t('nameNotion.placeholder', { ns: 'fields' })} (FR)`}
+          label={`${t('nameNotion.label', { ns: 'fields' })} (FR)`}
           onChange={(e) => {
             setNotionNameFr(e.target.value);
           }}
@@ -271,8 +271,8 @@ const AdminEditNotions: FC = () => {
         />
       </div>
       <div className="adminEditNotion__details">
-        <RichTextElement title={`${t('notionShort.title', { ns: 'fields' })} (FR)`} editor={shortFrEditor} rawStringContent={notionShortFr} small />
-        <RichTextElement title={`${t('notionText.title', { ns: 'fields' })} (FR)`} editor={textFrEditor} rawStringContent={notionTextFr} />
+        <RichTextElement label={`${t('notionShort.title', { ns: 'fields' })} (FR)`} editor={shortFrEditor} rawStringContent={notionShortFr} small />
+        <RichTextElement label={`${t('notionText.title', { ns: 'fields' })} (FR)`} editor={textFrEditor} rawStringContent={notionTextFr} />
       </div>
       <Button
         onClick={onSaveNotion}

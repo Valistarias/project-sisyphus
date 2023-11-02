@@ -7,7 +7,7 @@ import Heading from '@tiptap/extension-heading';
 import { MenuBar } from './menuBar';
 import ReactComponent from './test';
 
-import { Ap } from '../../atoms';
+import { Alabel } from '../../atoms';
 
 import { classTrim } from '../../utils';
 
@@ -164,7 +164,7 @@ interface IRichTextElement {
   /** Is there raw content (stringified) to be displayed */
   rawStringContent?: string
   /** The title of the editor, if any */
-  title?: string
+  label?: string
   /** Is the text element readOnly */
   readOnly?: boolean
   /** Is the text editor with all options ? */
@@ -175,7 +175,7 @@ interface IRichTextElement {
 
 const RichTextElement: FC<IRichTextElement> = ({
   editor,
-  title,
+  label,
   rawStringContent,
   readOnly = false,
   complete = false,
@@ -199,13 +199,13 @@ const RichTextElement: FC<IRichTextElement> = ({
         `)
       }
     >
-      {
-      title !== undefined && title !== null && !readOnly
+      {label !== undefined
         ? (
-        <Ap className="richTextElt__title">{title}</Ap>
+        <Alabel>
+          {label}
+        </Alabel>
           )
-        : null
-      }
+        : null}
       {
         !readOnly
           ? (

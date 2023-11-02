@@ -6,8 +6,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useSystemAlerts } from '../../providers/systemAlerts';
 import { useApi } from '../../providers/api';
 
-import { Aerror, Ainput, Ap, Atitle } from '../../atoms';
-import { Button } from '../../molecules';
+import { Aerror, Ap, Atitle } from '../../atoms';
+import { Button, Input } from '../../molecules';
 import { Alert } from '../../organisms';
 
 import './newPass.scss';
@@ -89,23 +89,23 @@ const NewPassword: FC = () => {
       <Atitle level={1}>{t('newPass.title', { ns: 'pages' })}</Atitle>
       <form className="new-pass__form" onSubmit={handleSubmit(onSubmit)} noValidate>
         {errors.root?.serverError?.message !== undefined ? (<Aerror>{errors.root.serverError.message}</Aerror>) : null}
-        <Ainput
+        <Input
           type="email"
           registered={register('mail')}
           autoComplete="username"
           hidden
           readOnly
         />
-        <Ainput
+        <Input
           type="password"
           registered={register('password', {
             required: t('password.required', { ns: 'fields' })
           })}
-          placeholder={t('password.placeholder', { ns: 'fields' })}
+          label={t('password.label', { ns: 'fields' })}
           autoComplete="new-password"
         />
         {errors.password?.message !== undefined ? (<Aerror>{errors.password.message}</Aerror>) : null}
-        <Ainput
+        <Input
           type="password"
           registered={register('confirmPassword', {
             required: t('confirmPassword.required', { ns: 'fields' }),
@@ -115,7 +115,7 @@ const NewPassword: FC = () => {
               }
             }
           })}
-          placeholder={t('confirmPassword.placeholder', { ns: 'fields' })}
+          label={t('confirmPassword.label', { ns: 'fields' })}
           autoComplete="new-password"
         />
         {errors.confirmPassword?.message !== undefined ? (<Aerror>{errors.confirmPassword.message}</Aerror>) : null}

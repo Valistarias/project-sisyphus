@@ -3,7 +3,7 @@ import Select, { components, type OptionProps } from 'react-select';
 
 import { useTranslation } from 'react-i18next';
 
-import { Ap } from '../atoms';
+import { Alabel, Ap } from '../atoms';
 
 import { classTrim } from '../utils';
 
@@ -24,6 +24,8 @@ interface IAp {
   onChange: (elt: ISingleValueSelect) => void
   /** Define the placeholder for this field */
   placeholder?: string
+  /** The label, if any */
+  label?: string
   /** The classname of the select */
   className?: string
 }
@@ -57,6 +59,7 @@ const Option: FC<OptionProps<ISingleValueSelect, false>> = ({ children, ...props
 
 const SmartSelect: FC<IAp> = ({
   options,
+  label,
   onChange,
   placeholder = null,
   selected = null,
@@ -73,23 +76,34 @@ const SmartSelect: FC<IAp> = ({
   }, [selected]);
 
   return (
-    <Select
-      onChange={(choice: ISingleValueSelect) => {
-        setSelectedElt(choice);
-        onChange(choice);
-      }}
-      value={selectedElt}
-      options={options}
+    <div
       className={
         classTrim(`
         smartselect
         ${className ?? ''}
       `)}
-      classNamePrefix="smartselect"
-      components={{ Option }}
-      placeholder={placeholder ?? t('smartselect.placeholder', { ns: 'components' })}
-      noOptionsMessage={() => <Ap>{t('smartselect.notfound', { ns: 'components' })}</Ap>}
-    />
+    >
+      {label !== undefined
+        ? (
+        <Alabel>
+          {label}
+        </Alabel>
+          )
+        : null}
+      <Select
+        onChange={(choice: ISingleValueSelect) => {
+          setSelectedElt(choice);
+          onChange(choice);
+        }}
+        value={selectedElt}
+        options={options}
+        className="smartselect__field"
+        classNamePrefix="smartselect"
+        components={{ Option }}
+        placeholder={placeholder ?? t('smartselect.label', { ns: 'components' })}
+        noOptionsMessage={() => <Ap>{t('smartselect.notfound', { ns: 'components' })}</Ap>}
+      />
+    </div>
   );
 };
 

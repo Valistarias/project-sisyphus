@@ -7,8 +7,8 @@ import { useTranslation } from 'react-i18next';
 import { useSystemAlerts } from '../../providers/systemAlerts';
 import { useApi } from '../../providers/api';
 
-import { Aerror, Ainput, Ap, Atitle } from '../../atoms';
-import { Button } from '../../molecules';
+import { Aerror, Ap, Atitle } from '../../atoms';
+import { Button, Input } from '../../molecules';
 import { Alert } from '../../organisms';
 
 import { regexMail } from '../../utils';
@@ -83,7 +83,7 @@ const Signup: FC = () => {
       <Atitle level={1}>{t('signup.title', { ns: 'pages' })}</Atitle>
       <form className="signup__form" onSubmit={handleSubmit(onSubmit)} noValidate>
         {errors.root?.serverError?.message !== undefined ? (<Aerror>{errors.root.serverError.message}</Aerror>) : null}
-        <Ainput
+        <Input
           type="email"
           registered={register('mail', {
             required: t('mail.required', { ns: 'fields' }),
@@ -92,20 +92,20 @@ const Signup: FC = () => {
               message: t('mail.pattern', { ns: 'fields' })
             }
           })}
-          placeholder={t('mail.placeholder', { ns: 'fields' })}
+          label={t('mail.label', { ns: 'fields' })}
           autoComplete="email"
         />
         {errors.mail?.message !== undefined ? (<Aerror>{errors.mail.message}</Aerror>) : null}
-        <Ainput
+        <Input
           type="password"
           registered={register('password', {
             required: t('password.required', { ns: 'fields' })
           })}
-          placeholder={t('password.placeholder', { ns: 'fields' })}
+          label={t('password.label', { ns: 'fields' })}
           autoComplete="new-password"
         />
         {errors.password?.message !== undefined ? (<Aerror>{errors.password.message}</Aerror>) : null}
-        <Ainput
+        <Input
           type="password"
           registered={register('confirmPassword', {
             required: t('confirmPassword.required', { ns: 'fields' }),
@@ -115,7 +115,7 @@ const Signup: FC = () => {
               }
             }
           })}
-          placeholder={t('confirmPassword.placeholder', { ns: 'fields' })}
+          label={t('confirmPassword.label', { ns: 'fields' })}
           autoComplete="new-password"
         />
         {errors.confirmPassword?.message !== undefined ? (<Aerror>{errors.confirmPassword.message}</Aerror>) : null}

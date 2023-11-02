@@ -1,34 +1,41 @@
 .input {
-  background: transparent;
-  border-radius: 3px;
-  box-sizing: border-box;
-  color: var(--font-color);
-  font-family: var(--mono-font);
-  margin: 0;
-  outline: 0;
-  resize: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   width: 100%;
 
+  &__field {
+    background: transparent;
+    border-radius: 3px;
+    box-sizing: border-box;
+    color: var(--font-color);
+    font-family: var(--mono-font);
+    margin: 0;
+    outline: 0;
+    resize: none;
+    width: 100%;
+  }
+
   // Sizes -----------------------------------
-  &--medium {
+  &--medium .input__field {
     font-size: 1.2rem;
     height: 40px;
     padding: .8rem 2rem;
   }
 
-  &--small {
+  &--small .input__field {
     font-size: 1rem;
     height: 30px;
     padding: .6rem 1.5rem;
   }
 
   // Themes ----------------------------------
-  &--primary {
+  &--primary .input__field {
     border: 1px solid var(--primary);
   }
 
   // Others ----------------------------------
-  &--readonly {
+  &--readonly .input__field {
     border: 0;
   }
 }

@@ -4,8 +4,9 @@ import { classTrim } from '../utils';
 
 import { type ChangeHandler } from 'react-hook-form';
 
-import './ainput.scss';
 import { Alabel } from '../atoms';
+
+import './input.scss';
 
 interface IInput {
   /** The controlled element for react hook form */
@@ -53,7 +54,15 @@ const Input: FC<IInput> = ({
   onChange,
   value
 }) => (
-  <>
+  <div className={
+    classTrim(`
+      input
+      input--${theme}
+      input--${size}
+      ${readOnly === true ? 'input--readonly' : ''}
+      ${className ?? ''}
+    `)
+  }>
     {label !== undefined
       ? (
       <Alabel
@@ -68,21 +77,13 @@ const Input: FC<IInput> = ({
       readOnly={readOnly}
       hidden={hidden}
       placeholder={placeholder}
-      className={
-        classTrim(`
-          ainput
-          ainput--${theme}
-          ainput--${size}
-          ${readOnly === true ? 'ainput--readonly' : ''}
-          ${className ?? ''}
-        `)
-      }
+      className="input__field"
       autoComplete={autoComplete ?? undefined}
       onChange={onChange}
       value={value}
       { ...registered }
     />
-  </>
+  </div>
 );
 
 export default Input;

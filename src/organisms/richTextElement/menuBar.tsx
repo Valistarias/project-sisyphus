@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 
 import { classTrim } from '../../utils';
 
-import { Ainput, Ap } from '../../atoms';
-import { Button } from '../../molecules';
+import { Ap } from '../../atoms';
+import { Button, Input } from '../../molecules';
 
 import './menuBar.scss';
 
@@ -55,7 +55,7 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className }) => {
         { testBarOpened
           ? (
             <div className="menubar__advanced__testbar">
-              <Ainput
+              <Input
                 type="text"
                 placeholder="Text"
                 onChange={(e) => { setTestBarValue(e.target.value); }}

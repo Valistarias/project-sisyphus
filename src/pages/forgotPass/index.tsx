@@ -7,8 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import { useSystemAlerts } from '../../providers/systemAlerts';
 import { useApi } from '../../providers/api';
 
-import { Aerror, Ainput, Ap, Atitle } from '../../atoms';
-import { Button } from '../../molecules';
+import { Aerror, Ap, Atitle } from '../../atoms';
+import { Button, Input } from '../../molecules';
 import { Alert } from '../../organisms';
 
 import { regexMail } from '../../utils';
@@ -70,7 +70,7 @@ const ForgotPassword: FC = () => {
       <Atitle level={1}>{t('forgotPass.title', { ns: 'pages' })}</Atitle>
       <form className="forgot-pass__form" onSubmit={handleSubmit(onSubmit)} noValidate>
         {errors.root?.serverError?.message !== undefined ? (<Aerror>{errors.root.serverError.message}</Aerror>) : null}
-        <Ainput
+        <Input
           type="email"
           registered={register('mail', {
             required: t('mail.required', { ns: 'fields' }),
@@ -79,7 +79,7 @@ const ForgotPassword: FC = () => {
               message: t('mail.pattern', { ns: 'fields' })
             }
           })}
-          placeholder={t('mail.placeholder', { ns: 'fields' })}
+          label={t('mail.label', { ns: 'fields' })}
           autoComplete="username"
         />
         {errors.mail?.message !== undefined ? (<Aerror>{errors.mail.message}</Aerror>) : null}

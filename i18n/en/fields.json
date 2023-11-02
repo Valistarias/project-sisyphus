@@ -2,42 +2,46 @@
   "mail": {
     "required": "Email address is required",
     "pattern": "The email format isn't right (xxx@yyy.zz)",
-    "placeholder": "Email..."
+    "label": "Email"
   },
   "password": {
     "required": "Password is required",
-    "placeholder": "Password..."
+    "label": "Password"
   },
   "confirmPassword": {
     "required": "Password is required",
     "validate": "Your passwords do no match",
-    "placeholder": "Confirm Password..."
+    "label": "Confirm Password"
   },
   "nameRuleBookType": {
     "required": "A Rulebook Type Name is required",
-    "placeholder": "Rulebook Type Name..."
+    "label": "Rulebook Type Name"
   },
   "nameRuleBook": {
     "required": "A Rulebook Name is required",
-    "placeholder": "Rulebook Name..."
+    "label": "Rulebook Name"
   },
   "typeRuleBook": {
     "required": "A Rulebook Type is required",
-    "placeholder": "Rulebook Type..."
+    "label": "Rulebook Type",
+    "select": "Rulebook Type"
   },
   "ruleBookSummary": {
     "title": "RuleBook Intro"
   },
   "nameNotion": {
     "required": "A Notion Name is required",
-    "placeholder": "Notion Name..."
+    "label": "Notion Name"
   },
   "typeNotion": {
     "required": "A Rulebook need to be linked to this Notion",
-    "placeholder": "Linked Rulebook..."
+    "label": "Linked Rulebook"
   },
   "notionShort": {
     "title": "Notion Summary"
+  },
+  "notionRuleBookType": {
+    "title": "RuleBook"
   },
   "notionText": {
     "title": "Notion Content"

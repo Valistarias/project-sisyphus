@@ -7,8 +7,8 @@ import { useTranslation } from 'react-i18next';
 import { useApi } from '../../providers/api';
 import { useSystemAlerts } from '../../providers/systemAlerts';
 
-import { Aerror, Ainput, Ap, Atitle } from '../../atoms';
-import { Button } from '../../molecules';
+import { Aerror, Ap, Atitle } from '../../atoms';
+import { Button, Input } from '../../molecules';
 import { Alert, type ISingleValueSelect, RichTextElement, SmartSelect, completeRichTextElementExtentions } from '../../organisms';
 
 import { type IRuleBookType } from '../../interfaces';
@@ -153,9 +153,9 @@ const AdminNewRuleBooks: FC = () => {
           : null
       }
       <div className="adminNewRuleBook__basics">
-        <Ainput
+        <Input
           type="text"
-          placeholder={t('nameRuleBook.placeholder', { ns: 'fields' })}
+          label={t('nameRuleBook.label', { ns: 'fields' })}
           onChange={(e) => {
             setRuleBookName(e.target.value);
             setError('');
@@ -164,8 +164,8 @@ const AdminNewRuleBooks: FC = () => {
           className="adminNewRuleBook__basics__name"
         />
         <SmartSelect
+          label={t('typeRuleBook.select', { ns: 'fields' })}
           options={ruleBookTypes}
-          placeholder={t('typeRuleBook.placeholder', { ns: 'fields' })}
           onChange={(choice) => {
             setSelectedType(choice.value);
             setError('');
@@ -174,15 +174,15 @@ const AdminNewRuleBooks: FC = () => {
         />
       </div>
       <div className="adminNewRuleBook__details">
-        <RichTextElement title={t('ruleBookSummary.title', { ns: 'fields' })} editor={introEditor} rawStringContent={ruleBookSummary} small />
+        <RichTextElement label={t('ruleBookSummary.title', { ns: 'fields' })} editor={introEditor} rawStringContent={ruleBookSummary} small />
       </div>
 
       <Atitle className="adminNewRuleBook__intl" level={2}>{t('adminNewRuleBook.i18n', { ns: 'pages' })}</Atitle>
       <Ap className="adminNewRuleBook__intl-info">{t('adminNewRuleBook.i18nInfo', { ns: 'pages' })}</Ap>
       <div className="adminNewRuleBook__basics">
-        <Ainput
+        <Input
           type="text"
-          placeholder={`${t('nameRuleBook.placeholder', { ns: 'fields' })} (FR)`}
+          label={`${t('nameRuleBook.label', { ns: 'fields' })} (FR)`}
           onChange={(e) => {
             setRuleBookNameFr(e.target.value);
           }}
@@ -191,7 +191,7 @@ const AdminNewRuleBooks: FC = () => {
         />
       </div>
       <div className="adminNewRuleBook__details">
-        <RichTextElement title={`${t('ruleBookSummary.title', { ns: 'fields' })} (FR)`} editor={introFrEditor} rawStringContent={ruleBookSummaryFr} small />
+        <RichTextElement label={`${t('ruleBookSummary.title', { ns: 'fields' })} (FR)`} editor={introFrEditor} rawStringContent={ruleBookSummaryFr} small />
       </div>
       <Button
         onClick={onSaveRuleBook}

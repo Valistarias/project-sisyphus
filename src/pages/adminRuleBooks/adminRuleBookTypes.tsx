@@ -8,8 +8,8 @@ import { useSystemAlerts } from '../../providers/systemAlerts';
 
 import { type IRuleBookType } from '../../interfaces';
 
-import { Aerror, Ainput, Ali, Ap, Atitle, Aul } from '../../atoms';
-import { Button } from '../../molecules';
+import { Aerror, Ali, Ap, Atitle, Aul } from '../../atoms';
+import { Button, Input } from '../../molecules';
 import { Alert } from '../../organisms';
 
 import './adminRuleBookTypes.scss';
@@ -253,13 +253,13 @@ const AdminRuleBookTypes: FC = () => {
             ? (
             <form className="signup__form" onSubmit={handleSubmit(onSubmit)}>
               {errors.root?.serverError?.message !== undefined ? (<Aerror>{errors.root.serverError.message}</Aerror>) : null}
-              <Ainput
+              <Input
                 type="text"
                 size="small"
                 registered={register('name', {
                   required: t('nameRuleBookType.required', { ns: 'fields' })
                 })}
-                placeholder={t('nameRuleBookType.placeholder', { ns: 'fields' })}
+                label={t('nameRuleBookType.label', { ns: 'fields' })}
               />
               {errors.name?.message !== undefined ? (<Aerror>{errors.name.message}</Aerror>) : null}
             </form>
