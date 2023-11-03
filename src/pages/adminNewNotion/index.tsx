@@ -62,8 +62,6 @@ const AdminNewNotions: FC = () => {
     extensions: completeRichTextElementExtentions,
   });
 
-  console.log('selectedType', selectedType);
-
   const onSaveNotion = useCallback(
     (elt) => {
       if (

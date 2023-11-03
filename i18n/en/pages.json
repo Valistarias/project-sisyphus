@@ -82,7 +82,14 @@
     "title": "Edit Notion",
     "i18n": "Internationalization - French",
     "button": "Update",
+    "delete": "Delete",
     "i18nInfo": "Internationalization is optionnal, but we will need to fill all of them in the long run",
-    "successUpdate": "Notion successfully updated !"
+    "successUpdate": "Notion successfully updated !",
+    "successDelete": "Notion successfully deleted !",
+    "confirmDeletion": {
+      "title": "Notion Deletion",
+      "text": "Are you sure you want to delete {{elt}} ?",
+      "confirmCta": "Delete Notion"
+    }
   }
 }

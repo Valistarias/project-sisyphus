@@ -2,10 +2,11 @@ import React, { useCallback, type FC, useEffect, useState, useRef, useMemo } fro
 import i18next from 'i18next';
 
 import { useEditor } from '@tiptap/react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useApi } from '../../providers/api';
 import { useSystemAlerts } from '../../providers/systemAlerts';
+import { useConfirmMessage } from '../../providers/confirmMessage';
 
 import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input } from '../../molecules';
@@ -25,7 +26,9 @@ const AdminEditNotions: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage();
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const calledApi = useRef(false);
 
@@ -59,6 +62,17 @@ const AdminEditNotions: FC = () => {
   const textFrEditor = useEditor({
     extensions: completeRichTextElementExtentions,
   });
+
+  const sentApiRuleBookChoice = useMemo(() => {
+    if (sentApiRuleBook === null || ruleBooks.length === 0) {
+      return null;
+    }
+    const selectedfield = ruleBooks.find((notionType) => notionType.value === sentApiRuleBook);
+    if (selectedfield !== undefined) {
+      return selectedfield;
+    }
+    return null;
+  }, [sentApiRuleBook, ruleBooks]);
 
   const onSaveNotion = useCallback(
     (elt) => {
@@ -159,6 +173,67 @@ const AdminEditNotions: FC = () => {
     ]
   );
 
+  const onAskDelete = useCallback(() => {
+    if (api === undefined) {
+      return;
+    }
+    setConfirmContent(
+      {
+        title: t('adminEditNotion.confirmDeletion.title', { ns: 'pages' }),
+        text: t('adminEditNotion.confirmDeletion.text', { ns: 'pages', elt: notionName }),
+        confirmCta: t('adminEditNotion.confirmDeletion.confirmCta', { ns: 'pages' }),
+      },
+      (evtId: string) => {
+        const confirmDelete = ({ detail }): void => {
+          if (detail.proceed === true) {
+            api.notions
+              .delete({ id })
+              .then(() => {
+                const newId = getNewId();
+                createAlert({
+                  key: newId,
+                  dom: (
+                    <Alert key={newId} id={newId} timer={5}>
+                      <Ap>{t('adminEditNotion.successDelete', { ns: 'pages' })}</Ap>
+                    </Alert>
+                  ),
+                });
+                navigate('/admin/rulebooks');
+              })
+              .catch(({ response }) => {
+                const { data } = response;
+                if (data.code === 'CYPU-104') {
+                  setError(
+                    t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
+                    })
+                  );
+                } else {
+                  setError(
+                    t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
+                    })
+                  );
+                }
+              });
+          }
+          ConfMessageEvent.removeEventListener(evtId, confirmDelete);
+        };
+        ConfMessageEvent.addEventListener(evtId, confirmDelete);
+      }
+    );
+  }, [
+    api,
+    setConfirmContent,
+    ConfMessageEvent,
+    id,
+    getNewId,
+    createAlert,
+    t,
+    navigate,
+    notionName,
+  ]);
+
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
       calledApi.current = true;
@@ -213,21 +288,14 @@ const AdminEditNotions: FC = () => {
     }
   }, [api, createAlert, getNewId, ruleBooks, id, t]);
 
-  const sentApiRuleBookChoice = useMemo(() => {
-    if (sentApiRuleBook === null || ruleBooks.length === 0) {
-      return null;
-    }
-    console.log('sentApiRuleBook', sentApiRuleBook);
-    const selectedfield = ruleBooks.find((notionType) => notionType.value === sentApiRuleBook);
-    if (selectedfield !== undefined) {
-      return selectedfield;
-    }
-    return null;
-  }, [sentApiRuleBook, ruleBooks]);
-
   return (
     <div className="adminEditNotion">
-      <Atitle level={1}>{t('adminEditNotion.title', { ns: 'pages' })}</Atitle>
+      <div className="adminEditNotion__head">
+        <Atitle level={1}>{t('adminEditNotion.title', { ns: 'pages' })}</Atitle>
+        <Button onClick={onAskDelete} theme="error">
+          {t('adminEditNotion.delete', { ns: 'pages' })}
+        </Button>
+      </div>
       {error !== '' ? <Aerror className="adminEditNotion__error">{error}</Aerror> : null}
       <div className="adminEditNotion__basics">
         <Input
