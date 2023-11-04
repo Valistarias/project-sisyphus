@@ -41,6 +41,8 @@ const ruleBookSchema = new Schema<IRuleBook>(
   }
 );
 
+// Virtuals -------------------------
+
 ruleBookSchema.virtual('notions', {
   ref: 'Notion',
   localField: '_id',

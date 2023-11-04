@@ -126,20 +126,20 @@ const deleteNotion = (req: Request, res: Response): void => {
     });
 };
 
-const deleteNotionByRuleBookId = (req: Request, res: Response): void => {
-  const { id } = req.body;
-  if (id === undefined) {
-    res.status(400).send(gemInvalidField('Rulebook ID'));
-    return;
-  }
-  Notion.deleteMany({ ruleBook: id })
-    .then(() => {
-      res.send({ message: 'Notions were deleted successfully!' });
-    })
-    .catch((err: Error) => {
-      res.status(500).send(gemServerError(err));
-    });
-};
+const deleteNotionByRuleBookId = async (ruleBookId: string): Promise<boolean> =>
+  await new Promise((resolve, reject) => {
+    if (ruleBookId === undefined) {
+      reject(gemInvalidField('Rulebook ID'));
+      return;
+    }
+    Notion.deleteMany({ ruleBook: ruleBookId })
+      .then(() => {
+        resolve(true);
+      })
+      .catch((err: Error) => {
+        reject(err);
+      });
+  });
 
 interface CuratedINotion {
   i18n: Record<string, any> | Record<string, unknown>;
