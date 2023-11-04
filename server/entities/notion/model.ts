@@ -4,8 +4,6 @@ import { type IRuleBook } from '../ruleBook/model';
 interface INotion {
   /** The title of the notion */
   title: string;
-  /** The content of the notion, shortened */
-  short: string;
   /** The content of the notion */
   text: string;
   /**
@@ -25,7 +23,6 @@ interface HydratedNotion extends Omit<HydratedDocument<INotion>, 'ruleBook'> {
 
 const notionSchema = new Schema<INotion>({
   title: String,
-  short: String,
   text: String,
   i18n: String,
   ruleBook: {

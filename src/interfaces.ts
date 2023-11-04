@@ -57,8 +57,6 @@ export interface INotion {
   _id: string;
   /** The title of the notion */
   title: string;
-  /** The short version of the notion */
-  short: string;
   /** The content of the notion */
   text: string;
   /** The rulebook associated with this notion */

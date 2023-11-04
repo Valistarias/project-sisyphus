@@ -35,9 +35,6 @@ const AdminEditNotions: FC = () => {
   const [notionName, setNotionName] = useState('');
   const [notionNameFr, setNotionNameFr] = useState('');
 
-  const [notionShort, setNotionShort] = useState('');
-  const [notionShortFr, setNotionShortFr] = useState('');
-
   const [notionText, setNotionText] = useState('');
   const [notionTextFr, setNotionTextFr] = useState('');
 
@@ -46,14 +43,6 @@ const AdminEditNotions: FC = () => {
   const [selectedType, setSelectedType] = useState<string | null>(null);
 
   const [error, setError] = useState('');
-
-  const shortEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
-  });
-
-  const shortFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
-  });
 
   const textEditor = useEditor({
     extensions: completeRichTextElementExtentions,
@@ -77,8 +66,6 @@ const AdminEditNotions: FC = () => {
   const onSaveNotion = useCallback(
     (elt) => {
       if (
-        shortEditor === null ||
-        shortFrEditor === null ||
         notionText === null ||
         notionTextFr === null ||
         textEditor === null ||
@@ -92,14 +79,9 @@ const AdminEditNotions: FC = () => {
       } else if (selectedType === null) {
         setError(t('typeNotion.required', { ns: 'fields' }));
       } else {
-        let htmlShort: string | null = shortEditor.getHTML();
         let htmlText: string | null = textEditor.getHTML();
 
-        const htmlShortFr = shortFrEditor.getHTML();
         const htmlTextFr = textFrEditor.getHTML();
-        if (htmlShort === '<p class="ap"></p>') {
-          htmlShort = null;
-        }
 
         if (htmlText === '<p class="ap"></p>') {
           htmlText = null;
@@ -107,11 +89,10 @@ const AdminEditNotions: FC = () => {
 
         let i18n: any | null = null;
 
-        if (notionNameFr !== '' || htmlShortFr !== '<p class="ap"></p>') {
+        if (notionNameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
           i18n = {
             fr: {
               title: notionNameFr,
-              short: htmlShortFr,
               text: htmlTextFr,
             },
           };
@@ -122,7 +103,6 @@ const AdminEditNotions: FC = () => {
             id,
             title: notionName,
             ruleBook: selectedType,
-            short: htmlShort,
             text: htmlText,
             i18n,
           })
@@ -157,8 +137,6 @@ const AdminEditNotions: FC = () => {
     },
     [
       id,
-      shortEditor,
-      shortFrEditor,
       textEditor,
       textFrEditor,
       api,
@@ -241,12 +219,10 @@ const AdminEditNotions: FC = () => {
         .get({ notionId: id })
         .then(({ notion, i18n }: ICuratedNotion) => {
           setNotionName(notion.title);
-          setNotionShort(notion.short);
           setNotionText(notion.text);
           setSentApiRuleBook(notion.ruleBook);
           if (i18n.fr !== undefined) {
             setNotionNameFr(i18n.fr.title ?? '');
-            setNotionShortFr(i18n.fr.short ?? '');
             setNotionTextFr(notion.text);
           }
         })
@@ -321,12 +297,6 @@ const AdminEditNotions: FC = () => {
       </div>
       <div className="adminEditNotion__details">
         <RichTextElement
-          label={t('notionShort.title', { ns: 'fields' })}
-          editor={shortEditor}
-          rawStringContent={notionShort}
-          small
-        />
-        <RichTextElement
           label={t('notionText.title', { ns: 'fields' })}
           editor={textEditor}
           rawStringContent={notionText}
@@ -351,12 +321,6 @@ const AdminEditNotions: FC = () => {
         />
       </div>
       <div className="adminEditNotion__details">
-        <RichTextElement
-          label={`${t('notionShort.title', { ns: 'fields' })} (FR)`}
-          editor={shortFrEditor}
-          rawStringContent={notionShortFr}
-          small
-        />
         <RichTextElement
           label={`${t('notionText.title', { ns: 'fields' })} (FR)`}
           editor={textFrEditor}

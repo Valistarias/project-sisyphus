@@ -42,14 +42,13 @@ const findNotionById = async (id: string): Promise<HydratedDocument<INotion>> =>
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, short, text, ruleBook, i18n = null } = req.body;
-  if (title === undefined || short === undefined || text === undefined || ruleBook === undefined) {
+  const { title, text, ruleBook, i18n = null } = req.body;
+  if (title === undefined || text === undefined || ruleBook === undefined) {
     res.status(400).send(gemInvalidField('Notion'));
     return;
   }
   const notion = new Notion({
     title,
-    short,
     text,
     ruleBook,
   });
@@ -69,7 +68,7 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, title = null, short = null, text = null, ruleBook = null, i18n = null } = req.body;
+  const { id, title = null, text = null, ruleBook = null, i18n = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Notion ID'));
     return;
@@ -78,9 +77,6 @@ const update = (req: Request, res: Response): void => {
     .then((notion) => {
       if (title !== null) {
         notion.title = title;
-      }
-      if (short !== null) {
-        notion.short = short;
       }
       if (text !== null) {
         notion.text = text;

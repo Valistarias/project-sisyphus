@@ -30,20 +30,17 @@
     "title": "RuleBook Intro"
   },
   "nameNotion": {
-    "required": "A Notion Name is required",
-    "label": "Notion Name"
+    "required": "A name is required",
+    "label": "Name"
   },
   "typeNotion": {
-    "required": "A Rulebook need to be linked to this Notion",
+    "required": "A rulebook need to be linked to this notion",
     "label": "Linked Rulebook"
-  },
-  "notionShort": {
-    "title": "Notion Summary"
   },
   "notionRuleBookType": {
     "title": "RuleBook"
   },
   "notionText": {
-    "title": "Notion Content"
+    "title": "Content"
   }
 }
