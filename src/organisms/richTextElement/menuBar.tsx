@@ -9,7 +9,7 @@ import { classTrim } from '../../utils';
 
 import { Ap } from '../../atoms';
 import { Button, Input } from '../../molecules';
-import { Alert, SmartSelect } from '../index';
+import { Alert, type IGroupedOption, SmartSelect } from '../index';
 
 import { type INotion } from '../../interfaces';
 
@@ -51,14 +51,21 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId 
     [notions]
   );
 
-  const highlightSelectChoices = useMemo(
-    () =>
-      notions.map((notion) => ({
-        value: notion._id,
-        label: notion.title,
-      })),
-    [notions]
-  );
+  const highlightSelectChoices = useMemo(() => {
+    const groupedOptions: IGroupedOption[] = [];
+    const notionOptions = notions.map((notion) => ({
+      value: notion._id,
+      label: notion.title,
+    }));
+
+    groupedOptions.push({
+      label: t('richTextElement.highlight.highlightNotionCat', { ns: 'components' }),
+      cat: 'notions',
+      options: notionOptions,
+    });
+
+    return groupedOptions;
+  }, [notions, t]);
 
   const callNotions = useCallback(
     async (): Promise<boolean> =>
@@ -132,6 +139,14 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId 
     if (editor === undefined || selectedHighlight === null) {
       return null;
     }
+
+    const selectedGroup = highlightSelectChoices.find((groupElt) => {
+      if (groupElt.options.find((option) => option.value === selectedHighlight) !== null) {
+        return true;
+      }
+      return false;
+    });
+
     editor
       .chain()
       .insertContentAt(editor.state.selection.head, {
@@ -139,50 +154,14 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId 
         attrs: {
           idElt: selectedHighlight,
           textElt: textHighlight !== '' ? textHighlight : null,
+          typeElt: selectedGroup?.cat ?? null,
         },
       })
       .focus()
       .run();
     highlightOpen(false);
     setSelectedHighlight(null);
-  }, [editor, selectedHighlight, textHighlight]);
-
-  // const completeOptns = useMemo(() => {
-  //   if (!complete || editor === undefined) {
-  //     return null;
-  //   }
-  //   return (
-  //     <div className="menubar__advanced">
-  //       <Button
-  //         onClick={() =>
-  //           editor
-  //             .chain()
-  //             .command(() => {
-  //               onEmbed();
-
-  //               return true;
-  //             })
-  //             .run()
-  //         }
-  //       >
-  //         embed element
-  //       </Button>
-  //       {embedBarOpened ? (
-  //         <div className="menubar__advanced__embedbar">
-  //           <Input
-  //             type="text"
-  //             placeholder="Text"
-  //             onChange={(e) => {
-  //               setEmbedBarValue(e.target.value);
-  //             }}
-  //             value={embedBarValue}
-  //           />
-  //           <Button onClick={onConfirmEmbedBar}>confirm</Button>
-  //         </div>
-  //       ) : null}
-  //     </div>
-  //   );
-  // }, [complete, editor, onConfirmEmbedBar, onEmbed, embedBarOpened, embedBarValue]);
+  }, [editor, selectedHighlight, textHighlight, highlightSelectChoices]);
 
   if (editor === undefined) {
     return null;
@@ -357,6 +336,7 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId 
                   })
                   .run()
               }
+              active={editor.isActive('reactComponentEmbed')}
             >
               {t('richTextElement.notion.button', { ns: 'components' })}
             </Button>

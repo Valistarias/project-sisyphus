@@ -5,7 +5,7 @@ import {
   completeRichTextElementExtentions,
   basicRichTextElementExtentions,
 } from './richTextElement';
-import { SmartSelect, type ISingleValueSelect } from './select';
+import { SmartSelect, type ISingleValueSelect, type IGroupedOption } from './select';
 
 export {
   HeaderBar,
@@ -15,4 +15,5 @@ export {
   basicRichTextElementExtentions,
   SmartSelect,
   type ISingleValueSelect,
+  type IGroupedOption,
 };

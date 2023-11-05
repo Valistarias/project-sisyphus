@@ -30,7 +30,7 @@ const EmbedNotion: FC<IEmbedNotion> = ({ notionId }) => {
   const [notionContent, setNotionContent] = useState<string>('');
 
   useEffect(() => {
-    if (api !== undefined && notionId !== undefined) {
+    if (api !== undefined && notionId !== undefined && !calledApi.current) {
       calledApi.current = true;
       api.notions
         .get({ notionId })

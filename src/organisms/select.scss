@@ -55,4 +55,13 @@
       color: var(--font-color);
     }
   }
+
+  .smartselect__group-label {
+    color: var(--bone);
+    display: flex;
+    font-family: var(--mono-font);
+    font-size: 1rem;
+    font-weight: bold;
+    justify-content: space-between;
+  }
 }

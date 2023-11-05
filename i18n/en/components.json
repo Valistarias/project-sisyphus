@@ -32,7 +32,8 @@
       "button": "Link",
       "confirm": "Send",
       "abort": "Abort",
-      "title": "Link title..."
+      "title": "Link title...",
+      "highlightNotionCat": "Notion"
     },
     "notion": {
       "button": "Notion Block",

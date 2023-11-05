@@ -15,9 +15,15 @@ interface ISingleValueSelect {
   details?: string;
 }
 
+interface IGroupedOption {
+  readonly label: string;
+  readonly cat: string;
+  readonly options: readonly ISingleValueSelect[];
+}
+
 interface IAp {
   /** The options for the select */
-  options: ISingleValueSelect[];
+  options: ISingleValueSelect[] | IGroupedOption[];
   /** When an optiojn is selected */
   selected?: ISingleValueSelect | null;
   /** When the select change his value */
@@ -28,6 +34,8 @@ interface IAp {
   label?: string;
   /** The classname of the select */
   className?: string;
+  /** The size of the select */
+  size?: 'medium' | 'small';
 }
 
 const Option: FC<OptionProps<ISingleValueSelect, false>> = ({ children, ...props }) => {
@@ -48,8 +56,16 @@ const Option: FC<OptionProps<ISingleValueSelect, false>> = ({ children, ...props
   return <components.Option {...props}>{children}</components.Option>;
 };
 
+const formatGroupLabel: FC = (data: IGroupedOption) => (
+  <div className="smartselect__group-label">
+    <span className="smartselect__group-label__name">{data.label}</span>
+    <span className="smartselect__group-label__list">{data.options.length}</span>
+  </div>
+);
+
 const SmartSelect: FC<IAp> = ({
   options,
+  size = 'medium',
   label,
   onChange,
   placeholder = null,
@@ -71,6 +87,7 @@ const SmartSelect: FC<IAp> = ({
       className={classTrim(`
         smartselect
         ${className ?? ''}
+        smartselect--${size}
       `)}
     >
       {label !== undefined ? <Alabel>{label}</Alabel> : null}
@@ -86,9 +103,10 @@ const SmartSelect: FC<IAp> = ({
         components={{ Option }}
         placeholder={placeholder ?? t('smartselect.placeholder', { ns: 'components' })}
         noOptionsMessage={() => <Ap>{t('smartselect.notfound', { ns: 'components' })}</Ap>}
+        formatGroupLabel={formatGroupLabel}
       />
     </div>
   );
 };
 
-export { SmartSelect, type ISingleValueSelect };
+export { SmartSelect, type ISingleValueSelect, type IGroupedOption };

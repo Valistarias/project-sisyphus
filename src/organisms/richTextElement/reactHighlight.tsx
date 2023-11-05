@@ -1,7 +1,7 @@
 import React, { type FC } from 'react';
 
 import { mergeAttributes, Node } from '@tiptap/core';
-import { ReactNodeViewRenderer, NodeViewWrapper, NodeViewContent } from '@tiptap/react';
+import { ReactNodeViewRenderer, NodeViewWrapper } from '@tiptap/react';
 
 import { Highlight } from '../../molecules';
 

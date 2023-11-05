@@ -1,4 +1,22 @@
 .highlight {
-  color: magenta;
-  margin: 0;
+  position: relative;
+
+  &__info {
+    background: var(--background-header);
+    left: 50%;
+    opacity: 0;
+    padding: 2rem;
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    transform: translate3d(-50%, -100%, 0);
+    width: 40rem;
+  }
+
+  // &--open {
+  //   .highlight__info {
+  //     opacity: 1;
+  //     pointer-events: all;
+  //   }
+  // }
 }

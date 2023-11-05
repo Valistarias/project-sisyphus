@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, type FC } from 'react';
+import React, { useState, useRef, type FC, useMemo, useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { useApi } from '../providers/api';
@@ -7,6 +7,8 @@ import { useEditor } from '@tiptap/react';
 
 import { Ap } from '../atoms';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../organisms';
+
+import { classTrim } from '../utils';
 
 import './highlight.scss';
 
@@ -20,46 +22,93 @@ interface IHighlight {
 }
 
 const Highlight: FC<IHighlight> = ({ id, type, children }) => {
-  console.log('id', id);
-  console.log('type', type);
-  console.log('children', children);
-  // const { t } = useTranslation();
-  // const { api } = useApi();
-  // const { createAlert, getNewId } = useSystemAlerts();
+  const { api } = useApi();
+  const { t } = useTranslation();
+  const { createAlert, getNewId } = useSystemAlerts();
 
-  // const textEditor = useEditor({
-  //   extensions: completeRichTextElementExtentions,
-  //   editable: false,
-  // });
+  const [highlightContent, setHighlightContent] = useState<any>(null);
+  const [isHighlightShown, setIsHighlightShown] = useState<boolean>(false);
 
-  // const calledApi = useRef(false);
+  const textEditor = useEditor({
+    extensions: completeRichTextElementExtentions,
+    editable: false,
+  });
 
-  // const [notionContent, setNotionContent] = useState<string>('');
+  const loading = useMemo(() => <Ap>Loading</Ap>, []);
 
-  // useEffect(() => {
-  //   if (api !== undefined && notionId !== undefined) {
-  //     calledApi.current = true;
-  //     api.notions
-  //       .get({ notionId })
-  //       .then(({ notion }) => {
-  //         // TODO: Do internationalization
-  //         setNotionContent(notion.text);
-  //       })
-  //       .catch((res) => {
-  //         const newId = getNewId();
-  //         createAlert({
-  //           key: newId,
-  //           dom: (
-  //             <Alert key={newId} id={newId} timer={5}>
-  //               <Ap>{t('serverErrors.CYPU-301')}</Ap>
-  //             </Alert>
-  //           ),
-  //         });
-  //       });
-  //   }
-  // }, [api, createAlert, getNewId, notionId, t]);
+  const contentHighlight = useMemo(() => {
+    if (highlightContent === null) {
+      return null;
+    }
+    if (type === 'notions') {
+      return highlightContent.notion.text;
+    }
+    return null;
+  }, [highlightContent, type]);
 
-  return <span className="highlight">{children}</span>;
+  const sentOptions = useMemo(() => {
+    if (type === 'notions') {
+      return { notionId: id };
+    }
+    return null;
+  }, [type, id]);
+
+  const calledApi = useRef(false);
+
+  const getData = useCallback(() => {
+    if (api !== undefined && sentOptions !== null) {
+      calledApi.current = true;
+      api[type]
+        .get(sentOptions)
+        .then((elt) => {
+          setHighlightContent(elt);
+        })
+        .catch((res) => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert key={newId} id={newId} timer={5}>
+                <Ap>{t('serverErrors.CYPU-301')}</Ap>
+              </Alert>
+            ),
+          });
+        });
+    }
+  }, [api, createAlert, getNewId, sentOptions, t, type]);
+
+  const onOpenHighlight = useCallback(() => {
+    if (!calledApi.current) {
+      getData();
+    }
+    setIsHighlightShown(true);
+  }, [getData]);
+
+  return (
+    <span
+      className={classTrim(`
+        highlight
+      `)}
+      onMouseEnter={() => {
+        onOpenHighlight();
+      }}
+      onMouseLeave={() => {
+        setIsHighlightShown(false);
+      }}
+    >
+      <span className="highlight__text">{children}</span>
+      <span
+        className="highlight__info"
+        style={isHighlightShown ? { opacity: '1', pointerEvents: 'all' } : undefined}
+      >
+        {contentHighlight === null ? (
+          loading
+        ) : (
+          <RichTextElement editor={textEditor} rawStringContent={contentHighlight} readOnly />
+        )}
+      </span>
+    </span>
+  );
 };
 
 export default Highlight;
