@@ -1,5 +1,5 @@
 import { model, type Model, Schema, type ObjectId, type HydratedDocument } from 'mongoose';
-import { type IChapterType } from '../index';
+import type { IRuleBook, IChapterType } from '../index';
 
 interface IChapter {
   /** The title of the ruleBook */
@@ -18,8 +18,9 @@ interface IChapter {
   createdAt: Date;
 }
 
-interface HydratedIChapter extends Omit<HydratedDocument<IChapter>, 'type'> {
+interface HydratedIChapter extends Omit<HydratedDocument<IChapter>, 'type' | 'ruleBook'> {
   type: IChapterType;
+  ruleBook: IRuleBook;
 }
 
 const ruleBookSchema = new Schema<IChapter>(

@@ -42,5 +42,12 @@
   },
   "notionText": {
     "title": "Content"
+  },
+  "nameChapter": {
+    "required": "A Chapter Name is required",
+    "label": "Chapter Name"
+  },
+  "chapterSummary": {
+    "title": "Chapter Intro"
   }
 }

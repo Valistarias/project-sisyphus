@@ -49,7 +49,7 @@
     "title": "New Rulebook",
     "i18n": "Internationalization - French",
     "button": "Create Book",
-    "i18nInfo": "Internationalization is optionnal, but we will need to fill all of them in the long run",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
     "successCreate": "Rulebook successfully created !"
   },
   "adminEditRuleBook": {
@@ -59,10 +59,11 @@
     "createNotion": "New Notion",
     "editNotion": "Edit Notion",
     "chapters": "Chapters",
-    "createChapter": "New Chapter",
+    "editChapter": "Edit Chapter",
+    "createDefaultChapter": "New Chapter",
     "i18n": "Internationalization - French",
     "button": "Update",
-    "i18nInfo": "Internationalization is optionnal, but we will need to fill all of them in the long run",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
     "successUpdate": "Rulebook successfully updated !",
     "successDelete": "Rulebook successfully deleted !",
     "confirmDeletion": {
@@ -75,7 +76,7 @@
     "title": "New Notion",
     "i18n": "Internationalization - French",
     "button": "Create Notion",
-    "i18nInfo": "Internationalization is optionnal, but we will need to fill all of them in the long run",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
     "successCreate": "Notion successfully created !"
   },
   "adminEditNotion": {
@@ -83,13 +84,37 @@
     "i18n": "Internationalization - French",
     "button": "Update",
     "delete": "Delete",
-    "i18nInfo": "Internationalization is optionnal, but we will need to fill all of them in the long run",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
     "successUpdate": "Notion successfully updated !",
     "successDelete": "Notion successfully deleted !",
     "confirmDeletion": {
       "title": "Notion Deletion",
       "text": "Are you sure you want to delete {{elt}} ?",
       "confirmCta": "Delete Notion"
+    }
+  },
+  "adminNewChapter": {
+    "title": "New Chapter",
+    "i18n": "Internationalization - French",
+    "button": "Create Chapter",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successCreate": "Chapter successfully created !"
+  },
+  "adminEditChapter": {
+    "title": "Edit Chapter",
+    "delete": "Delete Chapter",
+    "pages": "Pages",
+    "editPage": "Edit Page",
+    "createPage": "New Page",
+    "i18n": "Internationalization - French",
+    "button": "Update",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successUpdate": "Chapter successfully updated !",
+    "successDelete": "Chapter successfully deleted !",
+    "confirmDeletion": {
+      "title": "Chapter Deletion",
+      "text": "Are you sure you want to delete {{elt}} ? All of the related pages will be deleted as well.",
+      "confirmCta": "Delete Chapter"
     }
   }
 }

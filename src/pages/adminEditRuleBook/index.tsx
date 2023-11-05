@@ -18,7 +18,13 @@ import {
   completeRichTextElementExtentions,
 } from '../../organisms';
 
-import { type INotion, type ICuratedRuleBook, type IRuleBookType } from '../../interfaces';
+import type {
+  INotion,
+  ICuratedRuleBook,
+  IRuleBookType,
+  IChapterType,
+  IChapter,
+} from '../../interfaces';
 
 import './adminEditRuleBook.scss';
 
@@ -43,6 +49,9 @@ const AdminEditRuleBooks: FC = () => {
   const [selectedType, setSelectedType] = useState<string | null>(null);
 
   const [notionsData, setNotionsData] = useState<INotion[] | null>(null);
+
+  const [chaptersData, setChaptersData] = useState<IChapter[] | null>(null);
+  const [defaultTypeChapterId, setDefaultTypeChapterId] = useState<string | null>(null);
 
   const [error, setError] = useState('');
 
@@ -71,6 +80,24 @@ const AdminEditRuleBooks: FC = () => {
       </Aul>
     );
   }, [notionsData, t]);
+
+  const chaptersListDom = useMemo(() => {
+    if (chaptersData === null || (chaptersData.length === 0) === null) {
+      return null;
+    }
+    return (
+      <Aul className="adminEditRuleBook__chapter-list" noPoints>
+        {chaptersData.map((chapter) => (
+          <Ali className="adminEditRuleBook__chapter-list__elt" key={chapter._id}>
+            <Atitle level={4}>{chapter.title}</Atitle>
+            <Button size="small" href={`/admin/chapter/${chapter._id}`}>
+              {t('adminEditRuleBook.editChapter', { ns: 'pages' })}
+            </Button>
+          </Ali>
+        ))}
+      </Aul>
+    );
+  }, [chaptersData, t]);
 
   const onSaveRuleBook = useCallback(
     (elt) => {
@@ -222,6 +249,7 @@ const AdminEditRuleBooks: FC = () => {
           setSentApiType(ruleBook.type._id);
           setSelectedType(ruleBook.type._id);
           setNotionsData(ruleBook.notions);
+          setChaptersData(ruleBook.chapters);
           if (i18n.fr !== undefined) {
             setRuleBookNameFr(i18n.fr.title ?? '');
             setRuleBookSummaryFr(i18n.fr.summary ?? '');
@@ -247,6 +275,24 @@ const AdminEditRuleBooks: FC = () => {
               label: t(`ruleBookTypeNames.${ruleBookType.name}`, { count: 1 }),
               details: ruleBookType.name,
             }))
+          );
+        })
+        .catch(({ response }) => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert key={newId} id={newId} timer={5}>
+                <Ap>{t('serverErrors.CYPU-301')}</Ap>
+              </Alert>
+            ),
+          });
+        });
+      api.chapterTypes
+        .getAll()
+        .then((data: IChapterType[]) => {
+          setDefaultTypeChapterId(
+            data.find((chapterType) => chapterType.name === 'default')?._id ?? null
           );
         })
         .catch(({ response }) => {
@@ -354,6 +400,10 @@ const AdminEditRuleBooks: FC = () => {
             <Atitle className="adminEditRuleBook__intl" level={2}>
               {t('adminEditRuleBook.chapters', { ns: 'pages' })}
             </Atitle>
+            {chaptersListDom ?? null}
+            <Button href={`/admin/chapter/new?ruleBookId=${id}&type=${defaultTypeChapterId}`}>
+              {t('adminEditRuleBook.createDefaultChapter', { ns: 'pages' })}
+            </Button>
           </div>
           <div className="adminEditRuleBook__block-children">
             <Atitle className="adminEditRuleBook__intl" level={2}>

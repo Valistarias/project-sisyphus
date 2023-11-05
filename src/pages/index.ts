@@ -11,6 +11,8 @@ import AdminNewRuleBookPage from './adminNewRuleBook';
 import AdminEditRuleBookPage from './adminEditRuleBook';
 import AdminNewNotionPage from './adminNewNotion';
 import AdminEditNotionPage from './adminEditNotion';
+import AdminNewChapterPage from './adminNewChapter';
+import AdminEditChapterPage from './adminEditChapter';
 
 export {
   HomePage,
@@ -26,4 +28,6 @@ export {
   AdminEditRuleBookPage,
   AdminNewNotionPage,
   AdminEditNotionPage,
+  AdminNewChapterPage,
+  AdminEditChapterPage,
 };

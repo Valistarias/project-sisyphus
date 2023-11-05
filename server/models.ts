@@ -19,8 +19,6 @@ import {
   ChapterTypeModel,
   type IPage,
   PageModel,
-  type IPageType,
-  PageTypeModel,
 } from './entities';
 
 mongoose.Promise = global.Promise;
@@ -42,8 +40,6 @@ interface DBType {
   ChapterType: mongoose.Model<IChapterType>;
   /** The Page Model */
   Page: mongoose.Model<IPage>;
-  /** The Page Types Model */
-  PageType: mongoose.Model<IPageType>;
   /** The Mail Token Model (for forgotten password) */
   MailToken: mongoose.Model<IMailToken>;
   /** The possible Roles */
@@ -63,7 +59,6 @@ const db: DBType = {
   Chapter: ChapterModel(),
   ChapterType: ChapterTypeModel(),
   Page: PageModel(),
-  PageType: PageTypeModel(),
 };
 
 export default db;

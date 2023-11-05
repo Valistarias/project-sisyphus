@@ -1,5 +1,5 @@
 import { model, type Model, Schema, type ObjectId, type HydratedDocument } from 'mongoose';
-import { type INotion, type IRuleBookType } from '../index';
+import type { HydratedIChapter, INotion, IRuleBookType } from '../index';
 
 interface IRuleBook {
   /** The title of the ruleBook */
@@ -17,6 +17,7 @@ interface IRuleBook {
 interface HydratedIRuleBook extends Omit<HydratedDocument<IRuleBook>, 'type'> {
   type: IRuleBookType;
   notions: INotion[];
+  chapters: HydratedIChapter[];
 }
 
 const ruleBookSchema = new Schema<IRuleBook>(
@@ -45,6 +46,12 @@ const ruleBookSchema = new Schema<IRuleBook>(
 
 ruleBookSchema.virtual('notions', {
   ref: 'Notion',
+  localField: '_id',
+  foreignField: 'ruleBook',
+});
+
+ruleBookSchema.virtual('chapters', {
+  ref: 'Chapter',
   localField: '_id',
   foreignField: 'ruleBook',
 });

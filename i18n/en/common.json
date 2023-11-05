@@ -22,6 +22,14 @@
       "name": "name"
     }
   },
+  "chapterTypeNames": {
+    "default_one": "Info",
+    "default_other": "Infos",
+    "items_one": "Item",
+    "items_other": "Items",
+    "cyberframes_one": "Cyberframe",
+    "cyberframes_other": "Cyberframes"
+  },
   "ruleBookTypeNames": {
     "core_one": "Main Book",
     "core_other": "Main Books",

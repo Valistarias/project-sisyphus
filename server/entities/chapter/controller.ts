@@ -2,7 +2,7 @@ import db from '../../models';
 
 import { type Request, type Response } from 'express';
 import { type HydratedIChapter } from './model';
-import { type IChapterType } from '../index';
+import type { IRuleBook, IChapterType } from '../index';
 
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { deletePagesByChapterId } from '../page/controller';
@@ -13,6 +13,24 @@ const findChapters = async (): Promise<HydratedIChapter[]> =>
   await new Promise((resolve, reject) => {
     Chapter.find()
       .populate<{ type: IChapterType }>('type')
+      .populate<{ ruleBook: IRuleBook }>('ruleBook')
+      .then(async (res) => {
+        if (res === undefined || res === null) {
+          reject(gemNotFound('Chapters'));
+        } else {
+          resolve(res as HydratedIChapter[]);
+        }
+      })
+      .catch(async (err) => {
+        reject(err);
+      });
+  });
+
+const findChaptersByRuleBook = async (ruleBookId: string): Promise<HydratedIChapter[]> =>
+  await new Promise((resolve, reject) => {
+    Chapter.find({ ruleBook: ruleBookId })
+      .populate<{ type: IChapterType }>('type')
+      .populate<{ ruleBook: IRuleBook }>('ruleBook')
       .then(async (res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Chapters'));
@@ -29,6 +47,7 @@ const findChapterById = async (id: string): Promise<HydratedIChapter> =>
   await new Promise((resolve, reject) => {
     Chapter.findById(id)
       .populate<{ type: IChapterType }>('type')
+      .populate<{ ruleBook: IRuleBook }>('ruleBook')
       .then(async (res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Chapter'));
@@ -47,29 +66,35 @@ const create = (req: Request, res: Response): void => {
     res.status(400).send(gemInvalidField('Chapter'));
     return;
   }
-  const chapter = new Chapter({
-    title,
-    summary,
-    type,
-    ruleBook,
-  });
 
-  if (i18n !== null) {
-    chapter.i18n = JSON.stringify(i18n);
-  }
+  findChaptersByRuleBook(ruleBook)
+    .then((chapters) => {
+      const chapter = new Chapter({
+        title,
+        summary,
+        type,
+        ruleBook,
+        position: chapters.length,
+      });
 
-  chapter
-    .save()
-    .then(() => {
-      res.send(chapter);
+      if (i18n !== null) {
+        chapter.i18n = JSON.stringify(i18n);
+      }
+
+      chapter
+        .save()
+        .then(() => {
+          res.send(chapter);
+        })
+        .catch((err: Error) => {
+          res.status(500).send(gemServerError(err));
+        });
     })
-    .catch((err: Error) => {
-      res.status(500).send(gemServerError(err));
-    });
+    .catch((err) => res.status(500).send(gemServerError(err)));
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, title = null, type = null, summary = null, i18n } = req.body;
+  const { id, title = null, summary = null, i18n } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Chapter ID'));
     return;
@@ -81,9 +106,6 @@ const update = (req: Request, res: Response): void => {
       }
       if (summary !== null) {
         chapter.summary = summary;
-      }
-      if (type !== null) {
-        chapter.type = type;
       }
 
       if (i18n !== null) {
@@ -183,4 +205,26 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, update, deleteChapter, findSingle, findAll, findChapterById };
+const findAllByRuleBook = (req: Request, res: Response): void => {
+  const { ruleBookId } = req.query;
+  if (ruleBookId === undefined || typeof ruleBookId !== 'string') {
+    res.status(400).send(gemInvalidField('RuleBook ID'));
+    return;
+  }
+  findChaptersByRuleBook(ruleBookId)
+    .then((chapters) => {
+      const curatedChapters: CuratedIChapter[] = [];
+
+      chapters.forEach((chapter) => {
+        curatedChapters.push({
+          chapter,
+          i18n: curateChapter(chapter),
+        });
+      });
+
+      res.send(curatedChapters);
+    })
+    .catch((err) => res.status(500).send(gemServerError(err)));
+};
+
+export { create, update, deleteChapter, findSingle, findAll, findChapterById, findAllByRuleBook };

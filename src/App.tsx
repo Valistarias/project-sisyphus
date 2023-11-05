@@ -16,6 +16,8 @@ import {
   AdminEditRuleBookPage,
   AdminNewNotionPage,
   AdminEditNotionPage,
+  AdminNewChapterPage,
+  AdminEditChapterPage,
 } from './pages';
 import { useGlobalVars } from './providers/globalVars';
 
@@ -88,6 +90,14 @@ const App: FC = () => {
             {
               path: '/admin/notion/:id',
               element: <AdminEditNotionPage />,
+            },
+            {
+              path: '/admin/chapter/new',
+              element: <AdminNewChapterPage />,
+            },
+            {
+              path: '/admin/chapter/:id',
+              element: <AdminEditChapterPage />,
             },
           ],
         },

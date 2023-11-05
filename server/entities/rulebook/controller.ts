@@ -2,7 +2,7 @@ import db from '../../models';
 
 import { type Request, type Response } from 'express';
 import { type HydratedIRuleBook } from './model';
-import { type IRuleBookType, type INotion } from '../index';
+import type { IRuleBookType, INotion, HydratedIChapter } from '../index';
 
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { deleteNotionsByRuleBookId } from '../notion/controller';
@@ -32,6 +32,14 @@ const findRuleBookById = async (id: string): Promise<HydratedIRuleBook> =>
       .populate<{ notions: INotion[] }>({
         path: 'notions',
         select: '_id title ruleBook',
+      })
+      .populate<{ chapters: HydratedIChapter[] }>({
+        path: 'chapters',
+        select: '_id title ruleBook position type',
+        populate: 'type',
+        options: {
+          sort: { position: 'asc' },
+        },
       })
       .then(async (res) => {
         if (res === undefined || res === null) {
