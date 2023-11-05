@@ -6,6 +6,7 @@ import Heading from '@tiptap/extension-heading';
 
 import { MenuBar } from './menuBar';
 import ReactComponentEmbed from './reactComponentEmbed';
+import ReactHighlight from './reactHighlight';
 
 import { Alabel } from '../../atoms';
 
@@ -86,6 +87,7 @@ const completeRichTextElementExtentions = [
       ];
     },
   }),
+  ReactHighlight,
   ReactComponentEmbed,
 ];
 
@@ -156,6 +158,7 @@ const basicRichTextElementExtentions = [
       ];
     },
   }),
+  ReactHighlight,
 ];
 
 interface IRichTextElement {

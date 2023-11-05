@@ -10,7 +10,7 @@ interface ITest {
   node: any;
 }
 
-const TestReact: FC<ITest> = ({ node }) => (
+const EmbedReact: FC<ITest> = ({ node }) => (
   <NodeViewWrapper className="react-component-embed">
     <EmbedNotion notionId={node.attrs.notionId} />
   </NodeViewWrapper>
@@ -24,7 +24,7 @@ export default Node.create({
   addAttributes() {
     return {
       notionId: {
-        default: 'This is a test',
+        default: '',
       },
     };
   },
@@ -42,8 +42,8 @@ export default Node.create({
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(TestReact);
+    return ReactNodeViewRenderer(EmbedReact);
   },
 });
 
-// export default TestReact;
+// export default EmbedReact;

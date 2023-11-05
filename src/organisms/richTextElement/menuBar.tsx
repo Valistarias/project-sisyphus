@@ -8,7 +8,7 @@ import { useSystemAlerts } from '../../providers/systemAlerts';
 import { classTrim } from '../../utils';
 
 import { Ap } from '../../atoms';
-import { Button } from '../../molecules';
+import { Button, Input } from '../../molecules';
 import { Alert, SmartSelect } from '../index';
 
 import { type INotion } from '../../interfaces';
@@ -31,42 +31,86 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId 
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
 
+  const [notions, setNotions] = useState<INotion[]>([]);
+
+  // Embed Tool
   const [embedBarOpened, embedBarOpen] = useState(false);
-  const [embedNotions, setEmbedNotions] = useState<INotion[]>([]);
   const [selectedEmbed, setSelectedEmbed] = useState<string | null>(null);
+
+  // Highlight Tool
+  const [highlightOpened, highlightOpen] = useState(false);
+  const [textHighlight, setTextHighlight] = useState<string>('');
+  const [selectedHighlight, setSelectedHighlight] = useState<string | null>(null);
 
   const embedSelectChoices = useMemo(
     () =>
-      embedNotions.map((notion) => ({
+      notions.map((notion) => ({
         value: notion._id,
         label: notion.title,
       })),
-    [embedNotions]
+    [notions]
+  );
+
+  const highlightSelectChoices = useMemo(
+    () =>
+      notions.map((notion) => ({
+        value: notion._id,
+        label: notion.title,
+      })),
+    [notions]
+  );
+
+  const callNotions = useCallback(
+    async (): Promise<boolean> =>
+      await new Promise((resolve) => {
+        if (api === undefined) {
+          resolve(false);
+          return;
+        }
+
+        api.notions
+          .getAllByRuleBook({ ruleBookId })
+          .then((notions: INotion[]) => {
+            resolve(true);
+            setNotions(notions);
+          })
+          .catch(() => {
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{t('serverErrors.CYPU-301')}</Ap>
+                </Alert>
+              ),
+            });
+            resolve(false);
+          });
+      }),
+    [api, createAlert, getNewId, ruleBookId, t]
   );
 
   const onEmbed = useCallback(() => {
-    if (api === undefined) {
-      return;
-    }
+    callNotions().then(
+      (isDone) => {
+        if (isDone) {
+          embedBarOpen(true);
+        }
+      },
+      () => {}
+    );
+  }, [callNotions]);
 
-    api.notions
-      .getAllByRuleBook({ ruleBookId })
-      .then((notions: INotion[]) => {
-        setEmbedNotions(notions);
-        embedBarOpen(true);
-      })
-      .catch(() => {
-        const newId = getNewId();
-        createAlert({
-          key: newId,
-          dom: (
-            <Alert key={newId} id={newId} timer={5}>
-              <Ap>{t('serverErrors.CYPU-301')}</Ap>
-            </Alert>
-          ),
-        });
-      });
-  }, [api, createAlert, getNewId, ruleBookId, t]);
+  const onHighlight = useCallback(() => {
+    callNotions().then(
+      (isDone) => {
+        if (isDone) {
+          highlightOpen(true);
+        }
+      },
+      () => {}
+    );
+  }, [callNotions]);
 
   const onConfirmEmbedBar = useCallback(() => {
     if (editor === undefined || selectedEmbed === null) {
@@ -83,6 +127,25 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId 
     embedBarOpen(false);
     setSelectedEmbed(null);
   }, [editor, selectedEmbed]);
+
+  const onConfirmHighlightBar = useCallback(() => {
+    if (editor === undefined || selectedHighlight === null) {
+      return null;
+    }
+    editor
+      .chain()
+      .insertContentAt(editor.state.selection.head, {
+        type: 'reactComponentHighlight',
+        attrs: {
+          idElt: selectedHighlight,
+          textElt: textHighlight !== '' ? textHighlight : null,
+        },
+      })
+      .focus()
+      .run();
+    highlightOpen(false);
+    setSelectedHighlight(null);
+  }, [editor, selectedHighlight, textHighlight]);
 
   // const completeOptns = useMemo(() => {
   //   if (!complete || editor === undefined) {
@@ -229,6 +292,55 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId 
           <Button size="small" onClick={() => editor.chain().focus().splitCell().run()}>
             {t('richTextElement.table.split', { ns: 'components' })}
           </Button>
+        </div>
+        <div className="menubar__categories__highlight">
+          <Ap className="menubar__titles">
+            {t('richTextElement.textHighlight', { ns: 'components' })}
+          </Ap>
+          <Button
+            size="small"
+            onClick={() =>
+              editor
+                .chain()
+                .command(() => {
+                  onHighlight();
+                  return true;
+                })
+                .run()
+            }
+            active={editor.isActive('reactComponentHighlight')}
+          >
+            {t('richTextElement.highlight.button', { ns: 'components' })}
+          </Button>
+          {highlightOpened ? (
+            <div className="menubar__categories__highlight__highlightbar">
+              <SmartSelect
+                options={highlightSelectChoices}
+                onChange={(choice) => {
+                  setTextHighlight(choice.label);
+                  setSelectedHighlight(choice.value);
+                }}
+              />
+              <Input
+                type="text"
+                placeholder={t('richTextElement.highlight.title', { ns: 'components' })}
+                onChange={(e) => {
+                  setTextHighlight(e.target.value);
+                }}
+                value={textHighlight}
+              />
+              <Button onClick={onConfirmHighlightBar}>
+                {t('richTextElement.highlight.confirm', { ns: 'components' })}
+              </Button>
+              <Button
+                onClick={() => {
+                  highlightOpen(false);
+                }}
+              >
+                {t('richTextElement.highlight.abort', { ns: 'components' })}
+              </Button>
+            </div>
+          ) : null}
         </div>
         {complete ? (
           <div className="menubar__categories__embeds">

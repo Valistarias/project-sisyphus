@@ -3,15 +3,15 @@ import React, { useState, useEffect, useRef, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useApi } from '../providers/api';
 import { useSystemAlerts } from '../providers/systemAlerts';
+import { useEditor } from '@tiptap/react';
 
 import { Ap } from '../atoms';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../organisms';
 
 import './embedNotion.scss';
-import { useEditor } from '@tiptap/react';
 
 interface IEmbedNotion {
-  /** The class of the P element */
+  /** The id for the notion called */
   notionId: string;
 }
 

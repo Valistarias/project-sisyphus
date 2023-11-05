@@ -47,4 +47,8 @@
   .ProseMirror-gapcursor::after {
     border-top: 1px solid var(--tertiary);
   }
+
+  .node-reactComponentEmbed.ProseMirror-selectednode {
+    background-color: var(--primary-darker);
+  }
 }
