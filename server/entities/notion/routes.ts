@@ -2,7 +2,7 @@ import { type Router } from 'express';
 
 import { verifyToken, adminNeeded } from '../../middlewares';
 
-import { create, update, deleteNotion, findAll, findSingle } from './controller';
+import { create, update, deleteNotion, findAllByRuleBook, findSingle } from './controller';
 
 export default (app: Router): void => {
   app.use((req, res, next) => {
@@ -10,7 +10,7 @@ export default (app: Router): void => {
     next();
   });
 
-  app.get('/notions/', [verifyToken, adminNeeded], findAll);
+  app.get('/notions/byrulebook/', [verifyToken], findAllByRuleBook);
 
   app.get('/notions/single', [verifyToken], findSingle);
 

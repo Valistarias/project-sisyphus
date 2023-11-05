@@ -2,17 +2,19 @@
   border: 1px solid var(--primary-dark);
   padding: 1rem 2rem;
 
-  &__basics {
+  &__categories {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 0 4rem;
+    gap: 1rem 4rem;
 
     &__marks,
-    &__nodes {
+    &__nodes,
+    &__tables,
+    &__embeds {
       align-items: center;
       display: flex;
-      gap: 10px;
+      gap: 1rem;
     }
 
     &__marks {
@@ -24,12 +26,19 @@
         font-style: italic;
       }
     }
+
+    &__embeds__embedbar {
+      align-items: center;
+      display: flex;
+      gap: 1rem;
+    }
   }
 
   &__titles {
     align-items: center;
     display: flex;
     font-size: 1.8rem;
+    margin: 0;
     margin-right: 0.5rem;
   }
 

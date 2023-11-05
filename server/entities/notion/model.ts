@@ -1,5 +1,5 @@
 import { model, type Model, Schema, type ObjectId, type HydratedDocument } from 'mongoose';
-import { type IRuleBook } from '../ruleBook/model';
+import { type HydratedIRuleBook } from '../ruleBook/model';
 
 interface INotion {
   /** The title of the notion */
@@ -18,7 +18,7 @@ interface INotion {
 }
 
 interface HydratedNotion extends Omit<HydratedDocument<INotion>, 'ruleBook'> {
-  ruleBook: IRuleBook;
+  ruleBook: HydratedIRuleBook;
 }
 
 const notionSchema = new Schema<INotion>({

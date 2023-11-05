@@ -2,11 +2,16 @@ import React, { useCallback, useState, type FC, useMemo } from 'react';
 import { type Editor } from '@tiptap/react';
 
 import { useTranslation } from 'react-i18next';
+import { useApi } from '../../providers/api';
+import { useSystemAlerts } from '../../providers/systemAlerts';
 
 import { classTrim } from '../../utils';
 
 import { Ap } from '../../atoms';
-import { Button, Input } from '../../molecules';
+import { Button } from '../../molecules';
+import { Alert, SmartSelect } from '../index';
+
+import { type INotion } from '../../interfaces';
 
 import './menuBar.scss';
 
@@ -17,70 +22,104 @@ interface IMenuBar {
   complete: boolean;
   /** The className of the menubar */
   className: string;
+  /** The RuleBookId, if there is one */
+  ruleBookId?: string;
 }
 
-export const MenuBar: FC<IMenuBar> = ({ editor, complete, className }) => {
+export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId }) => {
   const { t } = useTranslation();
+  const { api } = useApi();
+  const { createAlert, getNewId } = useSystemAlerts();
 
-  const [testBarValue, setTestBarValue] = useState('');
-  const [testBarOpened, testBarOpen] = useState(false);
+  const [embedBarOpened, embedBarOpen] = useState(false);
+  const [embedNotions, setEmbedNotions] = useState<INotion[]>([]);
+  const [selectedEmbed, setSelectedEmbed] = useState<string | null>(null);
 
-  const onTest = useCallback(() => {
-    testBarOpen(true);
-  }, []);
+  const embedSelectChoices = useMemo(
+    () =>
+      embedNotions.map((notion) => ({
+        value: notion._id,
+        label: notion.title,
+      })),
+    [embedNotions]
+  );
 
-  const onConfirmTestBar = useCallback(() => {
-    if (editor === undefined) {
+  const onEmbed = useCallback(() => {
+    if (api === undefined) {
+      return;
+    }
+
+    api.notions
+      .getAllByRuleBook({ ruleBookId })
+      .then((notions: INotion[]) => {
+        setEmbedNotions(notions);
+        embedBarOpen(true);
+      })
+      .catch(() => {
+        const newId = getNewId();
+        createAlert({
+          key: newId,
+          dom: (
+            <Alert key={newId} id={newId} timer={5}>
+              <Ap>{t('serverErrors.CYPU-301')}</Ap>
+            </Alert>
+          ),
+        });
+      });
+  }, [api, createAlert, getNewId, ruleBookId, t]);
+
+  const onConfirmEmbedBar = useCallback(() => {
+    if (editor === undefined || selectedEmbed === null) {
       return null;
     }
     editor
       .chain()
       .insertContentAt(editor.state.selection.head, {
-        type: 'reactComponentTest',
-        attrs: { text: testBarValue },
+        type: 'reactComponentEmbed',
+        attrs: { notionId: selectedEmbed },
       })
       .focus()
       .run();
-    testBarOpen(false);
-    setTestBarValue('');
-  }, [editor, testBarValue]);
+    embedBarOpen(false);
+    setSelectedEmbed(null);
+  }, [editor, selectedEmbed]);
 
-  const completeOptns = useMemo(() => {
-    if (!complete || editor === undefined) {
-      return null;
-    }
-    return (
-      <div className="menubar__advanced">
-        <Button
-          onClick={() =>
-            editor
-              .chain()
-              .command(() => {
-                onTest();
+  // const completeOptns = useMemo(() => {
+  //   if (!complete || editor === undefined) {
+  //     return null;
+  //   }
+  //   return (
+  //     <div className="menubar__advanced">
+  //       <Button
+  //         onClick={() =>
+  //           editor
+  //             .chain()
+  //             .command(() => {
+  //               onEmbed();
 
-                return true;
-              })
-              .run()
-          }
-        >
-          test element
-        </Button>
-        {testBarOpened ? (
-          <div className="menubar__advanced__testbar">
-            <Input
-              type="text"
-              placeholder="Text"
-              onChange={(e) => {
-                setTestBarValue(e.target.value);
-              }}
-              value={testBarValue}
-            />
-            <Button onClick={onConfirmTestBar}>confirm</Button>
-          </div>
-        ) : null}
-      </div>
-    );
-  }, [complete, editor, onConfirmTestBar, onTest, testBarOpened, testBarValue]);
+  //               return true;
+  //             })
+  //             .run()
+  //         }
+  //       >
+  //         embed element
+  //       </Button>
+  //       {embedBarOpened ? (
+  //         <div className="menubar__advanced__embedbar">
+  //           <Input
+  //             type="text"
+  //             placeholder="Text"
+  //             onChange={(e) => {
+  //               setEmbedBarValue(e.target.value);
+  //             }}
+  //             value={embedBarValue}
+  //           />
+  //           <Button onClick={onConfirmEmbedBar}>confirm</Button>
+  //         </div>
+  //       ) : null}
+  //     </div>
+  //   );
+  // }, [complete, editor, onConfirmEmbedBar, onEmbed, embedBarOpened, embedBarValue]);
 
   if (editor === undefined) {
     return null;
@@ -93,8 +132,8 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className }) => {
         ${className ?? ''}
       `)}
     >
-      <div className="menubar__basics">
-        <div className="menubar__basics__marks">
+      <div className="menubar__categories">
+        <div className="menubar__categories__marks">
           <Ap className="menubar__titles">
             {t('richTextElement.textTitle', { ns: 'components' })}
           </Ap>
@@ -103,7 +142,7 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className }) => {
             onClick={() => editor.chain().focus().toggleBold().run()}
             disabled={!editor.can().chain().focus().toggleBold().run()}
             active={editor.isActive('bold')}
-            className="menubar__basics__marks__bold"
+            className="menubar__categories__marks__bold"
           >
             {t('richTextElement.bold', { ns: 'components' })}
           </Button>
@@ -112,13 +151,15 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className }) => {
             onClick={() => editor.chain().focus().toggleItalic().run()}
             disabled={!editor.can().chain().focus().toggleItalic().run()}
             active={editor.isActive('italic')}
-            className="menubar__basics__marks__italic"
+            className="menubar__categories__marks__italic"
           >
             {t('richTextElement.italic', { ns: 'components' })}
           </Button>
         </div>
-        <div className="menubar__basics__nodes">
-          <Ap className="menubar__titles">Paragraphs</Ap>
+        <div className="menubar__categories__nodes">
+          <Ap className="menubar__titles">
+            {t('richTextElement.textParagraph', { ns: 'components' })}
+          </Ap>
           <Button
             size="small"
             onClick={() => editor.chain().focus().setParagraph().run()}
@@ -155,8 +196,10 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className }) => {
             {t('richTextElement.list', { ns: 'components' })}
           </Button>
         </div>
-        <div className="menubar__basics__nodes">
-          <Ap className="menubar__titles">Table</Ap>
+        <div className="menubar__categories__tables">
+          <Ap className="menubar__titles">
+            {t('richTextElement.textTable', { ns: 'components' })}
+          </Ap>
           <Button
             size="small"
             onClick={() =>
@@ -187,8 +230,47 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className }) => {
             {t('richTextElement.table.split', { ns: 'components' })}
           </Button>
         </div>
+        {complete ? (
+          <div className="menubar__categories__embeds">
+            <Ap className="menubar__titles">
+              {t('richTextElement.textEmbed', { ns: 'components' })}
+            </Ap>
+            <Button
+              onClick={() =>
+                editor
+                  .chain()
+                  .command(() => {
+                    onEmbed();
+                    return true;
+                  })
+                  .run()
+              }
+            >
+              {t('richTextElement.notion.button', { ns: 'components' })}
+            </Button>
+            {embedBarOpened ? (
+              <div className="menubar__categories__embeds__embedbar">
+                <SmartSelect
+                  options={embedSelectChoices}
+                  onChange={(choice) => {
+                    setSelectedEmbed(choice.value);
+                  }}
+                />
+                <Button onClick={onConfirmEmbedBar}>
+                  {t('richTextElement.notion.confirm', { ns: 'components' })}
+                </Button>
+                <Button
+                  onClick={() => {
+                    embedBarOpen(false);
+                  }}
+                >
+                  {t('richTextElement.notion.abort', { ns: 'components' })}
+                </Button>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
       </div>
-      {/* {completeOptns} */}
     </div>
   );
 };

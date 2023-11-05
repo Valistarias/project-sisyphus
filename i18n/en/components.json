@@ -7,6 +7,9 @@
   },
   "richTextElement": {
     "textTitle": "Text",
+    "textParagraph": "Paragraph",
+    "textTable": "Table",
+    "textEmbed": "Embed",
     "bold": "b",
     "italic": "i",
     "paragraph": "p",
@@ -23,6 +26,12 @@
       "delrow": "Del. Row",
       "merge": "Merge",
       "split": "Split"
+    },
+    "notion": {
+      "button": "Notion Block",
+      "select": "Notion",
+      "confirm": "Send",
+      "abort": "Abort"
     }
   },
   "smartselect": {

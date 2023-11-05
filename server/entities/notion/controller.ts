@@ -6,14 +6,19 @@ import { type HydratedNotion, type INotion } from './model';
 
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
-import { type IRuleBook } from '../ruleBook/model';
+import { type HydratedIRuleBook } from '../ruleBook/model';
+import { findRuleBookById } from '../ruleBook/controller';
 
 const { Notion } = db;
 
 const findNotions = async (): Promise<HydratedNotion[]> =>
   await new Promise((resolve, reject) => {
     Notion.find()
-      .populate<{ ruleBook: IRuleBook }>('ruleBook')
+      .populate<{ ruleBook: HydratedIRuleBook }>({
+        path: 'ruleBook',
+        select: '_id title type',
+        populate: 'type',
+      })
       .then(async (res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Notions'));
@@ -137,10 +142,10 @@ const deleteNotionByRuleBookId = async (ruleBookId: string): Promise<boolean> =>
       });
   });
 
-interface CuratedINotion {
-  i18n: Record<string, any> | Record<string, unknown>;
-  notion: HydratedNotion;
-}
+// interface CuratedINotion {
+//   i18n: Record<string, any> | Record<string, unknown>;
+//   notion: HydratedNotion;
+// }
 
 const curateNotion = (notion: HydratedNotion | HydratedDocument<INotion>): Record<string, any> => {
   if (notion.i18n === undefined) {
@@ -169,21 +174,33 @@ const findSingle = (req: Request, res: Response): void => {
     .catch((err) => res.status(404).send(err));
 };
 
-const findAll = (req: Request, res: Response): void => {
+const findAllByRuleBook = (req: Request, res: Response): void => {
+  const { ruleBookId } = req.query;
+  const aggregatedNotions: Array<HydratedNotion | INotion> = [];
+
   findNotions()
     .then((notions) => {
-      const curatedRuleBooks: CuratedINotion[] = [];
-
       notions.forEach((notion) => {
-        curatedRuleBooks.push({
-          notion,
-          i18n: curateNotion(notion),
-        });
+        if (notion.ruleBook.type?.name === 'core') {
+          aggregatedNotions.push(notion);
+        }
       });
-
-      res.send(curatedRuleBooks);
+      if (ruleBookId !== undefined) {
+        findRuleBookById(ruleBookId as string)
+          .then((ruleBook) => {
+            if (ruleBook.type.name !== 'core' && ruleBook.notions.length > 0) {
+              aggregatedNotions.concat(ruleBook.notions);
+            }
+            res.send(aggregatedNotions);
+          })
+          .catch(() => {
+            res.status(404).send(gemNotFound('RuleBook'));
+          });
+      } else {
+        res.send(aggregatedNotions);
+      }
     })
     .catch((err) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, update, deleteNotion, deleteNotionByRuleBookId, findSingle, findAll };
+export { create, update, deleteNotion, deleteNotionByRuleBookId, findSingle, findAllByRuleBook };

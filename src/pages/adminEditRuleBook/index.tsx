@@ -312,6 +312,8 @@ const AdminEditRuleBooks: FC = () => {
               label={t('ruleBookSummary.title', { ns: 'fields' })}
               editor={introEditor}
               rawStringContent={ruleBookSummary}
+              ruleBookId={id}
+              complete
               small
             />
           </div>
@@ -338,6 +340,8 @@ const AdminEditRuleBooks: FC = () => {
               label={`${t('ruleBookSummary.title', { ns: 'fields' })} (FR)`}
               editor={introFrEditor}
               rawStringContent={ruleBookSummaryFr}
+              ruleBookId={id}
+              complete
               small
             />
           </div>

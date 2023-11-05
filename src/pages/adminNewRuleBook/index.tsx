@@ -182,6 +182,7 @@ const AdminNewRuleBooks: FC = () => {
           editor={introEditor}
           rawStringContent={ruleBookSummary}
           small
+          complete
         />
       </div>
 
@@ -208,6 +209,7 @@ const AdminNewRuleBooks: FC = () => {
           editor={introFrEditor}
           rawStringContent={ruleBookSummaryFr}
           small
+          complete
         />
       </div>
       <Button onClick={onSaveRuleBook} disabled={error !== ''}>

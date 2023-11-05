@@ -186,4 +186,4 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, update, deleteRuleBook, findSingle, findAll };
+export { create, update, deleteRuleBook, findSingle, findAll, findRuleBookById };

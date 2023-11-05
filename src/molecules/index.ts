@@ -1,4 +1,5 @@
 import Button from './button';
 import Input from './input';
+import EmbedNotion from './embedNotion';
 
-export { Button, Input };
+export { Button, Input, EmbedNotion };

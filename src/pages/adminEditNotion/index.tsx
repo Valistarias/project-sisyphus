@@ -221,6 +221,7 @@ const AdminEditNotions: FC = () => {
           setNotionName(notion.title);
           setNotionText(notion.text);
           setSentApiRuleBook(notion.ruleBook);
+          setSelectedType(notion.ruleBook);
           if (i18n.fr !== undefined) {
             setNotionNameFr(i18n.fr.title ?? '');
             setNotionTextFr(notion.text);
@@ -300,6 +301,7 @@ const AdminEditNotions: FC = () => {
           label={t('notionText.title', { ns: 'fields' })}
           editor={textEditor}
           rawStringContent={notionText}
+          ruleBookId={selectedType ?? undefined}
         />
       </div>
 
@@ -325,6 +327,7 @@ const AdminEditNotions: FC = () => {
           label={`${t('notionText.title', { ns: 'fields' })} (FR)`}
           editor={textFrEditor}
           rawStringContent={notionTextFr}
+          ruleBookId={selectedType ?? undefined}
         />
       </div>
       <Button onClick={onSaveNotion} disabled={error !== ''}>

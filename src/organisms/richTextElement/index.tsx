@@ -5,7 +5,7 @@ import Paragraph from '@tiptap/extension-paragraph';
 import Heading from '@tiptap/extension-heading';
 
 import { MenuBar } from './menuBar';
-import ReactComponent from './test';
+import ReactComponentEmbed from './reactComponentEmbed';
 
 import { Alabel } from '../../atoms';
 
@@ -86,7 +86,7 @@ const completeRichTextElementExtentions = [
       ];
     },
   }),
-  ReactComponent,
+  ReactComponentEmbed,
 ];
 
 const basicRichTextElementExtentions = [
@@ -171,6 +171,8 @@ interface IRichTextElement {
   complete?: boolean;
   /** Is the text editor small in height ? */
   small?: boolean;
+  /** The RuleBookId, if there is one */
+  ruleBookId?: string;
 }
 
 const RichTextElement: FC<IRichTextElement> = ({
@@ -180,6 +182,7 @@ const RichTextElement: FC<IRichTextElement> = ({
   readOnly = false,
   complete = false,
   small = false,
+  ruleBookId,
 }) => {
   useEffect(() => {
     if (editor === null || rawStringContent === undefined) {
@@ -201,7 +204,12 @@ const RichTextElement: FC<IRichTextElement> = ({
     >
       {label !== undefined ? <Alabel>{label}</Alabel> : null}
       {!readOnly ? (
-        <MenuBar editor={editor ?? undefined} complete={complete} className="richTextElt__menu" />
+        <MenuBar
+          editor={editor ?? undefined}
+          complete={complete}
+          ruleBookId={ruleBookId}
+          className="richTextElt__menu"
+        />
       ) : null}
       <EditorContent
         editor={editor}
