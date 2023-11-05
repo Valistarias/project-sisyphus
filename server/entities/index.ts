@@ -7,4 +7,3 @@ export { type IRuleBookType, RuleBookTypeModel } from './ruleBookType/model';
 export { type IChapter, type HydratedIChapter, ChapterModel } from './chapter/model';
 export { type IChapterType, ChapterTypeModel } from './chapterType/model';
 export { type IPage, type HydratedIPage, PageModel } from './page/model';
-export { type IPageType, PageTypeModel } from './pageType/model';

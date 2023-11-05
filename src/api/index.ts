@@ -8,7 +8,6 @@ import {
   Chapters,
   ChapterTypes,
   Pages,
-  PageTypes,
 } from './entities/index';
 
 export default class Api {
@@ -20,7 +19,6 @@ export default class Api {
   chapters: Chapters;
   chapterTypes: ChapterTypes;
   pages: Pages;
-  pageTypes: PageTypes;
   users: Users;
 
   constructor() {
@@ -33,6 +31,5 @@ export default class Api {
     this.chapters = new Chapters();
     this.chapterTypes = new ChapterTypes();
     this.pages = new Pages();
-    this.pageTypes = new PageTypes();
   }
 }

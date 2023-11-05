@@ -94,13 +94,6 @@ export interface ICuratedChapter {
 
 // Page ------------------------------------
 
-export interface IPageType {
-  /** The ID of the page type */
-  _id: string;
-  /** The name of the page type */
-  name: string;
-}
-
 export interface IPage {
   /** The ID of the page */
   _id: string;
@@ -110,11 +103,6 @@ export interface IPage {
   content: string;
   /** The rulebook linked to this page */
   chapter: IChapter;
-  /** The type of the page */
-  type: {
-    _id: string;
-    name: string;
-  };
   /** The position of this page, in reference with others */
   position: number;
   /** When the page was created */

@@ -1,5 +1,4 @@
 import { model, type Model, Schema, type ObjectId, type HydratedDocument } from 'mongoose';
-import { type IPageType } from '../index';
 
 interface IPage {
   /** The title of the ruleBook */
@@ -12,15 +11,11 @@ interface IPage {
   chapter: ObjectId;
   /** The internationnal content, as a json, stringified */
   i18n?: string;
-  /** The rulebook type */
-  type: ObjectId | null;
   /** When the ruleBook was created */
   createdAt: Date;
 }
 
-interface HydratedIPage extends Omit<HydratedDocument<IPage>, 'type'> {
-  type: IPageType;
-}
+interface HydratedIPage extends HydratedDocument<IPage> {}
 
 const ruleBookSchema = new Schema<IPage>({
   title: String,
@@ -30,10 +25,6 @@ const ruleBookSchema = new Schema<IPage>({
   chapter: {
     type: Schema.Types.ObjectId,
     ref: 'Chapter',
-  },
-  type: {
-    type: Schema.Types.ObjectId,
-    ref: 'PageType',
   },
   createdAt: {
     type: Date,

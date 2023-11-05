@@ -24,7 +24,6 @@ import RuleBookTypeRoutes from './entities/ruleBookType/routes';
 import ChapterRoutes from './entities/chapter/routes';
 import ChapterTypeRoutes from './entities/chapterType/routes';
 import PageRoutes from './entities/page/routes';
-import PageTypeRoutes from './entities/pageType/routes';
 
 import { gemInvalidField } from './utils/globalErrorMessage';
 
@@ -83,7 +82,6 @@ RuleBookTypeRoutes(apiRouter);
 ChapterRoutes(apiRouter);
 ChapterTypeRoutes(apiRouter);
 PageRoutes(apiRouter);
-PageTypeRoutes(apiRouter);
 
 app.use('/api/', apiRouter);
 

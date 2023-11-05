@@ -2,7 +2,6 @@ import db from '../../models';
 
 import { type Request, type Response } from 'express';
 import { type HydratedIPage } from './model';
-import { type IPageType } from '../index';
 
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
@@ -11,7 +10,6 @@ const { Page } = db;
 const findPages = async (): Promise<HydratedIPage[]> =>
   await new Promise((resolve, reject) => {
     Page.find()
-      .populate<{ type: IPageType }>('type')
       .then(async (res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Pages'));
@@ -27,7 +25,6 @@ const findPages = async (): Promise<HydratedIPage[]> =>
 const findPageById = async (id: string): Promise<HydratedIPage> =>
   await new Promise((resolve, reject) => {
     Page.findById(id)
-      .populate<{ type: IPageType }>('type')
       .then(async (res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Page'));
@@ -41,7 +38,7 @@ const findPageById = async (id: string): Promise<HydratedIPage> =>
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, content, type, chapter, i18n = null } = req.body;
+  const { title, content, chapter, i18n = null } = req.body;
   if (title === undefined || content === undefined || chapter === undefined) {
     res.status(400).send(gemInvalidField('Page'));
     return;
@@ -49,7 +46,6 @@ const create = (req: Request, res: Response): void => {
   const page = new Page({
     title,
     content,
-    type,
     chapter,
   });
 
@@ -68,7 +64,7 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, title = null, type = null, content = null, i18n } = req.body;
+  const { id, title = null, content = null, i18n } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Page ID'));
     return;
@@ -80,9 +76,6 @@ const update = (req: Request, res: Response): void => {
       }
       if (content !== null) {
         page.content = content;
-      }
-      if (type !== null) {
-        page.type = type;
       }
 
       if (i18n !== null) {
