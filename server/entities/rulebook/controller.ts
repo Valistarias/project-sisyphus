@@ -5,7 +5,7 @@ import { type HydratedIRuleBook } from './model';
 import { type IRuleBookType, type INotion } from '../index';
 
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
-import { deleteNotionByRuleBookId } from '../notion/controller';
+import { deleteNotionsByRuleBookId } from '../notion/controller';
 
 const { RuleBook } = db;
 
@@ -123,7 +123,7 @@ const deleteRuleBook = (req: Request, res: Response): void => {
     res.status(400).send(gemInvalidField('RuleBook ID'));
     return;
   }
-  deleteNotionByRuleBookId(id)
+  deleteNotionsByRuleBookId(id)
     .then(() => {
       RuleBook.findByIdAndDelete(id)
         .then(() => {

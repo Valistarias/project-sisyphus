@@ -13,6 +13,14 @@ import {
   RuleBookModel,
   type IRuleBookType,
   RuleBookTypeModel,
+  type IChapter,
+  ChapterModel,
+  type IChapterType,
+  ChapterTypeModel,
+  type IPage,
+  PageModel,
+  type IPageType,
+  PageTypeModel,
 } from './entities';
 
 mongoose.Promise = global.Promise;
@@ -28,6 +36,14 @@ interface DBType {
   RuleBook: mongoose.Model<IRuleBook>;
   /** The RuleBook Types Model */
   RuleBookType: mongoose.Model<IRuleBookType>;
+  /** The Chapter Model */
+  Chapter: mongoose.Model<IChapter>;
+  /** The Chapter Types Model */
+  ChapterType: mongoose.Model<IChapterType>;
+  /** The Page Model */
+  Page: mongoose.Model<IPage>;
+  /** The Page Types Model */
+  PageType: mongoose.Model<IPageType>;
   /** The Mail Token Model (for forgotten password) */
   MailToken: mongoose.Model<IMailToken>;
   /** The possible Roles */
@@ -44,6 +60,10 @@ const db: DBType = {
   Notion: NotionModel(),
   RuleBook: RuleBookModel(),
   RuleBookType: RuleBookTypeModel(),
+  Chapter: ChapterModel(),
+  ChapterType: ChapterTypeModel(),
+  Page: PageModel(),
+  PageType: PageTypeModel(),
 };
 
 export default db;

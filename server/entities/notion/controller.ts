@@ -127,7 +127,7 @@ const deleteNotion = (req: Request, res: Response): void => {
     });
 };
 
-const deleteNotionByRuleBookId = async (ruleBookId: string): Promise<boolean> =>
+const deleteNotionsByRuleBookId = async (ruleBookId: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (ruleBookId === undefined) {
       reject(gemInvalidField('Rulebook ID'));
@@ -203,4 +203,4 @@ const findAllByRuleBook = (req: Request, res: Response): void => {
     .catch((err) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, update, deleteNotion, deleteNotionByRuleBookId, findSingle, findAllByRuleBook };
+export { create, update, deleteNotion, deleteNotionsByRuleBookId, findSingle, findAllByRuleBook };
