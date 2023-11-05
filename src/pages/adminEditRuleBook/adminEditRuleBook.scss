@@ -64,6 +64,11 @@
     .atitle {
       margin-top: 0;
     }
+
+    &__buttons {
+      display: flex;
+      gap: 1rem;
+    }
   }
 
   &__notion-list,

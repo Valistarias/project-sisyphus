@@ -16,6 +16,8 @@ import {
   RichTextElement,
   SmartSelect,
   completeRichTextElementExtentions,
+  DragList,
+  type IDragElt,
 } from '../../organisms';
 
 import type {
@@ -25,6 +27,8 @@ import type {
   IChapterType,
   IChapter,
 } from '../../interfaces';
+
+import { arraysEqual } from '../../utils';
 
 import './adminEditRuleBook.scss';
 
@@ -52,6 +56,8 @@ const AdminEditRuleBooks: FC = () => {
 
   const [chaptersData, setChaptersData] = useState<IChapter[] | null>(null);
   const [defaultTypeChapterId, setDefaultTypeChapterId] = useState<string | null>(null);
+  const [initialOrder, setInitialOrder] = useState<string[]>([]);
+  const [chaptersOrder, setChaptersOrder] = useState<string[]>([]);
 
   const [error, setError] = useState('');
 
@@ -81,23 +87,32 @@ const AdminEditRuleBooks: FC = () => {
     );
   }, [notionsData, t]);
 
-  const chaptersListDom = useMemo(() => {
+  const chapterDragData = useMemo(() => {
     if (chaptersData === null || (chaptersData.length === 0) === null) {
-      return null;
+      return {};
     }
-    return (
-      <Aul className="adminEditRuleBook__chapter-list" noPoints>
-        {chaptersData.map((chapter) => (
-          <Ali className="adminEditRuleBook__chapter-list__elt" key={chapter._id}>
-            <Atitle level={4}>{chapter.title}</Atitle>
-            <Button size="small" href={`/admin/chapter/${chapter._id}`}>
-              {t('adminEditRuleBook.editChapter', { ns: 'pages' })}
-            </Button>
-          </Ali>
-        ))}
-      </Aul>
-    );
+
+    const chapters: Record<string, IDragElt> = {};
+    chaptersData.forEach((chapterData) => {
+      chapters[chapterData._id] = {
+        id: chapterData._id,
+        title: chapterData.title,
+        button: {
+          href: `/admin/chapter/${chapterData._id}`,
+          content: t('adminEditRuleBook.editChapter', { ns: 'pages' }),
+        },
+      };
+    });
+
+    return chapters;
   }, [chaptersData, t]);
+
+  const onChapterOrder = useCallback((elt: string[], isInitial: boolean) => {
+    setChaptersOrder(elt);
+    if (isInitial) {
+      setInitialOrder(elt);
+    }
+  }, []);
 
   const onSaveRuleBook = useCallback(
     (elt) => {
@@ -176,6 +191,14 @@ const AdminEditRuleBooks: FC = () => {
       createAlert,
     ]
   );
+
+  const onUpdateOrder = useCallback(() => {
+    if (arraysEqual(chaptersOrder, initialOrder)) {
+      return;
+    }
+    console.log('initialOrder', initialOrder);
+    console.log('chaptersOrder', chaptersOrder);
+  }, [initialOrder, chaptersOrder]);
 
   const onAskDelete = useCallback(() => {
     if (api === undefined) {
@@ -400,10 +423,17 @@ const AdminEditRuleBooks: FC = () => {
             <Atitle className="adminEditRuleBook__intl" level={2}>
               {t('adminEditRuleBook.chapters', { ns: 'pages' })}
             </Atitle>
-            {chaptersListDom ?? null}
-            <Button href={`/admin/chapter/new?ruleBookId=${id}&type=${defaultTypeChapterId}`}>
-              {t('adminEditRuleBook.createDefaultChapter', { ns: 'pages' })}
-            </Button>
+            <DragList data={chapterDragData} id="main" onChange={onChapterOrder} />
+            <div className="adminEditRuleBook__block-children__buttons">
+              {!arraysEqual(chaptersOrder, initialOrder) ? (
+                <Button onClick={onUpdateOrder}>
+                  {t('adminEditRuleBook.updateOrder', { ns: 'pages' })}
+                </Button>
+              ) : null}
+              <Button href={`/admin/chapter/new?ruleBookId=${id}&type=${defaultTypeChapterId}`}>
+                {t('adminEditRuleBook.createDefaultChapter', { ns: 'pages' })}
+              </Button>
+            </div>
           </div>
           <div className="adminEditRuleBook__block-children">
             <Atitle className="adminEditRuleBook__intl" level={2}>
