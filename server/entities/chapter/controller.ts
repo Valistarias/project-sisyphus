@@ -227,4 +227,13 @@ const findAllByRuleBook = (req: Request, res: Response): void => {
     .catch((err) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, update, deleteChapter, findSingle, findAll, findChapterById, findAllByRuleBook };
+export {
+  create,
+  update,
+  deleteChapter,
+  findSingle,
+  findAll,
+  findChapterById,
+  findAllByRuleBook,
+  findChaptersByRuleBook,
+};

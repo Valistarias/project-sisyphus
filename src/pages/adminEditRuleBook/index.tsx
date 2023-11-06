@@ -114,91 +114,125 @@ const AdminEditRuleBooks: FC = () => {
     }
   }, []);
 
-  const onSaveRuleBook = useCallback(
-    (elt) => {
-      if (introEditor === null || introFrEditor === null || api === undefined) {
-        return;
-      }
-      if (ruleBookName === '') {
-        setError(t('nameRuleBook.required', { ns: 'fields' }));
-      } else if (selectedType === null) {
-        setError(t('typeRuleBook.required', { ns: 'fields' }));
-      } else {
-        let html: string | null = introEditor.getHTML();
-        const htmlFr = introFrEditor.getHTML();
-        if (html === '<p class="ap"></p>') {
-          html = null;
-        }
-
-        let i18n: any | null = null;
-
-        if (ruleBookNameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-          i18n = {
-            fr: {
-              title: ruleBookNameFr,
-              summary: htmlFr,
-            },
-          };
-        }
-
-        api.ruleBooks
-          .update({
-            id,
-            title: ruleBookName,
-            type: selectedType,
-            summary: html,
-            i18n,
-          })
-          .then((rulebook) => {
-            const newId = getNewId();
-            createAlert({
-              key: newId,
-              dom: (
-                <Alert key={newId} id={newId} timer={5}>
-                  <Ap>{t('adminEditRuleBook.successUpdate', { ns: 'pages' })}</Ap>
-                </Alert>
-              ),
-            });
-          })
-          .catch(({ response }) => {
-            const { data } = response;
-            if (data.code === 'CYPU-104') {
-              setError(
-                t(`serverErrors.${data.code}`, {
-                  field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
-                })
-              );
-            } else {
-              setError(
-                t(`serverErrors.${data.code}`, {
-                  field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
-                })
-              );
-            }
-          });
-      }
-    },
-    [
-      id,
-      introEditor,
-      introFrEditor,
-      api,
-      ruleBookName,
-      selectedType,
-      t,
-      ruleBookNameFr,
-      getNewId,
-      createAlert,
-    ]
-  );
-
-  const onUpdateOrder = useCallback(() => {
-    if (arraysEqual(chaptersOrder, initialOrder)) {
+  const onSaveRuleBook = useCallback(() => {
+    if (introEditor === null || introFrEditor === null || api === undefined) {
       return;
     }
-    console.log('initialOrder', initialOrder);
-    console.log('chaptersOrder', chaptersOrder);
-  }, [initialOrder, chaptersOrder]);
+    if (ruleBookName === '') {
+      setError(t('nameRuleBook.required', { ns: 'fields' }));
+    } else if (selectedType === null) {
+      setError(t('typeRuleBook.required', { ns: 'fields' }));
+    } else {
+      let html: string | null = introEditor.getHTML();
+      const htmlFr = introFrEditor.getHTML();
+      if (html === '<p class="ap"></p>') {
+        html = null;
+      }
+
+      let i18n: any | null = null;
+
+      if (ruleBookNameFr !== '' || htmlFr !== '<p class="ap"></p>') {
+        i18n = {
+          fr: {
+            title: ruleBookNameFr,
+            summary: htmlFr,
+          },
+        };
+      }
+
+      api.ruleBooks
+        .update({
+          id,
+          title: ruleBookName,
+          type: selectedType,
+          summary: html,
+          i18n,
+        })
+        .then((rulebook) => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert key={newId} id={newId} timer={5}>
+                <Ap>{t('adminEditRuleBook.successUpdate', { ns: 'pages' })}</Ap>
+              </Alert>
+            ),
+          });
+        })
+        .catch(({ response }) => {
+          const { data } = response;
+          if (data.code === 'CYPU-104') {
+            setError(
+              t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
+              })
+            );
+          } else {
+            setError(
+              t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
+              })
+            );
+          }
+        });
+    }
+  }, [
+    id,
+    introEditor,
+    introFrEditor,
+    api,
+    ruleBookName,
+    selectedType,
+    t,
+    ruleBookNameFr,
+    getNewId,
+    createAlert,
+  ]);
+
+  const onUpdateOrder = useCallback(() => {
+    if (arraysEqual(chaptersOrder, initialOrder) || api === undefined || id === undefined) {
+      return;
+    }
+
+    console.log('changeChapterOrder');
+
+    api.ruleBooks
+      .changeChapterOrder({
+        id,
+        order: chaptersOrder.map((chapter, index) => ({
+          id: chapter,
+          position: index,
+        })),
+      })
+      .then(() => {
+        const newId = getNewId();
+        createAlert({
+          key: newId,
+          dom: (
+            <Alert key={newId} id={newId} timer={5}>
+              <Ap>{t('adminEditRuleBook.successUpdate', { ns: 'pages' })}</Ap>
+            </Alert>
+          ),
+        });
+        setInitialOrder(chaptersOrder);
+      })
+      .catch(({ response }) => {
+        const { data } = response;
+        if (data.code === 'CYPU-104') {
+          setError(
+            t(`serverErrors.${data.code}`, {
+              field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
+            })
+          );
+        } else {
+          setError(
+            t(`serverErrors.${data.code}`, {
+              field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
+            })
+          );
+        }
+      });
+  }, [chaptersOrder, initialOrder, api, id, getNewId, createAlert, t]);
 
   const onAskDelete = useCallback(() => {
     if (api === undefined) {

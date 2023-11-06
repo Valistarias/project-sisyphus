@@ -2,7 +2,14 @@ import { type Router } from 'express';
 
 import { verifyToken, adminNeeded } from '../../middlewares';
 
-import { create, update, deleteRuleBook, findAll, findSingle } from './controller';
+import {
+  create,
+  update,
+  deleteRuleBook,
+  findAll,
+  findSingle,
+  changeChapterOrder,
+} from './controller';
 
 export default (app: Router): void => {
   app.use((req, res, next) => {
@@ -17,6 +24,8 @@ export default (app: Router): void => {
   app.post('/rulebooks/create', [verifyToken, adminNeeded], create);
 
   app.post('/rulebooks/update', [verifyToken, adminNeeded], update);
+
+  app.post('/rulebooks/changechapterorder', [verifyToken, adminNeeded], changeChapterOrder);
 
   app.post('/rulebooks/delete', [verifyToken, adminNeeded], deleteRuleBook);
 };

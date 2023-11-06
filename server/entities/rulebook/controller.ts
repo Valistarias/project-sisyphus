@@ -4,10 +4,11 @@ import { type Request, type Response } from 'express';
 import { type HydratedIRuleBook } from './model';
 import type { IRuleBookType, INotion, HydratedIChapter } from '../index';
 
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { deleteNotionsByRuleBookId } from '../notion/controller';
 
-const { RuleBook } = db;
+import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+
+const { RuleBook, Chapter } = db;
 
 const findRuleBooks = async (): Promise<HydratedIRuleBook[]> =>
   await new Promise((resolve, reject) => {
@@ -125,6 +126,36 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
+const updateMultipleChaptersPosition = (order: any, cb: (res: Error | null) => void): void => {
+  Chapter.findOneAndUpdate({ _id: order[0].id }, { position: order[0].position })
+    .then(() => {
+      if (order.length > 1) {
+        order.shift();
+        updateMultipleChaptersPosition([...order], cb);
+      } else {
+        cb(null);
+      }
+    })
+    .catch(() => {
+      cb(new Error('Rulebook not found'));
+    });
+};
+
+const changeChapterOrder = (req: Request, res: Response): void => {
+  const { id, order } = req.body;
+  if (id === undefined || order === undefined) {
+    res.status(400).send(gemInvalidField('RuleBook Reordering'));
+    return;
+  }
+  updateMultipleChaptersPosition(order, (err) => {
+    if (err !== null) {
+      res.status(404).send(gemNotFound('RuleBook'));
+    } else {
+      res.send({ message: 'RuleBook was updated successfully!' });
+    }
+  });
+};
+
 const deleteRuleBook = (req: Request, res: Response): void => {
   const { id } = req.body;
   if (id === undefined) {
@@ -194,4 +225,12 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, update, deleteRuleBook, findSingle, findAll, findRuleBookById };
+export {
+  create,
+  update,
+  changeChapterOrder,
+  deleteRuleBook,
+  findSingle,
+  findAll,
+  findRuleBookById,
+};
