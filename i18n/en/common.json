@@ -15,6 +15,9 @@
     "ruleBook": {
       "title": "title",
       "summary": "summary",
+      "page": "page",
+      "chapter": "chapter",
+      "ruleBook": "rulebook",
       "type_one": "rulebook type",
       "type_other": "rulebook types"
     },

@@ -6,10 +6,32 @@
     align-items: center;
     display: flex;
     justify-content: space-between;
-    margin-bottom: 4rem;
+    margin-bottom: 2rem;
 
     .atitle {
       margin: 0;
+    }
+  }
+
+  &__ariane {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+
+    &__elt {
+      align-items: center;
+      display: flex;
+      font-family: var(--mono-font);
+      font-size: 1rem;
+      gap: 1rem;
+      margin: 0;
+      text-transform: uppercase;
+
+      .aa {
+        font-size: 1.4rem;
+        text-transform: none;
+      }
     }
   }
 

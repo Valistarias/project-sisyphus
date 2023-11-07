@@ -8,7 +8,7 @@ import { useApi } from '../../providers/api';
 import { useSystemAlerts } from '../../providers/systemAlerts';
 import { useConfirmMessage } from '../../providers/confirmMessage';
 
-import { Aerror, Ap, Atitle } from '../../atoms';
+import { Aa, Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input } from '../../molecules';
 import {
   Alert,
@@ -35,6 +35,7 @@ const AdminEditChapters: FC = () => {
   const calledApi = useRef(false);
 
   const [ruleBookId, setRuleBookId] = useState('');
+  const [ruleBookName, setRuleBookName] = useState('');
 
   const [chapterName, setChapterName] = useState('');
   const [chapterNameFr, setChapterNameFr] = useState('');
@@ -261,6 +262,7 @@ const AdminEditChapters: FC = () => {
           setChapterName(chapter.title);
           setChapterSummary(chapter.summary);
           setRuleBookId(chapter.ruleBook._id);
+          setRuleBookName(chapter.ruleBook.title);
           setPagesData(chapter.pages ?? null);
           if (i18n.fr !== undefined) {
             setChapterNameFr(i18n.fr.title ?? '');
@@ -288,6 +290,12 @@ const AdminEditChapters: FC = () => {
         <Button onClick={onAskDelete} theme="error">
           {t('adminEditChapter.delete', { ns: 'pages' })}
         </Button>
+      </div>
+      <div className="adminEditChapter__ariane">
+        <Ap className="adminEditChapter__ariane__elt">
+          {`${t(`terms.ruleBook.ruleBook`)}: `}
+          <Aa href={`/admin/rulebook/${ruleBookId}`}>{ruleBookName}</Aa>
+        </Ap>
       </div>
       <div className="adminEditChapter__content">
         <div className="adminEditChapter__content__left">

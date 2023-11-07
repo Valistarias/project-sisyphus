@@ -8,7 +8,7 @@ import { useApi } from '../../providers/api';
 import { useSystemAlerts } from '../../providers/systemAlerts';
 import { useConfirmMessage } from '../../providers/confirmMessage';
 
-import { Aerror, Ap, Atitle } from '../../atoms';
+import { Aa, Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
 
@@ -27,7 +27,9 @@ const AdminEditPages: FC = () => {
   const calledApi = useRef(false);
 
   const [ruleBookId, setRuleBookId] = useState('');
+  const [ruleBookName, setRuleBookName] = useState('');
   const [chapterId, setChapterId] = useState('');
+  const [chapterName, setChapterName] = useState('');
 
   const [pageName, setPageName] = useState('');
   const [pageNameFr, setPageNameFr] = useState('');
@@ -181,6 +183,8 @@ const AdminEditPages: FC = () => {
           setPageContent(page.content);
           setChapterId(page.chapter._id);
           setRuleBookId(page.chapter.ruleBook._id);
+          setChapterName(page.chapter.title);
+          setRuleBookName(page.chapter.ruleBook.title);
           if (i18n.fr !== undefined) {
             setPageNameFr(i18n.fr.title ?? '');
             setPageContentFr(i18n.fr.content ?? '');
@@ -207,6 +211,16 @@ const AdminEditPages: FC = () => {
         <Button onClick={onAskDelete} theme="error">
           {t('adminEditPage.delete', { ns: 'pages' })}
         </Button>
+      </div>
+      <div className="adminEditPage__ariane">
+        <Ap className="adminEditPage__ariane__elt">
+          {`${t(`terms.ruleBook.ruleBook`)}: `}
+          <Aa href={`/admin/rulebook/${ruleBookId}`}>{ruleBookName}</Aa>
+        </Ap>
+        <Ap className="adminEditPage__ariane__elt">
+          {`${t(`terms.ruleBook.chapter`)}: `}
+          <Aa href={`/admin/chapter/${chapterId}`}>{chapterName}</Aa>
+        </Ap>
       </div>
       <div className="adminEditPage__content">
         <div className="adminEditPage__content__left">
