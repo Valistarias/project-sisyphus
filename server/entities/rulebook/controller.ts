@@ -7,6 +7,7 @@ import type { IRuleBookType, INotion, HydratedIChapter } from '../index';
 import { deleteNotionsByRuleBookId } from '../notion/controller';
 
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import { deleteChaptersRecursive } from '../chapter/controller';
 
 const { RuleBook, Chapter } = db;
 
@@ -141,7 +142,7 @@ const updateMultipleChaptersPosition = (order: any, cb: (res: Error | null) => v
     });
 };
 
-const changeChapterOrder = (req: Request, res: Response): void => {
+const changeChaptersOrder = (req: Request, res: Response): void => {
   const { id, order } = req.body;
   if (id === undefined || order === undefined) {
     res.status(400).send(gemInvalidField('RuleBook Reordering'));
@@ -162,18 +163,30 @@ const deleteRuleBook = (req: Request, res: Response): void => {
     res.status(400).send(gemInvalidField('RuleBook ID'));
     return;
   }
-  deleteNotionsByRuleBookId(id)
-    .then(() => {
-      RuleBook.findByIdAndDelete(id)
+  findRuleBookById(id)
+    .then((ruleBook) => {
+      deleteNotionsByRuleBookId(id)
         .then(() => {
-          res.send({ message: 'RuleBook was deleted successfully!' });
+          deleteChaptersRecursive(ruleBook.chapters.map((chapter) => String(chapter._id)))
+            .then(() => {
+              RuleBook.findByIdAndDelete(id)
+                .then(() => {
+                  res.send({ message: 'RuleBook was deleted successfully!' });
+                })
+                .catch((err: Error) => {
+                  res.status(500).send(gemServerError(err));
+                });
+            })
+            .catch((err: Error) => {
+              res.status(500).send(gemServerError(err));
+            });
         })
         .catch((err: Error) => {
           res.status(500).send(gemServerError(err));
         });
     })
-    .catch((err: Error) => {
-      res.status(500).send(gemServerError(err));
+    .catch((err) => {
+      res.status(404).send(err);
     });
 };
 
@@ -228,7 +241,7 @@ const findAll = (req: Request, res: Response): void => {
 export {
   create,
   update,
-  changeChapterOrder,
+  changeChaptersOrder,
   deleteRuleBook,
   findSingle,
   findAll,

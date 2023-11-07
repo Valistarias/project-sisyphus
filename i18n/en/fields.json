@@ -49,5 +49,17 @@
   },
   "chapterSummary": {
     "title": "Chapter Intro"
+  },
+  "namePage": {
+    "required": "A Rulebook Name is required",
+    "label": "Rulebook Name"
+  },
+  "typePage": {
+    "required": "A Rulebook Type is required",
+    "label": "Rulebook Type",
+    "select": "Rulebook Type"
+  },
+  "pageContent": {
+    "title": "Text"
   }
 }

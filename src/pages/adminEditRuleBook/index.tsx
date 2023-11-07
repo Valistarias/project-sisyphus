@@ -194,10 +194,8 @@ const AdminEditRuleBooks: FC = () => {
       return;
     }
 
-    console.log('changeChapterOrder');
-
     api.ruleBooks
-      .changeChapterOrder({
+      .changeChaptersOrder({
         id,
         order: chaptersOrder.map((chapter, index) => ({
           id: chapter,

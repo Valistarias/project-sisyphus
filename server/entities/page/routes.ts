@@ -2,7 +2,7 @@ import { type Router } from 'express';
 
 import { verifyToken, adminNeeded } from '../../middlewares';
 
-import { create, update, deletePage, findAll, findSingle } from './controller';
+import { create, update, deletePage, findAll, findSingle, findAllByChapter } from './controller';
 
 export default (app: Router): void => {
   app.use((req, res, next) => {
@@ -11,6 +11,8 @@ export default (app: Router): void => {
   });
 
   app.get('/pages/', [verifyToken], findAll);
+
+  app.get('/pagesbychapterid/', [verifyToken], findAllByChapter);
 
   app.get('/pages/single', [verifyToken], findSingle);
 

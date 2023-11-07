@@ -1,4 +1,5 @@
 import { model, type Model, Schema, type ObjectId, type HydratedDocument } from 'mongoose';
+import { type HydratedIChapter } from '../chapter/model';
 
 interface IPage {
   /** The title of the ruleBook */
@@ -15,9 +16,11 @@ interface IPage {
   createdAt: Date;
 }
 
-interface HydratedIPage extends HydratedDocument<IPage> {}
+interface HydratedIPage extends Omit<HydratedDocument<IPage>, 'chapter'> {
+  chapter: HydratedIChapter;
+}
 
-const ruleBookSchema = new Schema<IPage>({
+const pageSchema = new Schema<IPage>({
   title: String,
   content: String,
   i18n: String,
@@ -32,6 +35,6 @@ const ruleBookSchema = new Schema<IPage>({
   },
 });
 
-const PageModel = (): Model<IPage> => model('Page', ruleBookSchema);
+const PageModel = (): Model<IPage> => model('Page', pageSchema);
 
 export { type IPage, type HydratedIPage, PageModel };

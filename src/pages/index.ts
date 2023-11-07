@@ -13,6 +13,8 @@ import AdminNewNotionPage from './adminNewNotion';
 import AdminEditNotionPage from './adminEditNotion';
 import AdminNewChapterPage from './adminNewChapter';
 import AdminEditChapterPage from './adminEditChapter';
+import AdminNewPage from './adminNewPage';
+import AdminEditPage from './adminEditPage';
 
 export {
   HomePage,
@@ -30,4 +32,6 @@ export {
   AdminEditNotionPage,
   AdminNewChapterPage,
   AdminEditChapterPage,
+  AdminNewPage,
+  AdminEditPage,
 };

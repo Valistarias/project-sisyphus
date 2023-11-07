@@ -17,7 +17,7 @@ interface IRuleBooksChapterOrder {
 
 export default class RuleBooks extends Entity {
   get: (payload: IRuleBooksPayload) => Promise<ICuratedRuleBook>;
-  changeChapterOrder: (payload: IRuleBooksChapterOrder) => Promise<ICuratedRuleBook>;
+  changeChaptersOrder: (payload: IRuleBooksChapterOrder) => Promise<ICuratedRuleBook>;
 
   constructor() {
     super('rulebooks');
@@ -34,10 +34,10 @@ export default class RuleBooks extends Entity {
           });
       });
 
-    this.changeChapterOrder = async (payload) =>
+    this.changeChaptersOrder = async (payload) =>
       await new Promise((resolve, reject) => {
         axios
-          .post(`${this.url}/changechapterorder/`, payload)
+          .post(`${this.url}/changechaptersorder/`, payload)
           .then((res) => {
             resolve(res.data);
           })

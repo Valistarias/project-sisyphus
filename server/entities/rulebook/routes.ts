@@ -8,7 +8,7 @@ import {
   deleteRuleBook,
   findAll,
   findSingle,
-  changeChapterOrder,
+  changeChaptersOrder,
 } from './controller';
 
 export default (app: Router): void => {
@@ -25,7 +25,7 @@ export default (app: Router): void => {
 
   app.post('/rulebooks/update', [verifyToken, adminNeeded], update);
 
-  app.post('/rulebooks/changechapterorder', [verifyToken, adminNeeded], changeChapterOrder);
+  app.post('/rulebooks/changechaptersorder', [verifyToken, adminNeeded], changeChaptersOrder);
 
   app.post('/rulebooks/delete', [verifyToken, adminNeeded], deleteRuleBook);
 };

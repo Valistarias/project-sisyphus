@@ -2,6 +2,7 @@ import db from '../../models';
 
 import { type Request, type Response } from 'express';
 import { type HydratedIPage } from './model';
+import type { HydratedIChapter } from '../index';
 
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
@@ -10,6 +11,29 @@ const { Page } = db;
 const findPages = async (): Promise<HydratedIPage[]> =>
   await new Promise((resolve, reject) => {
     Page.find()
+      .populate<{ chapter: HydratedIChapter }>({
+        path: 'chapter',
+        populate: 'ruleBook',
+      })
+      .then(async (res) => {
+        if (res === undefined || res === null) {
+          reject(gemNotFound('Pages'));
+        } else {
+          resolve(res as HydratedIPage[]);
+        }
+      })
+      .catch(async (err) => {
+        reject(err);
+      });
+  });
+
+const findPagesByChapter = async (chapterId: string): Promise<HydratedIPage[]> =>
+  await new Promise((resolve, reject) => {
+    Page.find({ chapter: chapterId })
+      .populate<{ chapter: HydratedIChapter }>({
+        path: 'chapter',
+        populate: 'ruleBook',
+      })
       .then(async (res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Pages'));
@@ -25,6 +49,10 @@ const findPages = async (): Promise<HydratedIPage[]> =>
 const findPageById = async (id: string): Promise<HydratedIPage> =>
   await new Promise((resolve, reject) => {
     Page.findById(id)
+      .populate<{ chapter: HydratedIChapter }>({
+        path: 'chapter',
+        populate: 'ruleBook',
+      })
       .then(async (res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Page'));
@@ -43,24 +71,30 @@ const create = (req: Request, res: Response): void => {
     res.status(400).send(gemInvalidField('Page'));
     return;
   }
-  const page = new Page({
-    title,
-    content,
-    chapter,
-  });
 
-  if (i18n !== null) {
-    page.i18n = JSON.stringify(i18n);
-  }
+  findPagesByChapter(chapter)
+    .then((pages) => {
+      const page = new Page({
+        title,
+        content,
+        chapter,
+        position: pages.length,
+      });
 
-  page
-    .save()
-    .then(() => {
-      res.send(page);
+      if (i18n !== null) {
+        page.i18n = JSON.stringify(i18n);
+      }
+
+      page
+        .save()
+        .then(() => {
+          res.send(page);
+        })
+        .catch((err: Error) => {
+          res.status(500).send(gemServerError(err));
+        });
     })
-    .catch((err: Error) => {
-      res.status(500).send(gemServerError(err));
-    });
+    .catch((err) => res.status(500).send(gemServerError(err)));
 };
 
 const update = (req: Request, res: Response): void => {
@@ -184,4 +218,36 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, update, deletePage, findSingle, findAll, findPageById, deletePagesByChapterId };
+const findAllByChapter = (req: Request, res: Response): void => {
+  const { chapterId } = req.query;
+  if (chapterId === undefined || typeof chapterId !== 'string') {
+    res.status(400).send(gemInvalidField('RuleBook ID'));
+    return;
+  }
+  findPagesByChapter(chapterId)
+    .then((pages) => {
+      const curatedChapters: CuratedIPage[] = [];
+
+      pages.forEach((page) => {
+        curatedChapters.push({
+          page,
+          i18n: curatePage(page),
+        });
+      });
+
+      res.send(curatedChapters);
+    })
+    .catch((err) => res.status(500).send(gemServerError(err)));
+};
+
+export {
+  create,
+  update,
+  deletePage,
+  findSingle,
+  findAll,
+  findPageById,
+  deletePagesByChapterId,
+  findPagesByChapter,
+  findAllByChapter,
+};

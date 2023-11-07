@@ -30,19 +30,19 @@ const AdminNewChapters: FC = () => {
 
   const [error, setError] = useState('');
 
-  const introEditor = useEditor({
+  const summaryEditor = useEditor({
     extensions: completeRichTextElementExtentions,
   });
 
-  const introFrEditor = useEditor({
+  const summaryFrEditor = useEditor({
     extensions: completeRichTextElementExtentions,
   });
 
   const onSaveChapter = useCallback(
     (elt) => {
       if (
-        introEditor === null ||
-        introFrEditor === null ||
+        summaryEditor === null ||
+        summaryFrEditor === null ||
         api === undefined ||
         params.get('ruleBookId') === undefined ||
         params.get('type') === undefined
@@ -52,8 +52,8 @@ const AdminNewChapters: FC = () => {
       if (chapterName === '') {
         setError(t('nameChapter.required', { ns: 'fields' }));
       } else {
-        let html: string | null = introEditor.getHTML();
-        const htmlFr = introFrEditor.getHTML();
+        let html: string | null = summaryEditor.getHTML();
+        const htmlFr = summaryFrEditor.getHTML();
         if (html === '<p class="ap"></p>') {
           html = null;
         }
@@ -108,8 +108,8 @@ const AdminNewChapters: FC = () => {
       }
     },
     [
-      introEditor,
-      introFrEditor,
+      summaryEditor,
+      summaryFrEditor,
       api,
       params,
       chapterName,
@@ -140,8 +140,9 @@ const AdminNewChapters: FC = () => {
       <div className="adminNewChapter__details">
         <RichTextElement
           label={t('chapterSummary.title', { ns: 'fields' })}
-          editor={introEditor}
+          editor={summaryEditor}
           rawStringContent={chapterSummary}
+          ruleBookId={params.get('ruleBookId') ?? undefined}
           small
           complete
         />
@@ -167,8 +168,9 @@ const AdminNewChapters: FC = () => {
       <div className="adminNewChapter__details">
         <RichTextElement
           label={`${t('chapterSummary.title', { ns: 'fields' })} (FR)`}
-          editor={introFrEditor}
+          editor={summaryFrEditor}
           rawStringContent={chapterSummaryFr}
+          ruleBookId={params.get('ruleBookId') ?? undefined}
           small
           complete
         />

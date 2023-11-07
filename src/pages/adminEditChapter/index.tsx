@@ -8,11 +8,19 @@ import { useApi } from '../../providers/api';
 import { useSystemAlerts } from '../../providers/systemAlerts';
 import { useConfirmMessage } from '../../providers/confirmMessage';
 
-import { Aerror, Ali, Ap, Atitle, Aul } from '../../atoms';
+import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input } from '../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
+import {
+  Alert,
+  DragList,
+  type IDragElt,
+  RichTextElement,
+  completeRichTextElementExtentions,
+} from '../../organisms';
 
 import type { ICuratedChapter, IPage } from '../../interfaces';
+
+import { arraysEqual } from '../../utils';
 
 import './adminEditChapter.scss';
 
@@ -35,6 +43,8 @@ const AdminEditChapters: FC = () => {
   const [chapterSummaryFr, setChapterSummaryFr] = useState('');
 
   const [pagesData, setPagesData] = useState<IPage[] | null>(null);
+  const [initialOrder, setInitialOrder] = useState<string[]>([]);
+  const [pagesOrder, setPagesOrder] = useState<string[]>([]);
 
   const [error, setError] = useState('');
 
@@ -46,24 +56,32 @@ const AdminEditChapters: FC = () => {
     extensions: completeRichTextElementExtentions,
   });
 
-  const pagesListDom = useMemo(() => {
-    if (pagesData === null) {
-      return null;
+  const pageDragData = useMemo(() => {
+    if (pagesData === null || (pagesData.length === 0) === null) {
+      return {};
     }
-    console.log('pagesData', pagesData);
-    return (
-      <Aul className="adminEditChapter__chapter-list" noPoints>
-        {pagesData.map((chapter) => (
-          <Ali className="adminEditChapter__chapter-list__elt" key={chapter._id}>
-            <Atitle level={4}>{chapter.title}</Atitle>
-            <Button size="small" href={`/admin/chapter/${chapter._id}`}>
-              {t('adminEditChapter.editChapter', { ns: 'pages' })}
-            </Button>
-          </Ali>
-        ))}
-      </Aul>
-    );
+
+    const pages: Record<string, IDragElt> = {};
+    pagesData.forEach((pageData) => {
+      pages[pageData._id] = {
+        id: pageData._id,
+        title: pageData.title,
+        button: {
+          href: `/admin/page/${pageData._id}`,
+          content: t('adminEditRuleBook.editChapter', { ns: 'pages' }),
+        },
+      };
+    });
+
+    return pages;
   }, [pagesData, t]);
+
+  const onPageOrder = useCallback((elt: string[], isInitial: boolean) => {
+    setPagesOrder(elt);
+    if (isInitial) {
+      setInitialOrder(elt);
+    }
+  }, []);
 
   const onSaveChapter = useCallback(
     (elt) => {
@@ -129,6 +147,49 @@ const AdminEditChapters: FC = () => {
     [id, introEditor, introFrEditor, api, chapterName, t, chapterNameFr, getNewId, createAlert]
   );
 
+  const onUpdateOrder = useCallback(() => {
+    if (arraysEqual(pagesOrder, initialOrder) || api === undefined || id === undefined) {
+      return;
+    }
+
+    api.chapters
+      .changePagesOrder({
+        id,
+        order: pagesOrder.map((page, index) => ({
+          id: page,
+          position: index,
+        })),
+      })
+      .then(() => {
+        const newId = getNewId();
+        createAlert({
+          key: newId,
+          dom: (
+            <Alert key={newId} id={newId} timer={5}>
+              <Ap>{t('adminEditChapter.successUpdate', { ns: 'pages' })}</Ap>
+            </Alert>
+          ),
+        });
+        setInitialOrder(pagesOrder);
+      })
+      .catch(({ response }) => {
+        const { data } = response;
+        if (data.code === 'CYPU-104') {
+          setError(
+            t(`serverErrors.${data.code}`, {
+              field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
+            })
+          );
+        } else {
+          setError(
+            t(`serverErrors.${data.code}`, {
+              field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
+            })
+          );
+        }
+      });
+  }, [pagesOrder, initialOrder, api, id, getNewId, createAlert, t]);
+
   const onAskDelete = useCallback(() => {
     if (api === undefined) {
       return;
@@ -154,7 +215,7 @@ const AdminEditChapters: FC = () => {
                     </Alert>
                   ),
                 });
-                navigate('/admin/rulebooks');
+                navigate(`/admin/rulebook/${ruleBookId}`);
               })
               .catch(({ response }) => {
                 const { data } = response;
@@ -181,13 +242,14 @@ const AdminEditChapters: FC = () => {
   }, [
     api,
     setConfirmContent,
+    t,
+    chapterName,
     ConfMessageEvent,
     id,
     getNewId,
     createAlert,
-    t,
     navigate,
-    chapterName,
+    ruleBookId,
   ]);
 
   useEffect(() => {
@@ -289,10 +351,17 @@ const AdminEditChapters: FC = () => {
             <Atitle className="adminEditChapter__intl" level={2}>
               {t('adminEditChapter.pages', { ns: 'pages' })}
             </Atitle>
-            {pagesListDom ?? null}
-            <Button href={`/admin/page/new?chapterId=${id}`}>
-              {t('adminEditChapter.createPage', { ns: 'pages' })}
-            </Button>
+            <DragList data={pageDragData} id="main" onChange={onPageOrder} />
+            <div className="adminEditRuleBook__block-children__buttons">
+              {!arraysEqual(pagesOrder, initialOrder) ? (
+                <Button onClick={onUpdateOrder}>
+                  {t('adminEditRuleBook.updateOrder', { ns: 'pages' })}
+                </Button>
+              ) : null}
+              <Button href={`/admin/page/new?chapterId=${id}&ruleBookId=${ruleBookId}`}>
+                {t('adminEditChapter.createPage', { ns: 'pages' })}
+              </Button>
+            </div>
           </div>
         </div>
       </div>

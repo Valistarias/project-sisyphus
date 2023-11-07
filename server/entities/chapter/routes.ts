@@ -9,6 +9,7 @@ import {
   findAll,
   findSingle,
   findAllByRuleBook,
+  changePagesOrder,
 } from './controller';
 
 export default (app: Router): void => {
@@ -26,6 +27,8 @@ export default (app: Router): void => {
   app.post('/chapters/create', [verifyToken, adminNeeded], create);
 
   app.post('/chapters/update', [verifyToken, adminNeeded], update);
+
+  app.post('/chapters/changepagesorder', [verifyToken, adminNeeded], changePagesOrder);
 
   app.post('/chapters/delete', [verifyToken, adminNeeded], deleteChapter);
 };

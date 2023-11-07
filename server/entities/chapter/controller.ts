@@ -2,18 +2,25 @@ import db from '../../models';
 
 import { type Request, type Response } from 'express';
 import { type HydratedIChapter } from './model';
-import type { IRuleBook, IChapterType } from '../index';
+import type { IRuleBook, IChapterType, IPage } from '../index';
 
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { deletePagesByChapterId } from '../page/controller';
 
-const { Chapter } = db;
+const { Chapter, Page } = db;
 
 const findChapters = async (): Promise<HydratedIChapter[]> =>
   await new Promise((resolve, reject) => {
     Chapter.find()
       .populate<{ type: IChapterType }>('type')
       .populate<{ ruleBook: IRuleBook }>('ruleBook')
+      .populate<{ pages: IPage[] }>({
+        path: 'pages',
+        select: '_id title chapter position',
+        options: {
+          sort: { position: 'asc' },
+        },
+      })
       .then(async (res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Chapters'));
@@ -31,6 +38,13 @@ const findChaptersByRuleBook = async (ruleBookId: string): Promise<HydratedIChap
     Chapter.find({ ruleBook: ruleBookId })
       .populate<{ type: IChapterType }>('type')
       .populate<{ ruleBook: IRuleBook }>('ruleBook')
+      .populate<{ pages: IPage[] }>({
+        path: 'pages',
+        select: '_id title chapter position',
+        options: {
+          sort: { position: 'asc' },
+        },
+      })
       .then(async (res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Chapters'));
@@ -48,6 +62,13 @@ const findChapterById = async (id: string): Promise<HydratedIChapter> =>
     Chapter.findById(id)
       .populate<{ type: IChapterType }>('type')
       .populate<{ ruleBook: IRuleBook }>('ruleBook')
+      .populate<{ pages: IPage[] }>({
+        path: 'pages',
+        select: '_id title chapter position',
+        options: {
+          sort: { position: 'asc' },
+        },
+      })
       .then(async (res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Chapter'));
@@ -136,21 +157,95 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteChapter = (req: Request, res: Response): void => {
-  const { id } = req.body;
-  if (id === undefined) {
-    res.status(400).send(gemInvalidField('Chapter ID'));
+const updateMultiplePagesPosition = (order: any, cb: (res: Error | null) => void): void => {
+  Page.findOneAndUpdate({ _id: order[0].id }, { position: order[0].position })
+    .then(() => {
+      if (order.length > 1) {
+        order.shift();
+        updateMultiplePagesPosition([...order], cb);
+      } else {
+        cb(null);
+      }
+    })
+    .catch(() => {
+      cb(new Error('Rulebook not found'));
+    });
+};
+
+const changePagesOrder = (req: Request, res: Response): void => {
+  const { id, order } = req.body;
+  if (id === undefined || order === undefined) {
+    res.status(400).send(gemInvalidField('Chapter Reordering'));
     return;
   }
-  deletePagesByChapterId(id)
+  updateMultiplePagesPosition(order, (err) => {
+    if (err !== null) {
+      res.status(404).send(gemNotFound('Chapter'));
+    } else {
+      res.send({ message: 'Chapter was updated successfully!' });
+    }
+  });
+};
+
+const deleteChapterById = async (id: string): Promise<boolean> =>
+  await new Promise((resolve, reject) => {
+    if (id === undefined) {
+      reject(gemInvalidField('Chapter ID'));
+      return;
+    }
+    deletePagesByChapterId(id)
+      .then(() => {
+        Chapter.findByIdAndDelete(id)
+          .then(() => {
+            resolve(true);
+          })
+          .catch((err: Error) => {
+            reject(gemServerError(err));
+          });
+      })
+      .catch((err: Error) => {
+        reject(gemServerError(err));
+      });
+  });
+
+const deleteChaptersAndPagesByPagesId = (
+  chapters: string[],
+  cb: (res: Error | null) => void
+): void => {
+  deleteChapterById(chapters[0])
     .then(() => {
-      Chapter.findByIdAndDelete(id)
-        .then(() => {
-          res.send({ message: 'Chapter was deleted successfully!' });
-        })
-        .catch((err: Error) => {
-          res.status(500).send(gemServerError(err));
-        });
+      if (chapters.length > 1) {
+        chapters.shift();
+        updateMultiplePagesPosition([...chapters], cb);
+      } else {
+        cb(null);
+      }
+    })
+    .catch(() => {
+      cb(new Error('Rulebook not found'));
+    });
+};
+
+const deleteChaptersRecursive = async (chapters: string[]): Promise<boolean> =>
+  await new Promise((resolve, reject) => {
+    if (chapters.length === 0) {
+      reject(gemInvalidField('Chapter IDS'));
+      return;
+    }
+    deleteChaptersAndPagesByPagesId(chapters, (err) => {
+      if (err !== null) {
+        reject(err);
+      } else {
+        resolve(true);
+      }
+    });
+  });
+
+const deleteChapter = (req: Request, res: Response): void => {
+  const { id } = req.body;
+  deleteChapterById(id)
+    .then(() => {
+      res.send({ message: 'Chapter was deleted successfully!' });
     })
     .catch((err: Error) => {
       res.status(500).send(gemServerError(err));
@@ -231,9 +326,11 @@ export {
   create,
   update,
   deleteChapter,
+  deleteChaptersRecursive,
   findSingle,
   findAll,
   findChapterById,
   findAllByRuleBook,
   findChaptersByRuleBook,
+  changePagesOrder,
 };
