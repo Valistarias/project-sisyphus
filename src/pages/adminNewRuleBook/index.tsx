@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useApi } from '../../providers/api';
 import { useSystemAlerts } from '../../providers/systemAlerts';
+import { useGlobalVars } from '../../providers/globalVars';
 
 import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input } from '../../molecules';
@@ -26,6 +27,7 @@ const AdminNewRuleBooks: FC = () => {
   const { api } = useApi();
   const navigate = useNavigate();
   const { createAlert, getNewId } = useSystemAlerts();
+  const { triggerRuleBookReload } = useGlobalVars();
 
   const [ruleBookName, setRuleBookName] = useState('');
   const [ruleBookNameFr, setRuleBookNameFr] = useState('');
@@ -90,6 +92,7 @@ const AdminNewRuleBooks: FC = () => {
                 </Alert>
               ),
             });
+            triggerRuleBookReload();
             navigate(`/admin/ruleBook/${ruleBook._id}`);
           })
           .catch(({ response }) => {
@@ -121,6 +124,7 @@ const AdminNewRuleBooks: FC = () => {
       getNewId,
       createAlert,
       navigate,
+      triggerRuleBookReload,
     ]
   );
 

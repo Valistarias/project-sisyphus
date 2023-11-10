@@ -1,7 +1,20 @@
-import React, { type FC, useState, useMemo, useContext, useEffect } from 'react';
+import React, {
+  type FC,
+  useState,
+  useMemo,
+  useContext,
+  useEffect,
+  useCallback,
+  useRef,
+} from 'react';
+
 import { useApi } from './api';
-import { type IUser } from '../interfaces';
 import { useTranslation } from 'react-i18next';
+import { useSystemAlerts } from './systemAlerts';
+
+import type { ICuratedRuleBook, IUser } from '../interfaces';
+import { Alert } from '../organisms';
+import { Ap } from '../atoms';
 
 interface IGlobalVarsContext {
   /** The logged user */
@@ -10,6 +23,10 @@ interface IGlobalVarsContext {
   setUser: React.Dispatch<React.SetStateAction<IUser | null>>;
   /** Is the provider loading */
   loading: boolean;
+  /** All the loaded rulebooks */
+  ruleBooks: ICuratedRuleBook[];
+  /** Used to trigger the reload of the rulebooks */
+  triggerRuleBookReload: () => void;
 }
 
 interface GlobalVarsProviderProps {
@@ -21,28 +38,64 @@ const GlobalVarsContext = React.createContext<IGlobalVarsContext | null>(null);
 
 export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) => {
   const { api } = useApi();
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { createAlert, getNewId } = useSystemAlerts();
+
+  const calledApi = useRef(false);
 
   const [user, setUser] = useState<IUser | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  useEffect(() => {
+  const [ruleBooks, setRuleBooks] = useState<ICuratedRuleBook[]>([]);
+
+  const loadRuleBooks = useCallback(() => {
     if (api === undefined) {
       return;
     }
-    api.auth
-      .check()
-      .then((data: IUser) => {
-        if (data.mail !== undefined) {
-          setUser(data);
-        }
-        setLoading(false);
+    api.ruleBooks
+      .getAll()
+      .then((data: ICuratedRuleBook[]) => {
+        setRuleBooks(data);
       })
-      .catch((err) => {
-        console.log('Error', err);
-        setLoading(false);
+      .catch(() => {
+        const newId = getNewId();
+        createAlert({
+          key: newId,
+          dom: (
+            <Alert key={newId} id={newId} timer={5}>
+              <Ap>{t('serverErrors.CYPU-301')}</Ap>
+            </Alert>
+          ),
+        });
       });
-  }, [api]);
+  }, [api, createAlert, getNewId, t]);
+
+  useEffect(() => {
+    if (api !== undefined && !calledApi.current) {
+      calledApi.current = true;
+      api.auth
+        .check()
+        .then((data: IUser) => {
+          if (data.mail !== undefined) {
+            setUser(data);
+            loadRuleBooks();
+          }
+          setLoading(false);
+        })
+        .catch(() => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert key={newId} id={newId} timer={5}>
+                <Ap>{t('serverErrors.CYPU-301')}</Ap>
+              </Alert>
+            ),
+          });
+          setLoading(false);
+        });
+    }
+  }, [api, createAlert, getNewId, t, loadRuleBooks]);
 
   useEffect(() => {
     if (user !== null) {
@@ -57,8 +110,10 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       user,
       setUser,
       loading,
+      ruleBooks,
+      triggerRuleBookReload: loadRuleBooks,
     }),
-    [user, setUser, loading]
+    [user, setUser, loading, ruleBooks, loadRuleBooks]
   );
 
   return <GlobalVarsContext.Provider value={providerValues}>{children}</GlobalVarsContext.Provider>;

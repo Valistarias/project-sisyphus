@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useApi } from '../../providers/api';
 import { useSystemAlerts } from '../../providers/systemAlerts';
 import { useConfirmMessage } from '../../providers/confirmMessage';
+import { useGlobalVars } from '../../providers/globalVars';
 
 import { Aerror, Ali, Ap, Atitle, Aul } from '../../atoms';
 import { Button, Input } from '../../molecules';
@@ -39,6 +40,7 @@ const AdminEditRuleBooks: FC = () => {
   const { id } = useParams();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage();
   const navigate = useNavigate();
+  const { triggerRuleBookReload } = useGlobalVars();
 
   const calledApi = useRef(false);
 
@@ -179,6 +181,7 @@ const AdminEditRuleBooks: FC = () => {
               </Alert>
             ),
           });
+          triggerRuleBookReload();
         })
         .catch(({ response }) => {
           const { data } = response;
@@ -197,7 +200,7 @@ const AdminEditRuleBooks: FC = () => {
           }
         });
     },
-    [id, api, t, getNewId, createAlert]
+    [id, api, t, getNewId, createAlert, triggerRuleBookReload]
   );
 
   const onSaveRuleBook = useCallback(
@@ -246,6 +249,7 @@ const AdminEditRuleBooks: FC = () => {
                   </Alert>
                 ),
               });
+              triggerRuleBookReload();
             } else {
               const date = formatDate(new Date(Date.now()));
               setAutoSaved(
@@ -286,6 +290,7 @@ const AdminEditRuleBooks: FC = () => {
       ruleBookNameFr,
       getNewId,
       createAlert,
+      triggerRuleBookReload,
     ]
   );
 
@@ -379,6 +384,7 @@ const AdminEditRuleBooks: FC = () => {
                     </Alert>
                   ),
                 });
+                triggerRuleBookReload();
                 navigate('/admin/rulebooks');
               })
               .catch(({ response }) => {
@@ -414,6 +420,7 @@ const AdminEditRuleBooks: FC = () => {
     navigate,
     ruleBookName,
     archived,
+    triggerRuleBookReload,
   ]);
 
   useEffect(() => {

@@ -19,9 +19,16 @@
     align-items: center;
     display: flex;
     gap: 2rem;
+    height: 100%;
   }
 
   .aa {
     font-size: 1.4rem;
+  }
+
+  &__fullheight {
+    align-items: center;
+    display: flex;
+    height: 100%;
   }
 }

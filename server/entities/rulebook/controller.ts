@@ -8,8 +8,11 @@ import { deleteNotionsByRuleBookId } from '../notion/controller';
 
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { deleteChaptersRecursive } from '../chapter/controller';
+import { isAdmin } from '../../middlewares';
 
 const { RuleBook, Chapter } = db;
+
+const ruleBookOrder = ['core', 'addon', 'adventure'];
 
 const findRuleBooks = async (): Promise<HydratedIRuleBook[]> =>
   await new Promise((resolve, reject) => {
@@ -270,18 +273,63 @@ const findSingle = (req: Request, res: Response): void => {
 };
 
 const findAll = (req: Request, res: Response): void => {
-  findRuleBooks()
-    .then((ruleBooks) => {
-      const curatedRuleBooks: CuratedIRuleBook[] = [];
+  isAdmin(req)
+    .then((isUserAdmin) => {
+      findRuleBooks()
+        .then((ruleBooks) => {
+          const curatedRuleBooks: CuratedIRuleBook[] = [];
 
-      ruleBooks.forEach((ruleBook) => {
-        curatedRuleBooks.push({
-          ruleBook,
-          i18n: curateRuleBook(ruleBook),
-        });
-      });
+          if (!isUserAdmin) {
+            ruleBooks = ruleBooks.filter((ruleBook) => ruleBook.archived || ruleBook.draft);
+          }
 
-      res.send(curatedRuleBooks);
+          // Sorting by state first (draft, archived)
+          // Then by type
+          ruleBooks
+            .sort((rb1, rb2) => {
+              let ptRb1 = 0;
+              let ptRb2 = 0;
+              if (rb1.draft) {
+                ptRb1++;
+              }
+              if (rb1.archived) {
+                ptRb1 += 2;
+              }
+              if (rb2.draft) {
+                ptRb2++;
+              }
+              if (rb2.archived) {
+                ptRb2 += 2;
+              }
+              if (ptRb1 < ptRb2) {
+                return -1;
+              } else if (ptRb1 > ptRb2) {
+                return 1;
+              }
+
+              if (
+                ruleBookOrder.findIndex((el) => el === rb1.type.name) >
+                ruleBookOrder.findIndex((el) => el === rb2.type.name)
+              ) {
+                return 1;
+              } else if (
+                ruleBookOrder.findIndex((el) => el === rb1.type.name) <
+                ruleBookOrder.findIndex((el) => el === rb2.type.name)
+              ) {
+                return -1;
+              }
+              return 0;
+            })
+            .forEach((ruleBook) => {
+              curatedRuleBooks.push({
+                ruleBook,
+                i18n: curateRuleBook(ruleBook),
+              });
+            });
+
+          res.send(curatedRuleBooks);
+        })
+        .catch((err) => res.status(500).send(gemServerError(err)));
     })
     .catch((err) => res.status(500).send(gemServerError(err)));
 };

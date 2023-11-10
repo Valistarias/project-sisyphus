@@ -35,7 +35,7 @@ const EmbedNotion: FC<IEmbedNotion> = ({ notionId }) => {
       api.notions
         .get({ notionId })
         .then(({ notion }) => {
-          // TODO: Do internationalization
+          // TODO: Handle internationalization
           setNotionContent(notion.text);
         })
         .catch((res) => {

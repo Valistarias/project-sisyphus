@@ -1,15 +1,12 @@
-import React, { type FC, useEffect, useState, useRef, useMemo } from 'react';
+import React, { type FC, useMemo } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { useApi } from '../../providers/api';
-import { useSystemAlerts } from '../../providers/systemAlerts';
+import { useGlobalVars } from '../../providers/globalVars';
 
-import { type ICuratedRuleBook } from '../../interfaces';
 import AdminRuleBookTypes from './adminRuleBookTypes';
 
 import { Ali, Ap, Atitle, Aul } from '../../atoms';
 import { Button } from '../../molecules';
-import { Alert } from '../../organisms';
 
 import { classTrim } from '../../utils';
 
@@ -17,34 +14,7 @@ import './adminRuleBooks.scss';
 
 const AdminRuleBooks: FC = () => {
   const { t } = useTranslation();
-  const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
-
-  const calledApi = useRef(false);
-
-  const [ruleBooks, setRuleBooks] = useState<ICuratedRuleBook[]>([]);
-
-  useEffect(() => {
-    if (api !== undefined && !calledApi.current) {
-      calledApi.current = true;
-      api.ruleBooks
-        .getAll()
-        .then((data: ICuratedRuleBook[]) => {
-          setRuleBooks(data);
-        })
-        .catch(() => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
-        });
-    }
-  }, [api, createAlert, getNewId, t]);
+  const { ruleBooks } = useGlobalVars();
 
   // Handle i18n in place of basic english language
   const ruleBookList = useMemo(() => {

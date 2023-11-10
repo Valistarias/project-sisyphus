@@ -145,5 +145,8 @@
       "text": "Are you sure you want to delete {{elt}} ?",
       "confirmCta": "Delete Page"
     }
+  },
+  "ruleBooks": {
+    "title": "Rulebooks"
   }
 }
