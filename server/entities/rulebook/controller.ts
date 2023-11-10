@@ -280,7 +280,7 @@ const findAll = (req: Request, res: Response): void => {
           const curatedRuleBooks: CuratedIRuleBook[] = [];
 
           if (!isUserAdmin) {
-            ruleBooks = ruleBooks.filter((ruleBook) => ruleBook.archived || ruleBook.draft);
+            ruleBooks = ruleBooks.filter((ruleBook) => !ruleBook.archived && !ruleBook.draft);
           }
 
           // Sorting by state first (draft, archived)

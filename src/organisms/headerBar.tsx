@@ -37,6 +37,11 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
     return 'logged';
   }, [user]);
 
+  const cleanedRuleBooks = useMemo(
+    () => ruleBooks.filter(({ ruleBook }) => !ruleBook.archived),
+    [ruleBooks]
+  );
+
   const onLogout = useCallback(() => {
     if (api !== undefined) {
       api.auth
@@ -91,7 +96,7 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
                   href: '/rulebooks',
                   text: t('ruleBooks.title', { ns: 'pages' }),
                 }}
-                content={ruleBooks.map(({ ruleBook }) => ({
+                content={cleanedRuleBooks.map(({ ruleBook }) => ({
                   href: `/rulebook/${ruleBook._id}`,
                   // TODO: Handle Internationalization
                   text: ruleBook.title,
