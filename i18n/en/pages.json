@@ -54,7 +54,8 @@
   },
   "adminEditRuleBook": {
     "title": "Edit Rulebook",
-    "delete": "Delete Rulebook",
+    "archive": "Archive Rulebook",
+    "unarchive": "Unarchive",
     "notions": "Notions",
     "createNotion": "New Notion",
     "editNotion": "Edit Notion",
@@ -66,11 +67,17 @@
     "button": "Update",
     "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
     "successUpdate": "Rulebook successfully updated !",
-    "successDelete": "Rulebook successfully deleted !",
-    "confirmDeletion": {
-      "title": "Rulebook Deletion",
-      "text": "Are you sure you want to delete {{elt}} ? All of the related pages and Notions will be deleted as well.",
-      "confirmCta": "Delete Rulebook"
+    "successArchive": "Rulebook successfully archived !",
+    "successUnarchive": "Rulebook successfully unarchived !",
+    "confirmArchive": {
+      "title": "Rulebook Archive",
+      "text": "Are you sure you want to archive {{elt}} ? All of the related pages and Notions will be archived as well.",
+      "confirmCta": "Archive Rulebook"
+    },
+    "confirmUnarchive": {
+      "title": "Rulebook Unarchive",
+      "text": "Are you sure you want to unarchive {{elt}} ? All of the related pages and Notions will be unarchived as well.",
+      "confirmCta": "Unarchive Rulebook"
     }
   },
   "adminNewNotion": {

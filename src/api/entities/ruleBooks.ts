@@ -15,8 +15,20 @@ interface IRuleBooksChapterOrder {
   }>;
 }
 
+interface IPublishPayload {
+  id: string;
+  draft: boolean;
+}
+
+interface IArchivedPayload {
+  id: string;
+  archived: boolean;
+}
+
 export default class RuleBooks extends Entity {
   get: (payload: IRuleBooksPayload) => Promise<ICuratedRuleBook>;
+  publish: (payload: IPublishPayload) => Promise<ICuratedRuleBook>;
+  archive: (payload: IArchivedPayload) => Promise<boolean>;
   changeChaptersOrder: (payload: IRuleBooksChapterOrder) => Promise<ICuratedRuleBook>;
 
   constructor() {
@@ -38,6 +50,30 @@ export default class RuleBooks extends Entity {
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/changechaptersorder/`, payload)
+          .then((res) => {
+            resolve(res.data);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+
+    this.publish = async (payload) =>
+      await new Promise((resolve, reject) => {
+        axios
+          .post(`${this.url}/publish/`, payload)
+          .then((res) => {
+            resolve(res.data);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+
+    this.archive = async (payload) =>
+      await new Promise((resolve, reject) => {
+        axios
+          .post(`${this.url}/archive/`, payload)
           .then((res) => {
             resolve(res.data);
           })

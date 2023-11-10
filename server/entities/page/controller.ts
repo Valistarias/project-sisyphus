@@ -158,7 +158,7 @@ const deletePage = (req: Request, res: Response): void => {
 const deletePagesByChapterId = async (chapterId: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (chapterId === undefined) {
-      reject(gemInvalidField('Chapter ID'));
+      resolve(true);
       return;
     }
     Page.deleteMany({ chapter: chapterId })

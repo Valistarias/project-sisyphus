@@ -43,6 +43,10 @@ export interface IRuleBook {
   };
   /** The summary of the rulebook */
   summary: string;
+  /** Is the RuleBook a draft ? */
+  draft: boolean;
+  /** Is the RuleBook archived ? */
+  archived: boolean;
   /** When the rulebook was created */
   createdAt: string;
   /** All the related Notions */

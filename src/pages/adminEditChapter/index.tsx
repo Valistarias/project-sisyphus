@@ -20,7 +20,7 @@ import {
 
 import type { ICuratedChapter, IPage } from '../../interfaces';
 
-import { arraysEqual } from '../../utils';
+import { arraysEqual, formatDate } from '../../utils';
 
 import './adminEditChapter.scss';
 
@@ -33,6 +33,9 @@ const AdminEditChapters: FC = () => {
   const navigate = useNavigate();
 
   const calledApi = useRef(false);
+
+  const saveTimer = useRef<NodeJS.Timeout | null>(null);
+  const [autoSaved, setAutoSaved] = useState<string | null>(null);
 
   const [ruleBookId, setRuleBookId] = useState('');
   const [ruleBookName, setRuleBookName] = useState('');
@@ -85,7 +88,7 @@ const AdminEditChapters: FC = () => {
   }, []);
 
   const onSaveChapter = useCallback(
-    (elt) => {
+    (silent?: boolean) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -116,16 +119,27 @@ const AdminEditChapters: FC = () => {
             summary: html,
             i18n,
           })
-          .then((rulebook) => {
-            const newId = getNewId();
-            createAlert({
-              key: newId,
-              dom: (
-                <Alert key={newId} id={newId} timer={5}>
-                  <Ap>{t('adminEditChapter.successUpdate', { ns: 'pages' })}</Ap>
-                </Alert>
-              ),
-            });
+          .then(() => {
+            if (silent === undefined) {
+              const newId = getNewId();
+              createAlert({
+                key: newId,
+                dom: (
+                  <Alert key={newId} id={newId} timer={5}>
+                    <Ap>{t('adminEditChapter.successUpdate', { ns: 'pages' })}</Ap>
+                  </Alert>
+                ),
+              });
+            } else {
+              const date = formatDate(new Date(Date.now()));
+              setAutoSaved(
+                t('autosave', {
+                  date: date.date,
+                  hour: date.hour,
+                  ns: 'components',
+                })
+              );
+            }
           })
           .catch(({ response }) => {
             const { data } = response;
@@ -283,6 +297,18 @@ const AdminEditChapters: FC = () => {
     }
   }, [api, createAlert, getNewId, id, t]);
 
+  // The Autosave
+  useEffect(() => {
+    saveTimer.current = setInterval(() => {
+      // onSaveChapter(true);
+    }, 300000);
+    return () => {
+      if (saveTimer.current !== null) {
+        clearInterval(saveTimer.current);
+      }
+    };
+  }, [onSaveChapter]);
+
   return (
     <div className="adminEditChapter">
       <div className="adminEditChapter__head">
@@ -297,6 +323,7 @@ const AdminEditChapters: FC = () => {
           <Aa href={`/admin/rulebook/${ruleBookId}`}>{ruleBookName}</Aa>
         </Ap>
       </div>
+      {autoSaved !== null ? <Ap className="adminEditChapter__autosave">{autoSaved}</Ap> : null}
       <div className="adminEditChapter__content">
         <div className="adminEditChapter__content__left">
           {error !== '' ? <Aerror className="adminEditChapter__error">{error}</Aerror> : null}
@@ -350,7 +377,12 @@ const AdminEditChapters: FC = () => {
               small
             />
           </div>
-          <Button onClick={onSaveChapter} disabled={error !== ''}>
+          <Button
+            onClick={() => {
+              onSaveChapter();
+            }}
+            disabled={error !== ''}
+          >
             {t('adminEditChapter.button', { ns: 'pages' })}
           </Button>
         </div>

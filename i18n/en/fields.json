@@ -26,6 +26,10 @@
     "label": "Rulebook Type",
     "select": "Rulebook Type"
   },
+  "draftRuleBook": {
+    "label": "Rulebook State",
+    "select": "Rulebook State"
+  },
   "ruleBookSummary": {
     "title": "RuleBook Intro"
   },

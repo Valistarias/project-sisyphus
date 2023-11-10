@@ -127,6 +127,54 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
+const publish = (req: Request, res: Response): void => {
+  const { id, draft = null } = req.body;
+  if (id === undefined || draft === null) {
+    res.status(400).send(gemInvalidField('RuleBook ID'));
+    return;
+  }
+  findRuleBookById(id)
+    .then((ruleBook) => {
+      ruleBook.draft = draft;
+
+      ruleBook
+        .save()
+        .then(() => {
+          res.send({ message: 'RuleBook was updated successfully!', ruleBook });
+        })
+        .catch((err) => {
+          res.status(500).send(gemServerError(err));
+        });
+    })
+    .catch(() => {
+      res.status(404).send(gemNotFound('RuleBook'));
+    });
+};
+
+const archive = (req: Request, res: Response): void => {
+  const { id, archived = null } = req.body;
+  if (id === undefined || archived === null) {
+    res.status(400).send(gemInvalidField('RuleBook ID'));
+    return;
+  }
+  findRuleBookById(id)
+    .then((ruleBook) => {
+      ruleBook.archived = archived;
+
+      ruleBook
+        .save()
+        .then(() => {
+          res.send({ message: 'RuleBook was updated successfully!', ruleBook });
+        })
+        .catch((err) => {
+          res.status(500).send(gemServerError(err));
+        });
+    })
+    .catch(() => {
+      res.status(404).send(gemNotFound('RuleBook'));
+    });
+};
+
 const updateMultipleChaptersPosition = (order: any, cb: (res: Error | null) => void): void => {
   Chapter.findOneAndUpdate({ _id: order[0].id }, { position: order[0].position })
     .then(() => {
@@ -241,6 +289,8 @@ const findAll = (req: Request, res: Response): void => {
 export {
   create,
   update,
+  publish,
+  archive,
   changeChaptersOrder,
   deleteRuleBook,
   findSingle,

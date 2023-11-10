@@ -35,6 +35,11 @@
     }
   }
 
+  &__autosave {
+    margin-bottom: 2rem;
+    margin-top: -1rem;
+  }
+
   &__content {
     display: flex;
     flex-direction: row;

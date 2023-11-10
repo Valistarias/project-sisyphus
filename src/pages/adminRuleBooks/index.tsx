@@ -5,13 +5,15 @@ import { useApi } from '../../providers/api';
 import { useSystemAlerts } from '../../providers/systemAlerts';
 
 import { type ICuratedRuleBook } from '../../interfaces';
+import AdminRuleBookTypes from './adminRuleBookTypes';
 
 import { Ali, Ap, Atitle, Aul } from '../../atoms';
 import { Button } from '../../molecules';
 import { Alert } from '../../organisms';
 
+import { classTrim } from '../../utils';
+
 import './adminRuleBooks.scss';
-import AdminRuleBookTypes from './adminRuleBookTypes';
 
 const AdminRuleBooks: FC = () => {
   const { t } = useTranslation();
@@ -52,9 +54,18 @@ const AdminRuleBooks: FC = () => {
     return (
       <Aul className="adminRuleBooks__rulebook-list" noPoints>
         {ruleBooks.map(({ ruleBook }) => (
-          <Ali className="adminRuleBooks__rulebook-list__elt" key={ruleBook._id}>
+          <Ali
+            className={classTrim(`
+              adminRuleBooks__rulebook-list__elt
+              ${ruleBook.archived ? 'adminRuleBooks__rulebook-list__elt--archived' : ''}
+            `)}
+            key={ruleBook._id}
+          >
             <Atitle level={3}>{ruleBook.title}</Atitle>
             <Ap>{t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 })}</Ap>
+            <Ap className="adminRuleBooks__rulebook-list__elt__details">{`${
+              ruleBook.archived ? t('terms.ruleBook.archived') : ''
+            } ${ruleBook.draft ? t('terms.ruleBook.draft') : ''}`}</Ap>
             <Button href={`/admin/rulebook/${ruleBook._id}`}>
               {t('adminRuleBooks.editRuleBook', { ns: 'pages' })}
             </Button>

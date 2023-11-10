@@ -13,6 +13,11 @@
     }
   }
 
+  &__autosave {
+    margin-bottom: 4rem;
+    margin-top: -4rem;
+  }
+
   &__content {
     display: flex;
     flex-direction: row;

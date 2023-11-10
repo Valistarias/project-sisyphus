@@ -10,6 +10,10 @@ interface IRuleBook {
   i18n?: string;
   /** The rulebook type */
   type: ObjectId | null;
+  /** Is the rulebook a draft ? */
+  draft: boolean;
+  /** Is the rulebook archived ? */
+  archived: boolean;
   /** When the ruleBook was created */
   createdAt: Date;
 }
@@ -28,6 +32,14 @@ const ruleBookSchema = new Schema<IRuleBook>(
     type: {
       type: Schema.Types.ObjectId,
       ref: 'RuleBookType',
+    },
+    draft: {
+      type: Boolean,
+      default: true,
+    },
+    archived: {
+      type: Boolean,
+      default: false,
     },
     createdAt: {
       type: Date,

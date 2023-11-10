@@ -229,7 +229,7 @@ const deleteChaptersAndPagesByPagesId = (
 const deleteChaptersRecursive = async (chapters: string[]): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (chapters.length === 0) {
-      reject(gemInvalidField('Chapter IDS'));
+      resolve(true);
       return;
     }
     deleteChaptersAndPagesByPagesId(chapters, (err) => {

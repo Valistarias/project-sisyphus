@@ -9,6 +9,8 @@ import {
   findAll,
   findSingle,
   changeChaptersOrder,
+  publish,
+  archive,
 } from './controller';
 
 export default (app: Router): void => {
@@ -24,6 +26,10 @@ export default (app: Router): void => {
   app.post('/rulebooks/create', [verifyToken, adminNeeded], create);
 
   app.post('/rulebooks/update', [verifyToken, adminNeeded], update);
+
+  app.post('/rulebooks/publish', [verifyToken, adminNeeded], publish);
+
+  app.post('/rulebooks/archive', [verifyToken, adminNeeded], archive);
 
   app.post('/rulebooks/changechaptersorder', [verifyToken, adminNeeded], changeChaptersOrder);
 

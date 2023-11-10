@@ -45,5 +45,6 @@
   "smartselect": {
     "placeholder": "Select one...",
     "notfound": "No field found"
-  }
+  },
+  "autosave": "Autosaved the {{date}} at {{hour}}"
 }
