@@ -1,0 +1,47 @@
+version: '3'
+services:
+  mongodb:
+    image: mongo:6
+    env_file:
+      - docker/.env
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - app
+    restart: always
+  
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.back
+    env_file:
+      - docker/.env
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      DB_HOST: mongodb
+      NODE_ENV: production
+    restart: always
+    networks:
+      - app
+    depends_on:
+      - mongodb
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.front
+    ports:
+      - "80:80"
+    restart: always
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  app:
+    driver: bridge
