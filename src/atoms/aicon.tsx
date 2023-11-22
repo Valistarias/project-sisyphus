@@ -1,9 +1,9 @@
 import React, { type FC, useMemo } from 'react';
 
 import AddLogo from '../assets/icons/add.svg?react';
-import EditLogo from '../assets/icons/edit.svg?react';
 import CheckLogo from '../assets/icons/check.svg?react';
 import DeleteLogo from '../assets/icons/delete.svg?react';
+import EditLogo from '../assets/icons/edit.svg?react';
 
 import { classTrim } from '../utils';
 

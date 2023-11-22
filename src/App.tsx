@@ -1,27 +1,30 @@
 import React, { useMemo, type FC } from 'react';
-import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
 
-import { HeaderBar } from './organisms';
+import { Outlet, RouterProvider, createBrowserRouter } from 'react-router-dom';
+
+import { useGlobalVars } from './providers';
+
 import {
-  HomePage,
-  ErrorPage,
-  LoginPage,
-  SignupPage,
-  DashboardPage,
-  ForgotPassPage,
-  NewPassPage,
+  AdminEditChapterPage,
+  AdminEditNotionPage,
+  AdminEditPage,
+  AdminEditRuleBookPage,
+  AdminNewChapterPage,
+  AdminNewNotionPage,
+  AdminNewPage,
+  AdminNewRuleBookPage,
   AdminPage,
   AdminRuleBooksPage,
-  AdminNewRuleBookPage,
-  AdminEditRuleBookPage,
-  AdminNewNotionPage,
-  AdminEditNotionPage,
-  AdminNewChapterPage,
-  AdminEditChapterPage,
-  AdminNewPage,
-  AdminEditPage,
+  DashboardPage,
+  ErrorPage,
+  ForgotPassPage,
+  HomePage,
+  LoginPage,
+  NewPassPage,
+  SignupPage,
 } from './pages';
-import { useGlobalVars } from './providers/globalVars';
+
+import { HeaderBar } from './organisms';
 
 import './assets/scss/index.scss';
 
@@ -68,6 +71,18 @@ const App: FC = () => {
               path: '/dashboard',
               element: <DashboardPage />,
             },
+            // {
+            //   path: '/rulebooks',
+            //   element: <RuleBooksPage />,
+            // },
+            // {
+            //   path: '/rulebook/:id',
+            //   element: <RuleBookSinglePage />,
+            // },
+            // {
+            //   path: '/rulebook/:id/:chapter',
+            //   element: <ChapterSinglePage />,
+            // },
             // Admin
             {
               path: '/admin',

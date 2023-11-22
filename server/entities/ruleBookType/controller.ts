@@ -1,15 +1,17 @@
-import db from '../../models';
 
 import { type Request, type Response } from 'express';
 import { type HydratedDocument } from 'mongoose';
-import { type IRuleBookType } from './model';
 
+import db from '../../models';
 import {
   gemDuplicate,
   gemInvalidField,
   gemNotFound,
   gemServerError,
 } from '../../utils/globalErrorMessage';
+
+import { type IRuleBookType } from './model';
+
 
 const { RuleBookType } = db;
 

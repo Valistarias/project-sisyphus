@@ -1,12 +1,13 @@
-import React, { type FC, useMemo } from 'react';
+import React, { useMemo, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { useGlobalVars } from '../../providers/globalVars';
 
-import AdminRuleBookTypes from './adminRuleBookTypes';
+import { useGlobalVars } from '../../providers';
 
 import { Ali, Ap, Atitle, Aul } from '../../atoms';
 import { Button } from '../../molecules';
+
+import AdminRuleBookTypes from './adminRuleBookTypes';
 
 import { classTrim } from '../../utils';
 

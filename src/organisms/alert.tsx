@@ -1,7 +1,8 @@
-import React, { type FC, useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { useSystemAlerts } from '../providers/systemAlerts';
+
+import { useSystemAlerts } from '../providers';
 
 import { Button } from '../molecules';
 

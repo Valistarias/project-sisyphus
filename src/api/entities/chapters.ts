@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { type ICuratedChapter } from '../../interfaces';
+
 import Entity from './entity';
 
 interface IChaptersPayload {

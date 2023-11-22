@@ -1,24 +1,22 @@
-import React, { useCallback, type FC, useEffect, useState, useRef, useMemo } from 'react';
-import i18next from 'i18next';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
-import { useNavigate, useParams } from 'react-router-dom';
+import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { useApi } from '../../providers/api';
-import { useSystemAlerts } from '../../providers/systemAlerts';
-import { useConfirmMessage } from '../../providers/confirmMessage';
+import { useNavigate, useParams } from 'react-router-dom';
+
+import { useApi, useConfirmMessage, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ap, Atitle } from '../../atoms';
+import { type ICuratedNotion, type ICuratedRuleBook } from '../../interfaces';
 import { Button, Input } from '../../molecules';
 import {
   Alert,
-  type ISingleValueSelect,
   RichTextElement,
   SmartSelect,
   completeRichTextElementExtentions,
+  type ISingleValueSelect,
 } from '../../organisms';
-
-import { type ICuratedNotion, type ICuratedRuleBook } from '../../interfaces';
 
 import './adminEditNotion.scss';
 

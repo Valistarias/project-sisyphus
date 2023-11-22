@@ -1,26 +1,25 @@
-import React, { useCallback, type FC, useEffect, useState, useRef, useMemo } from 'react';
-import i18next from 'i18next';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
-import { useNavigate, useParams } from 'react-router-dom';
+import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { useApi } from '../../providers/api';
-import { useSystemAlerts } from '../../providers/systemAlerts';
-import { useConfirmMessage } from '../../providers/confirmMessage';
+import { useNavigate, useParams } from 'react-router-dom';
+
+import { useApi, useConfirmMessage, useSystemAlerts } from '../../providers';
 
 import { Aa, Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input } from '../../molecules';
 import {
   Alert,
   DragList,
-  type IDragElt,
   RichTextElement,
   completeRichTextElementExtentions,
+  type IDragElt,
 } from '../../organisms';
 
-import type { ICuratedChapter, IPage } from '../../interfaces';
-
 import { arraysEqual, formatDate } from '../../utils';
+
+import type { ICuratedChapter, IPage } from '../../interfaces';
 
 import './adminEditChapter.scss';
 

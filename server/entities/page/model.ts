@@ -1,4 +1,5 @@
 import { model, type Model, Schema, type ObjectId, type HydratedDocument } from 'mongoose';
+
 import { type HydratedIChapter } from '../chapter/model';
 
 interface IPage {

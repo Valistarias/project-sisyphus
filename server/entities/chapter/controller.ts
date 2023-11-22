@@ -1,11 +1,13 @@
-import db from '../../models';
-
 import { type Request, type Response } from 'express';
-import { type HydratedIChapter } from './model';
-import type { IRuleBook, IChapterType, IPage } from '../index';
 
+import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { deletePagesByChapterId } from '../page/controller';
+
+import { type HydratedIChapter } from './model';
+
+import type { IRuleBook, IChapterType, IPage } from '../index';
+
 
 const { Chapter, Page } = db;
 

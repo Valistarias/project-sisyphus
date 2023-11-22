@@ -1,4 +1,5 @@
 import { model, type Model, Schema, type HydratedDocument, type ObjectId } from 'mongoose';
+
 import { type IRole } from '../index';
 
 interface IUser {

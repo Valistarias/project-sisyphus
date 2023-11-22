@@ -1,9 +1,9 @@
-import React, { useState, useRef, type FC, useMemo, useCallback } from 'react';
+import React, { useCallback, useMemo, useRef, useState, type FC } from 'react';
 
-import { useTranslation } from 'react-i18next';
-import { useApi } from '../providers/api';
-import { useSystemAlerts } from '../providers/systemAlerts';
 import { useEditor } from '@tiptap/react';
+import { useTranslation } from 'react-i18next';
+
+import { useApi, useSystemAlerts } from '../providers';
 
 import { Ap } from '../atoms';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../organisms';

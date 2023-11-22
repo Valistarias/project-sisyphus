@@ -1,12 +1,13 @@
 import React, { type FC, useState, useEffect, useCallback, useMemo } from 'react';
 
+import { DragDropContext, Draggable, type DropResult, Droppable } from 'react-beautiful-dnd';
+
 import { Ali, Aul, Atitle } from '../atoms';
 import { Button } from '../molecules';
 
 import { classTrim } from '../utils';
 
 import './dragList.scss';
-import { DragDropContext, Draggable, type DropResult, Droppable } from 'react-beautiful-dnd';
 
 interface IDragElt {
   id: string;

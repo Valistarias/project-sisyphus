@@ -1,18 +1,18 @@
-import React, { useCallback, type FC, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { useCallback, useMemo, type FC } from 'react';
 
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { useApi } from '../providers/api';
-import { useGlobalVars } from '../providers/globalVars';
-import { useSystemAlerts } from '../providers/systemAlerts';
+
+import { useApi, useGlobalVars, useSystemAlerts } from '../providers';
 
 import { Aa, Ap } from '../atoms';
 import { Button, DropDownList } from '../molecules';
 
+import Alert from './alert';
+
 import { classTrim } from '../utils';
 
 import './headerBar.scss';
-import Alert from './alert';
 
 interface IHeaderBar {
   /** The class of the HeaderBar */

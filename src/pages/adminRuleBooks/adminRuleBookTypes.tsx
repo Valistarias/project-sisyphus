@@ -1,14 +1,13 @@
-import React, { type FC, useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useCallback, useEffect, useMemo, useState, type FC } from 'react';
+
 import i18next from 'i18next';
-
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useApi } from '../../providers/api';
-import { type SubmitHandler, useForm } from 'react-hook-form';
-import { useSystemAlerts } from '../../providers/systemAlerts';
 
-import { type IRuleBookType } from '../../interfaces';
+import { useApi, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ali, Ap, Atitle, Aul } from '../../atoms';
+import { type IRuleBookType } from '../../interfaces';
 import { Button, Input } from '../../molecules';
 import { Alert } from '../../organisms';
 

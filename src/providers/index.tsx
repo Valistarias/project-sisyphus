@@ -1,11 +1,11 @@
 import React, { type FC } from 'react';
 
-import { ApiProvider } from './api';
-import { GlobalVarsProvider } from './globalVars';
-import { LangProvider } from './lang';
-import { ThemeProvider } from './theme';
-import { SystemAlertsProvider } from './systemAlerts';
-import { ConfirmMessageProvider } from './confirmMessage';
+import { ApiProvider, useApi } from './api';
+import { ConfirmMessageProvider, useConfirmMessage } from './confirmMessage';
+import { GlobalVarsProvider, useGlobalVars } from './globalVars';
+import { LangProvider, useLang } from './lang';
+import { SystemAlertsProvider, useSystemAlerts } from './systemAlerts';
+import { ThemeProvider, useTheme } from './theme';
 
 interface ProviderProps {
   /** The childrens of the Providers element */
@@ -26,4 +26,4 @@ const Providers: FC<ProviderProps> = ({ children }) => (
   </ApiProvider>
 );
 
-export default Providers;
+export { Providers, useApi, useConfirmMessage, useGlobalVars, useLang, useSystemAlerts, useTheme };

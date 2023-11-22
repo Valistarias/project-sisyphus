@@ -1,11 +1,11 @@
 import React, { type FC } from 'react';
-import i18next from 'i18next';
 
+import i18next from 'i18next';
 import { useForm, type SubmitHandler } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useSystemAlerts } from '../../providers/systemAlerts';
-import { useApi } from '../../providers/api';
+import { useNavigate } from 'react-router-dom';
+
+import { useApi, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input } from '../../molecules';

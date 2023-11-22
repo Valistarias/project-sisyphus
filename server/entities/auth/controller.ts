@@ -1,13 +1,12 @@
-import jwt, { type JwtPayload } from 'jsonwebtoken';
+import { type Request, type Response } from 'express';
+import { type Error, type HydratedDocument } from 'mongoose';
+
 import bcrypt from 'bcryptjs';
+import jwt, { type JwtPayload } from 'jsonwebtoken';
+import { type IMailgunClient } from 'mailgun.js/Interfaces';
 
 import config from '../../config/db.config';
 import db from '../../models';
-
-import { type HydratedIUser, type IRole, type IUser } from '../index';
-import { type Request, type Response } from 'express';
-import { type Error, type HydratedDocument } from 'mongoose';
-import { type IMailgunClient } from 'mailgun.js/Interfaces';
 import {
   gemInvalidField,
   gemNotAllowed,
@@ -15,8 +14,9 @@ import {
   gemServerError,
   gemUnverifiedUser,
 } from '../../utils/globalErrorMessage';
-import { findUserById } from '../user/controller';
+import { type HydratedIUser, type IRole, type IUser } from '../index';
 import { removeToken } from '../mailToken/controller';
+import { findUserById } from '../user/controller';
 
 const { User, Role } = db;
 
@@ -225,4 +225,4 @@ const updatePassword = (req: Request, res: Response): void => {
   }
 };
 
-export { signUp, signIn, signOut, verifyTokenSingIn, getLogged, updatePassword };
+export { getLogged, signIn, signOut, signUp, updatePassword, verifyTokenSingIn };

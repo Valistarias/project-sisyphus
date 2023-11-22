@@ -1,7 +1,6 @@
-import db from '../models';
-
 import { type Request, type Response } from 'express';
 
+import db from '../models';
 import { gemDuplicate, gemNotFound } from '../utils/globalErrorMessage';
 
 const { ROLES, User } = db;

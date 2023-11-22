@@ -1,18 +1,17 @@
-import React, { type FC, useMemo, useEffect, useRef } from 'react';
-import i18next from 'i18next';
+import React, { useEffect, useMemo, useRef, type FC } from 'react';
 
+import i18next from 'i18next';
 import { useForm, type SubmitHandler } from 'react-hook-form';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useGlobalVars } from '../../providers/globalVars';
-import { useApi } from '../../providers/api';
 import { useTranslation } from 'react-i18next';
-import { useSystemAlerts } from '../../providers/systemAlerts';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+import { useApi, useGlobalVars, useSystemAlerts } from '../../providers';
 
 import { Aa, Aerror, Ap, Atitle } from '../../atoms';
+import { type IUser } from '../../interfaces';
 import { Button, Input } from '../../molecules';
 import { Alert } from '../../organisms';
 
-import { type IUser } from '../../interfaces';
 import { regexMail } from '../../utils';
 
 import './login.scss';

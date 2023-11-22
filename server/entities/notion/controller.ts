@@ -1,13 +1,13 @@
-import db from '../../models';
 
 import { type Request, type Response } from 'express';
 import { type HydratedDocument } from 'mongoose';
-import { type HydratedNotion, type INotion } from './model';
 
+import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
-
-import { type HydratedIRuleBook } from '../ruleBook/model';
 import { findRuleBookById } from '../ruleBook/controller';
+import { type HydratedIRuleBook } from '../ruleBook/model';
+
+import { type HydratedNotion, type INotion } from './model';
 
 const { Notion } = db;
 

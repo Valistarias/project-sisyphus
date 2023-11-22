@@ -1,23 +1,24 @@
-import React, { type FC, useEffect } from 'react';
-import { type Editor, EditorContent, mergeAttributes } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import Paragraph from '@tiptap/extension-paragraph';
+import React, { useEffect, type FC } from 'react';
+
 import Heading from '@tiptap/extension-heading';
+import Paragraph from '@tiptap/extension-paragraph';
+import Table from '@tiptap/extension-table';
+import TableCell from '@tiptap/extension-table-cell';
+import TableHeader from '@tiptap/extension-table-header';
+import TableRow from '@tiptap/extension-table-row';
+import { EditorContent, mergeAttributes, type Editor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+
+import { Alabel } from '../../atoms';
 
 import { MenuBar } from './menuBar';
 import ReactComponentEmbed from './reactComponentEmbed';
 import ReactHighlight from './reactHighlight';
 
-import { Alabel } from '../../atoms';
-
 import { classTrim } from '../../utils';
 
 import './../../atoms/atitle.scss';
 import './richTextElement.scss';
-import Table from '@tiptap/extension-table';
-import TableRow from '@tiptap/extension-table-row';
-import TableHeader from '@tiptap/extension-table-header';
-import TableCell from '@tiptap/extension-table-cell';
 
 const completeRichTextElementExtentions = [
   StarterKit.configure({
@@ -226,4 +227,4 @@ const RichTextElement: FC<IRichTextElement> = ({
   );
 };
 
-export { RichTextElement, completeRichTextElementExtentions, basicRichTextElementExtentions };
+export { RichTextElement, basicRichTextElementExtentions, completeRichTextElementExtentions };

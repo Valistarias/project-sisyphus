@@ -1,10 +1,11 @@
 import React, { type FC } from 'react';
 
-import { classTrim } from '../utils';
 
 import { type ChangeHandler } from 'react-hook-form';
 
 import { Alabel } from '../atoms';
+
+import { classTrim } from '../utils';
 
 import './input.scss';
 

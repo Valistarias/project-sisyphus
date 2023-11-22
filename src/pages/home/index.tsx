@@ -1,7 +1,8 @@
 import React, { useCallback, type FC } from 'react';
 
-import { useSystemAlerts } from '../../providers/systemAlerts';
 import { useTranslation } from 'react-i18next';
+
+import { useSystemAlerts } from '../../providers';
 
 import { Ap, Atitle } from '../../atoms';
 import { Button } from '../../molecules';

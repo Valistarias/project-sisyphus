@@ -1,8 +1,9 @@
 import React, { type FC, type ReactNode } from 'react';
 
+import { classTrim } from '../utils';
+
 import type { ContextId, DroppableId } from 'react-beautiful-dnd';
 
-import { classTrim } from '../utils';
 
 import './aul.scss';
 

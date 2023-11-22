@@ -1,20 +1,22 @@
 import React, {
-  type FC,
-  useState,
-  useMemo,
+  useCallback,
   useContext,
   useEffect,
-  useCallback,
+  useMemo,
   useRef,
+  useState,
+  type FC,
 } from 'react';
 
-import { useApi } from './api';
 import { useTranslation } from 'react-i18next';
+
+import { Ap } from '../atoms';
+import { Alert } from '../organisms';
+
+import { useApi } from './api';
 import { useSystemAlerts } from './systemAlerts';
 
 import type { ICuratedRuleBook, IUser } from '../interfaces';
-import { Alert } from '../organisms';
-import { Ap } from '../atoms';
 
 interface IGlobalVarsContext {
   /** The logged user */

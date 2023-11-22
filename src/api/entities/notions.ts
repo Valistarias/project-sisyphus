@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { type ICuratedNotion } from '../../interfaces';
+
 import Entity from './entity';
 
 interface INotionsPayload {

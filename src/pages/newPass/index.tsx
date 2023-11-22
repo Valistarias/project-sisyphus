@@ -1,10 +1,11 @@
 import React, { useEffect, type FC } from 'react';
+
 import i18next from 'i18next';
-import { useTranslation } from 'react-i18next';
 import { useForm, type SubmitHandler } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useSystemAlerts } from '../../providers/systemAlerts';
-import { useApi } from '../../providers/api';
+
+import { useApi, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input } from '../../molecules';

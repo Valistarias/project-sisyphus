@@ -1,12 +1,12 @@
-import HeaderBar from './headerBar';
 import Alert from './alert';
+import { DragList, type IDragElt } from './dragList';
+import HeaderBar from './headerBar';
 import {
   RichTextElement,
   completeRichTextElementExtentions,
   basicRichTextElementExtentions,
 } from './richTextElement';
 import { SmartSelect, type ISingleValueSelect, type IGroupedOption } from './select';
-import { DragList, type IDragElt } from './dragList';
 
 export {
   HeaderBar,

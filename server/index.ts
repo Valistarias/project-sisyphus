@@ -1,30 +1,30 @@
 /* eslint-disable no-console */
-import mongoose from 'mongoose';
 import express, { type Request, type Response } from 'express';
-import bodyParser from 'body-parser';
-import cors from 'cors';
+import mongoose from 'mongoose';
+
 import path from 'path';
+
+import bodyParser from 'body-parser';
 import cookieSession from 'cookie-session';
+import cors from 'cors';
+import * as dotenv from 'dotenv';
 import formData from 'form-data';
 import Mailgun from 'mailgun.js';
-import * as dotenv from 'dotenv';
+
 
 import DBConfig from './config/db.config';
-
 import { verifyTokenSingIn } from './entities/auth/controller';
-import { checkRouteRights } from './middlewares/authJwt';
-import { verifyMailToken } from './entities/mailToken/controller';
-
 import AuthRoutes from './entities/auth/routes';
-import UserRoutes from './entities/user/routes';
-import MailTokenRoutes from './entities/mailToken/routes';
-import NotionRoutes from './entities/notion/routes';
-import RuleBookRoutes from './entities/ruleBook/routes';
-import RuleBookTypeRoutes from './entities/ruleBookType/routes';
 import ChapterRoutes from './entities/chapter/routes';
 import ChapterTypeRoutes from './entities/chapterType/routes';
+import { verifyMailToken } from './entities/mailToken/controller';
+import MailTokenRoutes from './entities/mailToken/routes';
+import NotionRoutes from './entities/notion/routes';
 import PageRoutes from './entities/page/routes';
-
+import RuleBookRoutes from './entities/ruleBook/routes';
+import RuleBookTypeRoutes from './entities/ruleBookType/routes';
+import UserRoutes from './entities/user/routes';
+import { checkRouteRights } from './middlewares/authJwt';
 import { gemInvalidField } from './utils/globalErrorMessage';
 
 dotenv.config();

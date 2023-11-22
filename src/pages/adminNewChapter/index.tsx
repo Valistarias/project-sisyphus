@@ -1,11 +1,11 @@
-import React, { useCallback, type FC, useMemo, useState } from 'react';
-import i18next from 'i18next';
+import React, { useCallback, useMemo, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { useApi } from '../../providers/api';
-import { useSystemAlerts } from '../../providers/systemAlerts';
+import { useLocation, useNavigate } from 'react-router-dom';
+
+import { useApi, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input } from '../../molecules';

@@ -1,14 +1,15 @@
-import db from '../../models';
-
 import { type Request, type Response } from 'express';
-import { type HydratedIRuleBook } from './model';
-import type { IRuleBookType, INotion, HydratedIChapter } from '../index';
 
-import { deleteNotionsByRuleBookId } from '../notion/controller';
-
+import { isAdmin } from '../../middlewares';
+import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { deleteChaptersRecursive } from '../chapter/controller';
-import { isAdmin } from '../../middlewares';
+import { deleteNotionsByRuleBookId } from '../notion/controller';
+
+import { type HydratedIRuleBook } from './model';
+
+import type { IRuleBookType, INotion, HydratedIChapter } from '../index';
+
 
 const { RuleBook, Chapter } = db;
 

@@ -1,7 +1,9 @@
-import jwt from 'jsonwebtoken';
-import config from '../config/db.config';
-
 import { type Request, type Response } from 'express';
+
+import jwt from 'jsonwebtoken';
+import { pathToRegexp } from 'path-to-regexp';
+
+import config from '../config/db.config';
 import { type IRole } from '../entities';
 import { findUserById } from '../entities/user/controller';
 import {
@@ -11,7 +13,6 @@ import {
   gemServerError,
   gemUnauthorized,
 } from '../utils/globalErrorMessage';
-import { pathToRegexp } from 'path-to-regexp';
 
 interface IVerifyTokenRequest extends Request {
   userId: string;
@@ -166,18 +167,17 @@ const checkRouteRights = (req: Request, res: Response, next: () => void): void =
           }
         }
       })
-      .catch((err) => {
-        console.error(err);
+      .catch(() => {
         next();
       });
   }
 };
 
 export {
-  verifyToken,
   adminNeeded,
+  checkRouteRights,
   generateVerificationMailToken,
   isAdmin,
-  checkRouteRights,
+  verifyToken,
   type IVerifyTokenRequest,
 };

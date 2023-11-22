@@ -1,10 +1,11 @@
-import React, { type FC, useState, useMemo, useContext, useCallback, useEffect } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState, type FC } from 'react';
 
 import { Ap, Atitle } from '../atoms';
+import { Button } from '../molecules';
+
+import { classTrim } from '../utils';
 
 import './confirmMessage.scss';
-import { Button } from '../molecules';
-import { classTrim } from '../utils';
 
 interface IConfirmContent {
   /** The title to be displayed on the window */

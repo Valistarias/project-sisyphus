@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import { type ICuratedPage } from '../../interfaces';
+
 import Entity from './entity';
 
 interface IPagesPayload {

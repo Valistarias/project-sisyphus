@@ -4,12 +4,17 @@
     "es2021": true,
     "node": true
   },
-  "extends": ["standard-with-typescript", "plugin:react/recommended", "prettier"],
+  "extends": [
+    "standard-with-typescript",
+    "plugin:react/recommended",
+    "prettier",
+    "plugin:css-import-order/recommended"
+  ],
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["react", "react-hooks"],
+  "plugins": ["react", "react-hooks", "import", "css-import-order"],
   "rules": {
     "no-console": 1,
     "semi": ["error", "always"],
@@ -22,6 +27,60 @@
       {
         "checksVoidReturn": {
           "attributes": false
+        }
+      }
+    ],
+    "import/order": [
+      "error",
+      {
+        "newlines-between": "always",
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "index",
+          "object",
+          "type"
+        ],
+        "pathGroups": [
+          {
+            "pattern": "react",
+            "group": "builtin",
+            "position": "before"
+          },
+          {
+            "pattern": "@(express|mongoose)",
+            "group": "builtin",
+            "position": "before"
+          },
+          {
+            "pattern": "mongoose",
+            "group": "builtin",
+            "position": "before"
+          },
+          {
+            "pattern": "{.,..,../..,../../..}/providers",
+            "group": "external",
+            "position": "after"
+          },
+          {
+            "pattern": "{.,..,../..,../../..}/pages",
+            "group": "internal",
+            "position": "before"
+          },
+          {
+            "pattern": "{.,..,../..,../../..}/utils",
+            "group": "object",
+            "position": "after"
+          }
+        ],
+        "pathGroupsExcludedImportTypes": ["react"],
+        "distinctGroup": true,
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
         }
       }
     ]

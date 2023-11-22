@@ -1,35 +1,33 @@
-import React, { useCallback, type FC, useEffect, useState, useRef, useMemo } from 'react';
-import i18next from 'i18next';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
-import { useNavigate, useParams } from 'react-router-dom';
+import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { useApi } from '../../providers/api';
-import { useSystemAlerts } from '../../providers/systemAlerts';
-import { useConfirmMessage } from '../../providers/confirmMessage';
-import { useGlobalVars } from '../../providers/globalVars';
+import { useNavigate, useParams } from 'react-router-dom';
+
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ali, Ap, Atitle, Aul } from '../../atoms';
 import { Button, Input } from '../../molecules';
 import {
   Alert,
-  type ISingleValueSelect,
+  DragList,
   RichTextElement,
   SmartSelect,
   completeRichTextElementExtentions,
-  DragList,
   type IDragElt,
+  type ISingleValueSelect,
 } from '../../organisms';
 
-import type {
-  INotion,
-  ICuratedRuleBook,
-  IRuleBookType,
-  IChapterType,
-  IChapter,
-} from '../../interfaces';
-
 import { arraysEqual, formatDate } from '../../utils';
+
+import type {
+  IChapter,
+  IChapterType,
+  ICuratedRuleBook,
+  INotion,
+  IRuleBookType,
+} from '../../interfaces';
 
 import './adminEditRuleBook.scss';
 

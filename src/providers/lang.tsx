@@ -1,17 +1,17 @@
 import React, { type FC, useState, useMemo, useContext } from 'react';
 
-import { I18nextProvider, initReactI18next } from 'react-i18next';
 import i18next from 'i18next';
-
-import common_fr from '../../i18n/fr/common.json';
-import fields_fr from '../../i18n/fr/fields.json';
-import pages_fr from '../../i18n/fr/pages.json';
-import components_fr from '../../i18n/fr/components.json';
+import { I18nextProvider, initReactI18next } from 'react-i18next';
 
 import common_en from '../../i18n/en/common.json';
+import components_en from '../../i18n/en/components.json';
 import fields_en from '../../i18n/en/fields.json';
 import pages_en from '../../i18n/en/pages.json';
-import components_en from '../../i18n/en/components.json';
+import common_fr from '../../i18n/fr/common.json';
+import components_fr from '../../i18n/fr/components.json';
+import fields_fr from '../../i18n/fr/fields.json';
+import pages_fr from '../../i18n/fr/pages.json';
+
 
 interface ILangContext {
   /** Is the provider loading */

@@ -1,24 +1,22 @@
-import React, { useCallback, type FC, useEffect, useState } from 'react';
-import i18next from 'i18next';
+import React, { useCallback, useEffect, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
-import { useNavigate } from 'react-router-dom';
+import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
-import { useApi } from '../../providers/api';
-import { useSystemAlerts } from '../../providers/systemAlerts';
-import { useGlobalVars } from '../../providers/globalVars';
+import { useNavigate } from 'react-router-dom';
+
+import { useApi, useGlobalVars, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ap, Atitle } from '../../atoms';
+import { type IRuleBookType } from '../../interfaces';
 import { Button, Input } from '../../molecules';
 import {
   Alert,
-  type ISingleValueSelect,
   RichTextElement,
   SmartSelect,
   completeRichTextElementExtentions,
+  type ISingleValueSelect,
 } from '../../organisms';
-
-import { type IRuleBookType } from '../../interfaces';
 
 import './adminNewRuleBook.scss';
 

@@ -1,17 +1,16 @@
-import React, { useCallback, useState, type FC, useMemo } from 'react';
+import React, { useCallback, useMemo, useState, type FC } from 'react';
+
 import { type Editor } from '@tiptap/react';
-
 import { useTranslation } from 'react-i18next';
-import { useApi } from '../../providers/api';
-import { useSystemAlerts } from '../../providers/systemAlerts';
 
-import { classTrim } from '../../utils';
+import { useApi, useSystemAlerts } from '../../providers';
 
 import { Ap } from '../../atoms';
-import { Button, Input } from '../../molecules';
-import { Alert, type IGroupedOption, SmartSelect } from '../index';
-
 import { type INotion } from '../../interfaces';
+import { Button, Input } from '../../molecules';
+import { Alert, SmartSelect, type IGroupedOption } from '../index';
+
+import { classTrim } from '../../utils';
 
 import './menuBar.scss';
 
