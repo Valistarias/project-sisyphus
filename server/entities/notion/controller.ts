@@ -6,8 +6,8 @@ import { type HydratedNotion, type INotion } from './model';
 
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
-import { type HydratedIRuleBook } from '../ruleBook/model';
-import { findRuleBookById } from '../ruleBook/controller';
+import { type HydratedIRuleBook } from '../ruleBooks/model';
+import { findRuleBookById } from '../ruleBooks/controller';
 
 const { Notion } = db;
 
