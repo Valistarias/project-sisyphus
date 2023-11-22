@@ -1,5 +1,5 @@
 import { model, type Model, Schema, type ObjectId, type HydratedDocument } from 'mongoose';
-import { type HydratedIRuleBook } from '../ruleBooks/model';
+import { type HydratedIRuleBook } from '../ruleBook/model';
 
 interface INotion {
   /** The title of the notion */
