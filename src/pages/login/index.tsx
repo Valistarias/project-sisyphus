@@ -3,7 +3,7 @@ import i18next from 'i18next';
 
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useGlobalVars } from '../../providers/globalVars';
+import { useGlobalVars } from '../../providers/globalVar';
 import { useApi } from '../../providers/api';
 import { useTranslation } from 'react-i18next';
 import { useSystemAlerts } from '../../providers/systemAlerts';

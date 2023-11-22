@@ -21,7 +21,7 @@ import {
   AdminNewPage,
   AdminEditPage,
 } from './pages';
-import { useGlobalVars } from './providers/globalVars';
+import { useGlobalVars } from './providers/globalVar';
 
 import './assets/scss/index.scss';
 

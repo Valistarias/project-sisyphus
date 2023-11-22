@@ -1,7 +1,7 @@
 import React, { type FC } from 'react';
 
 import { ApiProvider } from './api';
-import { GlobalVarsProvider } from './globalVars';
+import { GlobalVarsProvider } from './globalVar';
 import { LangProvider } from './lang';
 import { ThemeProvider } from './theme';
 import { SystemAlertsProvider } from './systemAlerts';

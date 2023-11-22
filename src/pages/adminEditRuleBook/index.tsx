@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useApi } from '../../providers/api';
 import { useSystemAlerts } from '../../providers/systemAlerts';
 import { useConfirmMessage } from '../../providers/confirmMessage';
-import { useGlobalVars } from '../../providers/globalVars';
+import { useGlobalVars } from '../../providers/globalVar';
 
 import { Aerror, Ali, Ap, Atitle, Aul } from '../../atoms';
 import { Button, Input } from '../../molecules';
