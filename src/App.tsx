@@ -21,6 +21,8 @@ import {
   HomePage,
   LoginPage,
   NewPassPage,
+  RuleBookPage,
+  RuleBooksPage,
   SignupPage,
 } from './pages';
 
@@ -71,14 +73,14 @@ const App: FC = () => {
               path: '/dashboard',
               element: <DashboardPage />,
             },
-            // {
-            //   path: '/rulebooks',
-            //   element: <RuleBooksPage />,
-            // },
-            // {
-            //   path: '/rulebook/:id',
-            //   element: <RuleBookSinglePage />,
-            // },
+            {
+              path: '/rulebooks',
+              element: <RuleBooksPage />,
+            },
+            {
+              path: '/rulebook/:id',
+              element: <RuleBookPage />,
+            },
             // {
             //   path: '/rulebook/:id/:chapter',
             //   element: <ChapterSinglePage />,

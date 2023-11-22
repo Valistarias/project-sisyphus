@@ -7,9 +7,10 @@ import { useTranslation } from 'react-i18next';
 import { useApi, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ali, Ap, Atitle, Aul } from '../../atoms';
-import { type IRuleBookType } from '../../interfaces';
 import { Button, Input } from '../../molecules';
 import { Alert } from '../../organisms';
+
+import { type IRuleBookType } from '../../interfaces';
 
 import './adminRuleBookTypes.scss';
 

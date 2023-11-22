@@ -19,8 +19,6 @@ import {
   type ISingleValueSelect,
 } from '../../organisms';
 
-import { arraysEqual, formatDate } from '../../utils';
-
 import type {
   IChapter,
   IChapterType,
@@ -28,6 +26,8 @@ import type {
   INotion,
   IRuleBookType,
 } from '../../interfaces';
+
+import { arraysEqual, formatDate } from '../../utils';
 
 import './adminEditRuleBook.scss';
 
@@ -40,7 +40,7 @@ const AdminEditRuleBooks: FC = () => {
   const navigate = useNavigate();
   const { triggerRuleBookReload } = useGlobalVars();
 
-  const calledApi = useRef(false);
+  const calledApi = useRef<string | null>(null);
 
   const saveTimer = useRef<NodeJS.Timeout | null>(null);
   const [autoSaved, setAutoSaved] = useState<string | null>(null);
@@ -422,8 +422,8 @@ const AdminEditRuleBooks: FC = () => {
   ]);
 
   useEffect(() => {
-    if (api !== undefined && id !== undefined && !calledApi.current) {
-      calledApi.current = true;
+    if (api !== undefined && id !== undefined && calledApi.current !== id) {
+      calledApi.current = id;
       api.ruleBooks
         .get({ ruleBookId: id })
         .then(({ ruleBook, i18n }: ICuratedRuleBook) => {

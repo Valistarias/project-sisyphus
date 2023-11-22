@@ -71,6 +71,11 @@
             "position": "before"
           },
           {
+            "pattern": "{.,..,../..,../../..}/interfaces",
+            "group": "object",
+            "position": "after"
+          },
+          {
             "pattern": "{.,..,../..,../../..}/utils",
             "group": "object",
             "position": "after"

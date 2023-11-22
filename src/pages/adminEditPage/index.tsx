@@ -11,9 +11,9 @@ import { Aa, Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
 
-import { formatDate } from '../../utils';
-
 import type { ICuratedPage } from '../../interfaces';
+
+import { formatDate } from '../../utils';
 
 import './adminEditPage.scss';
 
@@ -25,7 +25,7 @@ const AdminEditPages: FC = () => {
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage();
   const navigate = useNavigate();
 
-  const calledApi = useRef(false);
+  const calledApi = useRef<string | null>(null);
 
   const saveTimer = useRef<NodeJS.Timeout | null>(null);
   const [autoSaved, setAutoSaved] = useState<string | null>(null);
@@ -189,8 +189,8 @@ const AdminEditPages: FC = () => {
   ]);
 
   useEffect(() => {
-    if (api !== undefined && id !== undefined && !calledApi.current) {
-      calledApi.current = true;
+    if (api !== undefined && id !== undefined && calledApi.current !== id) {
+      calledApi.current = id;
       api.pages
         .get({ pageId: id })
         .then(({ page, i18n }: ICuratedPage) => {

@@ -1,8 +1,9 @@
 import axios from 'axios';
 
+import Entity from './entity';
+
 import { type ICuratedNotion } from '../../interfaces';
 
-import Entity from './entity';
 
 interface INotionsPayload {
   notionId: string;

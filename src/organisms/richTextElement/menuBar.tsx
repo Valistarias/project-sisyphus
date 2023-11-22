@@ -6,9 +6,10 @@ import { useTranslation } from 'react-i18next';
 import { useApi, useSystemAlerts } from '../../providers';
 
 import { Ap } from '../../atoms';
-import { type INotion } from '../../interfaces';
 import { Button, Input } from '../../molecules';
 import { Alert, SmartSelect, type IGroupedOption } from '../index';
+
+import { type INotion } from '../../interfaces';
 
 import { classTrim } from '../../utils';
 

@@ -14,24 +14,28 @@ import ForgotPassPage from './forgotPass';
 import HomePage from './home';
 import LoginPage from './login';
 import NewPassPage from './newPass';
+import RuleBookPage from './ruleBook';
+import RuleBooksPage from './ruleBooks';
 import SignupPage from './signup';
 
 export {
-  HomePage,
-  ErrorPage,
-  LoginPage,
-  SignupPage,
-  DashboardPage,
-  ForgotPassPage,
-  NewPassPage,
+  AdminEditChapterPage,
+  AdminEditNotionPage,
+  AdminEditPage,
+  AdminEditRuleBookPage,
+  AdminNewChapterPage,
+  AdminNewNotionPage,
+  AdminNewPage,
+  AdminNewRuleBookPage,
   AdminPage,
   AdminRuleBooksPage,
-  AdminNewRuleBookPage,
-  AdminEditRuleBookPage,
-  AdminNewNotionPage,
-  AdminEditNotionPage,
-  AdminNewChapterPage,
-  AdminEditChapterPage,
-  AdminNewPage,
-  AdminEditPage,
+  DashboardPage,
+  ErrorPage,
+  ForgotPassPage,
+  HomePage,
+  LoginPage,
+  NewPassPage,
+  RuleBookPage,
+  RuleBooksPage,
+  SignupPage,
 };

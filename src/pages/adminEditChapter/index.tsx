@@ -17,9 +17,9 @@ import {
   type IDragElt,
 } from '../../organisms';
 
-import { arraysEqual, formatDate } from '../../utils';
-
 import type { ICuratedChapter, IPage } from '../../interfaces';
+
+import { arraysEqual, formatDate } from '../../utils';
 
 import './adminEditChapter.scss';
 
@@ -31,7 +31,7 @@ const AdminEditChapters: FC = () => {
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage();
   const navigate = useNavigate();
 
-  const calledApi = useRef(false);
+  const calledApi = useRef<string | null>(null);
 
   const saveTimer = useRef<NodeJS.Timeout | null>(null);
   const [autoSaved, setAutoSaved] = useState<string | null>(null);
@@ -267,8 +267,8 @@ const AdminEditChapters: FC = () => {
   ]);
 
   useEffect(() => {
-    if (api !== undefined && id !== undefined && !calledApi.current) {
-      calledApi.current = true;
+    if (api !== undefined && id !== undefined && calledApi.current !== id) {
+      calledApi.current = id;
       api.chapters
         .get({ chapterId: id })
         .then(({ chapter, i18n }: ICuratedChapter) => {

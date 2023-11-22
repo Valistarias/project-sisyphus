@@ -8,9 +8,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useApi, useGlobalVars, useSystemAlerts } from '../../providers';
 
 import { Aa, Aerror, Ap, Atitle } from '../../atoms';
-import { type IUser } from '../../interfaces';
 import { Button, Input } from '../../molecules';
 import { Alert } from '../../organisms';
+
+import { type IUser } from '../../interfaces';
 
 import { regexMail } from '../../utils';
 

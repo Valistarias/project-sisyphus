@@ -147,6 +147,7 @@
     }
   },
   "ruleBooks": {
-    "title": "Rulebooks"
+    "title": "Rulebooks",
+    "openRuleBook": "Open Rulebook"
   }
 }

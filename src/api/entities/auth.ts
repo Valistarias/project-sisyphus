@@ -1,8 +1,9 @@
 import axios from 'axios';
 
+import Entity from './entity';
+
 import { type IUser } from '../../interfaces';
 
-import Entity from './entity';
 
 
 interface ISignUserPayload {

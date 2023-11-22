@@ -177,6 +177,8 @@ interface IRichTextElement {
   small?: boolean;
   /** The RuleBookId, if there is one */
   ruleBookId?: string;
+  /** The classname of the text element */
+  className?: string;
 }
 
 const RichTextElement: FC<IRichTextElement> = ({
@@ -187,6 +189,7 @@ const RichTextElement: FC<IRichTextElement> = ({
   complete = false,
   small = false,
   ruleBookId,
+  className,
 }) => {
   useEffect(() => {
     if (editor === null || rawStringContent === undefined) {
@@ -204,6 +207,7 @@ const RichTextElement: FC<IRichTextElement> = ({
           richTextElt
           ${small ? 'richTextElt--small' : ''}
           ${readOnly !== undefined && readOnly ? ' richTextElt--readOnly' : ''}
+          ${className ?? ''}
         `)}
     >
       {label !== undefined ? <Alabel>{label}</Alabel> : null}
