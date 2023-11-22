@@ -1,5 +1,5 @@
 import React, { type FC, useState, useMemo, useContext, useEffect } from 'react';
-import { useGlobalVars } from './globalVar';
+import { useGlobalVars } from './globalVars';
 
 interface IThemeContext {
   /** The chosen theme */

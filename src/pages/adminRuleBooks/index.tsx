@@ -1,7 +1,7 @@
 import React, { type FC, useMemo } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { useGlobalVars } from '../../providers/globalVar';
+import { useGlobalVars } from '../../providers/globalVars';
 
 import AdminRuleBookTypes from './adminRuleBookTypes';
 

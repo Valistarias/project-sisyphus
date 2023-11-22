@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useNavigate } from 'react-router-dom';
 import { useApi } from '../providers/api';
-import { useGlobalVars } from '../providers/globalVar';
+import { useGlobalVars } from '../providers/globalVars';
 import { useSystemAlerts } from '../providers/systemAlerts';
 
 import { Aa, Ap } from '../atoms';
