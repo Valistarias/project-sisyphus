@@ -10,11 +10,7 @@ import React, {
 
 import { useTranslation } from 'react-i18next';
 
-import { Ap } from '../atoms';
-import { Alert } from '../organisms';
-
 import { useApi } from './api';
-import { useSystemAlerts } from './systemAlerts';
 
 import type { ICuratedRuleBook, IUser } from '../interfaces';
 
@@ -40,8 +36,7 @@ const GlobalVarsContext = React.createContext<IGlobalVarsContext | null>(null);
 
 export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) => {
   const { api } = useApi();
-  const { t, i18n } = useTranslation();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const { i18n } = useTranslation();
 
   const calledApi = useRef(false);
 
@@ -59,18 +54,10 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       .then((data: ICuratedRuleBook[]) => {
         setRuleBooks(data);
       })
-      .catch(() => {
-        const newId = getNewId();
-        createAlert({
-          key: newId,
-          dom: (
-            <Alert key={newId} id={newId} timer={5}>
-              <Ap>{t('serverErrors.CYPU-301')}</Ap>
-            </Alert>
-          ),
-        });
+      .catch((err) => {
+        console.error(err);
       });
-  }, [api, createAlert, getNewId, t]);
+  }, [api]);
 
   useEffect(() => {
     if (api !== undefined && !calledApi.current) {
@@ -84,20 +71,11 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
           }
           setLoading(false);
         })
-        .catch(() => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
-          setLoading(false);
+        .catch((err) => {
+          console.error(err);
         });
     }
-  }, [api, createAlert, getNewId, t, loadRuleBooks]);
+  }, [api, loadRuleBooks]);
 
   useEffect(() => {
     if (user !== null) {

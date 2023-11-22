@@ -15,8 +15,6 @@ const RuleBooks: FC = () => {
   const { t } = useTranslation();
   const { ruleBooks } = useGlobalVars();
 
-  console.log('ruleBooks', ruleBooks);
-
   const ruleBookList = useMemo(() => {
     if (ruleBooks.length === 0) {
       return null;

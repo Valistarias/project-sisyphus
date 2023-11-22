@@ -15,13 +15,13 @@ interface ProviderProps {
 const Providers: FC<ProviderProps> = ({ children }) => (
   <ApiProvider>
     <LangProvider>
-      <SystemAlertsProvider>
-        <GlobalVarsProvider>
-          <ThemeProvider>
+      <GlobalVarsProvider>
+        <ThemeProvider>
+          <SystemAlertsProvider>
             <ConfirmMessageProvider>{children}</ConfirmMessageProvider>
-          </ThemeProvider>
-        </GlobalVarsProvider>
-      </SystemAlertsProvider>
+          </SystemAlertsProvider>
+        </ThemeProvider>
+      </GlobalVarsProvider>
     </LangProvider>
   </ApiProvider>
 );
