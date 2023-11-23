@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 
 import { useApi, useSystemAlerts } from '../../providers';
 
+import { ErrorPage } from '..';
 import { Ap, Atitle } from '../../atoms';
 import { Alert, RichTextElement } from '../../organisms';
 
@@ -21,33 +22,53 @@ const Chapter: FC = () => {
   const calledApi = useRef<string | null>(null);
 
   const [chapter, setChapter] = useState<ICuratedChapter | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
     if (
       api !== undefined &&
       ruleBookId !== undefined &&
       chapterId !== undefined &&
-      calledApi.current !== ruleBookId
+      calledApi.current !== chapterId
     ) {
       calledApi.current = chapterId;
       api.chapters
         .get({ chapterId })
         .then((chapter: ICuratedChapter) => {
-          setChapter(chapter);
+          setLoading(false);
+          if (chapter.chapter.ruleBook === undefined) {
+            setNotFound(true);
+          } else {
+            setChapter(chapter ?? null);
+          }
         })
         .catch((res) => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
+          setLoading(false);
+          if (res.response.status === 404) {
+            setNotFound(true);
+          } else {
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{t('serverErrors.CYPU-301')}</Ap>
+                </Alert>
+              ),
+            });
+          }
         });
     }
   }, [api, createAlert, getNewId, ruleBookId, chapterId, t]);
+
+  if (loading) {
+    return null;
+  }
+
+  if (notFound) {
+    return <ErrorPage />;
+  }
 
   return (
     <div className="chapter">

@@ -46,7 +46,6 @@ const App: FC = () => {
               </div>
             </>
           ),
-          errorElement: <ErrorPage />,
           children: [
             // Unlogged
             {
@@ -126,6 +125,11 @@ const App: FC = () => {
             {
               path: '/admin/page/:id',
               element: <AdminEditPage />,
+            },
+            // All
+            {
+              path: '/*',
+              element: <ErrorPage />,
             },
           ],
         },

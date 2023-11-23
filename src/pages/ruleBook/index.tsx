@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 
 import { useApi, useSystemAlerts } from '../../providers';
 
+import { ErrorPage } from '..';
 import { Aa, Ap, Atitle } from '../../atoms';
 import { Alert, RichTextElement } from '../../organisms';
 
@@ -21,6 +22,8 @@ const RuleBook: FC = () => {
   const calledApi = useRef<string | null>(null);
 
   const [ruleBook, setRuleBook] = useState<ICuratedRuleBook | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
   // TODO: Handle Internationalization
   const contentList = useMemo(() => {
@@ -45,25 +48,44 @@ const RuleBook: FC = () => {
 
   useEffect(() => {
     if (api !== undefined && ruleBookId !== undefined && calledApi.current !== ruleBookId) {
+      setLoading(true);
       calledApi.current = ruleBookId;
       api.ruleBooks
         .get({ ruleBookId })
         .then((ruleBook: ICuratedRuleBook) => {
-          setRuleBook(ruleBook);
+          setLoading(false);
+          if (ruleBook.ruleBook === undefined) {
+            setNotFound(true);
+          } else {
+            setRuleBook(ruleBook ?? null);
+          }
         })
         .catch((res) => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
+          setLoading(false);
+          if (res.response.status === 404) {
+            setNotFound(true);
+          } else {
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{t('serverErrors.CYPU-301')}</Ap>
+                </Alert>
+              ),
+            });
+          }
         });
     }
   }, [api, createAlert, getNewId, ruleBookId, t]);
+
+  if (loading) {
+    return null;
+  }
+
+  if (notFound) {
+    return <ErrorPage />;
+  }
 
   return (
     <div className="rulebook">

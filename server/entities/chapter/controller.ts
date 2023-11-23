@@ -1,5 +1,6 @@
 import { type Request, type Response } from 'express';
 
+import { isAdmin } from '../../middlewares';
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { deletePagesByChapterId } from '../page/controller';
@@ -271,17 +272,25 @@ const findSingle = (req: Request, res: Response): void => {
     res.status(400).send(gemInvalidField('Chapter ID'));
     return;
   }
-  findChapterById(chapterId)
-    .then((chapter) => {
-      const sentObj = {
-        chapter,
-        i18n: curateChapter(chapter),
-      };
-      res.send(sentObj);
+  isAdmin(req)
+    .then((isUserAdmin) => {
+      findChapterById(chapterId)
+        .then((chapter) => {
+          if ((chapter.ruleBook.archived || chapter.ruleBook.draft) && !isUserAdmin) {
+            res.status(404).send();
+          } else {
+            const sentObj = {
+              chapter,
+              i18n: curateChapter(chapter),
+            };
+            res.send(sentObj);
+          }
+        })
+        .catch((err) => {
+          res.status(404).send(err);
+        });
     })
-    .catch((err) => {
-      res.status(404).send(err);
-    });
+    .catch((err) => res.status(500).send(gemServerError(err)));
 };
 
 const findAll = (req: Request, res: Response): void => {

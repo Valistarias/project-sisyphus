@@ -1,4 +1,3 @@
-
 import { type Request, type Response } from 'express';
 import { type HydratedDocument } from 'mongoose';
 
@@ -11,7 +10,6 @@ import {
 } from '../../utils/globalErrorMessage';
 
 import { type IChapterType } from './model';
-
 
 const { ChapterType } = db;
 
@@ -117,12 +115,12 @@ const deleteChapterType = (req: Request, res: Response): void => {
 };
 
 const findSingle = (req: Request, res: Response): void => {
-  const { chapterTypeTypeId } = req.query;
-  if (chapterTypeTypeId === undefined || typeof chapterTypeTypeId !== 'string') {
+  const { chapterTypeId } = req.query;
+  if (chapterTypeId === undefined || typeof chapterTypeId !== 'string') {
     res.status(400).send(gemInvalidField('ChapterType ID'));
     return;
   }
-  findChapterTypeById(chapterTypeTypeId)
+  findChapterTypeById(chapterTypeId)
     .then((chapterType) => res.send(chapterType))
     .catch((err) => res.status(404).send(err));
 };
@@ -133,4 +131,4 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, update, deleteChapterType, findSingle, findAll };
+export { create, deleteChapterType, findAll, findSingle, update };

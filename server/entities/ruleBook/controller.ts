@@ -268,17 +268,25 @@ const findSingle = (req: Request, res: Response): void => {
     res.status(400).send(gemInvalidField('RuleBook ID'));
     return;
   }
-  findRuleBookById(ruleBookId)
-    .then((ruleBook) => {
-      const sentObj = {
-        ruleBook,
-        i18n: curateRuleBook(ruleBook),
-      };
-      res.send(sentObj);
+  isAdmin(req)
+    .then((isUserAdmin) => {
+      findRuleBookById(ruleBookId)
+        .then((ruleBook) => {
+          if ((ruleBook.archived || ruleBook.draft) && !isUserAdmin) {
+            res.status(404).send();
+          } else {
+            const sentObj = {
+              ruleBook,
+              i18n: curateRuleBook(ruleBook),
+            };
+            res.send(sentObj);
+          }
+        })
+        .catch((err) => {
+          res.status(404).send(err);
+        });
     })
-    .catch((err) => {
-      res.status(404).send(err);
-    });
+    .catch((err) => res.status(500).send(gemServerError(err)));
 };
 
 const findAll = (req: Request, res: Response): void => {

@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import { pathToRegexp } from 'path-to-regexp';
 
 import config from '../config/db.config';
-import { type IRole } from '../entities';
+import { type HydratedIUser } from '../entities';
 import { findUserById } from '../entities/user/controller';
 import {
   gemInvalidField,
@@ -81,11 +81,39 @@ const verifyToken = (
   });
 };
 
+const getUserFromToken = async (req: IVerifyTokenRequest): Promise<HydratedIUser | null> =>
+  await new Promise((resolve, reject) => {
+    const { token } = req.session;
+    if (token !== undefined) {
+      jwt.verify(token, config.secret(process.env), (err, decoded) => {
+        if (err !== null) {
+          reject(err);
+        }
+        findUserById(decoded.id)
+          .then((user) => {
+            if (user === undefined) {
+              reject(gemNotFound('User'));
+            }
+            resolve(user);
+          })
+          .catch((errFindUser) => {
+            reject(errFindUser);
+          });
+      });
+    } else {
+      resolve(null);
+    }
+  });
+
 const isAdmin = async (req: Request): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    getUserRolesFromToken(req as IVerifyTokenRequest)
-      .then((roles) => {
-        if (roles.length > 0 && roles.some((role) => role.name === 'admin')) {
+    getUserFromToken(req as IVerifyTokenRequest)
+      .then((user) => {
+        if (
+          user !== null &&
+          user.roles.length > 0 &&
+          user.roles.some((role) => role.name === 'admin')
+        ) {
           resolve(true);
         } else {
           resolve(false);
@@ -115,41 +143,17 @@ const adminNeeded = (req: Request, res: Response, next: () => void): void => {
     .catch((err) => res.status(500).send(gemServerError(err)));
 };
 
-const getUserRolesFromToken = async (req: IVerifyTokenRequest): Promise<IRole[]> =>
-  await new Promise((resolve, reject) => {
-    const { token } = req.session;
-    if (token !== undefined) {
-      jwt.verify(token, config.secret(process.env), (err, decoded) => {
-        if (err !== null) {
-          reject(err);
-        }
-        findUserById(decoded.id)
-          .then((user) => {
-            if (user === undefined) {
-              reject(gemNotFound('User'));
-            }
-            resolve(user.roles);
-          })
-          .catch((errFindUser) => {
-            reject(errFindUser);
-          });
-      });
-    } else {
-      resolve([]);
-    }
-  });
-
 const checkRouteRights = (req: Request, res: Response, next: () => void): void => {
   const urlMatch = routes.find((route) => pathToRegexp(route.url).exec(req.path) !== null);
   let rights = ['unlogged'];
   if (urlMatch === undefined || urlMatch.role === 'all') {
     next();
   } else {
-    getUserRolesFromToken(req as IVerifyTokenRequest)
-      .then((roles) => {
-        if (roles.length > 0) {
+    getUserFromToken(req as IVerifyTokenRequest)
+      .then((user) => {
+        if (user !== null && user.roles.length > 0) {
           rights = ['logged'];
-          if (roles.some((role) => role.name === 'admin')) {
+          if (user.roles.some((role) => role.name === 'admin')) {
             rights.push('admin');
           }
         }
@@ -177,6 +181,7 @@ export {
   adminNeeded,
   checkRouteRights,
   generateVerificationMailToken,
+  getUserFromToken,
   isAdmin,
   verifyToken,
   type IVerifyTokenRequest,
