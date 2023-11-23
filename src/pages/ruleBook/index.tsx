@@ -27,7 +27,7 @@ const RuleBook: FC = () => {
     extensions: completeRichTextElementExtentions,
   });
 
-  console.log('ruleBook', ruleBook);
+  console.log('ruleBook', ruleBook?.ruleBook);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && calledApi.current !== id) {
