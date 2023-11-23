@@ -8,8 +8,7 @@ import { deleteNotionsByRuleBookId } from '../notion/controller';
 
 import { type HydratedIRuleBook } from './model';
 
-import type { IRuleBookType, INotion, HydratedIChapter } from '../index';
-
+import type { HydratedIChapter, INotion, IRuleBookType } from '../index';
 
 const { RuleBook, Chapter } = db;
 
@@ -42,7 +41,16 @@ const findRuleBookById = async (id: string): Promise<HydratedIRuleBook> =>
       .populate<{ chapters: HydratedIChapter[] }>({
         path: 'chapters',
         select: '_id title ruleBook position type',
-        populate: 'type',
+        populate: [
+          {
+            path: 'pages',
+            select: '_id title chapter position',
+            options: {
+              sort: { position: 'asc' },
+            },
+          },
+          'type',
+        ],
         options: {
           sort: { position: 'asc' },
         },
@@ -336,13 +344,13 @@ const findAll = (req: Request, res: Response): void => {
 };
 
 export {
-  create,
-  update,
-  publish,
   archive,
   changeChaptersOrder,
+  create,
   deleteRuleBook,
-  findSingle,
   findAll,
   findRuleBookById,
+  findSingle,
+  publish,
+  update,
 };

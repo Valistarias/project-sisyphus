@@ -15,6 +15,7 @@ import {
   AdminNewRuleBookPage,
   AdminPage,
   AdminRuleBooksPage,
+  ChapterPage,
   DashboardPage,
   ErrorPage,
   ForgotPassPage,
@@ -81,10 +82,10 @@ const App: FC = () => {
               path: '/rulebook/:id',
               element: <RuleBookPage />,
             },
-            // {
-            //   path: '/rulebook/:id/:chapter',
-            //   element: <ChapterSinglePage />,
-            // },
+            {
+              path: '/rulebook/:id/:chapterId',
+              element: <ChapterPage />,
+            },
             // Admin
             {
               path: '/admin',

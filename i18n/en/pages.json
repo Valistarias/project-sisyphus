@@ -149,5 +149,8 @@
   "ruleBooks": {
     "title": "Rulebooks",
     "openRuleBook": "Open Rulebook"
+  },
+  "ruleBook": {
+    "tableContent": "Table of Contents"
   }
 }

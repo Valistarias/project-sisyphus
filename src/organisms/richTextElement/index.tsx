@@ -6,7 +6,7 @@ import Table from '@tiptap/extension-table';
 import TableCell from '@tiptap/extension-table-cell';
 import TableHeader from '@tiptap/extension-table-header';
 import TableRow from '@tiptap/extension-table-row';
-import { EditorContent, mergeAttributes, type Editor } from '@tiptap/react';
+import { EditorContent, mergeAttributes, useEditor, type Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 
 import { Alabel } from '../../atoms';
@@ -164,7 +164,7 @@ const basicRichTextElementExtentions = [
 
 interface IRichTextElement {
   /** The text Editor */
-  editor: Editor | null;
+  editor?: Editor;
   /** Is there raw content (stringified) to be displayed */
   rawStringContent?: string;
   /** The title of the editor, if any */
@@ -191,15 +191,24 @@ const RichTextElement: FC<IRichTextElement> = ({
   ruleBookId,
   className,
 }) => {
+  const basicEditor = useEditor({
+    extensions: completeRichTextElementExtentions,
+  });
+
   useEffect(() => {
-    if (editor === null || rawStringContent === undefined) {
+    if (basicEditor === null || rawStringContent === undefined) {
       return;
     }
+
     // https://github.com/ueberdosis/tiptap/issues/3764#issuecomment-1546629928
     setTimeout(() => {
-      editor.commands.setContent(rawStringContent);
+      if (editor === undefined) {
+        basicEditor.commands.setContent(rawStringContent);
+      } else {
+        editor.commands.setContent(rawStringContent);
+      }
     });
-  }, [editor, rawStringContent]);
+  }, [editor, basicEditor, rawStringContent]);
 
   return (
     <div
@@ -220,7 +229,7 @@ const RichTextElement: FC<IRichTextElement> = ({
         />
       ) : null}
       <EditorContent
-        editor={editor}
+        editor={editor ?? basicEditor}
         className="richTextElt__editor"
         autoComplete="off"
         autoCorrect="off"

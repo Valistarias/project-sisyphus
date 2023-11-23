@@ -8,6 +8,7 @@ import AdminNewNotionPage from './adminNewNotion';
 import AdminNewPage from './adminNewPage';
 import AdminNewRuleBookPage from './adminNewRuleBook';
 import AdminRuleBooksPage from './adminRuleBooks';
+import ChapterPage from './chapter';
 import DashboardPage from './dashboard';
 import ErrorPage from './error';
 import ForgotPassPage from './forgotPass';
@@ -29,6 +30,7 @@ export {
   AdminNewRuleBookPage,
   AdminPage,
   AdminRuleBooksPage,
+  ChapterPage,
   DashboardPage,
   ErrorPage,
   ForgotPassPage,

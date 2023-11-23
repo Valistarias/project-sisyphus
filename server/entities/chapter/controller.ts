@@ -6,8 +6,7 @@ import { deletePagesByChapterId } from '../page/controller';
 
 import { type HydratedIChapter } from './model';
 
-import type { IRuleBook, IChapterType, IPage } from '../index';
-
+import type { IChapterType, IPage, IRuleBook } from '../index';
 
 const { Chapter, Page } = db;
 
@@ -66,7 +65,7 @@ const findChapterById = async (id: string): Promise<HydratedIChapter> =>
       .populate<{ ruleBook: IRuleBook }>('ruleBook')
       .populate<{ pages: IPage[] }>({
         path: 'pages',
-        select: '_id title chapter position',
+        select: '_id title chapter position content i18n',
         options: {
           sort: { position: 'asc' },
         },
@@ -325,14 +324,14 @@ const findAllByRuleBook = (req: Request, res: Response): void => {
 };
 
 export {
+  changePagesOrder,
   create,
-  update,
   deleteChapter,
   deleteChaptersRecursive,
-  findSingle,
   findAll,
-  findChapterById,
   findAllByRuleBook,
+  findChapterById,
   findChaptersByRuleBook,
-  changePagesOrder,
+  findSingle,
+  update,
 };
