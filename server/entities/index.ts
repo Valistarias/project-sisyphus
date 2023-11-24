@@ -1,9 +1,15 @@
-export { type IMailToken, MailTokenModel } from './mailToken/model';
-export { type INotion, type HydratedNotion, NotionModel } from './notion/model';
-export { type IRole, RoleModel } from './role/model';
-export { type IUser, type HydratedIUser, UserModel } from './user/model';
-export { type IRuleBook, type HydratedIRuleBook, RuleBookModel } from './ruleBook/model';
-export { type IRuleBookType, RuleBookTypeModel } from './ruleBookType/model';
-export { type IChapter, type HydratedIChapter, ChapterModel } from './chapter/model';
-export { type IChapterType, ChapterTypeModel } from './chapterType/model';
-export { type IPage, type HydratedIPage, PageModel } from './page/model';
+export {
+  CampaignModel,
+  type HydratedICompleteCampaign,
+  type HydratedISimpleCampaign,
+  type ICampaign,
+} from './campaign/model';
+export { ChapterModel, type HydratedIChapter, type IChapter } from './chapter/model';
+export { ChapterTypeModel, type IChapterType } from './chapterType/model';
+export { MailTokenModel, type IMailToken } from './mailToken/model';
+export { NotionModel, type HydratedNotion, type INotion } from './notion/model';
+export { PageModel, type HydratedIPage, type IPage } from './page/model';
+export { RoleModel, type IRole } from './role/model';
+export { RuleBookModel, type HydratedIRuleBook, type IRuleBook } from './ruleBook/model';
+export { RuleBookTypeModel, type IRuleBookType } from './ruleBookType/model';
+export { UserModel, type HydratedIUser, type IUser } from './user/model';

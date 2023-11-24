@@ -1,13 +1,14 @@
 import {
   Auth,
+  Campaigns,
+  ChapterTypes,
+  Chapters,
   MailToken,
   Notions,
-  Users,
-  RuleBooks,
-  RuleBookTypes,
-  Chapters,
-  ChapterTypes,
   Pages,
+  RuleBookTypes,
+  RuleBooks,
+  Users,
 } from './entities/index';
 
 export default class Api {
@@ -20,6 +21,7 @@ export default class Api {
   chapterTypes: ChapterTypes;
   pages: Pages;
   users: Users;
+  campaigns: Campaigns;
 
   constructor() {
     this.auth = new Auth();
@@ -31,5 +33,6 @@ export default class Api {
     this.chapters = new Chapters();
     this.chapterTypes = new ChapterTypes();
     this.pages = new Pages();
+    this.campaigns = new Campaigns();
   }
 }

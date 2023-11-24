@@ -15,9 +15,13 @@ interface ICampaign {
   players: string[] | ObjectId[];
 }
 
-interface HydratedICampaign extends Omit<HydratedDocument<ICampaign>, 'owner' | 'players'> {
-  owner: IUser;
-  players: IUser[];
+interface HydratedICompleteCampaign extends Omit<HydratedDocument<ICampaign>, 'owner' | 'players'> {
+  owner: string | IUser;
+  players: string[] | IUser[];
+}
+
+interface HydratedISimpleCampaign extends Omit<HydratedDocument<ICampaign>, 'owner'> {
+  owner: string | IUser;
 }
 
 const CampaignSchema = new Schema<ICampaign>({
@@ -41,4 +45,9 @@ const CampaignSchema = new Schema<ICampaign>({
 
 const CampaignModel = (): Model<ICampaign> => model('Campaign', CampaignSchema);
 
-export { CampaignModel, type HydratedICampaign, type ICampaign };
+export {
+  CampaignModel,
+  type HydratedICompleteCampaign,
+  type HydratedISimpleCampaign,
+  type ICampaign,
+};

@@ -11,10 +11,10 @@ import * as dotenv from 'dotenv';
 import formData from 'form-data';
 import Mailgun from 'mailgun.js';
 
-
 import DBConfig from './config/db.config';
 import { verifyTokenSingIn } from './entities/auth/controller';
 import AuthRoutes from './entities/auth/routes';
+import CampaignRoutes from './entities/campaign/routes';
 import ChapterRoutes from './entities/chapter/routes';
 import ChapterTypeRoutes from './entities/chapterType/routes';
 import { verifyMailToken } from './entities/mailToken/controller';
@@ -83,6 +83,10 @@ ChapterRoutes(apiRouter);
 ChapterTypeRoutes(apiRouter);
 PageRoutes(apiRouter);
 
+// Campaign routes
+CampaignRoutes(apiRouter);
+
+// Global Router
 app.use('/api/', apiRouter);
 
 app.get('/verify/:id', function (req: Request, res: Response) {

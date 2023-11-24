@@ -34,16 +34,7 @@
       "error",
       {
         "newlines-between": "always",
-        "groups": [
-          "builtin",
-          "external",
-          "internal",
-          "parent",
-          "sibling",
-          "index",
-          "object",
-          "type"
-        ],
+        "groups": ["builtin", "external", "internal", "parent", "sibling", "index", "type"],
         "pathGroups": [
           {
             "pattern": "react",
@@ -52,11 +43,6 @@
           },
           {
             "pattern": "@(express|mongoose)",
-            "group": "builtin",
-            "position": "before"
-          },
-          {
-            "pattern": "mongoose",
             "group": "builtin",
             "position": "before"
           },

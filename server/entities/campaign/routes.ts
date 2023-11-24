@@ -2,7 +2,16 @@ import { type Router } from 'express';
 
 import { verifyToken } from '../../middlewares';
 
-import { create, deleteCampaign, findAll, findSingle, update } from './controller';
+import {
+  create,
+  deleteCampaign,
+  findAll,
+  findByCode,
+  findSingle,
+  register,
+  unregister,
+  update,
+} from './controller';
 
 export default (app: Router): void => {
   app.use((req, res, next) => {
@@ -10,13 +19,19 @@ export default (app: Router): void => {
     next();
   });
 
-  app.get('/campaign/', [verifyToken], findAll);
+  app.get('/campaigns/', [verifyToken], findAll);
 
-  app.get('/campaign/single', [verifyToken], findSingle);
+  app.get('/campaigns/single', [verifyToken], findSingle);
 
-  app.post('/campaign/create', [verifyToken], create);
+  app.get('/campaigns/find', [verifyToken], findByCode);
 
-  app.post('/campaign/update', [verifyToken], update);
+  app.get('/campaigns/register', [verifyToken], register);
 
-  app.post('/campaign/delete', [verifyToken], deleteCampaign);
+  app.get('/campaigns/unregister', [verifyToken], unregister);
+
+  app.post('/campaigns/create', [verifyToken], create);
+
+  app.post('/campaigns/update', [verifyToken], update);
+
+  app.post('/campaigns/delete', [verifyToken], deleteCampaign);
 };

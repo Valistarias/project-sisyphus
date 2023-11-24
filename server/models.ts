@@ -1,24 +1,26 @@
 import mongoose from 'mongoose';
 
 import {
-  type IRole,
-  RoleModel,
-  type IUser,
-  UserModel,
-  type INotion,
-  NotionModel,
-  type IMailToken,
-  MailTokenModel,
-  type IRuleBook,
-  RuleBookModel,
-  type IRuleBookType,
-  RuleBookTypeModel,
-  type IChapter,
+  CampaignModel,
   ChapterModel,
-  type IChapterType,
   ChapterTypeModel,
-  type IPage,
+  MailTokenModel,
+  NotionModel,
   PageModel,
+  RoleModel,
+  RuleBookModel,
+  RuleBookTypeModel,
+  UserModel,
+  type ICampaign,
+  type IChapter,
+  type IChapterType,
+  type IMailToken,
+  type INotion,
+  type IPage,
+  type IRole,
+  type IRuleBook,
+  type IRuleBookType,
+  type IUser,
 } from './entities';
 
 mongoose.Promise = global.Promise;
@@ -40,6 +42,8 @@ interface DBType {
   ChapterType: mongoose.Model<IChapterType>;
   /** The Page Model */
   Page: mongoose.Model<IPage>;
+  /** The Campaign Model */
+  Campaign: mongoose.Model<ICampaign>;
   /** The Mail Token Model (for forgotten password) */
   MailToken: mongoose.Model<IMailToken>;
   /** The possible Roles */
@@ -59,6 +63,8 @@ const db: DBType = {
   Chapter: ChapterModel(),
   ChapterType: ChapterTypeModel(),
   Page: PageModel(),
+  // Campaign models
+  Campaign: CampaignModel(),
 };
 
 export default db;
