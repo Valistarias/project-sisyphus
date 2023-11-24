@@ -15,12 +15,15 @@ import {
   AdminNewRuleBookPage,
   AdminPage,
   AdminRuleBooksPage,
+  CampaignPage,
+  CampaignsPage,
   ChapterPage,
   DashboardPage,
   ErrorPage,
   ForgotPassPage,
   HomePage,
   LoginPage,
+  NewCampaignPage,
   NewPassPage,
   RuleBookPage,
   RuleBooksPage,
@@ -84,6 +87,18 @@ const App: FC = () => {
             {
               path: '/rulebook/:id/:chapterId',
               element: <ChapterPage />,
+            },
+            {
+              path: '/campaigns',
+              element: <CampaignsPage />,
+            },
+            {
+              path: '/campaign/new',
+              element: <NewCampaignPage />,
+            },
+            {
+              path: '/campaign/:id',
+              element: <CampaignPage />,
             },
             // Admin
             {

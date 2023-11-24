@@ -65,5 +65,9 @@
   },
   "pageContent": {
     "title": "Text"
+  },
+  "campaignName": {
+    "required": "A Campaign Name is required",
+    "label": "Campaign Name"
   }
 }

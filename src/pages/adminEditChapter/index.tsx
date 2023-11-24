@@ -341,7 +341,7 @@ const AdminEditChapters: FC = () => {
           <div className="adminEditChapter__details">
             <RichTextElement
               label={t('chapterSummary.title', { ns: 'fields' })}
-              editor={introEditor}
+              editor={introEditor ?? undefined}
               rawStringContent={chapterSummary}
               ruleBookId={ruleBookId}
               complete
@@ -369,7 +369,7 @@ const AdminEditChapters: FC = () => {
           <div className="adminEditChapter__details">
             <RichTextElement
               label={`${t('chapterSummary.title', { ns: 'fields' })} (FR)`}
-              editor={introFrEditor}
+              editor={introFrEditor ?? undefined}
               rawStringContent={chapterSummaryFr}
               ruleBookId={ruleBookId}
               complete

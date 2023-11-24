@@ -1,4 +1,7 @@
 import { type Request, type Response } from 'express';
+import { type ObjectId } from 'mongoose';
+
+import { v4 as uuidv4 } from 'uuid';
 
 import { getUserFromToken, type IVerifyTokenRequest } from '../../middlewares/authJwt';
 import db from '../../models';
@@ -106,12 +109,13 @@ const create = (req: Request, res: Response): void => {
       const campaign = new Campaign({
         name,
         owner: user._id,
+        code: uuidv4(),
       });
 
       campaign
         .save()
         .then(() => {
-          res.send({ message: 'Campaign was created successfully!' });
+          res.send({ message: 'Campaign was created successfully!', campaignId: campaign._id });
         })
         .catch((err: Error) => {
           res.status(500).send(gemServerError(err));
@@ -147,16 +151,54 @@ const update = (req: Request, res: Response): void => {
     .catch((err) => res.status(500).send(gemServerError(err)));
 };
 
+const generateCode = (req: Request, res: Response): void => {
+  const { campaignId } = req.body;
+  if (campaignId === undefined) {
+    res.status(400).send(gemInvalidField('Campaign ID'));
+    return;
+  }
+  getUserFromToken(req as IVerifyTokenRequest)
+    .then((user) => {
+      findCampaignById(campaignId, req)
+        .then((campaign) => {
+          if (
+            campaign !== undefined &&
+            user !== null &&
+            String(campaign.owner._id) === String(user._id)
+          ) {
+            campaign.code = uuidv4();
+            campaign
+              .save()
+              .then(() => {
+                res.send({ message: 'Campaign code was changed successfully!', campaign });
+              })
+              .catch((err) => {
+                res.status(500).send(gemServerError(err));
+              });
+          } else {
+            res.status(404).send(gemNotFound('Campaign'));
+          }
+        })
+        .catch((err) => res.status(500).send(gemServerError(err)));
+    })
+    .catch((err) => res.status(500).send(gemServerError(err)));
+};
+
 const register = (req: Request, res: Response): void => {
   const { campaignCode } = req.body;
   if (campaignCode === undefined) {
     res.status(400).send(gemInvalidField('Campaign Code'));
     return;
   }
+
+  interface ICampaignPayload extends Omit<HydratedISimpleCampaign, 'players'> {
+    players: string[] | ObjectId[];
+  }
+
   getUserFromToken(req as IVerifyTokenRequest)
     .then((user) => {
       findCampaignByCode(campaignCode, req)
-        .then((campaign) => {
+        .then((campaign: ICampaignPayload) => {
           const foundPlayer =
             user !== null
               ? Boolean(campaign.players.find((player) => String(player) === String(user._id)))
@@ -188,10 +230,15 @@ const unregister = (req: Request, res: Response): void => {
     res.status(400).send(gemInvalidField('Campaign Id'));
     return;
   }
+
+  interface ICampaignPayload extends Omit<HydratedICompleteCampaign, 'players'> {
+    players: string[] | IUser[];
+  }
+
   getUserFromToken(req as IVerifyTokenRequest)
     .then((user) => {
       findCampaignById(campaignId, req)
-        .then((campaign) => {
+        .then((campaign: ICampaignPayload) => {
           const foundPlayer =
             user !== null
               ? Boolean(campaign.players.find((player) => String(player) === String(user._id)))
@@ -265,4 +312,14 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteCampaign, findAll, findByCode, findSingle, register, unregister, update };
+export {
+  create,
+  deleteCampaign,
+  findAll,
+  findByCode,
+  findSingle,
+  generateCode,
+  register,
+  unregister,
+  update,
+};

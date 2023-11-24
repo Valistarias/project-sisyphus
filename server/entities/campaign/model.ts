@@ -10,18 +10,18 @@ interface ICampaign {
   /** When the campaign was created */
   createdAt: Date;
   /** The owner of the campaign */
-  owner: string | ObjectId;
+  owner: ObjectId;
   /** The players in the campaign */
-  players: string[] | ObjectId[];
+  players: ObjectId[];
 }
 
 interface HydratedICompleteCampaign extends Omit<HydratedDocument<ICampaign>, 'owner' | 'players'> {
-  owner: string | IUser;
-  players: string[] | IUser[];
+  owner: HydratedDocument<IUser>;
+  players: Array<HydratedDocument<IUser>>;
 }
 
 interface HydratedISimpleCampaign extends Omit<HydratedDocument<ICampaign>, 'owner'> {
-  owner: string | IUser;
+  owner: HydratedDocument<IUser>;
 }
 
 const CampaignSchema = new Schema<ICampaign>({

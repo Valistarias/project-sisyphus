@@ -91,6 +91,9 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
               <Aa className="headerbar__fullheight" href="/dashboard">
                 {t('dashboard.title', { ns: 'pages' })}
               </Aa>
+              <Aa className="headerbar__fullheight" href="/campaigns">
+                {t('campaigns.title', { ns: 'pages' })}
+              </Aa>
               <DropDownList
                 title={{
                   href: '/rulebooks',

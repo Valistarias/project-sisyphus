@@ -298,7 +298,7 @@ const AdminEditNotions: FC = () => {
       <div className="adminEditNotion__details">
         <RichTextElement
           label={t('notionText.title', { ns: 'fields' })}
-          editor={textEditor}
+          editor={textEditor ?? undefined}
           rawStringContent={notionText}
           ruleBookId={selectedType ?? undefined}
         />
@@ -324,7 +324,7 @@ const AdminEditNotions: FC = () => {
       <div className="adminEditNotion__details">
         <RichTextElement
           label={`${t('notionText.title', { ns: 'fields' })} (FR)`}
-          editor={textFrEditor}
+          editor={textFrEditor ?? undefined}
           rawStringContent={notionTextFr}
           ruleBookId={selectedType ?? undefined}
         />

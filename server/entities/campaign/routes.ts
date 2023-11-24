@@ -8,6 +8,7 @@ import {
   findAll,
   findByCode,
   findSingle,
+  generateCode,
   register,
   unregister,
   update,
@@ -24,6 +25,8 @@ export default (app: Router): void => {
   app.get('/campaigns/single', [verifyToken], findSingle);
 
   app.get('/campaigns/find', [verifyToken], findByCode);
+
+  app.get('/campaigns/generatecode', [verifyToken], generateCode);
 
   app.get('/campaigns/register', [verifyToken], register);
 

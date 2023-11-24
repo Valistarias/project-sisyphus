@@ -147,7 +147,9 @@ export interface ICampaign {
   /** The code of the campaign to connect to it */
   code: string;
   /** The owner of the campaign */
-  owner: IUser;
+  owner: IUser | string;
   /** The players of the campaign */
   players: IUser[];
+  /** When the campaign was created */
+  createdAt: string;
 }

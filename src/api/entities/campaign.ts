@@ -17,6 +17,7 @@ export default class Campaigns extends Entity {
   register: (payload: ICampaignCodePayload) => Promise<ICampaign>;
   unregister: (payload: ICampaignPayload) => Promise<boolean>;
   find: (payload: ICampaignCodePayload) => Promise<ICampaign>;
+  generateCode: (payload: ICampaignPayload) => Promise<ICampaign>;
 
   constructor() {
     super('campaigns');
@@ -61,6 +62,18 @@ export default class Campaigns extends Entity {
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/find/`, { params: payload })
+          .then((res) => {
+            resolve(res.data);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+
+    this.generateCode = async (payload) =>
+      await new Promise((resolve, reject) => {
+        axios
+          .get(`${this.url}/generatecode/`, { params: payload })
           .then((res) => {
             resolve(res.data);
           })

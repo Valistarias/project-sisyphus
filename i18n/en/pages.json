@@ -152,5 +152,19 @@
   },
   "ruleBook": {
     "tableContent": "Table of Contents"
+  },
+  "campaigns": {
+    "title": "Campaigns",
+    "empty": "There is no campaigns here. Create your own to see it displayed here.",
+    "create": "Create Campaign",
+    "openCampaign": "View Campaign"
+  },
+  "newCampaign": {
+    "title": "New Campaign",
+    "formCTA": "Create Campaign",
+    "successCreate": "Campaign successfully created !"
+  },
+  "campaign": {
+    "inviteDetails": "Send this link to allow other players to join this Campaign."
   }
 }
