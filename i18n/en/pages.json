@@ -157,7 +157,14 @@
     "title": "Campaigns",
     "empty": "There is no campaigns here. Create your own to see it displayed here.",
     "create": "Create Campaign",
-    "openCampaign": "View Campaign"
+    "openCampaign": "Open",
+    "deleteCampaign": "Delete",
+    "confirmDelete": {
+      "title": "Campaign Delete",
+      "text": "Are you sure you want to delete {{elt}} ? All of the related character will be unnatached.",
+      "confirmCta": "Delete Campaign"
+    },
+    "successDelete": "Campaign successfully deleted"
   },
   "newCampaign": {
     "title": "New Campaign",

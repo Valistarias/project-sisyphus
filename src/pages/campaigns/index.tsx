@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { useApi, useGlobalVars, useSystemAlerts } from '../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../providers';
 
 import { Ali, Ap, Atitle, Aul } from '../../atoms';
 import { Button } from '../../molecules';
@@ -19,11 +19,84 @@ const Campaigns: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { user } = useGlobalVars();
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage();
 
   const [campaigns, setCampaigns] = useState<ICampaign[]>([]);
   const [loading, setLoading] = useState(true);
 
   const calledApi = useRef(false);
+
+  const campaignReload = useCallback(() => {
+    if (api !== undefined) {
+      api.campaigns
+        .getAll()
+        .then((sentCampaigns: ICampaign[]) => {
+          setLoading(false);
+          setCampaigns(sentCampaigns);
+        })
+        .catch(() => {
+          setLoading(false);
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert key={newId} id={newId} timer={5}>
+                <Ap>{t('serverErrors.CYPU-301')}</Ap>
+              </Alert>
+            ),
+          });
+        });
+    }
+  }, [api, createAlert, getNewId, t]);
+
+  const onDeleteCampaign = useCallback(
+    (id: string, name: string) => {
+      if (api === undefined) {
+        return;
+      }
+      setConfirmContent(
+        {
+          title: t('campaigns.confirmDelete.title', { ns: 'pages' }),
+          text: t('campaigns.confirmDelete.text', { ns: 'pages', elt: name }),
+          confirmCta: t('campaigns.confirmDelete.confirmCta', { ns: 'pages' }),
+        },
+        (evtId: string) => {
+          const confirmDelete = ({ detail }): void => {
+            if (detail.proceed === true) {
+              api.campaigns
+                .delete({ id })
+                .then(() => {
+                  const newId = getNewId();
+                  createAlert({
+                    key: newId,
+                    dom: (
+                      <Alert key={newId} id={newId} timer={5}>
+                        <Ap>{t('campaigns.successDelete', { ns: 'pages' })}</Ap>
+                      </Alert>
+                    ),
+                  });
+                  campaignReload();
+                })
+                .catch(({ response }) => {
+                  const newId = getNewId();
+                  createAlert({
+                    key: newId,
+                    dom: (
+                      <Alert key={newId} id={newId} timer={5}>
+                        <Ap>{t('serverErrors.CYPU-301')}</Ap>
+                      </Alert>
+                    ),
+                  });
+                });
+            }
+            ConfMessageEvent.removeEventListener(evtId, confirmDelete);
+          };
+          ConfMessageEvent.addEventListener(evtId, confirmDelete);
+        }
+      );
+    },
+    [api, setConfirmContent, t, ConfMessageEvent, getNewId, createAlert, campaignReload]
+  );
 
   const campaignList = useMemo(() => {
     if (campaigns.length === 0) {
@@ -48,9 +121,21 @@ const Campaigns: FC = () => {
           <Ap className="campaigns__campaign-list__elt__players">{`${t('terms.general.player', {
             count: campaign.players.length,
           })}: ${campaign.players.length}`}</Ap>
-          <Button href={`/campaign/${campaign._id}`}>
-            {t('campaigns.openCampaign', { ns: 'pages' })}
-          </Button>
+          <div className="campaigns__campaign-list__elt__buttons">
+            <Button href={`/campaign/${campaign._id}`}>
+              {t('campaigns.openCampaign', { ns: 'pages' })}
+            </Button>
+            {isOwner ? (
+              <Button
+                theme="error"
+                onClick={() => {
+                  onDeleteCampaign(campaign._id, campaign.name);
+                }}
+              >
+                {t('campaigns.deleteCampaign', { ns: 'pages' })}
+              </Button>
+            ) : null}
+          </div>
         </Ali>
       );
     });
@@ -60,32 +145,15 @@ const Campaigns: FC = () => {
         {campaignList}
       </Aul>
     );
-  }, [campaigns, t, user]);
+  }, [campaigns, onDeleteCampaign, t, user?._id]);
 
   useEffect(() => {
     if (api !== undefined && !calledApi.current) {
       setLoading(true);
       calledApi.current = true;
-      api.campaigns
-        .getAll()
-        .then((sentCampaigns: ICampaign[]) => {
-          setLoading(false);
-          setCampaigns(sentCampaigns);
-        })
-        .catch(() => {
-          setLoading(false);
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
-        });
+      campaignReload();
     }
-  }, [api, createAlert, getNewId, t]);
+  }, [api, createAlert, getNewId, campaignReload, t]);
 
   // TODO: Add loading state
   if (loading) {
