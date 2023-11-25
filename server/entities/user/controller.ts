@@ -8,7 +8,6 @@ import { type IRole } from '../role/model';
 
 import { type HydratedIUser } from './model';
 
-
 const { User } = db;
 
 const findUserById = async (id: string): Promise<HydratedIUser> =>
@@ -30,8 +29,8 @@ const findUserById = async (id: string): Promise<HydratedIUser> =>
 const update = (req: Request, res: Response): void => {
   const {
     id,
+    username = null,
     lang = null,
-    mail = null,
     oldPass = null,
     newPass = null,
     theme = null,
@@ -43,11 +42,11 @@ const update = (req: Request, res: Response): void => {
   }
   findUserById(id)
     .then((user) => {
+      if (username !== null) {
+        user.username = username;
+      }
       if (lang !== null) {
         user.lang = lang;
-      }
-      if (mail !== null) {
-        user.mail = mail;
       }
       if (newPass !== null) {
         const passwordIsValid = bcrypt.compareSync(oldPass, user.password);

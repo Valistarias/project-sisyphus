@@ -164,7 +164,16 @@
     "formCTA": "Create Campaign",
     "successCreate": "Campaign successfully created !"
   },
+  "joinCampaign": {
+    "title": "Join Campaign",
+    "alreadyPlayer": "You are already a player in this campaign",
+    "alreadyOwner": "You are the owner of this campaign",
+    "text": "You are invited to join",
+    "openCTA": "Open",
+    "joinCTA": "Join",
+    "successJoin": "Campaign successfully joined !"
+  },
   "campaign": {
-    "inviteDetails": "Send this link to allow other players to join this Campaign."
+    "inviteDetails": "Send this link to allow other players to join this campaign."
   }
 }

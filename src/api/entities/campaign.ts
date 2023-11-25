@@ -14,7 +14,7 @@ interface ICampaignCodePayload {
 
 export default class Campaigns extends Entity {
   get: (payload: ICampaignPayload) => Promise<ICampaign>;
-  register: (payload: ICampaignCodePayload) => Promise<ICampaign>;
+  register: (payload: ICampaignCodePayload) => Promise<{ campaignId: string }>;
   unregister: (payload: ICampaignPayload) => Promise<boolean>;
   find: (payload: ICampaignCodePayload) => Promise<ICampaign>;
   generateCode: (payload: ICampaignPayload) => Promise<ICampaign>;
@@ -37,7 +37,7 @@ export default class Campaigns extends Entity {
     this.register = async (payload) =>
       await new Promise((resolve, reject) => {
         axios
-          .get(`${this.url}/register/`, { params: payload })
+          .post(`${this.url}/register/`, payload)
           .then((res) => {
             resolve(res.data);
           })
@@ -49,7 +49,7 @@ export default class Campaigns extends Entity {
     this.unregister = async (payload) =>
       await new Promise((resolve, reject) => {
         axios
-          .get(`${this.url}/unregister/`, { params: payload })
+          .post(`${this.url}/unregister/`, payload)
           .then((res) => {
             resolve(Boolean(res));
           })
@@ -73,7 +73,7 @@ export default class Campaigns extends Entity {
     this.generateCode = async (payload) =>
       await new Promise((resolve, reject) => {
         axios
-          .get(`${this.url}/generatecode/`, { params: payload })
+          .post(`${this.url}/generatecode/`, payload)
           .then((res) => {
             resolve(res.data);
           })

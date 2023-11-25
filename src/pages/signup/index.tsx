@@ -16,6 +16,7 @@ import { regexMail } from '../../utils';
 import './signup.scss';
 
 interface FormValues {
+  username: string;
   mail: string;
   password: string;
   confirmPassword: string;
@@ -35,10 +36,11 @@ const Signup: FC = () => {
     formState: { errors },
   } = useForm<FormValues>();
 
-  const onSubmit: SubmitHandler<FormValues> = ({ mail, password }) => {
+  const onSubmit: SubmitHandler<FormValues> = ({ username, mail, password }) => {
     if (api !== undefined) {
       api.auth
         .signup({
+          username,
           mail,
           password,
         })
@@ -82,6 +84,14 @@ const Signup: FC = () => {
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
+        <Input
+          type="text"
+          registered={register('username', {
+            required: t('username.required', { ns: 'fields' }),
+          })}
+          label={t('username.label', { ns: 'fields' })}
+        />
+        {errors.mail?.message !== undefined ? <Aerror>{errors.mail.message}</Aerror> : null}
         <Input
           type="email"
           registered={register('mail', {

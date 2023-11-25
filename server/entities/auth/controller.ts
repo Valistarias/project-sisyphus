@@ -35,6 +35,7 @@ interface ISigninRequest extends Request {
 
 const signUp = (req: Request, res: Response, mg: IMailgunClient): void => {
   const user = new User({
+    username: req.body.username,
     mail: req.body.mail,
     password: bcrypt.hashSync(req.body.password, 8),
     lang: 'en',

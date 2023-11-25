@@ -22,6 +22,7 @@ import {
   ErrorPage,
   ForgotPassPage,
   HomePage,
+  JoinCampaignPage,
   LoginPage,
   NewCampaignPage,
   NewPassPage,
@@ -97,7 +98,14 @@ const App: FC = () => {
               element: <NewCampaignPage />,
             },
             {
+              path: '/campaign/join/:id',
+              element: <JoinCampaignPage />,
+            },
+            {
               path: '/campaign/:id',
+              element: <CampaignPage />,
+            },
+            {
               element: <CampaignPage />,
             },
             // Admin

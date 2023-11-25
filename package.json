@@ -1,7 +1,7 @@
 {
   "name": "project-sisyphus",
   "version": "0.0.1",
-  "description": "This is the project sisyphus website, for the role playing game qith the same name",
+  "description": "This is the project sisyphus website, for the role playing game with the same name",
   "main": "index.tsx",
   "scripts": {
     "build:server": "webpack -c webpack.node.config.ts",

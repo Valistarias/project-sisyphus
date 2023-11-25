@@ -51,6 +51,14 @@ const routes = [
     role: 'logged',
   },
   {
+    url: '/campaigns',
+    role: 'logged',
+  },
+  {
+    url: '/campaign/:param*',
+    role: 'logged',
+  },
+  {
     url: '/admin/:param*',
     role: 'admin',
   },

@@ -1,8 +1,10 @@
-import { model, type Model, Schema, type HydratedDocument, type ObjectId } from 'mongoose';
+import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
 import { type IRole } from '../index';
 
 interface IUser {
+  /** The username of the user */
+  username: string;
   /** The mail of the user */
   mail: string;
   /** The user password (encrypted) */
@@ -28,6 +30,7 @@ interface HydratedIUser extends Omit<HydratedDocument<IUser>, 'roles'> {
 }
 
 const userSchema = new Schema<IUser>({
+  username: String,
   mail: String,
   password: String,
   name: String,
@@ -52,4 +55,4 @@ const userSchema = new Schema<IUser>({
 
 const UserModel = (): Model<IUser> => model('User', userSchema);
 
-export { type IUser, type HydratedIUser, UserModel };
+export { UserModel, type HydratedIUser, type IUser };

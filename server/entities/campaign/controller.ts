@@ -210,7 +210,10 @@ const register = (req: Request, res: Response): void => {
             campaign
               .save()
               .then(() => {
-                res.send({ message: 'Campaign was updated successfully!', campaign });
+                res.send({
+                  message: 'Campaign was updated successfully!',
+                  campaignId: campaign._id,
+                });
               })
               .catch((err) => {
                 res.status(500).send(gemServerError(err));

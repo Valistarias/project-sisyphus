@@ -4,9 +4,8 @@ import Entity from './entity';
 
 import { type IUser } from '../../interfaces';
 
-
-
 interface ISignUserPayload {
+  username: string;
   mail: string;
   password: string;
 }

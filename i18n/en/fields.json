@@ -1,4 +1,8 @@
 {
+  "username": {
+    "required": "A username is required",
+    "label": "Username"
+  },
   "mail": {
     "required": "Email address is required",
     "pattern": "The email format isn't right (xxx@yyy.zz)",

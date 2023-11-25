@@ -1,6 +1,8 @@
 export interface IUser {
   /** The ID of the user */
   _id: string;
+  /** The username of the user */
+  username: string;
   /** The mail of the user */
   mail: string;
   /** The user password (encrypted) */
@@ -147,7 +149,7 @@ export interface ICampaign {
   /** The code of the campaign to connect to it */
   code: string;
   /** The owner of the campaign */
-  owner: IUser | string;
+  owner: IUser;
   /** The players of the campaign */
   players: IUser[];
   /** When the campaign was created */

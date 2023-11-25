@@ -15,6 +15,7 @@ import DashboardPage from './dashboard';
 import ErrorPage from './error';
 import ForgotPassPage from './forgotPass';
 import HomePage from './home';
+import JoinCampaignPage from './joinCampaign';
 import LoginPage from './login';
 import NewCampaignPage from './newCampaign';
 import NewPassPage from './newPass';
@@ -40,6 +41,7 @@ export {
   ErrorPage,
   ForgotPassPage,
   HomePage,
+  JoinCampaignPage,
   LoginPage,
   NewCampaignPage,
   NewPassPage,

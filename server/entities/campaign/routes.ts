@@ -26,11 +26,11 @@ export default (app: Router): void => {
 
   app.get('/campaigns/find', [verifyToken], findByCode);
 
-  app.get('/campaigns/generatecode', [verifyToken], generateCode);
+  app.post('/campaigns/generatecode', [verifyToken], generateCode);
 
-  app.get('/campaigns/register', [verifyToken], register);
+  app.post('/campaigns/register', [verifyToken], register);
 
-  app.get('/campaigns/unregister', [verifyToken], unregister);
+  app.post('/campaigns/unregister', [verifyToken], unregister);
 
   app.post('/campaigns/create', [verifyToken], create);
 

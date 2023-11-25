@@ -26,15 +26,21 @@
     },
     "ruleBookType": {
       "name": "name"
+    },
+    "general": {
+      "you": "You",
+      "gm": "Game Master",
+      "player_one": "Player",
+      "player_other": "Players"
     }
   },
   "chapterTypeNames": {
     "default_one": "Info",
     "default_other": "Infos",
-    "items_one": "Item",
-    "items_other": "Items",
-    "cyberframes_one": "Cyberframe",
-    "cyberframes_other": "Cyberframes"
+    "item_one": "Item",
+    "item_other": "Items",
+    "cyberframe_one": "Cyberframe",
+    "cyberframe_other": "Cyberframes"
   },
   "ruleBookTypeNames": {
     "core_one": "Main Book",
