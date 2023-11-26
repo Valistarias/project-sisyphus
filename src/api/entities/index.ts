@@ -4,6 +4,7 @@ import Auth from './auth';
 import Campaigns from './campaign';
 import Chapters from './chapters';
 import ChapterTypes from './chapterTypes';
+import Characters from './characters';
 import MailToken from './mailToken';
 import Notions from './notions';
 import RuleBooks from './ruleBooks';
@@ -15,6 +16,7 @@ export {
   Campaigns,
   Chapters,
   ChapterTypes,
+  Characters,
   MailToken,
   Notions,
   Pages,

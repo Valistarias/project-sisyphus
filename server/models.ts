@@ -4,6 +4,7 @@ import {
   CampaignModel,
   ChapterModel,
   ChapterTypeModel,
+  CharacterModel,
   MailTokenModel,
   NotionModel,
   PageModel,
@@ -14,6 +15,7 @@ import {
   type ICampaign,
   type IChapter,
   type IChapterType,
+  type ICharacter,
   type IMailToken,
   type INotion,
   type IPage,
@@ -44,6 +46,8 @@ interface DBType {
   Page: mongoose.Model<IPage>;
   /** The Campaign Model */
   Campaign: mongoose.Model<ICampaign>;
+  /** The Character Model */
+  Character: mongoose.Model<ICharacter>;
   /** The Mail Token Model (for forgotten password) */
   MailToken: mongoose.Model<IMailToken>;
   /** The possible Roles */
@@ -65,6 +69,8 @@ const db: DBType = {
   Page: PageModel(),
   // Campaign models
   Campaign: CampaignModel(),
+  // Character models
+  Character: CharacterModel(),
 };
 
 export default db;

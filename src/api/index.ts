@@ -3,6 +3,7 @@ import {
   Campaigns,
   ChapterTypes,
   Chapters,
+  Characters,
   MailToken,
   Notions,
   Pages,
@@ -13,26 +14,28 @@ import {
 
 export default class Api {
   auth: Auth;
-  mailToken: MailToken;
-  notions: Notions;
-  ruleBooks: RuleBooks;
-  ruleBookTypes: RuleBookTypes;
+  campaigns: Campaigns;
   chapters: Chapters;
   chapterTypes: ChapterTypes;
+  characters: Characters;
+  mailToken: MailToken;
+  notions: Notions;
   pages: Pages;
+  ruleBooks: RuleBooks;
+  ruleBookTypes: RuleBookTypes;
   users: Users;
-  campaigns: Campaigns;
 
   constructor() {
     this.auth = new Auth();
-    this.mailToken = new MailToken();
-    this.notions = new Notions();
-    this.users = new Users();
-    this.ruleBooks = new RuleBooks();
-    this.ruleBookTypes = new RuleBookTypes();
+    this.campaigns = new Campaigns();
     this.chapters = new Chapters();
     this.chapterTypes = new ChapterTypes();
+    this.characters = new Characters();
+    this.mailToken = new MailToken();
+    this.notions = new Notions();
     this.pages = new Pages();
-    this.campaigns = new Campaigns();
+    this.ruleBooks = new RuleBooks();
+    this.ruleBookTypes = new RuleBookTypes();
+    this.users = new Users();
   }
 }

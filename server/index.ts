@@ -17,6 +17,7 @@ import AuthRoutes from './entities/auth/routes';
 import CampaignRoutes from './entities/campaign/routes';
 import ChapterRoutes from './entities/chapter/routes';
 import ChapterTypeRoutes from './entities/chapterType/routes';
+import CharacterRoutes from './entities/character/routes';
 import { verifyMailToken } from './entities/mailToken/controller';
 import MailTokenRoutes from './entities/mailToken/routes';
 import NotionRoutes from './entities/notion/routes';
@@ -85,6 +86,9 @@ PageRoutes(apiRouter);
 
 // Campaign routes
 CampaignRoutes(apiRouter);
+
+// Character routes
+CharacterRoutes(apiRouter);
 
 // Global Router
 app.use('/api/', apiRouter);
