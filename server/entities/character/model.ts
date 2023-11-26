@@ -25,6 +25,11 @@ const CharacterSchema = new Schema<ICharacter>({
     type: Schema.Types.ObjectId,
     ref: 'User',
   },
+  campaign: {
+    type: Schema.Types.ObjectId,
+    ref: 'Campaign',
+    default: null,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

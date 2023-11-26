@@ -11,6 +11,8 @@ import AdminRuleBooksPage from './adminRuleBooks';
 import CampaignPage from './campaign';
 import CampaignsPage from './campaigns';
 import ChapterPage from './chapter';
+import CharacterPage from './character';
+import CharactersPage from './characters';
 import DashboardPage from './dashboard';
 import ErrorPage from './error';
 import ForgotPassPage from './forgotPass';
@@ -18,6 +20,7 @@ import HomePage from './home';
 import JoinCampaignPage from './joinCampaign';
 import LoginPage from './login';
 import NewCampaignPage from './newCampaign';
+import NewCharacterPage from './newCharacter';
 import NewPassPage from './newPass';
 import RuleBookPage from './ruleBook';
 import RuleBooksPage from './ruleBooks';
@@ -37,6 +40,8 @@ export {
   CampaignPage,
   CampaignsPage,
   ChapterPage,
+  CharacterPage,
+  CharactersPage,
   DashboardPage,
   ErrorPage,
   ForgotPassPage,
@@ -44,6 +49,7 @@ export {
   JoinCampaignPage,
   LoginPage,
   NewCampaignPage,
+  NewCharacterPage,
   NewPassPage,
   RuleBookPage,
   RuleBooksPage,

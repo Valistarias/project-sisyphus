@@ -1,4 +1,5 @@
 import { type Request, type Response } from 'express';
+import { type HydratedDocument } from 'mongoose';
 
 import { getUserFromToken, type IVerifyTokenRequest } from '../../middlewares/authJwt';
 import db from '../../models';
@@ -49,15 +50,15 @@ const findCharacterById = async (
           return;
         }
         Character.findById(id)
-          .populate<{ player: IUser }>('player')
+          .populate<{ player: HydratedDocument<IUser> }>('player')
           .populate<{ campaign: ICampaign }>('campaign')
           .then(async (res) => {
             if (res === undefined || res === null) {
               reject(gemNotFound('Character'));
             } else {
               resolve({
-                char: res[0] as HydratedICharacter,
-                canEdit: String(res[0].player._id) === String(user._id),
+                char: res as HydratedICharacter,
+                canEdit: String(res.player._id) === String(user._id),
               });
             }
           })
@@ -104,7 +105,7 @@ const create = (req: Request, res: Response): void => {
 };
 
 const updateInfos = (req: Request, res: Response): void => {
-  const { id, name = null } = req.body;
+  const { id, name = null, campaignId = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Character ID'));
     return;
@@ -115,32 +116,12 @@ const updateInfos = (req: Request, res: Response): void => {
         if (name !== null && name !== char.name) {
           char.name = name;
         }
-        char
-          .save()
-          .then(() => {
-            res.send({ message: 'Character was updated successfully!', char });
-          })
-          .catch((err) => {
-            res.status(500).send(gemServerError(err));
-          });
-      } else {
-        res.status(404).send(gemNotFound('Character'));
-      }
-    })
-    .catch((err) => res.status(500).send(gemServerError(err)));
-};
-
-const joinCampaign = (req: Request, res: Response): void => {
-  const { characterId, campaignId } = req.body;
-  if (characterId === undefined || campaignId === undefined) {
-    res.status(400).send(gemInvalidField('Character ID'));
-    return;
-  }
-
-  findCharacterById(characterId, req)
-    .then(({ char, canEdit }) => {
-      if (char !== undefined && canEdit) {
-        char.campaign = campaignId;
+        if (
+          campaignId !== null &&
+          (char.campaign === undefined || campaignId !== String(char.campaign._id))
+        ) {
+          char.campaign = campaignId;
+        }
         char
           .save()
           .then(() => {
@@ -204,7 +185,7 @@ const findSingle = (req: Request, res: Response): void => {
     return;
   }
   findCharacterById(characterId, req)
-    .then((character) => res.send(character))
+    .then(({ char }) => res.send(char))
     .catch((err) => res.status(404).send(err));
 };
 
@@ -214,4 +195,4 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteCharacter, findAll, findSingle, joinCampaign, quitCampaign, updateInfos };
+export { create, deleteCharacter, findAll, findSingle, quitCampaign, updateInfos };

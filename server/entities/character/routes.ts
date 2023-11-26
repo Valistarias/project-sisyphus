@@ -7,7 +7,6 @@ import {
   deleteCharacter,
   findAll,
   findSingle,
-  joinCampaign,
   quitCampaign,
   updateInfos,
 } from './controller';
@@ -21,8 +20,6 @@ export default (app: Router): void => {
   app.get('/characters/', [verifyToken], findAll);
 
   app.get('/characters/single', [verifyToken], findSingle);
-
-  app.post('/characters/joincampaign', [verifyToken], joinCampaign);
 
   app.post('/characters/quitcampaign', [verifyToken], quitCampaign);
 

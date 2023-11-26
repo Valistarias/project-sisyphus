@@ -18,6 +18,8 @@ import {
   CampaignPage,
   CampaignsPage,
   ChapterPage,
+  CharacterPage,
+  CharactersPage,
   DashboardPage,
   ErrorPage,
   ForgotPassPage,
@@ -25,6 +27,7 @@ import {
   JoinCampaignPage,
   LoginPage,
   NewCampaignPage,
+  NewCharacterPage,
   NewPassPage,
   RuleBookPage,
   RuleBooksPage,
@@ -106,7 +109,16 @@ const App: FC = () => {
               element: <CampaignPage />,
             },
             {
-              element: <CampaignPage />,
+              path: '/characters',
+              element: <CharactersPage />,
+            },
+            {
+              path: '/character/new',
+              element: <NewCharacterPage />,
+            },
+            {
+              path: '/character/:id',
+              element: <CharacterPage />,
             },
             // Admin
             {

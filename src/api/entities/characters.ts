@@ -30,18 +30,6 @@ export default class Characters extends Entity {
           });
       });
 
-    this.joinCampaign = async (payload) =>
-      await new Promise((resolve, reject) => {
-        axios
-          .post(`${this.url}/joincampaign/`, payload)
-          .then((res) => {
-            resolve(res.data);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
-
     this.quitCampaign = async (payload) =>
       await new Promise((resolve, reject) => {
         axios

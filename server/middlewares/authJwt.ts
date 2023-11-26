@@ -59,6 +59,14 @@ const routes = [
     role: 'logged',
   },
   {
+    url: '/characters',
+    role: 'logged',
+  },
+  {
+    url: '/character/:param*',
+    role: 'logged',
+  },
+  {
     url: '/admin/:param*',
     role: 'admin',
   },
