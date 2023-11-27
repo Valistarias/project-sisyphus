@@ -5,10 +5,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { useApi, useGlobalVars, useSystemAlerts } from '../../providers';
 
-import { ErrorPage } from '..';
 import { Ap, Atitle } from '../../atoms';
 import { Button } from '../../molecules';
 import { Alert } from '../../organisms';
+import { ErrorPage } from '../index';
 
 import { type ICampaign } from '../../interfaces';
 

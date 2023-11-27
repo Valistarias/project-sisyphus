@@ -54,5 +54,3 @@ export default Node.create({
     return ReactNodeViewRenderer(HighlightReact);
   },
 });
-
-// export default HighlightReact;

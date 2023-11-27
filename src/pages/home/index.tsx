@@ -19,12 +19,7 @@ const Home: FC = () => {
     createAlert({
       key: newId,
       dom: (
-        <Alert
-          key={newId}
-          id={newId}
-          // timer={5}
-          closable
-        >
+        <Alert key={newId} id={newId} closable>
           <Ap>Lorem Ipsum</Ap>
         </Alert>
       ),

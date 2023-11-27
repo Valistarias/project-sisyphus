@@ -1,8 +1,8 @@
-import React, { type FC, useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState, type FC } from 'react';
 
-import { DragDropContext, Draggable, type DropResult, Droppable } from 'react-beautiful-dnd';
+import { DragDropContext, Draggable, Droppable, type DropResult } from 'react-beautiful-dnd';
 
-import { Ali, Aul, Atitle } from '../atoms';
+import { Ali, Atitle, Aul } from '../atoms';
 import { Button } from '../molecules';
 
 import { classTrim } from '../utils';
@@ -30,7 +30,6 @@ interface IDragList {
 }
 
 const DragList: FC<IDragList> = ({ data, className, id, onChange }) => {
-  // const [data, setData] = useState<IDragElt[]>([]);
   const [order, setOrder] = useState<string[]>([]);
 
   const onDragEnd = useCallback(

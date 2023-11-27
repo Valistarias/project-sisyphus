@@ -299,7 +299,7 @@ const AdminEditChapters: FC = () => {
   // The Autosave
   useEffect(() => {
     saveTimer.current = setInterval(() => {
-      // onSaveChapter(true);
+      onSaveChapter(true);
     }, 300000);
     return () => {
       if (saveTimer.current !== null) {

@@ -23,3 +23,61 @@ export const formatDate = (date: Date): IFormattedDate => ({
   date: `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`,
   hour: `${date.getHours()}:${date.getMinutes()}`,
 });
+
+type typeDice = 4 | 6 | 8 | 10 | 12 | 20 | 100;
+
+interface DiceRequest {
+  /** The number of dices thrown */
+  qty: number;
+  /** The type of dice (as in the number of sides on the dice) */
+  type: typeDice;
+}
+
+interface DiceResult {
+  /** The type of dice (as in the number of sides on the dice) */
+  type: typeDice;
+  /** All the results, in an array */
+  results: number[];
+  /** All the results, summed up */
+  total: number;
+  /** The best throw on this type */
+  best: number;
+  /** The worst throw on this type */
+  worst: number;
+  /** The average value on the throws on this type */
+  average: number;
+}
+
+export const throwDices = (dices: DiceRequest[]): DiceResult[] => {
+  const resultsThrows: DiceResult[] = [];
+
+  dices.forEach(({ qty, type }) => {
+    let total = 0;
+    let best = 0;
+    let worst = 0;
+    const results: number[] = [];
+
+    for (let i = 0; i < qty; i++) {
+      const throwValue = Math.floor(Math.random() * type) + 1;
+      total += throwValue;
+      results.push(throwValue);
+      if (best < throwValue || i === 0) {
+        best = throwValue;
+      }
+      if (worst > throwValue || i === 0) {
+        worst = throwValue;
+      }
+    }
+
+    resultsThrows.push({
+      type,
+      results,
+      total,
+      best,
+      worst,
+      average: Math.floor((total / qty) * 10) / 10,
+    });
+  });
+
+  return resultsThrows;
+};

@@ -1,4 +1,3 @@
-
 import { type Request, type Response } from 'express';
 import { type HydratedDocument } from 'mongoose';
 
@@ -142,11 +141,6 @@ const deleteNotionsByRuleBookId = async (ruleBookId: string): Promise<boolean> =
       });
   });
 
-// interface CuratedINotion {
-//   i18n: Record<string, any> | Record<string, unknown>;
-//   notion: HydratedNotion;
-// }
-
 const curateNotion = (notion: HydratedNotion | HydratedDocument<INotion>): Record<string, any> => {
   if (notion.i18n === undefined) {
     return notion;
@@ -203,4 +197,4 @@ const findAllByRuleBook = (req: Request, res: Response): void => {
     .catch((err) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, update, deleteNotion, deleteNotionsByRuleBookId, findSingle, findAllByRuleBook };
+export { create, deleteNotion, deleteNotionsByRuleBookId, findAllByRuleBook, findSingle, update };
