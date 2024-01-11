@@ -13,7 +13,6 @@ import CampaignsPage from './campaigns';
 import ChapterPage from './chapter';
 import CharacterPage from './character';
 import CharactersPage from './characters';
-import DashboardPage from './dashboard';
 import ErrorPage from './error';
 import ForgotPassPage from './forgotPass';
 import HomePage from './home';
@@ -42,7 +41,6 @@ export {
   ChapterPage,
   CharacterPage,
   CharactersPage,
-  DashboardPage,
   ErrorPage,
   ForgotPassPage,
   HomePage,

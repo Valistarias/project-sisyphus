@@ -26,9 +26,6 @@
     "formCTA": "Sign Me Up",
     "successSent": "An email has been sent at {{mail}} for verifying your account. Check your inbox."
   },
-  "dashboard": {
-    "title": "Dashboard"
-  },
   "admin": {
     "title": "Administration"
   },

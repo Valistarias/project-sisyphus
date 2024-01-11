@@ -20,7 +20,6 @@ import {
   ChapterPage,
   CharacterPage,
   CharactersPage,
-  DashboardPage,
   ErrorPage,
   ForgotPassPage,
   HomePage,
@@ -76,10 +75,6 @@ const App: FC = () => {
               element: <NewPassPage />,
             },
             // Logged
-            {
-              path: '/dashboard',
-              element: <DashboardPage />,
-            },
             {
               path: '/rulebooks',
               element: <RuleBooksPage />,

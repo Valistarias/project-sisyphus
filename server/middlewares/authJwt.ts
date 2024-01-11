@@ -39,10 +39,6 @@ const routes = [
     role: 'unlogged',
   },
   {
-    url: '/dashboard',
-    role: 'logged',
-  },
-  {
     url: '/rulebooks',
     role: 'logged',
   },

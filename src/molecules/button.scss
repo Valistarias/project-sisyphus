@@ -28,7 +28,6 @@
   }
 
   &__content {
-    font-family: var(--mono-font);
     transition: color 0.15s ease;
   }
 
@@ -146,7 +145,6 @@
     --button-background-hover: transparent;
     --button-fill-hover: transparent;
     --button-text-hover: var(--primary);
-    text-decoration: underline;
   }
 
   // Others ----------------------------------

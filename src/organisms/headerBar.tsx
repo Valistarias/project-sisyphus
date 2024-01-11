@@ -80,9 +80,6 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
           </Aa>
           {userState !== 'unlogged' ? (
             <>
-              <Aa className="headerbar__menu" href="/dashboard">
-                {t('dashboard.title', { ns: 'pages' })}
-              </Aa>
               <Aa className="headerbar__menu" href="/characters">
                 {t('characters.title', { ns: 'pages' })}
               </Aa>
