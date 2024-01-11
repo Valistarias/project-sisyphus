@@ -45,5 +45,3 @@ export default Node.create({
     return ReactNodeViewRenderer(EmbedReact);
   },
 });
-
-// export default EmbedReact;
