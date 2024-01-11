@@ -7,13 +7,6 @@ html,
 body,
 #root,
 .main {
-  min-height: 100%;
-}
-
-/* stylelint-disable-next-line selector-max-id */
-html,
-body,
-#root {
   height: 100%;
 }
 
@@ -29,6 +22,9 @@ body {
 }
 
 .app {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
   position: relative;
   width: 100%;
 

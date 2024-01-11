@@ -201,5 +201,8 @@
     "formCTA": "Create Character",
     "successCreate": "Character successfully created !"
   },
-  "character": {}
+  "character": {},
+  "profile": {
+    "title": "Profile"
+  }
 }

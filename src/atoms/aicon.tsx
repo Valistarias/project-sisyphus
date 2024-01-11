@@ -1,15 +1,17 @@
-import React, { type FC, useMemo } from 'react';
+import React, { useMemo, type FC } from 'react';
 
 import AddLogo from '../assets/icons/add.svg?react';
 import CheckLogo from '../assets/icons/check.svg?react';
 import DeleteLogo from '../assets/icons/delete.svg?react';
+import DiscordLogo from '../assets/icons/discord.svg?react';
 import EditLogo from '../assets/icons/edit.svg?react';
+import MainLogo from '../assets/icons/logo.svg?react';
 
 import { classTrim } from '../utils';
 
 import './aicon.scss';
 
-type typeIcons = 'add' | 'edit' | 'check' | 'delete';
+type typeIcons = 'add' | 'edit' | 'check' | 'delete' | 'discord' | 'main';
 
 interface IAicon {
   /** The size of the icon */
@@ -39,6 +41,10 @@ const Aicon: FC<IAicon> = ({ type, size = 'medium', className, onClick }) => {
         return <AddLogo className={classes} />;
       case 'edit':
         return <EditLogo className={classes} />;
+      case 'discord':
+        return <DiscordLogo className={classes} />;
+      case 'main':
+        return <MainLogo className={classes} />;
       case 'check':
         return <CheckLogo className={classes} />;
       default:

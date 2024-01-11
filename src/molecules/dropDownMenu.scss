@@ -1,27 +1,27 @@
-.dropdown-list {
+.dropdown-menu {
   align-items: center;
   display: flex;
-  height: 100%;
-  position: relative;
 
   &__main {
     align-items: center;
     display: flex;
-    height: 100%;
   }
 
   &__list {
     background: var(--background-header);
-    bottom: 0;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    left: 0;
+    height: 100%;
+    left: var(--header-width);
     opacity: 0;
     padding: 1rem;
     pointer-events: none;
     position: absolute;
-    transform: translate3d(0, 100%, 0);
-    width: 20rem;
+    top: 0;
+    transition: opacity 0.2s ease;
+    width: 60%;
+    z-index: 2;
 
     &__elt {
       align-items: center;
@@ -31,7 +31,7 @@
     }
   }
 
-  &:hover .dropdown-list__list {
+  .dropdown-menu__list--open {
     opacity: 1;
     pointer-events: all;
   }

@@ -137,6 +137,18 @@
     font-weight: bold;
   }
 
+  &--link {
+    --button-border: transparent;
+    --button-background: transparent;
+    --button-fill: transparent;
+    --button-text-color: var(--primary);
+    --button-border-hover: transparent;
+    --button-background-hover: transparent;
+    --button-fill-hover: transparent;
+    --button-text-hover: var(--primary);
+    text-decoration: underline;
+  }
+
   // Others ----------------------------------
   &--disabled {
     opacity: 0.6;

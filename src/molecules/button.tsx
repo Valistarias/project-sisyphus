@@ -1,6 +1,6 @@
 import React, { type FC } from 'react';
 
-import { type NavigateFunction, useNavigate } from 'react-router-dom';
+import { useNavigate, type NavigateFunction } from 'react-router-dom';
 
 import { Aicon, type typeIcons } from '../atoms/aicon';
 
@@ -12,7 +12,7 @@ interface IButton {
   /** The type of the Button element */
   type?: 'button' | 'submit';
   /** The theme of the button */
-  theme?: 'primary' | 'secondary' | 'tertiary' | 'error';
+  theme?: 'primary' | 'secondary' | 'tertiary' | 'error' | 'link';
   /** The size of the button */
   size?: 'medium' | 'small';
   /** The class of the Button element */
