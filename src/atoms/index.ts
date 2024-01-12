@@ -12,5 +12,22 @@ import Ath from './ath';
 import Atitle from './atitle';
 import Atr from './atr';
 import Aul from './aul';
+import { Avideo } from './avideo';
 
-export { Aul, Ali, Ap, Aa, Aimg, Aicon, Atextarea, Atitle, Aerror, Atable, Atd, Ath, Atr, Alabel };
+export {
+  Aa,
+  Aerror,
+  Aicon,
+  Aimg,
+  Alabel,
+  Ali,
+  Ap,
+  Atable,
+  Atd,
+  Atextarea,
+  Ath,
+  Atitle,
+  Atr,
+  Aul,
+  Avideo,
+};

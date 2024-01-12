@@ -1,4 +1,76 @@
+@import '../../assets/scss/typed';
+
 .home {
   height: 100%;
   width: 100%;
+
+  &__intro {
+    align-items: center;
+    background-color: var(--primary-dark);
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+    height: 100%;
+    max-height: 95vh;
+
+    &__logo {
+      opacity: 0.8;
+      width: 50vh;
+    }
+
+    &__title {
+      font-size: 3.8rem;
+      font-weight: 100;
+      letter-spacing: 5rem;
+      margin-bottom: 0;
+      text-shadow: 0 0 1rem #fff2;
+      @include typed(
+        'Sisyphus',
+        null,
+        (
+          iterations: 0,
+          caret-width: 0.2rem,
+        )
+      );
+    }
+
+    &__line {
+      animation: 2s linear 2s forwards appear;
+      background: var(--tertiary);
+      height: 0.1rem;
+      opacity: 0;
+      width: 20rem;
+    }
+
+    &__text {
+      font-family: var(--mono-font);
+      font-size: 1.2rem;
+      letter-spacing: 1rem;
+      margin: 0;
+      text-shadow: 0 0 1rem #fff2;
+      text-transform: uppercase;
+      @include typed(
+        'Live again, Die again, Die better',
+        'A Tabletop RPG set in a strange future',
+        [.1,
+        null,
+        0.04,
+        .5],
+        (
+          caret: false,
+          delay: 3,
+        )
+      );
+    }
+  }
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
