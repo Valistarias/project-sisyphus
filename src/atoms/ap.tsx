@@ -8,7 +8,7 @@ interface IAp {
   /** The class of the P element */
   className?: string;
   /** The childrens of the P element */
-  children: React.JSX.Element | string | string[] | Array<string | React.JSX.Element>;
+  children?: React.JSX.Element | string | string[] | Array<string | React.JSX.Element>;
 }
 
 const AP: FC<IAp> = ({ className, children }) => (

@@ -1,4 +1,4 @@
-import React, { type FC, useMemo } from 'react';
+import React, { useMemo, type FC } from 'react';
 
 import { classTrim } from '../utils';
 
@@ -10,7 +10,7 @@ interface IAtitle {
   /** The class of the P element */
   className?: string;
   /** The childrens of the P element */
-  children: React.JSX.Element | string | string[];
+  children?: React.JSX.Element | string | string[];
 }
 
 const Atitle: FC<IAtitle> = ({ className, children, level = 1 }) => {
