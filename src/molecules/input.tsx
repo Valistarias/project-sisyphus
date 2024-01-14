@@ -1,5 +1,4 @@
-import React, { type FC } from 'react';
-
+import React, { useState, type FC } from 'react';
 
 import { type ChangeHandler } from 'react-hook-form';
 
@@ -19,8 +18,6 @@ interface IInput {
   };
   /** The type of input */
   type?: 'text' | 'password' | 'email';
-  /** The theme of the button */
-  theme?: 'primary' | 'secondary' | 'tertiary';
   /** The size of the input */
   size?: 'medium' | 'small';
   /** The class of the Textarea element */
@@ -44,7 +41,6 @@ interface IInput {
 const Input: FC<IInput> = ({
   registered,
   type = 'text',
-  theme = 'primary',
   size = 'medium',
   className,
   placeholder,
@@ -54,29 +50,44 @@ const Input: FC<IInput> = ({
   autoComplete,
   onChange,
   value,
-}) => (
-  <div
-    className={classTrim(`
+}) => {
+  const [isFocus, setFocus] = useState(false);
+  return (
+    <div
+      className={classTrim(`
       input
-      input--${theme}
       input--${size}
       ${readOnly === true ? 'input--readonly' : ''}
+      ${isFocus ? 'input--focus' : ''}
       ${className ?? ''}
     `)}
-  >
-    {label !== undefined ? <Alabel htmlFor={registered?.name}>{label}</Alabel> : null}
-    <input
-      type={type}
-      readOnly={readOnly}
-      hidden={hidden}
-      placeholder={placeholder}
-      className="input__field"
-      autoComplete={autoComplete ?? undefined}
-      onChange={onChange}
-      value={value}
-      {...registered}
-    />
-  </div>
-);
+    >
+      {label !== undefined ? <Alabel htmlFor={registered?.name}>{label}</Alabel> : null}
+      <div className="input__decor">
+        <input
+          type={type}
+          readOnly={readOnly}
+          hidden={hidden}
+          placeholder={placeholder}
+          className="input__field"
+          autoComplete={autoComplete ?? undefined}
+          onChange={onChange}
+          value={value}
+          onFocus={() => {
+            setFocus(true);
+          }}
+          {...registered}
+          onBlur={(e) => {
+            setFocus(false);
+            registered?.onBlur(e).then(
+              () => {},
+              () => {}
+            );
+          }}
+        />
+      </div>
+    </div>
+  );
+};
 
 export default Input;

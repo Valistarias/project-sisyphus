@@ -14,7 +14,8 @@
   "login": {
     "title": "Login",
     "formCTA": "Log In",
-    "successRegister": "Mail sucessfully verified. You can log in"
+    "successRegister": "Mail sucessfully verified. You can log in",
+    "forgotPass": "Forgot Password ?"
   },
   "newPass": {
     "title": "New Password",
@@ -22,7 +23,7 @@
     "success": "Password sucessfully modified. You can log in"
   },
   "signup": {
-    "title": "Sign Up",
+    "title": "Register",
     "formCTA": "Sign Me Up",
     "successSent": "An email has been sent at {{mail}} for verifying your account. Check your inbox."
   },

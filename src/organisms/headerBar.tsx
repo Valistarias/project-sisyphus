@@ -172,6 +172,7 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
               }
             }}
             icon="discord"
+            theme="text-only"
           />
         </div>
       </div>

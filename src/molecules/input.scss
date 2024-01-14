@@ -5,8 +5,9 @@
   width: 100%;
 
   &__field {
-    background: transparent;
-    border-radius: 3px;
+    background: var(--primary-20);
+    border: 0;
+    box-shadow: 0 0 2rem var(--primary-05);
     box-sizing: border-box;
     color: var(--font-color);
     font-family: var(--mono-font);
@@ -16,22 +17,47 @@
     width: 100%;
   }
 
+  &__decor {
+    position: relative;
+    width: 100%;
+
+    &::before {
+      background: var(--primary-00);
+      bottom: 0;
+      box-shadow: 0 0 2rem var(--primary-00);
+      content: '';
+      height: 0.2rem;
+      left: 0;
+      pointer-events: none;
+      position: absolute;
+      transition:
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+      width: 100%;
+    }
+  }
+
+  // Focused ----------------------------------
+  &--focus {
+    .input__decor::before {
+      background: var(--primary);
+      box-shadow: 0 0 2rem var(--primary);
+    }
+  }
+
   // Sizes -----------------------------------
   &--medium .input__field {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     height: 40px;
+    letter-spacing: 0.2rem;
     padding: 0.8rem 2rem;
   }
 
   &--small .input__field {
-    font-size: 1rem;
+    font-size: 1.2rem;
     height: 30px;
+    letter-spacing: 0.2rem;
     padding: 0.6rem 1.5rem;
-  }
-
-  // Themes ----------------------------------
-  &--primary .input__field {
-    border: 1px solid var(--primary);
   }
 
   // Others ----------------------------------

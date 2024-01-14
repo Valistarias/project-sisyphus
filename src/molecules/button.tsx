@@ -12,9 +12,11 @@ interface IButton {
   /** The type of the Button element */
   type?: 'button' | 'submit';
   /** The theme of the button */
-  theme?: 'primary' | 'secondary' | 'tertiary' | 'error' | 'link';
+  theme?: 'solid' | 'afterglow' | 'text-only';
+  /** The main color of the button */
+  color?: 'primary' | 'secondary' | 'tertiary' | 'error';
   /** The size of the button */
-  size?: 'medium' | 'small';
+  size?: 'large' | 'medium' | 'small';
   /** The class of the Button element */
   className?: string;
   /** The text inside the button */
@@ -33,7 +35,8 @@ interface IButton {
 
 const Button: FC<IButton> = ({
   type = 'button',
-  theme = 'primary',
+  theme = 'solid',
+  color = 'primary',
   size = 'medium',
   disabled = false,
   active = false,
@@ -54,6 +57,7 @@ const Button: FC<IButton> = ({
         button
         button--${theme}
         button--${size}
+        button--${color}
         ${icon === undefined ? 'button--noicon' : ''}
         ${children === undefined ? 'button--notext' : ''}
         ${disabled ? 'button--disabled' : ''}

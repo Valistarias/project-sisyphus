@@ -4,10 +4,13 @@ import Entity from './entity';
 
 import { type IUser } from '../../interfaces';
 
-interface ISignUserPayload {
-  username: string;
+interface ISignInUserPayload {
   mail: string;
   password: string;
+}
+
+interface ISignUpUserPayload extends ISignInUserPayload {
+  username: string;
 }
 
 interface INewPassPayload {
@@ -18,8 +21,8 @@ interface INewPassPayload {
 }
 
 export default class Auth extends Entity {
-  signup: (payload: ISignUserPayload) => Promise<Record<string, string>>;
-  signin: (payload: ISignUserPayload) => Promise<IUser | Record<string, unknown>>;
+  signup: (payload: ISignUpUserPayload) => Promise<Record<string, string>>;
+  signin: (payload: ISignInUserPayload) => Promise<IUser | Record<string, unknown>>;
   signout: () => Promise<Record<string, string>>;
   check: () => Promise<IUser | Record<string, unknown>>;
   passUpdate: (payload: INewPassPayload) => Promise<IUser | Record<string, unknown>>;

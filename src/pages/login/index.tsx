@@ -7,7 +7,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useApi, useGlobalVars, useSystemAlerts } from '../../providers';
 
-import { Aa, Aerror, Ap, Atitle } from '../../atoms';
+import tvBackground from '../../assets/imgs/tvbg.gif';
+import { Aerror, Ap, Avideo } from '../../atoms';
 import { Button, Input } from '../../molecules';
 import { Alert } from '../../organisms';
 
@@ -90,37 +91,46 @@ const Login: FC = () => {
   };
 
   return (
-    <div className="login">
-      <Atitle level={1}>{t('login.title', { ns: 'pages' })}</Atitle>
-      <form className="login__form" onSubmit={handleSubmit(onSubmit)} noValidate>
-        {errors.root?.serverError?.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
-        <Input
-          type="email"
-          registered={register('mail', {
-            required: t('mail.required', { ns: 'fields' }),
-            pattern: {
-              value: regexMail,
-              message: t('mail.pattern', { ns: 'fields' }),
-            },
-          })}
-          label={t('mail.label', { ns: 'fields' })}
-          autoComplete="username"
-        />
-        {errors.mail?.message !== undefined ? <Aerror>{errors.mail.message}</Aerror> : null}
-        <Input
-          type="password"
-          registered={register('password', {
-            required: t('password.required', { ns: 'fields' }),
-          })}
-          label={t('password.label', { ns: 'fields' })}
-          autoComplete="current-password"
-        />
-        {errors.password?.message !== undefined ? <Aerror>{errors.password.message}</Aerror> : null}
-        <Aa href="/reset/password">Forgot Password ?</Aa>
-        <Button type="submit">{t('login.formCTA', { ns: 'pages' })}</Button>
-      </form>
+    <div className="login" style={{ backgroundImage: `url(${tvBackground})` }}>
+      <div className="login__main">
+        <Avideo video="logo" className="login__main__video" />
+        <form className="login__main__form" onSubmit={handleSubmit(onSubmit)} noValidate>
+          {errors.root?.serverError?.message !== undefined ? (
+            <Aerror>{errors.root.serverError.message}</Aerror>
+          ) : null}
+          <Input
+            type="email"
+            registered={register('mail', {
+              required: t('mail.required', { ns: 'fields' }),
+              pattern: {
+                value: regexMail,
+                message: t('mail.pattern', { ns: 'fields' }),
+              },
+            })}
+            label={t('mail.label', { ns: 'fields' })}
+            autoComplete="username"
+          />
+          {errors.mail?.message !== undefined ? <Aerror>{errors.mail.message}</Aerror> : null}
+          <Input
+            type="password"
+            registered={register('password', {
+              required: t('password.required', { ns: 'fields' }),
+            })}
+            label={t('password.label', { ns: 'fields' })}
+            autoComplete="current-password"
+          />
+          {errors.password?.message !== undefined ? (
+            <Aerror>{errors.password.message}</Aerror>
+          ) : null}
+          <div className="login__main__buttons">
+            <Button type="submit">{t('login.formCTA', { ns: 'pages' })}</Button>
+            <Button href="/reset/password" theme="text-only">
+              {t('login.forgotPass', { ns: 'pages' })}
+            </Button>
+          </div>
+          {/* <Aa href="/reset/password">Forgot Password ?</Aa> */}
+        </form>
+      </div>
     </div>
   );
 };

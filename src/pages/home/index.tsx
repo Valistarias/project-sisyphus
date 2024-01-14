@@ -4,6 +4,7 @@ import React, { type FC } from 'react';
 
 import tvBackground from '../../assets/imgs/tvbg.gif';
 import { Ap, Atitle, Avideo } from '../../atoms';
+import { Button } from '../../molecules';
 
 import './home.scss';
 
@@ -30,6 +31,14 @@ const Home: FC = () => {
         <Atitle level={1} className="home__intro__title" />
         <div className="home__intro__line" />
         <Ap className="home__intro__text" />
+        <div className="home__intro__buttons">
+          <Button size="large" theme="afterglow" href="/signup">
+            Register
+          </Button>
+          <Button size="large" theme="text-only" href="/login">
+            Log In
+          </Button>
+        </div>
       </div>
 
       {/* <Button onClick={onAddAlert}>Add alert</Button> */}
