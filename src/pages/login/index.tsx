@@ -128,7 +128,6 @@ const Login: FC = () => {
               {t('login.forgotPass', { ns: 'pages' })}
             </Button>
           </div>
-          {/* <Aa href="/reset/password">Forgot Password ?</Aa> */}
         </form>
       </div>
     </div>

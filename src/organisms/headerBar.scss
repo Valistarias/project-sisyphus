@@ -1,7 +1,9 @@
 .headerbar {
   background: var(--background-header);
   height: 100%;
+  position: relative;
   width: var(--header-width);
+  z-index: 2;
 
   &__content {
     box-sizing: border-box;

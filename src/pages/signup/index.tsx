@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useApi, useSystemAlerts } from '../../providers';
 
+import arrowBackground from '../../assets/imgs/arrowbg.png';
 import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input } from '../../molecules';
 import { Alert } from '../../organisms';
@@ -79,59 +80,70 @@ const Signup: FC = () => {
 
   return (
     <div className="signup">
-      <Atitle level={1}>{t('signup.title', { ns: 'pages' })}</Atitle>
-      <form className="signup__form" onSubmit={handleSubmit(onSubmit)} noValidate>
-        {errors.root?.serverError?.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
-        <Input
-          type="text"
-          registered={register('username', {
-            required: t('username.required', { ns: 'fields' }),
-          })}
-          label={t('username.label', { ns: 'fields' })}
-        />
-        {errors.mail?.message !== undefined ? <Aerror>{errors.mail.message}</Aerror> : null}
-        <Input
-          type="email"
-          registered={register('mail', {
-            required: t('mail.required', { ns: 'fields' }),
-            pattern: {
-              value: regexMail,
-              message: t('mail.pattern', { ns: 'fields' }),
-            },
-          })}
-          label={t('mail.label', { ns: 'fields' })}
-          autoComplete="email"
-        />
-        {errors.mail?.message !== undefined ? <Aerror>{errors.mail.message}</Aerror> : null}
-        <Input
-          type="password"
-          registered={register('password', {
-            required: t('password.required', { ns: 'fields' }),
-          })}
-          label={t('password.label', { ns: 'fields' })}
-          autoComplete="new-password"
-        />
-        {errors.password?.message !== undefined ? <Aerror>{errors.password.message}</Aerror> : null}
-        <Input
-          type="password"
-          registered={register('confirmPassword', {
-            required: t('confirmPassword.required', { ns: 'fields' }),
-            validate: (val: string) => {
-              if (watch('password') !== val) {
-                return t('confirmPassword.validate', { ns: 'fields' });
-              }
-            },
-          })}
-          label={t('confirmPassword.label', { ns: 'fields' })}
-          autoComplete="new-password"
-        />
-        {errors.confirmPassword?.message !== undefined ? (
-          <Aerror>{errors.confirmPassword.message}</Aerror>
-        ) : null}
-        <Button type="submit">{t('signup.formCTA', { ns: 'pages' })}</Button>
-      </form>
+      <div className="signup__arrows-bg" style={{ backgroundImage: `url(${arrowBackground})` }} />
+      <div className="signup__main">
+        <Atitle level={1}>{t('signup.title', { ns: 'pages' })}</Atitle>
+        <form className="signup__main__form" onSubmit={handleSubmit(onSubmit)} noValidate>
+          {errors.root?.serverError?.message !== undefined ? (
+            <Aerror>{errors.root.serverError.message}</Aerror>
+          ) : null}
+          <Input
+            type="text"
+            registered={register('username', {
+              required: t('username.required', { ns: 'fields' }),
+            })}
+            label={t('username.label', { ns: 'fields' })}
+          />
+          {errors.mail?.message !== undefined ? <Aerror>{errors.mail.message}</Aerror> : null}
+          <Input
+            type="email"
+            registered={register('mail', {
+              required: t('mail.required', { ns: 'fields' }),
+              pattern: {
+                value: regexMail,
+                message: t('mail.pattern', { ns: 'fields' }),
+              },
+            })}
+            label={t('mail.label', { ns: 'fields' })}
+            autoComplete="email"
+          />
+          {errors.mail?.message !== undefined ? <Aerror>{errors.mail.message}</Aerror> : null}
+          <Input
+            type="password"
+            registered={register('password', {
+              required: t('password.required', { ns: 'fields' }),
+            })}
+            label={t('password.label', { ns: 'fields' })}
+            autoComplete="new-password"
+          />
+          {errors.password?.message !== undefined ? (
+            <Aerror>{errors.password.message}</Aerror>
+          ) : null}
+          <Input
+            type="password"
+            registered={register('confirmPassword', {
+              required: t('confirmPassword.required', { ns: 'fields' }),
+              validate: (val: string) => {
+                if (watch('password') !== val) {
+                  return t('confirmPassword.validate', { ns: 'fields' });
+                }
+              },
+            })}
+            label={t('confirmPassword.label', { ns: 'fields' })}
+            autoComplete="new-password"
+          />
+          {errors.confirmPassword?.message !== undefined ? (
+            <Aerror>{errors.confirmPassword.message}</Aerror>
+          ) : null}
+
+          <div className="signup__main__buttons">
+            <Button type="submit">{t('signup.formCTA', { ns: 'pages' })}</Button>
+            <Button href="/login" theme="text-only">
+              {t('signup.loginCTA', { ns: 'pages' })}
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

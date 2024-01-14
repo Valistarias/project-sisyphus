@@ -24,7 +24,8 @@
   },
   "signup": {
     "title": "Register",
-    "formCTA": "Sign Me Up",
+    "formCTA": "Register",
+    "loginCTA": "Already have an account ?",
     "successSent": "An email has been sent at {{mail}} for verifying your account. Check your inbox."
   },
   "admin": {
