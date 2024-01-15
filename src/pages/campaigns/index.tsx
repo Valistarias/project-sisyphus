@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../providers';
 
+import hollogramBackground from '../../assets/imgs/hologrambg.png';
 import { Ali, Ap, Atitle, Aul } from '../../atoms';
 import { Button } from '../../molecules';
 import { Alert } from '../../organisms';
@@ -59,6 +60,7 @@ const Campaigns: FC = () => {
           title: t('campaigns.confirmDelete.title', { ns: 'pages' }),
           text: t('campaigns.confirmDelete.text', { ns: 'pages', elt: name }),
           confirmCta: t('campaigns.confirmDelete.confirmCta', { ns: 'pages' }),
+          theme: 'error',
         },
         (evtId: string) => {
           const confirmDelete = ({ detail }): void => {
@@ -111,6 +113,7 @@ const Campaigns: FC = () => {
           campaigns__campaign-list__elt
         `)}
           key={campaign._id}
+          localStyle={{ backgroundImage: `url(${hollogramBackground})` }}
         >
           <Atitle className="campaigns__campaign-list__elt__title" level={3}>
             {campaign.name}
@@ -127,7 +130,8 @@ const Campaigns: FC = () => {
             </Button>
             {isOwner ? (
               <Button
-                theme="error"
+                // theme="text-only"
+                color="error"
                 onClick={() => {
                   onDeleteCampaign(campaign._id, campaign.name);
                 }}

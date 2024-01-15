@@ -1,25 +1,26 @@
 import React, { type FC } from 'react';
 
+import { Quark, type IQuarkProps } from '../quark';
+
 import { classTrim } from '../utils';
 
 import './atd.scss';
 
-interface IAtd {
-  /** The class of the Table Cell element */
-  className?: string;
+interface IAtd extends IQuarkProps {
   /** The childrens of the Table Cell element */
   children: React.JSX.Element;
 }
 
 const ATd: FC<IAtd> = ({ className, children }) => (
-  <td
+  <Quark
+    quarkType="td"
     className={classTrim(`
         atd
         ${className ?? ''}
       `)}
   >
     {children}
-  </td>
+  </Quark>
 );
 
 export default ATd;

@@ -3,22 +3,21 @@ import React, { type FC } from 'react';
 import { useNavigate, type NavigateFunction } from 'react-router-dom';
 
 import { Aicon, type typeIcons } from '../atoms/aicon';
+import { Quark, type IQuarkProps } from '../quark';
 
 import { classTrim } from '../utils';
 
 import './button.scss';
 
-interface IButton {
+interface IButton extends IQuarkProps {
   /** The type of the Button element */
   type?: 'button' | 'submit';
   /** The theme of the button */
-  theme?: 'solid' | 'afterglow' | 'text-only';
+  theme?: 'solid' | 'afterglow' | 'text-only' | 'bland';
   /** The main color of the button */
   color?: 'primary' | 'secondary' | 'tertiary' | 'error';
   /** The size of the button */
   size?: 'large' | 'medium' | 'small';
-  /** The class of the Button element */
-  className?: string;
   /** The text inside the button */
   children?: string;
   /** The icon (if any) of the button */
@@ -52,7 +51,8 @@ const Button: FC<IButton> = ({
   }
 
   return (
-    <button
+    <Quark
+      quarkType="button"
       className={classTrim(`
         button
         button--${theme}
@@ -68,7 +68,8 @@ const Button: FC<IButton> = ({
         e.stopPropagation();
         if (href !== null && navigate !== null) {
           navigate(href);
-        } else if (onClick !== undefined) {
+        }
+        if (onClick !== undefined) {
           onClick(e);
         }
       }}
@@ -77,7 +78,7 @@ const Button: FC<IButton> = ({
     >
       {children !== undefined ? <span className="button__content">{children}</span> : null}
       {icon !== undefined ? <Aicon className="button__icon" type={icon} /> : null}
-    </button>
+    </Quark>
   );
 };
 

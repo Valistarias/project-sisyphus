@@ -62,7 +62,11 @@ const Input: FC<IInput> = ({
       ${className ?? ''}
     `)}
     >
-      {label !== undefined ? <Alabel htmlFor={registered?.name}>{label}</Alabel> : null}
+      {label !== undefined ? (
+        <Alabel className="input__label" htmlFor={registered?.name}>
+          {label}
+        </Alabel>
+      ) : null}
       <div className="input__decor">
         <input
           type={type}

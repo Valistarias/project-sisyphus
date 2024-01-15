@@ -1,12 +1,10 @@
 .headerbar {
   background: var(--background-header);
   height: 100%;
-  position: relative;
   width: var(--header-width);
   z-index: 2;
 
   &__content {
-    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -14,30 +12,12 @@
     padding: 5rem 0;
   }
 
-  // &__content,
-  // &__content__bottom,
-  // &__content__top {
-  //   align-items: center;
-  //   display: flex;
-  //   flex-direction: column;
-  //   flex-wrap: nowrap;
-  //   gap: 2rem;
-  // }
-
   &__content__bottom,
   &__content__top {
     align-items: center;
     display: flex;
     flex-direction: column;
-    // gap: 2rem;
   }
-
-  // .aa {
-  //   display: block;
-  //   font-size: 1.4rem;
-  //   transform: rotate(180deg);
-  //   writing-mode: vertical-rl;
-  // }
 
   &__menu,
   &__menu-list .dropdown-menu__main {
@@ -57,13 +37,6 @@
     &:hover {
       color: var(--primary);
     }
-
-    // .aa {
-    //   display: block;
-    //   font-size: 1.4rem;
-    //   transform: rotate(180deg);
-    //   writing-mode: vertical-rl;
-    // }
   }
 
   &__menu-list .dropdown-menu__main {

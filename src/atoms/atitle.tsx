@@ -1,43 +1,29 @@
-import React, { useMemo, type FC } from 'react';
+import React, { type FC } from 'react';
+
+import { Quark, type IQuarkProps } from '../quark';
 
 import { classTrim } from '../utils';
 
 import './atitle.scss';
 
-interface IAtitle {
+interface IAtitle extends IQuarkProps {
   /** The class of the title */
-  level?: number;
-  /** The class of the P element */
-  className?: string;
+  level?: 1 | 2 | 3 | 4;
   /** The childrens of the P element */
   children?: React.JSX.Element | string | string[];
 }
 
-const Atitle: FC<IAtitle> = ({ className, children, level = 1 }) => {
-  const classes = useMemo(
-    () =>
-      classTrim(`
-    atitle
-    atitle--h${level}
-    ${className ?? ''}
-  `),
-    [className, level]
-  );
-
-  const titleDom = useMemo(() => {
-    switch (level) {
-      case 2:
-        return <h2 className={classes}>{children}</h2>;
-      case 3:
-        return <h3 className={classes}>{children}</h3>;
-      case 4:
-        return <h4 className={classes}>{children}</h4>;
-      default:
-        return <h1 className={classes}>{children}</h1>;
-    }
-  }, [level, classes, children]);
-
-  return titleDom;
-};
+const Atitle: FC<IAtitle> = ({ className, children, level = 1 }) => (
+  <Quark
+    quarkType={`h${level}`}
+    className={classTrim(`
+        atitle
+        atitle--h${level}
+        ${className ?? ''}
+      `)}
+  >
+    {children}
+  </Quark>
+);
 
 export default Atitle;

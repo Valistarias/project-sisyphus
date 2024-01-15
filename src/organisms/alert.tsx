@@ -45,7 +45,9 @@ const Alert: FC<IAlert> = ({ id, children, timer, closable }) => {
   const closeDom = useMemo(
     () =>
       closable === true ? (
-        <Button onClick={onCloseAlert}>{t('alert.close', { ns: 'components' })}</Button>
+        <Button theme="text-only" onClick={onCloseAlert}>
+          {t('alert.close', { ns: 'components' })}
+        </Button>
       ) : null,
     [closable, onCloseAlert, t]
   );

@@ -2,6 +2,10 @@ import React, { type FC } from 'react';
 
 // import { useTranslation } from 'react-i18next';
 
+import { useTranslation } from 'react-i18next';
+
+import { useGlobalVars } from '../../providers';
+
 import tvBackground from '../../assets/imgs/tvbg.gif';
 import { Ap, Atitle, Avideo } from '../../atoms';
 import { Button } from '../../molecules';
@@ -9,7 +13,8 @@ import { Button } from '../../molecules';
 import './home.scss';
 
 const Home: FC = () => {
-  // const { t } = useTranslation();
+  const { user } = useGlobalVars();
+  const { t } = useTranslation();
   // const { createAlert, getNewId } = useSystemAlerts();
 
   // const onAddAlert = useCallback(() => {
@@ -31,14 +36,16 @@ const Home: FC = () => {
         <Atitle level={1} className="home__intro__title" />
         <div className="home__intro__line" />
         <Ap className="home__intro__text" />
-        <div className="home__intro__buttons">
-          <Button size="large" theme="afterglow" href="/signup">
-            Register
-          </Button>
-          <Button size="large" theme="text-only" href="/login">
-            Log In
-          </Button>
-        </div>
+        {user?._id === undefined ? (
+          <div className="home__intro__buttons">
+            <Button size="large" theme="afterglow" href="/signup">
+              {t('home.registerCta', { ns: 'pages' })}
+            </Button>
+            <Button size="large" theme="text-only" href="/login">
+              {t('home.loginCta', { ns: 'pages' })}
+            </Button>
+          </div>
+        ) : null}
       </div>
 
       {/* <Button onClick={onAddAlert}>Add alert</Button> */}

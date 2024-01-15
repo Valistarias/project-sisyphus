@@ -1,6 +1,7 @@
 import React, { useMemo, type FC } from 'react';
 
 import LogoVideo from '../assets/videos/logo.webm';
+import { Quark, type IQuarkProps } from '../quark';
 
 import { classTrim } from '../utils';
 
@@ -8,11 +9,9 @@ import './avideo.scss';
 
 type typeVideos = 'logo';
 
-interface IAvideo {
+interface IAvideo extends IQuarkProps {
   /** The type of icon */
   video: typeVideos;
-  /** The class of the Icon element */
-  className?: string;
   /** When the icon is clicked */
   onClick?: (e: React.MouseEvent<HTMLElement>) => void;
 }
@@ -31,10 +30,18 @@ const Avideo: FC<IAvideo> = ({ video, className, onClick }) => {
     switch (video) {
       case 'logo':
         return (
-          <video className={classes} src={LogoVideo} muted autoPlay loop disablePictureInPicture />
+          <Quark
+            quarkType="video"
+            className={classes}
+            src={LogoVideo}
+            muted
+            autoPlay
+            loop
+            disablePictureInPicture
+          />
         );
       default:
-        return <video className={classes} src={LogoVideo} />;
+        return <Quark quarkType="video" className={classes} src={LogoVideo} />;
     }
   }, [video, classes]);
 

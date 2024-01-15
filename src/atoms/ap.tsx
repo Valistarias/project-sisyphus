@@ -1,25 +1,26 @@
 import React, { type FC } from 'react';
 
+import { Quark, type IQuarkProps } from '../quark';
+
 import { classTrim } from '../utils';
 
 import './ap.scss';
 
-interface IAp {
-  /** The class of the P element */
-  className?: string;
+interface IAp extends IQuarkProps {
   /** The childrens of the P element */
   children?: React.JSX.Element | string | string[] | Array<string | React.JSX.Element>;
 }
 
 const AP: FC<IAp> = ({ className, children }) => (
-  <p
+  <Quark
+    quarkType="p"
     className={classTrim(`
         ap
         ${className ?? ''}
       `)}
   >
     {children}
-  </p>
+  </Quark>
 );
 
 export default AP;

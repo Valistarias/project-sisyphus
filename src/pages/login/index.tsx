@@ -67,7 +67,7 @@ const Login: FC = () => {
         .then((data: IUser) => {
           setUser(data);
           triggerRuleBookReload();
-          navigate('/');
+          navigate('/campaigns');
         })
         .catch(({ response }) => {
           const { data } = response;

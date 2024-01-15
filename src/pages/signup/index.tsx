@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { useApi, useSystemAlerts } from '../../providers';
 
-import arrowBackground from '../../assets/imgs/arrowbg.png';
 import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input } from '../../molecules';
 import { Alert } from '../../organisms';
@@ -80,7 +79,6 @@ const Signup: FC = () => {
 
   return (
     <div className="signup">
-      <div className="signup__arrows-bg" style={{ backgroundImage: `url(${arrowBackground})` }} />
       <div className="signup__main">
         <Atitle level={1}>{t('signup.title', { ns: 'pages' })}</Atitle>
         <form className="signup__main__form" onSubmit={handleSubmit(onSubmit)} noValidate>

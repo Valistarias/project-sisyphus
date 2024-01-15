@@ -1,14 +1,14 @@
 import React, { type FC } from 'react';
 
+import { Quark, type IQuarkProps } from '../quark';
+
 import { classTrim } from '../utils';
 
 import './atextarea.scss';
 
-interface IAtextarea {
+interface IAtextarea extends IQuarkProps {
   /** The id of the Textarea element */
   id: string;
-  /** The class of the Textarea element */
-  className?: string;
   /** The placeholder of the Textarea element */
   placeholder?: string;
   /** The value of the Textarea element */
@@ -20,7 +20,8 @@ interface IAtextarea {
 }
 
 const Atextarea: FC<IAtextarea> = ({ id, className, value, placeholder, onChange, readOnly }) => (
-  <textarea
+  <Quark
+    quarkType="textarea"
     id={id}
     name={id}
     readOnly={readOnly}

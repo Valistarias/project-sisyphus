@@ -1,10 +1,13 @@
 {
   "home": {
     "title": "Sisyphus",
-    "text": "Live again, Die again, Die better"
+    "text": "Live again, Die again, Die better",
+    "registerCta": "Register",
+    "loginCta": "Login"
   },
   "error": {
-    "title": "404"
+    "title": "404",
+    "cta": "Return to Homepage"
   },
   "forgotPass": {
     "title": "Forgot Password",

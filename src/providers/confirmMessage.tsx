@@ -12,8 +12,10 @@ interface IConfirmContent {
   title: string;
   /** The text inside the confirm element */
   text: string;
-  /** The text inside the confirm buytton */
+  /** The text inside the confirm button */
   confirmCta?: string;
+  /** The theme of tyhe confirm content */
+  theme?: 'error' | 'info';
   /** Did the confirm need some strong verification
    * (as in "write DELETE to confirm") */
   strong?: boolean;
@@ -121,8 +123,15 @@ export const ConfirmMessageProvider: FC<ConfirmMessageProviderProps> = ({ childr
           <Atitle>{confirmData?.title ?? ''}</Atitle>
           <Ap>{confirmData?.text ?? ''}</Ap>
           <div className="confirm-message__window__buttons">
-            <Button onClick={onConfirmAction}>{confirmData?.confirmCta ?? 'Confirm'}</Button>
-            <Button onClick={onAbort}>Abort</Button>
+            <Button
+              color={confirmData?.theme === 'error' ? 'error' : 'primary'}
+              onClick={onConfirmAction}
+            >
+              {confirmData?.confirmCta ?? 'Confirm'}
+            </Button>
+            <Button theme="text-only" onClick={onAbort}>
+              Abort
+            </Button>
           </div>
         </div>
       </div>

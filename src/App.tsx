@@ -33,6 +33,8 @@ import {
   SignupPage,
 } from './pages';
 
+import arrowBackground from './assets/imgs/arrowbg.png';
+import mainBackground from './assets/imgs/twinkle.png';
 import { HeaderBar } from './organisms';
 
 import './assets/scss/index.scss';
@@ -168,7 +170,12 @@ const App: FC = () => {
   );
 
   return (
-    <div className={`app${loading ? ' app--loading' : ''}`}>
+    <div
+      className={`app${loading ? ' app--loading' : ''}`}
+      style={{ backgroundImage: `url(${mainBackground})` }}
+    >
+      <div className="app__gradient" />
+      <div className="app__arrows-bg" style={{ backgroundImage: `url(${arrowBackground})` }} />
       <div className="app__loader"></div>
       <RouterProvider router={router} />
     </div>

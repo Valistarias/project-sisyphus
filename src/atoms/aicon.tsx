@@ -6,6 +6,7 @@ import DeleteLogo from '../assets/icons/delete.svg?react';
 import DiscordLogo from '../assets/icons/discord.svg?react';
 import EditLogo from '../assets/icons/edit.svg?react';
 import MainLogo from '../assets/icons/logo.svg?react';
+import { Quark, type IQuarkProps } from '../quark';
 
 import { classTrim } from '../utils';
 
@@ -13,13 +14,11 @@ import './aicon.scss';
 
 type typeIcons = 'add' | 'edit' | 'check' | 'delete' | 'discord' | 'main';
 
-interface IAicon {
+interface IAicon extends IQuarkProps {
   /** The size of the icon */
   size?: 'small' | 'medium';
   /** The type of icon */
   type: typeIcons;
-  /** The class of the Icon element */
-  className?: string;
   /** When the icon is clicked */
   onClick?: (e: React.MouseEvent<HTMLElement>) => void;
 }
@@ -38,17 +37,17 @@ const Aicon: FC<IAicon> = ({ type, size = 'medium', className, onClick }) => {
   const icoDom = useMemo(() => {
     switch (type) {
       case 'add':
-        return <AddLogo className={classes} />;
+        return <Quark quarkType={AddLogo} className={classes} />;
       case 'edit':
-        return <EditLogo className={classes} />;
+        return <Quark quarkType={EditLogo} className={classes} />;
       case 'discord':
-        return <DiscordLogo className={classes} />;
+        return <Quark quarkType={DiscordLogo} className={classes} />;
       case 'main':
-        return <MainLogo className={classes} />;
+        return <Quark quarkType={MainLogo} className={classes} />;
       case 'check':
-        return <CheckLogo className={classes} />;
+        return <Quark quarkType={CheckLogo} className={classes} />;
       default:
-        return <DeleteLogo className={classes} />;
+        return <Quark quarkType={DeleteLogo} className={classes} />;
     }
   }, [type, classes]);
 

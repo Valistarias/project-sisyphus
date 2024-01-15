@@ -1,10 +1,12 @@
 import React, { type FC } from 'react';
 
+import { Quark, type IQuarkProps } from '../quark';
+
 import { classTrim } from '../utils';
 
 import './atable.scss';
 
-interface IAtable {
+interface IAtable extends IQuarkProps {
   /** The class of the Table element */
   className?: string;
   /** The childrens of the Table element */
@@ -12,14 +14,15 @@ interface IAtable {
 }
 
 const ATable: FC<IAtable> = ({ className, children }) => (
-  <table
+  <Quark
+    quarkType="table"
     className={classTrim(`
         atable
         ${className ?? ''}
       `)}
   >
     {children}
-  </table>
+  </Quark>
 );
 
 export default ATable;

@@ -2,13 +2,13 @@ import React, { type FC } from 'react';
 
 import { Link } from 'react-router-dom';
 
+import { Quark, type IQuarkProps } from '../quark';
+
 import { classTrim } from '../utils';
 
 import './aa.scss';
 
-interface IAA {
-  /** The class of the P element */
-  className?: string;
+interface IAA extends IQuarkProps {
   /** The link to another page */
   href: string;
   /** When the link is clicked */
@@ -20,7 +20,8 @@ interface IAA {
 }
 
 const AA: FC<IAA> = ({ className, children, href, target, onClick }) => (
-  <Link
+  <Quark
+    quarkType={Link}
     to={href}
     target={target}
     onClick={onClick}
@@ -30,7 +31,7 @@ const AA: FC<IAA> = ({ className, children, href, target, onClick }) => (
       `)}
   >
     {children}
-  </Link>
+  </Quark>
 );
 
 export default AA;

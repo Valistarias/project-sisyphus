@@ -1,15 +1,14 @@
 import React, { type FC, type ReactNode } from 'react';
 
-import { classTrim } from '../utils';
+import { Quark, type IQuarkProps } from '../quark';
 
 import type { ContextId, DroppableId } from 'react-beautiful-dnd';
 
+import { classTrim } from '../utils';
 
 import './aul.scss';
 
-interface IAul {
-  /** The class of the UL element */
-  className?: string;
+interface IAul extends IQuarkProps {
   /** The childrens of the UL element */
   children: Array<React.JSX.Element | ReactNode> | null;
   /** Is the decoration to be removed ? */
@@ -28,7 +27,8 @@ const Aul: FC<IAul> = (props) => {
     'data-rbd-droppable-id': props['data-rbd-droppable-id'],
   };
   return (
-    <ul
+    <Quark
+      quarkType="ul"
       className={classTrim(`
         aul
         ${className ?? ''}
@@ -38,7 +38,7 @@ const Aul: FC<IAul> = (props) => {
       {...rest}
     >
       {children}
-    </ul>
+    </Quark>
   );
 };
 

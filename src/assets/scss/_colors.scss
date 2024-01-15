@@ -5,7 +5,7 @@ $grey: #202020;
 $bone: #999;
 $white: #fff;
 $green: #39f21d;
-$red: #a6261b;
+$red: #c01919;
 $blue: #3de8ff;
 $blue-dark: #172573;
 $blue-darker: #0c1024;
@@ -22,7 +22,14 @@ $purple-dark: #59121f;
   --green: #{$green};
   --red: #{$red};
   --success: #{$green};
-  --fail: #{$red};
+  --error: #{$red};
+  --error-80: #{$red}cc;
+  --error-60: #{$red}99;
+  --error-40: #{$red}66;
+  --error-20: #{$red}33;
+  --error-10: #{$red}19;
+  --error-05: #{$red}0d;
+  --error-00: #{$red}00;
 }
 
 .dark-theme {

@@ -1,18 +1,19 @@
 import React, { type FC } from 'react';
 
+import { Quark, type IQuarkProps } from '../quark';
+
 import { classTrim } from '../utils';
 
 import './aimg.scss';
 
-interface IAimg {
-  /** The class of the IMG element */
-  className?: string;
+interface IAimg extends IQuarkProps {
   /** The url of the image */
   src: string;
 }
 
 const Aimg: FC<IAimg> = ({ className, src }) => (
-  <img
+  <Quark
+    quarkType="img"
     className={classTrim(`
         aimg
         ${className ?? ''}

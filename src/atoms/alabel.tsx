@@ -1,12 +1,12 @@
 import React, { type FC } from 'react';
 
+import { Quark, type IQuarkProps } from '../quark';
+
 import { classTrim } from '../utils';
 
 import './alabel.scss';
 
-interface IALabel {
-  /** The class of the P element */
-  className?: string;
+interface IALabel extends IQuarkProps {
   /** Is the label connected to any field */
   htmlFor?: string;
   /** The childrens of the P element */
@@ -14,7 +14,8 @@ interface IALabel {
 }
 
 const ALabel: FC<IALabel> = ({ className, children, htmlFor }) => (
-  <label
+  <Quark
+    quarkType="label"
     htmlFor={htmlFor}
     className={classTrim(`
         alabel
@@ -22,7 +23,7 @@ const ALabel: FC<IALabel> = ({ className, children, htmlFor }) => (
       `)}
   >
     {children}
-  </label>
+  </Quark>
 );
 
 export default ALabel;

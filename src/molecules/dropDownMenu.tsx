@@ -1,6 +1,4 @@
-import React, { Fragment, type FC } from 'react';
-
-import { Aa } from '../atoms';
+import React, { type FC } from 'react';
 
 import Button from './button';
 
@@ -48,7 +46,7 @@ const DropDownMenu: FC<IDropDownMenu> = ({
   >
     <Button
       className="dropdown-menu__main"
-      theme="link"
+      theme="bland"
       onClick={(e) => {
         if (title.onClick !== undefined) {
           title.onClick(e);
@@ -62,36 +60,6 @@ const DropDownMenu: FC<IDropDownMenu> = ({
     >
       {title.text}
     </Button>
-    {/* {title.href !== undefined ? (
-      <Aa
-        className="dropdown-menu__main"
-        href={title.href}
-        onClick={() => {
-          if (isOpen) {
-            onOpen();
-          } else {
-            onClose();
-          }
-        }}
-      >
-        {title.text}
-      </Aa>
-    ) : (
-      <Button
-        onClick={(e) => {
-          if (title.onClick !== undefined) {
-            title.onClick(e);
-          }
-          if (isOpen) {
-            onOpen();
-          } else {
-            onClose();
-          }
-        }}
-      >
-        {title.text}
-      </Button>
-    )} */}
 
     <div
       className={classTrim(`
@@ -100,26 +68,20 @@ const DropDownMenu: FC<IDropDownMenu> = ({
       `)}
     >
       {content.map((single) => (
-        <Fragment key={single.href ?? single.text}>
-          {single.href !== undefined ? (
-            <Aa className="dropdown-menu__list__elt" href={single.href} onClick={onClose}>
-              {single.text}
-            </Aa>
-          ) : (
-            <Button
-              className="dropdown-menu__list__elt"
-              theme="link"
-              onClick={(e) => {
-                if (single.onClick !== undefined) {
-                  single.onClick(e);
-                }
-                onClose();
-              }}
-            >
-              {single.text}
-            </Button>
-          )}
-        </Fragment>
+        <Button
+          key={single.href ?? single.text}
+          className="dropdown-menu__list__elt"
+          theme="text-only"
+          onClick={(e) => {
+            if (single.onClick !== undefined) {
+              single.onClick(e);
+            }
+            onClose();
+          }}
+          href={single.href}
+        >
+          {single.text}
+        </Button>
       ))}
     </div>
   </div>

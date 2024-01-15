@@ -17,6 +17,14 @@
     width: 100%;
   }
 
+  &__label {
+    color: var(--tertiary-80);
+    text-shadow: 0 0 1rem var(--tertiary-00);
+    transition:
+      color 0.2s ease,
+      text-shadow 0.2s ease;
+  }
+
   &__decor {
     position: relative;
     width: 100%;
@@ -42,6 +50,11 @@
     .input__decor::before {
       background: var(--primary);
       box-shadow: 0 0 2rem var(--primary);
+    }
+
+    .input__label {
+      color: var(--tertiary);
+      text-shadow: 0 0 1rem var(--tertiary-20);
     }
   }
 

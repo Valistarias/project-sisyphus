@@ -1,6 +1,6 @@
 import React, { type FC } from 'react';
 
-import { classTrim } from '../utils';
+import { Quark, type IQuarkProps } from '../quark';
 
 import type {
   ContextId,
@@ -10,11 +10,11 @@ import type {
   NotDraggingStyle,
 } from 'react-beautiful-dnd';
 
+import { classTrim } from '../utils';
+
 import './ali.scss';
 
-interface IAli {
-  /** The class of the LI element */
-  className?: string;
+interface IAli extends IQuarkProps {
   /** The childrens of the LI element */
   children: React.JSX.Element | React.JSX.Element[] | Array<React.JSX.Element | null>;
   /** The innerRef, if there is any */
@@ -32,12 +32,13 @@ interface IAli {
   tabIndex?: number;
   draggable?: boolean;
   onDragStart?: React.DragEventHandler<any>;
+  localStyle?: React.CSSProperties;
 }
 
 const Ali: FC<IAli> = (props) => {
   const { className, children, innerRef } = props;
   const restDrag = {
-    style: props.style,
+    style: { ...props.style, ...props.localStyle },
     'data-rbd-draggable-context-id': props['data-rbd-draggable-context-id'],
     'data-rbd-draggable-id': props['data-rbd-draggable-id'],
     onTransitionEnd: props.onTransitionEnd,
@@ -54,7 +55,8 @@ const Ali: FC<IAli> = (props) => {
   };
 
   return (
-    <li
+    <Quark
+      quarkType="li"
       className={classTrim(`
         ali
         ${className ?? ''}
@@ -64,7 +66,7 @@ const Ali: FC<IAli> = (props) => {
       {...restHandle}
     >
       {children}
-    </li>
+    </Quark>
   );
 };
 
