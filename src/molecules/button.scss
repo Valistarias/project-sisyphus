@@ -124,6 +124,10 @@
         width: calc(100% + 1rem - 0.2rem);
       }
     }
+
+    &.button--active {
+      background: var(--button-color-20);
+    }
   }
 
   &--afterglow {

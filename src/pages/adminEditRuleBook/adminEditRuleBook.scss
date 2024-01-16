@@ -1,5 +1,4 @@
 .adminEditRuleBook {
-  height: 100%;
   margin: 0 auto;
   max-width: 1200px;
   padding-top: 10vh;
@@ -17,14 +16,20 @@
   }
 
   &__autosave {
+    color: var(--primary);
+    font-family: var(--mono-font);
+    font-size: 1.2rem;
+    letter-spacing: 0.2rem;
     margin-bottom: 4rem;
-    margin-top: -4rem;
+    margin-top: -2rem;
+    text-transform: uppercase;
   }
 
   &__content {
     display: flex;
     flex-direction: row;
     gap: 4rem;
+    margin-bottom: 10vh;
 
     &__right {
       display: flex;
@@ -79,17 +84,22 @@
     }
   }
 
-  &__notion-list,
-  &__chapter-list {
+  &__draglist {
+    margin: 2rem 0;
+  }
+
+  &__notion-list {
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    margin-bottom: 2rem;
+    margin: 2rem 0;
 
     &__elt {
-      border: 1px solid var(--primary-dark);
+      background-color: var(--primary-05);
+      border: 1px solid var(--primary);
+      box-shadow: 0 0 2rem var(--primary-10);
       box-sizing: border-box;
-      padding: 1rem;
+      padding: 1.5rem 2rem;
     }
   }
 }

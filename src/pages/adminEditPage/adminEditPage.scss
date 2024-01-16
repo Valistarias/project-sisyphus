@@ -1,5 +1,7 @@
 .adminEditPage {
-  height: 100%;
+  margin: 0 auto;
+  max-width: 1200px;
+  padding-top: 10vh;
   width: 100%;
 
   &__head {
@@ -36,14 +38,20 @@
   }
 
   &__autosave {
-    margin-bottom: 2rem;
-    margin-top: -1rem;
+    color: var(--primary);
+    font-family: var(--mono-font);
+    font-size: 1.2rem;
+    letter-spacing: 0.2rem;
+    margin-bottom: 4rem;
+    margin-top: -2rem;
+    text-transform: uppercase;
   }
 
   &__content {
     display: flex;
     flex-direction: row;
     gap: 4rem;
+    margin-bottom: 10vh;
 
     &__right {
       display: flex;
@@ -68,6 +76,10 @@
       flex-shrink: 0;
       width: 20rem;
     }
+  }
+
+  &__draglist {
+    margin: 2rem 0;
   }
 
   &__details {

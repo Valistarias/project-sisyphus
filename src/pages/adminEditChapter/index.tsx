@@ -28,7 +28,10 @@ const AdminEditChapters: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { id } = useParams();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage();
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+    setConfirmContent: () => {},
+    ConfMessageEvent: {},
+  };
   const navigate = useNavigate();
 
   const calledApi = useRef<string | null>(null);
@@ -71,7 +74,7 @@ const AdminEditChapters: FC = () => {
         title: pageData.title,
         button: {
           href: `/admin/page/${pageData._id}`,
-          content: t('adminEditRuleBook.editChapter', { ns: 'pages' }),
+          content: t('adminEditChapter.editPage', { ns: 'pages' }),
         },
       };
     });
@@ -312,7 +315,7 @@ const AdminEditChapters: FC = () => {
     <div className="adminEditChapter">
       <div className="adminEditChapter__head">
         <Atitle level={1}>{t('adminEditChapter.title', { ns: 'pages' })}</Atitle>
-        <Button onClick={onAskDelete} theme="error">
+        <Button onClick={onAskDelete} color="error">
           {t('adminEditChapter.delete', { ns: 'pages' })}
         </Button>
       </div>
@@ -390,7 +393,12 @@ const AdminEditChapters: FC = () => {
             <Atitle className="adminEditChapter__intl" level={2}>
               {t('adminEditChapter.pages', { ns: 'pages' })}
             </Atitle>
-            <DragList data={pageDragData} id="main" onChange={onPageOrder} />
+            <DragList
+              data={pageDragData}
+              className="adminEditChapter__draglist"
+              id="main"
+              onChange={onPageOrder}
+            />
             <div className="adminEditRuleBook__block-children__buttons">
               {!arraysEqual(pagesOrder, initialOrder) ? (
                 <Button onClick={onUpdateOrder}>

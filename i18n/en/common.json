@@ -31,7 +31,8 @@
       "you": "You",
       "gm": "Game Master",
       "player_one": "Player",
-      "player_other": "Players"
+      "player_other": "Players",
+      "abort": "Abort"
     }
   },
   "chapterTypeNames": {

@@ -164,7 +164,7 @@ const basicRichTextElementExtentions = [
 
 interface IRichTextElement {
   /** The text Editor */
-  editor?: Editor;
+  editor?: Editor | null;
   /** Is there raw content (stringified) to be displayed */
   rawStringContent?: string;
   /** The title of the editor, if any */
@@ -202,7 +202,7 @@ const RichTextElement: FC<IRichTextElement> = ({
 
     // https://github.com/ueberdosis/tiptap/issues/3764#issuecomment-1546629928
     setTimeout(() => {
-      if (editor === undefined) {
+      if (editor === undefined || editor === null) {
         basicEditor.commands.setContent(rawStringContent);
       } else {
         editor.commands.setContent(rawStringContent);

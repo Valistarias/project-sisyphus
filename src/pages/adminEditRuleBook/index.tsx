@@ -31,12 +31,15 @@ import { arraysEqual, formatDate } from '../../utils';
 
 import './adminEditRuleBook.scss';
 
-const AdminEditRuleBooks: FC = () => {
+const AdminEditRuleBook: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { id } = useParams();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage();
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+    setConfirmContent: () => {},
+    ConfMessageEvent: {},
+  };
   const navigate = useNavigate();
   const { triggerRuleBookReload } = useGlobalVars();
 
@@ -359,6 +362,7 @@ const AdminEditRuleBooks: FC = () => {
             : 'adminEditRuleBook.confirmArchive.confirmCta',
           { ns: 'pages' }
         ),
+        theme: archived ? 'info' : 'error',
       },
       (evtId: string) => {
         const confirmArchive = ({ detail }): void => {
@@ -510,7 +514,7 @@ const AdminEditRuleBooks: FC = () => {
     <div className="adminEditRuleBook">
       <div className="adminEditRuleBook__head">
         <Atitle level={1}>{t('adminEditRuleBook.title', { ns: 'pages' })}</Atitle>
-        <Button onClick={onAskArchive} theme={archived ? 'tertiary' : 'error'}>
+        <Button onClick={onAskArchive} color={archived ? 'tertiary' : 'error'}>
           {t(archived ? 'adminEditRuleBook.unarchive' : 'adminEditRuleBook.archive', {
             ns: 'pages',
           })}
@@ -594,7 +598,12 @@ const AdminEditRuleBooks: FC = () => {
             <Atitle className="adminEditRuleBook__intl" level={2}>
               {t('adminEditRuleBook.chapters', { ns: 'pages' })}
             </Atitle>
-            <DragList data={chapterDragData} id="main" onChange={onChapterOrder} />
+            <DragList
+              className="adminEditRuleBook__draglist"
+              data={chapterDragData}
+              id="main"
+              onChange={onChapterOrder}
+            />
             <div className="adminEditRuleBook__block-children__buttons">
               {!arraysEqual(chaptersOrder, initialOrder) ? (
                 <Button onClick={onUpdateOrder}>
@@ -633,4 +642,4 @@ const AdminEditRuleBooks: FC = () => {
   );
 };
 
-export default AdminEditRuleBooks;
+export default AdminEditRuleBook;

@@ -18,7 +18,10 @@ const Characters: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage();
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+    setConfirmContent: () => {},
+    ConfMessageEvent: {},
+  };
 
   const [characters, setCharacters] = useState<ICharacter[]>([]);
   const [loading, setLoading] = useState(true);

@@ -1,8 +1,7 @@
-import React, { type FC, useState, useEffect } from 'react';
+import React, { useEffect, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import Select, { components, type OptionProps } from 'react-select';
-
 
 import { Alabel, Ap } from '../atoms';
 
@@ -110,4 +109,4 @@ const SmartSelect: FC<IAp> = ({
   );
 };
 
-export { SmartSelect, type ISingleValueSelect, type IGroupedOption };
+export { SmartSelect, type IGroupedOption, type ISingleValueSelect };

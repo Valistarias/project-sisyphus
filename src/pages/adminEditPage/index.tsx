@@ -22,7 +22,10 @@ const AdminEditPages: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { id } = useParams();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage();
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+    setConfirmContent: () => {},
+    ConfMessageEvent: {},
+  };
   const navigate = useNavigate();
 
   const calledApi = useRef<string | null>(null);
@@ -235,7 +238,7 @@ const AdminEditPages: FC = () => {
     <div className="adminEditPage">
       <div className="adminEditPage__head">
         <Atitle level={1}>{t('adminEditPage.title', { ns: 'pages' })}</Atitle>
-        <Button onClick={onAskDelete} theme="error">
+        <Button onClick={onAskDelete} color="error">
           {t('adminEditPage.delete', { ns: 'pages' })}
         </Button>
       </div>

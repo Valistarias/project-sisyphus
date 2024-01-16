@@ -10,6 +10,8 @@ import tvBackground from '../../assets/imgs/tvbg.gif';
 import { Ap, Atitle, Avideo } from '../../atoms';
 import { Button } from '../../molecules';
 
+import { classTrim } from '../../utils';
+
 import './home.scss';
 
 const Home: FC = () => {
@@ -30,7 +32,12 @@ const Home: FC = () => {
   // }, [createAlert, getNewId]);
 
   return (
-    <div className="home">
+    <div
+      className={classTrim(`
+        home
+        ${user?._id === undefined ? '' : 'home--connected'}
+      `)}
+    >
       <div className="home__intro" style={{ backgroundImage: `url(${tvBackground})` }}>
         <Avideo video="logo" className="home__intro__logo" />
         <Atitle level={1} className="home__intro__title" />

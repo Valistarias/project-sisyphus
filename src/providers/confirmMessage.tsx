@@ -1,5 +1,7 @@
 import React, { useCallback, useContext, useEffect, useMemo, useState, type FC } from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import { Ap, Atitle } from '../atoms';
 import { Button } from '../molecules';
 
@@ -56,6 +58,7 @@ function ConfMessageEventEmitter(): void {
 Emitter.methods = ['addEventListener', 'dispatchEvent', 'removeEventListener'];
 
 export const ConfirmMessageProvider: FC<ConfirmMessageProviderProps> = ({ children }) => {
+  const { t } = useTranslation();
   const ConfMessageEvent = useMemo(() => new ConfMessageEventEmitter(), []);
 
   const [idEvt, setIdEvt] = useState('');
@@ -130,7 +133,7 @@ export const ConfirmMessageProvider: FC<ConfirmMessageProviderProps> = ({ childr
               {confirmData?.confirmCta ?? 'Confirm'}
             </Button>
             <Button theme="text-only" onClick={onAbort}>
-              Abort
+              {t('terms.general.abort')}
             </Button>
           </div>
         </div>

@@ -122,57 +122,59 @@ const AdminNewPage: FC = () => {
 
   return (
     <div className="adminNewPage">
-      <Atitle level={1}>{t('adminNewPage.title', { ns: 'pages' })}</Atitle>
-      {error !== '' ? <Aerror className="adminNewPage__error">{error}</Aerror> : null}
-      <div className="adminNewPage__basics">
-        <Input
-          type="text"
-          label={t('namePage.label', { ns: 'fields' })}
-          onChange={(e) => {
-            setPageName(e.target.value);
-            setError('');
-          }}
-          value={pageName}
-          className="adminNewPage__basics__name"
-        />
-      </div>
-      <div className="adminNewPage__details">
-        <RichTextElement
-          label={t('pageContent.title', { ns: 'fields' })}
-          editor={contentEditor}
-          rawStringContent={pageContent}
-          ruleBookId={params.get('ruleBookId') ?? undefined}
-          complete
-        />
-      </div>
+      <div className="adminNewPage__content">
+        <Atitle level={1}>{t('adminNewPage.title', { ns: 'pages' })}</Atitle>
+        {error !== '' ? <Aerror className="adminNewPage__error">{error}</Aerror> : null}
+        <div className="adminNewPage__basics">
+          <Input
+            type="text"
+            label={t('namePage.label', { ns: 'fields' })}
+            onChange={(e) => {
+              setPageName(e.target.value);
+              setError('');
+            }}
+            value={pageName}
+            className="adminNewPage__basics__name"
+          />
+        </div>
+        <div className="adminNewPage__details">
+          <RichTextElement
+            label={t('pageContent.title', { ns: 'fields' })}
+            editor={contentEditor}
+            rawStringContent={pageContent}
+            ruleBookId={params.get('ruleBookId') ?? undefined}
+            complete
+          />
+        </div>
 
-      <Atitle className="adminNewPage__intl" level={2}>
-        {t('adminNewPage.i18n', { ns: 'pages' })}
-      </Atitle>
-      <Ap className="adminNewPage__intl-info">{t('adminNewPage.i18nInfo', { ns: 'pages' })}</Ap>
-      <div className="adminNewPage__basics">
-        <Input
-          type="text"
-          label={`${t('namePage.label', { ns: 'fields' })} (FR)`}
-          onChange={(e) => {
-            setPageNameFr(e.target.value);
-          }}
-          value={pageNameFr}
-          className="adminNewPage__basics__name"
-        />
+        <Atitle className="adminNewPage__intl" level={2}>
+          {t('adminNewPage.i18n', { ns: 'pages' })}
+        </Atitle>
+        <Ap className="adminNewPage__intl-info">{t('adminNewPage.i18nInfo', { ns: 'pages' })}</Ap>
+        <div className="adminNewPage__basics">
+          <Input
+            type="text"
+            label={`${t('namePage.label', { ns: 'fields' })} (FR)`}
+            onChange={(e) => {
+              setPageNameFr(e.target.value);
+            }}
+            value={pageNameFr}
+            className="adminNewPage__basics__name"
+          />
+        </div>
+        <div className="adminNewPage__details">
+          <RichTextElement
+            label={`${t('pageContent.title', { ns: 'fields' })} (FR)`}
+            editor={contentFrEditor}
+            rawStringContent={pageContentFr}
+            ruleBookId={params.get('ruleBookId') ?? undefined}
+            complete
+          />
+        </div>
+        <Button onClick={onSavePage} disabled={error !== ''}>
+          {t('adminNewPage.button', { ns: 'pages' })}
+        </Button>
       </div>
-      <div className="adminNewPage__details">
-        <RichTextElement
-          label={`${t('pageContent.title', { ns: 'fields' })} (FR)`}
-          editor={contentFrEditor}
-          rawStringContent={pageContentFr}
-          ruleBookId={params.get('ruleBookId') ?? undefined}
-          complete
-        />
-      </div>
-      <Button onClick={onSavePage} disabled={error !== ''}>
-        {t('adminNewPage.button', { ns: 'pages' })}
-      </Button>
     </div>
   );
 };

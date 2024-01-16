@@ -123,61 +123,63 @@ const AdminNewChapters: FC = () => {
 
   return (
     <div className="adminNewChapter">
-      <Atitle level={1}>{t('adminNewChapter.title', { ns: 'pages' })}</Atitle>
-      {error !== '' ? <Aerror className="adminNewChapter__error">{error}</Aerror> : null}
-      <div className="adminNewChapter__basics">
-        <Input
-          type="text"
-          label={t('nameChapter.label', { ns: 'fields' })}
-          onChange={(e) => {
-            setChapterName(e.target.value);
-            setError('');
-          }}
-          value={chapterName}
-          className="adminNewChapter__basics__name"
-        />
-      </div>
-      <div className="adminNewChapter__details">
-        <RichTextElement
-          label={t('chapterSummary.title', { ns: 'fields' })}
-          editor={summaryEditor}
-          rawStringContent={chapterSummary}
-          ruleBookId={params.get('ruleBookId') ?? undefined}
-          small
-          complete
-        />
-      </div>
+      <div className="adminNewChapter__content">
+        <Atitle level={1}>{t('adminNewChapter.title', { ns: 'pages' })}</Atitle>
+        {error !== '' ? <Aerror className="adminNewChapter__error">{error}</Aerror> : null}
+        <div className="adminNewChapter__basics">
+          <Input
+            type="text"
+            label={t('nameChapter.label', { ns: 'fields' })}
+            onChange={(e) => {
+              setChapterName(e.target.value);
+              setError('');
+            }}
+            value={chapterName}
+            className="adminNewChapter__basics__name"
+          />
+        </div>
+        <div className="adminNewChapter__details">
+          <RichTextElement
+            label={t('chapterSummary.title', { ns: 'fields' })}
+            editor={summaryEditor}
+            rawStringContent={chapterSummary}
+            ruleBookId={params.get('ruleBookId') ?? undefined}
+            small
+            complete
+          />
+        </div>
 
-      <Atitle className="adminNewChapter__intl" level={2}>
-        {t('adminNewChapter.i18n', { ns: 'pages' })}
-      </Atitle>
-      <Ap className="adminNewChapter__intl-info">
-        {t('adminNewChapter.i18nInfo', { ns: 'pages' })}
-      </Ap>
-      <div className="adminNewChapter__basics">
-        <Input
-          type="text"
-          label={`${t('nameChapter.label', { ns: 'fields' })} (FR)`}
-          onChange={(e) => {
-            setChapterNameFr(e.target.value);
-          }}
-          value={chapterNameFr}
-          className="adminNewChapter__basics__name"
-        />
+        <Atitle className="adminNewChapter__intl" level={2}>
+          {t('adminNewChapter.i18n', { ns: 'pages' })}
+        </Atitle>
+        <Ap className="adminNewChapter__intl-info">
+          {t('adminNewChapter.i18nInfo', { ns: 'pages' })}
+        </Ap>
+        <div className="adminNewChapter__basics">
+          <Input
+            type="text"
+            label={`${t('nameChapter.label', { ns: 'fields' })} (FR)`}
+            onChange={(e) => {
+              setChapterNameFr(e.target.value);
+            }}
+            value={chapterNameFr}
+            className="adminNewChapter__basics__name"
+          />
+        </div>
+        <div className="adminNewChapter__details">
+          <RichTextElement
+            label={`${t('chapterSummary.title', { ns: 'fields' })} (FR)`}
+            editor={summaryFrEditor}
+            rawStringContent={chapterSummaryFr}
+            ruleBookId={params.get('ruleBookId') ?? undefined}
+            small
+            complete
+          />
+        </div>
+        <Button onClick={onSaveChapter} disabled={error !== ''}>
+          {t('adminNewChapter.button', { ns: 'pages' })}
+        </Button>
       </div>
-      <div className="adminNewChapter__details">
-        <RichTextElement
-          label={`${t('chapterSummary.title', { ns: 'fields' })} (FR)`}
-          editor={summaryFrEditor}
-          rawStringContent={chapterSummaryFr}
-          ruleBookId={params.get('ruleBookId') ?? undefined}
-          small
-          complete
-        />
-      </div>
-      <Button onClick={onSaveChapter} disabled={error !== ''}>
-        {t('adminNewChapter.button', { ns: 'pages' })}
-      </Button>
     </div>
   );
 };

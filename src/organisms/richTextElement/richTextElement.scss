@@ -5,7 +5,7 @@
   width: 100%;
 
   &__editor {
-    border: 1px solid var(--primary-dark);
+    border: 1px solid var(--primary);
     padding: 2rem;
 
     .tiptap {
@@ -25,7 +25,7 @@
   .ath,
   .atd {
     &.selectedCell {
-      background: var(--primary-dark);
+      background: var(--primary);
     }
   }
 

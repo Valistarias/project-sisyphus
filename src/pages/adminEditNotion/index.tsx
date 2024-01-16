@@ -25,7 +25,10 @@ const AdminEditNotions: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage();
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+    setConfirmContent: () => {},
+    ConfMessageEvent: {},
+  };
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -266,72 +269,74 @@ const AdminEditNotions: FC = () => {
 
   return (
     <div className="adminEditNotion">
-      <div className="adminEditNotion__head">
-        <Atitle level={1}>{t('adminEditNotion.title', { ns: 'pages' })}</Atitle>
-        <Button onClick={onAskDelete} theme="error">
-          {t('adminEditNotion.delete', { ns: 'pages' })}
+      <div className="adminEditNotion__content">
+        <div className="adminEditNotion__head">
+          <Atitle level={1}>{t('adminEditNotion.title', { ns: 'pages' })}</Atitle>
+          <Button onClick={onAskDelete} color="error">
+            {t('adminEditNotion.delete', { ns: 'pages' })}
+          </Button>
+        </div>
+        {error !== '' ? <Aerror className="adminEditNotion__error">{error}</Aerror> : null}
+        <div className="adminEditNotion__basics">
+          <Input
+            type="text"
+            label={t('nameNotion.label', { ns: 'fields' })}
+            onChange={(e) => {
+              setNotionName(e.target.value);
+              setError('');
+            }}
+            value={notionName}
+            className="adminEditNotion__basics__name"
+          />
+          <SmartSelect
+            options={ruleBooks}
+            selected={sentApiRuleBookChoice}
+            label={t('notionRuleBookType.title', { ns: 'fields' })}
+            onChange={(choice) => {
+              setSelectedType(choice.value);
+              setError('');
+            }}
+            className="adminEditNotion__basics__type"
+          />
+        </div>
+        <div className="adminEditNotion__details">
+          <RichTextElement
+            label={t('notionText.title', { ns: 'fields' })}
+            editor={textEditor ?? undefined}
+            rawStringContent={notionText}
+            ruleBookId={selectedType ?? undefined}
+          />
+        </div>
+
+        <Atitle className="adminEditNotion__intl" level={2}>
+          {t('adminEditNotion.i18n', { ns: 'pages' })}
+        </Atitle>
+        <Ap className="adminEditNotion__intl-info">
+          {t('adminEditNotion.i18nInfo', { ns: 'pages' })}
+        </Ap>
+        <div className="adminEditNotion__basics">
+          <Input
+            type="text"
+            label={`${t('nameNotion.label', { ns: 'fields' })} (FR)`}
+            onChange={(e) => {
+              setNotionNameFr(e.target.value);
+            }}
+            value={notionNameFr}
+            className="adminEditNotion__basics__name"
+          />
+        </div>
+        <div className="adminEditNotion__details">
+          <RichTextElement
+            label={`${t('notionText.title', { ns: 'fields' })} (FR)`}
+            editor={textFrEditor ?? undefined}
+            rawStringContent={notionTextFr}
+            ruleBookId={selectedType ?? undefined}
+          />
+        </div>
+        <Button onClick={onSaveNotion} disabled={error !== ''}>
+          {t('adminEditNotion.button', { ns: 'pages' })}
         </Button>
       </div>
-      {error !== '' ? <Aerror className="adminEditNotion__error">{error}</Aerror> : null}
-      <div className="adminEditNotion__basics">
-        <Input
-          type="text"
-          label={t('nameNotion.label', { ns: 'fields' })}
-          onChange={(e) => {
-            setNotionName(e.target.value);
-            setError('');
-          }}
-          value={notionName}
-          className="adminEditNotion__basics__name"
-        />
-        <SmartSelect
-          options={ruleBooks}
-          selected={sentApiRuleBookChoice}
-          label={t('notionRuleBookType.title', { ns: 'fields' })}
-          onChange={(choice) => {
-            setSelectedType(choice.value);
-            setError('');
-          }}
-          className="adminEditNotion__basics__type"
-        />
-      </div>
-      <div className="adminEditNotion__details">
-        <RichTextElement
-          label={t('notionText.title', { ns: 'fields' })}
-          editor={textEditor ?? undefined}
-          rawStringContent={notionText}
-          ruleBookId={selectedType ?? undefined}
-        />
-      </div>
-
-      <Atitle className="adminEditNotion__intl" level={2}>
-        {t('adminEditNotion.i18n', { ns: 'pages' })}
-      </Atitle>
-      <Ap className="adminEditNotion__intl-info">
-        {t('adminEditNotion.i18nInfo', { ns: 'pages' })}
-      </Ap>
-      <div className="adminEditNotion__basics">
-        <Input
-          type="text"
-          label={`${t('nameNotion.label', { ns: 'fields' })} (FR)`}
-          onChange={(e) => {
-            setNotionNameFr(e.target.value);
-          }}
-          value={notionNameFr}
-          className="adminEditNotion__basics__name"
-        />
-      </div>
-      <div className="adminEditNotion__details">
-        <RichTextElement
-          label={`${t('notionText.title', { ns: 'fields' })} (FR)`}
-          editor={textFrEditor ?? undefined}
-          rawStringContent={notionTextFr}
-          ruleBookId={selectedType ?? undefined}
-        />
-      </div>
-      <Button onClick={onSaveNotion} disabled={error !== ''}>
-        {t('adminEditNotion.button', { ns: 'pages' })}
-      </Button>
     </div>
   );
 };

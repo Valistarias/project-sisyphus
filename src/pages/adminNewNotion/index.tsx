@@ -174,63 +174,67 @@ const AdminNewNotions: FC = () => {
 
   return (
     <div className="adminNewNotion">
-      <Atitle level={1}>{t('adminNewNotion.title', { ns: 'pages' })}</Atitle>
-      {error !== '' ? <Aerror className="adminNewNotion__error">{error}</Aerror> : null}
-      <div className="adminNewNotion__basics">
-        <Input
-          type="text"
-          onChange={(e) => {
-            setNotionName(e.target.value);
-            setError('');
-          }}
-          value={notionName}
-          label={t('nameNotion.label', { ns: 'fields' })}
-          className="adminNewNotion__basics__name"
-        />
-        <SmartSelect
-          label={t('notionRuleBookType.title', { ns: 'fields' })}
-          options={ruleBooks}
-          selected={sentApiTypeChoice}
-          onChange={(choice) => {
-            setSelectedType(choice.value);
-            setError('');
-          }}
-          className="adminNewNotion__basics__type"
-        />
-      </div>
-      <div className="adminNewNotion__details">
-        <RichTextElement
-          label={t('notionText.title', { ns: 'fields' })}
-          editor={textEditor}
-          rawStringContent={notionText}
-        />
-      </div>
+      <div className="adminNewNotion__content">
+        <Atitle level={1}>{t('adminNewNotion.title', { ns: 'pages' })}</Atitle>
+        {error !== '' ? <Aerror className="adminNewNotion__error">{error}</Aerror> : null}
+        <div className="adminNewNotion__basics">
+          <Input
+            type="text"
+            onChange={(e) => {
+              setNotionName(e.target.value);
+              setError('');
+            }}
+            value={notionName}
+            label={t('nameNotion.label', { ns: 'fields' })}
+            className="adminNewNotion__basics__name"
+          />
+          <SmartSelect
+            label={t('notionRuleBookType.title', { ns: 'fields' })}
+            options={ruleBooks}
+            selected={sentApiTypeChoice}
+            onChange={(choice) => {
+              setSelectedType(choice.value);
+              setError('');
+            }}
+            className="adminNewNotion__basics__type"
+          />
+        </div>
+        <div className="adminNewNotion__details">
+          <RichTextElement
+            label={t('notionText.title', { ns: 'fields' })}
+            editor={textEditor}
+            rawStringContent={notionText}
+          />
+        </div>
 
-      <Atitle className="adminNewNotion__intl" level={2}>
-        {t('adminNewNotion.i18n', { ns: 'pages' })}
-      </Atitle>
-      <Ap className="adminNewNotion__intl-info">{t('adminNewNotion.i18nInfo', { ns: 'pages' })}</Ap>
-      <div className="adminNewNotion__basics">
-        <Input
-          type="text"
-          label={`${t('nameNotion.label', { ns: 'fields' })} (FR)`}
-          onChange={(e) => {
-            setNotionNameFr(e.target.value);
-          }}
-          value={notionNameFr}
-          className="adminNewNotion__basics__name"
-        />
+        <Atitle className="adminNewNotion__intl" level={2}>
+          {t('adminNewNotion.i18n', { ns: 'pages' })}
+        </Atitle>
+        <Ap className="adminNewNotion__intl-info">
+          {t('adminNewNotion.i18nInfo', { ns: 'pages' })}
+        </Ap>
+        <div className="adminNewNotion__basics">
+          <Input
+            type="text"
+            label={`${t('nameNotion.label', { ns: 'fields' })} (FR)`}
+            onChange={(e) => {
+              setNotionNameFr(e.target.value);
+            }}
+            value={notionNameFr}
+            className="adminNewNotion__basics__name"
+          />
+        </div>
+        <div className="adminNewNotion__details">
+          <RichTextElement
+            label={`${t('notionText.title', { ns: 'fields' })} (FR)`}
+            editor={textFrEditor}
+            rawStringContent={notionTextFr}
+          />
+        </div>
+        <Button onClick={onSaveNotion} disabled={error !== ''}>
+          {t('adminNewNotion.button', { ns: 'pages' })}
+        </Button>
       </div>
-      <div className="adminNewNotion__details">
-        <RichTextElement
-          label={`${t('notionText.title', { ns: 'fields' })} (FR)`}
-          editor={textFrEditor}
-          rawStringContent={notionTextFr}
-        />
-      </div>
-      <Button onClick={onSaveNotion} disabled={error !== ''}>
-        {t('adminNewNotion.button', { ns: 'pages' })}
-      </Button>
     </div>
   );
 };

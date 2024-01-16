@@ -1,5 +1,4 @@
 .adminRuleBooks {
-  height: 100%;
   margin: 0 auto;
   max-width: 1200px;
   padding-top: 10vh;
@@ -8,6 +7,7 @@
   &__content {
     display: flex;
     gap: 2rem;
+    margin-bottom: 10vh;
     margin-top: 2rem;
   }
 
@@ -23,11 +23,24 @@
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    margin-bottom: 2rem;
 
     &__elt {
-      border: 1px solid var(--primary-dark);
+      background-color: var(--primary-05);
+      border: 1px solid var(--primary);
+      box-shadow: 0 0 2rem var(--primary-10);
       box-sizing: border-box;
       padding: 2rem;
+
+      &__type {
+        margin-top: 2rem;
+      }
+
+      &__buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 3rem;
+      }
 
       &__details {
         color: var(--primary);
@@ -39,7 +52,9 @@
       }
 
       &--archived {
+        background-color: var(--tertiary-00);
         border: 1px solid var(--grey);
+        box-shadow: 0 0 0;
         opacity: 0.6;
       }
     }
