@@ -61,9 +61,11 @@ const Ali: FC<IAli> = (props) => {
         ali
         ${className ?? ''}
       `)}
-      ref={innerRef}
-      {...restDrag}
-      {...restHandle}
+      reactProps={{
+        ref: innerRef,
+        ...restDrag,
+        ...restHandle,
+      }}
     >
       {children}
     </Quark>

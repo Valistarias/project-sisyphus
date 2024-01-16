@@ -18,13 +18,20 @@
     margin-bottom: 2rem;
 
     &__elt {
-      border: 1px solid var(--primary-dark);
+      background-color: var(--primary-05);
+      border: 1px solid var(--primary);
+      box-shadow: 0 0 2rem var(--primary-10);
       box-sizing: border-box;
-      padding: 1rem;
+      padding: 2rem;
+
+      &__title {
+        margin-bottom: 3rem;
+      }
 
       &__buttons {
         display: flex;
         gap: 1rem;
+        margin-top: 3rem;
       }
     }
   }

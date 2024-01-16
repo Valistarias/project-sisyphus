@@ -5,6 +5,8 @@ interface IQuarkProps {
   className?: string;
   /** The style defined for the element */
   style?: React.CSSProperties;
+  /** The react props that need to be set to the smallest defined element */
+  reactProps?: Record<string, unknown>;
   /** Everything else */
   [prop: string]: unknown;
 }
@@ -16,9 +18,9 @@ interface IQuark extends IQuarkProps {
   [prop: string]: unknown;
 }
 
-const Quark: FC<IQuark> = ({ className, quarkType, ...rest }) => {
+const Quark: FC<IQuark> = ({ className, style, quarkType, reactProps, ...rest }) => {
   const QuarkComponent = quarkType;
-  return <QuarkComponent className={className} {...rest} />;
+  return <QuarkComponent className={className} style={style} {...reactProps} {...rest} />;
 };
 
 export { Quark, type IQuarkProps };

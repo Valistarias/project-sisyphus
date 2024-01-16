@@ -34,8 +34,10 @@ const Aul: FC<IAul> = (props) => {
         ${className ?? ''}
         ${noPoints ? 'aul--nodecor' : ''}
       `)}
-      ref={innerRef}
-      {...rest}
+      reactProps={{
+        ref: innerRef,
+        ...rest,
+      }}
     >
       {children}
     </Quark>

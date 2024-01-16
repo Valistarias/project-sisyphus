@@ -118,7 +118,8 @@ const Characters: FC = () => {
                 {t('characters.openCharacter', { ns: 'pages' })}
               </Button>
               <Button
-                theme="error"
+                theme="text-only"
+                color="error"
                 onClick={() => {
                   onDeleteCharacter(character._id, character.name);
                 }}
