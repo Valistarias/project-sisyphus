@@ -34,7 +34,7 @@ type typeIcons =
 
 interface IAicon extends IQuarkProps {
   /** The size of the icon */
-  size?: 'small' | 'medium' | 'large';
+  size?: 'small' | 'medium' | 'large' | 'unsized';
   /** The type of icon */
   type: typeIcons;
   /** When the icon is clicked */

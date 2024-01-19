@@ -1,0 +1,87 @@
+.dice-card {
+  align-items: center;
+  background-blend-mode: overlay;
+  background-color: var(--primary-20);
+  border: 1px solid var(--primary);
+  border-radius: 0.5rem;
+  box-shadow: 0 0 2rem var(--primary-20);
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  position: relative;
+
+  &__dice-bg {
+    fill: var(--primary-20);
+    filter: drop-shadow(0 0 4px var(--primary));
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate3d(-50%, -50%, 0);
+    width: 16rem;
+    z-index: 0;
+  }
+
+  &__value {
+    color: var(--tertiary);
+    font-size: 12rem;
+    font-weight: 400;
+    letter-spacing: 2rem;
+    margin-right: -2rem;
+    position: relative;
+    text-shadow: 0 0 1rem var(--tertiary-20);
+    z-index: 1;
+  }
+
+  // Sizes ------------------------------------
+
+  &--small {
+    height: 18rem;
+    width: 13rem;
+
+    .dice-card {
+      &__dice-bg {
+        width: 12rem;
+      }
+
+      &__value {
+        font-size: 8rem;
+        letter-spacing: 1rem;
+        margin-right: -1rem;
+      }
+    }
+  }
+
+  &--medium {
+    height: 25rem;
+    width: 18rem;
+
+    .dice-card {
+      &__dice-bg {
+        width: 16rem;
+      }
+
+      &__value {
+        font-size: 12rem;
+        letter-spacing: 2rem;
+        margin-right: -2rem;
+      }
+    }
+  }
+
+  &--single {
+    height: 30rem;
+    width: 22rem;
+
+    .dice-card {
+      &__dice-bg {
+        width: 22rem;
+      }
+
+      &__value {
+        font-size: 16rem;
+        letter-spacing: 2rem;
+        margin-right: -2rem;
+      }
+    }
+  }
+}

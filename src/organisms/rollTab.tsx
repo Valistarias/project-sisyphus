@@ -1,7 +1,8 @@
 import React, { useCallback, useMemo, useState, type FC } from 'react';
 
-import { Aicon, Ap } from '../atoms';
-import { type typeIcons } from '../atoms/aicon';
+import { useTranslation } from 'react-i18next';
+
+import { Aicon, Ap, type typeIcons } from '../atoms';
 import { Button } from '../molecules';
 
 import { classTrim, type DiceRequest } from '../utils';
@@ -41,7 +42,7 @@ const initRollTab: DiceRequest[] = [
 ];
 
 const RollTab: FC<IRollTab> = ({ onRollDices }) => {
-  // const { t } = useTranslation();
+  const { t } = useTranslation();
 
   const [isOpen, setOpen] = useState(true);
 
@@ -126,7 +127,7 @@ const RollTab: FC<IRollTab> = ({ onRollDices }) => {
             setDiceValues(initRollTab);
           }}
         >
-          Roll
+          {t('rollTab.roll', { ns: 'components' })}
         </Button>
         <Button
           theme="solid"
@@ -138,7 +139,9 @@ const RollTab: FC<IRollTab> = ({ onRollDices }) => {
             setOpen(!isOpen);
           }}
         >
-          {isOpen ? 'Close' : 'Dices'}
+          {isOpen
+            ? t('rollTab.close', { ns: 'components' })
+            : t('rollTab.dices', { ns: 'components' })}
         </Button>
       </div>
 

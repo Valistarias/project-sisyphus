@@ -2,7 +2,7 @@ import React, { type FC } from 'react';
 
 import { useNavigate, type NavigateFunction } from 'react-router-dom';
 
-import { Aicon, type typeIcons } from '../atoms/aicon';
+import { Aicon, type typeIcons } from '../atoms';
 import { Quark, type IQuarkProps } from '../quark';
 
 import { classTrim } from '../utils';

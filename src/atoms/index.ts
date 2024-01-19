@@ -1,6 +1,6 @@
 import Aa from './aa';
 import Aerror from './aerror';
-import { Aicon } from './aicon';
+import { Aicon, type typeIcons } from './aicon';
 import Aimg from './aimg';
 import Alabel from './alabel';
 import Ali from './ali';
@@ -30,4 +30,5 @@ export {
   Atr,
   Aul,
   Avideo,
+  type typeIcons,
 };

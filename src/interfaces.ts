@@ -1,3 +1,5 @@
+// User ------------------------------------
+
 export interface IUser {
   /** The ID of the user */
   _id: string;
@@ -171,3 +173,7 @@ export interface ICharacter {
   /** When the character was created */
   createdAt: string;
 }
+
+// Dices ------------------------------------
+
+export type typeDice = 4 | 6 | 8 | 10 | 12 | 20;

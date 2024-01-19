@@ -4,6 +4,7 @@ import { ApiProvider, useApi } from './api';
 import { ConfirmMessageProvider, useConfirmMessage } from './confirmMessage';
 import { GlobalVarsProvider, useGlobalVars } from './globalVars';
 import { LangProvider, useLang } from './lang';
+import { RollWindowProvider, useRollWindow } from './rollWindow';
 import { SystemAlertsProvider, useSystemAlerts } from './systemAlerts';
 import { ThemeProvider, useTheme } from './theme';
 
@@ -18,7 +19,9 @@ const Providers: FC<ProviderProps> = ({ children }) => (
       <GlobalVarsProvider>
         <ThemeProvider>
           <SystemAlertsProvider>
-            <ConfirmMessageProvider>{children}</ConfirmMessageProvider>
+            <ConfirmMessageProvider>
+              <RollWindowProvider>{children}</RollWindowProvider>
+            </ConfirmMessageProvider>
           </SystemAlertsProvider>
         </ThemeProvider>
       </GlobalVarsProvider>
@@ -26,4 +29,13 @@ const Providers: FC<ProviderProps> = ({ children }) => (
   </ApiProvider>
 );
 
-export { Providers, useApi, useConfirmMessage, useGlobalVars, useLang, useSystemAlerts, useTheme };
+export {
+  Providers,
+  useApi,
+  useConfirmMessage,
+  useGlobalVars,
+  useLang,
+  useRollWindow,
+  useSystemAlerts,
+  useTheme,
+};

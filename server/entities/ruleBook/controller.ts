@@ -113,9 +113,7 @@ const update = (req: Request, res: Response): void => {
 
       if (i18n !== null) {
         const newIntl = {
-          ...(ruleBook.i18n !== null && ruleBook.i18n !== undefined && ruleBook.i18n !== ''
-            ? JSON.parse(ruleBook.i18n)
-            : {}),
+          ...(ruleBook.i18n != null && ruleBook.i18n !== '' ? JSON.parse(ruleBook.i18n) : {}),
         };
 
         Object.keys(i18n).forEach((lang) => {

@@ -121,7 +121,7 @@ export const ConfirmMessageProvider: FC<ConfirmMessageProviderProps> = ({ childr
             ${isWindowOpened ? 'confirm-message--open' : ''}
           `)}
       >
-        <div className="confirm-message__shadow" />
+        <div className="confirm-message__shadow" onClick={onAbort} />
         <div className="confirm-message__window">
           <Atitle>{confirmData?.title ?? ''}</Atitle>
           <Ap>{confirmData?.text ?? ''}</Ap>

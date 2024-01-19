@@ -3,15 +3,13 @@ import React, { useEffect, useRef, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import { useApi, useSystemAlerts } from '../../providers';
+import { useApi, useRollWindow, useSystemAlerts } from '../../providers';
 
 import { Ap, Atitle } from '../../atoms';
 import { Alert, RollTab } from '../../organisms';
 import { ErrorPage } from '../index';
 
 import { type ICharacter } from '../../interfaces';
-
-import { throwDices } from '../../utils';
 
 import './character.scss';
 
@@ -20,6 +18,7 @@ const Character: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { id } = useParams();
+  const { setDicesToRoll } = useRollWindow();
 
   const [character, setCharacter] = useState<ICharacter | null>(null);
   const [loading, setLoading] = useState(true);
@@ -75,11 +74,7 @@ const Character: FC = () => {
       <Atitle level={1}>{character.name}</Atitle>
       <RollTab
         onRollDices={(dices) => {
-          const throwDicesRes = throwDices(dices);
-          console.log('throwDicesRes', throwDicesRes);
-          console.log('throwDicesRes best', throwDicesRes[0].best);
-          console.log('throwDicesRes worst', throwDicesRes[0].worst);
-          console.log('throwDicesRes results', throwDicesRes[0].results);
+          setDicesToRoll(dices);
         }}
       />
     </div>

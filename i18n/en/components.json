@@ -42,6 +42,11 @@
       "abort": "Abort"
     }
   },
+  "rollTab": {
+    "roll": "Roll",
+    "close": "Close",
+    "dices": "Dices"
+  },
   "smartselect": {
     "placeholder": "Select one...",
     "notfound": "No field found"

@@ -1,3 +1,5 @@
+import { type typeDice } from './interfaces';
+
 export const fullTrim = (elt: string): string => elt.replace(/\s+/g, ' ').trim();
 
 export const classTrim = (elt: string): string => fullTrim(elt.replace(/\n {2,}/g, ' '));
@@ -23,8 +25,6 @@ export const formatDate = (date: Date): IFormattedDate => ({
   date: `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`,
   hour: `${date.getHours()}:${date.getMinutes()}`,
 });
-
-type typeDice = 4 | 6 | 8 | 10 | 12 | 20 | 100;
 
 export interface DiceRequest {
   /** The number of dices thrown */
