@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState, type FC } from 'react';
+import React, { useEffect, useRef, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
@@ -6,7 +6,6 @@ import { useParams } from 'react-router-dom';
 import { useApi, useSystemAlerts } from '../../providers';
 
 import { Ap, Atitle } from '../../atoms';
-import { Button } from '../../molecules';
 import { Alert, RollTab } from '../../organisms';
 import { ErrorPage } from '../index';
 
@@ -27,14 +26,6 @@ const Character: FC = () => {
   const [notFound, setNotFound] = useState(false);
 
   const calledApi = useRef(false);
-
-  const testLaunchDice = useCallback(() => {
-    console.log('launch dice');
-    const throwDice = throwDices([{ type: 20, qty: 2 }])[0];
-    console.log('throwDice best', throwDice.best);
-    console.log('throwDice worst', throwDice.worst);
-    console.log('throwDice results', throwDice.results);
-  }, []);
 
   useEffect(() => {
     if (api !== undefined && !calledApi.current && id !== undefined) {
@@ -82,8 +73,15 @@ const Character: FC = () => {
   return (
     <div className="character">
       <Atitle level={1}>{character.name}</Atitle>
-      <Button onClick={testLaunchDice}>Click Me</Button>
-      <RollTab />
+      <RollTab
+        onRollDices={(dices) => {
+          const throwDicesRes = throwDices(dices);
+          console.log('throwDicesRes', throwDicesRes);
+          console.log('throwDicesRes best', throwDicesRes[0].best);
+          console.log('throwDicesRes worst', throwDicesRes[0].worst);
+          console.log('throwDicesRes results', throwDicesRes[0].results);
+        }}
+      />
     </div>
   );
 };

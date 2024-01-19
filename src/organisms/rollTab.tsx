@@ -13,37 +13,39 @@ interface IRollTab {
   onRollDices: (diceValues: DiceRequest[]) => void;
 }
 
+const initRollTab: DiceRequest[] = [
+  {
+    type: 20,
+    qty: 0,
+  },
+  {
+    type: 12,
+    qty: 0,
+  },
+  {
+    type: 10,
+    qty: 0,
+  },
+  {
+    type: 8,
+    qty: 0,
+  },
+  {
+    type: 6,
+    qty: 0,
+  },
+  {
+    type: 4,
+    qty: 0,
+  },
+];
+
 const RollTab: FC<IRollTab> = ({ onRollDices }) => {
   // const { t } = useTranslation();
 
   const [isOpen, setOpen] = useState(true);
 
-  const [diceValues, setDiceValues] = useState<DiceRequest[]>([
-    {
-      type: 20,
-      qty: 0,
-    },
-    {
-      type: 12,
-      qty: 0,
-    },
-    {
-      type: 10,
-      qty: 0,
-    },
-    {
-      type: 8,
-      qty: 0,
-    },
-    {
-      type: 6,
-      qty: 0,
-    },
-    {
-      type: 4,
-      qty: 0,
-    },
-  ]);
+  const [diceValues, setDiceValues] = useState<DiceRequest[]>(initRollTab);
 
   const canRoll = useMemo(() => diceValues.some(({ qty }) => qty > 0), [diceValues]);
 
@@ -113,14 +115,15 @@ const RollTab: FC<IRollTab> = ({ onRollDices }) => {
     >
       <div className="roll-tab__buttons">
         <Button
-          theme="afterglow"
+          theme="solid"
+          active
           className={classTrim(`
             roll-tab__buttons__roll
               ${canRoll ? 'roll-tab__buttons__roll--visible' : ''}
             `)}
           onClick={() => {
             onRollDices(diceValues);
-            setOpen((prev) => !prev);
+            setDiceValues(initRollTab);
           }}
         >
           Roll
@@ -129,7 +132,10 @@ const RollTab: FC<IRollTab> = ({ onRollDices }) => {
           theme="solid"
           className="roll-tab__buttons__toggle"
           onClick={() => {
-            setOpen((prev) => !prev);
+            if (isOpen) {
+              setDiceValues(initRollTab);
+            }
+            setOpen(!isOpen);
           }}
         >
           {isOpen ? 'Close' : 'Dices'}
