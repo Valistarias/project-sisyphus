@@ -4,4 +4,8 @@
   max-width: 1000px;
   padding-top: 10vh;
   width: 100%;
+
+  &__test {
+    fill: var(--primary);
+  }
 }

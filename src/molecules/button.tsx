@@ -17,9 +17,9 @@ interface IButton extends IQuarkProps {
   /** The main color of the button */
   color?: 'primary' | 'secondary' | 'tertiary' | 'error';
   /** The size of the button */
-  size?: 'large' | 'medium' | 'small';
+  size?: 'xlarge' | 'large' | 'medium' | 'small';
   /** The text inside the button */
-  children?: string;
+  children?: React.JSX.Element | string | string[] | Array<string | React.JSX.Element>;
   /** The icon (if any) of the button */
   icon?: typeIcons;
   /** The redirect (if there is) on a button click */

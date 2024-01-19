@@ -3,20 +3,22 @@ import { DragList, type IDragElt } from './dragList';
 import HeaderBar from './headerBar';
 import {
   RichTextElement,
-  completeRichTextElementExtentions,
   basicRichTextElementExtentions,
+  completeRichTextElementExtentions,
 } from './richTextElement';
-import { SmartSelect, type ISingleValueSelect, type IGroupedOption } from './select';
+import RollTab from './rollTab';
+import { SmartSelect, type IGroupedOption, type ISingleValueSelect } from './select';
 
 export {
-  HeaderBar,
   Alert,
-  RichTextElement,
-  completeRichTextElementExtentions,
-  basicRichTextElementExtentions,
-  SmartSelect,
-  type ISingleValueSelect,
-  type IGroupedOption,
   DragList,
+  HeaderBar,
+  RichTextElement,
+  RollTab,
+  SmartSelect,
+  basicRichTextElementExtentions,
+  completeRichTextElementExtentions,
   type IDragElt,
+  type IGroupedOption,
+  type ISingleValueSelect,
 };

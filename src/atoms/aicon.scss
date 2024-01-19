@@ -1,13 +1,18 @@
 .aicon {
   fill: var(--black);
 
+  &--large {
+    height: 4.5rem;
+    width: 4.5rem;
+  }
+
   &--medium {
-    height: 25px;
-    width: 25px;
+    height: 2.5rem;
+    width: 2.5rem;
   }
 
   &--small {
-    height: 15px;
-    width: 15px;
+    height: 1.5rem;
+    width: 1.5rem;
   }
 }

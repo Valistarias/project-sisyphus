@@ -21,6 +21,25 @@
   }
 
   // Sizes -----------------------------------
+  &--xlarge {
+    height: 7rem;
+    letter-spacing: 0.8rem;
+
+    .button__content {
+      font-size: 3rem;
+      padding: 1rem 4rem;
+      padding-right: 1rem;
+    }
+
+    &.button--noicon .button__content {
+      padding-right: 4rem;
+    }
+
+    &.button--notext {
+      padding: 0.8rem;
+    }
+  }
+
   &--large {
     height: 5rem;
     letter-spacing: 0.4rem;
@@ -172,7 +191,6 @@
     --button-color-00: var(--primary-00);
     --button-color-05: var(--primary-05);
     --button-color-10: var(--primary-10);
-    --button-color-20: var(--primary-20);
     --button-color-20: var(--primary-40);
     --button-color-80: var(--primary-80);
     --button-hover-text: var(--tertiary);
@@ -185,7 +203,6 @@
     --button-color-00: var(--secondary-00);
     --button-color-05: var(--secondary-05);
     --button-color-10: var(--secondary-10);
-    --button-color-20: var(--secondary-20);
     --button-color-20: var(--secondary-40);
     --button-color-80: var(--secondary-80);
     --button-hover-text: var(--tertiary);
@@ -198,7 +215,6 @@
     --button-color-00: var(--tertiary-00);
     --button-color-05: var(--tertiary-05);
     --button-color-10: var(--tertiary-10);
-    --button-color-20: var(--tertiary-20);
     --button-color-20: var(--tertiary-40);
     --button-color-80: var(--tertiary-80);
     --button-hover-text: var(--primary);
@@ -211,7 +227,6 @@
     --button-color-00: var(--error-00);
     --button-color-05: var(--error-05);
     --button-color-10: var(--error-10);
-    --button-color-20: var(--error-20);
     --button-color-20: var(--error-40);
     --button-color-80: var(--error-80);
     --button-hover-text: var(--tertiary);

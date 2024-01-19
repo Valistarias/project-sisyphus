@@ -2,6 +2,12 @@ import React, { useMemo, type FC } from 'react';
 
 import AddLogo from '../assets/icons/add.svg?react';
 import CheckLogo from '../assets/icons/check.svg?react';
+import D10Logo from '../assets/icons/d10.svg?react';
+import D12Logo from '../assets/icons/d12.svg?react';
+import D20Logo from '../assets/icons/d20.svg?react';
+import D4Logo from '../assets/icons/d4.svg?react';
+import D6Logo from '../assets/icons/d6.svg?react';
+import D8Logo from '../assets/icons/d8.svg?react';
 import DeleteLogo from '../assets/icons/delete.svg?react';
 import DiscordLogo from '../assets/icons/discord.svg?react';
 import EditLogo from '../assets/icons/edit.svg?react';
@@ -12,11 +18,23 @@ import { classTrim } from '../utils';
 
 import './aicon.scss';
 
-type typeIcons = 'add' | 'edit' | 'check' | 'delete' | 'discord' | 'main';
+type typeIcons =
+  | 'add'
+  | 'edit'
+  | 'check'
+  | 'delete'
+  | 'discord'
+  | 'main'
+  | 'd20'
+  | 'd12'
+  | 'd10'
+  | 'd8'
+  | 'd6'
+  | 'd4';
 
 interface IAicon extends IQuarkProps {
   /** The size of the icon */
-  size?: 'small' | 'medium';
+  size?: 'small' | 'medium' | 'large';
   /** The type of icon */
   type: typeIcons;
   /** When the icon is clicked */
@@ -46,6 +64,18 @@ const Aicon: FC<IAicon> = ({ type, size = 'medium', className, onClick }) => {
         return <Quark quarkType={MainLogo} className={classes} />;
       case 'check':
         return <Quark quarkType={CheckLogo} className={classes} />;
+      case 'd20':
+        return <Quark quarkType={D20Logo} className={classes} />;
+      case 'd12':
+        return <Quark quarkType={D12Logo} className={classes} />;
+      case 'd10':
+        return <Quark quarkType={D10Logo} className={classes} />;
+      case 'd8':
+        return <Quark quarkType={D8Logo} className={classes} />;
+      case 'd6':
+        return <Quark quarkType={D6Logo} className={classes} />;
+      case 'd4':
+        return <Quark quarkType={D4Logo} className={classes} />;
       default:
         return <Quark quarkType={DeleteLogo} className={classes} />;
     }
