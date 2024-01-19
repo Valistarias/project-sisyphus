@@ -28,8 +28,10 @@ interface IButton extends IQuarkProps {
   disabled?: boolean;
   /** Is the button activated by any means ? */
   active?: boolean;
-  /** When the input is clicked */
+  /** When the button is left clicked */
   onClick?: (e: React.MouseEvent<HTMLElement>) => void;
+  /** When the button is right clicked */
+  onContextMenu?: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
 const Button: FC<IButton> = ({
@@ -44,6 +46,7 @@ const Button: FC<IButton> = ({
   children,
   icon,
   onClick,
+  onContextMenu,
 }) => {
   let navigate: NavigateFunction | null = null;
   if (href !== null) {
@@ -75,6 +78,7 @@ const Button: FC<IButton> = ({
       }}
       type={type}
       disabled={disabled}
+      onContextMenu={onContextMenu}
     >
       {children !== undefined ? <span className="button__content">{children}</span> : null}
       {icon !== undefined ? <Aicon className="button__icon" type={icon} /> : null}

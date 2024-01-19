@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 
 import { useApi, useSystemAlerts } from '../../providers';
 
-import { Aicon, Ap, Atitle } from '../../atoms';
+import { Ap, Atitle } from '../../atoms';
 import { Button } from '../../molecules';
 import { Alert, RollTab } from '../../organisms';
 import { ErrorPage } from '../index';
@@ -83,7 +83,6 @@ const Character: FC = () => {
     <div className="character">
       <Atitle level={1}>{character.name}</Atitle>
       <Button onClick={testLaunchDice}>Click Me</Button>
-      <Aicon type="d20" className="character__test" size="large" />
       <RollTab />
     </div>
   );

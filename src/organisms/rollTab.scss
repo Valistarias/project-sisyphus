@@ -8,11 +8,29 @@
   right: -25rem;
   transition: right 0.4s ease;
 
-  &__button {
+  &__buttons {
     display: flex;
-    height: 20rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
     justify-content: center;
-    writing-mode: vertical-rl;
+
+    &__roll,
+    &__toggle {
+      display: flex;
+      height: 20rem;
+      justify-content: center;
+      writing-mode: vertical-rl;
+    }
+
+    &__roll {
+      opacity: 0;
+      transition: opacity 0.2s ease;
+
+      &--visible {
+        opacity: 1;
+      }
+    }
   }
 
   &__table {
@@ -37,7 +55,7 @@
     &__button {
       opacity: 0;
       position: relative;
-      transition: opacity 0.4s ease;
+      transition: opacity 1s ease;
       width: 100%;
 
       &__icon {
@@ -47,6 +65,7 @@
         right: 1rem;
         top: 50%;
         transform: translate3d(0, -50%, 0);
+        transition: fill 0.4s ease;
         width: 6rem;
       }
 
@@ -56,6 +75,14 @@
 
       .ap {
         margin-right: -1rem;
+      }
+
+      &.button--active {
+        .roll-tab {
+          &__table__button__icon {
+            fill: var(--tertiary);
+          }
+        }
       }
     }
   }
@@ -75,7 +102,7 @@
 
       @for $i from 1 through 6 {
         &__button:nth-child(#{$i}n) {
-          transition-delay: #{($i * 0.1) + 0.05}s;
+          transition-delay: #{$i * 0.1}s;
         }
       }
     }

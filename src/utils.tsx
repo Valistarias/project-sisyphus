@@ -26,7 +26,7 @@ export const formatDate = (date: Date): IFormattedDate => ({
 
 type typeDice = 4 | 6 | 8 | 10 | 12 | 20 | 100;
 
-interface DiceRequest {
+export interface DiceRequest {
   /** The number of dices thrown */
   qty: number;
   /** The type of dice (as in the number of sides on the dice) */
