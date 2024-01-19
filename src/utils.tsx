@@ -81,3 +81,5 @@ export const throwDices = (dices: DiceRequest[]): DiceResult[] => {
 
   return resultsThrows;
 };
+
+export const degToRad = (degrees: number): number => degrees * (Math.PI / 180);

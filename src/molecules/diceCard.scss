@@ -8,15 +8,27 @@
   box-sizing: border-box;
   display: flex;
   justify-content: center;
+  opacity: 0;
   position: relative;
+  transform: translate3d(0, 10rem, 0);
+  transition:
+    transform 0.5s ease-out,
+    opacity 0.5s ease,
+    background-color 1s ease,
+    border 1s ease,
+    box-shadow 1s ease;
+  user-select: none;
 
   &__dice-bg {
     fill: var(--primary-20);
-    filter: drop-shadow(0 0 4px var(--primary));
+    filter: drop-shadow(0 0 4px var(--primary-40));
     left: 50%;
     position: absolute;
     top: 50%;
     transform: translate3d(-50%, -50%, 0);
+    transition:
+      fill 1s ease,
+      filter 1s ease;
     width: 16rem;
     z-index: 0;
   }
@@ -29,6 +41,7 @@
     margin-right: -2rem;
     position: relative;
     text-shadow: 0 0 1rem var(--tertiary-20);
+    transition: text-shadow 1s ease;
     z-index: 1;
   }
 
@@ -36,7 +49,7 @@
 
   &--small {
     height: 18rem;
-    width: 13rem;
+    width: 11rem;
 
     .dice-card {
       &__dice-bg {
@@ -53,7 +66,7 @@
 
   &--medium {
     height: 25rem;
-    width: 18rem;
+    width: 16rem;
 
     .dice-card {
       &__dice-bg {
@@ -68,9 +81,9 @@
     }
   }
 
-  &--single {
+  &--large {
     height: 30rem;
-    width: 22rem;
+    width: 20rem;
 
     .dice-card {
       &__dice-bg {
@@ -78,9 +91,92 @@
       }
 
       &__value {
-        font-size: 16rem;
+        font-size: 15rem;
         letter-spacing: 2rem;
         margin-right: -2rem;
+      }
+    }
+  }
+
+  &--single {
+    height: 50rem;
+    width: 32rem;
+
+    .dice-card {
+      &__dice-bg {
+        width: 30rem;
+      }
+
+      &__value {
+        font-size: 25rem;
+        letter-spacing: 3rem;
+        margin-right: -3rem;
+      }
+    }
+  }
+
+  // States ------------------------------------
+
+  &--visible {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    transition:
+      transform 2s ease-out,
+      opacity 2s ease;
+  }
+
+  &--max,
+  &--fumble {
+    transition:
+      transform 2s ease-out,
+      opacity 2s ease,
+      background-color 1s ease-out 1s,
+      border 1s ease-out 1s,
+      box-shadow 1s ease-out 1s;
+
+    .dice-card {
+      &__dice-bg {
+        transition:
+          fill 1s ease-out 1s,
+          filter 1s ease-out 1s;
+      }
+
+      &__value {
+        transition: text-shadow 1s ease-out 1s;
+      }
+    }
+  }
+
+  &--max {
+    background-color: var(--primary-00);
+    border: 1px solid var(--tertiary);
+    box-shadow: 0 0 2rem var(--tertiary-60);
+
+    .dice-card {
+      &__dice-bg {
+        fill: var(--tertiary-60);
+        filter: drop-shadow(0 0 4px var(--tertiary-40));
+      }
+
+      &__value {
+        text-shadow: 0 0 3rem var(--tertiary-80);
+      }
+    }
+  }
+
+  &--fumble {
+    background-color: var(--error-10);
+    border: 1px solid var(--error);
+    box-shadow: 0 0 0 var(--error-60);
+
+    .dice-card {
+      &__dice-bg {
+        fill: var(--error-60);
+        filter: drop-shadow(0 0 4px var(--error-40));
+      }
+
+      &__value {
+        text-shadow: 0 0 1rem var(--error-00);
       }
     }
   }
