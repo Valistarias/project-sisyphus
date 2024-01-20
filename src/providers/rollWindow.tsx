@@ -163,12 +163,12 @@ export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) =>
     }
     const dataDices = calculateDices(rollResults.current);
 
-    console.log('dataDices', dataDices);
-
     return (
       <div className="roll-window__window__results">
         <div className="roll-window__window__results__total">
-          <Ap className="roll-window__window__results__title">Total</Ap>
+          <Ap className="roll-window__window__results__title">
+            {t('rollWindow.total', { ns: 'components' })}
+          </Ap>
           <Ap className="roll-window__window__results__value">{dataDices.total.toString()}</Ap>
         </div>
         {dataDices.best != null && dataDices.worst != null ? (
@@ -176,11 +176,15 @@ export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) =>
             <div className="roll-window__window__results__line" />
             <div className="roll-window__window__results__info">
               <div className="roll-window__window__results__info__block">
-                <Ap className="roll-window__window__results__title">Best</Ap>
+                <Ap className="roll-window__window__results__title">
+                  {t('rollWindow.best', { ns: 'components' })}
+                </Ap>
                 <Ap className="roll-window__window__results__value">{dataDices.best.toString()}</Ap>
               </div>
               <div className="roll-window__window__results__info__block">
-                <Ap className="roll-window__window__results__title">Worst</Ap>
+                <Ap className="roll-window__window__results__title">
+                  {t('rollWindow.worst', { ns: 'components' })}
+                </Ap>
                 <Ap className="roll-window__window__results__value">
                   {dataDices.worst.toString()}
                 </Ap>
@@ -190,7 +194,7 @@ export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) =>
         ) : null}
       </div>
     );
-  }, [diceCards]);
+  }, [diceCards, t]);
 
   useEffect(() => {
     if (dicesToRoll !== null) {
@@ -265,7 +269,7 @@ export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) =>
             onClick={closeWindow}
             disabled={!isRollFinished}
           >
-            Close
+            {t('rollWindow.close', { ns: 'components' })}
           </Button>
         </div>
       </div>

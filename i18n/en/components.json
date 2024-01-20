@@ -47,6 +47,12 @@
     "close": "Close",
     "dices": "Dices"
   },
+  "rollWindow": {
+    "total": "Total",
+    "best": "Best",
+    "worst": "Worst",
+    "close": "Close"
+  },
   "smartselect": {
     "placeholder": "Select one...",
     "notfound": "No field found"
