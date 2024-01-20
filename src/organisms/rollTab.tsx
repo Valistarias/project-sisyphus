@@ -44,7 +44,7 @@ const initRollTab: DiceRequest[] = [
 const RollTab: FC<IRollTab> = ({ onRollDices }) => {
   const { t } = useTranslation();
 
-  const [isOpen, setOpen] = useState(true);
+  const [isOpen, setOpen] = useState(false);
 
   const [diceValues, setDiceValues] = useState<DiceRequest[]>(initRollTab);
 
