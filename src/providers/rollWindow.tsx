@@ -10,17 +10,21 @@ import React, {
 
 import { useTranslation } from 'react-i18next';
 
-import { DiceCard } from '../molecules';
+import { Ap } from '../atoms';
+import { Button, DiceCard } from '../molecules';
 
 import { type typeDice } from '../interfaces';
 
-import { classTrim, throwDices, type DiceRequest } from '../utils';
+import { calculateDices, classTrim, throwDices, type DiceRequest, type DiceResult } from '../utils';
 
 import './rollWindow.scss';
 
 interface IRollWindowContext {
   /** The function to send all the data to the confirm message element */
   setDicesToRoll: (dices: DiceRequest[]) => void;
+  /** The event system linked to the confirm popup */
+  addRollEventListener: (id: string, cb: (data: any) => void) => void;
+  removeRollEventListener: (id: string, cb: (data: any) => void) => void;
 }
 
 interface RollWindowProviderProps {
@@ -39,17 +43,37 @@ interface DiceData {
   def: number;
 }
 
+function Emitter(): void {
+  const eventTarget = document.createDocumentFragment();
+
+  function delegate(method: string): void {
+    this[method] = eventTarget[method].bind(eventTarget);
+  }
+
+  Emitter.methods.forEach(delegate, this);
+}
+
+function RollEventEmitter(): void {
+  Emitter.call(this);
+}
+
+Emitter.methods = ['addEventListener', 'dispatchEvent', 'removeEventListener'];
+
 const RollWindowContext = React.createContext<IRollWindowContext | null>(null);
 
 export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) => {
   const { t } = useTranslation();
+  const RollEvent = useMemo(() => new RollEventEmitter(), []);
 
   const [dicesToRoll, setDicesToRoll] = useState<DiceRequest[] | null>(null);
-  const [isWindowOpened, setWindowOpened] = useState<boolean>(false);
 
-  const [diceValues, setDiceValue] = useState<DiceData[]>([]);
+  const [isWindowOpened, setWindowOpened] = useState<boolean>(false);
+  const [isRollFinished, setRollFinished] = useState<boolean>(false);
+  const [diceValues, setDiceValues] = useState<DiceData[]>([]);
 
   const intervalEvt = useRef<NodeJS.Timeout | null>(null);
+  const endRollEvt = useRef<NodeJS.Timeout | null>(null);
+  const rollResults = useRef<DiceResult[] | null>(null);
   const tick = useRef<number>(0);
 
   const cardMode = useMemo(() => {
@@ -60,7 +84,7 @@ export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) =>
     if (diceCount === 1) {
       return 'single';
     }
-    if (diceCount === 2) {
+    if (diceCount <= 3) {
       return 'large';
     }
     if (diceCount <= 6) {
@@ -79,21 +103,30 @@ export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) =>
   }, [diceValues, cardMode]);
 
   const closeWindow = useCallback(() => {
-    setWindowOpened(false);
-    tick.current = 0;
-    if (intervalEvt.current !== null) {
-      clearTimeout(intervalEvt.current);
+    if (isRollFinished) {
+      setWindowOpened(false);
+      tick.current = 0;
+      if (intervalEvt.current !== null) {
+        clearTimeout(intervalEvt.current);
+        intervalEvt.current = null;
+      }
+      if (endRollEvt.current !== null) {
+        clearTimeout(endRollEvt.current);
+        endRollEvt.current = null;
+      }
+      setTimeout(() => {
+        setDiceValues([]);
+      }, 300);
     }
-    setTimeout(() => {
-      setDiceValue([]);
-    }, 1000);
-  }, []);
+  }, [isRollFinished]);
 
-  const providerValues = useMemo(
+  const providerValues = useMemo<IRollWindowContext>(
     () => ({
       setDicesToRoll,
+      addRollEventListener: RollEvent.addEventListener,
+      removeRollEventListener: RollEvent.removeEventListener,
     }),
-    [setDicesToRoll]
+    [setDicesToRoll, RollEvent]
   );
 
   const affectDiceValueAtIndex = useCallback((curatedDices: DiceData[], index: number) => {
@@ -103,19 +136,71 @@ export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) =>
         value: indexTab <= tick.current ? curatedDice.def : null,
       };
     });
-    setDiceValue([...newCuratedDices]);
-
+    setDiceValues([...newCuratedDices]);
     tick.current += 1;
-    if (curatedDices.length === tick.current && intervalEvt.current !== null) {
-      clearTimeout(intervalEvt.current);
-      tick.current = 0;
-    }
   }, []);
+
+  const endRollTriggerEvent = useCallback(() => {
+    endRollEvt.current = setTimeout(() => {
+      if (endRollEvt.current !== null) {
+        clearTimeout(endRollEvt.current);
+        endRollEvt.current = null;
+        setRollFinished(true);
+        RollEvent.dispatchEvent(
+          new CustomEvent('endroll', {
+            detail: {
+              stats: rollResults.current,
+            },
+          })
+        );
+      }
+    }, 2000);
+  }, [RollEvent, rollResults]);
+
+  const totalDom = useMemo(() => {
+    if (diceCards == null || diceCards.length === 1 || rollResults.current === null) {
+      return null;
+    }
+    const dataDices = calculateDices(rollResults.current);
+
+    return (
+      <div className="roll-window__window__results">
+        <div className="roll-window__window__results__total">
+          <Ap className="roll-window__window__results__title">Total</Ap>
+          <Ap className="roll-window__window__results__value">{dataDices.total.toString()}</Ap>
+        </div>
+        {dataDices.best != null && dataDices.worst != null ? (
+          <>
+            <div className="roll-window__window__results__line" />
+            <div className="roll-window__window__results__info">
+              <div className="roll-window__window__results__info__block">
+                <Ap className="roll-window__window__results__title">Best</Ap>
+                <Ap className="roll-window__window__results__value">{dataDices.best.toString()}</Ap>
+              </div>
+              <div className="roll-window__window__results__info__block">
+                <Ap className="roll-window__window__results__title">Worst</Ap>
+                <Ap className="roll-window__window__results__value">
+                  {dataDices.worst.toString()}
+                </Ap>
+              </div>
+            </div>
+          </>
+        ) : null}
+      </div>
+    );
+  }, [diceCards]);
 
   useEffect(() => {
     if (dicesToRoll !== null) {
+      // Init
       setWindowOpened(true);
+      setRollFinished(false);
+      tick.current = 0;
+      rollResults.current = null;
+      // Rolling dices
       const totalResult = throwDices(dicesToRoll);
+      rollResults.current = totalResult;
+      // Curating Results and initialize diceValues
       const curatedDices: DiceData[] = [];
       totalResult.forEach((typeDiceRes) => {
         typeDiceRes.results.forEach((diceRes, index) => {
@@ -127,27 +212,32 @@ export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) =>
           });
         });
       });
-      setDiceValue(curatedDices);
+      setDiceValues(curatedDices);
       // Adding timing here, for beauty purposes
       setTimeout(() => {
+        // Affect Dice value instantly, then each timeout event
+        // as long as necessary
         affectDiceValueAtIndex(curatedDices, 0);
         if (curatedDices.length > 1) {
           intervalEvt.current = setInterval(
             () => {
               affectDiceValueAtIndex(curatedDices, tick.current);
-
-              tick.current += 1;
-              if (curatedDices.length === tick.current && intervalEvt.current !== null) {
+              if (curatedDices.length <= tick.current && intervalEvt.current !== null) {
                 clearTimeout(intervalEvt.current);
                 tick.current = 0;
+                // Last timeout based on animation duration on css
+                endRollTriggerEvent();
               }
             },
             1000 / (curatedDices.length / 2)
           );
+        } else {
+          // Last timeout based on animation duration on css
+          endRollTriggerEvent();
         }
       }, 100);
     }
-  }, [dicesToRoll, affectDiceValueAtIndex]);
+  }, [dicesToRoll, affectDiceValueAtIndex, endRollTriggerEvent]);
 
   return (
     <RollWindowContext.Provider value={providerValues}>
@@ -155,10 +245,27 @@ export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) =>
         className={classTrim(`
           roll-window
             ${isWindowOpened ? 'roll-window--open' : ''}
+            ${isRollFinished ? 'roll-window--end' : ''}
+            roll-window--card-${cardMode}
+            ${diceValues.length > 15 ? 'roll-window--safe-mode' : ''}
           `)}
       >
         <div className="roll-window__shadow" onClick={closeWindow} />
-        <div className="roll-window__window">{diceCards}</div>
+        <div className="roll-window__window">
+          <div className="roll-window__window__content">
+            <div className="roll-window__window__values">{diceCards}</div>
+            {totalDom}
+          </div>
+          <Button
+            className="roll-window__window__close"
+            size="large"
+            theme="afterglow"
+            onClick={closeWindow}
+            disabled={!isRollFinished}
+          >
+            Close
+          </Button>
+        </div>
       </div>
       {children}
     </RollWindowContext.Provider>

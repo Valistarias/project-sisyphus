@@ -1,5 +1,7 @@
 import { type typeDice } from './interfaces';
 
+export const degToRad = (degrees: number): number => degrees * (Math.PI / 180);
+
 export const fullTrim = (elt: string): string => elt.replace(/\s+/g, ' ').trim();
 
 export const classTrim = (elt: string): string => fullTrim(elt.replace(/\n {2,}/g, ' '));
@@ -33,7 +35,7 @@ export interface DiceRequest {
   type: typeDice;
 }
 
-interface DiceResult {
+export interface DiceResult {
   /** The type of dice (as in the number of sides on the dice) */
   type: typeDice;
   /** All the results, in an array */
@@ -46,6 +48,15 @@ interface DiceResult {
   worst: number;
   /** The average value on the throws on this type */
   average: number;
+}
+
+interface TotalResult {
+  /** All the results, summed up */
+  total: number;
+  /** The best throw on this type */
+  best?: number;
+  /** The worst throw on this type */
+  worst?: number;
 }
 
 export const throwDices = (dices: DiceRequest[]): DiceResult[] => {
@@ -82,4 +93,26 @@ export const throwDices = (dices: DiceRequest[]): DiceResult[] => {
   return resultsThrows;
 };
 
-export const degToRad = (degrees: number): number => degrees * (Math.PI / 180);
+export const calculateDices = (diceGroups: DiceResult[]): TotalResult => {
+  let total = 0;
+  let optionnalParams: Pick<DiceResult, 'best' | 'worst'> | null = null;
+  let canUseOptionnal = false;
+  diceGroups.forEach(({ results, best, worst, total: totalDice }) => {
+    if (results.length > 0) {
+      total += totalDice;
+      if (optionnalParams === null) {
+        optionnalParams = {
+          best,
+          worst,
+        };
+        canUseOptionnal = true;
+      } else if (canUseOptionnal) {
+        canUseOptionnal = false;
+      }
+    }
+  });
+  return {
+    total,
+    ...(optionnalParams ?? {}),
+  };
+};

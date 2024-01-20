@@ -1,10 +1,10 @@
 .roll-window {
   height: 100%;
-  left: 0;
+  left: var(--header-width);
   pointer-events: none;
   position: absolute;
   top: 0;
-  width: 100%;
+  width: calc(100% - var(--header-width));
   z-index: 2;
 
   &__shadow {
@@ -20,42 +20,176 @@
   }
 
   &__window {
-    background: var(--background-color);
-    border: 1px solid var(--primary);
-    border-radius: 0.3rem;
+    align-items: center;
     display: flex;
-    flex-wrap: wrap;
-    gap: 4rem;
-    justify-content: flex-start;
+    flex-direction: column;
+    gap: 3rem;
+    height: 100%;
+    justify-content: space-evenly;
     left: 50%;
-    max-width: 80rem;
     opacity: 0;
-    padding: 4rem;
+    padding: 2rem;
     position: absolute;
     top: 50%;
     transform: translate3d(-50%, -50%, 0);
     transition: opacity 0.2s ease;
-    width: calc(100% - 4rem);
+    width: 100%;
     z-index: 1;
 
-    &__buttons {
+    &__close {
+      opacity: 0;
+      transition: opacity 0.4s ease 0.5s;
+    }
+
+    &__content {
+      align-items: center;
       display: flex;
+      gap: 5rem;
+    }
+
+    &__values {
+      align-items: center;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
       gap: 4rem;
-      justify-content: flex-start;
-      margin-top: 4rem;
+      justify-content: center;
+      max-height: 80vh;
+      max-width: 80rem;
+      overflow-x: none;
+      overflow-y: none;
+      padding: 3rem;
+    }
+
+    &__results {
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      padding: 4rem;
+      position: relative;
+      transition: opacity 0.4s ease;
+
+      &::before {
+        background: var(--background-color);
+        content: '';
+        height: 100%;
+        left: 0;
+        opacity: 0.9;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        z-index: -1;
+      }
+
+      &__line {
+        background: var(--tertiary);
+        height: 1px;
+        margin-bottom: 3rem;
+        margin-top: 1rem;
+        opacity: 0;
+        transition: opacity 0.4s ease 0.5s;
+        width: 100%;
+      }
+
+      &__title {
+        font-size: 2rem;
+        font-weight: 100;
+        letter-spacing: 1.5rem;
+        margin-right: -1.5rem;
+        text-transform: uppercase;
+      }
+
+      &__value {
+        font-family: var(--mono-font);
+        font-size: 10rem;
+        font-weight: 300;
+      }
+
+      &__info {
+        align-items: center;
+        display: flex;
+        gap: 4rem;
+        opacity: 0;
+        transition: opacity 0.4s ease 1s;
+
+        .roll-window {
+          &__window__results__title {
+            font-size: 1.4rem;
+            margin-right: -1rem;
+          }
+
+          &__window__results__value {
+            font-size: 6rem;
+          }
+        }
+      }
+
+      &__info__block,
+      &__total {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+      }
     }
   }
+
+  // Changes ------------------------------------------------
+
+  &--card-small {
+    .roll-window__window {
+      &__values {
+        gap: 1rem;
+        max-width: 70rem;
+      }
+    }
+  }
+
+  // States ------------------------------------------------
 
   &--open {
     pointer-events: all;
 
     .roll-window__shadow {
-      opacity: 0.6;
+      opacity: 0.9;
       transition: opacity 1s ease;
     }
 
     .roll-window__window {
       opacity: 1;
+    }
+  }
+
+  &--safe-mode.roll-window--open {
+    .roll-window__window {
+      &__values {
+        overflow-x: hidden;
+        overflow-y: hidden;
+      }
+    }
+  }
+
+  &--end.roll-window--open {
+    .roll-window__window {
+      &__values {
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
+      &__results {
+        opacity: 1;
+
+        &__line {
+          opacity: 1;
+        }
+
+        &__info {
+          opacity: 1;
+        }
+      }
+
+      &__close {
+        opacity: 1;
+      }
     }
   }
 }

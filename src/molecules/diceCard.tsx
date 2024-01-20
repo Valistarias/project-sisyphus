@@ -80,7 +80,7 @@ const DiceCard: FC<IDiceCard> = ({ type, value, size = 'medium', skip = false })
       dice-card
       dice-card--${size}
       ${value !== null ? 'dice-card--visible' : ''}
-      ${value === 1 && type > 8 ? 'dice-card--fumble' : ''}
+      ${value === 1 && type > 4 ? 'dice-card--fumble' : ''}
       ${value === type ? 'dice-card--max' : ''}
     `)}
       style={{ backgroundImage: `url(${holoBackground})` }}

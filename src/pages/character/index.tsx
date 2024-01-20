@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, type FC } from 'react';
+import React, { useCallback, useEffect, useRef, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
@@ -18,13 +18,18 @@ const Character: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { id } = useParams();
-  const { setDicesToRoll } = useRollWindow();
+  const { setDicesToRoll, addRollEventListener, removeRollEventListener } = useRollWindow();
 
   const [character, setCharacter] = useState<ICharacter | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
   const calledApi = useRef(false);
+  const initEvt = useRef(false);
+
+  const endRollEvent = useCallback(({ detail }) => {
+    console.log('Roll event dispatched', detail);
+  }, []);
 
   useEffect(() => {
     if (api !== undefined && !calledApi.current && id !== undefined) {
@@ -60,6 +65,17 @@ const Character: FC = () => {
         });
     }
   }, [api, createAlert, getNewId, t, id]);
+
+  useEffect(() => {
+    if (!initEvt.current) {
+      initEvt.current = true;
+      addRollEventListener?.('endroll', endRollEvent);
+    }
+
+    return () => {
+      removeRollEventListener?.('endroll', endRollEvent);
+    };
+  }, [addRollEventListener, removeRollEventListener, endRollEvent]);
 
   if (loading) {
     return null;

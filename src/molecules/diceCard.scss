@@ -48,16 +48,16 @@
   // Sizes ------------------------------------
 
   &--small {
-    height: 18rem;
-    width: 11rem;
+    height: 16rem;
+    width: 10rem;
 
     .dice-card {
       &__dice-bg {
-        width: 12rem;
+        width: 11rem;
       }
 
       &__value {
-        font-size: 8rem;
+        font-size: 7rem;
         letter-spacing: 1rem;
         margin-right: -1rem;
       }
@@ -99,8 +99,8 @@
   }
 
   &--single {
-    height: 50rem;
-    width: 32rem;
+    height: 44rem;
+    width: 28rem;
 
     .dice-card {
       &__dice-bg {
@@ -108,9 +108,9 @@
       }
 
       &__value {
-        font-size: 25rem;
-        letter-spacing: 3rem;
-        margin-right: -3rem;
+        font-size: 20rem;
+        letter-spacing: 2rem;
+        margin-right: -2rem;
       }
     }
   }
