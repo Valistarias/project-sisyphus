@@ -113,6 +113,6 @@ export const calculateDices = (diceGroups: DiceResult[]): TotalResult => {
   });
   return {
     total,
-    ...(optionnalParams ?? {}),
+    ...(optionnalParams != null && canUseOptionnal ? optionnalParams : {}),
   };
 };

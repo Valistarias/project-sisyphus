@@ -61,15 +61,23 @@
       overflow-x: none;
       overflow-y: none;
       padding: 3rem;
+      pointer-events: all;
     }
 
     &__results {
+      background-color: var(--primary-05);
+      border: 1px solid var(--primary);
+      box-shadow: 0 0 2rem var(--primary-10);
+      box-sizing: border-box;
       display: flex;
       flex-direction: column;
       opacity: 0;
       padding: 4rem;
       position: relative;
-      transition: opacity 0.4s ease;
+      transform: scale3d(1, 0, 1) skew(20deg, 10deg);
+      transition:
+        transform 0.5s ease-out,
+        opacity 0.01s ease;
 
       &::before {
         background: var(--background-color);
@@ -88,8 +96,6 @@
         height: 1px;
         margin-bottom: 3rem;
         margin-top: 1rem;
-        opacity: 0;
-        transition: opacity 0.4s ease 0.5s;
         width: 100%;
       }
 
@@ -111,8 +117,6 @@
         align-items: center;
         display: flex;
         gap: 4rem;
-        opacity: 0;
-        transition: opacity 0.4s ease 1s;
 
         .roll-window {
           &__window__results__title {
@@ -179,14 +183,18 @@
 
       &__results {
         opacity: 1;
+        transform: scale3d(1, 1, 1) skew(0deg, 0deg);
+        transition:
+          transform 0.2s cubic-bezier(0.2, 0.99, 0.65, 1.17),
+          opacity 0.1s ease;
 
-        &__line {
-          opacity: 1;
-        }
+        // &__line {
+        //   opacity: 1;
+        // }
 
-        &__info {
-          opacity: 1;
-        }
+        // &__info {
+        //   opacity: 1;
+        // }
       }
 
       &__close {

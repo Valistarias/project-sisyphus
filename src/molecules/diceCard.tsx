@@ -20,42 +20,74 @@ interface IDiceCard {
   skip?: boolean;
 }
 
-// const totalTicks = 500;
+// Animation numbers -------------------------------------
+// Number of ticks before the animation finishes
+const totalTicks = 300;
+// The duration of a tick, in milliseconds
+const tickDuration = 1;
+// How many random numbers are displayed in the available time
+const displayedRandNumber = 10;
+
+// Degree values for cosine curve (DO NOT TOUCH)
+const _beginAnimDegree = -90;
+const _endAnimDegree = 0;
+const _totalStepAnim = _endAnimDegree - _beginAnimDegree;
+const _singleStepAnim = _totalStepAnim / totalTicks;
+
+// Score to attain for new random number displayed
+const randNumberTreshold = 1 / displayedRandNumber;
+// -------------------------------------------------------
 
 const DiceCard: FC<IDiceCard> = ({ type, value, size = 'medium', skip = false }) => {
   const [displayedValue, setDisplayedValue] = useState(0);
+  const [animEnded, setAnimEnded] = useState(false);
 
   const intervalTick = useRef<NodeJS.Timeout | null>(null);
-  const totalTicks = useRef<number>(0);
   const tick = useRef<number>(0);
+  const storedThreshold = useRef<number>(0);
 
   useEffect(() => {
     if (value != null) {
       setDisplayedValue(0);
-      totalTicks.current = value * 5;
-      const begin = -90;
-      const end = 0;
-      const totalSteps = end - begin;
-      const singleStep = totalSteps / totalTicks.current;
 
       intervalTick.current = setInterval(() => {
+        const previousTick = tick.current;
         tick.current += 1;
-        const actualStep = singleStep * tick.current;
-        const actualDeg = Math.cos(degToRad(begin + actualStep));
-        setDisplayedValue(Math.floor(actualDeg * value));
-        if (tick.current >= totalTicks.current && intervalTick.current !== null) {
+
+        const actualStep = _singleStepAnim * tick.current;
+        const actualDeg = Math.cos(degToRad(_beginAnimDegree + actualStep));
+
+        const previousStep = _singleStepAnim * previousTick;
+        const previousDeg = Math.cos(degToRad(_beginAnimDegree + previousStep));
+
+        const delta = actualDeg - previousDeg;
+
+        // Animate a number
+        if (storedThreshold.current + delta >= randNumberTreshold || actualDeg === 1) {
+          storedThreshold.current = 0;
+          // console.log('actualDeg', actualDeg);
+          if (actualDeg === 1) {
+            setDisplayedValue(value);
+          } else {
+            setDisplayedValue(Math.floor(Math.random() * type) + 1);
+          }
+        } else {
+          storedThreshold.current += delta;
+        }
+        if (tick.current >= totalTicks && intervalTick.current !== null) {
+          setAnimEnded(true);
           clearTimeout(intervalTick.current);
         }
-      }, 400 / value);
+      }, tickDuration);
     } else {
       if (intervalTick.current !== null) {
         clearTimeout(intervalTick.current);
         intervalTick.current = null;
       }
-      totalTicks.current = 0;
       tick.current = 0;
+      storedThreshold.current = 0;
     }
-  }, [value]);
+  }, [value, type]);
 
   useEffect(() => {
     if (skip && intervalTick.current !== null) {
@@ -69,8 +101,8 @@ const DiceCard: FC<IDiceCard> = ({ type, value, size = 'medium', skip = false })
         clearTimeout(intervalTick.current);
         intervalTick.current = null;
       }
-      totalTicks.current = 0;
       tick.current = 0;
+      storedThreshold.current = 0;
     };
   }, []);
 
@@ -79,6 +111,7 @@ const DiceCard: FC<IDiceCard> = ({ type, value, size = 'medium', skip = false })
       className={classTrim(`
       dice-card
       dice-card--${size}
+      ${animEnded ? 'dice-card--end' : ''}
       ${value !== null ? 'dice-card--visible' : ''}
       ${value === 1 && type > 4 ? 'dice-card--fumble' : ''}
       ${value === type ? 'dice-card--max' : ''}

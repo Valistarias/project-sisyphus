@@ -154,7 +154,7 @@ export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) =>
           })
         );
       }
-    }, 2000);
+    }, 1500);
   }, [RollEvent, rollResults]);
 
   const totalDom = useMemo(() => {
@@ -162,6 +162,8 @@ export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) =>
       return null;
     }
     const dataDices = calculateDices(rollResults.current);
+
+    console.log('dataDices', dataDices);
 
     return (
       <div className="roll-window__window__results">
@@ -229,7 +231,7 @@ export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) =>
                 endRollTriggerEvent();
               }
             },
-            1000 / (curatedDices.length / 2)
+            500 / (curatedDices.length / 2)
           );
         } else {
           // Last timeout based on animation duration on css
