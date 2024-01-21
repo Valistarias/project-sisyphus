@@ -1,0 +1,13 @@
+{
+  "depcheck": {
+    "ignoreMatches": [
+      "@vitejs/plugin-react",
+      "eslint-plugin-react-refresh",
+      "prettier",
+      "stylelint",
+      "stylelint-config-sass-guidelines",
+      "stylelint-order",
+      "vite-plugin-svgr"
+    ]
+  }
+}
