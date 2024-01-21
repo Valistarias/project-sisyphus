@@ -2,7 +2,7 @@
 import express, { type Request, type Response } from 'express';
 import mongoose from 'mongoose';
 
-import path from 'path';
+import http from 'http';
 
 import bodyParser from 'body-parser';
 import cookieSession from 'cookie-session';
@@ -10,6 +10,8 @@ import cors from 'cors';
 import * as dotenv from 'dotenv';
 import formData from 'form-data';
 import Mailgun from 'mailgun.js';
+import { Server } from 'socket.io';
+import ViteExpress from 'vite-express';
 
 import DBConfig from './config/db.config';
 import { verifyTokenSingIn } from './entities/auth/controller';
@@ -32,6 +34,8 @@ import { gemInvalidField } from './utils/globalErrorMessage';
 dotenv.config();
 
 export const app = express();
+const serverApp = http.createServer(app);
+const io = new Server(serverApp);
 
 // Env vars
 const port = process.env.PORT ?? 3000;
@@ -138,42 +142,45 @@ app.get('/*', (req: Request, res: Response, next: () => void) => {
 });
 // ----------------------------------------------------------------------------------------
 
-app.get('/subscribe', (req, res) => {
-  res.writeHead(200, {
-    'Content-Type': 'text/event-stream',
-    Connection: 'keep-alive',
-    'Cache-Control': 'no-cache',
-  });
+// app.get('/subscribe', (req, res) => {
+//   res.writeHead(200, {
+//     'Content-Type': 'text/event-stream',
+//     Connection: 'keep-alive',
+//     'Cache-Control': 'no-cache',
+//   });
 
-  let counter = 0;
+//   let counter = 0;
 
-  // Send a message on connection
-  res.write('event: connected\n');
-  res.write(`data: You are now subscribed!\n`);
-  res.write(`id: ${counter}\n\n`);
-  counter += 1;
+//   // Send a message on connection
+//   res.write('event: connected\n');
+//   res.write(`data: You are now subscribed!\n`);
+//   res.write(`id: ${counter}\n\n`);
+//   counter += 1;
 
-  // Send a subsequent message every five seconds
-  setInterval(() => {
-    res.write('event: message\n');
-    res.write(`data: ${new Date().toLocaleString()}\n`);
-    res.write(`id: ${counter}\n\n`);
-    counter += 1;
-  }, 5000);
+//   // Send a subsequent message every five seconds
+//   setInterval(() => {
+//     res.write('event: message\n');
+//     res.write(`data: ${new Date().toLocaleString()}\n`);
+//     res.write(`id: ${counter}\n\n`);
+//     counter += 1;
+//   }, 5000);
 
-  // Close the connection when the client disconnects
-  req.on('close', () => res.end('OK'));
-});
+//   // Close the connection when the client disconnects
+//   req.on('close', () => res.end('OK'));
+// });
 
 // Build params ---------------------------------------------------------------------------
-if (process.env.VITE !== 'true') {
-  const frontendFiles = __dirname;
-  app.use(express.static(frontendFiles));
-  app.get('/*', (_, res) => {
-    res.sendFile(path.join(frontendFiles, 'index.html'));
-  });
-  app.listen(port, () => {
-    console.log(`running server on from port:${port}`);
-  });
-}
+// if (process.env.VITE !== 'true') {
+//   const frontendFiles = __dirname;
+//   app.use(express.static(frontendFiles));
+//   app.get('/*', (_, res) => {
+//     res.sendFile(path.join(frontendFiles, 'index.html'));
+//   });
+//   serverApp.listen(port, () => {
+//     console.log(`running server on from port:${port}`);
+//   });
+// }
+ViteExpress.listen(app, 3000, () => {
+  console.log('Server is listening on port 3000...');
+});
 // ----------------------------------------------------------------------------------------

@@ -33,6 +33,8 @@ import {
   SignupPage,
 } from './pages';
 
+// import { socket } from '../socket';
+
 import arrowBackground from './assets/imgs/arrowbg.png';
 import mainBackground from './assets/imgs/twinkle.png';
 import { HeaderBar } from './organisms';
@@ -168,6 +170,18 @@ const App: FC = () => {
       ]),
     []
   );
+
+  // useEffect(() => {
+  //   socket.on('connect', () => {
+  //     console.log('connected');
+  //   });
+
+  //   return () => {
+  //     socket.off('connect', () => {
+  //       console.log('disconnected');
+  //     });
+  //   };
+  // }, []);
 
   return (
     <div
