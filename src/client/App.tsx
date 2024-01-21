@@ -1,6 +1,7 @@
-import React, { useMemo, type FC } from 'react';
+import React, { useEffect, useMemo, type FC } from 'react';
 
 import { Outlet, RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { io } from 'socket.io-client';
 
 import { useGlobalVars } from './providers';
 
@@ -171,17 +172,19 @@ const App: FC = () => {
     []
   );
 
-  // useEffect(() => {
-  //   socket.on('connect', () => {
-  //     console.log('connected');
-  //   });
+  useEffect(() => {
+    const socket = io({ transports: ['websocket'] });
 
-  //   return () => {
-  //     socket.off('connect', () => {
-  //       console.log('disconnected');
-  //     });
-  //   };
-  // }, []);
+    socket.on('connect', () => {
+      console.log('connected');
+    });
+
+    return () => {
+      socket.off('connect', () => {
+        console.log('disconnected');
+      });
+    };
+  }, []);
 
   return (
     <div
