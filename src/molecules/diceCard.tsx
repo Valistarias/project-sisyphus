@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, type FC } from 'react';
+import React, { useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import holoBackground from '../assets/imgs/tvbg.gif';
 import { Aicon, Ap, type typeIcons } from '../atoms';
@@ -26,11 +26,11 @@ const totalTicks = 300;
 // The duration of a tick, in milliseconds
 const tickDuration = 1;
 // How many random numbers are displayed in the available time
-const displayedRandNumber = 10;
+const displayedRandNumber = 15;
 
 // Degree values for cosine curve (DO NOT TOUCH)
-const _beginAnimDegree = -90;
-const _endAnimDegree = 0;
+const _beginAnimDegree = 0;
+const _endAnimDegree = 90;
 const _totalStepAnim = _endAnimDegree - _beginAnimDegree;
 const _singleStepAnim = _totalStepAnim / totalTicks;
 
@@ -46,6 +46,19 @@ const DiceCard: FC<IDiceCard> = ({ type, value, size = 'medium', skip = false })
   const tick = useRef<number>(0);
   const storedThreshold = useRef<number>(0);
 
+  const displayedNumberString = useMemo(() => {
+    if (skip && value != null) {
+      if (type >= 10 && value < 10) {
+        return `0${value}`;
+      }
+      return value.toString();
+    }
+    if (type >= 20 && displayedValue < 10 && !animEnded) {
+      return `0${displayedValue}`;
+    }
+    return displayedValue.toString();
+  }, [displayedValue, skip, type, value, animEnded]);
+
   useEffect(() => {
     if (value != null) {
       setDisplayedValue(0);
@@ -55,10 +68,10 @@ const DiceCard: FC<IDiceCard> = ({ type, value, size = 'medium', skip = false })
         tick.current += 1;
 
         const actualStep = _singleStepAnim * tick.current;
-        const actualDeg = Math.cos(degToRad(_beginAnimDegree + actualStep));
+        const actualDeg = Math.sin(degToRad(_beginAnimDegree + actualStep));
 
         const previousStep = _singleStepAnim * previousTick;
-        const previousDeg = Math.cos(degToRad(_beginAnimDegree + previousStep));
+        const previousDeg = Math.sin(degToRad(_beginAnimDegree + previousStep));
 
         const delta = actualDeg - previousDeg;
 
@@ -119,9 +132,7 @@ const DiceCard: FC<IDiceCard> = ({ type, value, size = 'medium', skip = false })
       style={{ backgroundImage: `url(${holoBackground})` }}
     >
       <Aicon type={`d${type}` as typeIcons} className="dice-card__dice-bg" size="unsized" />
-      <Ap className="dice-card__value">
-        {skip && value != null ? value.toString() : displayedValue.toString()}
-      </Ap>
+      <Ap className="dice-card__value">{displayedNumberString}</Ap>
     </div>
   );
 };

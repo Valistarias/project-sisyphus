@@ -151,6 +151,16 @@
     }
   }
 
+  &--card-large,
+  &--card-single {
+    .roll-window__window {
+      &__values {
+        max-width: 85rem;
+        padding: 8rem;
+      }
+    }
+  }
+
   // States ------------------------------------------------
 
   &--open {
