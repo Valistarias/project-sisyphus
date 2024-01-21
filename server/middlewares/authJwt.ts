@@ -1,6 +1,6 @@
 import { type Request, type Response } from 'express';
 
-import jwt from 'jsonwebtoken';
+import jwt, { type GetPublicKeyOrSecret, type Secret } from 'jsonwebtoken';
 import { pathToRegexp } from 'path-to-regexp';
 
 import config from '../config/db.config';
@@ -63,6 +63,10 @@ const routes = [
     role: 'logged',
   },
   {
+    url: '/subscribe/:param*',
+    role: 'logged',
+  },
+  {
     url: '/admin/:param*',
     role: 'admin',
   },
@@ -83,35 +87,45 @@ const verifyToken = (
     return;
   }
 
-  jwt.verify(token, config.secret(process.env), (err, decoded) => {
-    if (err !== null) {
-      res.status(mute !== undefined ? 200 : 401).send(mute !== undefined ? {} : gemUnauthorized());
-      return;
+  jwt.verify(
+    token,
+    config.secret(process.env) as Secret | GetPublicKeyOrSecret,
+    (err, decoded: jwt.JwtPayload) => {
+      if (err !== null || decoded === undefined) {
+        res
+          .status(mute !== undefined ? 200 : 401)
+          .send(mute !== undefined ? {} : gemUnauthorized());
+        return;
+      }
+      req.userId = decoded.id as string;
+      next();
     }
-    req.userId = decoded.id;
-    next();
-  });
+  );
 };
 
 const getUserFromToken = async (req: IVerifyTokenRequest): Promise<HydratedIUser | null> =>
   await new Promise((resolve, reject) => {
     const { token } = req.session;
     if (token !== undefined) {
-      jwt.verify(token, config.secret(process.env), (err, decoded) => {
-        if (err !== null) {
-          reject(err);
+      jwt.verify(
+        token,
+        config.secret(process.env) as Secret | GetPublicKeyOrSecret,
+        (err, decoded: jwt.JwtPayload) => {
+          if (err !== null || decoded === undefined) {
+            reject(err);
+          }
+          findUserById(decoded.id as string)
+            .then((user) => {
+              if (user === undefined) {
+                reject(gemNotFound('User'));
+              }
+              resolve(user);
+            })
+            .catch((errFindUser) => {
+              reject(errFindUser);
+            });
         }
-        findUserById(decoded.id)
-          .then((user) => {
-            if (user === undefined) {
-              reject(gemNotFound('User'));
-            }
-            resolve(user);
-          })
-          .catch((errFindUser) => {
-            reject(errFindUser);
-          });
-      });
+      );
     } else {
       resolve(null);
     }
@@ -137,7 +151,7 @@ const isAdmin = async (req: Request): Promise<boolean> =>
   });
 
 const generateVerificationMailToken = (userId: string): string => {
-  const verificationToken = jwt.sign({ IdMail: userId }, config.secret(process.env), {
+  const verificationToken = jwt.sign({ IdMail: userId }, config.secret(process.env) as Secret, {
     expiresIn: '7d',
   });
   return verificationToken;
@@ -152,7 +166,7 @@ const adminNeeded = (req: Request, res: Response, next: () => void): void => {
         res.status(403).send(gemNotAdmin());
       }
     })
-    .catch((err) => res.status(500).send(gemServerError(err)));
+    .catch((err) => res.status(500).send(gemServerError(err as Error)));
 };
 
 const checkRouteRights = (req: Request, res: Response, next: () => void): void => {

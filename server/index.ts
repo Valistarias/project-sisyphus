@@ -28,11 +28,12 @@ import UserRoutes from './entities/user/routes';
 import { checkRouteRights } from './middlewares/authJwt';
 import { gemInvalidField } from './utils/globalErrorMessage';
 
+// Initialization -------------------------------------------------------------------
 dotenv.config();
 
 export const app = express();
-const apiRouter = express.Router();
 
+// Env vars
 const port = process.env.PORT ?? 3000;
 const mailgunApi = process.env.MAILGUN_API_KEY ?? '';
 const cookieSecret = process.env.COOKIE_SECRET;
@@ -60,7 +61,9 @@ app.use(
     httpOnly: true,
   })
 );
+// ----------------------------------------------------------------------------------------
 
+// Database Connection ---------------------------------------------------------------------
 mongoose
   .connect(DBConfig.url(process.env))
   .then(() => {
@@ -70,6 +73,8 @@ mongoose
     console.log('Cannot connect to the database!', err);
     process.exit();
   });
+
+const apiRouter = express.Router();
 
 // Global routes
 AuthRoutes(apiRouter, mg);
@@ -92,7 +97,10 @@ CharacterRoutes(apiRouter);
 
 // Global Router
 app.use('/api/', apiRouter);
+// ----------------------------------------------------------------------------------------
 
+// Automatic redirections ---------------------------------------------------------------------
+// (Neet to be elsewhere)
 app.get('/verify/:id', function (req: Request, res: Response) {
   const { id } = req.params;
   // Check we have an id
@@ -106,10 +114,6 @@ app.get('/verify/:id', function (req: Request, res: Response) {
     .catch(() => {
       res.redirect('/');
     });
-});
-
-app.get('/*', (req: Request, res: Response, next: () => void) => {
-  checkRouteRights(req, res, next);
 });
 
 app.get('/reset/password/:userId/:token', function (req: Request, res: Response, next: () => void) {
@@ -126,7 +130,42 @@ app.get('/reset/password/:userId/:token', function (req: Request, res: Response,
       res.redirect('/');
     });
 });
+// ----------------------------------------------------------------------------------------
 
+// Checking user rights to open specific routes -------------------------------------------
+app.get('/*', (req: Request, res: Response, next: () => void) => {
+  checkRouteRights(req, res, next);
+});
+// ----------------------------------------------------------------------------------------
+
+app.get('/subscribe', (req, res) => {
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    Connection: 'keep-alive',
+    'Cache-Control': 'no-cache',
+  });
+
+  let counter = 0;
+
+  // Send a message on connection
+  res.write('event: connected\n');
+  res.write(`data: You are now subscribed!\n`);
+  res.write(`id: ${counter}\n\n`);
+  counter += 1;
+
+  // Send a subsequent message every five seconds
+  setInterval(() => {
+    res.write('event: message\n');
+    res.write(`data: ${new Date().toLocaleString()}\n`);
+    res.write(`id: ${counter}\n\n`);
+    counter += 1;
+  }, 5000);
+
+  // Close the connection when the client disconnects
+  req.on('close', () => res.end('OK'));
+});
+
+// Build params ---------------------------------------------------------------------------
 if (process.env.VITE !== 'true') {
   const frontendFiles = __dirname;
   app.use(express.static(frontendFiles));
@@ -137,3 +176,4 @@ if (process.env.VITE !== 'true') {
     console.log(`running server on from port:${port}`);
   });
 }
+// ----------------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-import React, { type FC, useState, useMemo, useContext } from 'react';
+import React, { useContext, useMemo, useState, type FC } from 'react';
 
 import i18next from 'i18next';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
@@ -11,7 +11,6 @@ import common_fr from '../../i18n/fr/common.json';
 import components_fr from '../../i18n/fr/components.json';
 import fields_fr from '../../i18n/fr/fields.json';
 import pages_fr from '../../i18n/fr/pages.json';
-
 
 interface ILangContext {
   /** Is the provider loading */

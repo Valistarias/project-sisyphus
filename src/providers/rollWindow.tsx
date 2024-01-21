@@ -154,7 +154,7 @@ export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) =>
           })
         );
       }
-    }, 1500);
+    }, 1000);
   }, [RollEvent, rollResults]);
 
   const totalDom = useMemo(() => {

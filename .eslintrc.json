@@ -21,6 +21,7 @@
     "@typescript-eslint/semi": ["error", "always"],
     "@typescript-eslint/strict-boolean-expressions": "warn",
     "@typescript-eslint/no-extraneous-class": 0,
+    "@typescript-eslint/non-nullable-type-assertion-style": 0,
     "react-hooks/exhaustive-deps": "error",
     "@typescript-eslint/no-misused-promises": [
       2,
