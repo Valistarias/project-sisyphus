@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { Ap } from '../atoms';
 import { Button, DiceCard } from '../molecules';
 
-import { type typeDice } from '../interfaces';
+import { type typeDice } from '../types/data';
 
 import { calculateDices, classTrim, throwDices, type DiceRequest, type DiceResult } from '../utils';
 

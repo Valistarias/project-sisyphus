@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import { type ICharacter } from '../../interfaces';
+import { type ICharacter } from '../../types/data';
 
 interface ICharacterPayload {
   characterId: string;

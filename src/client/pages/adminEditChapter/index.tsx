@@ -17,7 +17,7 @@ import {
   type IDragElt,
 } from '../../organisms';
 
-import type { ICuratedChapter, IPage } from '../../interfaces';
+import type { ICuratedChapter, IPage } from '../../types/data';
 
 import { arraysEqual, formatDate } from '../../utils';
 

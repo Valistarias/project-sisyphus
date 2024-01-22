@@ -9,7 +9,7 @@ import { Ap, Atitle } from '../../atoms';
 import { Alert } from '../../organisms';
 import { ErrorPage } from '../index';
 
-import { type ICampaign } from '../../interfaces';
+import { type ICampaign } from '../../types/data';
 
 import './campaign.scss';
 

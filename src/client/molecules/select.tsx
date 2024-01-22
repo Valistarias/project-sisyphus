@@ -1,9 +1,11 @@
-import React, { useEffect, useState, type FC } from 'react';
+import React, { type FC } from 'react';
 
+import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import Select, { components, type OptionProps } from 'react-select';
 
-import { Alabel, Ap } from '../atoms';
+import { Aerror, Alabel, Ap } from '../atoms';
+import { type IReactHookFormInputs } from '../types/form';
 
 import { classTrim } from '../utils';
 
@@ -21,13 +23,9 @@ interface IGroupedOption {
   readonly options: readonly ISingleValueSelect[];
 }
 
-interface IAp {
+interface IAp extends IReactHookFormInputs {
   /** The options for the select */
-  options: ISingleValueSelect[] | IGroupedOption[];
-  /** When an optiojn is selected */
-  selected?: ISingleValueSelect | null;
-  /** When the select change his value */
-  onChange: (elt: ISingleValueSelect) => void;
+  options: ISingleValueSelect[];
   /** Define the placeholder for this field */
   placeholder?: string;
   /** The label, if any */
@@ -64,23 +62,16 @@ const formatGroupLabel: FC = (data: IGroupedOption) => (
 );
 
 const SmartSelect: FC<IAp> = ({
+  control,
+  inputName,
   options,
   size = 'medium',
   label,
-  onChange,
   placeholder = null,
-  selected = null,
   className = null,
+  rules,
 }) => {
   const { t } = useTranslation();
-
-  const [selectedElt, setSelectedElt] = useState<ISingleValueSelect | null>(null);
-
-  useEffect(() => {
-    if (selected !== null) {
-      setSelectedElt(selected);
-    }
-  }, [selected]);
 
   return (
     <div
@@ -90,20 +81,41 @@ const SmartSelect: FC<IAp> = ({
         smartselect--${size}
       `)}
     >
-      {label !== undefined ? <Alabel>{label}</Alabel> : null}
-      <Select
-        onChange={(choice: ISingleValueSelect) => {
-          setSelectedElt(choice);
-          onChange(choice);
-        }}
-        value={selectedElt}
-        options={options}
-        className="smartselect__field"
-        classNamePrefix="smartselect"
-        components={{ Option }}
-        placeholder={placeholder ?? t('smartselect.placeholder', { ns: 'components' })}
-        noOptionsMessage={() => <Ap>{t('smartselect.notfound', { ns: 'components' })}</Ap>}
-        formatGroupLabel={formatGroupLabel}
+      <Controller
+        control={control}
+        name={inputName}
+        rules={rules}
+        render={({
+          field: { onChange, onBlur, value, name, ref },
+          fieldState: { error },
+          // formState,
+        }) => (
+          <>
+            {label !== undefined ? (
+              <Alabel className="smartselect__label" htmlFor={name}>
+                {label}
+              </Alabel>
+            ) : null}
+            <Select
+              options={options}
+              value={options.find((c) => c.value === value)}
+              onChange={(val) => {
+                if (val != null) {
+                  onChange(val.value);
+                }
+              }}
+              className="smartselect__field"
+              classNamePrefix="smartselect"
+              components={{ Option }}
+              placeholder={placeholder ?? t('smartselect.placeholder', { ns: 'components' })}
+              noOptionsMessage={() => <Ap>{t('smartselect.notfound', { ns: 'components' })}</Ap>}
+              formatGroupLabel={formatGroupLabel}
+            />
+            {error?.message !== undefined ? (
+              <Aerror className="input__error">{error.message}</Aerror>
+            ) : null}
+          </>
+        )}
       />
     </div>
   );

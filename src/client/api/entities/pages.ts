@@ -2,8 +2,7 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import { type ICuratedPage } from '../../interfaces';
-
+import { type ICuratedPage } from '../../types/data';
 
 interface IPagesPayload {
   pageId: string;

@@ -1,4 +1,4 @@
-import { type typeDice } from './interfaces';
+import { type typeDice } from './types/data';
 
 export const degToRad = (degrees: number): number => degrees * (Math.PI / 180);
 

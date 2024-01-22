@@ -7,8 +7,7 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Ali, Ap, Atitle, Aul } from '../../atoms';
 import { Button } from '../../molecules';
 import { Alert } from '../../organisms';
-
-import { type ICampaign } from '../../interfaces';
+import { type ICampaign } from '../../types/data';
 
 import { classTrim } from '../../utils';
 
@@ -29,7 +28,7 @@ const Campaigns: FC = () => {
 
   const calledApi = useRef(false);
 
-  const campaignReload = useCallback(() => {
+  const getCampaigns = useCallback(() => {
     if (api !== undefined) {
       api.campaigns
         .getAll()
@@ -79,7 +78,7 @@ const Campaigns: FC = () => {
                       </Alert>
                     ),
                   });
-                  campaignReload();
+                  getCampaigns();
                 })
                 .catch(({ response }) => {
                   const newId = getNewId();
@@ -99,7 +98,7 @@ const Campaigns: FC = () => {
         }
       );
     },
-    [api, setConfirmContent, t, ConfMessageEvent, getNewId, createAlert, campaignReload]
+    [api, setConfirmContent, t, ConfMessageEvent, getNewId, createAlert, getCampaigns]
   );
 
   const campaignList = useMemo(() => {
@@ -155,9 +154,9 @@ const Campaigns: FC = () => {
     if (api !== undefined && !calledApi.current) {
       setLoading(true);
       calledApi.current = true;
-      campaignReload();
+      getCampaigns();
     }
-  }, [api, createAlert, getNewId, campaignReload, t]);
+  }, [api, createAlert, getNewId, getCampaigns, t]);
 
   // TODO: Add loading state
   if (loading) {

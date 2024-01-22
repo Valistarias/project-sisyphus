@@ -8,15 +8,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ali, Ap, Atitle, Aul } from '../../atoms';
-import { Button, Input } from '../../molecules';
+import { Button, Input, SmartSelect, type ISingleValueSelect } from '../../molecules';
 import {
   Alert,
   DragList,
   RichTextElement,
-  SmartSelect,
   completeRichTextElementExtentions,
   type IDragElt,
-  type ISingleValueSelect,
 } from '../../organisms';
 
 import type {
@@ -25,7 +23,7 @@ import type {
   ICuratedRuleBook,
   INotion,
   IRuleBookType,
-} from '../../interfaces';
+} from '../../types/data';
 
 import { arraysEqual, formatDate } from '../../utils';
 

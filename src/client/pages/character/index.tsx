@@ -9,7 +9,7 @@ import { Ap, Atitle } from '../../atoms';
 import { Alert, RollTab } from '../../organisms';
 import { ErrorPage } from '../index';
 
-import { type ICharacter } from '../../interfaces';
+import { type ICharacter } from '../../types/data';
 
 import './character.scss';
 

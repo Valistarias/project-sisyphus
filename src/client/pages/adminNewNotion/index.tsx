@@ -8,16 +8,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useApi, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ap, Atitle } from '../../atoms';
-import { Button, Input } from '../../molecules';
-import {
-  Alert,
-  RichTextElement,
-  SmartSelect,
-  completeRichTextElementExtentions,
-  type ISingleValueSelect,
-} from '../../organisms';
-
-import { type ICuratedRuleBook } from '../../interfaces';
+import { Button, Input, SmartSelect, type ISingleValueSelect } from '../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
+import { type ICuratedRuleBook } from '../../types/data';
 
 import './adminNewNotion.scss';
 

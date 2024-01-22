@@ -1,21 +1,15 @@
 import React, { useState, type FC } from 'react';
 
-import { type ChangeHandler } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 
-import { Alabel } from '../atoms';
+import { Aerror, Alabel } from '../atoms';
+import { type IReactHookFormInputs } from '../types/form';
 
 import { classTrim } from '../utils';
 
 import './input.scss';
 
-interface IInput {
-  /** The controlled element for react hook form */
-  registered?: {
-    onChange: ChangeHandler;
-    onBlur: ChangeHandler;
-    ref: React.Ref<any>;
-    name: string;
-  };
+interface IInput extends IReactHookFormInputs {
   /** The type of input */
   type?: 'text' | 'password' | 'email';
   /** The size of the input */
@@ -32,14 +26,12 @@ interface IInput {
   hidden?: boolean;
   /** Allow the user's password manager to automatically enter the password */
   autoComplete?: string;
-  /** On field change */
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  /** The field value */
-  value?: string;
 }
 
 const Input: FC<IInput> = ({
-  registered,
+  control,
+  inputName,
+  rules,
   type = 'text',
   size = 'medium',
   className,
@@ -48,8 +40,6 @@ const Input: FC<IInput> = ({
   readOnly,
   hidden,
   autoComplete,
-  onChange,
-  value,
 }) => {
   const [isFocus, setFocus] = useState(false);
   return (
@@ -62,34 +52,42 @@ const Input: FC<IInput> = ({
       ${className ?? ''}
     `)}
     >
-      {label !== undefined ? (
-        <Alabel className="input__label" htmlFor={registered?.name}>
-          {label}
-        </Alabel>
-      ) : null}
-      <div className="input__decor">
-        <input
-          type={type}
-          readOnly={readOnly}
-          hidden={hidden}
-          placeholder={placeholder}
-          className="input__field"
-          autoComplete={autoComplete ?? undefined}
-          onChange={onChange}
-          value={value}
-          onFocus={() => {
-            setFocus(true);
-          }}
-          {...registered}
-          onBlur={(e) => {
-            setFocus(false);
-            registered?.onBlur(e).then(
-              () => {},
-              () => {}
-            );
-          }}
-        />
-      </div>
+      <Controller
+        control={control}
+        name={inputName}
+        rules={rules}
+        render={({ field: { onChange, onBlur, value, name, ref }, fieldState: { error } }) => (
+          <>
+            {label !== undefined ? (
+              <Alabel className="input__label" htmlFor={name}>
+                {label}
+              </Alabel>
+            ) : null}
+            <div className="input__decor">
+              <input
+                type={type}
+                readOnly={readOnly}
+                hidden={hidden}
+                placeholder={placeholder}
+                className="input__field"
+                autoComplete={autoComplete ?? undefined}
+                onChange={onChange}
+                value={value || ''}
+                onFocus={() => {
+                  setFocus(true);
+                }}
+                onBlur={(e) => {
+                  setFocus(false);
+                  onBlur();
+                }}
+              />
+            </div>
+            {error?.message !== undefined ? (
+              <Aerror className="input__error">{error.message}</Aerror>
+            ) : null}
+          </>
+        )}
+      />
     </div>
   );
 };

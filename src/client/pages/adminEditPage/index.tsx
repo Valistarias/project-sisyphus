@@ -11,7 +11,7 @@ import { Aa, Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
 
-import type { ICuratedPage } from '../../interfaces';
+import type { ICuratedPage } from '../../types/data';
 
 import { formatDate } from '../../utils';
 

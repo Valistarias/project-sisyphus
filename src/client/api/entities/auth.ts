@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import { type IUser } from '../../interfaces';
+import { type IUser } from '../../types/data';
 
 interface ISignInUserPayload {
   mail: string;

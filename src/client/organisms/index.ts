@@ -7,7 +7,6 @@ import {
   completeRichTextElementExtentions,
 } from './richTextElement';
 import RollTab from './rollTab';
-import { SmartSelect, type IGroupedOption, type ISingleValueSelect } from './select';
 
 export {
   Alert,
@@ -15,10 +14,7 @@ export {
   HeaderBar,
   RichTextElement,
   RollTab,
-  SmartSelect,
   basicRichTextElementExtentions,
   completeRichTextElementExtentions,
   type IDragElt,
-  type IGroupedOption,
-  type ISingleValueSelect,
 };

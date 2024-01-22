@@ -32,7 +32,9 @@
       "gm": "Game Master",
       "player_one": "Player",
       "player_other": "Players",
-      "abort": "Abort"
+      "abort": "Abort",
+      "createdBy": "Created by {{owner}}",
+      "createdByShort": "by {{owner}}"
     }
   },
   "chapterTypeNames": {

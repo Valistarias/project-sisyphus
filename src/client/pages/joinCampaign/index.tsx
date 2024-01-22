@@ -10,7 +10,7 @@ import { Button } from '../../molecules';
 import { Alert } from '../../organisms';
 import { ErrorPage } from '../index';
 
-import { type ICampaign } from '../../interfaces';
+import { type ICampaign } from '../../types/data';
 
 import './joinCampaign.scss';
 

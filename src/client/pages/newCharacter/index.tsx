@@ -1,20 +1,22 @@
-import React, { type FC } from 'react';
+import React, { useCallback, useEffect, useRef, useState, type FC } from 'react';
 
 import i18next from 'i18next';
-import { useForm, type SubmitHandler } from 'react-hook-form';
+import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { useApi, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ap, Atitle } from '../../atoms';
-import { Button, Input } from '../../molecules';
+import { Button, Input, SmartSelect, type ISingleValueSelect } from '../../molecules';
 import { Alert } from '../../organisms';
+import { type ICampaign } from '../../types/data';
 
 import './newCharacter.scss';
 
 interface FormValues {
   name: string;
+  campaign: string;
 }
 
 const NewCharacter: FC = () => {
@@ -23,42 +25,101 @@ const NewCharacter: FC = () => {
   const { createAlert, getNewId } = useSystemAlerts();
   const navigate = useNavigate();
 
+  const [campaigns, setCampaigns] = useState<ISingleValueSelect[]>([]);
+  const [selectedCampaign, setSelectedCampaign] = useState<string | null>(null);
+
+  const [loading, setLoading] = useState(true);
+
+  const calledApi = useRef(false);
+
+  console.log('campaigns', campaigns);
+
   const {
     register,
     handleSubmit,
     setError,
+    control,
     formState: { errors },
-  } = useForm<FormValues>();
+  } = useForm<FieldValues>();
 
-  const onSubmit: SubmitHandler<FormValues> = ({ name }) => {
+  const getCampaigns = useCallback(() => {
     if (api !== undefined) {
-      api.characters
-        .create({
-          name,
+      api.campaigns
+        .getAll()
+        .then((sentCampaigns: ICampaign[]) => {
+          setLoading(false);
+          // setCampaigns(sentCampaigns);
+          setCampaigns(
+            sentCampaigns.map(({ _id, name, owner }) => ({
+              value: _id,
+              label: name,
+              details: i18next.format(
+                t('terms.general.createdByShort', {
+                  owner: owner.username,
+                }),
+                'capitalize'
+              ),
+            }))
+          );
         })
-        .then(({ characterId }) => {
+        .catch(() => {
+          setLoading(false);
           const newId = getNewId();
           createAlert({
             key: newId,
             dom: (
               <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('newCharacter.successCreate', { ns: 'pages' })}</Ap>
+                <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
             ),
           });
-          navigate(`/character/${characterId}`);
-        })
-        .catch(({ response }) => {
-          const { data } = response;
-          setError('root.serverError', {
-            type: 'server',
-            message: t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
-            }),
-          });
         });
     }
+  }, [api, createAlert, getNewId, t]);
+
+  const onSubmit: SubmitHandler<FormValues> = (elt) => {
+    console.log('elt', elt);
+    // if (api !== undefined) {
+    //   api.characters
+    //     .create({
+    //       name,
+    //     })
+    //     .then(({ characterId }) => {
+    //       const newId = getNewId();
+    //       createAlert({
+    //         key: newId,
+    //         dom: (
+    //           <Alert key={newId} id={newId} timer={5}>
+    //             <Ap>{t('newCharacter.successCreate', { ns: 'pages' })}</Ap>
+    //           </Alert>
+    //         ),
+    //       });
+    //       navigate(`/character/${characterId}`);
+    //     })
+    //     .catch(({ response }) => {
+    //       const { data } = response;
+    //       setError('root.serverError', {
+    //         type: 'server',
+    //         message: t(`serverErrors.${data.code}`, {
+    //           field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
+    //         }),
+    //       });
+    //     });
+    // }
   };
+
+  useEffect(() => {
+    if (api !== undefined && !calledApi.current) {
+      setLoading(true);
+      calledApi.current = true;
+      getCampaigns();
+    }
+  }, [api, createAlert, getNewId, getCampaigns, t]);
+
+  // TODO: Add loading state
+  if (loading) {
+    return null;
+  }
 
   return (
     <div className="newcharacter">
@@ -68,13 +129,20 @@ const NewCharacter: FC = () => {
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <Input
+          control={control}
+          inputName="name"
           type="text"
-          registered={register('name', {
-            required: t('characterName.required', { ns: 'fields' }),
-          })}
+          rules={{ required: t('characterName.required', { ns: 'fields' }) }}
           label={t('characterName.label', { ns: 'fields' })}
         />
-        {errors.name?.message !== undefined ? <Aerror>{errors.name.message}</Aerror> : null}
+        <SmartSelect
+          control={control}
+          inputName="campaign"
+          label={t('typeRuleBook.select', { ns: 'fields' })}
+          options={campaigns}
+          className="adminNewRuleBook__basics__type"
+          rules={{ required: 'This field is required' }}
+        />
         <Button type="submit">{t('newCharacter.formCTA', { ns: 'pages' })}</Button>
       </form>
     </div>

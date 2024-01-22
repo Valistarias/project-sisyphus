@@ -9,8 +9,7 @@ import { useApi, useSystemAlerts } from '../../providers';
 import { Aerror, Ali, Ap, Atitle, Aul } from '../../atoms';
 import { Button, Input } from '../../molecules';
 import { Alert } from '../../organisms';
-
-import { type IRuleBookType } from '../../interfaces';
+import { type IRuleBookType } from '../../types/data';
 
 import './adminRuleBookTypes.scss';
 
@@ -84,7 +83,7 @@ const AdminRuleBookTypes: FC = () => {
           .catch(({ response }) => {
             const { data } = response;
             if (data.code === 'CYPU-104') {
-              setError(data.sent, {
+              setError(data.sent as 'name', {
                 type: 'server',
                 message: t(`serverErrors.${data.code}`, {
                   field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
@@ -122,7 +121,7 @@ const AdminRuleBookTypes: FC = () => {
           .catch(({ response }) => {
             const { data } = response;
             if (data.code === 'CYPU-104') {
-              setError(data.sent, {
+              setError(data.sent as 'name', {
                 type: 'server',
                 message: t(`serverErrors.${data.code}`, {
                   field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),

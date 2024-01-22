@@ -11,8 +11,7 @@ import tvBackground from '../../assets/imgs/tvbg.gif';
 import { Aerror, Ap, Avideo } from '../../atoms';
 import { Button, Input } from '../../molecules';
 import { Alert } from '../../organisms';
-
-import { type IUser } from '../../interfaces';
+import { type IUser } from '../../types/data';
 
 import { regexMail } from '../../utils';
 
@@ -72,7 +71,7 @@ const Login: FC = () => {
         .catch(({ response }) => {
           const { data } = response;
           if (data.code === 'CYPU-102') {
-            setError(data.sent, {
+            setError(data.sent as 'mail' | 'password', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
                 field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
