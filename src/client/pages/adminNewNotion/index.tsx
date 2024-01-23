@@ -42,13 +42,8 @@ const AdminNewNotions: FC = () => {
     extensions: completeRichTextElementExtentions,
   });
 
-  const {
-    handleSubmit,
-    setError,
-    control,
-    formState: { errors },
-  } = useForm<FieldValues>({
-    defaultValues: useMemo(() => {
+  const createDefaultData = useCallback(
+    (params: URLSearchParams, ruleBooks: ISingleValueSelect[]) => {
       if (params.get('ruleBookId') === undefined || ruleBooks.length === 0) {
         return {};
       }
@@ -56,10 +51,24 @@ const AdminNewNotions: FC = () => {
         (ruleBook) => ruleBook.value === params.get('ruleBookId')
       );
       if (selectedfield !== undefined) {
-        return { type: selectedfield };
+        return { type: selectedfield.value };
       }
       return {};
-    }, [params, ruleBooks]),
+    },
+    []
+  );
+
+  const {
+    handleSubmit,
+    setError,
+    control,
+    formState: { errors },
+    reset,
+  } = useForm<FieldValues>({
+    defaultValues: useMemo(
+      () => createDefaultData(params, ruleBooks),
+      [createDefaultData, params, ruleBooks]
+    ),
   });
 
   const onSaveNotion: SubmitHandler<FormValues> = useCallback(
@@ -155,6 +164,11 @@ const AdminNewNotions: FC = () => {
         });
     }
   }, [api, createAlert, getNewId, t]);
+
+  // To affect default data
+  useEffect(() => {
+    reset(createDefaultData(params, ruleBooks));
+  }, [params, ruleBooks, reset, createDefaultData]);
 
   return (
     <div className="adminNewNotion">

@@ -44,19 +44,16 @@ const AdminEditRuleBook: FC = () => {
   const { triggerRuleBookReload } = useGlobalVars();
 
   const calledApi = useRef<string | null>(null);
-
   const saveTimer = useRef<NodeJS.Timeout | null>(null);
-  const [autoSaved, setAutoSaved] = useState<string | null>(null);
+  const silentSave = useRef(false);
 
-  // const [ruleBookName, setRuleBookName] = useState('');
-  // const [ruleBookNameFr, setRuleBookNameFr] = useState('');
+  const [autoSaved, setAutoSaved] = useState<string | null>(null);
 
   const [ruleBookSummary, setRuleBookSummary] = useState('');
   const [ruleBookSummaryFr, setRuleBookSummaryFr] = useState('');
 
   const [archived, setArchived] = useState<boolean>(false);
 
-  // const [sentDraft, setSentDraft] = useState<boolean | null>(null);
   const [draftChoices] = useState([
     {
       value: 'draft',
@@ -75,8 +72,6 @@ const AdminEditRuleBook: FC = () => {
   const [defaultTypeChapterId, setDefaultTypeChapterId] = useState<string | null>(null);
   const [initialOrder, setInitialOrder] = useState<string[]>([]);
   const [chaptersOrder, setChaptersOrder] = useState<string[]>([]);
-
-  const silentSave = useRef(false);
 
   const introEditor = useEditor({
     extensions: completeRichTextElementExtentions,
@@ -116,9 +111,10 @@ const AdminEditRuleBook: FC = () => {
     formState: { errors },
     reset,
   } = useForm<FieldValues>({
-    defaultValues: useMemo(() => {
-      return createDefaultData(ruleBookTypes, rulebookData);
-    }, [createDefaultData, ruleBookTypes, rulebookData]),
+    defaultValues: useMemo(
+      () => createDefaultData(ruleBookTypes, rulebookData),
+      [createDefaultData, ruleBookTypes, rulebookData]
+    ),
   });
 
   const notionsListDom = useMemo(() => {

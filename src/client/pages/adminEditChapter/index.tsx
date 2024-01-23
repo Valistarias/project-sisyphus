@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } fro
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
+import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
@@ -23,6 +24,11 @@ import { arraysEqual, formatDate } from '../../utils';
 
 import './adminEditChapter.scss';
 
+interface FormValues {
+  name: string;
+  nameFr: string;
+}
+
 const AdminEditChapters: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
@@ -38,12 +44,9 @@ const AdminEditChapters: FC = () => {
 
   const saveTimer = useRef<NodeJS.Timeout | null>(null);
   const [autoSaved, setAutoSaved] = useState<string | null>(null);
+  const silentSave = useRef(false);
 
-  const [ruleBookId, setRuleBookId] = useState('');
-  const [ruleBookName, setRuleBookName] = useState('');
-
-  const [chapterName, setChapterName] = useState('');
-  const [chapterNameFr, setChapterNameFr] = useState('');
+  const [chapterData, setChapterData] = useState<ICuratedChapter | null>(null);
 
   const [chapterSummary, setChapterSummary] = useState('');
   const [chapterSummaryFr, setChapterSummaryFr] = useState('');
@@ -52,14 +55,35 @@ const AdminEditChapters: FC = () => {
   const [initialOrder, setInitialOrder] = useState<string[]>([]);
   const [pagesOrder, setPagesOrder] = useState<string[]>([]);
 
-  const [error, setError] = useState('');
-
   const introEditor = useEditor({
     extensions: completeRichTextElementExtentions,
   });
 
   const introFrEditor = useEditor({
     extensions: completeRichTextElementExtentions,
+  });
+
+  const createDefaultData = useCallback((chapterData: ICuratedChapter | null) => {
+    if (chapterData == null) {
+      return {};
+    }
+    const { chapter, i18n } = chapterData;
+    const defaultData: Partial<FormValues> = {};
+    defaultData.name = chapter.title;
+    if (i18n.fr !== undefined) {
+      defaultData.nameFr = i18n.fr.title ?? '';
+    }
+    return defaultData;
+  }, []);
+
+  const {
+    handleSubmit,
+    setError,
+    control,
+    formState: { errors },
+    reset,
+  } = useForm<FieldValues>({
+    defaultValues: useMemo(() => createDefaultData(chapterData), [createDefaultData, chapterData]),
   });
 
   const pageDragData = useMemo(() => {
@@ -89,79 +113,80 @@ const AdminEditChapters: FC = () => {
     }
   }, []);
 
-  const onSaveChapter = useCallback(
-    (silent?: boolean) => {
+  const ruleBook = useMemo(() => chapterData?.chapter.ruleBook, [chapterData]);
+
+  const onSaveChapter: SubmitHandler<FormValues> = useCallback(
+    ({ name, nameFr }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
-      if (chapterName === '') {
-        setError(t('nameChapter.required', { ns: 'fields' }));
-      } else {
-        let html: string | null = introEditor.getHTML();
-        const htmlFr = introFrEditor.getHTML();
-        if (html === '<p class="ap"></p>') {
-          html = null;
-        }
-
-        let i18n: any | null = null;
-
-        if (chapterNameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-          i18n = {
-            fr: {
-              title: chapterNameFr,
-              summary: htmlFr,
-            },
-          };
-        }
-
-        api.chapters
-          .update({
-            id,
-            title: chapterName,
-            summary: html,
-            i18n,
-          })
-          .then(() => {
-            if (silent === undefined) {
-              const newId = getNewId();
-              createAlert({
-                key: newId,
-                dom: (
-                  <Alert key={newId} id={newId} timer={5}>
-                    <Ap>{t('adminEditChapter.successUpdate', { ns: 'pages' })}</Ap>
-                  </Alert>
-                ),
-              });
-            } else {
-              const date = formatDate(new Date(Date.now()));
-              setAutoSaved(
-                t('autosave', {
-                  date: date.date,
-                  hour: date.hour,
-                  ns: 'components',
-                })
-              );
-            }
-          })
-          .catch(({ response }) => {
-            const { data } = response;
-            if (data.code === 'CYPU-104') {
-              setError(
-                t(`serverErrors.${data.code}`, {
-                  field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize'),
-                })
-              );
-            } else {
-              setError(
-                t(`serverErrors.${data.code}`, {
-                  field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize'),
-                })
-              );
-            }
-          });
+      let html: string | null = introEditor.getHTML();
+      const htmlFr = introFrEditor.getHTML();
+      if (html === '<p class="ap"></p>') {
+        html = null;
       }
+
+      let i18n: any | null = null;
+
+      if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
+        i18n = {
+          fr: {
+            title: nameFr,
+            summary: htmlFr,
+          },
+        };
+      }
+
+      api.chapters
+        .update({
+          id,
+          title: name,
+          summary: html,
+          i18n,
+        })
+        .then(() => {
+          if (!silentSave.current) {
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{t('adminEditChapter.successUpdate', { ns: 'pages' })}</Ap>
+                </Alert>
+              ),
+            });
+          } else {
+            const date = formatDate(new Date(Date.now()));
+            setAutoSaved(
+              t('autosave', {
+                date: date.date,
+                hour: date.hour,
+                ns: 'components',
+              })
+            );
+          }
+          silentSave.current = false;
+        })
+        .catch(({ response }) => {
+          const { data } = response;
+          if (data.code === 'CYPU-104') {
+            setError('root.serverError', {
+              type: 'server',
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize'),
+              }),
+            });
+          } else {
+            setError('root.serverError', {
+              type: 'server',
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize'),
+              }),
+            });
+          }
+        });
     },
-    [id, introEditor, introFrEditor, api, chapterName, t, chapterNameFr, getNewId, createAlert]
+    [introEditor, introFrEditor, api, id, getNewId, createAlert, t, setError]
   );
 
   const onUpdateOrder = useCallback(() => {
@@ -192,20 +217,22 @@ const AdminEditChapters: FC = () => {
       .catch(({ response }) => {
         const { data } = response;
         if (data.code === 'CYPU-104') {
-          setError(
-            t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
-            })
-          );
+          setError('root.serverError', {
+            type: 'server',
+            message: t(`serverErrors.${data.code}`, {
+              field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize'),
+            }),
+          });
         } else {
-          setError(
-            t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
-            })
-          );
+          setError('root.serverError', {
+            type: 'server',
+            message: t(`serverErrors.${data.code}`, {
+              field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize'),
+            }),
+          });
         }
       });
-  }, [pagesOrder, initialOrder, api, id, getNewId, createAlert, t]);
+  }, [pagesOrder, initialOrder, api, id, getNewId, createAlert, t, setError]);
 
   const onAskDelete = useCallback(() => {
     if (api === undefined) {
@@ -214,7 +241,10 @@ const AdminEditChapters: FC = () => {
     setConfirmContent(
       {
         title: t('adminEditChapter.confirmDeletion.title', { ns: 'pages' }),
-        text: t('adminEditChapter.confirmDeletion.text', { ns: 'pages', elt: chapterName }),
+        text: t('adminEditChapter.confirmDeletion.text', {
+          ns: 'pages',
+          elt: chapterData?.chapter.title,
+        }),
         confirmCta: t('adminEditChapter.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
       (evtId: string) => {
@@ -232,22 +262,24 @@ const AdminEditChapters: FC = () => {
                     </Alert>
                   ),
                 });
-                navigate(`/admin/rulebook/${ruleBookId}`);
+                navigate(`/admin/rulebook/${ruleBook?._id}`);
               })
               .catch(({ response }) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
-                  setError(
-                    t(`serverErrors.${data.code}`, {
+                  setError('root.serverError', {
+                    type: 'server',
+                    message: t(`serverErrors.${data.code}`, {
                       field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize'),
-                    })
-                  );
+                    }),
+                  });
                 } else {
-                  setError(
-                    t(`serverErrors.${data.code}`, {
+                  setError('root.serverError', {
+                    type: 'server',
+                    message: t(`serverErrors.${data.code}`, {
                       field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize'),
-                    })
-                  );
+                    }),
+                  });
                 }
               });
           }
@@ -260,13 +292,14 @@ const AdminEditChapters: FC = () => {
     api,
     setConfirmContent,
     t,
-    chapterName,
+    chapterData?.chapter.title,
     ConfMessageEvent,
     id,
     getNewId,
     createAlert,
     navigate,
-    ruleBookId,
+    ruleBook,
+    setError,
   ]);
 
   useEffect(() => {
@@ -274,15 +307,13 @@ const AdminEditChapters: FC = () => {
       calledApi.current = id;
       api.chapters
         .get({ chapterId: id })
-        .then(({ chapter, i18n }: ICuratedChapter) => {
-          setChapterName(chapter.title);
+        .then((curatedChapter: ICuratedChapter) => {
+          const { chapter, i18n } = curatedChapter;
+          setChapterData(curatedChapter);
           setChapterSummary(chapter.summary);
-          setRuleBookId(chapter.ruleBook._id);
-          setRuleBookName(chapter.ruleBook.title);
           setPagesData(chapter.pages ?? null);
           if (i18n.fr !== undefined) {
-            setChapterNameFr(i18n.fr.title ?? '');
-            setChapterSummaryFr(i18n.fr.summary ?? '');
+            setChapterSummaryFr((i18n.fr.summary as string) ?? '');
           }
         })
         .catch((res) => {
@@ -302,14 +333,23 @@ const AdminEditChapters: FC = () => {
   // The Autosave
   useEffect(() => {
     saveTimer.current = setInterval(() => {
-      onSaveChapter(true);
+      silentSave.current = true;
+      handleSubmit(onSaveChapter)().then(
+        () => {},
+        () => {}
+      );
     }, 300000);
     return () => {
       if (saveTimer.current !== null) {
         clearInterval(saveTimer.current);
       }
     };
-  }, [onSaveChapter]);
+  }, [handleSubmit, onSaveChapter]);
+
+  // To affect default data
+  useEffect(() => {
+    reset(createDefaultData(chapterData));
+  }, [chapterData, reset, createDefaultData]);
 
   return (
     <div className="adminEditChapter">
@@ -322,22 +362,28 @@ const AdminEditChapters: FC = () => {
       <div className="adminEditChapter__ariane">
         <Ap className="adminEditChapter__ariane__elt">
           {`${t(`terms.ruleBook.ruleBook`)}: `}
-          <Aa href={`/admin/rulebook/${ruleBookId}`}>{ruleBookName}</Aa>
+          <Aa href={`/admin/rulebook/${ruleBook?._id}`}>{ruleBook?.title as string}</Aa>
         </Ap>
       </div>
       {autoSaved !== null ? <Ap className="adminEditChapter__autosave">{autoSaved}</Ap> : null}
       <div className="adminEditChapter__content">
-        <div className="adminEditChapter__content__left">
-          {error !== '' ? <Aerror className="adminEditChapter__error">{error}</Aerror> : null}
+        <form
+          onSubmit={handleSubmit(onSaveChapter)}
+          noValidate
+          className="adminEditChapter__content__left"
+        >
+          {errors.root?.serverError?.message !== undefined ? (
+            <Aerror>{errors.root.serverError.message}</Aerror>
+          ) : null}
           <div className="adminEditChapter__basics">
             <Input
+              control={control}
+              inputName="name"
+              rules={{
+                required: t('nameChapter.required', { ns: 'fields' }),
+              }}
               type="text"
               label={t('nameChapter.label', { ns: 'fields' })}
-              onChange={(e) => {
-                setChapterName(e.target.value);
-                setError('');
-              }}
-              value={chapterName}
               className="adminEditChapter__basics__name"
             />
           </div>
@@ -346,7 +392,7 @@ const AdminEditChapters: FC = () => {
               label={t('chapterSummary.title', { ns: 'fields' })}
               editor={introEditor ?? undefined}
               rawStringContent={chapterSummary}
-              ruleBookId={ruleBookId}
+              ruleBookId={ruleBook?._id}
               complete
               small
             />
@@ -360,12 +406,10 @@ const AdminEditChapters: FC = () => {
           </Ap>
           <div className="adminEditChapter__basics">
             <Input
+              control={control}
+              inputName="nameFr"
               type="text"
               label={`${t('nameChapter.label', { ns: 'fields' })} (FR)`}
-              onChange={(e) => {
-                setChapterNameFr(e.target.value);
-              }}
-              value={chapterNameFr}
               className="adminEditChapter__basics__name"
             />
           </div>
@@ -374,20 +418,13 @@ const AdminEditChapters: FC = () => {
               label={`${t('chapterSummary.title', { ns: 'fields' })} (FR)`}
               editor={introFrEditor ?? undefined}
               rawStringContent={chapterSummaryFr}
-              ruleBookId={ruleBookId}
+              ruleBookId={ruleBook?._id}
               complete
               small
             />
           </div>
-          <Button
-            onClick={() => {
-              onSaveChapter();
-            }}
-            disabled={error !== ''}
-          >
-            {t('adminEditChapter.button', { ns: 'pages' })}
-          </Button>
-        </div>
+          <Button type="submit">{t('adminEditChapter.button', { ns: 'pages' })}</Button>
+        </form>
         <div className="adminEditChapter__content__right">
           <div className="adminEditChapter__block-children">
             <Atitle className="adminEditChapter__intl" level={2}>
@@ -405,7 +442,7 @@ const AdminEditChapters: FC = () => {
                   {t('adminEditRuleBook.updateOrder', { ns: 'pages' })}
                 </Button>
               ) : null}
-              <Button href={`/admin/page/new?chapterId=${id}&ruleBookId=${ruleBookId}`}>
+              <Button href={`/admin/page/new?chapterId=${id}&ruleBookId=${ruleBook?._id}`}>
                 {t('adminEditChapter.createPage', { ns: 'pages' })}
               </Button>
             </div>
