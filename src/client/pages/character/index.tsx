@@ -7,9 +7,8 @@ import { useApi, useRollWindow, useSystemAlerts } from '../../providers';
 
 import { Ap, Atitle } from '../../atoms';
 import { Alert, RollTab } from '../../organisms';
-import { ErrorPage } from '../index';
-
 import { type ICharacter } from '../../types/data';
+import { ErrorPage } from '../index';
 
 import './character.scss';
 

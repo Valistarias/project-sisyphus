@@ -1,7 +1,7 @@
 import React, { type FC } from 'react';
 
 import i18next from 'i18next';
-import { useForm, type SubmitHandler } from 'react-hook-form';
+import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
@@ -24,11 +24,11 @@ const NewCampaign: FC = () => {
   const navigate = useNavigate();
 
   const {
-    register,
+    control,
     handleSubmit,
     setError,
     formState: { errors },
-  } = useForm<FormValues>();
+  } = useForm<FieldValues>();
 
   const onSubmit: SubmitHandler<FormValues> = ({ name }) => {
     if (api !== undefined) {
@@ -68,13 +68,14 @@ const NewCampaign: FC = () => {
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <Input
+          control={control}
+          inputName="campaignName"
           type="text"
-          registered={register('name', {
+          rules={{
             required: t('campaignName.required', { ns: 'fields' }),
-          })}
+          }}
           label={t('campaignName.label', { ns: 'fields' })}
         />
-        {errors.name?.message !== undefined ? <Aerror>{errors.name.message}</Aerror> : null}
         <Button type="submit">{t('newCampaign.formCTA', { ns: 'pages' })}</Button>
       </form>
     </div>

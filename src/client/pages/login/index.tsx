@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, type FC } from 'react';
 
 import i18next from 'i18next';
-import { useForm, type SubmitHandler } from 'react-hook-form';
+import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -33,11 +33,11 @@ const Login: FC = () => {
   const alertSent = useRef(false);
 
   const {
-    register,
+    control,
     handleSubmit,
     setError,
     formState: { errors },
-  } = useForm<FormValues>();
+  } = useForm<FieldValues>();
 
   const params = useMemo(() => new URLSearchParams(search), [search]);
 
@@ -98,29 +98,29 @@ const Login: FC = () => {
             <Aerror>{errors.root.serverError.message}</Aerror>
           ) : null}
           <Input
+            control={control}
+            inputName="mail"
             type="email"
-            registered={register('mail', {
+            rules={{
               required: t('mail.required', { ns: 'fields' }),
               pattern: {
                 value: regexMail,
                 message: t('mail.pattern', { ns: 'fields' }),
               },
-            })}
+            }}
             label={t('mail.label', { ns: 'fields' })}
             autoComplete="username"
           />
-          {errors.mail?.message !== undefined ? <Aerror>{errors.mail.message}</Aerror> : null}
           <Input
+            control={control}
+            inputName="password"
             type="password"
-            registered={register('password', {
+            rules={{
               required: t('password.required', { ns: 'fields' }),
-            })}
+            }}
             label={t('password.label', { ns: 'fields' })}
             autoComplete="current-password"
           />
-          {errors.password?.message !== undefined ? (
-            <Aerror>{errors.password.message}</Aerror>
-          ) : null}
           <div className="login__main__buttons">
             <Button type="submit">{t('login.formCTA', { ns: 'pages' })}</Button>
             <Button href="/reset/password" theme="text-only">

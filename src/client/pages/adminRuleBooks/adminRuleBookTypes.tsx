@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState, type FC } from 'react';
 
 import i18next from 'i18next';
-import { useForm, type SubmitHandler } from 'react-hook-form';
+import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { useApi, useSystemAlerts } from '../../providers';
@@ -28,13 +28,13 @@ const AdminRuleBookTypes: FC = () => {
   const [deleteBookTypeMode, setDeleteBookTypeMode] = useState('');
 
   const {
-    register,
+    control,
     handleSubmit,
     setError,
     reset,
     setValue,
     formState: { errors },
-  } = useForm<FormValues>();
+  } = useForm<FieldValues>();
 
   const loadRuleBookTypes = useCallback(() => {
     if (api !== undefined) {
@@ -256,14 +256,15 @@ const AdminRuleBookTypes: FC = () => {
               <Aerror>{errors.root.serverError.message}</Aerror>
             ) : null}
             <Input
+              control={control}
+              inputName="name"
               type="text"
               size="small"
-              registered={register('name', {
+              rules={{
                 required: t('nameRuleBookType.required', { ns: 'fields' }),
-              })}
+              }}
               label={t('nameRuleBookType.label', { ns: 'fields' })}
             />
-            {errors.name?.message !== undefined ? <Aerror>{errors.name.message}</Aerror> : null}
           </form>
         ) : null}
         <div className="adminRuleBooktypes__create__buttons">

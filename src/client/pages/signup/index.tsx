@@ -1,7 +1,7 @@
 import React, { type FC } from 'react';
 
 import i18next from 'i18next';
-import { useForm, type SubmitHandler } from 'react-hook-form';
+import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
@@ -29,12 +29,12 @@ const Signup: FC = () => {
   const { createAlert, getNewId } = useSystemAlerts();
 
   const {
-    register,
+    control,
     handleSubmit,
     watch,
     setError,
     formState: { errors },
-  } = useForm<FormValues>();
+  } = useForm<FieldValues>();
 
   const onSubmit: SubmitHandler<FormValues> = ({ username, mail, password }) => {
     if (api !== undefined) {
@@ -59,7 +59,7 @@ const Signup: FC = () => {
         .catch(({ response }) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
-            setError(data.sent, {
+            setError(data.sent as string, {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
                 field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
@@ -86,53 +86,53 @@ const Signup: FC = () => {
             <Aerror>{errors.root.serverError.message}</Aerror>
           ) : null}
           <Input
-            type="text"
-            registered={register('username', {
+            control={control}
+            inputName="username"
+            rules={{
               required: t('username.required', { ns: 'fields' }),
-            })}
+            }}
+            type="text"
             label={t('username.label', { ns: 'fields' })}
           />
-          {errors.mail?.message !== undefined ? <Aerror>{errors.mail.message}</Aerror> : null}
           <Input
+            control={control}
+            inputName="mail"
             type="email"
-            registered={register('mail', {
+            rules={{
               required: t('mail.required', { ns: 'fields' }),
               pattern: {
                 value: regexMail,
                 message: t('mail.pattern', { ns: 'fields' }),
               },
-            })}
+            }}
             label={t('mail.label', { ns: 'fields' })}
             autoComplete="email"
           />
-          {errors.mail?.message !== undefined ? <Aerror>{errors.mail.message}</Aerror> : null}
           <Input
+            control={control}
+            inputName="password"
             type="password"
-            registered={register('password', {
+            rules={{
               required: t('password.required', { ns: 'fields' }),
-            })}
+            }}
             label={t('password.label', { ns: 'fields' })}
             autoComplete="new-password"
           />
-          {errors.password?.message !== undefined ? (
-            <Aerror>{errors.password.message}</Aerror>
-          ) : null}
           <Input
+            control={control}
+            inputName="confirmPassword"
             type="password"
-            registered={register('confirmPassword', {
+            rules={{
               required: t('confirmPassword.required', { ns: 'fields' }),
               validate: (val: string) => {
                 if (watch('password') !== val) {
                   return t('confirmPassword.validate', { ns: 'fields' });
                 }
               },
-            })}
+            }}
             label={t('confirmPassword.label', { ns: 'fields' })}
             autoComplete="new-password"
           />
-          {errors.confirmPassword?.message !== undefined ? (
-            <Aerror>{errors.confirmPassword.message}</Aerror>
-          ) : null}
 
           <div className="signup__main__buttons">
             <Button type="submit">{t('signup.formCTA', { ns: 'pages' })}</Button>

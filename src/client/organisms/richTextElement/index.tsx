@@ -1,6 +1,6 @@
 import React, { useEffect, type FC } from 'react';
 
-import Heading from '@tiptap/extension-heading';
+import Heading, { type Level } from '@tiptap/extension-heading';
 import Paragraph from '@tiptap/extension-paragraph';
 import Table from '@tiptap/extension-table';
 import TableCell from '@tiptap/extension-table-cell';
@@ -20,7 +20,7 @@ import { classTrim } from '../../utils';
 import './../../atoms/atitle.scss';
 import './richTextElement.scss';
 
-const completeRichTextElementExtentions = [
+const basicRichTextElementExtentions = [
   StarterKit.configure({
     // Disable an included extension
     paragraph: false,
@@ -76,78 +76,7 @@ const completeRichTextElementExtentions = [
   }),
   Heading.configure({ levels: [1, 2, 3] }).extend({
     renderHTML({ node, HTMLAttributes }) {
-      const hasLevel = this.options.levels.includes(node.attrs.level);
-      const level = hasLevel ? node.attrs.level : this.options.levels[0];
-
-      return [
-        `h${level}`,
-        mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
-          class: `atitle atitle--h${level}`,
-        }),
-        0,
-      ];
-    },
-  }),
-  ReactHighlight,
-  ReactComponentEmbed,
-];
-
-const basicRichTextElementExtentions = [
-  StarterKit.configure({
-    // Disable an included extension
-    paragraph: false,
-    heading: false,
-
-    // Configure an included extension
-    bold: {
-      HTMLAttributes: {
-        class: 'richTextElt--bold',
-      },
-    },
-    italic: {
-      HTMLAttributes: {
-        class: 'richTextElt--italic',
-      },
-    },
-    bulletList: {
-      HTMLAttributes: {
-        class: 'aul',
-      },
-    },
-    listItem: {
-      HTMLAttributes: {
-        class: 'ali',
-      },
-    },
-  }),
-  Paragraph.configure({
-    HTMLAttributes: {
-      class: 'ap',
-    },
-  }),
-  Table.configure({
-    HTMLAttributes: {
-      class: 'atable',
-    },
-  }),
-  TableRow.configure({
-    HTMLAttributes: {
-      class: 'atr',
-    },
-  }),
-  TableHeader.configure({
-    HTMLAttributes: {
-      class: 'ath',
-    },
-  }),
-  TableCell.configure({
-    HTMLAttributes: {
-      class: 'atd',
-    },
-  }),
-  Heading.configure({ levels: [1, 2, 3] }).extend({
-    renderHTML({ node, HTMLAttributes }) {
-      const hasLevel = this.options.levels.includes(node.attrs.level);
+      const hasLevel = this.options.levels.includes(node.attrs.level as Level);
       const level = hasLevel ? node.attrs.level : this.options.levels[0];
 
       return [
@@ -161,6 +90,8 @@ const basicRichTextElementExtentions = [
   }),
   ReactHighlight,
 ];
+
+const completeRichTextElementExtentions = [...basicRichTextElementExtentions, ReactComponentEmbed];
 
 interface IRichTextElement {
   /** The text Editor */

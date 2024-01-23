@@ -1,7 +1,7 @@
 import React, { type FC } from 'react';
 
 import i18next from 'i18next';
-import { useForm, type SubmitHandler } from 'react-hook-form';
+import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
@@ -26,11 +26,11 @@ const ForgotPassword: FC = () => {
   const navigate = useNavigate();
 
   const {
-    register,
+    control,
     handleSubmit,
     setError,
     formState: { errors },
-  } = useForm<FormValues>();
+  } = useForm<FieldValues>();
 
   const onSubmit: SubmitHandler<FormValues> = ({ mail }) => {
     if (api !== undefined) {
@@ -70,18 +70,19 @@ const ForgotPassword: FC = () => {
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <Input
+          control={control}
+          inputName="mail"
           type="email"
-          registered={register('mail', {
+          rules={{
             required: t('mail.required', { ns: 'fields' }),
             pattern: {
               value: regexMail,
               message: t('mail.pattern', { ns: 'fields' }),
             },
-          })}
+          }}
           label={t('mail.label', { ns: 'fields' })}
           autoComplete="username"
         />
-        {errors.mail?.message !== undefined ? <Aerror>{errors.mail.message}</Aerror> : null}
         <Button type="submit">{t('forgotPass.formCTA', { ns: 'pages' })}</Button>
       </form>
     </div>

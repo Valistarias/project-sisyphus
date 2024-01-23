@@ -1,7 +1,8 @@
-import React, { useCallback, useMemo, useState, type FC } from 'react';
+import React, { useCallback, useMemo, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
+import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -13,6 +14,11 @@ import { Alert, RichTextElement, completeRichTextElementExtentions } from '../..
 
 import './adminNewChapter.scss';
 
+interface FormValues {
+  name: string;
+  nameFr: string;
+}
+
 const AdminNewChapters: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
@@ -22,14 +28,6 @@ const AdminNewChapters: FC = () => {
 
   const params = useMemo(() => new URLSearchParams(search), [search]);
 
-  const [chapterName, setChapterName] = useState('');
-  const [chapterNameFr, setChapterNameFr] = useState('');
-
-  const [chapterSummary] = useState('');
-  const [chapterSummaryFr] = useState('');
-
-  const [error, setError] = useState('');
-
   const summaryEditor = useEditor({
     extensions: completeRichTextElementExtentions,
   });
@@ -38,8 +36,15 @@ const AdminNewChapters: FC = () => {
     extensions: completeRichTextElementExtentions,
   });
 
-  const onSaveChapter = useCallback(
-    (elt) => {
+  const {
+    handleSubmit,
+    setError,
+    control,
+    formState: { errors },
+  } = useForm<FieldValues>();
+
+  const onSaveChapter: SubmitHandler<FormValues> = useCallback(
+    ({ name, nameFr }) => {
       if (
         summaryEditor === null ||
         summaryFrEditor === null ||
@@ -49,92 +54,81 @@ const AdminNewChapters: FC = () => {
       ) {
         return;
       }
-      if (chapterName === '') {
-        setError(t('nameChapter.required', { ns: 'fields' }));
-      } else {
-        let html: string | null = summaryEditor.getHTML();
-        const htmlFr = summaryFrEditor.getHTML();
-        if (html === '<p class="ap"></p>') {
-          html = null;
-        }
-
-        let i18n: any | null = null;
-
-        if (chapterNameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-          i18n = {
-            fr: {
-              title: chapterNameFr,
-              summary: htmlFr,
-            },
-          };
-        }
-
-        api.chapters
-          .create({
-            title: chapterName,
-            type: params.get('type'),
-            ruleBook: params.get('ruleBookId'),
-            summary: html,
-            i18n,
-          })
-          .then((chapter) => {
-            const newId = getNewId();
-            createAlert({
-              key: newId,
-              dom: (
-                <Alert key={newId} id={newId} timer={5}>
-                  <Ap>{t('adminNewChapter.successCreate', { ns: 'pages' })}</Ap>
-                </Alert>
-              ),
-            });
-            navigate(`/admin/chapter/${chapter._id}`);
-          })
-          .catch(({ response }) => {
-            const { data } = response;
-            if (data.code === 'CYPU-104') {
-              setError(
-                t(`serverErrors.${data.code}`, {
-                  field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize'),
-                })
-              );
-            } else {
-              setError(
-                t(`serverErrors.${data.code}`, {
-                  field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize'),
-                })
-              );
-            }
-          });
+      let html: string | null = summaryEditor.getHTML();
+      const htmlFr = summaryFrEditor.getHTML();
+      if (html === '<p class="ap"></p>') {
+        html = null;
       }
+
+      let i18n: any | null = null;
+
+      if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
+        i18n = {
+          fr: {
+            title: nameFr,
+            summary: htmlFr,
+          },
+        };
+      }
+
+      api.chapters
+        .create({
+          title: name,
+          type: params.get('type'),
+          ruleBook: params.get('ruleBookId'),
+          summary: html,
+          i18n,
+        })
+        .then((chapter) => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert key={newId} id={newId} timer={5}>
+                <Ap>{t('adminNewChapter.successCreate', { ns: 'pages' })}</Ap>
+              </Alert>
+            ),
+          });
+          navigate(`/admin/chapter/${chapter._id}`);
+        })
+        .catch(({ response }) => {
+          const { data } = response;
+          if (data.code === 'CYPU-104') {
+            setError('root.serverError', {
+              type: 'server',
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize'),
+              }),
+            });
+          } else {
+            setError('root.serverError', {
+              type: 'server',
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize'),
+              }),
+            });
+          }
+        });
     },
-    [
-      summaryEditor,
-      summaryFrEditor,
-      api,
-      params,
-      chapterName,
-      t,
-      chapterNameFr,
-      getNewId,
-      createAlert,
-      navigate,
-    ]
+    [summaryEditor, summaryFrEditor, api, params, getNewId, createAlert, t, navigate, setError]
   );
 
   return (
     <div className="adminNewChapter">
-      <div className="adminNewChapter__content">
+      <form onSubmit={handleSubmit(onSaveChapter)} noValidate className="adminNewChapter__content">
         <Atitle level={1}>{t('adminNewChapter.title', { ns: 'pages' })}</Atitle>
-        {error !== '' ? <Aerror className="adminNewChapter__error">{error}</Aerror> : null}
+        {errors.root?.serverError?.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminNewChapter__basics">
           <Input
+            control={control}
+            inputName="name"
+            rules={{
+              required: t('nameChapter.required', { ns: 'fields' }),
+            }}
             type="text"
             label={t('nameChapter.label', { ns: 'fields' })}
-            onChange={(e) => {
-              setChapterName(e.target.value);
-              setError('');
-            }}
-            value={chapterName}
             className="adminNewChapter__basics__name"
           />
         </div>
@@ -142,7 +136,7 @@ const AdminNewChapters: FC = () => {
           <RichTextElement
             label={t('chapterSummary.title', { ns: 'fields' })}
             editor={summaryEditor}
-            rawStringContent={chapterSummary}
+            rawStringContent={''}
             ruleBookId={params.get('ruleBookId') ?? undefined}
             small
             complete
@@ -157,12 +151,10 @@ const AdminNewChapters: FC = () => {
         </Ap>
         <div className="adminNewChapter__basics">
           <Input
+            control={control}
+            inputName="nameFr"
             type="text"
             label={`${t('nameChapter.label', { ns: 'fields' })} (FR)`}
-            onChange={(e) => {
-              setChapterNameFr(e.target.value);
-            }}
-            value={chapterNameFr}
             className="adminNewChapter__basics__name"
           />
         </div>
@@ -170,16 +162,14 @@ const AdminNewChapters: FC = () => {
           <RichTextElement
             label={`${t('chapterSummary.title', { ns: 'fields' })} (FR)`}
             editor={summaryFrEditor}
-            rawStringContent={chapterSummaryFr}
+            rawStringContent={''}
             ruleBookId={params.get('ruleBookId') ?? undefined}
             small
             complete
           />
         </div>
-        <Button onClick={onSaveChapter} disabled={error !== ''}>
-          {t('adminNewChapter.button', { ns: 'pages' })}
-        </Button>
-      </div>
+        <Button type="submit">{t('adminNewChapter.button', { ns: 'pages' })}</Button>
+      </form>
     </div>
   );
 };

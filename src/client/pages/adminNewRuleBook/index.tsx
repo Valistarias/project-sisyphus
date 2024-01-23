@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
+import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,6 +15,12 @@ import { type IRuleBookType } from '../../types/data';
 
 import './adminNewRuleBook.scss';
 
+interface FormValues {
+  name: string;
+  nameFr: string;
+  type: string;
+}
+
 const AdminNewRuleBooks: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
@@ -21,16 +28,7 @@ const AdminNewRuleBooks: FC = () => {
   const { createAlert, getNewId } = useSystemAlerts();
   const { triggerRuleBookReload } = useGlobalVars();
 
-  const [ruleBookName, setRuleBookName] = useState('');
-  const [ruleBookNameFr, setRuleBookNameFr] = useState('');
-
-  const [ruleBookSummary] = useState('');
-  const [ruleBookSummaryFr] = useState('');
-
   const [ruleBookTypes, setRuleBookTypes] = useState<ISingleValueSelect[]>([]);
-  const [selectedType, setSelectedType] = useState<string | null>(null);
-
-  const [error, setError] = useState('');
 
   const introEditor = useEditor({
     extensions: completeRichTextElementExtentions,
@@ -40,83 +38,84 @@ const AdminNewRuleBooks: FC = () => {
     extensions: completeRichTextElementExtentions,
   });
 
-  const onSaveRuleBook = useCallback(
-    (elt) => {
+  const {
+    handleSubmit,
+    setError,
+    control,
+    formState: { errors },
+  } = useForm<FieldValues>();
+
+  const onSaveRuleBook: SubmitHandler<FormValues> = useCallback(
+    ({ name, nameFr, type }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
-      if (ruleBookName === '') {
-        setError(t('nameRuleBook.required', { ns: 'fields' }));
-      } else if (selectedType === null) {
-        setError(t('typeRuleBook.required', { ns: 'fields' }));
-      } else {
-        let html: string | null = introEditor.getHTML();
-        const htmlFr = introFrEditor.getHTML();
-        if (html === '<p class="ap"></p>') {
-          html = null;
-        }
-
-        let i18n: any | null = null;
-
-        if (ruleBookNameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-          i18n = {
-            fr: {
-              title: ruleBookNameFr,
-              summary: htmlFr,
-            },
-          };
-        }
-
-        api.ruleBooks
-          .create({
-            title: ruleBookName,
-            type: selectedType,
-            summary: html,
-            i18n,
-          })
-          .then((ruleBook) => {
-            const newId = getNewId();
-            createAlert({
-              key: newId,
-              dom: (
-                <Alert key={newId} id={newId} timer={5}>
-                  <Ap>{t('adminNewRuleBook.successCreate', { ns: 'pages' })}</Ap>
-                </Alert>
-              ),
-            });
-            triggerRuleBookReload();
-            navigate(`/admin/ruleBook/${ruleBook._id}`);
-          })
-          .catch(({ response }) => {
-            const { data } = response;
-            if (data.code === 'CYPU-104') {
-              setError(
-                t(`serverErrors.${data.code}`, {
-                  field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
-                })
-              );
-            } else {
-              setError(
-                t(`serverErrors.${data.code}`, {
-                  field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
-                })
-              );
-            }
-          });
+      let html: string | null = introEditor.getHTML();
+      const htmlFr = introFrEditor.getHTML();
+      if (html === '<p class="ap"></p>') {
+        html = null;
       }
+
+      let i18n: any | null = null;
+
+      if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
+        i18n = {
+          fr: {
+            title: nameFr,
+            summary: htmlFr,
+          },
+        };
+      }
+
+      api.ruleBooks
+        .create({
+          title: name,
+          type,
+          summary: html,
+          i18n,
+        })
+        .then((ruleBook) => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert key={newId} id={newId} timer={5}>
+                <Ap>{t('adminNewRuleBook.successCreate', { ns: 'pages' })}</Ap>
+              </Alert>
+            ),
+          });
+          triggerRuleBookReload();
+          navigate(`/admin/ruleBook/${ruleBook._id}`);
+        })
+        .catch(({ response }) => {
+          const { data } = response;
+          if (data.code === 'CYPU-104') {
+            setError('root.serverError', {
+              type: 'server',
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
+              }),
+            });
+          } else {
+            setError('root.serverError', {
+              type: 'server',
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
+              }),
+            });
+          }
+        });
     },
     [
       introEditor,
       introFrEditor,
       api,
-      ruleBookName,
-      selectedType,
-      t,
-      ruleBookNameFr,
       getNewId,
       createAlert,
-      navigate,
+      t,
       triggerRuleBookReload,
+      navigate,
+      setError,
     ]
   );
 
@@ -149,27 +148,34 @@ const AdminNewRuleBooks: FC = () => {
 
   return (
     <div className="adminNewRuleBook">
-      <div className="adminNewRuleBook__content">
+      <form
+        className="adminNewRuleBook__content"
+        onSubmit={handleSubmit(onSaveRuleBook)}
+        noValidate
+      >
         <Atitle level={1}>{t('adminNewRuleBook.title', { ns: 'pages' })}</Atitle>
-        {error !== '' ? <Aerror className="adminNewRuleBook__error">{error}</Aerror> : null}
+        {errors.root?.serverError?.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminNewRuleBook__basics">
           <Input
+            control={control}
+            inputName="name"
             type="text"
-            label={t('nameRuleBook.label', { ns: 'fields' })}
-            onChange={(e) => {
-              setRuleBookName(e.target.value);
-              setError('');
+            rules={{
+              required: t('nameRuleBook.required', { ns: 'fields' }),
             }}
-            value={ruleBookName}
+            label={t('nameRuleBook.label', { ns: 'fields' })}
             className="adminNewRuleBook__basics__name"
           />
           <SmartSelect
+            control={control}
+            inputName="type"
+            rules={{
+              required: t('typeRuleBook.required', { ns: 'fields' }),
+            }}
             label={t('typeRuleBook.select', { ns: 'fields' })}
             options={ruleBookTypes}
-            onChange={(choice) => {
-              setSelectedType(choice.value);
-              setError('');
-            }}
             className="adminNewRuleBook__basics__type"
           />
         </div>
@@ -177,7 +183,7 @@ const AdminNewRuleBooks: FC = () => {
           <RichTextElement
             label={t('ruleBookSummary.title', { ns: 'fields' })}
             editor={introEditor}
-            rawStringContent={ruleBookSummary}
+            rawStringContent={''}
             small
             complete
           />
@@ -191,12 +197,10 @@ const AdminNewRuleBooks: FC = () => {
         </Ap>
         <div className="adminNewRuleBook__basics">
           <Input
+            control={control}
+            inputName="nameFr"
             type="text"
             label={`${t('nameRuleBook.label', { ns: 'fields' })} (FR)`}
-            onChange={(e) => {
-              setRuleBookNameFr(e.target.value);
-            }}
-            value={ruleBookNameFr}
             className="adminNewRuleBook__basics__name"
           />
         </div>
@@ -204,15 +208,13 @@ const AdminNewRuleBooks: FC = () => {
           <RichTextElement
             label={`${t('ruleBookSummary.title', { ns: 'fields' })} (FR)`}
             editor={introFrEditor}
-            rawStringContent={ruleBookSummaryFr}
+            rawStringContent={''}
             small
             complete
           />
         </div>
-        <Button onClick={onSaveRuleBook} disabled={error !== ''}>
-          {t('adminNewRuleBook.button', { ns: 'pages' })}
-        </Button>
-      </div>
+        <Button type="submit">{t('adminNewRuleBook.button', { ns: 'pages' })}</Button>
+      </form>
     </div>
   );
 };

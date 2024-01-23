@@ -26,16 +26,12 @@ const NewCharacter: FC = () => {
   const navigate = useNavigate();
 
   const [campaigns, setCampaigns] = useState<ISingleValueSelect[]>([]);
-  const [selectedCampaign, setSelectedCampaign] = useState<string | null>(null);
 
   const [loading, setLoading] = useState(true);
 
   const calledApi = useRef(false);
 
-  console.log('campaigns', campaigns);
-
   const {
-    register,
     handleSubmit,
     setError,
     control,
@@ -77,35 +73,35 @@ const NewCharacter: FC = () => {
     }
   }, [api, createAlert, getNewId, t]);
 
-  const onSubmit: SubmitHandler<FormValues> = (elt) => {
-    console.log('elt', elt);
-    // if (api !== undefined) {
-    //   api.characters
-    //     .create({
-    //       name,
-    //     })
-    //     .then(({ characterId }) => {
-    //       const newId = getNewId();
-    //       createAlert({
-    //         key: newId,
-    //         dom: (
-    //           <Alert key={newId} id={newId} timer={5}>
-    //             <Ap>{t('newCharacter.successCreate', { ns: 'pages' })}</Ap>
-    //           </Alert>
-    //         ),
-    //       });
-    //       navigate(`/character/${characterId}`);
-    //     })
-    //     .catch(({ response }) => {
-    //       const { data } = response;
-    //       setError('root.serverError', {
-    //         type: 'server',
-    //         message: t(`serverErrors.${data.code}`, {
-    //           field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
-    //         }),
-    //       });
-    //     });
-    // }
+  const onSubmit: SubmitHandler<FormValues> = ({ name, campaign }) => {
+    if (api !== undefined) {
+      api.characters
+        .create({
+          name,
+          campaign,
+        })
+        .then(({ characterId }) => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert key={newId} id={newId} timer={5}>
+                <Ap>{t('newCharacter.successCreate', { ns: 'pages' })}</Ap>
+              </Alert>
+            ),
+          });
+          navigate(`/character/${characterId}`);
+        })
+        .catch(({ response }) => {
+          const { data } = response;
+          setError('root.serverError', {
+            type: 'server',
+            message: t(`serverErrors.${data.code}`, {
+              field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
+            }),
+          });
+        });
+    }
   };
 
   useEffect(() => {
@@ -141,7 +137,6 @@ const NewCharacter: FC = () => {
           label={t('typeRuleBook.select', { ns: 'fields' })}
           options={campaigns}
           className="adminNewRuleBook__basics__type"
-          rules={{ required: 'This field is required' }}
         />
         <Button type="submit">{t('newCharacter.formCTA', { ns: 'pages' })}</Button>
       </form>
