@@ -1,16 +1,15 @@
 import { type Router } from 'express';
 
-import { verifyToken, adminNeeded } from '../../middlewares';
+import { adminNeeded, verifyToken } from '../../middlewares';
 
 import {
+  archive,
+  changeChaptersOrder,
   create,
-  update,
   deleteRuleBook,
   findAll,
   findSingle,
-  changeChaptersOrder,
-  publish,
-  archive,
+  update,
 } from './controller';
 
 export default (app: Router): void => {
@@ -26,8 +25,6 @@ export default (app: Router): void => {
   app.post('/rulebooks/create', [verifyToken, adminNeeded], create);
 
   app.post('/rulebooks/update', [verifyToken, adminNeeded], update);
-
-  app.post('/rulebooks/publish', [verifyToken, adminNeeded], publish);
 
   app.post('/rulebooks/archive', [verifyToken, adminNeeded], archive);
 

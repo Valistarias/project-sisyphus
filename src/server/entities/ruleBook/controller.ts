@@ -94,12 +94,12 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, title = null, type = null, summary = null, i18n } = req.body;
+  const { id, title = null, type = null, summary = null, draft = null, i18n } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('RuleBook ID'));
     return;
   }
-  findRuleBookById(id)
+  findRuleBookById(id as string)
     .then((ruleBook) => {
       if (title !== null) {
         ruleBook.title = title;
@@ -110,13 +110,16 @@ const update = (req: Request, res: Response): void => {
       if (type !== null) {
         ruleBook.type = type;
       }
+      if (draft !== null) {
+        ruleBook.draft = draft;
+      }
 
       if (i18n !== null) {
         const newIntl = {
           ...(ruleBook.i18n != null && ruleBook.i18n !== '' ? JSON.parse(ruleBook.i18n) : {}),
         };
 
-        Object.keys(i18n).forEach((lang) => {
+        Object.keys(i18n as Record<string, any>).forEach((lang) => {
           newIntl[lang] = i18n[lang];
         });
 
@@ -129,31 +132,7 @@ const update = (req: Request, res: Response): void => {
           res.send({ message: 'RuleBook was updated successfully!', ruleBook });
         })
         .catch((err) => {
-          res.status(500).send(gemServerError(err));
-        });
-    })
-    .catch(() => {
-      res.status(404).send(gemNotFound('RuleBook'));
-    });
-};
-
-const publish = (req: Request, res: Response): void => {
-  const { id, draft = null } = req.body;
-  if (id === undefined || draft === null) {
-    res.status(400).send(gemInvalidField('RuleBook ID'));
-    return;
-  }
-  findRuleBookById(id)
-    .then((ruleBook) => {
-      ruleBook.draft = draft;
-
-      ruleBook
-        .save()
-        .then(() => {
-          res.send({ message: 'RuleBook was updated successfully!', ruleBook });
-        })
-        .catch((err) => {
-          res.status(500).send(gemServerError(err));
+          res.status(500).send(gemServerError(err as Error));
         });
     })
     .catch(() => {
@@ -167,7 +146,7 @@ const archive = (req: Request, res: Response): void => {
     res.status(400).send(gemInvalidField('RuleBook ID'));
     return;
   }
-  findRuleBookById(id)
+  findRuleBookById(id as string)
     .then((ruleBook) => {
       ruleBook.archived = archived;
 
@@ -177,7 +156,7 @@ const archive = (req: Request, res: Response): void => {
           res.send({ message: 'RuleBook was updated successfully!', ruleBook });
         })
         .catch((err) => {
-          res.status(500).send(gemServerError(err));
+          res.status(500).send(gemServerError(err as Error));
         });
     })
     .catch(() => {
@@ -221,13 +200,13 @@ const deleteRuleBook = (req: Request, res: Response): void => {
     res.status(400).send(gemInvalidField('RuleBook ID'));
     return;
   }
-  findRuleBookById(id)
+  findRuleBookById(id as string)
     .then((ruleBook) => {
-      deleteNotionsByRuleBookId(id)
+      deleteNotionsByRuleBookId(id as string)
         .then(() => {
           deleteChaptersRecursive(ruleBook.chapters.map((chapter) => String(chapter._id)))
             .then(() => {
-              RuleBook.findByIdAndDelete(id)
+              RuleBook.findByIdAndDelete(id as string)
                 .then(() => {
                   res.send({ message: 'RuleBook was deleted successfully!' });
                 })
@@ -284,7 +263,7 @@ const findSingle = (req: Request, res: Response): void => {
           res.status(404).send(err);
         });
     })
-    .catch((err) => res.status(500).send(gemServerError(err)));
+    .catch((err) => res.status(500).send(gemServerError(err as Error)));
 };
 
 const findAll = (req: Request, res: Response): void => {
@@ -344,9 +323,9 @@ const findAll = (req: Request, res: Response): void => {
 
           res.send(curatedRuleBooks);
         })
-        .catch((err) => res.status(500).send(gemServerError(err)));
+        .catch((err) => res.status(500).send(gemServerError(err as Error)));
     })
-    .catch((err) => res.status(500).send(gemServerError(err)));
+    .catch((err) => res.status(500).send(gemServerError(err as Error)));
 };
 
 export {
@@ -357,6 +336,5 @@ export {
   findAll,
   findRuleBookById,
   findSingle,
-  publish,
   update,
 };

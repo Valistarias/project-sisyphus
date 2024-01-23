@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-import Entity from './entity';
-
 import { type ICuratedRuleBook } from '../../types/data';
+
+import Entity from './entity';
 
 interface IRuleBooksPayload {
   ruleBookId: string;
@@ -16,11 +16,6 @@ interface IRuleBooksChapterOrder {
   }>;
 }
 
-interface IPublishPayload {
-  id: string;
-  draft: boolean;
-}
-
 interface IArchivedPayload {
   id: string;
   archived: boolean;
@@ -28,7 +23,6 @@ interface IArchivedPayload {
 
 export default class RuleBooks extends Entity {
   get: (payload: IRuleBooksPayload) => Promise<ICuratedRuleBook>;
-  publish: (payload: IPublishPayload) => Promise<ICuratedRuleBook>;
   archive: (payload: IArchivedPayload) => Promise<boolean>;
   changeChaptersOrder: (payload: IRuleBooksChapterOrder) => Promise<ICuratedRuleBook>;
 
@@ -40,7 +34,7 @@ export default class RuleBooks extends Entity {
         axios
           .get(`${this.url}/single/`, { params: payload })
           .then((res) => {
-            resolve(res.data);
+            resolve(res.data as ICuratedRuleBook | PromiseLike<ICuratedRuleBook>);
           })
           .catch((err) => {
             reject(err);
@@ -52,19 +46,7 @@ export default class RuleBooks extends Entity {
         axios
           .post(`${this.url}/changechaptersorder/`, payload)
           .then((res) => {
-            resolve(res.data);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
-
-    this.publish = async (payload) =>
-      await new Promise((resolve, reject) => {
-        axios
-          .post(`${this.url}/publish/`, payload)
-          .then((res) => {
-            resolve(res.data);
+            resolve(res.data as ICuratedRuleBook | PromiseLike<ICuratedRuleBook>);
           })
           .catch((err) => {
             reject(err);
@@ -76,7 +58,7 @@ export default class RuleBooks extends Entity {
         axios
           .post(`${this.url}/archive/`, payload)
           .then((res) => {
-            resolve(res.data);
+            resolve(res.data as boolean | PromiseLike<boolean>);
           })
           .catch((err) => {
             reject(err);
