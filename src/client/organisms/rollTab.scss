@@ -1,66 +1,101 @@
 .roll-tab {
   align-items: flex-end;
-  bottom: 2vh;
+  bottom: 0;
   display: flex;
   flex-direction: row;
   gap: 1rem;
+  height: 100%;
   position: absolute;
-  right: -25rem;
+  right: -34rem;
   transition: right 0.4s ease;
 
-  &__buttons {
-    display: flex;
+  &__content {
+    background-color: var(--primary-05);
+    border-left: 1px solid var(--primary);
+    box-shadow: 0 0 2rem var(--primary-00);
     display: flex;
     flex-direction: column;
-    gap: 2rem;
-    justify-content: center;
+    height: 100%;
+    transition:
+      box-shadow 0.4s ease 0.2s,
+      border 0.6s ease 0.1s;
+    width: 34rem;
+  }
 
-    &__roll,
-    &__toggle {
-      display: flex;
-      height: 20rem;
-      justify-content: center;
-      writing-mode: vertical-rl;
+  &__log {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 1;
+    height: 100%;
+    padding: 1rem;
+    padding-top: 5vh;
+
+    &__title {
+      font-size: 1.6rem;
+      letter-spacing: 1rem;
+      margin: 0;
+      margin-bottom: 2rem;
+      text-align: center;
     }
 
-    &__roll {
-      opacity: 0;
-      transition: opacity 0.2s ease;
+    &__table {
+      background: var(--primary-dark-40);
+      background-blend-mode: lighten;
+      border: 1px solid var(--primary-05);
+      height: 100%;
+      overflow-y: scroll;
+      padding: 1rem;
+      position: relative;
 
-      &--visible {
-        opacity: 1;
+      &__animatedbg {
+        left: 50%;
+        opacity: 0.05;
+        pointer-events: none;
+        position: absolute;
+        top: 50%;
+        transform: translate3d(-50%, -50%, 0);
+        width: 100%;
       }
     }
   }
 
-  &__table {
+  &__dice {
     background-color: var(--primary-00);
-    border: 1px solid var(--primary-00);
-    box-shadow: 0 0 2rem var(--primary-00);
     box-sizing: border-box;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     flex-wrap: wrap;
     gap: 1rem;
-    // height: 30rem;
-    // opacity: 0;
     padding: 1rem;
+    padding-bottom: 5vh;
     pointer-events: none;
     transition:
       box-shadow 0.4s ease 0.2s,
       border 0.6s ease 0.1s,
       background-color 0.6s ease 0.1s;
-    width: 25rem;
+
+    &__title {
+      font-size: 1.2rem;
+      letter-spacing: 0.8rem;
+      text-align: center;
+      text-transform: uppercase;
+      width: 100%;
+    }
+
+    &__roll {
+      justify-content: center;
+      width: 100%;
+    }
 
     &__button {
       opacity: 0;
       position: relative;
       transition: opacity 1s ease;
-      width: 100%;
+      width: calc(50% - 0.5rem);
 
       &__icon {
         fill: var(--primary-60);
-        height: 6rem;
+        height: 5rem;
         position: absolute;
         right: 1rem;
         top: 50%;
@@ -87,20 +122,38 @@
     }
   }
 
-  &--open {
-    right: 2vh;
+  &__buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    height: 100%;
+    justify-content: flex-start;
+    padding-top: 1rem;
 
-    .roll-tab__table {
-      background-color: var(--primary-05);
-      border: 1px solid var(--primary);
+    &__toggle {
+      display: flex;
+      height: 20rem;
+      justify-content: center;
+      writing-mode: vertical-rl;
+    }
+  }
+
+  &--open {
+    right: 0;
+
+    .roll-tab__content {
       box-shadow: 0 0 2rem var(--primary-10);
+    }
+
+    .roll-tab__dice {
+      background-color: var(--primary-05);
       pointer-events: all;
 
       &__button {
         opacity: 1;
       }
 
-      @for $i from 1 through 6 {
+      @for $i from 1 through 7 {
         &__button:nth-child(#{$i}n) {
           transition-delay: #{$i * 0.1}s;
         }

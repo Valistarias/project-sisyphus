@@ -43,7 +43,7 @@
             "position": "before"
           },
           {
-            "pattern": "@(express|mongoose)",
+            "pattern": "@(express|mongoose|socket.io-client)",
             "group": "builtin",
             "position": "before"
           },

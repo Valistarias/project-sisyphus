@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import holoBackground from '../assets/imgs/tvbg.gif';
 import { Aicon, Ap, type typeIcons } from '../atoms';
-
 import { type typeDice } from '../types/data';
 
 import { classTrim } from '../utils';
@@ -15,7 +14,7 @@ interface IDiceCard {
   /** The number got */
   value?: number | null;
   /** The size of the card */
-  size?: 'small' | 'medium' | 'large' | 'single';
+  size?: 'xsmall' | 'small' | 'medium' | 'large' | 'single';
   /** Is the card to be skipped ? */
   skip?: boolean;
 }
@@ -46,7 +45,7 @@ const DiceCard: FC<IDiceCard> = ({ type, value, size = 'medium', skip = false })
   const displayedNumberString = useMemo(() => {
     if (skip && value != null) {
       if (type >= 10 && value < 10) {
-        return `0${value}`;
+        return value.toString();
       }
       return value.toString();
     }
@@ -114,7 +113,7 @@ const DiceCard: FC<IDiceCard> = ({ type, value, size = 'medium', skip = false })
       className={classTrim(`
       dice-card
       dice-card--${size}
-      ${animEnded ? 'dice-card--end' : ''}
+      ${animEnded || skip ? 'dice-card--end' : ''}
       ${value !== null ? 'dice-card--visible' : ''}
       ${value === 1 && type > 4 ? 'dice-card--fumble' : ''}
       ${value === type ? 'dice-card--max' : ''}

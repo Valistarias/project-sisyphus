@@ -13,6 +13,13 @@ $purple-dark: #59121f;
 
 :root {
   --black: #{$black};
+  --black-80: #{$black}c;
+  --black-60: #{$black}9;
+  --black-40: #{$black}6;
+  --black-20: #{$black}3;
+  --black-10: #{$black}2;
+  --black-05: #{$black}1;
+  --black-00: #{$black}0;
   --vanta: #{$vanta};
   --dark: #{$dark};
   --white: #{$white};
@@ -68,6 +75,6 @@ $purple-dark: #59121f;
   --tertiary-20: #{$white}3;
   --tertiary-10: #{$white}2;
   --tertiary-05: #{$white}1;
-  --tertiary-00: #{$white}00;
+  --tertiary-00: #{$white}0;
   --tertiary-dark: #{$bone};
 }

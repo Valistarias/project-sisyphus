@@ -46,6 +46,7 @@
 
   &__value {
     color: var(--tertiary);
+    font-family: var(--mono-font);
     font-size: 12rem;
     font-weight: 400;
     letter-spacing: 2rem;
@@ -57,6 +58,23 @@
   }
 
   // Sizes ------------------------------------
+
+  &--xsmall {
+    height: 10rem;
+    width: 6rem;
+
+    .dice-card {
+      &__dice-bg {
+        width: 6rem;
+      }
+
+      &__value {
+        font-size: 4rem;
+        letter-spacing: 0.5rem;
+        margin-right: -0.5rem;
+      }
+    }
+  }
 
   &--small {
     height: 16rem;

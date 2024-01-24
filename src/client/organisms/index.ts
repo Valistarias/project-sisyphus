@@ -6,6 +6,7 @@ import {
   basicRichTextElementExtentions,
   completeRichTextElementExtentions,
 } from './richTextElement';
+import RollResult from './rollResult';
 import RollTab from './rollTab';
 
 export {
@@ -13,6 +14,7 @@ export {
   DragList,
   HeaderBar,
   RichTextElement,
+  RollResult,
   RollTab,
   basicRichTextElementExtentions,
   completeRichTextElementExtentions,

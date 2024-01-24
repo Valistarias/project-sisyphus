@@ -2,8 +2,11 @@ import React, { useCallback, useMemo, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { Aicon, Ap, type typeIcons } from '../atoms';
+import holoBackground from '../assets/imgs/tvbg.gif';
+import { Aicon, Ap, Avideo, type typeIcons } from '../atoms';
 import { Button } from '../molecules';
+
+import RollResult from './rollResult';
 
 import { classTrim, type DiceRequest } from '../utils';
 
@@ -44,7 +47,7 @@ const initRollTab: DiceRequest[] = [
 const RollTab: FC<IRollTab> = ({ onRollDices }) => {
   const { t } = useTranslation();
 
-  const [isOpen, setOpen] = useState(false);
+  const [isOpen, setOpen] = useState(true);
 
   const [diceValues, setDiceValues] = useState<DiceRequest[]>(initRollTab);
 
@@ -81,8 +84,8 @@ const RollTab: FC<IRollTab> = ({ onRollDices }) => {
             <Button
               key={typeDiceNumber}
               theme="solid"
-              className="roll-tab__table__button"
-              size="xlarge"
+              className="roll-tab__dice__button"
+              size="large"
               onContextMenu={(e) => {
                 e.preventDefault();
                 changeDice(typeDiceNumber, 'remove');
@@ -96,7 +99,7 @@ const RollTab: FC<IRollTab> = ({ onRollDices }) => {
               <Ap>{`${diceElt.qty > 0 ? diceElt.qty : ''}D${typeDiceNumber}`}</Ap>
               <Aicon
                 type={`d${typeDiceNumber}` as typeIcons}
-                className="roll-tab__table__button__icon"
+                className="roll-tab__dice__button__icon"
                 size="large"
               />
             </Button>
@@ -117,20 +120,6 @@ const RollTab: FC<IRollTab> = ({ onRollDices }) => {
       <div className="roll-tab__buttons">
         <Button
           theme="solid"
-          active
-          className={classTrim(`
-            roll-tab__buttons__roll
-              ${canRoll ? 'roll-tab__buttons__roll--visible' : ''}
-            `)}
-          onClick={() => {
-            onRollDices(diceValues);
-            setDiceValues(initRollTab);
-          }}
-        >
-          {t('rollTab.roll', { ns: 'components' })}
-        </Button>
-        <Button
-          theme="solid"
           className="roll-tab__buttons__toggle"
           onClick={() => {
             if (isOpen) {
@@ -144,8 +133,35 @@ const RollTab: FC<IRollTab> = ({ onRollDices }) => {
             : t('rollTab.dices', { ns: 'components' })}
         </Button>
       </div>
-
-      <div className="roll-tab__table">{diceElts}</div>
+      <div className="roll-tab__content">
+        <div className="roll-tab__log">
+          <Ap className="roll-tab__log__title">Dice Log</Ap>
+          <div
+            className="roll-tab__log__table"
+            style={{ backgroundImage: `url(${holoBackground})` }}
+          >
+            <Avideo className="roll-tab__log__table__animatedbg" video="logo" />
+            <RollResult />
+          </div>
+        </div>
+        <div className="roll-tab__dice">
+          <Ap className="roll-tab__dice__title">Free Roll</Ap>
+          {diceElts}
+          <Button
+            theme="text-only"
+            size="large"
+            active
+            className="roll-tab__dice__roll"
+            disabled={!canRoll}
+            onClick={() => {
+              onRollDices(diceValues);
+              setDiceValues(initRollTab);
+            }}
+          >
+            {t('rollTab.roll', { ns: 'components' })}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
