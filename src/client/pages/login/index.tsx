@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, type FC } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, type FC } from 'react';
 
 import i18next from 'i18next';
 import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
@@ -56,38 +56,41 @@ const Login: FC = () => {
     }
   }, [params, createAlert, getNewId, t]);
 
-  const onSubmit: SubmitHandler<FormValues> = ({ mail, password }) => {
-    if (api !== undefined) {
-      api.auth
-        .signin({
-          mail,
-          password,
-        })
-        .then((data: IUser) => {
-          setUser(data);
-          triggerRuleBookReload();
-          navigate('/campaigns');
-        })
-        .catch(({ response }) => {
-          const { data } = response;
-          if (data.code === 'CYPU-102') {
-            setError(data.sent as 'mail' | 'password', {
-              type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
-              }),
-            });
-          } else {
-            setError('root.serverError', {
-              type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
-              }),
-            });
-          }
-        });
-    }
-  };
+  const onSubmit: SubmitHandler<FormValues> = useCallback(
+    ({ mail, password }) => {
+      if (api !== undefined) {
+        api.auth
+          .signin({
+            mail,
+            password,
+          })
+          .then((data: IUser) => {
+            setUser(data);
+            triggerRuleBookReload();
+            navigate('/campaigns');
+          })
+          .catch(({ response }) => {
+            const { data } = response;
+            if (data.code === 'CYPU-102') {
+              setError(data.sent as 'mail' | 'password', {
+                type: 'server',
+                message: t(`serverErrors.${data.code}`, {
+                  field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
+                }),
+              });
+            } else {
+              setError('root.serverError', {
+                type: 'server',
+                message: t(`serverErrors.${data.code}`, {
+                  field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
+                }),
+              });
+            }
+          });
+      }
+    },
+    [api, navigate, setError, setUser, t, triggerRuleBookReload]
+  );
 
   return (
     <div className="login" style={{ backgroundImage: `url(${tvBackground})` }}>

@@ -77,5 +77,8 @@
   "characterName": {
     "required": "A Character Name is required",
     "label": "Character Name"
+  },
+  "characterCampaign": {
+    "label": "Campaign"
   }
 }

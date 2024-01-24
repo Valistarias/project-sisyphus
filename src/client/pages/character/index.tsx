@@ -20,6 +20,7 @@ const Character: FC = () => {
   const { setDicesToRoll, addRollEventListener, removeRollEventListener } = useRollWindow();
 
   const [character, setCharacter] = useState<ICharacter | null>(null);
+
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 

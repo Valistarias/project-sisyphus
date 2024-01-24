@@ -1,4 +1,4 @@
-import React, { type FC } from 'react';
+import React, { useCallback, type FC } from 'react';
 
 import i18next from 'i18next';
 import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
@@ -36,46 +36,49 @@ const Signup: FC = () => {
     formState: { errors },
   } = useForm<FieldValues>();
 
-  const onSubmit: SubmitHandler<FormValues> = ({ username, mail, password }) => {
-    if (api !== undefined) {
-      api.auth
-        .signup({
-          username,
-          mail,
-          password,
-        })
-        .then(() => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('signup.successSent', { ns: 'pages', mail })}</Ap>
-              </Alert>
-            ),
+  const onSubmit: SubmitHandler<FormValues> = useCallback(
+    ({ username, mail, password }) => {
+      if (api !== undefined) {
+        api.auth
+          .signup({
+            username,
+            mail,
+            password,
+          })
+          .then(() => {
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{t('signup.successSent', { ns: 'pages', mail })}</Ap>
+                </Alert>
+              ),
+            });
+            navigate('/');
+          })
+          .catch(({ response }) => {
+            const { data } = response;
+            if (data.code === 'CYPU-104') {
+              setError(data.sent as string, {
+                type: 'server',
+                message: t(`serverErrors.${data.code}`, {
+                  field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
+                }),
+              });
+            } else {
+              setError('root.serverError', {
+                type: 'server',
+                message: t(`serverErrors.${data.code}`, {
+                  field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
+                }),
+              });
+            }
           });
-          navigate('/');
-        })
-        .catch(({ response }) => {
-          const { data } = response;
-          if (data.code === 'CYPU-104') {
-            setError(data.sent as string, {
-              type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
-              }),
-            });
-          } else {
-            setError('root.serverError', {
-              type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
-              }),
-            });
-          }
-        });
-    }
-  };
+      }
+    },
+    [api, createAlert, getNewId, navigate, setError, t]
+  );
 
   return (
     <div className="signup">

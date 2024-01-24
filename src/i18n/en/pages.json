@@ -190,6 +190,7 @@
     "empty": "There is no characters here. Create your own to see it displayed here.",
     "create": "Create Character",
     "openCharacter": "View",
+    "editCharacter": "Edit",
     "deleteCharacter": "Delete",
     "confirmDelete": {
       "title": "Character Deletion",
@@ -202,6 +203,11 @@
     "title": "New Character",
     "formCTA": "Create Character",
     "successCreate": "Character successfully created !"
+  },
+  "editCharacter": {
+    "title": "Edit Character",
+    "formCTA": "Edit Character",
+    "successEdit": "Character successfully updated !"
   },
   "character": {},
   "profile": {

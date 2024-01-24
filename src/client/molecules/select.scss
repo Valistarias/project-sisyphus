@@ -6,7 +6,7 @@
 
   &__field {
     .smartselect__control {
-      background-color: var(--primary-05);
+      background-color: var(--primary-dark-60);
       border: 1px solid var(--primary);
       border-radius: 0.2rem;
       transition: all 0.2s ease;
@@ -24,7 +24,7 @@
     }
 
     .smartselect__menu {
-      background: var(--primary-10);
+      background: var(--primary-dark);
       border-radius: 0.2rem;
       box-shadow: 0 0 2rem var(--primary-10);
     }
@@ -40,12 +40,16 @@
       }
 
       &.smartselect__option--double {
+        align-items: center;
         display: inline-flex;
         justify-content: space-between;
 
         .smartselect__option {
           &__details {
-            opacity: 0.5;
+            color: var(--tertiary-60);
+            font-family: var(--mono-font);
+            font-size: 1.1rem;
+            text-transform: uppercase;
           }
         }
       }

@@ -459,7 +459,7 @@ const AdminEditRuleBook: FC = () => {
     };
   }, [handleSubmit, onSaveRuleBook]);
 
-  // To affect default data
+  // Default data
   useEffect(() => {
     reset(createDefaultData(ruleBookTypes, rulebookData));
   }, [ruleBookTypes, rulebookData, reset, createDefaultData]);

@@ -1,4 +1,4 @@
-import React, { useEffect, type FC } from 'react';
+import React, { useCallback, useEffect, type FC } from 'react';
 
 import i18next from 'i18next';
 import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
@@ -35,38 +35,41 @@ const NewPassword: FC = () => {
     formState: { errors },
   } = useForm<FieldValues>();
 
-  const onSubmit: SubmitHandler<FormValues> = ({ password, confirmPassword }) => {
-    if (api !== undefined && userId !== undefined && token !== undefined) {
-      api.auth
-        .passUpdate({
-          userId,
-          token,
-          pass: password,
-          confirmPass: confirmPassword,
-        })
-        .then(() => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('newPass.success', { ns: 'pages' })}</Ap>
-              </Alert>
-            ),
+  const onSubmit: SubmitHandler<FormValues> = useCallback(
+    ({ password, confirmPassword }) => {
+      if (api !== undefined && userId !== undefined && token !== undefined) {
+        api.auth
+          .passUpdate({
+            userId,
+            token,
+            pass: password,
+            confirmPass: confirmPassword,
+          })
+          .then(() => {
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{t('newPass.success', { ns: 'pages' })}</Ap>
+                </Alert>
+              ),
+            });
+            navigate('/login');
+          })
+          .catch(({ response }) => {
+            const { data } = response;
+            setError('root.serverError', {
+              type: 'server',
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
+              }),
+            });
           });
-          navigate('/login');
-        })
-        .catch(({ response }) => {
-          const { data } = response;
-          setError('root.serverError', {
-            type: 'server',
-            message: t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
-            }),
-          });
-        });
-    }
-  };
+      }
+    },
+    [api, createAlert, getNewId, navigate, setError, t, token, userId]
+  );
 
   useEffect(() => {
     if (api !== undefined && userId !== undefined && token !== undefined) {

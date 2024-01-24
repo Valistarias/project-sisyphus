@@ -1,4 +1,4 @@
-import React, { type FC } from 'react';
+import React, { useCallback, type FC } from 'react';
 
 import i18next from 'i18next';
 import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
@@ -30,35 +30,38 @@ const NewCampaign: FC = () => {
     formState: { errors },
   } = useForm<FieldValues>();
 
-  const onSubmit: SubmitHandler<FormValues> = ({ name }) => {
-    if (api !== undefined) {
-      api.campaigns
-        .create({
-          name,
-        })
-        .then(({ campaignId }) => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('newCampaign.successCreate', { ns: 'pages' })}</Ap>
-              </Alert>
-            ),
+  const onSubmit: SubmitHandler<FormValues> = useCallback(
+    ({ name }) => {
+      if (api !== undefined) {
+        api.campaigns
+          .create({
+            name,
+          })
+          .then(({ campaignId }) => {
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{t('newCampaign.successCreate', { ns: 'pages' })}</Ap>
+                </Alert>
+              ),
+            });
+            navigate(`/campaign/${campaignId}`);
+          })
+          .catch(({ response }) => {
+            const { data } = response;
+            setError('root.serverError', {
+              type: 'server',
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
+              }),
+            });
           });
-          navigate(`/campaign/${campaignId}`);
-        })
-        .catch(({ response }) => {
-          const { data } = response;
-          setError('root.serverError', {
-            type: 'server',
-            message: t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
-            }),
-          });
-        });
-    }
-  };
+      }
+    },
+    [api, createAlert, getNewId, navigate, setError, t]
+  );
 
   return (
     <div className="newcampaign">

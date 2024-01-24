@@ -2,7 +2,7 @@ import { type Request, type Response } from 'express';
 import { type Error, type HydratedDocument } from 'mongoose';
 
 import bcrypt from 'bcryptjs';
-import jwt, { type JwtPayload } from 'jsonwebtoken';
+import jwt, { type JwtPayload, type Secret } from 'jsonwebtoken';
 import { type IMailgunClient } from 'mailgun.js/Interfaces';
 
 import config from '../../config/db.config';
@@ -37,7 +37,7 @@ const signUp = (req: Request, res: Response, mg: IMailgunClient): void => {
   const user = new User({
     username: req.body.username,
     mail: req.body.mail,
-    password: bcrypt.hashSync(req.body.password, 8),
+    password: bcrypt.hashSync(req.body.password as string, 8),
     lang: 'en',
     theme: 'dark',
     scale: 1,
@@ -52,9 +52,13 @@ const signUp = (req: Request, res: Response, mg: IMailgunClient): void => {
           user
             .save()
             .then(() => {
-              const verifToken = jwt.sign({ IdMail: user._id }, config.secret(process.env), {
-                expiresIn: '7d',
-              });
+              const verifToken = jwt.sign(
+                { IdMail: user._id },
+                config.secret(process.env) as Secret,
+                {
+                  expiresIn: '7d',
+                }
+              );
               const url = `http://localhost:3000/verify/${verifToken}`;
               mg.messages
                 .create('sandboxc0904a9e4c234e1d8f885c0c93a61e6f.mailgun.org', {
@@ -106,7 +110,7 @@ const signIn = (req: ISigninRequest, res: Response): void => {
         return;
       }
 
-      const passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
+      const passwordIsValid = bcrypt.compareSync(req.body.password as string, user.password);
 
       if (!passwordIsValid) {
         res.status(400).send(gemInvalidField('password'));
@@ -118,7 +122,7 @@ const signIn = (req: ISigninRequest, res: Response): void => {
         return;
       }
 
-      const token = jwt.sign({ id: user.id }, config.secret(process.env), {
+      const token = jwt.sign({ id: user.id }, config.secret(process.env) as Secret, {
         expiresIn: 86400, // 24 hours
       });
 
@@ -133,7 +137,7 @@ const signIn = (req: ISigninRequest, res: Response): void => {
       res.status(200).send(user);
     })
     .catch((err) => {
-      res.status(500).send(gemServerError(err));
+      res.status(500).send(gemServerError(err as Error));
     });
 };
 
@@ -146,7 +150,7 @@ const verifyTokenSingIn = async (token: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     let payload: JwtPayload | string | null = null;
     try {
-      payload = jwt.verify(token, config.secret(process.env));
+      payload = jwt.verify(token, config.secret(process.env) as Secret);
     } catch (err) {
       reject(err);
     }
@@ -198,21 +202,21 @@ const updatePassword = (req: Request, res: Response): void => {
   if (pass !== confirmPass || pass === undefined || confirmPass === undefined) {
     res.status(404).send(gemNotFound('Password'));
   } else {
-    findUserById(userId)
+    findUserById(userId as string)
       .then((user) => {
         removeToken(req)
           .then((isTokenDelete) => {
             if (!isTokenDelete) {
               res.status(404).send(gemNotFound('Token'));
             } else {
-              user.password = bcrypt.hashSync(pass, 8);
+              user.password = bcrypt.hashSync(pass as string, 8);
               user
                 .save()
                 .then(() => {
                   res.send({ message: 'User was updated successfully!', user });
                 })
                 .catch((err) => {
-                  res.status(500).send(gemServerError(err));
+                  res.status(500).send(gemServerError(err as Error));
                 });
             }
           })

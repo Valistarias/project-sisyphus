@@ -19,6 +19,7 @@ import {
   CampaignPage,
   CampaignsPage,
   ChapterPage,
+  CharacterEditPage,
   CharacterPage,
   CharactersPage,
   ErrorPage,
@@ -119,6 +120,10 @@ const App: FC = () => {
             {
               path: '/character/:id',
               element: <CharacterPage />,
+            },
+            {
+              path: '/character/:id/edit',
+              element: <CharacterEditPage />,
             },
             // Admin
             {

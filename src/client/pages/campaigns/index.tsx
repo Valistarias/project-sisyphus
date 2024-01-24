@@ -108,6 +108,7 @@ const Campaigns: FC = () => {
     const campaignList: JSX.Element[] = [];
     campaigns.forEach((campaign) => {
       const isOwner = campaign.owner._id === user?._id;
+      console.log('campaign', campaign);
       campaignList.push(
         <Ali
           className={classTrim(`
@@ -131,6 +132,7 @@ const Campaigns: FC = () => {
             {isOwner ? (
               <Button
                 theme="text-only"
+                color="error"
                 onClick={() => {
                   onDeleteCampaign(campaign._id, campaign.name);
                 }}

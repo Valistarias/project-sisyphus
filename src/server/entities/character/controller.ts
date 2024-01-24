@@ -101,7 +101,7 @@ const create = (req: Request, res: Response): void => {
           res.status(500).send(gemServerError(err));
         });
     })
-    .catch((err) => res.status(500).send(gemServerError(err)));
+    .catch((err) => res.status(500).send(gemServerError(err as Error)));
 };
 
 const updateInfos = (req: Request, res: Response): void => {
@@ -110,7 +110,7 @@ const updateInfos = (req: Request, res: Response): void => {
     res.status(400).send(gemInvalidField('Character ID'));
     return;
   }
-  findCharacterById(id, req)
+  findCharacterById(id as string, req)
     .then(({ char, canEdit }) => {
       if (char !== undefined && canEdit) {
         if (name !== null && name !== char.name) {
@@ -118,7 +118,7 @@ const updateInfos = (req: Request, res: Response): void => {
         }
         if (
           campaignId !== null &&
-          (char.campaign === undefined || campaignId !== String(char.campaign._id))
+          (char.campaign == null || campaignId !== String(char.campaign._id))
         ) {
           char.campaign = campaignId;
         }
@@ -128,13 +128,13 @@ const updateInfos = (req: Request, res: Response): void => {
             res.send({ message: 'Character was updated successfully!', char });
           })
           .catch((err) => {
-            res.status(500).send(gemServerError(err));
+            res.status(500).send(gemServerError(err as Error));
           });
       } else {
         res.status(404).send(gemNotFound('Character'));
       }
     })
-    .catch((err) => res.status(500).send(gemServerError(err)));
+    .catch((err) => res.status(500).send(gemServerError(err as Error)));
 };
 
 const quitCampaign = (req: Request, res: Response): void => {
@@ -144,7 +144,7 @@ const quitCampaign = (req: Request, res: Response): void => {
     return;
   }
 
-  findCharacterById(characterId, req)
+  findCharacterById(characterId as string, req)
     .then(({ char, canEdit }) => {
       if (char !== undefined && canEdit) {
         char.campaign = undefined;
@@ -154,13 +154,13 @@ const quitCampaign = (req: Request, res: Response): void => {
             res.send({ message: 'Character was unlinked of his campaign!', char });
           })
           .catch((err) => {
-            res.status(500).send(gemServerError(err));
+            res.status(500).send(gemServerError(err as Error));
           });
       } else {
         res.status(404).send(gemNotFound('Character'));
       }
     })
-    .catch((err) => res.status(500).send(gemServerError(err)));
+    .catch((err) => res.status(500).send(gemServerError(err as Error)));
 };
 
 const deleteCharacter = (req: Request, res: Response): void => {
@@ -186,13 +186,13 @@ const findSingle = (req: Request, res: Response): void => {
   }
   findCharacterById(characterId, req)
     .then(({ char }) => res.send(char))
-    .catch((err) => res.status(404).send(err));
+    .catch((err) => res.status(404).send(err as Error));
 };
 
 const findAll = (req: Request, res: Response): void => {
   findCharactersByPlayer(req)
     .then((characters) => res.send(characters))
-    .catch((err) => res.status(500).send(gemServerError(err)));
+    .catch((err) => res.status(500).send(gemServerError(err as Error)));
 };
 
 export { create, deleteCharacter, findAll, findSingle, quitCampaign, updateInfos };

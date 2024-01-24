@@ -119,6 +119,9 @@ const Characters: FC = () => {
               <Button href={`/character/${character._id}`}>
                 {t('characters.openCharacter', { ns: 'pages' })}
               </Button>
+              <Button theme="text-only" href={`/character/${character._id}/edit`}>
+                {t('characters.editCharacter', { ns: 'pages' })}
+              </Button>
               <Button
                 theme="text-only"
                 color="error"

@@ -57,88 +57,91 @@ const AdminRuleBookTypes: FC = () => {
     }
   }, [api, createAlert, getNewId, t]);
 
-  const onSubmit: SubmitHandler<FormValues> = ({ name }) => {
-    if (api !== undefined) {
-      if (updateBookTypeMode !== '') {
-        // Updating a Rulebook Type
-        api.ruleBookTypes
-          .update({
-            id: updateBookTypeMode,
-            name,
-          })
-          .then(() => {
-            const newId = getNewId();
-            createAlert({
-              key: newId,
-              dom: (
-                <Alert key={newId} id={newId} timer={5}>
-                  <Ap>{t('adminRuleBooks.successUpdateType', { ns: 'pages' })}</Ap>
-                </Alert>
-              ),
+  const onSubmit: SubmitHandler<FormValues> = useCallback(
+    ({ name }) => {
+      if (api !== undefined) {
+        if (updateBookTypeMode !== '') {
+          // Updating a Rulebook Type
+          api.ruleBookTypes
+            .update({
+              id: updateBookTypeMode,
+              name,
+            })
+            .then(() => {
+              const newId = getNewId();
+              createAlert({
+                key: newId,
+                dom: (
+                  <Alert key={newId} id={newId} timer={5}>
+                    <Ap>{t('adminRuleBooks.successUpdateType', { ns: 'pages' })}</Ap>
+                  </Alert>
+                ),
+              });
+              loadRuleBookTypes();
+              setUpdateBookTypeMode('');
+              reset();
+            })
+            .catch(({ response }) => {
+              const { data } = response;
+              if (data.code === 'CYPU-104') {
+                setError(data.sent as 'name', {
+                  type: 'server',
+                  message: t(`serverErrors.${data.code}`, {
+                    field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
+                  }),
+                });
+              } else {
+                setError('root.serverError', {
+                  type: 'server',
+                  message: t(`serverErrors.${data.code}`, {
+                    field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
+                  }),
+                });
+              }
             });
-            loadRuleBookTypes();
-            setUpdateBookTypeMode('');
-            reset();
-          })
-          .catch(({ response }) => {
-            const { data } = response;
-            if (data.code === 'CYPU-104') {
-              setError(data.sent as 'name', {
-                type: 'server',
-                message: t(`serverErrors.${data.code}`, {
-                  field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
-                }),
+        } else {
+          // Creating a Rulebook Type
+          api.ruleBookTypes
+            .create({
+              name,
+            })
+            .then(() => {
+              const newId = getNewId();
+              createAlert({
+                key: newId,
+                dom: (
+                  <Alert key={newId} id={newId} timer={5}>
+                    <Ap>{t('adminRuleBooks.successCreateType', { ns: 'pages' })}</Ap>
+                  </Alert>
+                ),
               });
-            } else {
-              setError('root.serverError', {
-                type: 'server',
-                message: t(`serverErrors.${data.code}`, {
-                  field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
-                }),
-              });
-            }
-          });
-      } else {
-        // Creating a Rulebook Type
-        api.ruleBookTypes
-          .create({
-            name,
-          })
-          .then(() => {
-            const newId = getNewId();
-            createAlert({
-              key: newId,
-              dom: (
-                <Alert key={newId} id={newId} timer={5}>
-                  <Ap>{t('adminRuleBooks.successCreateType', { ns: 'pages' })}</Ap>
-                </Alert>
-              ),
+              loadRuleBookTypes();
+              setCreateBookTypeMode(false);
+              reset();
+            })
+            .catch(({ response }) => {
+              const { data } = response;
+              if (data.code === 'CYPU-104') {
+                setError(data.sent as 'name', {
+                  type: 'server',
+                  message: t(`serverErrors.${data.code}`, {
+                    field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
+                  }),
+                });
+              } else {
+                setError('root.serverError', {
+                  type: 'server',
+                  message: t(`serverErrors.${data.code}`, {
+                    field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
+                  }),
+                });
+              }
             });
-            loadRuleBookTypes();
-            setCreateBookTypeMode(false);
-            reset();
-          })
-          .catch(({ response }) => {
-            const { data } = response;
-            if (data.code === 'CYPU-104') {
-              setError(data.sent as 'name', {
-                type: 'server',
-                message: t(`serverErrors.${data.code}`, {
-                  field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
-                }),
-              });
-            } else {
-              setError('root.serverError', {
-                type: 'server',
-                message: t(`serverErrors.${data.code}`, {
-                  field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
-                }),
-              });
-            }
-          });
+        }
       }
-    }
-  };
+    },
+    [api, createAlert, getNewId, loadRuleBookTypes, reset, setError, t, updateBookTypeMode]
+  );
 
   const onClickUpdate = useCallback(
     (_id: string, name: string) => {
