@@ -32,7 +32,11 @@ const RollResult: FC<IRollResult> = ({}) => {
       `)}
         style={{ backgroundImage: `url(${holoBackground})` }}
       >
-        <Ap className="roll-result__result__type">Free Roll</Ap>
+        <div className="roll-result__result__type">
+          <Ap className="roll-result__result__type__text">
+            <span className="roll-result__result__type__text__long">Free</span> Roll
+          </Ap>
+        </div>
         <div className="roll-result__result__content">
           <Ap className="roll-result__result__content__character">Galmur Copperstone</Ap>
           <Ap

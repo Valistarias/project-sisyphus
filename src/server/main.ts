@@ -24,6 +24,7 @@ import { verifyMailToken } from './entities/mailToken/controller';
 import MailTokenRoutes from './entities/mailToken/routes';
 import NotionRoutes from './entities/notion/routes';
 import PageRoutes from './entities/page/routes';
+import RollRoutes from './entities/roll/routes';
 import RuleBookRoutes from './entities/ruleBook/routes';
 import RuleBookTypeRoutes from './entities/ruleBookType/routes';
 import UserRoutes from './entities/user/routes';
@@ -98,6 +99,7 @@ CampaignRoutes(apiRouter);
 
 // Character routes
 CharacterRoutes(apiRouter);
+RollRoutes(apiRouter);
 
 // Global Router
 app.use('/api/', apiRouter);

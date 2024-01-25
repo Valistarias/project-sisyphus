@@ -9,6 +9,7 @@ import {
   NotionModel,
   PageModel,
   RoleModel,
+  RollModel,
   RuleBookModel,
   RuleBookTypeModel,
   UserModel,
@@ -20,6 +21,7 @@ import {
   type INotion,
   type IPage,
   type IRole,
+  type IRoll,
   type IRuleBook,
   type IRuleBookType,
   type IUser,
@@ -48,6 +50,8 @@ interface DBType {
   Campaign: mongoose.Model<ICampaign>;
   /** The Character Model */
   Character: mongoose.Model<ICharacter>;
+  /** The Roll Model */
+  Roll: mongoose.Model<IRoll>;
   /** The Mail Token Model (for forgotten password) */
   MailToken: mongoose.Model<IMailToken>;
   /** The possible Roles */
@@ -71,6 +75,7 @@ const db: DBType = {
   Campaign: CampaignModel(),
   // Character models
   Character: CharacterModel(),
+  Roll: RollModel(),
 };
 
 export default db;
