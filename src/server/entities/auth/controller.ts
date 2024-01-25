@@ -136,8 +136,8 @@ const signIn = (req: ISigninRequest, res: Response): void => {
 
       res.status(200).send(user);
     })
-    .catch((err) => {
-      res.status(500).send(gemServerError(err as Error));
+    .catch((err: Error) => {
+      res.status(500).send(gemServerError(err));
     });
 };
 
@@ -215,8 +215,8 @@ const updatePassword = (req: Request, res: Response): void => {
                 .then(() => {
                   res.send({ message: 'User was updated successfully!', user });
                 })
-                .catch((err) => {
-                  res.status(500).send(gemServerError(err as Error));
+                .catch((err: Error) => {
+                  res.status(500).send(gemServerError(err));
                 });
             }
           })

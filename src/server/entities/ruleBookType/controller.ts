@@ -1,4 +1,3 @@
-
 import { type Request, type Response } from 'express';
 import { type HydratedDocument } from 'mongoose';
 
@@ -11,7 +10,6 @@ import {
 } from '../../utils/globalErrorMessage';
 
 import { type IRuleBookType } from './model';
-
 
 const { RuleBookType } = db;
 
@@ -70,7 +68,7 @@ const create = (req: Request, res: Response): void => {
         res.status(400).send(gemDuplicate('Name'));
       }
     })
-    .catch((err) => res.status(500).send(gemServerError(err)));
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
 const update = (req: Request, res: Response): void => {
@@ -91,14 +89,14 @@ const update = (req: Request, res: Response): void => {
           .then(() => {
             res.send({ message: 'RuleBookType was updated successfully!', actualRuleBookType });
           })
-          .catch((err) => {
+          .catch((err: Error) => {
             res.status(500).send(gemServerError(err));
           });
       } else {
         res.status(404).send(gemNotFound('RuleBookType'));
       }
     })
-    .catch((err) => res.status(500).send(gemServerError(err)));
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
 const deleteRuleBookType = (req: Request, res: Response): void => {
@@ -124,13 +122,13 @@ const findSingle = (req: Request, res: Response): void => {
   }
   findRuleBookTypeById(ruleBookTypeId)
     .then((ruleBook) => res.send(ruleBook))
-    .catch((err) => res.status(404).send(err));
+    .catch((err: Error) => res.status(404).send(err));
 };
 
 const findAll = (req: Request, res: Response): void => {
   findRuleBookTypes()
     .then((ruleBooks) => res.send(ruleBooks))
-    .catch((err) => res.status(500).send(gemServerError(err)));
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, update, deleteRuleBookType, findSingle, findAll };
+export { create, deleteRuleBookType, findAll, findSingle, update };

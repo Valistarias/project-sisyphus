@@ -40,7 +40,7 @@ const update = (req: Request, res: Response): void => {
     res.status(400).send(gemInvalidField('User ID'));
     return;
   }
-  findUserById(id)
+  findUserById(id as string)
     .then((user) => {
       if (username !== null) {
         user.username = username;
@@ -49,12 +49,12 @@ const update = (req: Request, res: Response): void => {
         user.lang = lang;
       }
       if (newPass !== null) {
-        const passwordIsValid = bcrypt.compareSync(oldPass, user.password);
+        const passwordIsValid = bcrypt.compareSync(oldPass as string, user.password);
         if (!passwordIsValid) {
           res.status(400).send(gemInvalidField('password'));
           return;
         }
-        user.password = bcrypt.hashSync(newPass, 8);
+        user.password = bcrypt.hashSync(newPass as string, 8);
       }
       if (theme !== null) {
         user.theme = theme;
@@ -84,7 +84,7 @@ const update = (req: Request, res: Response): void => {
 
           res.send({ message: 'User was updated successfully!', responsePayload });
         })
-        .catch((err) => {
+        .catch((err: Error) => {
           res.status(500).send(gemServerError(err));
         });
     })

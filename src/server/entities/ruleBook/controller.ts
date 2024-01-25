@@ -131,8 +131,8 @@ const update = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'RuleBook was updated successfully!', ruleBook });
         })
-        .catch((err) => {
-          res.status(500).send(gemServerError(err as Error));
+        .catch((err: Error) => {
+          res.status(500).send(gemServerError(err));
         });
     })
     .catch(() => {
@@ -155,8 +155,8 @@ const archive = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'RuleBook was updated successfully!', ruleBook });
         })
-        .catch((err) => {
-          res.status(500).send(gemServerError(err as Error));
+        .catch((err: Error) => {
+          res.status(500).send(gemServerError(err));
         });
     })
     .catch(() => {
@@ -222,7 +222,7 @@ const deleteRuleBook = (req: Request, res: Response): void => {
           res.status(500).send(gemServerError(err));
         });
     })
-    .catch((err) => {
+    .catch((err: Error) => {
       res.status(404).send(err);
     });
 };
@@ -259,11 +259,11 @@ const findSingle = (req: Request, res: Response): void => {
             res.send(sentObj);
           }
         })
-        .catch((err) => {
+        .catch((err: Error) => {
           res.status(404).send(err);
         });
     })
-    .catch((err) => res.status(500).send(gemServerError(err as Error)));
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
 const findAll = (req: Request, res: Response): void => {
@@ -323,9 +323,9 @@ const findAll = (req: Request, res: Response): void => {
 
           res.send(curatedRuleBooks);
         })
-        .catch((err) => res.status(500).send(gemServerError(err as Error)));
+        .catch((err: Error) => res.status(500).send(gemServerError(err)));
     })
-    .catch((err) => res.status(500).send(gemServerError(err as Error)));
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
 export {

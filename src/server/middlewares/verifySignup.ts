@@ -25,7 +25,7 @@ const checkDuplicateMail = (req: Request, res: Response, next: () => void): void
 const checkRolesExisted = (req: Request, res: Response, next: () => void): void => {
   if (Array.isArray(req.body.roles)) {
     for (let i = 0; i < req.body.roles.length; i += 1) {
-      if (!ROLES.includes(req.body.roles[i])) {
+      if (!ROLES.includes(req.body.roles[i] as string)) {
         res.status(404).send(gemNotFound('Role'));
         return;
       }

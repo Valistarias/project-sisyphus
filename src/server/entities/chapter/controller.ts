@@ -90,7 +90,7 @@ const create = (req: Request, res: Response): void => {
     return;
   }
 
-  findChaptersByRuleBook(ruleBook)
+  findChaptersByRuleBook(ruleBook as string)
     .then((chapters) => {
       const chapter = new Chapter({
         title,
@@ -113,7 +113,7 @@ const create = (req: Request, res: Response): void => {
           res.status(500).send(gemServerError(err));
         });
     })
-    .catch((err) => res.status(500).send(gemServerError(err)));
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
 const update = (req: Request, res: Response): void => {
@@ -122,7 +122,7 @@ const update = (req: Request, res: Response): void => {
     res.status(400).send(gemInvalidField('Chapter ID'));
     return;
   }
-  findChapterById(id)
+  findChapterById(id as string)
     .then((chapter) => {
       if (title !== null) {
         chapter.title = title;
@@ -138,7 +138,7 @@ const update = (req: Request, res: Response): void => {
             : {}),
         };
 
-        Object.keys(i18n).forEach((lang) => {
+        Object.keys(i18n as Record<string, any>).forEach((lang) => {
           newIntl[lang] = i18n[lang];
         });
 
@@ -150,7 +150,7 @@ const update = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'Chapter was updated successfully!', chapter });
         })
-        .catch((err) => {
+        .catch((err: Error) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -245,7 +245,7 @@ const deleteChaptersRecursive = async (chapters: string[]): Promise<boolean> =>
 
 const deleteChapter = (req: Request, res: Response): void => {
   const { id } = req.body;
-  deleteChapterById(id)
+  deleteChapterById(id as string)
     .then(() => {
       res.send({ message: 'Chapter was deleted successfully!' });
     })
@@ -286,11 +286,11 @@ const findSingle = (req: Request, res: Response): void => {
             res.send(sentObj);
           }
         })
-        .catch((err) => {
+        .catch((err: Error) => {
           res.status(404).send(err);
         });
     })
-    .catch((err) => res.status(500).send(gemServerError(err)));
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
 const findAll = (req: Request, res: Response): void => {
@@ -307,7 +307,7 @@ const findAll = (req: Request, res: Response): void => {
 
       res.send(curatedChapters);
     })
-    .catch((err) => res.status(500).send(gemServerError(err)));
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
 const findAllByRuleBook = (req: Request, res: Response): void => {
@@ -329,7 +329,7 @@ const findAllByRuleBook = (req: Request, res: Response): void => {
 
       res.send(curatedChapters);
     })
-    .catch((err) => res.status(500).send(gemServerError(err)));
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
 export {

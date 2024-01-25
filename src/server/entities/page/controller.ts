@@ -7,7 +7,6 @@ import { type HydratedIPage } from './model';
 
 import type { HydratedIChapter } from '../index';
 
-
 const { Page } = db;
 
 const findPages = async (): Promise<HydratedIPage[]> =>
@@ -74,7 +73,7 @@ const create = (req: Request, res: Response): void => {
     return;
   }
 
-  findPagesByChapter(chapter)
+  findPagesByChapter(chapter as string)
     .then((pages) => {
       const page = new Page({
         title,
@@ -96,7 +95,7 @@ const create = (req: Request, res: Response): void => {
           res.status(500).send(gemServerError(err));
         });
     })
-    .catch((err) => res.status(500).send(gemServerError(err)));
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
 const update = (req: Request, res: Response): void => {
@@ -105,7 +104,7 @@ const update = (req: Request, res: Response): void => {
     res.status(400).send(gemInvalidField('Page ID'));
     return;
   }
-  findPageById(id)
+  findPageById(id as string)
     .then((page) => {
       if (title !== null) {
         page.title = title;
@@ -121,7 +120,7 @@ const update = (req: Request, res: Response): void => {
             : {}),
         };
 
-        Object.keys(i18n).forEach((lang) => {
+        Object.keys(i18n as Record<string, any>).forEach((lang) => {
           newIntl[lang] = i18n[lang];
         });
 
@@ -133,7 +132,7 @@ const update = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'Page was updated successfully!', page });
         })
-        .catch((err) => {
+        .catch((err: Error) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -198,7 +197,7 @@ const findSingle = (req: Request, res: Response): void => {
       };
       res.send(sentObj);
     })
-    .catch((err) => {
+    .catch((err: Error) => {
       res.status(404).send(err);
     });
 };
@@ -217,7 +216,7 @@ const findAll = (req: Request, res: Response): void => {
 
       res.send(curatedPages);
     })
-    .catch((err) => res.status(500).send(gemServerError(err)));
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
 const findAllByChapter = (req: Request, res: Response): void => {
@@ -239,17 +238,17 @@ const findAllByChapter = (req: Request, res: Response): void => {
 
       res.send(curatedChapters);
     })
-    .catch((err) => res.status(500).send(gemServerError(err)));
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
 export {
   create,
-  update,
   deletePage,
-  findSingle,
-  findAll,
-  findPageById,
   deletePagesByChapterId,
-  findPagesByChapter,
+  findAll,
   findAllByChapter,
+  findPageById,
+  findPagesByChapter,
+  findSingle,
+  update,
 };

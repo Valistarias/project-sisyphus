@@ -33,7 +33,7 @@ const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[
             reject(err);
           });
       })
-      .catch((err) => {
+      .catch((err: Error) => {
         reject(err);
       });
   });
@@ -66,7 +66,7 @@ const findCharacterById = async (
             reject(err);
           });
       })
-      .catch((err) => {
+      .catch((err: Error) => {
         reject(err);
       });
   });
@@ -101,7 +101,7 @@ const create = (req: Request, res: Response): void => {
           res.status(500).send(gemServerError(err));
         });
     })
-    .catch((err) => res.status(500).send(gemServerError(err as Error)));
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
 const updateInfos = (req: Request, res: Response): void => {
@@ -127,14 +127,14 @@ const updateInfos = (req: Request, res: Response): void => {
           .then(() => {
             res.send({ message: 'Character was updated successfully!', char });
           })
-          .catch((err) => {
-            res.status(500).send(gemServerError(err as Error));
+          .catch((err: Error) => {
+            res.status(500).send(gemServerError(err));
           });
       } else {
         res.status(404).send(gemNotFound('Character'));
       }
     })
-    .catch((err) => res.status(500).send(gemServerError(err as Error)));
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
 const quitCampaign = (req: Request, res: Response): void => {
@@ -153,14 +153,14 @@ const quitCampaign = (req: Request, res: Response): void => {
           .then(() => {
             res.send({ message: 'Character was unlinked of his campaign!', char });
           })
-          .catch((err) => {
-            res.status(500).send(gemServerError(err as Error));
+          .catch((err: Error) => {
+            res.status(500).send(gemServerError(err));
           });
       } else {
         res.status(404).send(gemNotFound('Character'));
       }
     })
-    .catch((err) => res.status(500).send(gemServerError(err as Error)));
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
 const deleteCharacter = (req: Request, res: Response): void => {
@@ -186,13 +186,13 @@ const findSingle = (req: Request, res: Response): void => {
   }
   findCharacterById(characterId, req)
     .then(({ char }) => res.send(char))
-    .catch((err) => res.status(404).send(err as Error));
+    .catch((err: Error) => res.status(404).send(err));
 };
 
 const findAll = (req: Request, res: Response): void => {
   findCharactersByPlayer(req)
     .then((characters) => res.send(characters))
-    .catch((err) => res.status(500).send(gemServerError(err as Error)));
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
 export { create, deleteCharacter, findAll, findSingle, quitCampaign, updateInfos };

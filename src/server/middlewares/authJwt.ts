@@ -145,7 +145,7 @@ const isAdmin = async (req: Request): Promise<boolean> =>
           resolve(false);
         }
       })
-      .catch((err) => {
+      .catch((err: Error) => {
         reject(err);
       });
   });
@@ -166,7 +166,7 @@ const adminNeeded = (req: Request, res: Response, next: () => void): void => {
         res.status(403).send(gemNotAdmin());
       }
     })
-    .catch((err) => res.status(500).send(gemServerError(err as Error)));
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
 const checkRouteRights = (req: Request, res: Response, next: () => void): void => {

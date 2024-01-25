@@ -77,7 +77,7 @@ const update = (req: Request, res: Response): void => {
     res.status(400).send(gemInvalidField('Notion ID'));
     return;
   }
-  findNotionById(id)
+  findNotionById(id as string)
     .then((notion) => {
       if (title !== null) {
         notion.title = title;
@@ -91,7 +91,7 @@ const update = (req: Request, res: Response): void => {
       if (i18n !== null) {
         const newIntl = { ...(notion.i18n !== undefined ? JSON.parse(notion.i18n) : {}) };
 
-        Object.keys(i18n).forEach((lang) => {
+        Object.keys(i18n as Record<string, any>).forEach((lang) => {
           newIntl[lang] = i18n[lang];
         });
 
@@ -102,7 +102,7 @@ const update = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'Notion was updated successfully!', notion });
         })
-        .catch((err) => {
+        .catch((err: Error) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -165,7 +165,7 @@ const findSingle = (req: Request, res: Response): void => {
       };
       res.send(sentObj);
     })
-    .catch((err) => res.status(404).send(err));
+    .catch((err: Error) => res.status(404).send(err));
 };
 
 const findAllByRuleBook = (req: Request, res: Response): void => {
@@ -194,7 +194,7 @@ const findAllByRuleBook = (req: Request, res: Response): void => {
         res.send(aggregatedNotions);
       }
     })
-    .catch((err) => res.status(500).send(gemServerError(err)));
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
 export { create, deleteNotion, deleteNotionsByRuleBookId, findAllByRuleBook, findSingle, update };

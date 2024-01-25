@@ -130,7 +130,7 @@ const create = (req: Request, res: Response): void => {
           res.status(500).send(gemServerError(err));
         });
     })
-    .catch((err) => res.status(500).send(gemServerError(err as Error)));
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
 const update = (req: Request, res: Response): void => {
@@ -150,14 +150,14 @@ const update = (req: Request, res: Response): void => {
           .then(() => {
             res.send({ message: 'Campaign was updated successfully!', campaign });
           })
-          .catch((err) => {
-            res.status(500).send(gemServerError(err as Error));
+          .catch((err: Error) => {
+            res.status(500).send(gemServerError(err));
           });
       } else {
         res.status(404).send(gemNotFound('Campaign'));
       }
     })
-    .catch((err) => res.status(500).send(gemServerError(err as Error)));
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
 const generateCode = (req: Request, res: Response): void => {
@@ -181,16 +181,16 @@ const generateCode = (req: Request, res: Response): void => {
               .then(() => {
                 res.send({ message: 'Campaign code was changed successfully!', campaign });
               })
-              .catch((err) => {
-                res.status(500).send(gemServerError(err as Error));
+              .catch((err: Error) => {
+                res.status(500).send(gemServerError(err));
               });
           } else {
             res.status(404).send(gemNotFound('Campaign'));
           }
         })
-        .catch((err) => res.status(500).send(gemServerError(err as Error)));
+        .catch((err: Error) => res.status(500).send(gemServerError(err)));
     })
-    .catch((err) => res.status(500).send(gemServerError(err as Error)));
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
 const register = (req: Request, res: Response): void => {
@@ -224,16 +224,16 @@ const register = (req: Request, res: Response): void => {
                   campaignId: campaign._id,
                 });
               })
-              .catch((err) => {
-                res.status(500).send(gemServerError(err as Error));
+              .catch((err: Error) => {
+                res.status(500).send(gemServerError(err));
               });
           } else {
             res.status(404).send(gemNotFound('Campaign'));
           }
         })
-        .catch((err) => res.status(500).send(gemServerError(err as Error)));
+        .catch((err: Error) => res.status(500).send(gemServerError(err)));
     })
-    .catch((err) => res.status(500).send(gemServerError(err as Error)));
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
 const unregister = (req: Request, res: Response): void => {
@@ -269,16 +269,16 @@ const unregister = (req: Request, res: Response): void => {
               .then(() => {
                 res.send({ message: 'Campaign was updated successfully!' });
               })
-              .catch((err) => {
-                res.status(500).send(gemServerError(err as Error));
+              .catch((err: Error) => {
+                res.status(500).send(gemServerError(err));
               });
           } else {
             res.status(404).send(gemNotFound('Campaign'));
           }
         })
-        .catch((err) => res.status(500).send(gemServerError(err as Error)));
+        .catch((err: Error) => res.status(500).send(gemServerError(err)));
     })
-    .catch((err) => res.status(500).send(gemServerError(err as Error)));
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
 const deleteCampaign = (req: Request, res: Response): void => {
@@ -321,7 +321,7 @@ const findByCode = (req: Request, res: Response): void => {
 const findAll = (req: Request, res: Response): void => {
   findCampaigns(req)
     .then((campaigns) => res.send(campaigns))
-    .catch((err) => res.status(500).send(gemServerError(err as Error)));
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
 export {
