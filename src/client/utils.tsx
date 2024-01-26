@@ -59,6 +59,33 @@ interface TotalResult {
   worst?: number;
 }
 
+export const createBacisDiceRequest = (): DiceRequest[] => [
+  {
+    type: 20,
+    qty: 0,
+  },
+  {
+    type: 12,
+    qty: 0,
+  },
+  {
+    type: 10,
+    qty: 0,
+  },
+  {
+    type: 8,
+    qty: 0,
+  },
+  {
+    type: 6,
+    qty: 0,
+  },
+  {
+    type: 4,
+    qty: 0,
+  },
+];
+
 export const throwDices = (dices: DiceRequest[]): DiceResult[] => {
   const resultsThrows: DiceResult[] = [];
 
@@ -86,11 +113,73 @@ export const throwDices = (dices: DiceRequest[]): DiceResult[] => {
       total,
       best,
       worst,
-      average: Math.floor((total / qty) * 10) / 10,
+      average: Math.floor((total / (qty || 1)) * 10) / 10,
     });
   });
 
   return resultsThrows;
+};
+
+export const diceResultToStr = (diceCats: DiceResult[] | null): string => {
+  if (diceCats === null) {
+    return '';
+  }
+
+  let stringified = '';
+  const curatedCats = diceCats.filter((diceCat) => diceCat.results.length > 0);
+
+  curatedCats.forEach((diceCat, catIndex) => {
+    const catRolls = diceCat.results;
+    if (catRolls.length > 0) {
+      stringified += `${diceCat.type}:`;
+      catRolls.forEach((roll, indexRoll) => {
+        stringified += roll.toString();
+        if (indexRoll < catRolls.length - 1) {
+          stringified += ',';
+        }
+      });
+
+      if (catIndex < curatedCats.length - 1) {
+        stringified += ';';
+      }
+    }
+  });
+  return stringified;
+};
+
+export const strTodiceResult = (text: string): DiceResult[] => {
+  const basicMold = createBacisDiceRequest();
+  const catRollObj = {};
+  text.split(';').forEach((catText) => {
+    const [type, dicesText] = catText.split(':');
+    catRollObj[Number(type)] = dicesText.split(',').map((diceText) => Number(diceText));
+  });
+  return basicMold.map(({ type }) => {
+    const data = catRollObj[type];
+    let total = 0;
+    let best = 0;
+    let worst = 0;
+    if (data) {
+      data.forEach((val: number, i: number) => {
+        total += val;
+        if (best < val || i === 0) {
+          best = val;
+        }
+        if (worst > val || i === 0) {
+          worst = val;
+        }
+      });
+    }
+
+    return {
+      type,
+      results: data || [],
+      total,
+      best,
+      worst,
+      average: Math.floor((total / (data?.length || 1)) * 10) / 10,
+    };
+  });
 };
 
 export const calculateDices = (diceGroups: DiceResult[]): TotalResult => {

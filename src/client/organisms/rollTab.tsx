@@ -8,7 +8,7 @@ import { Button } from '../molecules';
 
 import RollResult from './rollResult';
 
-import { classTrim, type DiceRequest } from '../utils';
+import { classTrim, createBacisDiceRequest, type DiceRequest } from '../utils';
 
 import './rollTab.scss';
 
@@ -17,39 +17,12 @@ interface IRollTab {
   onRollDices: (diceValues: DiceRequest[]) => void;
 }
 
-const initRollTab: DiceRequest[] = [
-  {
-    type: 20,
-    qty: 0,
-  },
-  {
-    type: 12,
-    qty: 0,
-  },
-  {
-    type: 10,
-    qty: 0,
-  },
-  {
-    type: 8,
-    qty: 0,
-  },
-  {
-    type: 6,
-    qty: 0,
-  },
-  {
-    type: 4,
-    qty: 0,
-  },
-];
-
 const RollTab: FC<IRollTab> = ({ onRollDices }) => {
   const { t } = useTranslation();
 
   const [isOpen, setOpen] = useState(true);
 
-  const [diceValues, setDiceValues] = useState<DiceRequest[]>(initRollTab);
+  const [diceValues, setDiceValues] = useState<DiceRequest[]>(createBacisDiceRequest());
 
   const canRoll = useMemo(() => diceValues.some(({ qty }) => qty > 0), [diceValues]);
 
@@ -123,7 +96,7 @@ const RollTab: FC<IRollTab> = ({ onRollDices }) => {
           className="roll-tab__buttons__toggle"
           onClick={() => {
             if (isOpen) {
-              setDiceValues(initRollTab);
+              setDiceValues(createBacisDiceRequest());
             }
             setOpen(!isOpen);
           }}
@@ -155,7 +128,7 @@ const RollTab: FC<IRollTab> = ({ onRollDices }) => {
             disabled={!canRoll}
             onClick={() => {
               onRollDices(diceValues);
-              setDiceValues(initRollTab);
+              setDiceValues(createBacisDiceRequest());
             }}
           >
             {t('rollTab.roll', { ns: 'components' })}

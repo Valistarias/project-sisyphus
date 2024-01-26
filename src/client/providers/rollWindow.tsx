@@ -12,10 +12,17 @@ import { useTranslation } from 'react-i18next';
 
 import { Ap } from '../atoms';
 import { Button, DiceCard } from '../molecules';
-
 import { type typeDice } from '../types/data';
 
-import { calculateDices, classTrim, throwDices, type DiceRequest, type DiceResult } from '../utils';
+import {
+  calculateDices,
+  classTrim,
+  diceResultToStr,
+  strTodiceResult,
+  throwDices,
+  type DiceRequest,
+  type DiceResult,
+} from '../utils';
 
 import './rollWindow.scss';
 
@@ -153,6 +160,10 @@ export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) =>
             },
           })
         );
+        console.log('rollResults', rollResults.current);
+        const test = diceResultToStr(rollResults.current);
+        console.log('diceResultToStr', test);
+        console.log('strTodiceResult', strTodiceResult(test));
       }
     }, 1000);
   }, [RollEvent, rollResults]);
