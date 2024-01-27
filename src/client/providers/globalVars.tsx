@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useApi } from './api';
 
-import type { ICuratedRuleBook, IUser } from '../types/data';
+import type { ICampaign, ICuratedRuleBook, IUser } from '../types/data';
 
 interface IGlobalVarsContext {
   /** The logged user */
@@ -23,7 +23,11 @@ interface IGlobalVarsContext {
   loading: boolean;
   /** All the loaded rulebooks */
   ruleBooks: ICuratedRuleBook[];
+  /** All the loaded campaigns */
+  campaigns: ICampaign[];
   /** Used to trigger the reload of the rulebooks */
+  triggerCampaignReload: () => void;
+  /** Used to trigger the reload of the campaigns */
   triggerRuleBookReload: () => void;
 }
 
@@ -44,6 +48,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
   const [loading, setLoading] = useState<boolean>(true);
 
   const [ruleBooks, setRuleBooks] = useState<ICuratedRuleBook[]>([]);
+  const [campaigns, setCampaigns] = useState<ICampaign[]>([]);
 
   const loadRuleBooks = useCallback(() => {
     if (api === undefined) {
@@ -59,6 +64,20 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       });
   }, [api]);
 
+  const loadCampaigns = useCallback(() => {
+    if (api === undefined) {
+      return;
+    }
+    api.campaigns
+      .getAll()
+      .then((sentCampaigns: ICampaign[]) => {
+        setCampaigns(sentCampaigns);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, [api]);
+
   useEffect(() => {
     if (api !== undefined && !calledApi.current) {
       calledApi.current = true;
@@ -68,6 +87,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
           if (data.mail !== undefined) {
             setUser(data);
             loadRuleBooks();
+            loadCampaigns();
           }
           setLoading(false);
         })
@@ -75,7 +95,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
           console.error(err);
         });
     }
-  }, [api, loadRuleBooks]);
+  }, [api, loadRuleBooks, loadCampaigns]);
 
   useEffect(() => {
     if (user !== null) {
@@ -91,9 +111,11 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       setUser,
       loading,
       ruleBooks,
+      campaigns,
+      triggerCampaignReload: loadCampaigns,
       triggerRuleBookReload: loadRuleBooks,
     }),
-    [user, setUser, loading, ruleBooks, loadRuleBooks]
+    [user, setUser, loading, ruleBooks, campaigns, loadCampaigns, loadRuleBooks]
   );
 
   return <GlobalVarsContext.Provider value={providerValues}>{children}</GlobalVarsContext.Provider>;

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, { useCallback, useMemo, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -7,7 +7,6 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Ali, Ap, Atitle, Aul } from '../../atoms';
 import { Button } from '../../molecules';
 import { Alert } from '../../organisms';
-import { type ICampaign } from '../../types/data';
 
 import { classTrim } from '../../utils';
 
@@ -17,39 +16,11 @@ const Campaigns: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { user } = useGlobalVars();
+  const { user, campaigns, triggerCampaignReload } = useGlobalVars();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
-
-  const [campaigns, setCampaigns] = useState<ICampaign[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const calledApi = useRef(false);
-
-  const getCampaigns = useCallback(() => {
-    if (api !== undefined) {
-      api.campaigns
-        .getAll()
-        .then((sentCampaigns: ICampaign[]) => {
-          setLoading(false);
-          setCampaigns(sentCampaigns);
-        })
-        .catch(() => {
-          setLoading(false);
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
-        });
-    }
-  }, [api, createAlert, getNewId, t]);
 
   const onDeleteCampaign = useCallback(
     (id: string, name: string) => {
@@ -78,7 +49,7 @@ const Campaigns: FC = () => {
                       </Alert>
                     ),
                   });
-                  getCampaigns();
+                  triggerCampaignReload();
                 })
                 .catch(({ response }) => {
                   const newId = getNewId();
@@ -98,7 +69,7 @@ const Campaigns: FC = () => {
         }
       );
     },
-    [api, setConfirmContent, t, ConfMessageEvent, getNewId, createAlert, getCampaigns]
+    [api, setConfirmContent, t, ConfMessageEvent, getNewId, createAlert, triggerCampaignReload]
   );
 
   const campaignList = useMemo(() => {
@@ -151,19 +122,6 @@ const Campaigns: FC = () => {
       </Aul>
     );
   }, [campaigns, onDeleteCampaign, t, user?._id]);
-
-  useEffect(() => {
-    if (api !== undefined && !calledApi.current) {
-      setLoading(true);
-      calledApi.current = true;
-      getCampaigns();
-    }
-  }, [api, createAlert, getNewId, getCampaigns, t]);
-
-  // TODO: Add loading state
-  if (loading) {
-    return null;
-  }
 
   return (
     <div className="campaigns">

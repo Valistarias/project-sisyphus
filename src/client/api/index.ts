@@ -7,6 +7,7 @@ import {
   MailToken,
   Notions,
   Pages,
+  Rolls,
   RuleBookTypes,
   RuleBooks,
   Users,
@@ -24,6 +25,7 @@ export default class Api {
   ruleBooks: RuleBooks;
   ruleBookTypes: RuleBookTypes;
   users: Users;
+  rolls: Rolls;
 
   constructor() {
     this.auth = new Auth();
@@ -37,5 +39,6 @@ export default class Api {
     this.ruleBooks = new RuleBooks();
     this.ruleBookTypes = new RuleBookTypes();
     this.users = new Users();
+    this.rolls = new Rolls();
   }
 }

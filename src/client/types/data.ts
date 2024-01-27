@@ -174,6 +174,25 @@ export interface ICharacter {
   createdAt: string;
 }
 
-// Dices ------------------------------------
+// Dices and Rolls ------------------------------------
 
-export type typeDice = 4 | 6 | 8 | 10 | 12 | 20;
+export type TypeDice = 4 | 6 | 8 | 10 | 12 | 20;
+
+export type TypeRoll = 'free';
+
+export interface IRoll {
+  /** The ID of the roll */
+  _id: string;
+  /** The type of the roll */
+  type: string;
+  /** The result of the roll, as value */
+  result: number;
+  /** The formula of the roll, as string */
+  formula: string;
+  /** The owner of the roll */
+  character: ICharacter;
+  /** The campaign of the roll */
+  campaign: ICampaign;
+  /** When the roll was executed */
+  createdAt: string;
+}

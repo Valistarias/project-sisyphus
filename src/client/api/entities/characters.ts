@@ -1,19 +1,16 @@
 import axios from 'axios';
 
-import Entity from './entity';
-
 import { type ICharacter } from '../../types/data';
+
+import Entity from './entity';
 
 interface ICharacterPayload {
   characterId: string;
 }
 
-type basicPayload = (payload: ICharacterPayload) => Promise<{ char: ICharacter }>;
-
 export default class Characters extends Entity {
   get: (payload: ICharacterPayload) => Promise<ICharacter>;
-  joinCampaign: basicPayload;
-  quitCampaign: basicPayload;
+  quitCampaign: (payload: ICharacterPayload) => Promise<boolean>;
 
   constructor() {
     super('characters');
@@ -23,7 +20,7 @@ export default class Characters extends Entity {
         axios
           .get(`${this.url}/single/`, { params: payload })
           .then((res) => {
-            resolve(res.data);
+            resolve(res.data as ICharacter);
           })
           .catch((err) => {
             reject(err);
@@ -34,8 +31,8 @@ export default class Characters extends Entity {
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/quitcampaign/`, payload)
-          .then((res) => {
-            resolve(res.data);
+          .then(() => {
+            resolve(true);
           })
           .catch((err) => {
             reject(err);

@@ -1,4 +1,4 @@
-import { type typeDice } from './types/data';
+import { type TypeDice } from './types/data';
 
 export const degToRad = (degrees: number): number => degrees * (Math.PI / 180);
 
@@ -32,12 +32,12 @@ export interface DiceRequest {
   /** The number of dices thrown */
   qty: number;
   /** The type of dice (as in the number of sides on the dice) */
-  type: typeDice;
+  type: TypeDice;
 }
 
 export interface DiceResult {
   /** The type of dice (as in the number of sides on the dice) */
-  type: typeDice;
+  type: TypeDice;
   /** All the results, in an array */
   results: number[];
   /** All the results, summed up */

@@ -43,9 +43,15 @@
     }
   },
   "rollTab": {
+    "title": "Dice Log",
     "roll": "Roll",
     "close": "Close",
-    "dices": "Dice"
+    "dices": "Dice",
+    "freeRoll": "Free Roll"
+  },
+  "rollResults": {
+    "freeRoll1": "Free",
+    "freeRoll2": "Roll"
   },
   "rollWindow": {
     "total": "Total",

@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-import Entity from './entity';
-
 import { type ICuratedNotion } from '../../types/data';
+
+import Entity from './entity';
 
 interface INotionsPayload {
   notionId: string;
@@ -14,7 +14,7 @@ interface IRulebookPayload {
 
 export default class Notions extends Entity {
   get: (payload: INotionsPayload) => Promise<ICuratedNotion>;
-  getAllByRuleBook: (payload: IRulebookPayload) => Promise<Record<string, any>>;
+  getAllByRuleBook: (payload: IRulebookPayload) => Promise<ICuratedNotion[]>;
 
   constructor() {
     super('notions');
@@ -24,7 +24,7 @@ export default class Notions extends Entity {
         axios
           .get(`${this.url}/single/`, { params: payload })
           .then((res) => {
-            resolve(res.data);
+            resolve(res.data as ICuratedNotion);
           })
           .catch((err) => {
             reject(err);
@@ -36,7 +36,7 @@ export default class Notions extends Entity {
         axios
           .get(`${this.url}/byrulebook/`, { params: payload })
           .then((res) => {
-            resolve(res.data);
+            resolve(res.data as ICuratedNotion[]);
           })
           .catch((err) => {
             reject(err);

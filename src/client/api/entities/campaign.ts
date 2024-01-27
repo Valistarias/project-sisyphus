@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-import Entity from './entity';
-
 import { type ICampaign } from '../../types/data';
+
+import Entity from './entity';
 
 interface ICampaignPayload {
   campaignId: string;
@@ -27,7 +27,7 @@ export default class Campaigns extends Entity {
         axios
           .get(`${this.url}/single/`, { params: payload })
           .then((res) => {
-            resolve(res.data);
+            resolve(res.data as ICampaign);
           })
           .catch((err) => {
             reject(err);
@@ -39,7 +39,7 @@ export default class Campaigns extends Entity {
         axios
           .post(`${this.url}/register/`, payload)
           .then((res) => {
-            resolve(res.data);
+            resolve(res.data as { campaignId: string });
           })
           .catch((err) => {
             reject(err);
@@ -63,7 +63,7 @@ export default class Campaigns extends Entity {
         axios
           .get(`${this.url}/find/`, { params: payload })
           .then((res) => {
-            resolve(res.data);
+            resolve(res.data as ICampaign);
           })
           .catch((err) => {
             reject(err);
@@ -75,7 +75,7 @@ export default class Campaigns extends Entity {
         axios
           .post(`${this.url}/generatecode/`, payload)
           .then((res) => {
-            resolve(res.data);
+            resolve(res.data as ICampaign);
           })
           .catch((err) => {
             reject(err);

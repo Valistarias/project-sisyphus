@@ -18,7 +18,7 @@ export default class MailToken extends Entity {
         axios
           .get(`${this.url}/getmail/`, { params: payload })
           .then((res) => {
-            resolve(res.data);
+            resolve(res.data as string);
           })
           .catch((err) => {
             reject(err);

@@ -67,7 +67,7 @@ const Button: FC<IButton> = ({
         ${active ? 'button--active' : ''}
         ${className ?? ''}
       `)}
-      onClick={(e) => {
+      onClick={(e: React.MouseEvent<HTMLElement>) => {
         e.stopPropagation();
         if (href !== null && navigate !== null) {
           navigate(href);

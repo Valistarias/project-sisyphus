@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-type IBasicRequests = (payload: any) => Promise<Record<string, string>>;
+type IBasicRequests = (payload: any) => Promise<Record<string, any>>;
 
 export default class Entity {
   url: string;
@@ -8,7 +8,7 @@ export default class Entity {
   create: IBasicRequests;
   update: IBasicRequests;
   delete: IBasicRequests;
-  basicPost: (target: string, payload: any) => Promise<Record<string, string>>;
+  basicPost: (target: string, payload: any) => Promise<Record<string, any>>;
 
   constructor(id: string) {
     this.url = `/api/${id}`;
@@ -18,7 +18,7 @@ export default class Entity {
         axios
           .get(`${this.url}/`)
           .then((res) => {
-            resolve(res.data);
+            resolve(res.data as Record<string, any>);
           })
           .catch((err) => {
             reject(err);
@@ -30,7 +30,7 @@ export default class Entity {
         axios
           .post(`${this.url}/create/`, payload)
           .then((res) => {
-            resolve(res.data);
+            resolve(res.data as Record<string, any>);
           })
           .catch((err) => {
             reject(err);
@@ -42,7 +42,7 @@ export default class Entity {
         axios
           .post(`${this.url}/update/`, payload)
           .then((res) => {
-            resolve(res.data);
+            resolve(res.data as Record<string, any>);
           })
           .catch((err) => {
             reject(err);
@@ -54,7 +54,7 @@ export default class Entity {
         axios
           .post(`${this.url}/delete/`, payload)
           .then((res) => {
-            resolve(res.data);
+            resolve(res.data as Record<string, any>);
           })
           .catch((err) => {
             reject(err);
@@ -66,7 +66,7 @@ export default class Entity {
         axios
           .post(`${this.url}/${target}/`, payload)
           .then((res) => {
-            resolve(res.data);
+            resolve(res.data as Record<string, any>);
           })
           .catch((err) => {
             reject(err);

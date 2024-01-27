@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-import Entity from './entity';
-
 import { type IUser } from '../../types/data';
+
+import Entity from './entity';
 
 interface ISignInUserPayload {
   mail: string;
@@ -21,11 +21,11 @@ interface INewPassPayload {
 }
 
 export default class Auth extends Entity {
-  signup: (payload: ISignUpUserPayload) => Promise<Record<string, string>>;
-  signin: (payload: ISignInUserPayload) => Promise<IUser | Record<string, unknown>>;
-  signout: () => Promise<Record<string, string>>;
-  check: () => Promise<IUser | Record<string, unknown>>;
-  passUpdate: (payload: INewPassPayload) => Promise<IUser | Record<string, unknown>>;
+  signup: (payload: ISignUpUserPayload) => Promise<boolean>;
+  signin: (payload: ISignInUserPayload) => Promise<IUser>;
+  signout: () => Promise<boolean>;
+  check: () => Promise<IUser>;
+  passUpdate: (payload: INewPassPayload) => Promise<IUser>;
 
   constructor() {
     super('auth');
@@ -38,8 +38,8 @@ export default class Auth extends Entity {
             password: payload.password,
             roles: ['user'],
           })
-          .then((res) => {
-            resolve(res.data);
+          .then(() => {
+            resolve(true);
           })
           .catch((err) => {
             reject(err);
@@ -54,7 +54,7 @@ export default class Auth extends Entity {
             password: payload.password,
           })
           .then((res) => {
-            resolve(res.data);
+            resolve(res.data as IUser);
           })
           .catch((err) => {
             reject(err);
@@ -65,8 +65,8 @@ export default class Auth extends Entity {
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/signout/`)
-          .then((res) => {
-            resolve(res.data);
+          .then(() => {
+            resolve(true);
           })
           .catch((err) => {
             reject(err);
@@ -78,7 +78,7 @@ export default class Auth extends Entity {
         axios
           .get(`${this.url}/check/`)
           .then((res) => {
-            resolve(res.data);
+            resolve(res.data as IUser);
           })
           .catch((err) => {
             reject(err);
@@ -90,7 +90,7 @@ export default class Auth extends Entity {
         axios
           .post(`${this.url}/passupdate/`, payload)
           .then((res) => {
-            resolve(res.data);
+            resolve(res.data as IUser);
           })
           .catch((err) => {
             reject(err);

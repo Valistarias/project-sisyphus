@@ -1,11 +1,15 @@
-import React, { useCallback, useMemo, useState, type FC } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
+
+import { useApi, useSystemAlerts } from '../providers';
 
 import holoBackground from '../assets/imgs/tvbg.gif';
 import { Aicon, Ap, Avideo, type typeIcons } from '../atoms';
 import { Button } from '../molecules';
+import { type IRoll, type TypeRoll } from '../types/data';
 
+import Alert from './alert';
 import RollResult from './rollResult';
 
 import { classTrim, createBacisDiceRequest, type DiceRequest } from '../utils';
@@ -13,18 +17,27 @@ import { classTrim, createBacisDiceRequest, type DiceRequest } from '../utils';
 import './rollTab.scss';
 
 interface IRollTab {
+  /** The campaign that the rolls are displayed */
+  campaignId: string;
+  /** The character used for rolling */
+  characterId: string;
   /** The ID used on the alert provider */
   onRollDices: (diceValues: DiceRequest[]) => void;
 }
 
-const RollTab: FC<IRollTab> = ({ onRollDices }) => {
+const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, characterId }) => {
   const { t } = useTranslation();
+  const { api } = useApi();
+  const { createAlert, getNewId } = useSystemAlerts();
 
-  const [isOpen, setOpen] = useState(true);
+  const [isOpen, setOpen] = useState(false);
 
   const [diceValues, setDiceValues] = useState<DiceRequest[]>(createBacisDiceRequest());
+  const [dataPrevRolls, setDataPrevRolls] = useState<IRoll[]>([]);
 
   const canRoll = useMemo(() => diceValues.some(({ qty }) => qty > 0), [diceValues]);
+
+  const calledApi = useRef(false);
 
   const changeDice = useCallback((dice: number, type: 'add' | 'remove') => {
     setDiceValues((prevDiceValues: DiceRequest[]) => {
@@ -83,6 +96,55 @@ const RollTab: FC<IRollTab> = ({ onRollDices }) => {
     [changeDice, diceValues]
   );
 
+  const logRolls = useMemo(() => {
+    return dataPrevRolls.map(({ _id, character, createdAt, formula, result, type }) => (
+      <RollResult
+        key={_id}
+        authorName={character.name}
+        result={result}
+        formula={formula}
+        type={type as TypeRoll}
+        createdAt={new Date(createdAt)}
+      />
+    ));
+  }, [dataPrevRolls]);
+
+  const reloadRolls = useCallback(() => {
+    if (api !== undefined) {
+      api.rolls
+        .getAllByCampaign({
+          campaignId,
+        })
+        .then((sentRolls: IRoll[]) => {
+          setDataPrevRolls(sentRolls);
+        })
+        .catch((res) => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert key={newId} id={newId} timer={5}>
+                <Ap>{t('serverErrors.CYPU-301')}</Ap>
+              </Alert>
+            ),
+          });
+        });
+    }
+  }, [api, campaignId, createAlert, getNewId, t]);
+
+  useEffect(() => {
+    if (api !== undefined && !calledApi.current) {
+      calledApi.current = true;
+      reloadRolls();
+    }
+  }, [api, createAlert, getNewId, t, reloadRolls]);
+
+  useEffect(() => {
+    if (calledApi.current) {
+      calledApi.current = false;
+    }
+  }, [campaignId]);
+
   return (
     <div
       className={classTrim(`
@@ -108,17 +170,17 @@ const RollTab: FC<IRollTab> = ({ onRollDices }) => {
       </div>
       <div className="roll-tab__content">
         <div className="roll-tab__log">
-          <Ap className="roll-tab__log__title">Dice Log</Ap>
+          <Ap className="roll-tab__log__title">{t('rollTab.title', { ns: 'components' })}</Ap>
           <div
             className="roll-tab__log__table"
             style={{ backgroundImage: `url(${holoBackground})` }}
           >
             <Avideo className="roll-tab__log__table__animatedbg" video="logo" />
-            <RollResult />
+            {logRolls}
           </div>
         </div>
         <div className="roll-tab__dice">
-          <Ap className="roll-tab__dice__title">Free Roll</Ap>
+          <Ap className="roll-tab__dice__title">{t('rollTab.freeRoll', { ns: 'components' })}</Ap>
           {diceElts}
           <Button
             theme="text-only"

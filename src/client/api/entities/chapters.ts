@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-import Entity from './entity';
-
 import { type ICuratedChapter } from '../../types/data';
+
+import Entity from './entity';
 
 interface IChaptersPayload {
   ruleBookId: string;
@@ -33,7 +33,7 @@ export default class Chapters extends Entity {
         axios
           .get(`${this.url}/`, { params: payload })
           .then((res) => {
-            resolve(res.data);
+            resolve(res.data as ICuratedChapter[]);
           })
           .catch((err) => {
             reject(err);
@@ -45,7 +45,7 @@ export default class Chapters extends Entity {
         axios
           .get(`${this.url}/single/`, { params: payload })
           .then((res) => {
-            resolve(res.data);
+            resolve(res.data as ICuratedChapter);
           })
           .catch((err) => {
             reject(err);
@@ -57,7 +57,7 @@ export default class Chapters extends Entity {
         axios
           .post(`${this.url}/changepagesorder/`, payload)
           .then((res) => {
-            resolve(res.data);
+            resolve(res.data as ICuratedChapter);
           })
           .catch((err) => {
             reject(err);

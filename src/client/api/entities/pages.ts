@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-import Entity from './entity';
-
 import { type ICuratedPage } from '../../types/data';
+
+import Entity from './entity';
 
 interface IPagesPayload {
   pageId: string;
@@ -24,7 +24,7 @@ export default class Pages extends Entity {
         axios
           .get(`${this.url}/pagesbychapterid/`, { params: payload })
           .then((res) => {
-            resolve(res.data);
+            resolve(res.data as ICuratedPage[]);
           })
           .catch((err) => {
             reject(err);
@@ -36,7 +36,7 @@ export default class Pages extends Entity {
         axios
           .get(`${this.url}/single/`, { params: payload })
           .then((res) => {
-            resolve(res.data);
+            resolve(res.data as ICuratedPage);
           })
           .catch((err) => {
             reject(err);

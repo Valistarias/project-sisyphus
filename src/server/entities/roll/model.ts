@@ -5,7 +5,7 @@ import { type ICharacter } from '../character/model';
 
 interface IRoll {
   /*  The type of the roll */
-  type: number;
+  type: string;
   /*  The result of the roll */
   result: number;
   /*  The formula of the roll */
@@ -26,6 +26,7 @@ interface HydratedRoll extends Omit<HydratedDocument<IRoll>, 'campaign' | 'chara
 const notionSchema = new Schema<IRoll>({
   result: Number,
   formula: String,
+  type: String,
   character: {
     type: Schema.Types.ObjectId,
     ref: 'Character',

@@ -12,23 +12,15 @@ import { useTranslation } from 'react-i18next';
 
 import { Ap } from '../atoms';
 import { Button, DiceCard } from '../molecules';
-import { type typeDice } from '../types/data';
+import { type TypeDice, type TypeRoll } from '../types/data';
 
-import {
-  calculateDices,
-  classTrim,
-  diceResultToStr,
-  strTodiceResult,
-  throwDices,
-  type DiceRequest,
-  type DiceResult,
-} from '../utils';
+import { calculateDices, classTrim, throwDices, type DiceRequest, type DiceResult } from '../utils';
 
 import './rollWindow.scss';
 
 interface IRollWindowContext {
   /** The function to send all the data to the confirm message element */
-  setDicesToRoll: (dices: DiceRequest[]) => void;
+  setToRoll: (dices: DiceRequest[], mode: TypeRoll) => void;
   /** The event system linked to the confirm popup */
   addRollEventListener: (id: string, cb: (data: any) => void) => void;
   removeRollEventListener: (id: string, cb: (data: any) => void) => void;
@@ -43,7 +35,7 @@ interface DiceData {
   /** The ID of the dice element */
   id: string;
   /** The type of dice */
-  type: typeDice;
+  type: TypeDice;
   /** The changed value over time */
   value: number | null;
   /** The definitive value, to be used with timeout */
@@ -77,6 +69,7 @@ export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) =>
   const [isWindowOpened, setWindowOpened] = useState<boolean>(false);
   const [isRollFinished, setRollFinished] = useState<boolean>(false);
   const [diceValues, setDiceValues] = useState<DiceData[]>([]);
+  const typeRoll = useRef<string>('free');
 
   const intervalEvt = useRef<NodeJS.Timeout | null>(null);
   const endRollEvt = useRef<NodeJS.Timeout | null>(null);
@@ -105,7 +98,7 @@ export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) =>
       return null;
     }
     return diceValues.map(({ id, type, value }) => (
-      <DiceCard key={id} type={type as typeDice} value={value} size={cardMode} />
+      <DiceCard key={id} type={type as TypeDice} value={value} size={cardMode} />
     ));
   }, [diceValues, cardMode]);
 
@@ -123,17 +116,23 @@ export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) =>
       }
       setTimeout(() => {
         setDiceValues([]);
+        typeRoll.current = 'free';
       }, 300);
     }
   }, [isRollFinished]);
 
+  const setToRoll = useCallback((dices: DiceRequest[], mode: TypeRoll) => {
+    setDicesToRoll(dices);
+    typeRoll.current = mode;
+  }, []);
+
   const providerValues = useMemo<IRollWindowContext>(
     () => ({
-      setDicesToRoll,
+      setToRoll,
       addRollEventListener: RollEvent.addEventListener,
       removeRollEventListener: RollEvent.removeEventListener,
     }),
-    [setDicesToRoll, RollEvent]
+    [setToRoll, RollEvent]
   );
 
   const affectDiceValueAtIndex = useCallback((curatedDices: DiceData[], index: number) => {
@@ -157,13 +156,10 @@ export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) =>
           new CustomEvent('endroll', {
             detail: {
               stats: rollResults.current,
+              mode: typeRoll.current,
             },
           })
         );
-        console.log('rollResults', rollResults.current);
-        const test = diceResultToStr(rollResults.current);
-        console.log('diceResultToStr', test);
-        console.log('strTodiceResult', strTodiceResult(test));
       }
     }, 1000);
   }, [RollEvent, rollResults]);

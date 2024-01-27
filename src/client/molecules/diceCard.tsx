@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import holoBackground from '../assets/imgs/tvbg.gif';
 import { Aicon, Ap, type typeIcons } from '../atoms';
-import { type typeDice } from '../types/data';
+import { type TypeDice } from '../types/data';
 
 import { classTrim } from '../utils';
 
@@ -10,7 +10,7 @@ import './diceCard.scss';
 
 interface IDiceCard {
   /** The type of dice displayed */
-  type: typeDice;
+  type: TypeDice;
   /** The number got */
   value?: number | null;
   /** The size of the card */

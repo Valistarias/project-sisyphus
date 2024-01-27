@@ -7,8 +7,10 @@ import { useApi, useRollWindow, useSystemAlerts } from '../../providers';
 
 import { Ap, Atitle } from '../../atoms';
 import { Alert, RollTab } from '../../organisms';
-import { type ICharacter } from '../../types/data';
+import { type ICharacter, type TypeRoll } from '../../types/data';
 import { ErrorPage } from '../index';
+
+import { calculateDices, diceResultToStr, type DiceResult } from '../../utils';
 
 import './character.scss';
 
@@ -17,7 +19,7 @@ const Character: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { id } = useParams();
-  const { setDicesToRoll, addRollEventListener, removeRollEventListener } = useRollWindow();
+  const { setToRoll, addRollEventListener, removeRollEventListener } = useRollWindow();
 
   const [character, setCharacter] = useState<ICharacter | null>(null);
 
@@ -27,9 +29,42 @@ const Character: FC = () => {
   const calledApi = useRef(false);
   const initEvt = useRef(false);
 
-  const endRollEvent = useCallback(({ detail }) => {
-    console.log('Roll event dispatched', detail);
-  }, []);
+  const endRollEvent = useCallback(
+    ({ detail }) => {
+      if (api !== undefined && detail.stats !== null && character !== null) {
+        const { stats, mode }: { stats: DiceResult[]; mode: TypeRoll } = detail;
+        const result = calculateDices(stats).total;
+        api.rolls
+          .create({
+            result,
+            formula: diceResultToStr(stats),
+            character: character._id,
+            campaign: character?.campaign._id,
+            type: mode,
+          })
+          .then(() => {
+            console.log('DATA SENT');
+          })
+          .catch((res) => {
+            setLoading(false);
+            if (res.response.status === 404) {
+              setNotFound(true);
+            } else {
+              const newId = getNewId();
+              createAlert({
+                key: newId,
+                dom: (
+                  <Alert key={newId} id={newId} timer={5}>
+                    <Ap>{t('serverErrors.CYPU-301')}</Ap>
+                  </Alert>
+                ),
+              });
+            }
+          });
+      }
+    },
+    [api, character, createAlert, getNewId, t]
+  );
 
   useEffect(() => {
     if (api !== undefined && !calledApi.current && id !== undefined) {
@@ -67,7 +102,7 @@ const Character: FC = () => {
   }, [api, createAlert, getNewId, t, id]);
 
   useEffect(() => {
-    if (!initEvt.current) {
+    if (!initEvt.current && api !== undefined && character !== null) {
       initEvt.current = true;
       addRollEventListener?.('endroll', endRollEvent);
     }
@@ -75,7 +110,7 @@ const Character: FC = () => {
     return () => {
       removeRollEventListener?.('endroll', endRollEvent);
     };
-  }, [addRollEventListener, removeRollEventListener, endRollEvent]);
+  }, [addRollEventListener, removeRollEventListener, endRollEvent, api, character]);
 
   if (loading) {
     return null;
@@ -89,8 +124,10 @@ const Character: FC = () => {
     <div className="character">
       <Atitle level={1}>{character.name}</Atitle>
       <RollTab
+        campaignId={character.campaign._id}
+        characterId={character._id}
         onRollDices={(dices) => {
-          setDicesToRoll(dices);
+          setToRoll(dices, 'free');
         }}
       />
     </div>
