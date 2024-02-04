@@ -15,6 +15,7 @@ import {
   AdminNewRuleBookPage,
   AdminPage,
   AdminRuleBooksPage,
+  AdminTestDiceCompPage,
   CampaignPage,
   CampaignsPage,
   ChapterPage,
@@ -128,6 +129,10 @@ const App: FC = () => {
             {
               path: '/admin',
               element: <AdminPage />,
+            },
+            {
+              path: '/admin/dicecomp',
+              element: <AdminTestDiceCompPage />,
             },
             {
               path: '/admin/rulebooks',

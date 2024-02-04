@@ -212,5 +212,15 @@
   "character": {},
   "profile": {
     "title": "Profile"
+  },
+  "adminTestDiceComp": {
+    "title": "Test Dice Composition",
+    "formCTA": "Launch",
+    "count": "Count",
+    "score": "Score",
+    "this": "This %",
+    "orMore": "Or More %",
+    "orLess": "Or Less %",
+    "caption": "Roll results for {{formula}}. Total possible throws: {{variations}}"
   }
 }

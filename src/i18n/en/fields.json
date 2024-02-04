@@ -80,5 +80,10 @@
   },
   "characterCampaign": {
     "label": "Campaign"
+  },
+  "diceFormula": {
+    "required": "Dice formula is required",
+    "pattern": "The dice formula format isn't right ([num]d[num])",
+    "label": "Dice formula"
   }
 }

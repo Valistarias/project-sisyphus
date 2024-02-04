@@ -8,6 +8,7 @@ import AdminNewNotionPage from './adminNewNotion';
 import AdminNewPage from './adminNewPage';
 import AdminNewRuleBookPage from './adminNewRuleBook';
 import AdminRuleBooksPage from './adminRuleBooks';
+import AdminTestDiceCompPage from './adminTestDiceComp';
 import CampaignPage from './campaign';
 import CampaignsPage from './campaigns';
 import ChapterPage from './chapter';
@@ -37,6 +38,7 @@ export {
   AdminNewRuleBookPage,
   AdminPage,
   AdminRuleBooksPage,
+  AdminTestDiceCompPage,
   CampaignPage,
   CampaignsPage,
   ChapterPage,

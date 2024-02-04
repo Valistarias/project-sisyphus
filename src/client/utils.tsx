@@ -8,6 +8,8 @@ export const classTrim = (elt: string): string => fullTrim(elt.replace(/\n {2,}/
 
 export const regexMail = /([A-z0-9._%-])+@([A-z0-9.-])+\.([A-z0-9]{2,})/g;
 
+export const regexDiceFormula = /^(\d+)d(\d+)$/g;
+
 export const arraysEqual = (a: string[], b: string[]): boolean => {
   if (a === b) return true;
   if (a == null || b == null) return false;

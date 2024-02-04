@@ -119,6 +119,10 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
                   href: '/admin/rulebooks',
                   text: t('adminRuleBooks.title', { ns: 'pages' }),
                 },
+                {
+                  href: '/admin/dicecomp',
+                  text: t('adminTestDiceComp.title', { ns: 'pages' }),
+                },
               ]}
               className="headerbar__menu-list"
               onOpen={() => {
