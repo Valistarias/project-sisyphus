@@ -27,7 +27,7 @@ const AdminTestDiceComp: FC = () => {
     const scores: Record<
       string,
       {
-        rolls: number[][];
+        // rolls: number[][];
         count: number;
         thisP?: number;
         orMoreP?: number;
@@ -52,11 +52,11 @@ const AdminTestDiceComp: FC = () => {
       });
       // rolls.push(diceVal);
       if (scores[total] != null) {
-        scores[total].rolls.push(diceVal);
+        // scores[total].rolls.push(diceVal);
         scores[total].count++;
       } else {
         scores[total] = {
-          rolls: [diceVal],
+          // rolls: [diceVal],
           count: 1,
         };
       }
