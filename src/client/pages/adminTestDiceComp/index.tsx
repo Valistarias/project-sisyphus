@@ -63,22 +63,18 @@ const AdminTestDiceComp: FC = () => {
     }
     const possibleScores = Object.keys(scores);
 
+    let orLessCount = 0;
+    let orMoreCount = variations;
+
     // Probabilities
     possibleScores.forEach((possibleScore, z) => {
-      scores[possibleScore].thisP =
-        Math.round((scores[possibleScore].count / variations) * 10000) / 100;
+      const score = scores[possibleScore].count;
+      scores[possibleScore].thisP = Math.round((score / variations) * 10000) / 100;
 
-      let orLessCountTotal = 0;
-      for (let i = 0; i <= z; i++) {
-        orLessCountTotal += scores[possibleScores[i]].count;
-      }
-      scores[possibleScore].orLessP = Math.round((orLessCountTotal / variations) * 10000) / 100;
-
-      let orMoreCountTotal = 0;
-      for (let i = z; i < possibleScores.length; i++) {
-        orMoreCountTotal += scores[possibleScores[i]].count;
-      }
-      scores[possibleScore].orMoreP = Math.round((orMoreCountTotal / variations) * 10000) / 100;
+      orLessCount += score;
+      scores[possibleScore].orLessP = Math.round((orLessCount / variations) * 10000) / 100;
+      scores[possibleScore].orMoreP = Math.round((orMoreCount / variations) * 10000) / 100;
+      orMoreCount -= score;
     });
     return (
       <table className="adminTestDiceComp__table">
