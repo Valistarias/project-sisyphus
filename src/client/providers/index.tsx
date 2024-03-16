@@ -5,7 +5,7 @@ import { ConfirmMessageProvider, useConfirmMessage } from './confirmMessage';
 import { GlobalVarsProvider, useGlobalVars } from './globalVars';
 import { LangProvider, useLang } from './lang';
 import { RollWindowProvider, useRollWindow } from './rollWindow';
-import { SocketProvider } from './socket';
+import { SocketProvider, useSocket } from './socket';
 import { SystemAlertsProvider, useSystemAlerts } from './systemAlerts';
 import { ThemeProvider, useTheme } from './theme';
 
@@ -39,6 +39,7 @@ export {
   useGlobalVars,
   useLang,
   useRollWindow,
+  useSocket,
   useSystemAlerts,
   useTheme,
 };

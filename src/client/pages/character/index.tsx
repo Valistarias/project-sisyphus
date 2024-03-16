@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useRef, useState, type FC } from 'react'
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import { useApi, useRollWindow, useSystemAlerts } from '../../providers';
+import { useApi, useRollWindow, useSocket, useSystemAlerts } from '../../providers';
 
 import { Ap, Atitle } from '../../atoms';
 import { Alert, RollTab } from '../../organisms';
@@ -19,6 +19,7 @@ const Character: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { id } = useParams();
+  const { socket } = useSocket();
   const { setToRoll, addRollEventListener, removeRollEventListener } = useRollWindow();
 
   const [character, setCharacter] = useState<ICharacter | null>(null);
@@ -31,19 +32,28 @@ const Character: FC = () => {
 
   const endRollEvent = useCallback(
     ({ detail }) => {
-      if (api !== undefined && detail.stats !== null && character?.campaign !== null) {
+      if (
+        api !== undefined &&
+        detail.stats !== null &&
+        character?.campaign !== undefined &&
+        socket !== null
+      ) {
         const { stats, mode }: { stats: DiceResult[]; mode: TypeRoll } = detail;
         const result = calculateDices(stats).total;
         api.rolls
           .create({
             result,
             formula: diceResultToStr(stats),
-            character: character._id,
+            character: character?._id,
             campaign: character?.campaign._id,
             type: mode,
           })
-          .then(() => {
-            console.log('DATA SENT');
+          .then((data) => {
+            // console.log('DATA SENT', data);
+            socket.emit('newRoll', {
+              room: character?.campaign._id,
+              data,
+            });
           })
           .catch((res) => {
             setLoading(false);
@@ -63,11 +73,11 @@ const Character: FC = () => {
           });
       }
     },
-    [api, character, createAlert, getNewId, t]
+    [api, character, createAlert, getNewId, socket, t]
   );
 
   useEffect(() => {
-    if (api !== undefined && !calledApi.current && id !== undefined) {
+    if (api !== undefined && !calledApi.current && id !== undefined && socket !== null) {
       setLoading(true);
       calledApi.current = true;
       api.characters
@@ -99,7 +109,24 @@ const Character: FC = () => {
           }
         });
     }
-  }, [api, createAlert, getNewId, t, id]);
+  }, [api, createAlert, getNewId, t, id, socket]);
+
+  useEffect(() => {
+    if (character?.campaign !== undefined && socket !== null) {
+      const triggerNewData = (args): void => {
+        console.log('UPDATE', args);
+      };
+
+      socket.emit('goToRoom', character.campaign._id);
+
+      socket.on('newRoll', triggerNewData);
+
+      return () => {
+        socket.emit('exitRoom', character.campaign._id);
+        socket.off('newRoll', triggerNewData);
+      };
+    }
+  }, [character, socket]);
 
   useEffect(() => {
     if (!initEvt.current && api !== undefined && character !== null) {

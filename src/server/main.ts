@@ -147,7 +147,21 @@ app.get('/*', (req: Request, res: Response, next: () => void) => {
 // Socket IO for Campaigns ----------------------------------------------------------------
 io.on('connection', (socket) => {
   console.log('a user connected');
+  console.log('socket.rooms', socket.rooms);
+  socket.on('goToRoom', (data: string) => {
+    void socket.join(data);
+  });
+
+  socket.on('exitRoom', (data: string) => {
+    void socket.leave(data);
+  });
+
+  socket.on('newRoll', ({ room, data }: { room: string; data: Record<string, any> }) => {
+    console.log('NEW ROLL', room, data);
+    socket.to(room).emit('newRoll', data);
+  });
 });
+
 // ----------------------------------------------------------------------------------------
 
 const server = httpServer.listen(3000, '0.0.0.0', () => {
