@@ -58,7 +58,7 @@ function RollEventEmitter(): void {
 
 Emitter.methods = ['addEventListener', 'dispatchEvent', 'removeEventListener'];
 
-const RollWindowContext = React.createContext<IRollWindowContext | null>(null);
+const RollWindowContext = React.createContext<IRollWindowContext | string>('');
 
 export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) => {
   const { t } = useTranslation();

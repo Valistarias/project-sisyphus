@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
+import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
 
 import { useApi, useConfirmMessage, useSystemAlerts } from '../../providers';
 
 import { Ali, Ap, Atitle, Aul } from '../../atoms';
+import AP from '../../atoms/ap';
 import { Button } from '../../molecules';
 import { Alert } from '../../organisms';
 import { type ICharacter } from '../../types/data';
@@ -108,13 +110,20 @@ const Characters: FC = () => {
         {characters.map((character) => (
           <Ali
             className={classTrim(`
-          characters__character-list__elt
-        `)}
+              characters__character-list__elt
+            `)}
             key={character._id}
           >
-            <Atitle className="characters__character-list__elt__title" level={3}>
-              {character.name}
-            </Atitle>
+            <div className="characters__character-list__elt__title">
+              <Atitle className="characters__character-list__elt__title__text" level={3}>
+                {character.name}
+              </Atitle>
+              {character.campaign !== null ? (
+                <AP className="characters__character-list__elt__title__campaign">
+                  {`${i18next.format(t(`terms.campaign.title`), 'capitalize')}: ${character.campaign.name}`}
+                </AP>
+              ) : null}
+            </div>
             <div className="characters__character-list__elt__buttons">
               <Button href={`/character/${character._id}`}>
                 {t('characters.openCharacter', { ns: 'pages' })}

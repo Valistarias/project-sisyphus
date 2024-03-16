@@ -47,7 +47,8 @@
     "roll": "Roll",
     "close": "Close",
     "dices": "Dice",
-    "freeRoll": "Free Roll"
+    "freeRoll": "Free Roll",
+    "noCampaign": "No Dice Log available. To have a Dice Log, your character need to be in a campaign."
   },
   "rollResults": {
     "freeRoll1": "Free",

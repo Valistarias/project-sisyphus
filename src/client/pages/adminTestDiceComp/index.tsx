@@ -41,8 +41,6 @@ const AdminTestDiceComp: FC = () => {
       increments.push(Math.pow(valueDice, i));
     }
 
-    let nbTwoOnes = 0;
-
     // Establishing base array
     for (let y = 0; y < variations; y++) {
       const diceVal: number[] = [];
@@ -52,9 +50,6 @@ const AdminTestDiceComp: FC = () => {
         diceVal.push(singleDieVal);
         total += singleDieVal;
       });
-      if (diceVal.filter((dieVal) => dieVal === 1).length >= 2) {
-        nbTwoOnes++;
-      }
       if (scores[total] != null) {
         // scores[total].rolls.push(diceVal);
         scores[total].count++;
@@ -81,10 +76,6 @@ const AdminTestDiceComp: FC = () => {
       orMoreCount -= score;
     });
 
-    console.log(
-      'Two same small values percent: ',
-      Math.round((nbTwoOnes / variations) * 10000) / 100
-    );
     return (
       <table className="adminTestDiceComp__table">
         <caption>{t('adminTestDiceComp.caption', { ns: 'pages', formula, variations })}</caption>

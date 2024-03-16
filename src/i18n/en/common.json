@@ -35,6 +35,9 @@
       "abort": "Abort",
       "createdBy": "Created by {{owner}}",
       "createdByShort": "by {{owner}}"
+    },
+    "campaign": {
+      "title": "campaign"
     }
   },
   "chapterTypeNames": {

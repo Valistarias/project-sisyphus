@@ -175,6 +175,11 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, characterId }) => {
             className="roll-tab__log__table"
             style={{ backgroundImage: `url(${holoBackground})` }}
           >
+            {campaignId === undefined ? (
+              <p className="roll-tab__log__table__no-canmpaign">
+                {t('rollTab.noCampaign', { ns: 'components' })}
+              </p>
+            ) : null}
             <Avideo className="roll-tab__log__table__animatedbg" video="logo" />
             {logRolls}
           </div>

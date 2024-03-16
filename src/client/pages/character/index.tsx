@@ -31,7 +31,7 @@ const Character: FC = () => {
 
   const endRollEvent = useCallback(
     ({ detail }) => {
-      if (api !== undefined && detail.stats !== null && character !== null) {
+      if (api !== undefined && detail.stats !== null && character?.campaign !== null) {
         const { stats, mode }: { stats: DiceResult[]; mode: TypeRoll } = detail;
         const result = calculateDices(stats).total;
         api.rolls
@@ -124,8 +124,8 @@ const Character: FC = () => {
     <div className="character">
       <Atitle level={1}>{character.name}</Atitle>
       <RollTab
-        campaignId={character.campaign._id}
-        characterId={character._id}
+        campaignId={character.campaign?._id}
+        characterId={character?._id}
         onRollDices={(dices) => {
           setToRoll(dices, 'free');
         }}
