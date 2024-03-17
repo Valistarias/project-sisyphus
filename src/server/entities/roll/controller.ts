@@ -9,10 +9,16 @@ import { type ICharacter } from '../character/model';
 import { type HydratedRoll, type IRoll } from './model';
 
 const { Roll } = db;
+const perRequest = 10;
 
-const findRollsByCampaignId = async (id: string): Promise<HydratedRoll[]> =>
+const findRollsByCampaignId = async (id: string, offset: number = 0): Promise<HydratedRoll[]> =>
   await new Promise((resolve, reject) => {
     Roll.find({ campaign: id })
+      .sort({
+        createdAt: 'desc',
+      })
+      .limit(perRequest)
+      .skip(offset)
       .populate<{ character: ICharacter }>('character')
       .populate<{ campaign: ICampaign }>('campaign')
       .then(async (res: HydratedRoll[]) => {
@@ -132,10 +138,10 @@ const deleteRollByCampaignId = async (campaignId: string): Promise<boolean> =>
   });
 
 const findAllByCampaign = (req: Request, res: Response): void => {
-  const { campaignId } = req.query;
-  findRollsByCampaignId(campaignId as string)
+  const { campaignId, offset } = req.query;
+  findRollsByCampaignId(campaignId as string, (offset ?? 0) as number)
     .then((rolls) => {
-      res.send(rolls);
+      res.send(rolls.reverse());
     })
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };

@@ -2,17 +2,24 @@ import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } fro
 
 import { useTranslation } from 'react-i18next';
 
-import { useApi, useSystemAlerts } from '../providers';
+import { useApi, useRollWindow, useSocket, useSystemAlerts } from '../providers';
 
 import holoBackground from '../assets/imgs/tvbg.gif';
 import { Aicon, Ap, Avideo, type typeIcons } from '../atoms';
 import { Button } from '../molecules';
-import { type IRoll, type TypeRoll } from '../types/data';
+import { type ICharacter, type IRoll, type TypeRoll } from '../types/data';
 
 import Alert from './alert';
 import RollResult from './rollResult';
 
-import { classTrim, createBacisDiceRequest, type DiceRequest } from '../utils';
+import {
+  calculateDices,
+  classTrim,
+  createBacisDiceRequest,
+  diceResultToStr,
+  type DiceRequest,
+  type DiceResult,
+} from '../utils';
 
 import './rollTab.scss';
 
@@ -20,17 +27,21 @@ interface IRollTab {
   /** The campaign that the rolls are displayed */
   campaignId: string;
   /** The character used for rolling */
-  characterId: string;
+  character: ICharacter;
   /** The ID used on the alert provider */
   onRollDices: (diceValues: DiceRequest[]) => void;
 }
 
-const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, characterId }) => {
+const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, character }) => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
+  const { socket } = useSocket();
+  const { addRollEventListener, removeRollEventListener } = useRollWindow();
 
+  // const [loading, setLoading] = useState(true);
   const [isOpen, setOpen] = useState(false);
+  // const [notFound, setNotFound] = useState(false);
 
   const [diceValues, setDiceValues] = useState<DiceRequest[]>(createBacisDiceRequest());
   const [dataPrevRolls, setDataPrevRolls] = useState<IRoll[]>([]);
@@ -38,6 +49,10 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, characterId }) => {
   const canRoll = useMemo(() => diceValues.some(({ qty }) => qty > 0), [diceValues]);
 
   const calledApi = useRef(false);
+  const initEvt = useRef(false);
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const lockedScroll = useRef(true);
 
   const changeDice = useCallback((dice: number, type: 'add' | 'remove') => {
     setDiceValues((prevDiceValues: DiceRequest[]) => {
@@ -60,6 +75,59 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, characterId }) => {
       return newDiceValues;
     });
   }, []);
+
+  const addRoll = useCallback((roll: IRoll) => {
+    setDataPrevRolls((prev) => {
+      const next = [...prev];
+      next.push(roll);
+      return next;
+    });
+  }, []);
+
+  const endRollEvent = useCallback(
+    ({ detail }) => {
+      if (
+        api !== undefined &&
+        detail.stats !== null &&
+        campaignId !== undefined &&
+        socket !== null
+      ) {
+        const { stats, mode }: { stats: DiceResult[]; mode: TypeRoll } = detail;
+        const result = calculateDices(stats).total;
+        api.rolls
+          .create({
+            result,
+            formula: diceResultToStr(stats),
+            character: character._id,
+            campaign: campaignId,
+            type: mode,
+          })
+          .then((data: IRoll) => {
+            const dataRoll = {
+              ...data,
+              character,
+            };
+            socket.emit('newRoll', {
+              room: campaignId,
+              data: dataRoll,
+            });
+            addRoll(dataRoll);
+          })
+          .catch((res) => {
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{t('serverErrors.CYPU-301')}</Ap>
+                </Alert>
+              ),
+            });
+          });
+      }
+    },
+    [addRoll, api, campaignId, character, createAlert, getNewId, socket, t]
+  );
 
   const diceElts = useMemo(
     () =>
@@ -114,6 +182,7 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, characterId }) => {
       api.rolls
         .getAllByCampaign({
           campaignId,
+          offset: 0,
         })
         .then((sentRolls: IRoll[]) => {
           setDataPrevRolls(sentRolls);
@@ -132,8 +201,52 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, characterId }) => {
     }
   }, [api, campaignId, createAlert, getNewId, t]);
 
+  const onLogScroll = useCallback(() => {
+    if (scrollRef.current !== null) {
+      const totalHeight = scrollRef.current.scrollTop + scrollRef.current.clientHeight;
+      if (totalHeight >= scrollRef.current.scrollHeight && !lockedScroll.current) {
+        lockedScroll.current = true;
+      } else if (totalHeight < scrollRef.current.scrollHeight && lockedScroll.current) {
+        lockedScroll.current = false;
+      }
+
+      if (scrollRef.current.scrollTop === 0) {
+        if (api !== undefined) {
+          api.rolls
+            .getAllByCampaign({
+              campaignId,
+              offset: dataPrevRolls.length,
+            })
+            .then((sentRolls: IRoll[]) => {
+              const indexedTotHeight = scrollRef.current?.scrollHeight;
+              setDataPrevRolls((prev) => {
+                const next = [...sentRolls, ...prev];
+                return next;
+              });
+              setTimeout(function () {
+                if (scrollRef.current !== null && indexedTotHeight !== undefined) {
+                  scrollRef.current.scrollTo(0, scrollRef.current.scrollHeight - indexedTotHeight);
+                }
+              }, 0);
+            })
+            .catch((res) => {
+              const newId = getNewId();
+              createAlert({
+                key: newId,
+                dom: (
+                  <Alert key={newId} id={newId} timer={5}>
+                    <Ap>{t('serverErrors.CYPU-301')}</Ap>
+                  </Alert>
+                ),
+              });
+            });
+        }
+      }
+    }
+  }, [api, campaignId, createAlert, dataPrevRolls, getNewId, t]);
+
   useEffect(() => {
-    if (api !== undefined && !calledApi.current) {
+    if (api !== undefined && !calledApi.current && scrollRef.current !== null) {
       calledApi.current = true;
       reloadRolls();
     }
@@ -144,6 +257,38 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, characterId }) => {
       calledApi.current = false;
     }
   }, [campaignId]);
+
+  useEffect(() => {
+    if (campaignId !== undefined && socket !== null) {
+      const triggerNewData = (diceResult: IRoll): void => {
+        addRoll(diceResult);
+      };
+      socket.emit('goToRoom', campaignId);
+      socket.on('newRoll', triggerNewData);
+
+      return () => {
+        socket.off('newRoll', triggerNewData);
+        socket.emit('exitRoom', campaignId);
+      };
+    }
+  }, [addRoll, campaignId, socket]);
+
+  useEffect(() => {
+    if (!initEvt.current && api !== undefined) {
+      initEvt.current = true;
+      addRollEventListener?.('endroll', endRollEvent);
+    }
+
+    return () => {
+      removeRollEventListener?.('endroll', endRollEvent);
+    };
+  }, [addRollEventListener, removeRollEventListener, api, endRollEvent]);
+
+  setTimeout(function () {
+    if (lockedScroll.current && scrollRef.current !== null) {
+      scrollRef.current.scrollTo(0, scrollRef.current.scrollHeight);
+    }
+  }, 0);
 
   return (
     <div
@@ -174,6 +319,8 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, characterId }) => {
           <div
             className="roll-tab__log__table"
             style={{ backgroundImage: `url(${holoBackground})` }}
+            ref={scrollRef}
+            onScroll={onLogScroll}
           >
             {campaignId === undefined ? (
               <p className="roll-tab__log__table__no-canmpaign">

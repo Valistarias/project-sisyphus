@@ -6,6 +6,7 @@ import Entity from './entity';
 
 interface IRollsPayload {
   campaignId: string;
+  offset: number;
 }
 
 export default class Rolls extends Entity {

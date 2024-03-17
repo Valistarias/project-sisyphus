@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState, type FC } from 'react';
+import React, { useEffect, useRef, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
@@ -7,10 +7,10 @@ import { useApi, useRollWindow, useSocket, useSystemAlerts } from '../../provide
 
 import { Ap, Atitle } from '../../atoms';
 import { Alert, RollTab } from '../../organisms';
-import { type ICharacter, type TypeRoll } from '../../types/data';
+import { type ICharacter } from '../../types/data';
 import { ErrorPage } from '../index';
 
-import { calculateDices, diceResultToStr, type DiceResult } from '../../utils';
+// import { calculateDices, diceResultToStr, type DiceResult } from '../../utils';
 
 import './character.scss';
 
@@ -20,7 +20,7 @@ const Character: FC = () => {
   const { createAlert, getNewId } = useSystemAlerts();
   const { id } = useParams();
   const { socket } = useSocket();
-  const { setToRoll, addRollEventListener, removeRollEventListener } = useRollWindow();
+  const { setToRoll } = useRollWindow();
 
   const [character, setCharacter] = useState<ICharacter | null>(null);
 
@@ -28,53 +28,6 @@ const Character: FC = () => {
   const [notFound, setNotFound] = useState(false);
 
   const calledApi = useRef(false);
-  const initEvt = useRef(false);
-
-  const endRollEvent = useCallback(
-    ({ detail }) => {
-      if (
-        api !== undefined &&
-        detail.stats !== null &&
-        character?.campaign !== undefined &&
-        socket !== null
-      ) {
-        const { stats, mode }: { stats: DiceResult[]; mode: TypeRoll } = detail;
-        const result = calculateDices(stats).total;
-        api.rolls
-          .create({
-            result,
-            formula: diceResultToStr(stats),
-            character: character?._id,
-            campaign: character?.campaign._id,
-            type: mode,
-          })
-          .then((data) => {
-            // console.log('DATA SENT', data);
-            socket.emit('newRoll', {
-              room: character?.campaign._id,
-              data,
-            });
-          })
-          .catch((res) => {
-            setLoading(false);
-            if (res.response.status === 404) {
-              setNotFound(true);
-            } else {
-              const newId = getNewId();
-              createAlert({
-                key: newId,
-                dom: (
-                  <Alert key={newId} id={newId} timer={5}>
-                    <Ap>{t('serverErrors.CYPU-301')}</Ap>
-                  </Alert>
-                ),
-              });
-            }
-          });
-      }
-    },
-    [api, character, createAlert, getNewId, socket, t]
-  );
 
   useEffect(() => {
     if (api !== undefined && !calledApi.current && id !== undefined && socket !== null) {
@@ -111,34 +64,6 @@ const Character: FC = () => {
     }
   }, [api, createAlert, getNewId, t, id, socket]);
 
-  useEffect(() => {
-    if (character?.campaign !== undefined && socket !== null) {
-      const triggerNewData = (args): void => {
-        console.log('UPDATE', args);
-      };
-
-      socket.emit('goToRoom', character.campaign._id);
-
-      socket.on('newRoll', triggerNewData);
-
-      return () => {
-        socket.emit('exitRoom', character.campaign._id);
-        socket.off('newRoll', triggerNewData);
-      };
-    }
-  }, [character, socket]);
-
-  useEffect(() => {
-    if (!initEvt.current && api !== undefined && character !== null) {
-      initEvt.current = true;
-      addRollEventListener?.('endroll', endRollEvent);
-    }
-
-    return () => {
-      removeRollEventListener?.('endroll', endRollEvent);
-    };
-  }, [addRollEventListener, removeRollEventListener, endRollEvent, api, character]);
-
   if (loading) {
     return null;
   }
@@ -152,7 +77,7 @@ const Character: FC = () => {
       <Atitle level={1}>{character.name}</Atitle>
       <RollTab
         campaignId={character.campaign?._id}
-        characterId={character?._id}
+        character={character}
         onRollDices={(dices) => {
           setToRoll(dices, 'free');
         }}
