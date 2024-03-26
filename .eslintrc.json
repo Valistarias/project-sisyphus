@@ -5,7 +5,7 @@
     "node": true
   },
   "extends": [
-    "standard-with-typescript",
+    "love",
     "plugin:react/recommended",
     "prettier",
     "plugin:css-import-order/recommended"
