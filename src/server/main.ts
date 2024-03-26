@@ -14,12 +14,15 @@ import { Server } from 'socket.io';
 import ViteExpress from 'vite-express';
 
 import DBConfig from './config/db.config';
+import ActionRoutes from './entities/action/routes';
+import ActionTypeRoutes from './entities/actionType/routes';
 import { verifyTokenSingIn } from './entities/auth/controller';
 import AuthRoutes from './entities/auth/routes';
 import CampaignRoutes from './entities/campaign/routes';
 import ChapterRoutes from './entities/chapter/routes';
 import ChapterTypeRoutes from './entities/chapterType/routes';
 import CharacterRoutes from './entities/character/routes';
+import EffectRoutes from './entities/effect/routes';
 import { verifyMailToken } from './entities/mailToken/controller';
 import MailTokenRoutes from './entities/mailToken/routes';
 import NotionRoutes from './entities/notion/routes';
@@ -27,6 +30,8 @@ import PageRoutes from './entities/page/routes';
 import RollRoutes from './entities/roll/routes';
 import RuleBookRoutes from './entities/ruleBook/routes';
 import RuleBookTypeRoutes from './entities/ruleBookType/routes';
+import SkillRoutes from './entities/skill/routes';
+import StatRoutes from './entities/stat/routes';
 import UserRoutes from './entities/user/routes';
 import { checkRouteRights } from './middlewares/authJwt';
 import { gemInvalidField } from './utils/globalErrorMessage';
@@ -96,10 +101,17 @@ PageRoutes(apiRouter);
 
 // Campaign routes
 CampaignRoutes(apiRouter);
+RollRoutes(apiRouter);
 
 // Character routes
 CharacterRoutes(apiRouter);
-RollRoutes(apiRouter);
+
+// Rules routes
+ActionRoutes(apiRouter);
+ActionTypeRoutes(apiRouter);
+EffectRoutes(apiRouter);
+StatRoutes(apiRouter);
+SkillRoutes(apiRouter);
 
 // Global Router
 app.use('/api/', apiRouter);

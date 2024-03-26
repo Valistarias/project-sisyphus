@@ -7,6 +7,7 @@ import {
   ChapterModel,
   ChapterTypeModel,
   CharacterModel,
+  EffectModel,
   MailTokenModel,
   NotionModel,
   PageModel,
@@ -14,6 +15,8 @@ import {
   RollModel,
   RuleBookModel,
   RuleBookTypeModel,
+  SkillModel,
+  StatModel,
   UserModel,
   type IAction,
   type IActionType,
@@ -21,6 +24,7 @@ import {
   type IChapter,
   type IChapterType,
   type ICharacter,
+  type IEffect,
   type IMailToken,
   type INotion,
   type IPage,
@@ -28,6 +32,8 @@ import {
   type IRoll,
   type IRuleBook,
   type IRuleBookType,
+  type ISkill,
+  type IStat,
   type IUser,
 } from './entities';
 
@@ -62,6 +68,12 @@ interface DBType {
   Action: mongoose.Model<IAction>;
   /** The Action Type Model */
   ActionType: mongoose.Model<IActionType>;
+  /** The Effect Model */
+  Effect: mongoose.Model<IEffect>;
+  /** The Stat Model */
+  Stat: mongoose.Model<IStat>;
+  /** The Skill Model */
+  Skill: mongoose.Model<ISkill>;
   /** The possible Roles */
   ROLES: string[];
 }
@@ -87,6 +99,9 @@ const db: DBType = {
   // Rules models
   Action: ActionModel(),
   ActionType: ActionTypeModel(),
+  Effect: EffectModel(),
+  Stat: StatModel(),
+  Skill: SkillModel(),
 };
 
 export default db;

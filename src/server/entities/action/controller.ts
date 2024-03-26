@@ -1,12 +1,11 @@
 import { type Request, type Response } from 'express';
 
-import { isAdmin } from '../../middlewares';
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
 import { type HydratedIAction } from './model';
 
-import type { IActionType, IPage, IRuleBook } from '../index';
+import type { IActionType, ISkill } from '../index';
 
 const { Action } = db;
 
@@ -14,14 +13,7 @@ const findActions = async (): Promise<HydratedIAction[]> =>
   await new Promise((resolve, reject) => {
     Action.find()
       .populate<{ type: IActionType }>('type')
-      .populate<{ ruleBook: IRuleBook }>('ruleBook')
-      .populate<{ pages: IPage[] }>({
-        path: 'pages',
-        select: '_id title action position',
-        options: {
-          sort: { position: 'asc' },
-        },
-      })
+      .populate<{ skill: ISkill }>('skill')
       .then(async (res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Actions'));
@@ -38,14 +30,7 @@ const findActionById = async (id: string): Promise<HydratedIAction> =>
   await new Promise((resolve, reject) => {
     Action.findById(id)
       .populate<{ type: IActionType }>('type')
-      .populate<{ ruleBook: IRuleBook }>('ruleBook')
-      .populate<{ pages: IPage[] }>({
-        path: 'pages',
-        select: '_id title action position content i18n',
-        options: {
-          sort: { position: 'asc' },
-        },
-      })
+      .populate<{ skill: ISkill }>('skill')
       .then(async (res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Action'));
@@ -201,25 +186,17 @@ const findSingle = (req: Request, res: Response): void => {
     res.status(400).send(gemInvalidField('Action ID'));
     return;
   }
-  isAdmin(req)
-    .then((isUserAdmin) => {
-      findActionById(actionId)
-        .then((action) => {
-          if ((action.ruleBook.archived || action.ruleBook.draft) && !isUserAdmin) {
-            res.status(404).send();
-          } else {
-            const sentObj = {
-              action,
-              i18n: curateAction(action),
-            };
-            res.send(sentObj);
-          }
-        })
-        .catch((err: Error) => {
-          res.status(404).send(err);
-        });
+  findActionById(actionId)
+    .then((action) => {
+      const sentObj = {
+        action,
+        i18n: curateAction(action),
+      };
+      res.send(sentObj);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: Error) => {
+      res.status(404).send(err);
+    });
 };
 
 const findAll = (req: Request, res: Response): void => {

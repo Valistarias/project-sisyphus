@@ -1,11 +1,11 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import type { IActionType, IPage, IRuleBook } from '../index';
+import type { IActionType, ISkill } from '../index';
 
 interface IAction {
-  /** The title of the ruleBook */
+  /** The title of the action */
   title: string;
-  /** A summary of the ruleBook */
+  /** A summary of the action */
   summary: string;
   /** The internationnal content, as a json, stringified */
   i18n?: string;
@@ -19,14 +19,13 @@ interface IAction {
   offsetSkill?: string;
   /** The formula for the damages caused */
   damages?: string;
-  /** When the ruleBook was created */
+  /** When the action was created */
   createdAt: Date;
 }
 
-interface HydratedIAction extends Omit<HydratedDocument<IAction>, 'type' | 'ruleBook'> {
+interface HydratedIAction extends Omit<HydratedDocument<IAction>, 'type' | 'skill'> {
   type: IActionType;
-  ruleBook: IRuleBook;
-  pages: IPage[];
+  skill: ISkill;
 }
 
 const actionSchema = new Schema<IAction>({
