@@ -6,7 +6,9 @@ import {
   CampaignModel,
   ChapterModel,
   ChapterTypeModel,
+  CharParamModel,
   CharacterModel,
+  CyberFrameModel,
   EffectModel,
   MailTokenModel,
   NotionModel,
@@ -23,7 +25,9 @@ import {
   type ICampaign,
   type IChapter,
   type IChapterType,
+  type ICharParam,
   type ICharacter,
+  type ICyberFrame,
   type IEffect,
   type IMailToken,
   type INotion,
@@ -74,6 +78,10 @@ interface DBType {
   Stat: mongoose.Model<IStat>;
   /** The Skill Model */
   Skill: mongoose.Model<ISkill>;
+  /** The CharParam Model */
+  CharParam: mongoose.Model<ICharParam>;
+  /** The CyberFrame Model */
+  CyberFrame: mongoose.Model<ICyberFrame>;
   /** The possible Roles */
   ROLES: string[];
 }
@@ -102,6 +110,8 @@ const db: DBType = {
   Effect: EffectModel(),
   Stat: StatModel(),
   Skill: SkillModel(),
+  CharParam: CharParamModel(),
+  CyberFrame: CyberFrameModel(),
 };
 
 export default db;

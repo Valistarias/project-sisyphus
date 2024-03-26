@@ -41,8 +41,8 @@ const findSkillById = async (id: string): Promise<HydratedISkill> =>
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, summary, short, i18n = null } = req.body;
-  if (title === undefined || summary === undefined || short === undefined) {
+  const { title, summary, stat, i18n = null } = req.body;
+  if (title === undefined || summary === undefined || stat === undefined) {
     res.status(400).send(gemInvalidField('Skill'));
     return;
   }
@@ -50,7 +50,7 @@ const create = (req: Request, res: Response): void => {
   const skill = new Skill({
     title,
     summary,
-    short,
+    stat,
   });
 
   if (i18n !== null) {
@@ -68,7 +68,7 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, title = null, summary = null, i18n, short = null } = req.body;
+  const { id, title = null, summary = null, stat = null, i18n } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Skill ID'));
     return;
@@ -81,8 +81,8 @@ const update = (req: Request, res: Response): void => {
       if (summary !== null) {
         skill.summary = summary;
       }
-      if (short !== null) {
-        skill.short = short;
+      if (stat !== null) {
+        skill.stat = stat;
       }
 
       if (i18n !== null) {

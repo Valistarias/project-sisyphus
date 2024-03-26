@@ -7,8 +7,6 @@ interface ISkill {
   title: string;
   /** A summary of the skill */
   summary: string;
-  /** A short version of the skill */
-  short: string;
   /** The internationnal content, as a json, stringified */
   i18n?: string;
   /** The associated stat */
@@ -24,7 +22,6 @@ interface HydratedISkill extends Omit<HydratedDocument<ISkill>, 'stat'> {
 const effectSchema = new Schema<ISkill>({
   title: String,
   summary: String,
-  short: String,
   i18n: String,
   stat: {
     type: Schema.Types.ObjectId,

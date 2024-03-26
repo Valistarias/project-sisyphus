@@ -22,6 +22,8 @@ import CampaignRoutes from './entities/campaign/routes';
 import ChapterRoutes from './entities/chapter/routes';
 import ChapterTypeRoutes from './entities/chapterType/routes';
 import CharacterRoutes from './entities/character/routes';
+import CharParamRoutes from './entities/charParam/routes';
+import CyberFrameRoutes from './entities/cyberFrame/routes';
 import EffectRoutes from './entities/effect/routes';
 import { verifyMailToken } from './entities/mailToken/controller';
 import MailTokenRoutes from './entities/mailToken/routes';
@@ -112,6 +114,8 @@ ActionTypeRoutes(apiRouter);
 EffectRoutes(apiRouter);
 StatRoutes(apiRouter);
 SkillRoutes(apiRouter);
+CharParamRoutes(apiRouter);
+CyberFrameRoutes(apiRouter);
 
 // Global Router
 app.use('/api/', apiRouter);
