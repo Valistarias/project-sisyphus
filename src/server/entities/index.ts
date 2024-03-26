@@ -1,3 +1,5 @@
+export { ActionModel, type HydratedIAction, type IAction } from './action/model';
+export { ActionTypeModel, type IActionType } from './actionType/model';
 export {
   CampaignModel,
   type HydratedICompleteCampaign,

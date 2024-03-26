@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 
 import {
+  ActionModel,
+  ActionTypeModel,
   CampaignModel,
   ChapterModel,
   ChapterTypeModel,
@@ -13,6 +15,8 @@ import {
   RuleBookModel,
   RuleBookTypeModel,
   UserModel,
+  type IAction,
+  type IActionType,
   type ICampaign,
   type IChapter,
   type IChapterType,
@@ -54,6 +58,10 @@ interface DBType {
   Roll: mongoose.Model<IRoll>;
   /** The Mail Token Model (for forgotten password) */
   MailToken: mongoose.Model<IMailToken>;
+  /** The Action Model */
+  Action: mongoose.Model<IAction>;
+  /** The Action Type Model */
+  ActionType: mongoose.Model<IActionType>;
   /** The possible Roles */
   ROLES: string[];
 }
@@ -73,9 +81,12 @@ const db: DBType = {
   Page: PageModel(),
   // Campaign models
   Campaign: CampaignModel(),
+  Roll: RollModel(),
   // Character models
   Character: CharacterModel(),
-  Roll: RollModel(),
+  // Rules models
+  Action: ActionModel(),
+  ActionType: ActionTypeModel(),
 };
 
 export default db;

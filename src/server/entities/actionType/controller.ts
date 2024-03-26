@@ -9,16 +9,16 @@ import {
   gemServerError,
 } from '../../utils/globalErrorMessage';
 
-import { type IChapterType } from './model';
+import { type IActionType } from './model';
 
-const { ChapterType } = db;
+const { ActionType } = db;
 
-const findChapterTypes = async (): Promise<Array<HydratedDocument<IChapterType>>> =>
+const findActionTypes = async (): Promise<Array<HydratedDocument<IActionType>>> =>
   await new Promise((resolve, reject) => {
-    ChapterType.find()
+    ActionType.find()
       .then(async (res) => {
         if (res === undefined || res === null) {
-          reject(gemNotFound('ChapterTypes'));
+          reject(gemNotFound('ActionTypes'));
         } else {
           resolve(res);
         }
@@ -28,12 +28,12 @@ const findChapterTypes = async (): Promise<Array<HydratedDocument<IChapterType>>
       });
   });
 
-const findChapterTypeById = async (id: string): Promise<HydratedDocument<IChapterType>> =>
+const findActionTypeById = async (id: string): Promise<HydratedDocument<IActionType>> =>
   await new Promise((resolve, reject) => {
-    ChapterType.findById(id)
+    ActionType.findById(id)
       .then(async (res) => {
         if (res === undefined || res === null) {
-          reject(gemNotFound('ChapterType'));
+          reject(gemNotFound('ActionType'));
         } else {
           resolve(res);
         }
@@ -46,20 +46,20 @@ const findChapterTypeById = async (id: string): Promise<HydratedDocument<IChapte
 const create = (req: Request, res: Response): void => {
   const { name } = req.body;
   if (name === undefined) {
-    res.status(400).send(gemInvalidField('ChapterType'));
+    res.status(400).send(gemInvalidField('ActionType'));
     return;
   }
-  findChapterTypes()
-    .then((chapterTypes) => {
-      if (chapterTypes.find((chapterType) => chapterType.name === name) === undefined) {
-        const chapterTypeType = new ChapterType({
+  findActionTypes()
+    .then((actionTypes) => {
+      if (actionTypes.find((actionType) => actionType.name === name) === undefined) {
+        const toSaveActionType = new ActionType({
           name,
         });
 
-        chapterTypeType
+        toSaveActionType
           .save()
           .then(() => {
-            res.send({ message: 'ChapterType was registered successfully!' });
+            res.send({ message: 'ActionType was registered successfully!' });
           })
           .catch((err: Error) => {
             res.status(500).send(gemServerError(err));
@@ -74,40 +74,40 @@ const create = (req: Request, res: Response): void => {
 const update = (req: Request, res: Response): void => {
   const { id, name = null } = req.body;
   if (id === undefined) {
-    res.status(400).send(gemInvalidField('ChapterType ID'));
+    res.status(400).send(gemInvalidField('ActionType ID'));
     return;
   }
-  findChapterTypes()
-    .then((chapterTypes) => {
-      const actualChapterType = chapterTypes.find((chapterType) => String(chapterType._id) === id);
-      if (actualChapterType !== undefined) {
-        if (name !== null && name !== actualChapterType.name) {
-          actualChapterType.name = name;
+  findActionTypes()
+    .then((actionTypes) => {
+      const actualActionType = actionTypes.find((actionType) => String(actionType._id) === id);
+      if (actualActionType !== undefined) {
+        if (name !== null && name !== actualActionType.name) {
+          actualActionType.name = name;
         }
-        actualChapterType
+        actualActionType
           .save()
           .then(() => {
-            res.send({ message: 'ChapterType was updated successfully!', actualChapterType });
+            res.send({ message: 'ActionType was updated successfully!', actualActionType });
           })
           .catch((err: Error) => {
             res.status(500).send(gemServerError(err));
           });
       } else {
-        res.status(404).send(gemNotFound('ChapterType'));
+        res.status(404).send(gemNotFound('ActionType'));
       }
     })
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-const deleteChapterType = (req: Request, res: Response): void => {
+const deleteActionType = (req: Request, res: Response): void => {
   const { id } = req.body;
   if (id === undefined) {
-    res.status(400).send(gemInvalidField('ChapterType ID'));
+    res.status(400).send(gemInvalidField('ActionType ID'));
     return;
   }
-  ChapterType.findByIdAndDelete(id)
+  ActionType.findByIdAndDelete(id)
     .then(() => {
-      res.send({ message: 'ChapterType was deleted successfully!' });
+      res.send({ message: 'ActionType was deleted successfully!' });
     })
     .catch((err: Error) => {
       res.status(500).send(gemServerError(err));
@@ -115,20 +115,20 @@ const deleteChapterType = (req: Request, res: Response): void => {
 };
 
 const findSingle = (req: Request, res: Response): void => {
-  const { chapterTypeId } = req.query;
-  if (chapterTypeId === undefined || typeof chapterTypeId !== 'string') {
-    res.status(400).send(gemInvalidField('ChapterType ID'));
+  const { actionTypeId } = req.query;
+  if (actionTypeId === undefined || typeof actionTypeId !== 'string') {
+    res.status(400).send(gemInvalidField('ActionType ID'));
     return;
   }
-  findChapterTypeById(chapterTypeId)
-    .then((chapterType) => res.send(chapterType))
+  findActionTypeById(actionTypeId)
+    .then((actionType) => res.send(actionType))
     .catch((err) => res.status(404).send(err));
 };
 
 const findAll = (req: Request, res: Response): void => {
-  findChapterTypes()
-    .then((chapterTypes) => res.send(chapterTypes))
+  findActionTypes()
+    .then((actionTypes) => res.send(actionTypes))
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteChapterType, findAll, findSingle, update };
+export { create, deleteActionType, findAll, findSingle, update };
