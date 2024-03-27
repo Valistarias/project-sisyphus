@@ -172,10 +172,10 @@ const findSingle = (req: Request, res: Response): void => {
 
 const findAll = (req: Request, res: Response): void => {
   findSkillBranches()
-    .then((skillBranchs) => {
+    .then((skillBranches) => {
       const curatedSkillBranches: CuratedISkillBranch[] = [];
 
-      skillBranchs.forEach((skillBranch) => {
+      skillBranches.forEach((skillBranch) => {
         curatedSkillBranches.push({
           skillBranch,
           i18n: curateSkillBranch(skillBranch),
