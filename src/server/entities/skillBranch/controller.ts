@@ -41,8 +41,8 @@ const findSkillBranchById = async (id: string): Promise<HydratedISkillBranch> =>
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, summary, cyberframe, i18n = null } = req.body;
-  if (title === undefined || summary === undefined || cyberframe === undefined) {
+  const { title, summary, skill, i18n = null } = req.body;
+  if (title === undefined || summary === undefined || skill === undefined) {
     res.status(400).send(gemInvalidField('SkillBranch'));
     return;
   }
@@ -50,7 +50,7 @@ const create = (req: Request, res: Response): void => {
   const skillBranch = new SkillBranch({
     title,
     summary,
-    cyberframe,
+    skill,
   });
 
   if (i18n !== null) {

@@ -6,20 +6,24 @@ import {
   CampaignModel,
   ChapterModel,
   ChapterTypeModel,
+  CharParamBonusModel,
   CharParamModel,
   CharacterModel,
   CyberFrameBranchModel,
   CyberFrameModel,
   EffectModel,
   MailTokenModel,
+  NodeModel,
   NotionModel,
   PageModel,
   RoleModel,
   RollModel,
   RuleBookModel,
   RuleBookTypeModel,
+  SkillBonusModel,
   SkillBranchModel,
   SkillModel,
+  StatBonusModel,
   StatModel,
   UserModel,
   type IAction,
@@ -28,11 +32,13 @@ import {
   type IChapter,
   type IChapterType,
   type ICharParam,
+  type ICharParamBonus,
   type ICharacter,
   type ICyberFrame,
   type ICyberFrameBranch,
   type IEffect,
   type IMailToken,
+  type INode,
   type INotion,
   type IPage,
   type IRole,
@@ -40,8 +46,10 @@ import {
   type IRuleBook,
   type IRuleBookType,
   type ISkill,
+  type ISkillBonus,
   type ISkillBranch,
   type IStat,
+  type IStatBonus,
   type IUser,
 } from './entities';
 
@@ -80,16 +88,24 @@ interface DBType {
   Effect: mongoose.Model<IEffect>;
   /** The Stat Model */
   Stat: mongoose.Model<IStat>;
+  /** The Stat bonus Model */
+  StatBonus: mongoose.Model<IStatBonus>;
   /** The Skill Model */
   Skill: mongoose.Model<ISkill>;
   /** The Skill branch Model */
   SkillBranch: mongoose.Model<ISkillBranch>;
+  /** The Skill bonus Model */
+  SkillBonus: mongoose.Model<ISkillBonus>;
   /** The CharParam Model */
   CharParam: mongoose.Model<ICharParam>;
+  /** The CharParamBonus Model */
+  CharParamBonus: mongoose.Model<ICharParamBonus>;
   /** The CyberFrame Model */
   CyberFrame: mongoose.Model<ICyberFrame>;
   /** The CyberFramebranch Model */
   CyberFrameBranch: mongoose.Model<ICyberFrameBranch>;
+  /** The Node Model */
+  Node: mongoose.Model<INode>;
   /** The possible Roles */
   ROLES: string[];
 }
@@ -117,11 +133,15 @@ const db: DBType = {
   ActionType: ActionTypeModel(),
   Effect: EffectModel(),
   Stat: StatModel(),
+  StatBonus: StatBonusModel(),
   Skill: SkillModel(),
+  SkillBonus: SkillBonusModel(),
+  SkillBranch: SkillBranchModel(),
   CharParam: CharParamModel(),
+  CharParamBonus: CharParamBonusModel(),
   CyberFrame: CyberFrameModel(),
   CyberFrameBranch: CyberFrameBranchModel(),
-  SkillBranch: SkillBranchModel(),
+  Node: NodeModel(),
 };
 
 export default db;

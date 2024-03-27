@@ -3,15 +3,15 @@ import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 
 import { type ISkill } from '../index';
 
 interface ISkillBranch {
-  /** The title of the skill */
+  /** The title of the skill branch */
   title: string;
-  /** A summary of the skill */
+  /** A summary of the skill branch */
   summary: string;
   /** The internationnal content, as a json, stringified */
   i18n?: string;
-  /** The associated skill */
+  /** The associated skill branch */
   skill: ObjectId;
-  /** When the skill was created */
+  /** When the skill branch was created */
   createdAt: Date;
 }
 

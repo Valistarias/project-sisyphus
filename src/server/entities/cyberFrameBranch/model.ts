@@ -3,15 +3,15 @@ import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 
 import { type ICyberFrame } from '../index';
 
 interface ICyberFrameBranch {
-  /** The title of the skill */
+  /** The title of the cyberframe branch */
   title: string;
-  /** A summary of the skill */
+  /** A summary of the cyberframe branch */
   summary: string;
   /** The internationnal content, as a json, stringified */
   i18n?: string;
   /** The associated cyberFrame */
   cyberFrame: ObjectId;
-  /** When the skill was created */
+  /** When the cyberframe branch was created */
   createdAt: Date;
 }
 
