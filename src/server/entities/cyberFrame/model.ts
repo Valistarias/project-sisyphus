@@ -25,7 +25,7 @@ const effectSchema = new Schema<ICyberFrame>({
   i18n: String,
   ruleBook: {
     type: Schema.Types.ObjectId,
-    ref: 'Stat',
+    ref: 'RuleBook',
   },
   createdAt: {
     type: Date,

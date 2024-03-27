@@ -1,0 +1,57 @@
+.adminEditCyberFrame {
+  margin: 0 auto;
+  max-width: 1200px;
+  padding-top: 10vh;
+  width: 100%;
+
+  &__content {
+    margin-bottom: 10vh;
+  }
+
+  &__head {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4rem;
+
+    .atitle {
+      margin: 0;
+    }
+  }
+
+  &__basics {
+    display: flex;
+    flex-direction: row;
+    gap: 10rem;
+    margin-bottom: 2em;
+
+    &__name {
+      width: 100%;
+    }
+
+    &__type {
+      flex-shrink: 0;
+      width: 20rem;
+    }
+  }
+
+  &__details {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  &__error {
+    margin-bottom: 2rem;
+  }
+
+  &__intl {
+    margin-bottom: 1rem;
+    margin-top: 6rem;
+  }
+
+  &__intl-info {
+    margin-bottom: 4rem;
+  }
+}

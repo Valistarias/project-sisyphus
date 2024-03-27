@@ -11,9 +11,9 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input, SmartSelect, type ISingleValueSelect } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
-import { type ICuratedNotion } from '../../types';
+import { type ICuratedCyberFrame } from '../../types';
 
-import './adminEditNotion.scss';
+import './adminEditCyberFrame.scss';
 
 interface FormValues {
   name: string;
@@ -21,7 +21,7 @@ interface FormValues {
   type: string;
 }
 
-const AdminEditNotions: FC = () => {
+const AdminEditCyberFrames: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
@@ -37,10 +37,10 @@ const AdminEditNotions: FC = () => {
   const saveTimer = useRef<NodeJS.Timeout | null>(null);
   const silentSave = useRef(false);
 
-  const [notionData, setNotionData] = useState<ICuratedNotion | null>(null);
+  const [cyberFrameData, setCyberFrameData] = useState<ICuratedCyberFrame | null>(null);
 
-  const [notionText, setNotionText] = useState('');
-  const [notionTextFr, setNotionTextFr] = useState('');
+  const [cyberFrameText, setCyberFrameText] = useState('');
+  const [cyberFrameTextFr, setCyberFrameTextFr] = useState('');
 
   const textEditor = useEditor({
     extensions: completeRichTextElementExtentions,
@@ -50,15 +50,26 @@ const AdminEditNotions: FC = () => {
     extensions: completeRichTextElementExtentions,
   });
 
+  const ruleBookSelect = useMemo(() => {
+    return ruleBooks.map(({ ruleBook }) => ({
+      value: ruleBook._id,
+      // TODO : Handle Internationalization
+      label: ruleBook.title,
+      details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 }),
+    }));
+  }, [t, ruleBooks]);
+
   const createDefaultData = useCallback(
-    (notionData: ICuratedNotion | null, ruleBooks: ISingleValueSelect[]) => {
-      if (notionData == null) {
+    (cyberFrameData: ICuratedCyberFrame | null, ruleBookSelect: ISingleValueSelect[]) => {
+      if (cyberFrameData == null) {
         return {};
       }
-      const { notion, i18n } = notionData;
+      const { cyberFrame, i18n } = cyberFrameData;
       const defaultData: Partial<FormValues> = {};
-      defaultData.name = notion.title;
-      const selectedfield = ruleBooks.find((notionType) => notionType.value === notion.ruleBook);
+      defaultData.name = cyberFrame.title;
+      const selectedfield = ruleBookSelect.find(
+        (singleSelect) => singleSelect.value === cyberFrame.ruleBook?._id
+      );
       if (selectedfield !== undefined) {
         defaultData.type = selectedfield.value;
       }
@@ -70,15 +81,6 @@ const AdminEditNotions: FC = () => {
     []
   );
 
-  const ruleBookSelect = useMemo(() => {
-    return ruleBooks.map(({ ruleBook }) => ({
-      value: ruleBook._id,
-      // TODO : Handle Internationalization
-      label: ruleBook.title,
-      details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 }),
-    }));
-  }, [t, ruleBooks]);
-
   const {
     handleSubmit,
     setError,
@@ -87,18 +89,18 @@ const AdminEditNotions: FC = () => {
     reset,
   } = useForm<FieldValues>({
     defaultValues: useMemo(
-      () => createDefaultData(notionData, ruleBookSelect),
-      [createDefaultData, notionData, ruleBookSelect]
+      () => createDefaultData(cyberFrameData, ruleBookSelect),
+      [createDefaultData, cyberFrameData, ruleBookSelect]
     ),
   });
 
-  const ruleBook = useMemo(() => notionData?.notion.ruleBook, [notionData]);
+  const ruleBook = useMemo(() => cyberFrameData?.cyberFrame.ruleBook, [cyberFrameData]);
 
-  const onSaveNotion: SubmitHandler<FormValues> = useCallback(
+  const onSaveCyberFrame: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, type }) => {
       if (
-        notionText === null ||
-        notionTextFr === null ||
+        cyberFrameText === null ||
+        cyberFrameTextFr === null ||
         textEditor === null ||
         textFrEditor === null ||
         api === undefined
@@ -124,21 +126,21 @@ const AdminEditNotions: FC = () => {
         };
       }
 
-      api.notions
+      api.cyberFrames
         .update({
           id,
           title: name,
           ruleBook: type,
-          text: htmlText,
+          summary: htmlText,
           i18n,
         })
-        .then((rulebook) => {
+        .then((cyberFrame) => {
           const newId = getNewId();
           createAlert({
             key: newId,
             dom: (
               <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('adminEditNotion.successUpdate', { ns: 'pages' })}</Ap>
+                <Ap>{t('adminEditCyberFrame.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
             ),
           });
@@ -149,22 +151,22 @@ const AdminEditNotions: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.notionType.${data.sent}`), 'capitalize'),
+                field: i18next.format(t(`terms.cyberFrameType.${data.sent}`), 'capitalize'),
               }),
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.notionType.${data.sent}`), 'capitalize'),
+                field: i18next.format(t(`terms.cyberFrameType.${data.sent}`), 'capitalize'),
               }),
             });
           }
         });
     },
     [
-      notionText,
-      notionTextFr,
+      cyberFrameText,
+      cyberFrameTextFr,
       textEditor,
       textFrEditor,
       api,
@@ -182,17 +184,17 @@ const AdminEditNotions: FC = () => {
     }
     setConfirmContent(
       {
-        title: t('adminEditNotion.confirmDeletion.title', { ns: 'pages' }),
-        text: t('adminEditNotion.confirmDeletion.text', {
+        title: t('adminEditCyberFrame.confirmDeletion.title', { ns: 'pages' }),
+        text: t('adminEditCyberFrame.confirmDeletion.text', {
           ns: 'pages',
-          elt: notionData?.notion.title,
+          elt: cyberFrameData?.cyberFrame.title,
         }),
-        confirmCta: t('adminEditNotion.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditCyberFrame.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
           if (detail.proceed === true) {
-            api.notions
+            api.cyberFrames
               .delete({ id })
               .then(() => {
                 const newId = getNewId();
@@ -200,11 +202,11 @@ const AdminEditNotions: FC = () => {
                   key: newId,
                   dom: (
                     <Alert key={newId} id={newId} timer={5}>
-                      <Ap>{t('adminEditNotion.successDelete', { ns: 'pages' })}</Ap>
+                      <Ap>{t('adminEditCyberFrame.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
                   ),
                 });
-                navigate('/admin/rulebooks');
+                navigate('/admin/cyberframes');
               })
               .catch(({ response }) => {
                 const { data } = response;
@@ -212,14 +214,14 @@ const AdminEditNotions: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
+                      field: i18next.format(t(`terms.cyberFrame.name`), 'capitalize'),
                     }),
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
+                      field: i18next.format(t(`terms.cyberFrame.name`), 'capitalize'),
                     }),
                   });
                 }
@@ -234,7 +236,7 @@ const AdminEditNotions: FC = () => {
     api,
     setConfirmContent,
     t,
-    notionData?.notion.title,
+    cyberFrameData?.cyberFrame.title,
     ConfMessageEvent,
     id,
     getNewId,
@@ -246,14 +248,14 @@ const AdminEditNotions: FC = () => {
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
       calledApi.current = true;
-      api.notions
-        .get({ notionId: id })
-        .then((curatedNotion: ICuratedNotion) => {
-          const { notion, i18n } = curatedNotion;
-          setNotionData(curatedNotion);
-          setNotionText(notion.text);
+      api.cyberFrames
+        .get({ cyberFrameId: id })
+        .then((curatedCyberFrame: ICuratedCyberFrame) => {
+          const { cyberFrame, i18n } = curatedCyberFrame;
+          setCyberFrameData(curatedCyberFrame);
+          setCyberFrameText(cyberFrame.summary);
           if (i18n.fr !== undefined) {
-            setNotionTextFr(i18n.fr.text ?? '');
+            setCyberFrameTextFr(i18n.fr.text ?? '');
           }
         })
         .catch(() => {
@@ -274,7 +276,7 @@ const AdminEditNotions: FC = () => {
   useEffect(() => {
     saveTimer.current = setInterval(() => {
       silentSave.current = true;
-      handleSubmit(onSaveNotion)().then(
+      handleSubmit(onSaveCyberFrame)().then(
         () => {},
         () => {}
       );
@@ -284,79 +286,83 @@ const AdminEditNotions: FC = () => {
         clearInterval(saveTimer.current);
       }
     };
-  }, [handleSubmit, onSaveNotion]);
+  }, [handleSubmit, onSaveCyberFrame]);
 
   // To affect default data
   useEffect(() => {
-    reset(createDefaultData(notionData, ruleBookSelect));
-  }, [notionData, ruleBookSelect, reset, createDefaultData]);
+    reset(createDefaultData(cyberFrameData, ruleBookSelect));
+  }, [cyberFrameData, ruleBookSelect, reset, createDefaultData]);
 
   return (
-    <div className="adminEditNotion">
-      <form onSubmit={handleSubmit(onSaveNotion)} noValidate className="adminEditNotion__content">
-        <div className="adminEditNotion__head">
-          <Atitle level={1}>{t('adminEditNotion.title', { ns: 'pages' })}</Atitle>
+    <div className="adminEditCyberFrame">
+      <form
+        onSubmit={handleSubmit(onSaveCyberFrame)}
+        noValidate
+        className="adminEditCyberFrame__content"
+      >
+        <div className="adminEditCyberFrame__head">
+          <Atitle level={1}>{t('adminEditCyberFrame.title', { ns: 'pages' })}</Atitle>
           <Button onClick={onAskDelete} color="error">
-            {t('adminEditNotion.delete', { ns: 'pages' })}
+            {t('adminEditCyberFrame.delete', { ns: 'pages' })}
           </Button>
         </div>
         {errors.root?.serverError?.message !== undefined ? (
-          <Aerror className="adminEditNotion__error">{errors.root.serverError.message}</Aerror>
+          <Aerror className="adminEditCyberFrame__error">{errors.root.serverError.message}</Aerror>
         ) : null}
-        <div className="adminEditNotion__basics">
+        <div className="adminEditCyberFrame__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
-            rules={{ required: t('nameNotion.required', { ns: 'fields' }) }}
-            label={t('nameNotion.label', { ns: 'fields' })}
-            className="adminEditNotion__basics__name"
+            rules={{ required: t('nameCyberFrame.required', { ns: 'fields' }) }}
+            label={t('nameCyberFrame.label', { ns: 'fields' })}
+            className="adminEditCyberFrame__basics__name"
           />
           <SmartSelect
             control={control}
             inputName="type"
             rules={{ required: t('linkedRuleBook.required', { ns: 'fields' }) }}
-            label={t('notionRuleBookType.title', { ns: 'fields' })}
+            label={t('cyberFrameRuleBookType.title', { ns: 'fields' })}
             options={ruleBookSelect}
-            className="adminEditNotion__basics__type"
+            className="adminEditCyberFrame__basics__type"
           />
         </div>
-        <div className="adminEditNotion__details">
+        <div className="adminEditCyberFrame__details">
           <RichTextElement
-            label={t('notionText.title', { ns: 'fields' })}
+            label={t('cyberFrameText.title', { ns: 'fields' })}
             editor={textEditor ?? undefined}
-            rawStringContent={notionText}
-            ruleBookId={ruleBook ?? undefined}
+            rawStringContent={cyberFrameText}
+            ruleBookId={ruleBook?._id ?? undefined}
           />
         </div>
 
-        <Atitle className="adminEditNotion__intl" level={2}>
-          {t('adminEditNotion.i18n', { ns: 'pages' })}
+        <Atitle className="adminEditCyberFrame__intl" level={2}>
+          {t('adminEditCyberFrame.i18n', { ns: 'pages' })}
         </Atitle>
-        <Ap className="adminEditNotion__intl-info">
-          {t('adminEditNotion.i18nInfo', { ns: 'pages' })}
+        <Ap className="adminEditCyberFrame__intl-info">
+          {t('adminEditCyberFrame.i18nInfo', { ns: 'pages' })}
         </Ap>
-        <div className="adminEditNotion__basics">
+        <div className="adminEditCyberFrame__basics">
           <Input
             control={control}
             inputName="nameFr"
             type="text"
-            label={`${t('nameNotion.label', { ns: 'fields' })} (FR)`}
-            className="adminEditNotion__basics__name"
+            label={`${t('nameCyberFrame.label', { ns: 'fields' })} (FR)`}
+            className="adminEditCyberFrame__basics__name"
           />
         </div>
-        <div className="adminEditNotion__details">
+        <div className="adminEditCyberFrame__details">
           <RichTextElement
-            label={`${t('notionText.title', { ns: 'fields' })} (FR)`}
+            label={`${t('cyberFrameText.title', { ns: 'fields' })} (FR)`}
             editor={textFrEditor ?? undefined}
-            rawStringContent={notionTextFr}
-            ruleBookId={ruleBook ?? undefined}
+            rawStringContent={cyberFrameTextFr}
+            ruleBookId={ruleBook?._id ?? undefined}
           />
         </div>
-        <Button type="submit">{t('adminEditNotion.button', { ns: 'pages' })}</Button>
+        <Button type="submit">{t('adminEditCyberFrame.button', { ns: 'pages' })}</Button>
       </form>
     </div>
   );
 };
 
-export default AdminEditNotions;
+export default AdminEditCyberFrames;

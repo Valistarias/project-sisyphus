@@ -234,5 +234,19 @@
     "button": "Create CyberFrame",
     "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
     "successCreate": "CyberFrame successfully created !"
+  },
+  "adminEditCyberFrame": {
+    "title": "Edit CyberFrame",
+    "delete": "Delete CyberFrame",
+    "i18n": "Internationalization - French",
+    "button": "Update",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successUpdate": "CyberFrame successfully updated !",
+    "successDelete": "CyberFrame successfully deleted !",
+    "confirmDeletion": {
+      "title": "CyberFrame Deletion",
+      "text": "Are you sure you want to delete {{elt}} ?",
+      "confirmCta": "Delete CyberFrame"
+    }
   }
 }

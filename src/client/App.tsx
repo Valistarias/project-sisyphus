@@ -7,6 +7,7 @@ import { useGlobalVars } from './providers';
 import {
   AdminCyberFramesPage,
   AdminEditChapterPage,
+  AdminEditCyberFramePage,
   AdminEditNotionPage,
   AdminEditPage,
   AdminEditRuleBookPage,
@@ -179,6 +180,10 @@ const App: FC = () => {
             {
               path: '/admin/cyberframe/new',
               element: <AdminNewCyberFramePage />,
+            },
+            {
+              path: '/admin/cyberframe/:id',
+              element: <AdminEditCyberFramePage />,
             },
             // All
             {
