@@ -11,6 +11,7 @@ import AdminNewNotionPage from './adminNewNotion';
 import AdminNewPage from './adminNewPage';
 import AdminNewRuleBookPage from './adminNewRuleBook';
 import AdminRuleBooksPage from './adminRuleBooks';
+import AdminStatsPage from './adminStats';
 import AdminTestDiceCompPage from './adminTestDiceComp';
 import CampaignPage from './campaign';
 import CampaignsPage from './campaigns';
@@ -44,6 +45,7 @@ export {
   AdminNewRuleBookPage,
   AdminPage,
   AdminRuleBooksPage,
+  AdminStatsPage,
   AdminTestDiceCompPage,
   CampaignPage,
   CampaignsPage,

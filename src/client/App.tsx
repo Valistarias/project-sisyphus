@@ -18,6 +18,7 @@ import {
   AdminNewRuleBookPage,
   AdminPage,
   AdminRuleBooksPage,
+  AdminStatsPage,
   AdminTestDiceCompPage,
   CampaignPage,
   CampaignsPage,
@@ -184,6 +185,10 @@ const App: FC = () => {
             {
               path: '/admin/cyberframe/:id',
               element: <AdminEditCyberFramePage />,
+            },
+            {
+              path: '/admin/stats',
+              element: <AdminStatsPage />,
             },
             // All
             {

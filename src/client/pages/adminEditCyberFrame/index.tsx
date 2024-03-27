@@ -333,6 +333,8 @@ const AdminEditCyberFrames: FC = () => {
             editor={textEditor ?? undefined}
             rawStringContent={cyberFrameText}
             ruleBookId={ruleBook?._id ?? undefined}
+            small
+            complete
           />
         </div>
 
@@ -357,6 +359,8 @@ const AdminEditCyberFrames: FC = () => {
             editor={textFrEditor ?? undefined}
             rawStringContent={cyberFrameTextFr}
             ruleBookId={ruleBook?._id ?? undefined}
+            small
+            complete
           />
         </div>
         <Button type="submit">{t('adminEditCyberFrame.button', { ns: 'pages' })}</Button>
