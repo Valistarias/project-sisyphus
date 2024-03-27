@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, { useCallback, useEffect, useMemo, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
@@ -6,12 +6,11 @@ import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { useApi, useSystemAlerts } from '../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input, SmartSelect, type ISingleValueSelect } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
-import { type ICuratedRuleBook } from '../../types';
 
 import './adminNewNotion.scss';
 
@@ -27,12 +26,9 @@ const AdminNewNotions: FC = () => {
   const { search } = useLocation();
   const navigate = useNavigate();
   const { createAlert, getNewId } = useSystemAlerts();
+  const { ruleBooks } = useGlobalVars();
 
   const params = useMemo(() => new URLSearchParams(search), [search]);
-
-  const calledApi = useRef(false);
-
-  const [ruleBooks, setRulebooks] = useState<ISingleValueSelect[]>([]);
 
   const textEditor = useEditor({
     extensions: completeRichTextElementExtentions,
@@ -58,6 +54,15 @@ const AdminNewNotions: FC = () => {
     []
   );
 
+  const ruleBookSelect = useMemo(() => {
+    return ruleBooks.map(({ ruleBook }) => ({
+      value: ruleBook._id,
+      // TODO : Handle Internationalization
+      label: ruleBook.title,
+      details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 }),
+    }));
+  }, [t, ruleBooks]);
+
   const {
     handleSubmit,
     setError,
@@ -66,8 +71,8 @@ const AdminNewNotions: FC = () => {
     reset,
   } = useForm<FieldValues>({
     defaultValues: useMemo(
-      () => createDefaultData(params, ruleBooks),
-      [createDefaultData, params, ruleBooks]
+      () => createDefaultData(params, ruleBookSelect),
+      [createDefaultData, params, ruleBookSelect]
     ),
   });
 
@@ -136,39 +141,10 @@ const AdminNewNotions: FC = () => {
     [textEditor, textFrEditor, api, getNewId, createAlert, t, navigate, setError]
   );
 
-  useEffect(() => {
-    if (api !== undefined && !calledApi.current) {
-      calledApi.current = true;
-      api.ruleBooks
-        .getAll()
-        .then((data: ICuratedRuleBook[]) => {
-          setRulebooks(
-            data.map(({ ruleBook }) => ({
-              value: ruleBook._id,
-              // TODO : Handle Internationalization
-              label: ruleBook.title,
-              details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 }),
-            }))
-          );
-        })
-        .catch((response) => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
-        });
-    }
-  }, [api, createAlert, getNewId, t]);
-
   // To affect default data
   useEffect(() => {
-    reset(createDefaultData(params, ruleBooks));
-  }, [params, ruleBooks, reset, createDefaultData]);
+    reset(createDefaultData(params, ruleBookSelect));
+  }, [params, ruleBookSelect, reset, createDefaultData]);
 
   return (
     <div className="adminNewNotion">
@@ -189,9 +165,9 @@ const AdminNewNotions: FC = () => {
           <SmartSelect
             control={control}
             inputName="type"
-            rules={{ required: t('typeNotion.required', { ns: 'fields' }) }}
+            rules={{ required: t('linkedRuleBook.required', { ns: 'fields' }) }}
             label={t('notionRuleBookType.title', { ns: 'fields' })}
-            options={ruleBooks}
+            options={ruleBookSelect}
             className="adminNewNotion__basics__type"
           />
         </div>

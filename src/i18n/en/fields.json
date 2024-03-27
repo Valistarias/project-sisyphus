@@ -41,8 +41,8 @@
     "required": "A name is required",
     "label": "Name"
   },
-  "typeNotion": {
-    "required": "A rulebook need to be linked to this notion",
+  "linkedRuleBook": {
+    "required": "A rulebook need to be linked",
     "label": "Linked Rulebook"
   },
   "notionRuleBookType": {
@@ -61,6 +61,13 @@
   "namePage": {
     "required": "A Rulebook Name is required",
     "label": "Rulebook Name"
+  },
+  "nameCyberFrame": {
+    "required": "A CyberFrame Name is required",
+    "label": "CyberFrame Name"
+  },
+  "cyberFrameSummary": {
+    "title": "CyberFrame Details"
   },
   "typePage": {
     "required": "A Rulebook Type is required",

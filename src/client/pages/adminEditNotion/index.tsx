@@ -338,7 +338,7 @@ const AdminEditNotions: FC = () => {
           <SmartSelect
             control={control}
             inputName="type"
-            rules={{ required: t('typeNotion.required', { ns: 'fields' }) }}
+            rules={{ required: t('linkedRuleBook.required', { ns: 'fields' }) }}
             label={t('notionRuleBookType.title', { ns: 'fields' })}
             options={ruleBooks}
             className="adminEditNotion__basics__type"

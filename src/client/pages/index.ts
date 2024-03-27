@@ -5,6 +5,7 @@ import AdminEditNotionPage from './adminEditNotion';
 import AdminEditPage from './adminEditPage';
 import AdminEditRuleBookPage from './adminEditRuleBook';
 import AdminNewChapterPage from './adminNewChapter';
+import AdminNewCyberFramePage from './adminNewCyberFrame';
 import AdminNewNotionPage from './adminNewNotion';
 import AdminNewPage from './adminNewPage';
 import AdminNewRuleBookPage from './adminNewRuleBook';
@@ -35,6 +36,7 @@ export {
   AdminEditPage,
   AdminEditRuleBookPage,
   AdminNewChapterPage,
+  AdminNewCyberFramePage,
   AdminNewNotionPage,
   AdminNewPage,
   AdminNewRuleBookPage,

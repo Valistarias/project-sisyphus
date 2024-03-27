@@ -11,6 +11,7 @@ import {
   AdminEditPage,
   AdminEditRuleBookPage,
   AdminNewChapterPage,
+  AdminNewCyberFramePage,
   AdminNewNotionPage,
   AdminNewPage,
   AdminNewRuleBookPage,
@@ -140,10 +141,6 @@ const App: FC = () => {
               element: <AdminRuleBooksPage />,
             },
             {
-              path: '/admin/cyberframes',
-              element: <AdminCyberFramesPage />,
-            },
-            {
               path: '/admin/rulebook/new',
               element: <AdminNewRuleBookPage />,
             },
@@ -174,6 +171,14 @@ const App: FC = () => {
             {
               path: '/admin/page/:id',
               element: <AdminEditPage />,
+            },
+            {
+              path: '/admin/cyberframes',
+              element: <AdminCyberFramesPage />,
+            },
+            {
+              path: '/admin/cyberframe/new',
+              element: <AdminNewCyberFramePage />,
             },
             // All
             {
