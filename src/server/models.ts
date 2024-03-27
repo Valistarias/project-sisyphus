@@ -8,6 +8,7 @@ import {
   ChapterTypeModel,
   CharParamModel,
   CharacterModel,
+  CyberFrameBranchModel,
   CyberFrameModel,
   EffectModel,
   MailTokenModel,
@@ -17,6 +18,7 @@ import {
   RollModel,
   RuleBookModel,
   RuleBookTypeModel,
+  SkillBranchModel,
   SkillModel,
   StatModel,
   UserModel,
@@ -28,6 +30,7 @@ import {
   type ICharParam,
   type ICharacter,
   type ICyberFrame,
+  type ICyberFrameBranch,
   type IEffect,
   type IMailToken,
   type INotion,
@@ -37,6 +40,7 @@ import {
   type IRuleBook,
   type IRuleBookType,
   type ISkill,
+  type ISkillBranch,
   type IStat,
   type IUser,
 } from './entities';
@@ -78,10 +82,14 @@ interface DBType {
   Stat: mongoose.Model<IStat>;
   /** The Skill Model */
   Skill: mongoose.Model<ISkill>;
+  /** The Skill branch Model */
+  SkillBranch: mongoose.Model<ISkillBranch>;
   /** The CharParam Model */
   CharParam: mongoose.Model<ICharParam>;
   /** The CyberFrame Model */
   CyberFrame: mongoose.Model<ICyberFrame>;
+  /** The CyberFramebranch Model */
+  CyberFrameBranch: mongoose.Model<ICyberFrameBranch>;
   /** The possible Roles */
   ROLES: string[];
 }
@@ -112,6 +120,8 @@ const db: DBType = {
   Skill: SkillModel(),
   CharParam: CharParamModel(),
   CyberFrame: CyberFrameModel(),
+  CyberFrameBranch: CyberFrameBranchModel(),
+  SkillBranch: SkillBranchModel(),
 };
 
 export default db;

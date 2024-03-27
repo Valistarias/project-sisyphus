@@ -24,6 +24,7 @@ import ChapterTypeRoutes from './entities/chapterType/routes';
 import CharacterRoutes from './entities/character/routes';
 import CharParamRoutes from './entities/charParam/routes';
 import CyberFrameRoutes from './entities/cyberFrame/routes';
+import CyberFrameBranchRoutes from './entities/cyberFrameBranch/routes';
 import EffectRoutes from './entities/effect/routes';
 import { verifyMailToken } from './entities/mailToken/controller';
 import MailTokenRoutes from './entities/mailToken/routes';
@@ -33,6 +34,7 @@ import RollRoutes from './entities/roll/routes';
 import RuleBookRoutes from './entities/ruleBook/routes';
 import RuleBookTypeRoutes from './entities/ruleBookType/routes';
 import SkillRoutes from './entities/skill/routes';
+import SkillBranchRoutes from './entities/skillBranch/routes';
 import StatRoutes from './entities/stat/routes';
 import UserRoutes from './entities/user/routes';
 import { checkRouteRights } from './middlewares/authJwt';
@@ -116,6 +118,8 @@ StatRoutes(apiRouter);
 SkillRoutes(apiRouter);
 CharParamRoutes(apiRouter);
 CyberFrameRoutes(apiRouter);
+CyberFrameBranchRoutes(apiRouter);
+SkillBranchRoutes(apiRouter);
 
 // Global Router
 app.use('/api/', apiRouter);
