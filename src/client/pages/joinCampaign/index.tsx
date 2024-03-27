@@ -8,7 +8,7 @@ import { useApi, useGlobalVars, useSystemAlerts } from '../../providers';
 import { Ap, Atitle } from '../../atoms';
 import { Button } from '../../molecules';
 import { Alert } from '../../organisms';
-import { type ICampaign } from '../../types/data';
+import { type ICampaign } from '../../types';
 import { ErrorPage } from '../index';
 
 import './joinCampaign.scss';

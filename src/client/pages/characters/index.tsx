@@ -9,7 +9,7 @@ import { Ali, Ap, Atitle, Aul } from '../../atoms';
 import AP from '../../atoms/ap';
 import { Button } from '../../molecules';
 import { Alert } from '../../organisms';
-import { type ICharacter } from '../../types/data';
+import { type ICharacter } from '../../types';
 
 import { classTrim } from '../../utils';
 

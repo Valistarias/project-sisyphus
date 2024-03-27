@@ -11,7 +11,7 @@ import { ErrorPage } from '..';
 import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input, SmartSelect } from '../../molecules';
 import { Alert } from '../../organisms';
-import { type ICampaign, type ICharacter } from '../../types/data';
+import { type ICampaign, type ICharacter } from '../../types';
 
 import './editCharacter.scss';
 

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { type ICuratedChapter } from '../../types/data';
+import { type ICuratedChapter } from '../../types';
 
 import Entity from './entity';
 

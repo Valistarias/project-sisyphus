@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { type ICuratedNotion } from '../../types/data';
+import { type ICuratedNotion } from '../../types';
 
 import Entity from './entity';
 

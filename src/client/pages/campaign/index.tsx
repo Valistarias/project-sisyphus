@@ -7,7 +7,7 @@ import { useApi, useSystemAlerts } from '../../providers';
 
 import { Ap, Atitle } from '../../atoms';
 import { Alert } from '../../organisms';
-import { type ICampaign } from '../../types/data';
+import { type ICampaign } from '../../types';
 import { ErrorPage } from '../index';
 
 import './campaign.scss';

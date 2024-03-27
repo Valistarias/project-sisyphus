@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import holoBackground from '../assets/imgs/tvbg.gif';
 import { Aicon, Ap, type typeIcons } from '../atoms';
-import { type TypeDice } from '../types/data';
+import { type TypeDice } from '../types';
 
 import { classTrim } from '../utils';
 

@@ -11,7 +11,7 @@ import tvBackground from '../../assets/imgs/tvbg.gif';
 import { Aerror, Ap, Avideo } from '../../atoms';
 import { Button, Input } from '../../molecules';
 import { Alert } from '../../organisms';
-import { type IUser } from '../../types/data';
+import { type IUser } from '../../types';
 
 import { regexMail } from '../../utils';
 

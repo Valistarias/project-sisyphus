@@ -12,7 +12,7 @@ import { Aa, Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
 
-import type { ICuratedPage } from '../../types/data';
+import type { ICuratedPage } from '../../types';
 
 import { formatDate } from '../../utils';
 

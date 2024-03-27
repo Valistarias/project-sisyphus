@@ -18,7 +18,7 @@ import {
   type IDragElt,
 } from '../../organisms';
 
-import type { IChapterType, ICuratedRuleBook, IRuleBookType } from '../../types/data';
+import type { IChapterType, ICuratedRuleBook, IRuleBookType } from '../../types';
 
 import { arraysEqual, formatDate } from '../../utils';
 

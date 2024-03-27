@@ -7,7 +7,7 @@ import { useApi, useSystemAlerts } from '../../providers';
 
 import { Ap } from '../../atoms';
 import { Button, Input, SmartSelect, type IGroupedOption } from '../../molecules';
-import { type INotion } from '../../types/data';
+import { type INotion } from '../../types';
 import { Alert } from '../index';
 
 import { classTrim } from '../../utils';

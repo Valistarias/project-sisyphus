@@ -11,7 +11,7 @@ import { useApi, useGlobalVars, useSystemAlerts } from '../../providers';
 import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input, SmartSelect, type ISingleValueSelect } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
-import { type IRuleBookType } from '../../types/data';
+import { type IRuleBookType } from '../../types';
 
 import './adminNewRuleBook.scss';
 

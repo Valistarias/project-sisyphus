@@ -11,7 +11,7 @@ import { useApi, useConfirmMessage, useSystemAlerts } from '../../providers';
 import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input, SmartSelect, type ISingleValueSelect } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
-import { type ICuratedNotion, type ICuratedRuleBook } from '../../types/data';
+import { type ICuratedNotion, type ICuratedRuleBook } from '../../types';
 
 import './adminEditNotion.scss';
 

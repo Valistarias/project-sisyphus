@@ -7,7 +7,7 @@ import { useApi, useRollWindow, useSocket, useSystemAlerts } from '../../provide
 
 import { Ap, Atitle } from '../../atoms';
 import { Alert, RollTab } from '../../organisms';
-import { type ICharacter } from '../../types/data';
+import { type ICharacter } from '../../types';
 import { ErrorPage } from '../index';
 
 // import { calculateDices, diceResultToStr, type DiceResult } from '../../utils';

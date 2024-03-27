@@ -10,7 +10,7 @@ import { useApi, useGlobalVars, useSystemAlerts } from '../../providers';
 import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input, SmartSelect } from '../../molecules';
 import { Alert } from '../../organisms';
-import { type ICampaign } from '../../types/data';
+import { type ICampaign } from '../../types';
 
 import './newCharacter.scss';
 

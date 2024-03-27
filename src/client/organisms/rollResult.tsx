@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import holoBackground from '../assets/imgs/tvbg.gif';
 import { Ap } from '../atoms';
 import DiceCard from '../molecules/diceCard';
-import { type TypeDice, type TypeRoll } from '../types/data';
+import { type TypeDice, type TypeRoll } from '../types';
 
 import { classTrim, strTodiceResult } from '../utils';
 

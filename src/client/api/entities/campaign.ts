@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { type ICampaign } from '../../types/data';
+import { type ICampaign } from '../../types';
 
 import Entity from './entity';
 

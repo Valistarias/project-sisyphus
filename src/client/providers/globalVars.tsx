@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useApi } from './api';
 
-import type { ICampaign, ICuratedRuleBook, IUser } from '../types/data';
+import type { ICampaign, ICuratedRuleBook, IUser } from '../types';
 
 interface IGlobalVarsContext {
   /** The logged user */

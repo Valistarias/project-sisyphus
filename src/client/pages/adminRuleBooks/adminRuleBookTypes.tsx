@@ -9,7 +9,7 @@ import { useApi, useSystemAlerts } from '../../providers';
 import { Aerror, Ali, Ap, Atitle, Aul } from '../../atoms';
 import { Button, Input } from '../../molecules';
 import { Alert } from '../../organisms';
-import { type IRuleBookType } from '../../types/data';
+import { type IRuleBookType } from '../../types';
 
 import './adminRuleBookTypes.scss';
 

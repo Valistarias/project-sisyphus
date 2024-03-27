@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { type ICharacter } from '../../types/data';
+import { type ICharacter } from '../../types';
 
 import Entity from './entity';
 

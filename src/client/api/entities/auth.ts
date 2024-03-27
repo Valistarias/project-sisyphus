@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { type IUser } from '../../types/data';
+import { type IUser } from '../../types';
 
 import Entity from './entity';
 

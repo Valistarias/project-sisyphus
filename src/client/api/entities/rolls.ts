@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { type IRoll } from '../../types/data';
+import { type IRoll } from '../../types';
 
 import Entity from './entity';
 

@@ -7,7 +7,7 @@ import { useApi, useRollWindow, useSocket, useSystemAlerts } from '../providers'
 import holoBackground from '../assets/imgs/tvbg.gif';
 import { Aicon, Ap, Avideo, type typeIcons } from '../atoms';
 import { Button } from '../molecules';
-import { type ICharacter, type IRoll, type TypeRoll } from '../types/data';
+import { type ICharacter, type IRoll, type TypeRoll } from '../types';
 
 import Alert from './alert';
 import RollResult from './rollResult';

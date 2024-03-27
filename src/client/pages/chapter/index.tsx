@@ -9,7 +9,7 @@ import { Ap, Atitle } from '../../atoms';
 import { Alert, RichTextElement } from '../../organisms';
 import { ErrorPage } from '../index';
 
-import type { ICuratedChapter } from '../../types/data';
+import type { ICuratedChapter } from '../../types';
 
 import './chapter.scss';
 
