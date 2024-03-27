@@ -1,4 +1,5 @@
 import AdminPage from './admin';
+import AdminCyberFramesPage from './adminCyberFrames';
 import AdminEditChapterPage from './adminEditChapter';
 import AdminEditNotionPage from './adminEditNotion';
 import AdminEditPage from './adminEditPage';
@@ -28,6 +29,7 @@ import RuleBooksPage from './ruleBooks';
 import SignupPage from './signup';
 
 export {
+  AdminCyberFramesPage,
   AdminEditChapterPage,
   AdminEditNotionPage,
   AdminEditPage,

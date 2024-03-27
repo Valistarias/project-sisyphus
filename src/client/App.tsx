@@ -5,6 +5,7 @@ import { Outlet, RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { useGlobalVars } from './providers';
 
 import {
+  AdminCyberFramesPage,
   AdminEditChapterPage,
   AdminEditNotionPage,
   AdminEditPage,
@@ -137,6 +138,10 @@ const App: FC = () => {
             {
               path: '/admin/rulebooks',
               element: <AdminRuleBooksPage />,
+            },
+            {
+              path: '/admin/cyberframes',
+              element: <AdminCyberFramesPage />,
             },
             {
               path: '/admin/rulebook/new',

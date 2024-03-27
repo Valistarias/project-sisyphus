@@ -222,5 +222,17 @@
     "orMore": "Or More %",
     "orLess": "Or Less %",
     "caption": "Roll results for {{formula}}. Total possible throws: {{variations}}"
+  },
+  "adminCyberFrames": {
+    "title": "Cyberframes",
+    "list": "List",
+    "editCyberFrame": "Edit"
+  },
+  "adminNewCyberFrame": {
+    "title": "New CyberFrame",
+    "i18n": "Internationalization - French",
+    "button": "Create CyberFrame",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successCreate": "CyberFrame successfully created !"
   }
 }
