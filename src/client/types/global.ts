@@ -1,6 +1,9 @@
 import { type ICampaign } from './campaign';
 import { type ICharacter } from './character';
 
+// Global Types ------------------------------------
+export type InternationalizationType = Record<string, Record<string, string>>;
+
 // User ------------------------------------
 export interface IUser {
   /** The ID of the user */

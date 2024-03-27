@@ -1,5 +1,6 @@
-// Rulebook ------------------------------------
+import { type InternationalizationType } from './global';
 
+// Rulebook ------------------------------------
 export interface IRuleBookType {
   /** The ID of the rulebook type */
   _id: string;
@@ -32,7 +33,7 @@ export interface IRuleBook {
 }
 
 export interface ICuratedRuleBook {
-  i18n: Record<string, any> | Record<string, unknown>;
+  i18n: InternationalizationType;
   ruleBook: IRuleBook;
 }
 
@@ -68,7 +69,7 @@ export interface IChapter {
 }
 
 export interface ICuratedChapter {
-  i18n: Record<string, any> | Record<string, unknown>;
+  i18n: InternationalizationType;
   chapter: IChapter;
 }
 
@@ -90,7 +91,7 @@ export interface IPage {
 }
 
 export interface ICuratedPage {
-  i18n: Record<string, any> | Record<string, unknown>;
+  i18n: InternationalizationType;
   page: IPage;
 }
 
@@ -110,6 +111,6 @@ export interface INotion {
 }
 
 export interface ICuratedNotion {
-  i18n: Record<string, any> | Record<string, unknown>;
+  i18n: InternationalizationType;
   notion: INotion;
 }

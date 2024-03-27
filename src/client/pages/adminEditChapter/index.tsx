@@ -313,7 +313,7 @@ const AdminEditChapters: FC = () => {
           setChapterSummary(chapter.summary);
           setPagesData(chapter.pages ?? null);
           if (i18n.fr !== undefined) {
-            setChapterSummaryFr((i18n.fr.summary as string) ?? '');
+            setChapterSummaryFr(i18n.fr.summary ?? '');
           }
         })
         .catch((res) => {

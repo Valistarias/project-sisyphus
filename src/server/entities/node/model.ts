@@ -16,7 +16,7 @@ interface INode {
   /** A summary of the node */
   summary: string;
   /** A quote or text, MTG style */
-  quote: string;
+  quote?: string;
   /** The internationnal content, as a json, stringified */
   i18n?: string;
   /** The associated skillBranch */
