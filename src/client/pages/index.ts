@@ -5,11 +5,13 @@ import AdminEditCyberFramePage from './adminEditCyberFrame';
 import AdminEditNotionPage from './adminEditNotion';
 import AdminEditPage from './adminEditPage';
 import AdminEditRuleBookPage from './adminEditRuleBook';
+import AdminEditStatPage from './adminEditStat';
 import AdminNewChapterPage from './adminNewChapter';
 import AdminNewCyberFramePage from './adminNewCyberFrame';
 import AdminNewNotionPage from './adminNewNotion';
 import AdminNewPage from './adminNewPage';
 import AdminNewRuleBookPage from './adminNewRuleBook';
+import AdminNewStatPage from './adminNewStat';
 import AdminRuleBooksPage from './adminRuleBooks';
 import AdminStatsPage from './adminStats';
 import AdminTestDiceCompPage from './adminTestDiceComp';
@@ -38,11 +40,13 @@ export {
   AdminEditNotionPage,
   AdminEditPage,
   AdminEditRuleBookPage,
+  AdminEditStatPage,
   AdminNewChapterPage,
   AdminNewCyberFramePage,
   AdminNewNotionPage,
   AdminNewPage,
   AdminNewRuleBookPage,
+  AdminNewStatPage,
   AdminPage,
   AdminRuleBooksPage,
   AdminStatsPage,

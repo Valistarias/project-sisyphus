@@ -11,11 +11,13 @@ import {
   AdminEditNotionPage,
   AdminEditPage,
   AdminEditRuleBookPage,
+  AdminEditStatPage,
   AdminNewChapterPage,
   AdminNewCyberFramePage,
   AdminNewNotionPage,
   AdminNewPage,
   AdminNewRuleBookPage,
+  AdminNewStatPage,
   AdminPage,
   AdminRuleBooksPage,
   AdminStatsPage,
@@ -189,6 +191,14 @@ const App: FC = () => {
             {
               path: '/admin/stats',
               element: <AdminStatsPage />,
+            },
+            {
+              path: '/admin/stat/new',
+              element: <AdminNewStatPage />,
+            },
+            {
+              path: '/admin/stat/:id',
+              element: <AdminEditStatPage />,
             },
             // All
             {

@@ -7,7 +7,7 @@ import { useApi, useSystemAlerts } from '../../providers';
 import { Ali, Ap, Atitle, Aul } from '../../atoms';
 import { Button } from '../../molecules';
 import { Alert } from '../../organisms';
-import { type ICuratedCyberFrame } from '../../types';
+import { type ICuratedStat } from '../../types';
 
 import { classTrim } from '../../utils';
 
@@ -20,7 +20,7 @@ const AdminStats: FC = () => {
 
   const calledApi = useRef<boolean>(false);
 
-  const [stats, setStats] = useState<ICuratedCyberFrame[] | null>(null);
+  const [stats, setStats] = useState<ICuratedStat[] | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Handle i18n in place of basic english language
@@ -30,18 +30,15 @@ const AdminStats: FC = () => {
     }
     return (
       <Aul className="adminStats__stat-list" noPoints>
-        {stats.map(({ cyberFrame }) => (
+        {stats.map(({ stat }) => (
           <Ali
             className={classTrim(`
               adminStats__stat-list__elt
             `)}
-            key={cyberFrame._id}
+            key={stat._id}
           >
-            <Atitle level={3}>{cyberFrame.title}</Atitle>
-            {/* <Ap className="adminStats__stat-list__elt__details">{`${
-              cyberFrame.archived ? t('terms.cyberFrame.archived') : ''
-            } ${cyberFrame.draft ? t('terms.cyberFrame.draft') : ''}`}</Ap> */}
-            <Button href={`/admin/stat/${cyberFrame._id}`}>
+            <Atitle level={3}>{stat.title}</Atitle>
+            <Button href={`/admin/stat/${stat._id}`}>
               {t('adminStats.editStat', { ns: 'pages' })}
             </Button>
           </Ali>
@@ -55,7 +52,7 @@ const AdminStats: FC = () => {
       calledApi.current = true;
       api.stats
         .getAll()
-        .then((res: ICuratedCyberFrame[]) => {
+        .then((res: ICuratedStat[]) => {
           setLoading(false);
           setStats(res ?? []);
         })

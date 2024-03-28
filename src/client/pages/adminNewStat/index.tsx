@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, type FC } from 'react';
+import React, { useCallback, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
@@ -6,26 +6,26 @@ import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { useApi, useGlobalVars, useSystemAlerts } from '../../providers';
+import { useApi, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ap, Atitle } from '../../atoms';
-import { Button, Input, SmartSelect } from '../../molecules';
+import { Button, Input } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
 
-import './adminNewCyberFrame.scss';
+import './adminNewStat.scss';
 
 interface FormValues {
   name: string;
+  short: string;
   nameFr: string;
-  ruleBook: string;
+  shortFr: string;
 }
 
-const AdminNewCyberFrame: FC = () => {
+const AdminNewStat: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const navigate = useNavigate();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { ruleBooks } = useGlobalVars();
 
   const introEditor = useEditor({
     extensions: completeRichTextElementExtentions,
@@ -42,17 +42,8 @@ const AdminNewCyberFrame: FC = () => {
     formState: { errors },
   } = useForm<FieldValues>();
 
-  const ruleBookSelect = useMemo(() => {
-    return ruleBooks.map(({ ruleBook }) => ({
-      value: ruleBook._id,
-      // TODO : Handle Internationalization
-      label: ruleBook.title,
-      details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 }),
-    }));
-  }, [t, ruleBooks]);
-
-  const onSaveCyberFrame: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, ruleBook }) => {
+  const onSaveStat: SubmitHandler<FormValues> = useCallback(
+    ({ name, nameFr, short, shortFr }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -68,29 +59,30 @@ const AdminNewCyberFrame: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
+            short: shortFr ?? '',
             summary: htmlFr,
           },
         };
       }
 
-      api.cyberFrames
+      api.stats
         .create({
           title: name,
-          ruleBook,
+          short,
           summary: html,
           i18n,
         })
-        .then((cyberFrame) => {
+        .then((stat) => {
           const newId = getNewId();
           createAlert({
             key: newId,
             dom: (
               <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('adminNewCyberFrame.successCreate', { ns: 'pages' })}</Ap>
+                <Ap>{t('adminNewStat.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
             ),
           });
-          navigate(`/admin/cyberframe/${cyberFrame._id}`);
+          navigate(`/admin/stat/${stat._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;
@@ -98,14 +90,14 @@ const AdminNewCyberFrame: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.cyberFrameType.${data.sent}`), 'capitalize'),
+                field: i18next.format(t(`terms.statType.${data.sent}`), 'capitalize'),
               }),
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.cyberFrameType.${data.sent}`), 'capitalize'),
+                field: i18next.format(t(`terms.statType.${data.sent}`), 'capitalize'),
               }),
             });
           }
@@ -115,41 +107,37 @@ const AdminNewCyberFrame: FC = () => {
   );
 
   return (
-    <div className="adminNewCyberFrame">
-      <form
-        className="adminNewCyberFrame__content"
-        onSubmit={handleSubmit(onSaveCyberFrame)}
-        noValidate
-      >
-        <Atitle level={1}>{t('adminNewCyberFrame.title', { ns: 'pages' })}</Atitle>
+    <div className="adminNewStat">
+      <form className="adminNewStat__content" onSubmit={handleSubmit(onSaveStat)} noValidate>
+        <Atitle level={1}>{t('adminNewStat.title', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
-        <div className="adminNewCyberFrame__basics">
+        <div className="adminNewStat__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameCyberFrame.required', { ns: 'fields' }),
+              required: t('nameStat.required', { ns: 'fields' }),
             }}
-            label={t('nameCyberFrame.label', { ns: 'fields' })}
-            className="adminNewCyberFrame__basics__name"
+            label={t('nameStat.label', { ns: 'fields' })}
+            className="adminNewStat__basics__name"
           />
-          <SmartSelect
+          <Input
             control={control}
-            inputName="ruleBook"
+            inputName="short"
+            type="text"
             rules={{
-              required: t('linkedRuleBook.required', { ns: 'fields' }),
+              required: t('nameStatShort.required', { ns: 'fields' }),
             }}
-            label={t('linkedRuleBook.label', { ns: 'fields' })}
-            options={ruleBookSelect}
-            className="adminNewCyberFrame__basics__type"
+            label={t('nameStatShort.label', { ns: 'fields' })}
+            className="adminNewStat__basics__name"
           />
         </div>
-        <div className="adminNewCyberFrame__details">
+        <div className="adminNewStat__details">
           <RichTextElement
-            label={t('cyberFrameSummary.title', { ns: 'fields' })}
+            label={t('statSummary.title', { ns: 'fields' })}
             editor={introEditor}
             rawStringContent={''}
             small
@@ -157,34 +145,39 @@ const AdminNewCyberFrame: FC = () => {
           />
         </div>
 
-        <Atitle className="adminNewCyberFrame__intl" level={2}>
-          {t('adminNewCyberFrame.i18n', { ns: 'pages' })}
+        <Atitle className="adminNewStat__intl" level={2}>
+          {t('adminNewStat.i18n', { ns: 'pages' })}
         </Atitle>
-        <Ap className="adminNewCyberFrame__intl-info">
-          {t('adminNewCyberFrame.i18nInfo', { ns: 'pages' })}
-        </Ap>
-        <div className="adminNewCyberFrame__basics">
+        <Ap className="adminNewStat__intl-info">{t('adminNewStat.i18nInfo', { ns: 'pages' })}</Ap>
+        <div className="adminNewStat__basics">
           <Input
             control={control}
             inputName="nameFr"
             type="text"
-            label={`${t('nameCyberFrame.label', { ns: 'fields' })} (FR)`}
-            className="adminNewCyberFrame__basics__name"
+            label={`${t('nameStat.label', { ns: 'fields' })} (FR)`}
+            className="adminNewStat__basics__name"
+          />
+          <Input
+            control={control}
+            inputName="shortFr"
+            type="text"
+            label={`${t('nameStatShort.label', { ns: 'fields' })} (FR)`}
+            className="adminNewStat__basics__name"
           />
         </div>
-        <div className="adminNewCyberFrame__details">
+        <div className="adminNewStat__details">
           <RichTextElement
-            label={`${t('cyberFrameSummary.title', { ns: 'fields' })} (FR)`}
+            label={`${t('statSummary.title', { ns: 'fields' })} (FR)`}
             editor={introFrEditor}
             rawStringContent={''}
             small
             complete
           />
         </div>
-        <Button type="submit">{t('adminNewCyberFrame.button', { ns: 'pages' })}</Button>
+        <Button type="submit">{t('adminNewStat.button', { ns: 'pages' })}</Button>
       </form>
     </div>
   );
 };
 
-export default AdminNewCyberFrame;
+export default AdminNewStat;
