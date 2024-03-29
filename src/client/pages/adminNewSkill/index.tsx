@@ -11,7 +11,7 @@ import { useApi, useSystemAlerts } from '../../providers';
 import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input, SmartSelect } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
-import { type IStat } from '../../types';
+import { type ICuratedStat } from '../../types';
 
 import './adminNewSkill.scss';
 
@@ -27,7 +27,7 @@ const AdminNewSkill: FC = () => {
   const navigate = useNavigate();
   const { createAlert, getNewId } = useSystemAlerts();
 
-  const [stats, setStats] = useState<IStat[]>([]);
+  const [stats, setStats] = useState<ICuratedStat[]>([]);
 
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
@@ -48,9 +48,9 @@ const AdminNewSkill: FC = () => {
   } = useForm<FieldValues>();
 
   const statList = useMemo(() => {
-    return stats.map(({ _id, title }) => ({
-      value: _id,
-      label: title,
+    return stats.map(({ stat }) => ({
+      value: stat._id,
+      label: stat.title,
     }));
   }, [stats]);
 
@@ -58,7 +58,7 @@ const AdminNewSkill: FC = () => {
     if (api !== undefined) {
       api.stats
         .getAll()
-        .then((sentStats: IStat[]) => {
+        .then((sentStats: ICuratedStat[]) => {
           setLoading(false);
           setStats(sentStats);
         })

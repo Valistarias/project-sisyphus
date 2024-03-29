@@ -82,7 +82,7 @@ const AdminNewCharParam: FC = () => {
               </Alert>
             ),
           });
-          navigate(`/admin/charparams/${charParams._id}`);
+          navigate(`/admin/charparam/${charParams._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;
