@@ -11,15 +11,18 @@ import {
   AdminEditNotionPage,
   AdminEditPage,
   AdminEditRuleBookPage,
+  AdminEditSkillPage,
   AdminEditStatPage,
   AdminNewChapterPage,
   AdminNewCyberFramePage,
   AdminNewNotionPage,
   AdminNewPage,
   AdminNewRuleBookPage,
+  AdminNewSkillPage,
   AdminNewStatPage,
   AdminPage,
   AdminRuleBooksPage,
+  AdminSkillsPage,
   AdminStatsPage,
   AdminTestDiceCompPage,
   CampaignPage,
@@ -199,6 +202,18 @@ const App: FC = () => {
             {
               path: '/admin/stat/:id',
               element: <AdminEditStatPage />,
+            },
+            {
+              path: '/admin/skills',
+              element: <AdminSkillsPage />,
+            },
+            {
+              path: '/admin/skill/new',
+              element: <AdminNewSkillPage />,
+            },
+            {
+              path: '/admin/skill/:id',
+              element: <AdminEditSkillPage />,
             },
             // All
             {

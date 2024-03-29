@@ -29,7 +29,6 @@ const NewCharacter: FC = () => {
   const [campaigns, setCampaigns] = useState<ICampaign[]>([]);
 
   const [loading, setLoading] = useState(true);
-
   const calledApi = useRef(false);
 
   const {

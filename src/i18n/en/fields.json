@@ -100,5 +100,19 @@
   "nameStatShort": {
     "required": "A Short Name is required",
     "label": "Short"
+  },
+  "statSummary": {
+    "title": "Stat Details"
+  },
+  "nameSkill": {
+    "required": "A Skill Name is required",
+    "label": "Skill Name"
+  },
+  "statSkill": {
+    "required": "You need to link a Stat with this Skill",
+    "label": "Stat"
+  },
+  "skillSummary": {
+    "title": "Skill Details"
   }
 }

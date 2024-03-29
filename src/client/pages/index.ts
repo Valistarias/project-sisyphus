@@ -5,14 +5,17 @@ import AdminEditCyberFramePage from './adminEditCyberFrame';
 import AdminEditNotionPage from './adminEditNotion';
 import AdminEditPage from './adminEditPage';
 import AdminEditRuleBookPage from './adminEditRuleBook';
+import AdminEditSkillPage from './adminEditSkill';
 import AdminEditStatPage from './adminEditStat';
 import AdminNewChapterPage from './adminNewChapter';
 import AdminNewCyberFramePage from './adminNewCyberFrame';
 import AdminNewNotionPage from './adminNewNotion';
 import AdminNewPage from './adminNewPage';
 import AdminNewRuleBookPage from './adminNewRuleBook';
+import AdminNewSkillPage from './adminNewSkill';
 import AdminNewStatPage from './adminNewStat';
 import AdminRuleBooksPage from './adminRuleBooks';
+import AdminSkillsPage from './adminSkills';
 import AdminStatsPage from './adminStats';
 import AdminTestDiceCompPage from './adminTestDiceComp';
 import CampaignPage from './campaign';
@@ -40,15 +43,18 @@ export {
   AdminEditNotionPage,
   AdminEditPage,
   AdminEditRuleBookPage,
+  AdminEditSkillPage,
   AdminEditStatPage,
   AdminNewChapterPage,
   AdminNewCyberFramePage,
   AdminNewNotionPage,
   AdminNewPage,
   AdminNewRuleBookPage,
+  AdminNewSkillPage,
   AdminNewStatPage,
   AdminPage,
   AdminRuleBooksPage,
+  AdminSkillsPage,
   AdminStatsPage,
   AdminTestDiceCompPage,
   CampaignPage,
