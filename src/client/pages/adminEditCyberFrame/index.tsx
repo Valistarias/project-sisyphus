@@ -8,10 +8,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../providers';
 
-import { Aerror, Ap, Atitle } from '../../atoms';
+import { Aerror, Ali, Ap, Atitle, Aul } from '../../atoms';
 import { Button, Input, SmartSelect, type ISingleValueSelect } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
-import { type ICuratedCyberFrame } from '../../types';
+import { type ICuratedCyberFrame, type ICuratedCyberFrameBranch } from '../../types';
+
+import { classTrim } from '../../utils';
 
 import './adminEditCyberFrame.scss';
 
@@ -42,6 +44,10 @@ const AdminEditCyberFrame: FC = () => {
   const [cyberFrameText, setCyberFrameText] = useState('');
   const [cyberFrameTextFr, setCyberFrameTextFr] = useState('');
 
+  const [cyberFrameBranches, setCyberFrameBranches] = useState<ICuratedCyberFrameBranch[] | null>(
+    null
+  );
+
   const textEditor = useEditor({
     extensions: completeRichTextElementExtentions,
   });
@@ -49,6 +55,29 @@ const AdminEditCyberFrame: FC = () => {
   const textFrEditor = useEditor({
     extensions: completeRichTextElementExtentions,
   });
+
+  const cyberFrameBranchesList = useMemo(() => {
+    if (cyberFrameBranches === null || cyberFrameBranches.length === 0) {
+      return null;
+    }
+    return (
+      <Aul className="adminEditCyberFrame__cyberframebranch-list" noPoints>
+        {cyberFrameBranches.map(({ cyberFrameBranch }) => (
+          <Ali
+            className={classTrim(`
+              adminEditCyberFrame__cyberframebranch-list__elt
+            `)}
+            key={cyberFrameBranch._id}
+          >
+            <Atitle level={3}>{cyberFrameBranch.title}</Atitle>
+            <Button href={`/admin/cyberframebranch/${cyberFrameBranch._id}`}>
+              {t('adminCyberFrames.editCyberFrame', { ns: 'pages' })}
+            </Button>
+          </Ali>
+        ))}
+      </Aul>
+    );
+  }, [cyberFrameBranches, t]);
 
   const ruleBookSelect = useMemo(() => {
     return ruleBooks.map(({ ruleBook }) => ({
@@ -269,6 +298,22 @@ const AdminEditCyberFrame: FC = () => {
             ),
           });
         });
+      api.cyberFrameBranches
+        .getAllByCyberFrame({ cyberFrameId: id })
+        .then((curatedCyberFrameBranches: ICuratedCyberFrameBranch[]) => {
+          setCyberFrameBranches(curatedCyberFrameBranches ?? []);
+        })
+        .catch(() => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert key={newId} id={newId} timer={5}>
+                <Ap>{t('serverErrors.CYPU-301')}</Ap>
+              </Alert>
+            ),
+          });
+        });
     }
   }, [api, createAlert, getNewId, ruleBooks, id, t]);
 
@@ -301,11 +346,19 @@ const AdminEditCyberFrame: FC = () => {
         className="adminEditCyberFrame__content"
       >
         <div className="adminEditCyberFrame__head">
-          <Atitle level={1}>{t('adminEditCyberFrame.title', { ns: 'pages' })}</Atitle>
+          <Atitle level={1}>{cyberFrameData?.cyberFrame.title}</Atitle>
           <Button onClick={onAskDelete} color="error">
             {t('adminEditCyberFrame.delete', { ns: 'pages' })}
           </Button>
         </div>
+        <div className="adminEditCyberFrame__branches">
+          <Atitle level={2}>{t('adminEditCyberFrame.branches', { ns: 'pages' })}</Atitle>
+          <div className="adminEditCyberFrame__branches__list">{cyberFrameBranchesList}</div>
+          <Button href={`/admin/cyberframebranch/new?cyberFrameId=${id}`}>
+            {t('adminNewCyberFrameBranch.title', { ns: 'pages' })}
+          </Button>
+        </div>
+        <Atitle level={2}>{t('adminEditCyberFrame.edit', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror className="adminEditCyberFrame__error">{errors.root.serverError.message}</Aerror>
         ) : null}
@@ -321,8 +374,10 @@ const AdminEditCyberFrame: FC = () => {
           <SmartSelect
             control={control}
             inputName="ruleBook"
-            rules={{ required: t('linkedRuleBook.required', { ns: 'fields' }) }}
-            label={t('cyberFrameRuleBookType.title', { ns: 'fields' })}
+            rules={{
+              required: t('linkedRuleBook.required', { ns: 'fields' }),
+            }}
+            label={t('linkedRuleBook.label', { ns: 'fields' })}
             options={ruleBookSelect}
             className="adminEditCyberFrame__basics__type"
           />

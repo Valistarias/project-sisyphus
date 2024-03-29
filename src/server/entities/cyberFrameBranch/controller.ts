@@ -24,6 +24,24 @@ const findCyberFrameBranches = async (): Promise<HydratedICyberFrameBranch[]> =>
       });
   });
 
+const findCyberFrameBranchesByFrame = async (
+  cyberFrameId: string
+): Promise<HydratedICyberFrameBranch[]> =>
+  await new Promise((resolve, reject) => {
+    CyberFrameBranch.find({ cyberFrame: cyberFrameId })
+      .populate<{ cyberFrame: ICyberFrame }>('cyberFrame')
+      .then(async (res) => {
+        if (res === undefined || res === null) {
+          reject(gemNotFound('CyberFrameBranches'));
+        } else {
+          resolve(res as HydratedICyberFrameBranch[]);
+        }
+      })
+      .catch(async (err) => {
+        reject(err);
+      });
+  });
+
 const findCyberFrameBranchById = async (id: string): Promise<HydratedICyberFrameBranch> =>
   await new Promise((resolve, reject) => {
     CyberFrameBranch.findById(id)
@@ -41,8 +59,8 @@ const findCyberFrameBranchById = async (id: string): Promise<HydratedICyberFrame
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, summary, cyberframe, i18n = null } = req.body;
-  if (title === undefined || summary === undefined || cyberframe === undefined) {
+  const { title, summary, cyberFrame, i18n = null } = req.body;
+  if (title === undefined || summary === undefined || cyberFrame === undefined) {
     res.status(400).send(gemInvalidField('CyberFrameBranch'));
     return;
   }
@@ -50,7 +68,7 @@ const create = (req: Request, res: Response): void => {
   const cyberFrameBranch = new CyberFrameBranch({
     title,
     summary,
-    cyberframe,
+    cyberFrame,
   });
 
   if (i18n !== null) {
@@ -195,4 +213,34 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteCyberFrameBranch, findAll, findCyberFrameBranchById, findSingle, update };
+const findAllByFrame = (req: Request, res: Response): void => {
+  const { cyberFrameId } = req.query;
+  if (cyberFrameId === undefined || typeof cyberFrameId !== 'string') {
+    res.status(400).send(gemInvalidField('CyberFrame ID'));
+    return;
+  }
+  findCyberFrameBranchesByFrame(cyberFrameId)
+    .then((cyberFrameBranchs) => {
+      const curatedCyberFrameBranches: CuratedICyberFrameBranch[] = [];
+
+      cyberFrameBranchs.forEach((cyberFrameBranch) => {
+        curatedCyberFrameBranches.push({
+          cyberFrameBranch,
+          i18n: curateCyberFrameBranch(cyberFrameBranch),
+        });
+      });
+
+      res.send(curatedCyberFrameBranches);
+    })
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+};
+
+export {
+  create,
+  deleteCyberFrameBranch,
+  findAll,
+  findAllByFrame,
+  findCyberFrameBranchById,
+  findSingle,
+  update,
+};

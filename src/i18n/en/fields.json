@@ -66,7 +66,7 @@
     "required": "A CyberFrame Name is required",
     "label": "CyberFrame Name"
   },
-  "cyberFrameSummary": {
+  "cyberFrameText": {
     "title": "CyberFrame Details"
   },
   "typePage": {
@@ -101,7 +101,7 @@
     "required": "A Short Name is required",
     "label": "Short"
   },
-  "statSummary": {
+  "statText": {
     "title": "Stat Details"
   },
   "nameSkill": {
@@ -112,7 +112,7 @@
     "required": "You need to link a Stat with this Skill",
     "label": "Stat"
   },
-  "skillSummary": {
+  "skillText": {
     "title": "Skill Details"
   },
   "nameCharParam": {
@@ -123,7 +123,14 @@
     "required": "A Short Name is required",
     "label": "Short"
   },
-  "charParamSummary": {
+  "charParamText": {
     "title": "Character Parameter Details"
+  },
+  "nameCyberFrameBranch": {
+    "required": "A CyberFrame Branch Name is required",
+    "label": "CyberFrame Branch Name"
+  },
+  "cyberFrameBranchSummary": {
+    "title": "CyberFrame Branch Details"
   }
 }

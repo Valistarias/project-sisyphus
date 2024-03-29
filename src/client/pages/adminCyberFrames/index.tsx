@@ -82,9 +82,9 @@ const AdminCyberFrames: FC = () => {
     <div className="adminCyberFrames">
       <Atitle level={1}>{t('adminCyberFrames.title', { ns: 'pages' })}</Atitle>
       <div className="adminCyberFrames__content">
-        <div className="adminCyberFrames__books">
+        <div className="adminCyberFrames__frames">
           <Atitle level={2}>{t('adminCyberFrames.list', { ns: 'pages' })}</Atitle>
-          <div className="adminCyberFrames__books__list">{cyberFramesList}</div>
+          <div className="adminCyberFrames__frames__list">{cyberFramesList}</div>
           <Button href="/admin/cyberframe/new">
             {t('adminNewCyberFrame.title', { ns: 'pages' })}
           </Button>

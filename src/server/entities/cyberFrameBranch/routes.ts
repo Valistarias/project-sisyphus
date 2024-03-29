@@ -2,7 +2,14 @@ import { type Router } from 'express';
 
 import { adminNeeded, verifyToken } from '../../middlewares';
 
-import { create, deleteCyberFrameBranch, findAll, findSingle, update } from './controller';
+import {
+  create,
+  deleteCyberFrameBranch,
+  findAll,
+  findAllByFrame,
+  findSingle,
+  update,
+} from './controller';
 
 export default (app: Router): void => {
   app.use((req, res, next) => {
@@ -11,6 +18,8 @@ export default (app: Router): void => {
   });
 
   app.get('/cyberframebranches/', [verifyToken], findAll);
+
+  app.get('/cyberframebranches/byframe', [verifyToken], findAllByFrame);
 
   app.get('/cyberframebranches/single', [verifyToken], findSingle);
 

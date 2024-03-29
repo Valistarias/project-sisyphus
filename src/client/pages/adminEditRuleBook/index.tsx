@@ -386,7 +386,7 @@ const AdminEditRuleBook: FC = () => {
           setArchived(curatedRuleBook.ruleBook.archived);
           setRuleBookSummary(curatedRuleBook.ruleBook.summary);
           if (curatedRuleBook.i18n.fr !== undefined) {
-            setRuleBookSummaryFr((curatedRuleBook.i18n.fr.summary as string) ?? '');
+            setRuleBookSummaryFr(curatedRuleBook.i18n.fr.summary ?? '');
           }
         })
         .catch((res) => {

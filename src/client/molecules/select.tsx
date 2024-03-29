@@ -32,6 +32,8 @@ interface IAp extends IReactHookFormInputs {
   label?: string;
   /** The classname of the select */
   className?: string;
+  /** Triggered when the selected field is changing */
+  onChange?: (val: string) => void;
   /** The size of the select */
   size?: 'medium' | 'small';
 }
@@ -67,6 +69,7 @@ const SmartSelect: FC<IAp> = ({
   options,
   size = 'medium',
   label,
+  onChange: exteriorChange,
   placeholder = null,
   className = null,
   rules,
@@ -102,6 +105,9 @@ const SmartSelect: FC<IAp> = ({
               onChange={(val) => {
                 if (val != null) {
                   onChange(val.value);
+                  if (exteriorChange !== undefined) {
+                    exteriorChange(val.value);
+                  }
                 }
               }}
               className="smartselect__field"

@@ -17,6 +17,7 @@ import {
   AdminEditStatPage,
   AdminNewChapterPage,
   AdminNewCharParamPage,
+  AdminNewCyberFrameBranchPage,
   AdminNewCyberFramePage,
   AdminNewNotionPage,
   AdminNewPage,
@@ -229,6 +230,10 @@ const App: FC = () => {
             {
               path: '/admin/charparam/:id',
               element: <AdminEditCharParamPage />,
+            },
+            {
+              path: '/admin/cyberframebranch/new',
+              element: <AdminNewCyberFrameBranchPage />,
             },
             // All
             {

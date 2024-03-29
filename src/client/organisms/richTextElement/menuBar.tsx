@@ -7,7 +7,7 @@ import { useApi, useSystemAlerts } from '../../providers';
 
 import { Ap } from '../../atoms';
 import { Button, Input, SmartSelect, type IGroupedOption } from '../../molecules';
-import { type INotion } from '../../types';
+import { type ICuratedNotion } from '../../types';
 import { Alert } from '../index';
 
 import { classTrim } from '../../utils';
@@ -30,7 +30,7 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId 
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
 
-  const [notions, setNotions] = useState<INotion[]>([]);
+  const [notions, setNotions] = useState<ICuratedNotion[]>([]);
 
   // Embed Tool
   const [embedBarOpened, embedBarOpen] = useState(false);
@@ -43,7 +43,7 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId 
 
   const embedSelectChoices = useMemo(
     () =>
-      notions.map((notion) => ({
+      notions.map(({ notion }) => ({
         value: notion._id,
         label: notion.title,
       })),
@@ -52,7 +52,7 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId 
 
   const highlightSelectChoices = useMemo(() => {
     const groupedOptions: IGroupedOption[] = [];
-    const notionOptions = notions.map((notion) => ({
+    const notionOptions = notions.map(({ notion }) => ({
       value: notion._id,
       label: notion.title,
     }));
@@ -76,7 +76,7 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId 
 
         api.notions
           .getAllByRuleBook({ ruleBookId })
-          .then((notions: INotion[]) => {
+          .then((notions: ICuratedNotion[]) => {
             resolve(true);
             setNotions(notions);
           })
@@ -343,8 +343,8 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId 
               <div className="menubar__categories__embeds__embedbar">
                 <SmartSelect
                   options={embedSelectChoices}
-                  onChange={(choice) => {
-                    setSelectedEmbed(choice.value);
+                  onChange={(value) => {
+                    setSelectedEmbed(value);
                   }}
                 />
                 <Button onClick={onConfirmEmbedBar}>
