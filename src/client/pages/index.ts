@@ -1,6 +1,8 @@
 import AdminPage from './admin';
+import AdminCharParamsPage from './adminCharParams';
 import AdminCyberFramesPage from './adminCyberFrames';
 import AdminEditChapterPage from './adminEditChapter';
+import AdminEditCharParamPage from './adminEditCharParam';
 import AdminEditCyberFramePage from './adminEditCyberFrame';
 import AdminEditNotionPage from './adminEditNotion';
 import AdminEditPage from './adminEditPage';
@@ -8,6 +10,7 @@ import AdminEditRuleBookPage from './adminEditRuleBook';
 import AdminEditSkillPage from './adminEditSkill';
 import AdminEditStatPage from './adminEditStat';
 import AdminNewChapterPage from './adminNewChapter';
+import AdminNewCharParamPage from './adminNewCharParam';
 import AdminNewCyberFramePage from './adminNewCyberFrame';
 import AdminNewNotionPage from './adminNewNotion';
 import AdminNewPage from './adminNewPage';
@@ -37,8 +40,10 @@ import RuleBooksPage from './ruleBooks';
 import SignupPage from './signup';
 
 export {
+  AdminCharParamsPage,
   AdminCyberFramesPage,
   AdminEditChapterPage,
+  AdminEditCharParamPage,
   AdminEditCyberFramePage,
   AdminEditNotionPage,
   AdminEditPage,
@@ -46,6 +51,7 @@ export {
   AdminEditSkillPage,
   AdminEditStatPage,
   AdminNewChapterPage,
+  AdminNewCharParamPage,
   AdminNewCyberFramePage,
   AdminNewNotionPage,
   AdminNewPage,

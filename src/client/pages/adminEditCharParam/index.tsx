@@ -11,9 +11,9 @@ import { useApi, useConfirmMessage, useSystemAlerts } from '../../providers';
 import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
-import { type ICuratedStat } from '../../types';
+import { type ICuratedCharParam } from '../../types';
 
-import './adminEditStat.scss';
+import './adminEditCharParam.scss';
 
 interface FormValues {
   name: string;
@@ -22,7 +22,7 @@ interface FormValues {
   shortFr: string;
 }
 
-const AdminEditStat: FC = () => {
+const AdminEditCharParam: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
@@ -37,10 +37,10 @@ const AdminEditStat: FC = () => {
   const saveTimer = useRef<NodeJS.Timeout | null>(null);
   const silentSave = useRef(false);
 
-  const [statData, setStatData] = useState<ICuratedStat | null>(null);
+  const [charParamData, setCharParamData] = useState<ICuratedCharParam | null>(null);
 
-  const [statText, setStatText] = useState('');
-  const [statTextFr, setStatTextFr] = useState('');
+  const [charParamText, setCharParamText] = useState('');
+  const [charParamTextFr, setCharParamTextFr] = useState('');
 
   const textEditor = useEditor({
     extensions: completeRichTextElementExtentions,
@@ -50,14 +50,14 @@ const AdminEditStat: FC = () => {
     extensions: completeRichTextElementExtentions,
   });
 
-  const createDefaultData = useCallback((statData: ICuratedStat | null) => {
-    if (statData == null) {
+  const createDefaultData = useCallback((charParamData: ICuratedCharParam | null) => {
+    if (charParamData == null) {
       return {};
     }
-    const { stat, i18n } = statData;
+    const { charParam, i18n } = charParamData;
     const defaultData: Partial<FormValues> = {};
-    defaultData.name = stat.title;
-    defaultData.short = stat.short;
+    defaultData.name = charParam.title;
+    defaultData.short = charParam.short;
     if (i18n.fr !== undefined) {
       defaultData.nameFr = i18n.fr.title ?? '';
       defaultData.shortFr = i18n.fr.short ?? '';
@@ -72,14 +72,17 @@ const AdminEditStat: FC = () => {
     formState: { errors },
     reset,
   } = useForm<FieldValues>({
-    defaultValues: useMemo(() => createDefaultData(statData), [createDefaultData, statData]),
+    defaultValues: useMemo(
+      () => createDefaultData(charParamData),
+      [createDefaultData, charParamData]
+    ),
   });
 
-  const onSaveStat: SubmitHandler<FormValues> = useCallback(
+  const onSaveCharParam: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, short, shortFr }) => {
       if (
-        statText === null ||
-        statTextFr === null ||
+        charParamText === null ||
+        charParamTextFr === null ||
         textEditor === null ||
         textFrEditor === null ||
         api === undefined
@@ -106,7 +109,7 @@ const AdminEditStat: FC = () => {
         };
       }
 
-      api.stats
+      api.charParams
         .update({
           id,
           title: name,
@@ -114,13 +117,13 @@ const AdminEditStat: FC = () => {
           summary: htmlText,
           i18n,
         })
-        .then((stat) => {
+        .then((charParam) => {
           const newId = getNewId();
           createAlert({
             key: newId,
             dom: (
               <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('adminEditStat.successUpdate', { ns: 'pages' })}</Ap>
+                <Ap>{t('adminEditCharParam.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
             ),
           });
@@ -131,20 +134,31 @@ const AdminEditStat: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.statType.${data.sent}`), 'capitalize'),
+                field: i18next.format(t(`terms.charParamType.${data.sent}`), 'capitalize'),
               }),
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.statType.${data.sent}`), 'capitalize'),
+                field: i18next.format(t(`terms.charParamType.${data.sent}`), 'capitalize'),
               }),
             });
           }
         });
     },
-    [statText, statTextFr, textEditor, textFrEditor, api, id, getNewId, createAlert, t, setError]
+    [
+      charParamText,
+      charParamTextFr,
+      textEditor,
+      textFrEditor,
+      api,
+      id,
+      getNewId,
+      createAlert,
+      t,
+      setError,
+    ]
   );
 
   const onAskDelete = useCallback(() => {
@@ -153,17 +167,17 @@ const AdminEditStat: FC = () => {
     }
     setConfirmContent(
       {
-        title: t('adminEditStat.confirmDeletion.title', { ns: 'pages' }),
-        text: t('adminEditStat.confirmDeletion.text', {
+        title: t('adminEditCharParam.confirmDeletion.title', { ns: 'pages' }),
+        text: t('adminEditCharParam.confirmDeletion.text', {
           ns: 'pages',
-          elt: statData?.stat.title,
+          elt: charParamData?.charParam.title,
         }),
-        confirmCta: t('adminEditStat.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditCharParam.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
           if (detail.proceed === true) {
-            api.stats
+            api.charParams
               .delete({ id })
               .then(() => {
                 const newId = getNewId();
@@ -171,11 +185,11 @@ const AdminEditStat: FC = () => {
                   key: newId,
                   dom: (
                     <Alert key={newId} id={newId} timer={5}>
-                      <Ap>{t('adminEditStat.successDelete', { ns: 'pages' })}</Ap>
+                      <Ap>{t('adminEditCharParam.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
                   ),
                 });
-                navigate('/admin/stats');
+                navigate('/admin/charparams');
               })
               .catch(({ response }) => {
                 const { data } = response;
@@ -183,14 +197,14 @@ const AdminEditStat: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.stat.name`), 'capitalize'),
+                      field: i18next.format(t(`terms.charParam.name`), 'capitalize'),
                     }),
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.stat.name`), 'capitalize'),
+                      field: i18next.format(t(`terms.charParam.name`), 'capitalize'),
                     }),
                   });
                 }
@@ -205,7 +219,7 @@ const AdminEditStat: FC = () => {
     api,
     setConfirmContent,
     t,
-    statData?.stat.title,
+    charParamData?.charParam.title,
     ConfMessageEvent,
     id,
     getNewId,
@@ -217,14 +231,14 @@ const AdminEditStat: FC = () => {
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
       calledApi.current = true;
-      api.stats
-        .get({ statId: id })
-        .then((curatedStat: ICuratedStat) => {
-          const { stat, i18n } = curatedStat;
-          setStatData(curatedStat);
-          setStatText(stat.summary);
+      api.charParams
+        .get({ charParamId: id })
+        .then((curatedCharParam: ICuratedCharParam) => {
+          const { charParam, i18n } = curatedCharParam;
+          setCharParamData(curatedCharParam);
+          setCharParamText(charParam.summary);
           if (i18n.fr !== undefined) {
-            setStatTextFr(i18n.fr.text ?? '');
+            setCharParamTextFr(i18n.fr.text ?? '');
           }
         })
         .catch(() => {
@@ -245,7 +259,7 @@ const AdminEditStat: FC = () => {
   useEffect(() => {
     saveTimer.current = setInterval(() => {
       silentSave.current = true;
-      handleSubmit(onSaveStat)().then(
+      handleSubmit(onSaveCharParam)().then(
         () => {},
         () => {}
       );
@@ -255,86 +269,92 @@ const AdminEditStat: FC = () => {
         clearInterval(saveTimer.current);
       }
     };
-  }, [handleSubmit, onSaveStat]);
+  }, [handleSubmit, onSaveCharParam]);
 
   // To affect default data
   useEffect(() => {
-    reset(createDefaultData(statData));
-  }, [statData, reset, createDefaultData]);
+    reset(createDefaultData(charParamData));
+  }, [charParamData, reset, createDefaultData]);
 
   return (
-    <div className="adminEditStat">
-      <form onSubmit={handleSubmit(onSaveStat)} noValidate className="adminEditStat__content">
-        <div className="adminEditStat__head">
-          <Atitle level={1}>{t('adminEditStat.title', { ns: 'pages' })}</Atitle>
+    <div className="adminEditCharParam">
+      <form
+        onSubmit={handleSubmit(onSaveCharParam)}
+        noValidate
+        className="adminEditCharParam__content"
+      >
+        <div className="adminEditCharParam__head">
+          <Atitle level={1}>{t('adminEditCharParam.title', { ns: 'pages' })}</Atitle>
           <Button onClick={onAskDelete} color="error">
-            {t('adminEditStat.delete', { ns: 'pages' })}
+            {t('adminEditCharParam.delete', { ns: 'pages' })}
           </Button>
         </div>
         {errors.root?.serverError?.message !== undefined ? (
-          <Aerror className="adminEditStat__error">{errors.root.serverError.message}</Aerror>
+          <Aerror className="adminEditCharParam__error">{errors.root.serverError.message}</Aerror>
         ) : null}
-        <div className="adminEditStat__basics">
+        <div className="adminEditCharParam__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
-            rules={{ required: t('nameStat.required', { ns: 'fields' }) }}
-            label={t('nameStat.label', { ns: 'fields' })}
-            className="adminEditStat__basics__name"
+            rules={{ required: t('nameCharParam.required', { ns: 'fields' }) }}
+            label={t('nameCharParam.label', { ns: 'fields' })}
+            className="adminEditCharParam__basics__name"
           />
           <Input
             control={control}
             inputName="short"
             type="text"
             rules={{
-              required: t('nameStatShort.required', { ns: 'fields' }),
+              required: t('nameCharParamShort.required', { ns: 'fields' }),
             }}
-            label={t('nameStatShort.label', { ns: 'fields' })}
-            className="adminNewStat__basics__name"
+            label={t('nameCharParamShort.label', { ns: 'fields' })}
+            className="adminNewCharParam__basics__name"
           />
         </div>
-        <div className="adminEditStat__details">
+        <div className="adminEditCharParam__details">
           <RichTextElement
-            label={t('statText.title', { ns: 'fields' })}
+            label={t('charParamText.title', { ns: 'fields' })}
             editor={textEditor ?? undefined}
-            rawStringContent={statText}
+            rawStringContent={charParamText}
             small
           />
         </div>
 
-        <Atitle className="adminEditStat__intl" level={2}>
-          {t('adminEditStat.i18n', { ns: 'pages' })}
+        <Atitle className="adminEditCharParam__intl" level={2}>
+          {t('adminEditCharParam.i18n', { ns: 'pages' })}
         </Atitle>
-        <Ap className="adminEditStat__intl-info">{t('adminEditStat.i18nInfo', { ns: 'pages' })}</Ap>
-        <div className="adminEditStat__basics">
+        <Ap className="adminEditCharParam__intl-info">
+          {t('adminEditCharParam.i18nInfo', { ns: 'pages' })}
+        </Ap>
+        <div className="adminEditCharParam__basics">
           <Input
             control={control}
             inputName="nameFr"
             type="text"
-            label={`${t('nameStat.label', { ns: 'fields' })} (FR)`}
-            className="adminEditStat__basics__name"
+            label={`${t('nameCharParam.label', { ns: 'fields' })} (FR)`}
+            className="adminEditCharParam__basics__name"
           />
           <Input
             control={control}
             inputName="shortFr"
             type="text"
-            label={`${t('nameStatShort.label', { ns: 'fields' })} (FR)`}
-            className="adminNewStat__basics__name"
+            label={`${t('nameCharParamShort.label', { ns: 'fields' })} (FR)`}
+            className="adminNewCharParam__basics__name"
           />
         </div>
-        <div className="adminEditStat__details">
+        <div className="adminEditCharParam__details">
           <RichTextElement
-            label={`${t('statText.title', { ns: 'fields' })} (FR)`}
+            label={`${t('charParamText.title', { ns: 'fields' })} (FR)`}
             editor={textFrEditor ?? undefined}
-            rawStringContent={statTextFr}
+            rawStringContent={charParamTextFr}
             small
           />
         </div>
-        <Button type="submit">{t('adminEditStat.button', { ns: 'pages' })}</Button>
+        <Button type="submit">{t('adminEditCharParam.button', { ns: 'pages' })}</Button>
       </form>
     </div>
   );
 };
 
-export default AdminEditStat;
+export default AdminEditCharParam;

@@ -1,0 +1,38 @@
+.adminNewCharParam {
+  margin: 0 auto;
+  max-width: 1200px;
+  padding-top: 10vh;
+  width: 100%;
+
+  &__content {
+    margin-bottom: 10vh;
+  }
+
+  &__basics {
+    display: flex;
+    flex-direction: row;
+    gap: 10rem;
+    margin-bottom: 2em;
+
+    &__name {
+      width: 100%;
+    }
+  }
+
+  &__details {
+    margin-bottom: 2rem;
+  }
+
+  &__error {
+    margin-bottom: 2rem;
+  }
+
+  &__intl {
+    margin-bottom: 1rem;
+    margin-top: 6rem;
+  }
+
+  &__intl-info {
+    margin-bottom: 4rem;
+  }
+}

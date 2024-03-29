@@ -128,6 +128,14 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
                   text: t('adminStats.title', { ns: 'pages' }),
                 },
                 {
+                  href: '/admin/skills',
+                  text: t('adminSkills.title', { ns: 'pages' }),
+                },
+                {
+                  href: '/admin/charparams',
+                  text: t('adminCharParams.title', { ns: 'pages' }),
+                },
+                {
                   href: '/admin/dicecomp',
                   text: t('adminTestDiceComp.title', { ns: 'pages' }),
                 },

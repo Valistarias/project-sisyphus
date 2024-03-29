@@ -114,5 +114,16 @@
   },
   "skillSummary": {
     "title": "Skill Details"
+  },
+  "nameCharParam": {
+    "required": "A Character Parameter Name is required",
+    "label": "Character Parameter Name"
+  },
+  "nameCharParamShort": {
+    "required": "A Short Name is required",
+    "label": "Short"
+  },
+  "charParamSummary": {
+    "title": "Character Parameter Details"
   }
 }

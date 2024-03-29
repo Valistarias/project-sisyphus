@@ -300,5 +300,31 @@
       "text": "Are you sure you want to delete {{elt}} ?",
       "confirmCta": "Delete Skill"
     }
+  },
+  "adminCharParams": {
+    "title": "Character Parameters",
+    "list": "List",
+    "editCharParam": "Edit"
+  },
+  "adminNewCharParam": {
+    "title": "New Character Parameter",
+    "i18n": "Internationalization - French",
+    "button": "Create Character Parameter",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successCreate": "Character Parameter successfully created !"
+  },
+  "adminEditCharParam": {
+    "title": "Edit Character Parameter",
+    "delete": "Delete Character Parameter",
+    "i18n": "Internationalization - French",
+    "button": "Update",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successUpdate": "Character Parameter successfully updated !",
+    "successDelete": "Character Parameter successfully deleted !",
+    "confirmDeletion": {
+      "title": "Character Parameter Deletion",
+      "text": "Are you sure you want to delete {{elt}} ?",
+      "confirmCta": "Delete Character Parameter"
+    }
   }
 }

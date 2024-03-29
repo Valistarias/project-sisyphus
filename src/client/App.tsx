@@ -5,8 +5,10 @@ import { Outlet, RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { useGlobalVars } from './providers';
 
 import {
+  AdminCharParamsPage,
   AdminCyberFramesPage,
   AdminEditChapterPage,
+  AdminEditCharParamPage,
   AdminEditCyberFramePage,
   AdminEditNotionPage,
   AdminEditPage,
@@ -14,6 +16,7 @@ import {
   AdminEditSkillPage,
   AdminEditStatPage,
   AdminNewChapterPage,
+  AdminNewCharParamPage,
   AdminNewCyberFramePage,
   AdminNewNotionPage,
   AdminNewPage,
@@ -214,6 +217,18 @@ const App: FC = () => {
             {
               path: '/admin/skill/:id',
               element: <AdminEditSkillPage />,
+            },
+            {
+              path: '/admin/charparams',
+              element: <AdminCharParamsPage />,
+            },
+            {
+              path: '/admin/charparam/new',
+              element: <AdminNewCharParamPage />,
+            },
+            {
+              path: '/admin/charparam/:id',
+              element: <AdminEditCharParamPage />,
             },
             // All
             {
