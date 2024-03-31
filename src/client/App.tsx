@@ -9,6 +9,7 @@ import {
   AdminCyberFramesPage,
   AdminEditChapterPage,
   AdminEditCharParamPage,
+  AdminEditCyberFrameBranchPage,
   AdminEditCyberFramePage,
   AdminEditNotionPage,
   AdminEditPage,
@@ -234,6 +235,10 @@ const App: FC = () => {
             {
               path: '/admin/cyberframebranch/new',
               element: <AdminNewCyberFrameBranchPage />,
+            },
+            {
+              path: '/admin/cyberframebranch/:id',
+              element: <AdminEditCyberFrameBranchPage />,
             },
             // All
             {
