@@ -2,7 +2,14 @@ import { type Router } from 'express';
 
 import { adminNeeded, verifyToken } from '../../middlewares';
 
-import { create, deleteSkillBranch, findAll, findSingle, update } from './controller';
+import {
+  create,
+  deleteSkillBranch,
+  findAll,
+  findAllBySkill,
+  findSingle,
+  update,
+} from './controller';
 
 export default (app: Router): void => {
   app.use((req, res, next) => {
@@ -11,6 +18,8 @@ export default (app: Router): void => {
   });
 
   app.get('/skillbranches/', [verifyToken], findAll);
+
+  app.get('/skillbranches/byskill', [verifyToken], findAllBySkill);
 
   app.get('/skillbranches/single', [verifyToken], findSingle);
 

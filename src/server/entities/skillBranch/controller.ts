@@ -24,6 +24,22 @@ const findSkillBranches = async (): Promise<HydratedISkillBranch[]> =>
       });
   });
 
+const findSkillBranchesBySkill = async (skillId: string): Promise<HydratedISkillBranch[]> =>
+  await new Promise((resolve, reject) => {
+    SkillBranch.find({ skill: skillId })
+      .populate<{ skill: ISkill }>('skill')
+      .then(async (res) => {
+        if (res === undefined || res === null) {
+          reject(gemNotFound('SkillBranches'));
+        } else {
+          resolve(res as HydratedISkillBranch[]);
+        }
+      })
+      .catch(async (err) => {
+        reject(err);
+      });
+  });
+
 const findSkillBranchById = async (id: string): Promise<HydratedISkillBranch> =>
   await new Promise((resolve, reject) => {
     SkillBranch.findById(id)
@@ -187,4 +203,35 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteSkillBranch, findAll, findSingle, findSkillBranchById, update };
+const findAllBySkill = (req: Request, res: Response): void => {
+  const { skillId } = req.query;
+  if (skillId === undefined || typeof skillId !== 'string') {
+    res.status(400).send(gemInvalidField('Skill ID'));
+    return;
+  }
+  findSkillBranchesBySkill(skillId)
+    .then((skillBranches) => {
+      const curatedSkillBranches: CuratedISkillBranch[] = [];
+
+      skillBranches.forEach((skillBranch) => {
+        curatedSkillBranches.push({
+          skillBranch,
+          i18n: curateSkillBranch(skillBranch),
+        });
+      });
+
+      res.send(curatedSkillBranches);
+    })
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+};
+
+export {
+  create,
+  deleteSkillBranch,
+  findAll,
+  findAllBySkill,
+  findSingle,
+  findSkillBranchById,
+  findSkillBranchesBySkill,
+  update,
+};

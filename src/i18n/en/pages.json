@@ -289,7 +289,7 @@
     "successCreate": "Skill successfully created !"
   },
   "adminEditSkill": {
-    "title": "Edit Skill",
+    "branches": "Skill Specialisations",
     "delete": "Delete Skill",
     "i18n": "Internationalization - French",
     "button": "Update",
@@ -347,6 +347,27 @@
       "title": "CyberFrame Branch Deletion",
       "text": "Are you sure you want to delete {{elt}} ?",
       "confirmCta": "Delete CyberFrame Branch"
+    }
+  },
+  "adminNewSkillBranch": {
+    "title": "New Skill Branch",
+    "i18n": "Internationalization - French",
+    "button": "Create Skill Branch",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successCreate": "Skill Branch successfully created !"
+  },
+  "adminEditSkillBranch": {
+    "title": "Edit Skill Branch",
+    "delete": "Delete Skill Branch",
+    "i18n": "Internationalization - French",
+    "button": "Update",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successUpdate": "Skill Branch successfully updated !",
+    "successDelete": "Skill Branch successfully deleted !",
+    "confirmDeletion": {
+      "title": "Skill Branch Deletion",
+      "text": "Are you sure you want to delete {{elt}} ?",
+      "confirmCta": "Delete Skill Branch"
     }
   }
 }

@@ -9,6 +9,7 @@ import AdminEditNotionPage from './adminEditNotion';
 import AdminEditPage from './adminEditPage';
 import AdminEditRuleBookPage from './adminEditRuleBook';
 import AdminEditSkillPage from './adminEditSkill';
+import AdminEditSkillBranchPage from './adminEditSkillBranch';
 import AdminEditStatPage from './adminEditStat';
 import AdminNewChapterPage from './adminNewChapter';
 import AdminNewCharParamPage from './adminNewCharParam';
@@ -18,6 +19,7 @@ import AdminNewNotionPage from './adminNewNotion';
 import AdminNewPage from './adminNewPage';
 import AdminNewRuleBookPage from './adminNewRuleBook';
 import AdminNewSkillPage from './adminNewSkill';
+import AdminNewSkillBranchPage from './adminNewSkillBranch';
 import AdminNewStatPage from './adminNewStat';
 import AdminRuleBooksPage from './adminRuleBooks';
 import AdminSkillsPage from './adminSkills';
@@ -51,6 +53,7 @@ export {
   AdminEditNotionPage,
   AdminEditPage,
   AdminEditRuleBookPage,
+  AdminEditSkillBranchPage,
   AdminEditSkillPage,
   AdminEditStatPage,
   AdminNewChapterPage,
@@ -60,6 +63,7 @@ export {
   AdminNewNotionPage,
   AdminNewPage,
   AdminNewRuleBookPage,
+  AdminNewSkillBranchPage,
   AdminNewSkillPage,
   AdminNewStatPage,
   AdminPage,

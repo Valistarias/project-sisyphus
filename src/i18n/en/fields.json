@@ -130,7 +130,11 @@
     "required": "A CyberFrame Branch Name is required",
     "label": "CyberFrame Branch Name"
   },
-  "cyberFrameBranchSummary": {
-    "title": "CyberFrame Branch Details"
+  "skillBranchSummary": {
+    "title": "Skill Branch Details"
+  },
+  "nameSkillBranch": {
+    "required": "A skill Branch Name is required",
+    "label": "skill Branch Name"
   }
 }

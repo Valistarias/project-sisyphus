@@ -8,10 +8,12 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { useApi, useConfirmMessage, useSystemAlerts } from '../../providers';
 
-import { Aerror, Ap, Atitle } from '../../atoms';
+import { Aerror, Ali, Ap, Atitle, Aul } from '../../atoms';
 import { Button, Input, SmartSelect, type ISingleValueSelect } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
-import { type ICuratedSkill, type ICuratedStat } from '../../types';
+import { type ICuratedSkill, type ICuratedSkillBranch, type ICuratedStat } from '../../types';
+
+import { classTrim } from '../../utils';
 
 import './adminEditSkill.scss';
 
@@ -43,6 +45,8 @@ const AdminEditSkill: FC = () => {
   const [skillText, setSkillText] = useState('');
   const [skillTextFr, setSkillTextFr] = useState('');
 
+  const [skillBranches, setSkillBranches] = useState<ICuratedSkillBranch[] | null>(null);
+
   const textEditor = useEditor({
     extensions: completeRichTextElementExtentions,
   });
@@ -50,6 +54,29 @@ const AdminEditSkill: FC = () => {
   const textFrEditor = useEditor({
     extensions: completeRichTextElementExtentions,
   });
+
+  const skillBranchesList = useMemo(() => {
+    if (skillBranches === null || skillBranches.length === 0) {
+      return null;
+    }
+    return (
+      <Aul className="adminEditSkill__skillbranch-list" noPoints>
+        {skillBranches.map(({ skillBranch }) => (
+          <Ali
+            className={classTrim(`
+              adminEditSkill__skillbranch-list__elt
+            `)}
+            key={skillBranch._id}
+          >
+            <Atitle level={3}>{skillBranch.title}</Atitle>
+            <Button href={`/admin/skillbranch/${skillBranch._id}`}>
+              {t('adminSkills.editSkill', { ns: 'pages' })}
+            </Button>
+          </Ali>
+        ))}
+      </Aul>
+    );
+  }, [skillBranches, t]);
 
   const createDefaultData = useCallback(
     (skillData: ICuratedSkill | null, stats: ISingleValueSelect[]) => {
@@ -268,6 +295,22 @@ const AdminEditSkill: FC = () => {
             ),
           });
         });
+      api.skillBranches
+        .getAllBySkill({ skillId: id })
+        .then((curatedSkillBranches: ICuratedSkillBranch[]) => {
+          setSkillBranches(curatedSkillBranches ?? []);
+        })
+        .catch(() => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert key={newId} id={newId} timer={5}>
+                <Ap>{t('serverErrors.CYPU-301')}</Ap>
+              </Alert>
+            ),
+          });
+        });
     }
   }, [api, createAlert, getNewId, id, t]);
 
@@ -296,11 +339,19 @@ const AdminEditSkill: FC = () => {
     <div className="adminEditSkill">
       <form onSubmit={handleSubmit(onSaveSkill)} noValidate className="adminEditSkill__content">
         <div className="adminEditSkill__head">
-          <Atitle level={1}>{t('adminEditSkill.title', { ns: 'pages' })}</Atitle>
+          <Atitle level={1}>{skillData?.skill.title}</Atitle>
           <Button onClick={onAskDelete} color="error">
             {t('adminEditSkill.delete', { ns: 'pages' })}
           </Button>
         </div>
+        <div className="adminEditSkill__branches">
+          <Atitle level={2}>{t('adminEditSkill.branches', { ns: 'pages' })}</Atitle>
+          <div className="adminEditSkill__branches__list">{skillBranchesList}</div>
+          <Button href={`/admin/skillbranch/new?skillId=${id}`}>
+            {t('adminNewSkillBranch.title', { ns: 'pages' })}
+          </Button>
+        </div>
+        <Atitle level={2}>{t('adminEditSkill.edit', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror className="adminEditSkill__error">{errors.root.serverError.message}</Aerror>
         ) : null}

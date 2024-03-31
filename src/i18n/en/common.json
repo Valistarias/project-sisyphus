@@ -30,6 +30,9 @@
     "cyberFrame": {
       "name": "cyber frame"
     },
+    "skill": {
+      "name": "skill"
+    },
     "general": {
       "you": "You",
       "gm": "Game Master",
