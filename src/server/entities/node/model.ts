@@ -51,7 +51,6 @@ interface HydratedINode
     | 'skillBonuses'
     | 'statBonuses'
     | 'charParamBonuses'
-    | 'overrides'
   > {
   skillBranch: ISkillBranch;
   cyberFrameBranch: ICyberFrameBranch;
@@ -60,7 +59,6 @@ interface HydratedINode
   skillBonuses: ISkillBonus[];
   statBonuses: IStatBonus[];
   charParamBonuses: ICharParamBonus[];
-  overrides: INode[];
 }
 
 const effectSchema = new Schema<INode>({

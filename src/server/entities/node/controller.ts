@@ -38,6 +38,38 @@ const findNodes = async (): Promise<HydratedINode[]> =>
       });
   });
 
+const findNodesByBranch = async ({
+  cyberFrameBranchId,
+  skillBranchId,
+}: {
+  cyberFrameBranchId?: string;
+  skillBranchId?: string;
+}): Promise<HydratedINode[]> =>
+  await new Promise((resolve, reject) => {
+    Node.find(
+      cyberFrameBranchId !== undefined
+        ? { cyberFrameBranch: cyberFrameBranchId }
+        : { skillBranch: skillBranchId }
+    )
+      .populate<{ skillBranch: ISkillBranch }>('skillBranch')
+      .populate<{ cyberFrameBranch: ICyberFrameBranch }>('cyberFrameBranch')
+      .populate<{ effects: IEffect[] }>('effects')
+      .populate<{ actions: IAction[] }>('actions')
+      .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
+      .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
+      .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
+      .then(async (res) => {
+        if (res === undefined || res === null) {
+          reject(gemNotFound('Nodes'));
+        } else {
+          resolve(res as HydratedINode[]);
+        }
+      })
+      .catch(async (err: Error) => {
+        reject(err);
+      });
+  });
+
 const findNodeById = async (id: string): Promise<HydratedINode> =>
   await new Promise((resolve, reject) => {
     Node.findById(id)
@@ -277,4 +309,29 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteNode, findAll, findNodeById, findSingle, update };
+const findAllByBranch = (req: Request, res: Response): void => {
+  const { cyberFrameBranchId, skillBranchId } = req.query as {
+    cyberFrameBranchId?: string;
+    skillBranchId?: string;
+  };
+  if (cyberFrameBranchId === undefined && skillBranchId === undefined) {
+    res.status(400).send(gemInvalidField('ID'));
+    return;
+  }
+  findNodesByBranch({ cyberFrameBranchId, skillBranchId })
+    .then((nodes) => {
+      const curatedCyberFrameBranches: CuratedINode[] = [];
+
+      nodes.forEach((node) => {
+        curatedCyberFrameBranches.push({
+          node,
+          i18n: curateNode(node),
+        });
+      });
+
+      res.send(curatedCyberFrameBranches);
+    })
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+};
+
+export { create, deleteNode, findAll, findAllByBranch, findNodeById, findSingle, update };
