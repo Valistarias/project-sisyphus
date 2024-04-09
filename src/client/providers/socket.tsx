@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState, type FC } from 'react';
+import React, { useContext, useEffect, useMemo, useState, type FC, type ReactNode } from 'react';
 
 import { io, type Socket } from 'socket.io-client';
 
@@ -13,7 +13,7 @@ interface ISocketContext {
 
 interface SocketProviderProps {
   /** The childrens of the Providers element */
-  children: React.JSX.Element;
+  children: ReactNode;
 }
 
 const SocketContext = React.createContext<ISocketContext | null>(null);

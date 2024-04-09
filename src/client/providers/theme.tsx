@@ -1,4 +1,4 @@
-import React, { type FC, useState, useMemo, useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useMemo, useState, type FC, type ReactNode } from 'react';
 
 import { useGlobalVars } from './globalVars';
 
@@ -9,7 +9,7 @@ interface IThemeContext {
 
 interface ThemeProviderProps {
   /** The childrens of the Providers element */
-  children: React.JSX.Element;
+  children: ReactNode;
 }
 
 const ThemeContext = React.createContext<IThemeContext | null>(null);

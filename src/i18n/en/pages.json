@@ -32,7 +32,7 @@
     "successSent": "An email has been sent at {{mail}} for verifying your account. Check your inbox."
   },
   "admin": {
-    "title": "Administration"
+    "title": "Admin"
   },
   "adminRuleBooks": {
     "title": "Rulebooks",

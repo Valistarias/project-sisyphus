@@ -1,4 +1,12 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FC,
+  type ReactNode,
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -14,7 +22,7 @@ interface IAlert {
   /** The ID used on the alert provider */
   id: number;
   /** The content of the alert */
-  children: React.JSX.Element;
+  children: ReactNode;
   /** If the timer is provided, the alert will close automatically after the timer (in seconds) */
   timer?: number;
   /** Is the alert self closable */

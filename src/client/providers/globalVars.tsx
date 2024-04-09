@@ -6,6 +6,7 @@ import React, {
   useRef,
   useState,
   type FC,
+  type ReactNode,
 } from 'react';
 
 import { useTranslation } from 'react-i18next';
@@ -33,7 +34,7 @@ interface IGlobalVarsContext {
 
 interface GlobalVarsProviderProps {
   /** The childrens of the Providers element */
-  children: React.JSX.Element;
+  children: ReactNode;
 }
 
 const GlobalVarsContext = React.createContext<IGlobalVarsContext | null>(null);

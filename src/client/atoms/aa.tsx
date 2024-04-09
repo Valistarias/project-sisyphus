@@ -1,4 +1,4 @@
-import React, { type FC } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 import { Link } from 'react-router-dom';
 
@@ -16,7 +16,7 @@ interface IAA extends IQuarkProps {
   /** If the target is different to this page */
   target?: string;
   /** The childrens of the P element */
-  children: React.JSX.Element | string | string[];
+  children: ReactNode;
 }
 
 const AA: FC<IAA> = ({ className, children, href, target, onClick }) => (

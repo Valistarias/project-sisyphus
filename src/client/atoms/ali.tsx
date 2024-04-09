@@ -1,4 +1,4 @@
-import React, { type FC } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 import { Quark, type IQuarkProps } from '../quark';
 
@@ -16,7 +16,7 @@ import './ali.scss';
 
 interface IAli extends IQuarkProps {
   /** The childrens of the LI element */
-  children: React.JSX.Element | React.JSX.Element[] | Array<React.JSX.Element | null>;
+  children: ReactNode;
   /** The innerRef, if there is any */
   innerRef?: (element: HTMLElement | null) => void;
   /** Used for Drag */

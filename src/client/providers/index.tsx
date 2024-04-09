@@ -1,4 +1,4 @@
-import React, { type FC } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 import { ApiProvider, useApi } from './api';
 import { ConfirmMessageProvider, useConfirmMessage } from './confirmMessage';
@@ -11,7 +11,7 @@ import { ThemeProvider, useTheme } from './theme';
 
 interface ProviderProps {
   /** The childrens of the Providers element */
-  children: React.JSX.Element;
+  children: ReactNode;
 }
 
 const Providers: FC<ProviderProps> = ({ children }) => (

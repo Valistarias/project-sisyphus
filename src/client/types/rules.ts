@@ -241,88 +241,91 @@ export interface ICuratedNode {
   node: INode;
 }
 
-export type typeNodeIcons =
-  | 'artnet'
-  | 'adn'
-  | 'animalhandl'
-  | 'arts'
-  | 'bow'
-  | 'brain'
-  | 'build'
-  | 'bullets'
-  | 'charm'
-  | 'connected'
-  | 'cross'
-  | 'deceit'
-  | 'default'
-  | 'endu'
-  | 'energy'
-  | 'energyhammer'
-  | 'energyrifle'
-  | 'energysword'
-  | 'engine'
-  | 'expertise'
-  | 'explosion'
-  | 'fight'
-  | 'finesse'
-  | 'firearm'
-  | 'flask'
-  | 'formation'
-  | 'gatling'
-  | 'genknow'
-  | 'gravity'
-  | 'grenade'
-  | 'harmonisation'
-  | 'heart'
-  | 'heavyhammer'
-  | 'heavysword'
-  | 'heavyweapons'
-  | 'improvised'
-  | 'insigna'
-  | 'intimidation'
-  | 'jetset'
-  | 'katana'
-  | 'key'
-  | 'knife'
-  | 'lance'
-  | 'languages'
-  | 'leadership'
-  | 'logo'
-  | 'maitrisesoi'
-  | 'martial'
-  | 'medicine'
-  | 'missileweapon'
-  | 'orientation'
-  | 'parkour'
-  | 'perception'
-  | 'persuade'
-  | 'pistol'
-  | 'psych'
-  | 'raisonn'
-  | 'repair'
-  | 'rifle'
-  | 'rocket'
-  | 'run'
-  | 'scroll'
-  | 'hourglass'
-  | 'cog'
-  | 'shield'
-  | 'shotgun'
-  | 'shotgunshells'
-  | 'shuriken'
-  | 'smg'
-  | 'sniper'
-  | 'sof'
-  | 'soh'
-  | 'spark'
-  | 'spider'
-  | 'star'
-  | 'stealth'
-  | 'survival'
-  | 'swim'
-  | 'sword'
-  | 'syringe'
-  | 'tactic'
-  | 'throwable'
-  | 'time'
-  | 'vault';
+export const possibleNodeIcons = [
+  'artnet',
+  'adn',
+  'animalhandl',
+  'arts',
+  'bow',
+  'brain',
+  'build',
+  'bullets',
+  'charm',
+  'connected',
+  'cross',
+  'deceit',
+  'default',
+  'endu',
+  'energy',
+  'energyhammer',
+  'energyrifle',
+  'energysword',
+  'engine',
+  'expertise',
+  'explosion',
+  'fight',
+  'finesse',
+  'firearm',
+  'flask',
+  'formation',
+  'gatling',
+  'genknow',
+  'gravity',
+  'grenade',
+  'harmonisation',
+  'heart',
+  'heavyhammer',
+  'heavysword',
+  'heavyweapons',
+  'improvised',
+  'insigna',
+  'intimidation',
+  'jetset',
+  'katana',
+  'key',
+  'knife',
+  'lance',
+  'languages',
+  'leadership',
+  'logo',
+  'maitrisesoi',
+  'martial',
+  'medicine',
+  'missileweapon',
+  'orientation',
+  'parkour',
+  'perception',
+  'persuade',
+  'pistol',
+  'psych',
+  'raisonn',
+  'repair',
+  'rifle',
+  'rocket',
+  'run',
+  'scroll',
+  'hourglass',
+  'cog',
+  'shield',
+  'shotgun',
+  'shotgunshells',
+  'shuriken',
+  'smg',
+  'sniper',
+  'sof',
+  'soh',
+  'spark',
+  'spider',
+  'star',
+  'stealth',
+  'survival',
+  'swim',
+  'sword',
+  'syringe',
+  'tactic',
+  'throwable',
+  'time',
+  'vault',
+] as const;
+
+export type TypeNodeIcons = (typeof possibleNodeIcons)[number];

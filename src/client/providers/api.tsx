@@ -1,4 +1,4 @@
-import React, { useMemo, useContext, type FC } from 'react';
+import React, { useContext, useMemo, type FC, type ReactNode } from 'react';
 
 import Api from '../api';
 
@@ -9,7 +9,7 @@ interface IApiContext {
 
 interface IApiProvider {
   /** The childrens of the Providers element */
-  children: React.JSX.Element;
+  children: ReactNode;
 }
 
 const ApiContext = React.createContext<IApiContext | undefined>(undefined);

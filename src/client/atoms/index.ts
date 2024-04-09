@@ -1,4 +1,5 @@
 import Aa from './aa';
+import { Abutton, type IAButton } from './abutton';
 import Aerror from './aerror';
 import { Aicon, type typeIcons } from './aicon';
 import Aimg from './aimg';
@@ -17,6 +18,7 @@ import { Avideo } from './avideo';
 
 export {
   Aa,
+  Abutton,
   Aerror,
   Aicon,
   Aimg,
@@ -32,5 +34,6 @@ export {
   Atr,
   Aul,
   Avideo,
+  type IAButton,
   type typeIcons,
 };

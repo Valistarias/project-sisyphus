@@ -1,6 +1,6 @@
 .anodeicon {
   font-family: var(--node-icon-font);
-  font-size: 4rem;
+
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-style: normal;
@@ -11,18 +11,21 @@
   text-transform: none;
 
   &--large {
-    // height: 4.5rem;
-    // width: 4.5rem;
+    font-size: 5rem;
+    height: 5rem;
+    width: 5rem;
   }
 
   &--medium {
-    // height: 2.5rem;
-    // width: 2.5rem;
+    font-size: 4rem;
+    height: 4rem;
+    width: 4rem;
   }
 
   &--small {
-    // height: 1.5rem;
-    // width: 1.5rem;
+    font-size: 3rem;
+    height: 3rem;
+    width: 3rem;
   }
 
   &--artnet::before {

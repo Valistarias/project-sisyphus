@@ -2,36 +2,25 @@ import React, { type FC } from 'react';
 
 import { useNavigate, type NavigateFunction } from 'react-router-dom';
 
-import { Aicon, type typeIcons } from '../atoms';
-import { Quark, type IQuarkProps } from '../quark';
+import { Abutton, Aicon, type IAButton, type typeIcons } from '../atoms';
 
 import { classTrim } from '../utils';
 
 import './button.scss';
 
-interface IButton extends IQuarkProps {
-  /** The type of the Button element */
-  type?: 'button' | 'submit';
+interface IButton extends IAButton {
   /** The theme of the button */
   theme?: 'solid' | 'afterglow' | 'text-only' | 'bland';
   /** The main color of the button */
   color?: 'primary' | 'secondary' | 'tertiary' | 'error';
   /** The size of the button */
   size?: 'xlarge' | 'large' | 'medium' | 'small';
-  /** The text inside the button */
-  children?: React.JSX.Element | string | string[] | Array<string | React.JSX.Element>;
   /** The icon (if any) of the button */
   icon?: typeIcons;
   /** The redirect (if there is) on a button click */
   href?: string;
-  /** Is the button disabled ? */
-  disabled?: boolean;
   /** Is the button activated by any means ? */
   active?: boolean;
-  /** When the button is left clicked */
-  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
-  /** When the button is right clicked */
-  onContextMenu?: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
 const Button: FC<IButton> = ({
@@ -54,7 +43,7 @@ const Button: FC<IButton> = ({
   }
 
   return (
-    <Quark
+    <Abutton
       quarkType="button"
       className={classTrim(`
         button
@@ -82,7 +71,7 @@ const Button: FC<IButton> = ({
     >
       {children !== undefined ? <span className="button__content">{children}</span> : null}
       {icon !== undefined ? <Aicon className="button__icon" type={icon} /> : null}
-    </Quark>
+    </Abutton>
   );
 };
 

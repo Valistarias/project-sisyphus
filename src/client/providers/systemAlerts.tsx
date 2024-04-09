@@ -1,4 +1,12 @@
-import React, { type FC, useState, useMemo, useContext, useRef, useCallback } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+  type FC,
+  type ReactNode,
+} from 'react';
 
 import './systemAlerts.scss';
 
@@ -20,7 +28,7 @@ interface ISystemAlertsContext {
 
 interface SystemAlertsProviderProps {
   /** The childrens of the Providers element */
-  children: React.JSX.Element;
+  children: ReactNode;
 }
 
 const SystemAlertsContext = React.createContext<ISystemAlertsContext | null>(null);

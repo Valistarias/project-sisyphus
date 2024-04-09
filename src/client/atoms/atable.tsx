@@ -1,4 +1,4 @@
-import React, { type FC } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 import { Quark, type IQuarkProps } from '../quark';
 
@@ -10,7 +10,7 @@ interface IAtable extends IQuarkProps {
   /** The class of the Table element */
   className?: string;
   /** The childrens of the Table element */
-  children: React.JSX.Element;
+  children: ReactNode;
 }
 
 const ATable: FC<IAtable> = ({ className, children }) => (

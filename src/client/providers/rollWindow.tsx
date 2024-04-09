@@ -6,6 +6,7 @@ import React, {
   useRef,
   useState,
   type FC,
+  type ReactNode,
 } from 'react';
 
 import { useTranslation } from 'react-i18next';
@@ -28,7 +29,7 @@ interface IRollWindowContext {
 
 interface RollWindowProviderProps {
   /** The childrens of the Providers element */
-  children: React.JSX.Element;
+  children: ReactNode;
 }
 
 interface DiceData {

@@ -1,4 +1,4 @@
-import React, { type FC } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 import { Quark, type IQuarkProps } from '../quark';
 
@@ -8,7 +8,7 @@ import './atd.scss';
 
 interface IAtd extends IQuarkProps {
   /** The childrens of the Table Cell element */
-  children: React.JSX.Element;
+  children: ReactNode;
 }
 
 const ATd: FC<IAtd> = ({ className, children }) => (

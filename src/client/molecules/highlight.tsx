@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState, type FC } from 'react';
+import React, { useCallback, useMemo, useRef, useState, type FC, type ReactNode } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import { useTranslation } from 'react-i18next';
@@ -18,7 +18,7 @@ interface IHighlight {
   /** The type of element to highlight */
   type: string;
   /** The children element to be displayed */
-  children: React.JSX.Element | string;
+  children: ReactNode;
 }
 
 const Highlight: FC<IHighlight> = ({ id, type, children }) => {

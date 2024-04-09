@@ -1,20 +1,21 @@
 import React, { useMemo, type FC } from 'react';
 
 import { Quark, type IQuarkProps } from '../quark';
-import { type typeNodeIcons } from '../types/rules';
+import { type TypeNodeIcons } from '../types/rules';
 
 import { classTrim } from '../utils';
 
 import './anodeIcon.scss';
 
 interface IANodeIcon extends IQuarkProps {
-  /** The size of the icon */
+  /** The size of the node icon */
   size?: 'small' | 'medium' | 'large';
-  /** The type of icon */
-  type: typeNodeIcons;
-  /** When the icon is clicked */
-  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
+  /** The type of node icon */
+  type: TypeNodeIcons;
 }
+
+// When adding a new icon, dont forget to add it in the scss file, as before content
+// and in the type TypeNodeIcons
 
 const ANodeIcon: FC<IANodeIcon> = ({ type, size = 'medium', className, onClick }) => {
   const classes = useMemo<string>(

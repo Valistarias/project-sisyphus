@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState, type FC } from 'react';
+import React, { useContext, useMemo, useState, type FC, type ReactNode } from 'react';
 
 import i18next from 'i18next';
 import { I18nextProvider, initReactI18next } from 'react-i18next';
@@ -19,7 +19,7 @@ interface ILangContext {
 
 interface LangProviderProps {
   /** The childrens of the Providers element */
-  children: React.JSX.Element;
+  children: ReactNode;
 }
 
 void i18next.use(initReactI18next).init({

@@ -8,7 +8,7 @@ import { useGlobalVars } from '../../providers';
 
 import tvBackground from '../../assets/imgs/tvbg.gif';
 import { AnodeIcon, Ap, Atitle, Avideo } from '../../atoms';
-import { Button } from '../../molecules';
+import { Button, NodeIconSelect } from '../../molecules';
 
 import { classTrim } from '../../utils';
 
@@ -54,6 +54,7 @@ const Home: FC = () => {
           </div>
         ) : null}
         <AnodeIcon type="explosion" />
+        <NodeIconSelect />
       </div>
 
       {/* <Button onClick={onAddAlert}>Add alert</Button> */}

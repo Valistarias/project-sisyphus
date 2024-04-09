@@ -1,4 +1,12 @@
-import React, { useCallback, useContext, useEffect, useMemo, useState, type FC } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type FC,
+  type ReactNode,
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -36,7 +44,7 @@ interface IConfirmMessageContext {
 
 interface ConfirmMessageProviderProps {
   /** The childrens of the Providers element */
-  children: React.JSX.Element;
+  children: ReactNode;
 }
 
 const ConfirmMessageContext = React.createContext<IConfirmMessageContext | null>(null);

@@ -1,4 +1,4 @@
-import React, { type FC } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 import { Quark, type IQuarkProps } from '../quark';
 
@@ -8,7 +8,7 @@ import './aerror.scss';
 
 interface IAerror extends IQuarkProps {
   /** The childrens of the P element */
-  children: React.JSX.Element | string | string[];
+  children: ReactNode;
 }
 
 const Aerror: FC<IAerror> = ({ className, children }) => (
