@@ -2,6 +2,10 @@ import { type Request, type Response } from 'express';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  createGeneralForCyberFrameId,
+  deleteCyberFrameBranchesByCyberFrameId,
+} from '../cyberFrameBranch/controller';
 import { type IRuleBook } from '../index';
 
 import { type HydratedICyberFrame } from './model';
@@ -60,7 +64,13 @@ const create = (req: Request, res: Response): void => {
   cyberFrame
     .save()
     .then(() => {
-      res.send(cyberFrame);
+      createGeneralForCyberFrameId(String(cyberFrame._id))
+        .then(() => {
+          res.send(cyberFrame);
+        })
+        .catch((err: Error) => {
+          res.status(500).send(gemServerError(err));
+        });
     })
     .catch((err: Error) => {
       res.status(500).send(gemServerError(err));
@@ -119,9 +129,15 @@ const deleteCyberFrameById = async (id: string): Promise<boolean> =>
       reject(gemInvalidField('CyberFrame ID'));
       return;
     }
-    CyberFrame.findByIdAndDelete(id)
+    deleteCyberFrameBranchesByCyberFrameId(id)
       .then(() => {
-        resolve(true);
+        CyberFrame.findByIdAndDelete(id)
+          .then(() => {
+            resolve(true);
+          })
+          .catch((err: Error) => {
+            reject(gemServerError(err));
+          });
       })
       .catch((err: Error) => {
         reject(gemServerError(err));

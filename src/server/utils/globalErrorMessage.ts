@@ -56,6 +56,11 @@ const gemCreate = (type: string): IGemRes => ({
   message: `Some error occurred while creating the ${type}`,
   code: 'CYPU-201',
 });
+// Error 403
+const gemForbidden = (): IGemRes => ({
+  message: 'You cant use this request',
+  code: 'CYPU-203',
+});
 // Error 404
 const gemNotFound = (type: string): IGemRes => ({
   message: `${type} not  found`,
@@ -71,19 +76,16 @@ const gemServerError = (err: Error): IGemRes => ({
 });
 
 export {
-  // Global Errors
-  gemNotAllowed,
-  gemNotAdmin,
-  gemTeaPot,
-  // Form Validation Errors
-  gemEmpty,
-  gemInvalidField,
-  gemUnverifiedUser,
-  gemDuplicate,
-  gemUnauthorized,
-  // Request Errors
   gemCreate,
+  gemDuplicate,
+  gemEmpty,
+  gemForbidden,
+  gemInvalidField,
+  gemNotAdmin,
+  gemNotAllowed,
   gemNotFound,
-  // Server Errors
   gemServerError,
+  gemTeaPot,
+  gemUnauthorized,
+  gemUnverifiedUser,
 };

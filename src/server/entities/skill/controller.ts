@@ -3,6 +3,7 @@ import { type Request, type Response } from 'express';
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { type IStat } from '../index';
+import { createGeneralForSkillId, deleteSkillBranchesBySkillId } from '../skillBranch/controller';
 
 import { type HydratedISkill } from './model';
 
@@ -60,7 +61,13 @@ const create = (req: Request, res: Response): void => {
   skill
     .save()
     .then(() => {
-      res.send(skill);
+      createGeneralForSkillId(String(skill._id))
+        .then(() => {
+          res.send(skill);
+        })
+        .catch((err: Error) => {
+          res.status(500).send(gemServerError(err));
+        });
     })
     .catch((err: Error) => {
       res.status(500).send(gemServerError(err));
@@ -119,9 +126,15 @@ const deleteSkillById = async (id: string): Promise<boolean> =>
       reject(gemInvalidField('Skill ID'));
       return;
     }
-    Skill.findByIdAndDelete(id)
+    deleteSkillBranchesBySkillId(id)
       .then(() => {
-        resolve(true);
+        Skill.findByIdAndDelete(id)
+          .then(() => {
+            resolve(true);
+          })
+          .catch((err: Error) => {
+            reject(gemServerError(err));
+          });
       })
       .catch((err: Error) => {
         reject(gemServerError(err));

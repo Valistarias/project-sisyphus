@@ -246,7 +246,7 @@
     "successDelete": "CyberFrame successfully deleted !",
     "confirmDeletion": {
       "title": "CyberFrame Deletion",
-      "text": "Are you sure you want to delete {{elt}} ?",
+      "text": "Are you sure you want to delete {{elt}} ? All the related branches will be lost !",
       "confirmCta": "Delete CyberFrame"
     }
   },
@@ -290,6 +290,7 @@
   },
   "adminEditSkill": {
     "branches": "Skill Specialisations",
+    "edit": "Edit Skill",
     "delete": "Delete Skill",
     "i18n": "Internationalization - French",
     "button": "Update",
@@ -298,7 +299,7 @@
     "successDelete": "Skill successfully deleted !",
     "confirmDeletion": {
       "title": "Skill Deletion",
-      "text": "Are you sure you want to delete {{elt}} ?",
+      "text": "Are you sure you want to delete {{elt}} ? All the related branches will be lost !",
       "confirmCta": "Delete Skill"
     }
   },

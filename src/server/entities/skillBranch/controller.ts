@@ -1,7 +1,12 @@
 import { type Request, type Response } from 'express';
 
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemForbidden,
+  gemInvalidField,
+  gemNotFound,
+  gemServerError,
+} from '../../utils/globalErrorMessage';
 import { type ISkill } from '../index';
 
 import { type HydratedISkillBranch } from './model';
@@ -62,6 +67,10 @@ const create = (req: Request, res: Response): void => {
     res.status(400).send(gemInvalidField('SkillBranch'));
     return;
   }
+  if (title === '_general') {
+    res.status(403).send(gemForbidden());
+    return;
+  }
 
   const skillBranch = new SkillBranch({
     title,
@@ -83,14 +92,43 @@ const create = (req: Request, res: Response): void => {
     });
 };
 
+const createGeneralForSkillId = async (id: string): Promise<boolean> =>
+  await new Promise((resolve, reject) => {
+    if (id === undefined) {
+      reject(gemInvalidField('Skill ID'));
+      return;
+    }
+    const skillBranch = new SkillBranch({
+      title: '_general',
+      summary: '',
+      skill: id,
+    });
+    skillBranch
+      .save()
+      .then(() => {
+        resolve(true);
+      })
+      .catch((err: Error) => {
+        reject(gemServerError(err));
+      });
+  });
+
 const update = (req: Request, res: Response): void => {
   const { id, title = null, summary = null, skill = null, i18n } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('SkillBranch ID'));
     return;
   }
+  if (title === '_general') {
+    res.status(403).send(gemForbidden());
+    return;
+  }
   findSkillBranchById(id as string)
     .then((skillBranch) => {
+      if (skillBranch.title === '_general') {
+        res.status(403).send(gemForbidden());
+        return;
+      }
       if (title !== null) {
         skillBranch.title = title;
       }
@@ -132,12 +170,22 @@ const update = (req: Request, res: Response): void => {
 const deleteSkillBranchById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
-      reject(gemInvalidField('SkillBranch ID'));
+      reject(gemInvalidField('Skill ID'));
       return;
     }
-    SkillBranch.findByIdAndDelete(id)
-      .then(() => {
-        resolve(true);
+    findSkillBranchById(id)
+      .then(({ title }) => {
+        if (title === '_general') {
+          reject(gemForbidden());
+        } else {
+          SkillBranch.findByIdAndDelete(id)
+            .then(() => {
+              resolve(true);
+            })
+            .catch((err: Error) => {
+              reject(gemServerError(err));
+            });
+        }
       })
       .catch((err: Error) => {
         reject(gemServerError(err));
@@ -151,9 +199,24 @@ const deleteSkillBranch = (req: Request, res: Response): void => {
       res.send({ message: 'Skill branch was deleted successfully!' });
     })
     .catch((err: Error) => {
-      res.status(500).send(gemServerError(err));
+      res.status(500).send(err);
     });
 };
+
+const deleteSkillBranchesBySkillId = async (skillId: string): Promise<boolean> =>
+  await new Promise((resolve, reject) => {
+    if (skillId === undefined) {
+      resolve(true);
+      return;
+    }
+    SkillBranch.deleteMany({ skill: skillId })
+      .then(() => {
+        resolve(true);
+      })
+      .catch((err: Error) => {
+        reject(err);
+      });
+  });
 
 interface CuratedISkillBranch {
   i18n: Record<string, any> | Record<string, unknown>;
@@ -227,7 +290,9 @@ const findAllBySkill = (req: Request, res: Response): void => {
 
 export {
   create,
+  createGeneralForSkillId,
   deleteSkillBranch,
+  deleteSkillBranchesBySkillId,
   findAll,
   findAllBySkill,
   findSingle,

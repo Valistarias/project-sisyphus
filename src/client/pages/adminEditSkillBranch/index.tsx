@@ -183,7 +183,7 @@ const AdminEditSkillBranch: FC = () => {
                     </Alert>
                   ),
                 });
-                navigate('/admin/skills');
+                navigate(`/admin/skill/${skillBranchData?.skillBranch.skill?._id}`);
               })
               .catch(({ response }) => {
                 const { data } = response;
@@ -213,7 +213,7 @@ const AdminEditSkillBranch: FC = () => {
     api,
     setConfirmContent,
     t,
-    skillBranchData?.skillBranch.title,
+    skillBranchData,
     ConfMessageEvent,
     id,
     getNewId,

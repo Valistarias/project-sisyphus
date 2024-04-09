@@ -210,7 +210,7 @@ const AdminEditSkill: FC = () => {
                     </Alert>
                   ),
                 });
-                navigate('/admin/cyberframes');
+                navigate('/admin/skills');
               })
               .catch(({ response }) => {
                 const { data } = response;

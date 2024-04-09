@@ -74,6 +74,7 @@
     "CYPU-105": "You need to log in to do this request",
     "CYPU-201": "Some error occurred while creating the {{field}}",
     "CYPU-202": "{{field}} not found",
+    "CYPU-203": "Forbidden",
     "CYPU-301": "Internal server error"
   }
 }
