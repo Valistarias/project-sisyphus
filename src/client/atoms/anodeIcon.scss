@@ -1,0 +1,363 @@
+.anodeicon {
+  font-family: var(--node-icon-font);
+  font-size: 4rem;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+  line-height: 1;
+  speak: never;
+  text-transform: none;
+
+  &--large {
+    // height: 4.5rem;
+    // width: 4.5rem;
+  }
+
+  &--medium {
+    // height: 2.5rem;
+    // width: 2.5rem;
+  }
+
+  &--small {
+    // height: 1.5rem;
+    // width: 1.5rem;
+  }
+
+  &--artnet::before {
+    content: '\e900';
+  }
+
+  &--adn::before {
+    content: '\e901';
+  }
+
+  &--animalhandl::before {
+    content: '\e902';
+  }
+
+  &--arts::before {
+    content: '\e903';
+  }
+
+  &--bow::before {
+    content: '\e904';
+  }
+
+  &--brain::before {
+    content: '\e905';
+  }
+
+  &--build::before {
+    content: '\e906';
+  }
+
+  &--bullets::before {
+    content: '\e907';
+  }
+
+  &--charm::before {
+    content: '\e908';
+  }
+
+  &--connected::before {
+    content: '\e909';
+  }
+
+  &--cross::before {
+    content: '\e90a';
+  }
+
+  &--deceit::before {
+    content: '\e90b';
+  }
+
+  &--default::before {
+    content: '\e90c';
+  }
+
+  &--endu::before {
+    content: '\e90d';
+  }
+
+  &--energy::before {
+    content: '\e90e';
+  }
+
+  &--energyhammer::before {
+    content: '\e90f';
+  }
+
+  &--energyrifle::before {
+    content: '\e910';
+  }
+
+  &--energysword::before {
+    content: '\e911';
+  }
+
+  &--engine::before {
+    content: '\e912';
+  }
+
+  &--expertise::before {
+    content: '\e913';
+  }
+
+  &--explosion::before {
+    content: '\e914';
+  }
+
+  &--fight::before {
+    content: '\e915';
+  }
+
+  &--finesse::before {
+    content: '\e916';
+  }
+
+  &--firearm::before {
+    content: '\e917';
+  }
+
+  &--flask::before {
+    content: '\e918';
+  }
+
+  &--formation::before {
+    content: '\e919';
+  }
+
+  &--gatling::before {
+    content: '\e91a';
+  }
+
+  &--genknow::before {
+    content: '\e91b';
+  }
+
+  &--gravity::before {
+    content: '\e91c';
+  }
+
+  &--grenade::before {
+    content: '\e91d';
+  }
+
+  &--harmonisation::before {
+    content: '\e91e';
+  }
+
+  &--heart::before {
+    content: '\e91f';
+  }
+
+  &--heavyhammer::before {
+    content: '\e920';
+  }
+
+  &--heavysword::before {
+    content: '\e921';
+  }
+
+  &--heavyweapons::before {
+    content: '\e922';
+  }
+
+  &--improvised::before {
+    content: '\e923';
+  }
+
+  &--insigna::before {
+    content: '\e924';
+  }
+
+  &--intimidation::before {
+    content: '\e925';
+  }
+
+  &--jetset::before {
+    content: '\e926';
+  }
+
+  &--katana::before {
+    content: '\e927';
+  }
+
+  &--key::before {
+    content: '\e928';
+  }
+
+  &--knife::before {
+    content: '\e929';
+  }
+
+  &--lance::before {
+    content: '\e92a';
+  }
+
+  &--languages::before {
+    content: '\e92b';
+  }
+
+  &--leadership::before {
+    content: '\e92c';
+  }
+
+  &--logo::before {
+    content: '\e92d';
+  }
+
+  &--maitrisesoi::before {
+    content: '\e92e';
+  }
+
+  &--martial::before {
+    content: '\e92f';
+  }
+
+  &--medicine::before {
+    content: '\e930';
+  }
+
+  &--missileweapon::before {
+    content: '\e931';
+  }
+
+  &--orientation::before {
+    content: '\e932';
+  }
+
+  &--parkour::before {
+    content: '\e933';
+  }
+
+  &--perception::before {
+    content: '\e934';
+  }
+
+  &--persuade::before {
+    content: '\e935';
+  }
+
+  &--pistol::before {
+    content: '\e936';
+  }
+
+  &--psych::before {
+    content: '\e937';
+  }
+
+  &--raisonn::before {
+    content: '\e938';
+  }
+
+  &--repair::before {
+    content: '\e939';
+  }
+
+  &--rifle::before {
+    content: '\e93a';
+  }
+
+  &--rocket::before {
+    content: '\e93b';
+  }
+
+  &--run::before {
+    content: '\e93c';
+  }
+
+  &--scroll::before {
+    content: '\e93d';
+  }
+
+  &--hourglass::before {
+    content: '\e93e';
+  }
+
+  &--cog::before {
+    content: '\e93f';
+  }
+
+  &--shield::before {
+    content: '\e940';
+  }
+
+  &--shotgun::before {
+    content: '\e941';
+  }
+
+  &--shotgunshells::before {
+    content: '\e942';
+  }
+
+  &--shuriken::before {
+    content: '\e943';
+  }
+
+  &--smg::before {
+    content: '\e944';
+  }
+
+  &--sniper::before {
+    content: '\e945';
+  }
+
+  &--sof::before {
+    content: '\e946';
+  }
+
+  &--soh::before {
+    content: '\e947';
+  }
+
+  &--spark::before {
+    content: '\e948';
+  }
+
+  &--spider::before {
+    content: '\e949';
+  }
+
+  &--star::before {
+    content: '\e94a';
+  }
+
+  &--stealth::before {
+    content: '\e94b';
+  }
+
+  &--survival::before {
+    content: '\e94c';
+  }
+
+  &--swim::before {
+    content: '\e94d';
+  }
+
+  &--sword::before {
+    content: '\e94e';
+  }
+
+  &--syringe::before {
+    content: '\e94f';
+  }
+
+  &--tactic::before {
+    content: '\e950';
+  }
+
+  &--throwable::before {
+    content: '\e951';
+  }
+
+  &--time::before {
+    content: '\e952';
+  }
+
+  &--vault::before {
+    content: '\e953';
+  }
+}

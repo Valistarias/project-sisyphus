@@ -4,6 +4,7 @@ import { Aicon, type typeIcons } from './aicon';
 import Aimg from './aimg';
 import Alabel from './alabel';
 import Ali from './ali';
+import AnodeIcon from './anodeIcon';
 import Ap from './ap';
 import Atable from './atable';
 import Atd from './atd';
@@ -21,6 +22,7 @@ export {
   Aimg,
   Alabel,
   Ali,
+  AnodeIcon,
   Ap,
   Atable,
   Atd,

@@ -1,8 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Chivo+Mono:ital,wght@0,100;0,200;0,500;0,900;1,600&family=Space+Grotesk:wght@300;500;700&display=swap');
 
+@font-face {
+  font-display: block;
+  font-family: 'NodeIcons';
+  font-style: normal;
+  font-weight: normal;
+  src: url('../fonts/nodeIcons.eot');
+  src:
+    url('../fonts/nodeIcons.eot') format('embedded-opentype'),
+    url('../fonts/nodeIcons.ttf') format('truetype'),
+    url('../fonts/nodeIcons.woff') format('woff'),
+    url('../fonts/nodeIcons.svg') format('svg');
+}
+
 :root {
   --main-font: 'Space Grotesk', sans-serif;
   --mono-font: 'Chivo Mono', monospace;
+  --node-icon-font: 'NodeIcons';
 }
 
 .main {
