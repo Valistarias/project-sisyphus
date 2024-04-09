@@ -15,7 +15,7 @@ interface IANodeIcon extends IQuarkProps {
 }
 
 // When adding a new icon, dont forget to add it in the scss file, as before content
-// and in the type TypeNodeIcons
+// AND in the TypeNodeIcons type
 
 const ANodeIcon: FC<IANodeIcon> = ({ type, size = 'medium', className, onClick }) => {
   const classes = useMemo<string>(

@@ -7,8 +7,8 @@ import { useTranslation } from 'react-i18next';
 import { useGlobalVars } from '../../providers';
 
 import tvBackground from '../../assets/imgs/tvbg.gif';
-import { AnodeIcon, Ap, Atitle, Avideo } from '../../atoms';
-import { Button, NodeIconSelect } from '../../molecules';
+import { Ap, Atitle, Avideo } from '../../atoms';
+import { Button } from '../../molecules';
 
 import { classTrim } from '../../utils';
 
@@ -53,8 +53,6 @@ const Home: FC = () => {
             </Button>
           </div>
         ) : null}
-        <AnodeIcon type="explosion" />
-        <NodeIconSelect />
       </div>
 
       {/* <Button onClick={onAddAlert}>Add alert</Button> */}

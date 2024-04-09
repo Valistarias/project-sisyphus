@@ -205,41 +205,6 @@ export interface ICuratedCyberFrameBranch {
 }
 
 // Node ------------------------------------
-export interface INode {
-  /** The ID of the Node */
-  _id: string;
-  /** The title of the Node */
-  title: string;
-  /** The summary of the Node */
-  summary: string;
-  /** Some lore for this node, MTG style */
-  quote?: string;
-  /** The correlated skill branch, id any */
-  skillBranch?: ISkillBranch;
-  /** The correlated cyberFrame branch, id any */
-  cyberFrameBranch?: ICyberFrameBranch;
-  /** The position/rank where the node is located */
-  rank: number;
-  /** The effects related to the node */
-  effects?: IEffect[];
-  /** The actions related to the node */
-  actions?: IAction[];
-  /** The skill bonuses related to the node */
-  skillBonuses?: ISkillBonus[];
-  /** The stat bonuses related to the node */
-  statBonuses?: IStatBonus[];
-  /** The charParam bonuses related to the node */
-  charParamBonuses?: ICharParamBonus[];
-  /** The overriden nodes by this one (to upgrade a previous node) */
-  overrides?: string[];
-  /** When the Node was created */
-  createdAt: string;
-}
-
-export interface ICuratedNode {
-  i18n: InternationalizationType;
-  node: INode;
-}
 
 export const possibleNodeIcons = [
   'artnet',
@@ -329,3 +294,40 @@ export const possibleNodeIcons = [
 ] as const;
 
 export type TypeNodeIcons = (typeof possibleNodeIcons)[number];
+export interface INode {
+  /** The ID of the Node */
+  _id: string;
+  /** The title of the Node */
+  title: string;
+  /** The summary of the Node */
+  summary: string;
+  /** The icon of the Node */
+  icon: TypeNodeIcons;
+  /** Some lore for this node, MTG style */
+  quote?: string;
+  /** The correlated skill branch, id any */
+  skillBranch?: ISkillBranch;
+  /** The correlated cyberFrame branch, id any */
+  cyberFrameBranch?: ICyberFrameBranch;
+  /** The position/rank where the node is located */
+  rank: number;
+  /** The effects related to the node */
+  effects?: IEffect[];
+  /** The actions related to the node */
+  actions?: IAction[];
+  /** The skill bonuses related to the node */
+  skillBonuses?: ISkillBonus[];
+  /** The stat bonuses related to the node */
+  statBonuses?: IStatBonus[];
+  /** The charParam bonuses related to the node */
+  charParamBonuses?: ICharParamBonus[];
+  /** The overriden nodes by this one (to upgrade a previous node) */
+  overrides?: string[];
+  /** When the Node was created */
+  createdAt: string;
+}
+
+export interface ICuratedNode {
+  i18n: InternationalizationType;
+  node: INode;
+}

@@ -1,21 +1,44 @@
-import React, { useState, type FC } from 'react';
+import React, { useCallback, useEffect, useState, type FC } from 'react';
 
-import { Abutton, AnodeIcon } from '../atoms';
+import { Controller } from 'react-hook-form';
+
+import holoBackground from '../assets/imgs/tvbg.gif';
+import { Abutton, Aerror, Aicon, Alabel, AnodeIcon } from '../atoms';
 import { Quark, type IQuarkProps } from '../quark';
-import { type TypeNodeIcons } from '../types/rules';
+import { type IReactHookFormInputs } from '../types';
+import { possibleNodeIcons, type TypeNodeIcons } from '../types/rules';
 
 import { classTrim } from '../utils';
 
 import './nodeIconSelect.scss';
 
-interface INodeIconSelect extends IQuarkProps {}
+interface INodeIconSelect extends IQuarkProps, IReactHookFormInputs {
+  /** The label, if any */
+  label?: string;
+}
 
 const defaultNodeIcon: TypeNodeIcons = 'default';
 
-const NodeIconSelect: FC<INodeIconSelect> = ({ className }) => {
-  const [selected, setSelected] = useState(defaultNodeIcon);
-  const [isOpen, setisOpen] = useState(false);
-  console.log('selected', selected);
+const NodeIconSelect: FC<INodeIconSelect> = ({ className, inputName, rules, control, label }) => {
+  // const [selected, setSelected] = useState<TypeNodeIcons>(defaultNodeIcon);
+  const [isOpen, setOpenMenu] = useState(false);
+
+  const closeMenu = useCallback((e: MouseEvent) => {
+    if (
+      e.target !== null &&
+      !(e.target as Element).classList.contains('nodeiconselect__list__visual')
+    ) {
+      setOpenMenu(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener('click', closeMenu);
+    return () => {
+      document.removeEventListener('click', closeMenu);
+    };
+  }, [closeMenu]);
+
   return (
     <Quark
       quarkType="div"
@@ -25,10 +48,54 @@ const NodeIconSelect: FC<INodeIconSelect> = ({ className }) => {
         ${className ?? ''}
       `)}
     >
-      <Abutton className="nodeiconselect__display">
-        <AnodeIcon type={selected} />
-      </Abutton>
-      <div className="nodeiconselect__list"></div>
+      <Controller
+        control={control}
+        name={inputName}
+        rules={rules}
+        render={({ field: { onChange, value, name }, fieldState: { error } }) => (
+          <>
+            {label !== undefined ? (
+              <Alabel className="nodeiconselect__label" htmlFor={name}>
+                {label}
+              </Alabel>
+            ) : null}
+            <Abutton
+              className="nodeiconselect__display"
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpenMenu((prev) => !prev);
+              }}
+            >
+              <AnodeIcon className="nodeiconselect__display__visual" type={value} />
+              <Aicon className="nodeiconselect__display__arrow" type="arrow" />
+            </Abutton>
+            <div
+              className="nodeiconselect__list"
+              style={{ backgroundImage: `url(${holoBackground})` }}
+            >
+              {possibleNodeIcons.map((possibleNodeIcon) => (
+                <Abutton
+                  key={possibleNodeIcon}
+                  className="nodeiconselect__list__elt"
+                  onClick={(e: React.MouseEvent<HTMLElement>) => {
+                    onChange(possibleNodeIcon);
+                    setOpenMenu(false);
+                  }}
+                >
+                  <AnodeIcon
+                    className="nodeiconselect__list__visual"
+                    size="large"
+                    type={possibleNodeIcon}
+                  />
+                </Abutton>
+              ))}
+            </div>
+            {error?.message !== undefined ? (
+              <Aerror className="nodeiconselect__error">{error.message}</Aerror>
+            ) : null}
+          </>
+        )}
+      />
     </Quark>
   );
 };

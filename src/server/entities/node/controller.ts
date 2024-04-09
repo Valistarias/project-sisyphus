@@ -96,6 +96,7 @@ const create = (req: Request, res: Response): void => {
   const {
     title,
     summary,
+    icon,
     quote,
     i18n = null,
     skillBranch,
@@ -121,6 +122,7 @@ const create = (req: Request, res: Response): void => {
   const node = new Node({
     title,
     summary,
+    icon,
     quote,
     skillBranch,
     cyberFrameBranch,
@@ -152,6 +154,7 @@ const update = (req: Request, res: Response): void => {
     id,
     title = null,
     summary = null,
+    icon = null,
     quote = null,
     i18n,
     skillBranch = null,
@@ -172,6 +175,9 @@ const update = (req: Request, res: Response): void => {
     .then((node) => {
       if (title !== null) {
         node.title = title;
+      }
+      if (icon !== null) {
+        node.icon = icon;
       }
       if (summary !== null) {
         node.summary = summary;

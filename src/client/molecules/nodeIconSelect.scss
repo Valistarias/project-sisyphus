@@ -1,3 +1,85 @@
 .nodeiconselect {
-  width: 100%;
+  position: relative;
+
+  &__label {
+    color: var(--tertiary-80);
+    text-shadow: 0 0 1rem var(--tertiary-00);
+    transition:
+      color 0.2s ease,
+      text-shadow 0.2s ease;
+  }
+
+  &__display {
+    align-items: center;
+    background-color: var(--primary-dark-60);
+    border: 1px solid var(--primary);
+    border-radius: 0.2rem;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    transition:
+      border 0.2s ease,
+      box-shadow 0.2s ease;
+
+    &__arrow {
+      border-left: 0.1rem solid var(--font-color);
+      fill: var(--font-color);
+      height: 2rem;
+      width: 4rem;
+    }
+
+    &__visual {
+      padding: 0.5rem;
+    }
+
+    &:hover {
+      border: 1px solid var(--primary);
+      box-shadow: 0 0 0 0.1rem var(--primary);
+    }
+  }
+
+  &__list {
+    background-blend-mode: overlay;
+    border: 1px solid var(--primary);
+    border-radius: 0.2rem;
+    bottom: -1rem;
+    display: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    height: 30rem;
+    justify-content: space-between;
+    overflow-x: auto;
+    padding: 0.1rem;
+    position: absolute;
+    transform: translateY(100%);
+    width: 48rem;
+
+    &__elt {
+      border: 1px solid var(--primary-00);
+      border-radius: 0.2rem;
+      color: var(--font-color);
+      cursor: pointer;
+      padding: 0.5rem;
+      transition:
+        border 0.2s ease,
+        box-shadow 0.2s ease,
+        color 0.2s ease;
+
+      &:hover {
+        border: 1px solid var(--primary-20);
+        color: var(--primary);
+      }
+    }
+
+    &__visual {
+      pointer-events: none;
+    }
+  }
+
+  &--open {
+    .nodeiconselect__list {
+      display: flex;
+    }
+  }
 }

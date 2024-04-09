@@ -15,6 +15,8 @@ interface INode {
   title: string;
   /** A summary of the node */
   summary: string;
+  /** The icon of the node */
+  icon: string;
   /** A quote or text, MTG style */
   quote?: string;
   /** The internationnal content, as a json, stringified */
@@ -64,6 +66,7 @@ interface HydratedINode
 const effectSchema = new Schema<INode>({
   title: String,
   summary: String,
+  icon: String,
   quote: String,
   i18n: String,
   skillBranch: {

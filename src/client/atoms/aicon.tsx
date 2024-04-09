@@ -1,6 +1,7 @@
 import React, { useMemo, type FC } from 'react';
 
 import AddLogo from '../assets/icons/add.svg?react';
+import ArrowLogo from '../assets/icons/arrow.svg?react';
 import CheckLogo from '../assets/icons/check.svg?react';
 import D10Logo from '../assets/icons/d10.svg?react';
 import D12Logo from '../assets/icons/d12.svg?react';
@@ -21,6 +22,7 @@ import './aicon.scss';
 type typeIcons =
   | 'add'
   | 'edit'
+  | 'arrow'
   | 'check'
   | 'delete'
   | 'discord'
@@ -56,6 +58,8 @@ const Aicon: FC<IAicon> = ({ type, size = 'medium', className, onClick }) => {
     switch (type) {
       case 'add':
         return <Quark quarkType={AddLogo} className={classes} />;
+      case 'arrow':
+        return <Quark quarkType={ArrowLogo} className={classes} />;
       case 'edit':
         return <Quark quarkType={EditLogo} className={classes} />;
       case 'discord':
