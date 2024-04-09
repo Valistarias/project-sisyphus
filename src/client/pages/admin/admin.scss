@@ -1,6 +1,5 @@
+@use '../../assets/scss/index';
+
 .admin {
-  margin: 0 auto;
-  max-width: 1200px;
-  padding-top: 10vh;
-  width: 100%;
+  @include index.basic-page;
 }

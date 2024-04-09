@@ -1,8 +1,7 @@
+@use '../../assets/scss/index';
+
 .adminRuleBooks {
-  margin: 0 auto;
-  max-width: 1200px;
-  padding-top: 10vh;
-  width: 100%;
+  @include index.basic-page;
 
   &__content {
     display: flex;

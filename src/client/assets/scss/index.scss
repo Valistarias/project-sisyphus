@@ -1,8 +1,9 @@
-@import './colors';
-@import './fonts';
-@import './vars';
+/* stylelint-disable selector-max-id */
+@use './colors';
+@use './fonts';
+@use './vars';
+@forward './mixins';
 
-/* stylelint-disable-next-line selector-max-id */
 html,
 body,
 #root,
