@@ -5,10 +5,8 @@ import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/global
 import {
   type IAction,
   type ICharParamBonus,
-  type ICyberFrameBranch,
   type IEffect,
   type ISkillBonus,
-  type ISkillBranch,
   type IStatBonus,
 } from '../index';
 
@@ -19,8 +17,6 @@ const { Node } = db;
 const findNodes = async (): Promise<HydratedINode[]> =>
   await new Promise((resolve, reject) => {
     Node.find()
-      .populate<{ skillBranch: ISkillBranch }>('skillBranch')
-      .populate<{ cyberFrameBranch: ICyberFrameBranch }>('cyberFrameBranch')
       .populate<{ effects: IEffect[] }>('effects')
       .populate<{ actions: IAction[] }>('actions')
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
@@ -51,8 +47,6 @@ const findNodesByBranch = async ({
         ? { cyberFrameBranch: cyberFrameBranchId }
         : { skillBranch: skillBranchId }
     )
-      .populate<{ skillBranch: ISkillBranch }>('skillBranch')
-      .populate<{ cyberFrameBranch: ICyberFrameBranch }>('cyberFrameBranch')
       .populate<{ effects: IEffect[] }>('effects')
       .populate<{ actions: IAction[] }>('actions')
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
@@ -73,8 +67,6 @@ const findNodesByBranch = async ({
 const findNodeById = async (id: string): Promise<HydratedINode> =>
   await new Promise((resolve, reject) => {
     Node.findById(id)
-      .populate<{ skillBranch: ISkillBranch }>('skillBranch')
-      .populate<{ cyberFrameBranch: ICyberFrameBranch }>('cyberFrameBranch')
       .populate<{ effects: IEffect[] }>('effects')
       .populate<{ actions: IAction[] }>('actions')
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')

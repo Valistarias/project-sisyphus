@@ -15,6 +15,7 @@ import AdminNewChapterPage from './adminNewChapter';
 import AdminNewCharParamPage from './adminNewCharParam';
 import AdminNewCyberFramePage from './adminNewCyberFrame';
 import AdminNewCyberFrameBranchPage from './adminNewCyberFrameBranch';
+import AdminNewNodePage from './adminNewNode';
 import AdminNewNotionPage from './adminNewNotion';
 import AdminNewPage from './adminNewPage';
 import AdminNewRuleBookPage from './adminNewRuleBook';
@@ -60,6 +61,7 @@ export {
   AdminNewCharParamPage,
   AdminNewCyberFrameBranchPage,
   AdminNewCyberFramePage,
+  AdminNewNodePage,
   AdminNewNotionPage,
   AdminNewPage,
   AdminNewRuleBookPage,

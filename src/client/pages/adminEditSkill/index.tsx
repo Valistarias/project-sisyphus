@@ -344,6 +344,13 @@ const AdminEditSkill: FC = () => {
             {t('adminEditSkill.delete', { ns: 'pages' })}
           </Button>
         </div>
+        <div className="adminEditSkill__nodes">
+          <Atitle level={2}>{t('adminEditSkill.nodes', { ns: 'pages' })}</Atitle>
+          <div className="adminEditSkill__nodes__list" />
+          <Button href={`/admin/node/new?skillId=${id}`}>
+            {t('adminNewNode.title', { ns: 'pages' })}
+          </Button>
+        </div>
         <div className="adminEditSkill__branches">
           <Atitle level={2}>{t('adminEditSkill.branches', { ns: 'pages' })}</Atitle>
           <div className="adminEditSkill__branches__list">{skillBranchesList}</div>

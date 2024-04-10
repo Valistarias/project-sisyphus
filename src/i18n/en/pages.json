@@ -290,6 +290,7 @@
   },
   "adminEditSkill": {
     "branches": "Skill Specialisations",
+    "nodes": "Node Tree",
     "edit": "Edit Skill",
     "delete": "Delete Skill",
     "i18n": "Internationalization - French",
@@ -369,6 +370,27 @@
       "title": "Skill Branch Deletion",
       "text": "Are you sure you want to delete {{elt}} ?",
       "confirmCta": "Delete Skill Branch"
+    }
+  },
+  "adminNewNode": {
+    "title": "New Node",
+    "i18n": "Internationalization - French",
+    "button": "Create Node",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successCreate": "Node successfully created !"
+  },
+  "adminEditNode": {
+    "title": "Edit Node",
+    "delete": "Delete Node",
+    "i18n": "Internationalization - French",
+    "button": "Update",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successUpdate": "Node successfully updated !",
+    "successDelete": "Node successfully deleted !",
+    "confirmDeletion": {
+      "title": "Node Deletion",
+      "text": "Are you sure you want to delete {{elt}} ?",
+      "confirmCta": "Delete Node"
     }
   }
 }

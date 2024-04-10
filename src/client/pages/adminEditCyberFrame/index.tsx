@@ -62,19 +62,21 @@ const AdminEditCyberFrame: FC = () => {
     }
     return (
       <Aul className="adminEditCyberFrame__cyberframebranch-list" noPoints>
-        {cyberFrameBranches.map(({ cyberFrameBranch }) => (
-          <Ali
-            className={classTrim(`
+        {cyberFrameBranches.map(({ cyberFrameBranch }) => {
+          return cyberFrameBranch.title !== '_general' ? (
+            <Ali
+              className={classTrim(`
               adminEditCyberFrame__cyberframebranch-list__elt
             `)}
-            key={cyberFrameBranch._id}
-          >
-            <Atitle level={3}>{cyberFrameBranch.title}</Atitle>
-            <Button href={`/admin/cyberframebranch/${cyberFrameBranch._id}`}>
-              {t('adminCyberFrames.editCyberFrame', { ns: 'pages' })}
-            </Button>
-          </Ali>
-        ))}
+              key={cyberFrameBranch._id}
+            >
+              <Atitle level={3}>{cyberFrameBranch.title}</Atitle>
+              <Button href={`/admin/cyberframebranch/${cyberFrameBranch._id}`}>
+                {t('adminCyberFrames.editCyberFrame', { ns: 'pages' })}
+              </Button>
+            </Ali>
+          ) : null;
+        })}
       </Aul>
     );
   }, [cyberFrameBranches, t]);

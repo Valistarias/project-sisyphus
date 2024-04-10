@@ -11,7 +11,7 @@ import { useApi, useConfirmMessage, useSystemAlerts } from '../../providers';
 import { Aa, Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
-import { type ICuratedCyberFrameBranch, type ICuratedNode } from '../../types';
+import { type ICuratedCyberFrameBranch } from '../../types';
 
 import './adminEditCyberFrameBranch.scss';
 
@@ -41,8 +41,6 @@ const AdminEditCyberFrameBranch: FC = () => {
 
   const limitedMode =
     cyberFrameBranchData === null || cyberFrameBranchData?.cyberFrameBranch.title === '_general';
-
-  const [nodes, setNodes] = useState<ICuratedNode[] | null>(null);
 
   const [cyberFrameBranchText, setCyberFrameBranchText] = useState('');
   const [cyberFrameBranchTextFr, setCyberFrameBranchTextFr] = useState('');
@@ -256,22 +254,22 @@ const AdminEditCyberFrameBranch: FC = () => {
           });
         });
 
-      api.nodes
-        .getAllByBranch({ cyberFrameBranchId: id })
-        .then((curatedNodes: ICuratedNode[]) => {
-          setNodes(curatedNodes ?? []);
-        })
-        .catch(() => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
-        });
+      // api.nodes
+      //   .getAllByBranch({ cyberFrameBranchId: id })
+      //   .then((curatedNodes: ICuratedNode[]) => {
+      //     setNodes(curatedNodes ?? []);
+      //   })
+      //   .catch(() => {
+      //     const newId = getNewId();
+      //     createAlert({
+      //       key: newId,
+      //       dom: (
+      //         <Alert key={newId} id={newId} timer={5}>
+      //           <Ap>{t('serverErrors.CYPU-301')}</Ap>
+      //         </Alert>
+      //       ),
+      //     });
+      //   });
     }
   }, [api, createAlert, getNewId, id, t]);
 

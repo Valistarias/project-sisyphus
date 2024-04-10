@@ -3,10 +3,8 @@ import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 
 import {
   type IAction,
   type ICharParamBonus,
-  type ICyberFrameBranch,
   type IEffect,
   type ISkillBonus,
-  type ISkillBranch,
   type IStatBonus,
 } from '../index';
 
@@ -46,16 +44,8 @@ interface INode {
 interface HydratedINode
   extends Omit<
     HydratedDocument<INode>,
-    | 'skillBranch'
-    | 'cyberFrameBranch'
-    | 'effects'
-    | 'actions'
-    | 'skillBonuses'
-    | 'statBonuses'
-    | 'charParamBonuses'
+    'effects' | 'actions' | 'skillBonuses' | 'statBonuses' | 'charParamBonuses'
   > {
-  skillBranch: ISkillBranch;
-  cyberFrameBranch: ICyberFrameBranch;
   effects: IEffect[];
   actions: IAction[];
   skillBonuses: ISkillBonus[];
