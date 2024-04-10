@@ -39,6 +39,9 @@ const AdminEditCyberFrameBranch: FC = () => {
     null
   );
 
+  const limitedMode =
+    cyberFrameBranchData === null || cyberFrameBranchData?.cyberFrameBranch.title === '_general';
+
   const [nodes, setNodes] = useState<ICuratedNode[] | null>(null);
 
   const [cyberFrameBranchText, setCyberFrameBranchText] = useState('');
@@ -187,7 +190,9 @@ const AdminEditCyberFrameBranch: FC = () => {
                     </Alert>
                   ),
                 });
-                navigate('/admin/cyberframes');
+                navigate(
+                  `/admin/cyberframe/${cyberFrameBranchData?.cyberFrameBranch.cyberFrame?._id}`
+                );
               })
               .catch(({ response }) => {
                 const { data } = response;
@@ -217,7 +222,7 @@ const AdminEditCyberFrameBranch: FC = () => {
     api,
     setConfirmContent,
     t,
-    cyberFrameBranchData?.cyberFrameBranch.title,
+    cyberFrameBranchData,
     ConfMessageEvent,
     id,
     getNewId,
@@ -300,7 +305,7 @@ const AdminEditCyberFrameBranch: FC = () => {
       >
         <div className="adminEditCyberFrameBranch__head">
           <Atitle level={1}>{t('adminEditCyberFrameBranch.title', { ns: 'pages' })}</Atitle>
-          <Button onClick={onAskDelete} color="error">
+          <Button onClick={onAskDelete} color="error" disabled={limitedMode}>
             {t('adminEditCyberFrameBranch.delete', { ns: 'pages' })}
           </Button>
         </div>
@@ -361,7 +366,9 @@ const AdminEditCyberFrameBranch: FC = () => {
             small
           />
         </div>
-        <Button type="submit">{t('adminEditCyberFrameBranch.button', { ns: 'pages' })}</Button>
+        <Button type="submit" disabled={limitedMode}>
+          {t('adminEditCyberFrameBranch.button', { ns: 'pages' })}
+        </Button>
       </form>
     </div>
   );

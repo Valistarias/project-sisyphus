@@ -37,6 +37,8 @@ const AdminEditSkillBranch: FC = () => {
 
   const [skillBranchData, seSkillBranchData] = useState<ICuratedSkillBranch | null>(null);
 
+  const limitedMode = skillBranchData === null || skillBranchData?.skillBranch.title === '_general';
+
   const [skillBranchText, seSkillBranchText] = useState('');
   const [skillBranchTextFr, seSkillBranchTextFr] = useState('');
 
@@ -279,7 +281,7 @@ const AdminEditSkillBranch: FC = () => {
       >
         <div className="adminEditSkillBranch__head">
           <Atitle level={1}>{t('adminEditSkillBranch.title', { ns: 'pages' })}</Atitle>
-          <Button onClick={onAskDelete} color="error">
+          <Button onClick={onAskDelete} color="error" disabled={limitedMode}>
             {t('adminEditSkillBranch.delete', { ns: 'pages' })}
           </Button>
         </div>
@@ -336,7 +338,9 @@ const AdminEditSkillBranch: FC = () => {
             small
           />
         </div>
-        <Button type="submit">{t('adminEditSkillBranch.button', { ns: 'pages' })}</Button>
+        <Button type="submit" disabled={limitedMode}>
+          {t('adminEditSkillBranch.button', { ns: 'pages' })}
+        </Button>
       </form>
     </div>
   );
