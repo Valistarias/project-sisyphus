@@ -61,7 +61,7 @@
       overflow-x: none;
       overflow-y: none;
       padding: 3rem;
-      pointer-events: all;
+      pointer-events: none;
     }
 
     &__results {
@@ -173,6 +173,10 @@
 
     .roll-window__window {
       opacity: 1;
+
+      &__values {
+        pointer-events: all;
+      }
     }
   }
 

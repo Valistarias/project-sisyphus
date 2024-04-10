@@ -44,6 +44,9 @@
     },
     "campaign": {
       "title": "campaign"
+    },
+    "node": {
+      "generalBranch": "Main Branch"
     }
   },
   "chapterTypeNames": {

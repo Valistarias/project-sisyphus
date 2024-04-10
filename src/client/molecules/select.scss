@@ -72,4 +72,10 @@
     font-weight: bold;
     justify-content: space-between;
   }
+
+  // Others ----------------------------------
+  &--disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
 }

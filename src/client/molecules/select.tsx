@@ -12,7 +12,7 @@ import { classTrim } from '../utils';
 import './select.scss';
 
 interface ISingleValueSelect {
-  value: string;
+  value: string | number;
   label: string;
   details?: string;
 }
@@ -33,9 +33,11 @@ interface IAp extends IReactHookFormInputs {
   /** The classname of the select */
   className?: string;
   /** Triggered when the selected field is changing */
-  onChange?: (val: string) => void;
+  onChange?: (val: string | number) => void;
   /** The size of the select */
   size?: 'medium' | 'small';
+  /** Is the field disabled */
+  disabled?: boolean;
 }
 
 const Option: FC<OptionProps<ISingleValueSelect, false>> = ({ children, ...props }) => {
@@ -72,6 +74,7 @@ const SmartSelect: FC<IAp> = ({
   onChange: exteriorChange,
   placeholder = null,
   className = null,
+  disabled = false,
   rules,
 }) => {
   const { t } = useTranslation();
@@ -81,6 +84,7 @@ const SmartSelect: FC<IAp> = ({
       className={classTrim(`
         smartselect
         ${className ?? ''}
+        ${disabled ? 'smartselect--disabled' : ''}
         smartselect--${size}
       `)}
     >

@@ -63,6 +63,7 @@ const NodeIconSelect: FC<INodeIconSelect> = ({ className, inputName, rules, cont
               className="nodeiconselect__display"
               onClick={(e) => {
                 e.stopPropagation();
+                e.preventDefault();
                 setOpenMenu((prev) => !prev);
               }}
             >
@@ -78,6 +79,7 @@ const NodeIconSelect: FC<INodeIconSelect> = ({ className, inputName, rules, cont
                   key={possibleNodeIcon}
                   className="nodeiconselect__list__elt"
                   onClick={(e: React.MouseEvent<HTMLElement>) => {
+                    e.preventDefault();
                     onChange(possibleNodeIcon);
                     setOpenMenu(false);
                   }}

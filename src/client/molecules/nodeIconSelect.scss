@@ -1,4 +1,8 @@
 .nodeiconselect {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   position: relative;
 
   &__label {
@@ -40,6 +44,7 @@
 
   &__list {
     background-blend-mode: overlay;
+    background-color: var(--primary-10);
     border: 1px solid var(--primary);
     border-radius: 0.2rem;
     bottom: -1rem;
@@ -54,6 +59,7 @@
     position: absolute;
     transform: translateY(100%);
     width: 48rem;
+    z-index: 1;
 
     &__elt {
       border: 1px solid var(--primary-00);

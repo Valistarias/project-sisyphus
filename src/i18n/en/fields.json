@@ -135,6 +135,31 @@
   },
   "nameSkillBranch": {
     "required": "A skill Branch Name is required",
-    "label": "skill Branch Name"
+    "label": "Skill Branch Name"
+  },
+  "nameNode": {
+    "required": "A name is required for this node",
+    "label": "Node Name"
+  },
+  "nodeSummary": {
+    "title": "Node Details"
+  },
+  "quoteNode": {
+    "label": "Quote"
+  },
+  "branchNode": {
+    "required": "A Branch Node is required",
+    "label": "Branch",
+    "select": "Branch Node"
+  },
+  "levelNode": {
+    "required": "A Node Level is required",
+    "label": "Level",
+    "select": "Node Level"
+  },
+  "iconNode": {
+    "required": "A Node Icon is required",
+    "label": "Icon",
+    "select": "Node Icon"
   }
 }

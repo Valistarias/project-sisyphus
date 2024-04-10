@@ -3,32 +3,50 @@ import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } fro
 import { useEditor } from '@tiptap/react';
 import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import { useApi, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ap, Atitle } from '../../atoms';
-import { Button, Input } from '../../molecules';
+import { Button, Input, NodeIconSelect, SmartSelect } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
 import {
   type ICuratedCyberFrame,
   type ICuratedCyberFrameBranch,
   type ICuratedSkill,
   type ICuratedSkillBranch,
+  type ICyberFrameBranch,
+  type ISkillBranch,
 } from '../../types';
+import { type InternationalizationType } from '../../types/global';
 
 import './adminNewNode.scss';
 
 interface FormValues {
   name: string;
   nameFr: string;
+  quote: string;
+  quoteFr: string;
+  level: number;
+  icon: string;
+  branch: string;
 }
+
+const generalRange = [...Array(2)].map((_, i) => ({
+  value: i + 1,
+  label: String(i + 1),
+}));
+
+const branchRange = [...Array(8)].map((_, i) => ({
+  value: i + 3,
+  label: String(i + 3),
+}));
 
 const AdminNewNode: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { search } = useLocation();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { createAlert, getNewId } = useSystemAlerts();
 
   const params = useMemo(() => new URLSearchParams(search), [search]);
@@ -38,7 +56,12 @@ const AdminNewNode: FC = () => {
 
   const [branches, setBranches] = useState<ICuratedSkillBranch[] | ICuratedCyberFrameBranch[]>([]);
 
-  console.log('branches', branches);
+  const [levelSelect, setLevelSelect] = useState<
+    Array<{
+      value: number;
+      label: string;
+    }>
+  >([]);
 
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
@@ -54,9 +77,41 @@ const AdminNewNode: FC = () => {
   const {
     handleSubmit,
     setError,
+    setValue,
     control,
     formState: { errors },
-  } = useForm<FieldValues>();
+  } = useForm<FieldValues>({
+    defaultValues: {
+      icon: 'default',
+    },
+  });
+
+  const branchSelect = useMemo(() => {
+    return branches.reduce(
+      (
+        result: Array<{
+          value: string;
+          label: string;
+        }>,
+        elt: {
+          i18n: InternationalizationType;
+          skillBranch?: ISkillBranch;
+          cyberFrameBranch?: ICyberFrameBranch;
+        }
+      ) => {
+        const data = elt.skillBranch ?? elt.cyberFrameBranch;
+        if (data !== undefined) {
+          result.push({
+            value: data._id,
+            // TODO : Handle Internationalization
+            label: data.title === '_general' ? t('terms.node.generalBranch') : data.title,
+          });
+        }
+        return result;
+      },
+      []
+    );
+  }, [branches, t]);
 
   const getData = useCallback(() => {
     if (api !== undefined) {
@@ -141,11 +196,12 @@ const AdminNewNode: FC = () => {
   }, [api, createAlert, getNewId, params, t]);
 
   const onSaveNode: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr }) => {
+    (elts) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
       console.log('onSaveNode');
+      console.log('elts', elts);
       // let html: string | null = introEditor.getHTML();
       // const htmlFr = introFrEditor.getHTML();
       // if (html === '<p class="ap"></p>') {
@@ -163,14 +219,14 @@ const AdminNewNode: FC = () => {
       //   };
       // }
 
-      // api.skillBranches
+      // api.quotees
       //   .create({
       //     title: name,
       //     skill: params.get('skillId'),
       //     summary: html,
       //     i18n,
       //   })
-      //   .then((skillBranch) => {
+      //   .then((quote) => {
       //     const newId = getNewId();
       //     createAlert({
       //       key: newId,
@@ -180,7 +236,7 @@ const AdminNewNode: FC = () => {
       //         </Alert>
       //       ),
       //     });
-      //     navigate(`/admin/skillbranch/${skillBranch._id}`);
+      //     navigate(`/admin/skillbranch/${quote._id}`);
       //   })
       //   .catch(({ response }) => {
       //     const { data } = response;
@@ -188,14 +244,14 @@ const AdminNewNode: FC = () => {
       //       setError('root.serverError', {
       //         type: 'server',
       //         message: t(`serverErrors.${data.code}`, {
-      //           field: i18next.format(t(`terms.skillBranchType.${data.sent}`), 'capitalize'),
+      //           field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
       //         }),
       //       });
       //     } else {
       //       setError('root.serverError', {
       //         type: 'server',
       //         message: t(`serverErrors.${data.code}`, {
-      //           field: i18next.format(t(`terms.skillBranchType.${data.sent}`), 'capitalize'),
+      //           field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
       //         }),
       //       });
       //     }
@@ -211,6 +267,12 @@ const AdminNewNode: FC = () => {
       getData();
     }
   }, [api, createAlert, getNewId, getData, t]);
+
+  useEffect(() => {
+    if (levelSelect.length > 0) {
+      setValue('level', levelSelect[0].value);
+    }
+  }, [levelSelect, setValue]);
 
   return (
     <div className="adminNewNode">
@@ -228,6 +290,16 @@ const AdminNewNode: FC = () => {
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
+        <div className="adminNewNode__visual">
+          <NodeIconSelect
+            label={t('iconNode.label', { ns: 'fields' })}
+            control={control}
+            inputName="icon"
+            rules={{
+              required: t('iconNode.required', { ns: 'fields' }),
+            }}
+          />
+        </div>
         <div className="adminNewNode__basics">
           <Input
             control={control}
@@ -239,14 +311,66 @@ const AdminNewNode: FC = () => {
             label={t('nameNode.label', { ns: 'fields' })}
             className="adminNewNode__basics__name"
           />
+          <SmartSelect
+            control={control}
+            inputName="branch"
+            rules={{
+              required: t('branchNode.required', { ns: 'fields' }),
+            }}
+            label={t('branchNode.label', { ns: 'fields' })}
+            options={branchSelect}
+            onChange={(e) => {
+              let titleBranch: string | null = null;
+              branches.forEach(
+                (branch: {
+                  i18n: InternationalizationType;
+                  skillBranch?: ISkillBranch;
+                  cyberFrameBranch?: ICyberFrameBranch;
+                }) => {
+                  const data = branch.skillBranch ?? branch.cyberFrameBranch;
+                  if (data !== undefined && data._id === e) {
+                    titleBranch = data.title;
+                  }
+                }
+              );
+              if (titleBranch === '_general') {
+                setLevelSelect(generalRange);
+              } else {
+                setLevelSelect(branchRange);
+              }
+            }}
+            className="adminNewNode__basics__type"
+          />
+          <SmartSelect
+            control={control}
+            placeholder={'0'}
+            inputName="level"
+            rules={{
+              required: t('levelNode.required', { ns: 'fields' }),
+            }}
+            label={t('levelNode.label', { ns: 'fields' })}
+            options={levelSelect}
+            className="adminNewNode__basics__level"
+            disabled={levelSelect.length === 0}
+          />
         </div>
         <div className="adminNewNode__details">
           <RichTextElement
-            label={t('skillBranchSummary.title', { ns: 'fields' })}
+            label={t('nodeSummary.title', { ns: 'fields' })}
             editor={introEditor}
             rawStringContent={''}
             small
             complete
+          />
+          <Input
+            control={control}
+            inputName="quote"
+            type="text"
+            rules={{
+              required: t('quoteNode.required', { ns: 'fields' }),
+            }}
+            label={t('quoteNode.label', { ns: 'fields' })}
+            className="adminNewNode__details__quote"
           />
         </div>
 
@@ -265,11 +389,18 @@ const AdminNewNode: FC = () => {
         </div>
         <div className="adminNewNode__details">
           <RichTextElement
-            label={`${t('skillBranchSummary.title', { ns: 'fields' })} (FR)`}
+            label={`${t('nodeSummary.title', { ns: 'fields' })} (FR)`}
             editor={introFrEditor}
             rawStringContent={''}
             small
             complete
+          />
+          <Input
+            control={control}
+            inputName="quoteFr"
+            type="text"
+            label={`${t('quoteNode.label', { ns: 'fields' })} (FR)`}
+            className="adminNewNode__details__quote"
           />
         </div>
         <Button type="submit">{t('adminNewNode.button', { ns: 'pages' })}</Button>
