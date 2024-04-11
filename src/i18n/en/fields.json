@@ -161,5 +161,29 @@
     "required": "A Node Icon is required",
     "label": "Icon",
     "select": "Node Icon"
+  },
+  "skillBonusValue": {
+    "required": "A value is required for this bonus",
+    "label": "Value"
+  },
+  "skillBonusSkill": {
+    "required": "A skill is required for this bonus",
+    "label": "Skill"
+  },
+  "statBonusValue": {
+    "required": "A value is required for this bonus",
+    "label": "Value"
+  },
+  "statBonusStat": {
+    "required": "A stat is required for this bonus",
+    "label": "Stat"
+  },
+  "charParamBonusValue": {
+    "required": "A value is required for this bonus",
+    "label": "Value"
+  },
+  "charParamBonusStat": {
+    "required": "A character parameter is required for this bonus",
+    "label": "Character Parameter"
   }
 }

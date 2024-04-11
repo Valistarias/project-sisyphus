@@ -20,6 +20,22 @@ export const arraysEqual = (a: string[], b: string[]): boolean => {
   return true;
 };
 
+export const isThereDuplicate = (elts: string[]): boolean => {
+  const count = {};
+  let duplicate = false;
+  elts.forEach((elt) => {
+    if (count[elt] === undefined) {
+      count[elt] = 0;
+    }
+    count[elt] = count[elt] + 1;
+    if (count[elt] > 1 || duplicate) {
+      duplicate = true;
+    }
+  });
+
+  return duplicate;
+};
+
 export interface IFormattedDate {
   date: string;
   hour: string;

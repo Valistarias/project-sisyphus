@@ -11,7 +11,7 @@ import './input.scss';
 
 interface IInput extends IReactHookFormInputs {
   /** The type of input */
-  type?: 'text' | 'password' | 'email';
+  type?: 'text' | 'password' | 'email' | 'number';
   /** The size of the input */
   size?: 'medium' | 'small';
   /** The class of the Textarea element */
@@ -72,7 +72,7 @@ const Input: FC<IInput> = ({
                 className="input__field"
                 autoComplete={autoComplete ?? undefined}
                 onChange={onChange}
-                value={value || ''}
+                value={value ?? ''}
                 onFocus={() => {
                   setFocus(true);
                 }}
