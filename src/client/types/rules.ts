@@ -102,6 +102,8 @@ export interface IAction {
   _id: string;
   /** The type of the action */
   type: IActionType;
+  /** The duration of the action */
+  duration: IActionDuration;
   /** The title of the action */
   title: string;
   /** The summary of the action */
@@ -111,7 +113,13 @@ export interface IAction {
   /** The associated skill */
   skill?: ISkill;
   /** The bonus (or malus) associated with the skill */
-  offsetSkill?: string;
+  offsetSkill?: number;
+  /** Is this action a karma offering ? */
+  isKarmic: boolean;
+  /** Cost of karma, if karmic offering */
+  karmicCost?: number;
+  /** How many times the action is usable in a day */
+  uses?: number;
   /** All the related Chapters */
   damages: string;
   /** When the action was created */

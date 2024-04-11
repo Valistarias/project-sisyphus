@@ -45,6 +45,11 @@
     }
   }
 
+  // Types -----------------------------------
+  &.input--textarea .input__field {
+    height: 10rem;
+  }
+
   // Focused ----------------------------------
   &--focus {
     .input__decor::before {
@@ -61,14 +66,14 @@
   // Sizes -----------------------------------
   &--medium .input__field {
     font-size: 1.4rem;
-    height: 40px;
+    height: 4rem;
     letter-spacing: 0.2rem;
     padding: 0.8rem 2rem;
   }
 
   &--small .input__field {
     font-size: 1.2rem;
-    height: 30px;
+    height: 3rem;
     letter-spacing: 0.2rem;
     padding: 0.6rem 1.5rem;
   }

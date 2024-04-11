@@ -40,13 +40,25 @@
       "player_other": "Players",
       "abort": "Abort",
       "createdBy": "Created by {{owner}}",
-      "createdByShort": "by {{owner}}"
+      "createdByShort": "by {{owner}}",
+      "yes": "Yes",
+      "no": "No"
     },
     "campaign": {
       "title": "campaign"
     },
     "node": {
       "generalBranch": "Main Branch"
+    },
+    "actionType": {
+      "combatmelee": "Melee Action",
+      "combatdistance": "Range Action",
+      "utility": "Utility"
+    },
+    "actionDuration": {
+      "free": "Free",
+      "action": "Action",
+      "long": "Long"
     }
   },
   "chapterTypeNames": {

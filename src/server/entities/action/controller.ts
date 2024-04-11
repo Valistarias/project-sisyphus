@@ -5,7 +5,7 @@ import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/global
 
 import { type HydratedIAction } from './model';
 
-import type { IActionType, ISkill } from '../index';
+import type { IActionDuration, IActionType, ISkill } from '../index';
 
 const { Action } = db;
 
@@ -13,6 +13,7 @@ const findActions = async (): Promise<HydratedIAction[]> =>
   await new Promise((resolve, reject) => {
     Action.find()
       .populate<{ type: IActionType }>('type')
+      .populate<{ duration: IActionDuration }>('duration')
       .populate<{ skill: ISkill }>('skill')
       .then(async (res) => {
         if (res === undefined || res === null) {
@@ -30,6 +31,7 @@ const findActionById = async (id: string): Promise<HydratedIAction> =>
   await new Promise((resolve, reject) => {
     Action.findById(id)
       .populate<{ type: IActionType }>('type')
+      .populate<{ duration: IActionDuration }>('duration')
       .populate<{ skill: ISkill }>('skill')
       .then(async (res) => {
         if (res === undefined || res === null) {
@@ -44,8 +46,26 @@ const findActionById = async (id: string): Promise<HydratedIAction> =>
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, summary, type, i18n = null, time, skill, offsetSkill, damages } = req.body;
-  if (title === undefined || summary === undefined || type === undefined) {
+  const {
+    title,
+    summary,
+    type,
+    duration,
+    i18n = null,
+    time,
+    skill,
+    uses,
+    offsetSkill,
+    damages,
+    isKarmic = false,
+    karmicCost,
+  } = req.body;
+  if (
+    title === undefined ||
+    summary === undefined ||
+    type === undefined ||
+    duration === undefined
+  ) {
     res.status(400).send(gemInvalidField('Action'));
     return;
   }
@@ -54,10 +74,14 @@ const create = (req: Request, res: Response): void => {
     title,
     summary,
     type,
+    duration,
     time,
     skill,
+    uses,
     offsetSkill,
     damages,
+    isKarmic,
+    karmicCost,
   });
 
   if (i18n !== null) {
@@ -81,10 +105,14 @@ const update = (req: Request, res: Response): void => {
     summary = null,
     i18n,
     type = null,
+    duration = null,
     time = null,
     skill = null,
+    uses = null,
     offsetSkill = null,
     damages = null,
+    isKarmic = null,
+    karmicCost = null,
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Action ID'));
@@ -112,6 +140,18 @@ const update = (req: Request, res: Response): void => {
       }
       if (damages !== null) {
         action.damages = damages;
+      }
+      if (duration !== null) {
+        action.duration = duration;
+      }
+      if (isKarmic !== null) {
+        action.isKarmic = isKarmic;
+      }
+      if (karmicCost !== null) {
+        action.karmicCost = karmicCost;
+      }
+      if (uses !== null) {
+        action.uses = uses;
       }
 
       if (i18n !== null) {

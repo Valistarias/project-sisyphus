@@ -11,6 +11,8 @@ import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input, NodeIconSelect, SmartSelect } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
 import {
+  type IActionDuration,
+  type IActionType,
   type ICuratedCharParam,
   type ICuratedCyberFrame,
   type ICuratedCyberFrameBranch,
@@ -37,7 +39,6 @@ interface FormValues {
   skillBonuses?: Record<
     string,
     {
-      id: number;
       skill: string;
       value: number;
     }
@@ -45,7 +46,6 @@ interface FormValues {
   statBonuses?: Record<
     string,
     {
-      id: number;
       stat: string;
       value: number;
     }
@@ -53,9 +53,38 @@ interface FormValues {
   charParamBonuses?: Record<
     string,
     {
-      id: number;
       charParam: string;
       value: number;
+    }
+  >;
+  effect?: Record<
+    string,
+    {
+      title: string;
+      titleFr?: string;
+      summary: string;
+      summaryFr?: string;
+      type: string;
+      formula?: string;
+    }
+  >;
+  action?: Record<
+    string,
+    {
+      title: string;
+      titleFr?: string;
+      summary: string;
+      summaryFr?: string;
+      type: string;
+      skill: string;
+      duration: string;
+      time?: string;
+      timeFr?: string;
+      damages?: string;
+      offsetSkill?: number;
+      uses?: number;
+      isKarmic?: boolean;
+      karmicCost?: number;
     }
   >;
 }
@@ -92,7 +121,7 @@ const AdminNewNode: FC = () => {
     }>
   >([]);
   const [skillBonusIds, setSkillBonusIds] = useState<number[]>([]);
-  const skillBonusIncrement = useRef(0);
+  const idIncrement = useRef(0);
 
   const [statSelect, setStatSelect] = useState<
     Array<{
@@ -101,7 +130,6 @@ const AdminNewNode: FC = () => {
     }>
   >([]);
   const [statBonusIds, setStatBonusIds] = useState<number[]>([]);
-  const statBonusIncrement = useRef(0);
 
   const [charParamSelect, setCharParamSelect] = useState<
     Array<{
@@ -110,7 +138,6 @@ const AdminNewNode: FC = () => {
     }>
   >([]);
   const [charParamBonusIds, setCharParamBonusIds] = useState<number[]>([]);
-  const charParamBonusIncrement = useRef(0);
 
   const [branches, setBranches] = useState<ICuratedSkillBranch[] | ICuratedCyberFrameBranch[]>([]);
 
@@ -120,6 +147,24 @@ const AdminNewNode: FC = () => {
       label: string;
     }>
   >([]);
+
+  const [actionTypeSelect, setActionTypeSelect] = useState<
+    Array<{
+      value: string;
+      label: string;
+    }>
+  >([]);
+
+  const [actionDurationSelect, setActionDurationSelect] = useState<
+    Array<{
+      value: string;
+      label: string;
+    }>
+  >([]);
+
+  const [effectIds, setEffectIds] = useState<number[]>([]);
+
+  const [actionIds, setActionIds] = useState<number[]>([]);
 
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
@@ -144,6 +189,20 @@ const AdminNewNode: FC = () => {
       icon: 'default',
     },
   });
+
+  const boolRange = useMemo(
+    () => [
+      {
+        value: '1',
+        label: t('terms.general.yes'),
+      },
+      {
+        value: '0',
+        label: t('terms.general.no'),
+      },
+    ],
+    [t]
+  );
 
   const branchSelect = useMemo(() => {
     return branches.reduce(
@@ -175,8 +234,8 @@ const AdminNewNode: FC = () => {
   const onAddSkillBonus = useCallback(() => {
     setSkillBonusIds((prev) => {
       const next = [...prev];
-      next.push(skillBonusIncrement.current);
-      skillBonusIncrement.current += 1;
+      next.push(idIncrement.current);
+      idIncrement.current += 1;
       return next;
     });
   }, []);
@@ -184,8 +243,8 @@ const AdminNewNode: FC = () => {
   const onAddStatBonus = useCallback(() => {
     setStatBonusIds((prev) => {
       const next = [...prev];
-      next.push(statBonusIncrement.current);
-      statBonusIncrement.current += 1;
+      next.push(idIncrement.current);
+      idIncrement.current += 1;
       return next;
     });
   }, []);
@@ -193,8 +252,26 @@ const AdminNewNode: FC = () => {
   const onAddCharParamBonus = useCallback(() => {
     setCharParamBonusIds((prev) => {
       const next = [...prev];
-      next.push(charParamBonusIncrement.current);
-      charParamBonusIncrement.current += 1;
+      next.push(idIncrement.current);
+      idIncrement.current += 1;
+      return next;
+    });
+  }, []);
+
+  const onAddAction = useCallback(() => {
+    setActionIds((prev) => {
+      const next = [...prev];
+      next.push(idIncrement.current);
+      idIncrement.current += 1;
+      return next;
+    });
+  }, []);
+
+  const onAddEffect = useCallback(() => {
+    setEffectIds((prev) => {
+      const next = [...prev];
+      next.push(idIncrement.current);
+      idIncrement.current += 1;
       return next;
     });
   }, []);
@@ -347,6 +424,46 @@ const AdminNewNode: FC = () => {
             ),
           });
         });
+      api.actionTypes
+        .getAll()
+        .then((actionTypes: IActionType[]) => {
+          const curatedSelect = actionTypes.map(({ name, _id }) => ({
+            value: _id,
+            label: t(`terms.actionType.${name}`),
+          }));
+          setActionTypeSelect(curatedSelect);
+        })
+        .catch(() => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert key={newId} id={newId} timer={5}>
+                <Ap>{t('serverErrors.CYPU-301')}</Ap>
+              </Alert>
+            ),
+          });
+        });
+      api.actionDurations
+        .getAll()
+        .then((actionDurations: IActionDuration[]) => {
+          const curatedSelect = actionDurations.map(({ name, _id }) => ({
+            value: _id,
+            label: t(`terms.actionDuration.${name}`),
+          }));
+          setActionDurationSelect(curatedSelect);
+        })
+        .catch(() => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert key={newId} id={newId} timer={5}>
+                <Ap>{t('serverErrors.CYPU-301')}</Ap>
+              </Alert>
+            ),
+          });
+        });
     }
   }, [api, createAlert, getNewId, params, t]);
 
@@ -355,7 +472,6 @@ const AdminNewNode: FC = () => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
-      console.log('elts', elts);
 
       // Check duplicate on skills
       const skillBonuses = elts.skillBonuses !== undefined ? Object.values(elts.skillBonuses) : [];
@@ -403,6 +519,7 @@ const AdminNewNode: FC = () => {
         });
         return;
       }
+      console.log('elts', elts);
       console.log('onSaveNode');
       // let html: string | null = introEditor.getHTML();
       // const htmlFr = introFrEditor.getHTML();
@@ -459,7 +576,7 @@ const AdminNewNode: FC = () => {
       //     }
       //   });
     },
-    [introEditor, introFrEditor, api]
+    [introEditor, introFrEditor, api, setError, t]
   );
 
   useEffect(() => {
@@ -578,7 +695,7 @@ const AdminNewNode: FC = () => {
           />
         </div>
         <Atitle className="adminNewNode__bonus-title" level={2}>
-          {t('adminNewNode.effects', { ns: 'pages' })}
+          {t('adminNewNode.values', { ns: 'pages' })}
         </Atitle>
         <div className="adminNewNode__bonuses">
           <div className="adminNewNode__bonuses__elts">
@@ -608,24 +725,23 @@ const AdminNewNode: FC = () => {
                     label={t('skillBonusValue.label', { ns: 'fields' })}
                     className="adminNewNode__bonus__value"
                   />
-
-                  <Button
-                    icon="delete"
-                    theme="afterglow"
-                    color="tertiary"
-                    onClick={() => {
-                      setSkillBonusIds((prev) =>
-                        prev.reduce((result: number[], elt) => {
-                          if (elt !== skillBonusId) {
-                            result.push(elt);
-                          }
-                          return result;
-                        }, [])
-                      );
-                      unregister(`skillBonuses.skill-${skillBonusId}`);
-                    }}
-                  />
                 </div>
+                <Button
+                  icon="delete"
+                  theme="afterglow"
+                  onClick={() => {
+                    setSkillBonusIds((prev) =>
+                      prev.reduce((result: number[], elt) => {
+                        if (elt !== skillBonusId) {
+                          result.push(elt);
+                        }
+                        return result;
+                      }, [])
+                    );
+                    unregister(`skillBonuses.skill-${skillBonusId}`);
+                  }}
+                  className="adminNewNode__bonus__button"
+                />
               </div>
             ))}
             {statBonusIds.map((statBonusId) => (
@@ -654,24 +770,23 @@ const AdminNewNode: FC = () => {
                     label={t('statBonusValue.label', { ns: 'fields' })}
                     className="adminNewNode__bonus__value"
                   />
-
-                  <Button
-                    icon="delete"
-                    theme="afterglow"
-                    color="tertiary"
-                    onClick={() => {
-                      setStatBonusIds((prev) =>
-                        prev.reduce((result: number[], elt) => {
-                          if (elt !== statBonusId) {
-                            result.push(elt);
-                          }
-                          return result;
-                        }, [])
-                      );
-                      unregister(`statBonuses.stat-${statBonusId}`);
-                    }}
-                  />
                 </div>
+                <Button
+                  icon="delete"
+                  theme="afterglow"
+                  onClick={() => {
+                    setStatBonusIds((prev) =>
+                      prev.reduce((result: number[], elt) => {
+                        if (elt !== statBonusId) {
+                          result.push(elt);
+                        }
+                        return result;
+                      }, [])
+                    );
+                    unregister(`statBonuses.stat-${statBonusId}`);
+                  }}
+                  className="adminNewNode__bonus__button"
+                />
               </div>
             ))}
             {charParamBonusIds.map((charParamBonusId) => (
@@ -700,24 +815,237 @@ const AdminNewNode: FC = () => {
                     label={t('charParamBonusValue.label', { ns: 'fields' })}
                     className="adminNewNode__bonus__value"
                   />
-
-                  <Button
-                    icon="delete"
-                    theme="afterglow"
-                    color="tertiary"
-                    onClick={() => {
-                      setCharParamBonusIds((prev) =>
-                        prev.reduce((result: number[], elt) => {
-                          if (elt !== charParamBonusId) {
-                            result.push(elt);
-                          }
-                          return result;
-                        }, [])
-                      );
-                      unregister(`charParamBonuses.charParam-${charParamBonusId}`);
+                </div>
+                <Button
+                  icon="delete"
+                  theme="afterglow"
+                  onClick={() => {
+                    setCharParamBonusIds((prev) =>
+                      prev.reduce((result: number[], elt) => {
+                        if (elt !== charParamBonusId) {
+                          result.push(elt);
+                        }
+                        return result;
+                      }, [])
+                    );
+                    unregister(`charParamBonuses.charParam-${charParamBonusId}`);
+                  }}
+                  className="adminNewNode__bonus__button"
+                />
+              </div>
+            ))}
+            {effectIds.map((effectId) => (
+              <div className="adminNewNode__bonus" key={`charParam-${effectId}`}>
+                <Atitle className="adminNewNode__bonus__title" level={4}>
+                  {t('adminNewNode.effectTitle', { ns: 'pages' })}
+                </Atitle>
+                <div className="adminNewNode__bonus__fields adminNewNode__bonus__fields--large">
+                  <Input
+                    control={control}
+                    inputName={`effects.effect-${effectId}.title`}
+                    rules={{
+                      required: t('effectTitle.required', { ns: 'fields' }),
                     }}
+                    label={t('effectTitle.label', { ns: 'fields' })}
+                    className="adminNewNode__bonus__value adminNewNode__bonus__value--s"
+                  />
+                  <SmartSelect
+                    control={control}
+                    inputName={`effects.effect-${effectId}.type`}
+                    rules={{
+                      required: t('effectType.required', { ns: 'fields' }),
+                    }}
+                    label={t('effectType.label', { ns: 'fields' })}
+                    options={actionTypeSelect}
+                    className="adminNewNode__bonus__select adminNewNode__bonus__value--s"
+                  />
+                  <Input
+                    control={control}
+                    type="textarea"
+                    inputName={`effects.effect-${effectId}.summary`}
+                    rules={{
+                      required: t('effectSummary.required', { ns: 'fields' }),
+                    }}
+                    label={t('effectSummary.label', { ns: 'fields' })}
+                    className="adminNewNode__bonus__value adminNewNode__bonus__value--l"
+                  />
+                  <Input
+                    control={control}
+                    inputName={`effects.effect-${effectId}.formula`}
+                    label={t('effectFormula.label', { ns: 'fields' })}
+                    className="adminNewNode__bonus__value adminNewNode__bonus__value--l"
+                  />
+                  <Atitle className="adminNewNode__bonus__title" level={4}>
+                    {t('adminNewNode.effectInt', { ns: 'pages' })}
+                  </Atitle>
+                  <Input
+                    control={control}
+                    inputName={`effects.effect-${effectId}.titleFr`}
+                    label={`${t('effectTitle.label', { ns: 'fields' })} (FR)`}
+                    className="adminNewNode__bonus__value adminNewNode__bonus__value--l"
+                  />
+                  <Input
+                    control={control}
+                    type="textarea"
+                    inputName={`effects.effect-${effectId}.summaryFr`}
+                    label={`${t('effectSummary.label', { ns: 'fields' })} (FR)`}
+                    className="adminNewNode__bonus__value adminNewNode__bonus__value--l"
                   />
                 </div>
+                <Button
+                  icon="delete"
+                  theme="afterglow"
+                  onClick={() => {
+                    setEffectIds((prev) =>
+                      prev.reduce((result: number[], elt) => {
+                        if (elt !== effectId) {
+                          result.push(elt);
+                        }
+                        return result;
+                      }, [])
+                    );
+                    unregister(`effects.effect-${effectId}`);
+                  }}
+                  className="adminNewNode__bonus__button"
+                />
+              </div>
+            ))}
+            {actionIds.map((actionId) => (
+              <div className="adminNewNode__bonus" key={`charParam-${actionId}`}>
+                <Atitle className="adminNewNode__bonus__title" level={4}>
+                  {t('adminNewNode.actionTitle', { ns: 'pages' })}
+                </Atitle>
+                <div className="adminNewNode__bonus__fields adminNewNode__bonus__fields--large">
+                  <Input
+                    control={control}
+                    inputName={`actions.action-${actionId}.title`}
+                    rules={{
+                      required: t('actionTitle.required', { ns: 'fields' }),
+                    }}
+                    label={t('actionTitle.label', { ns: 'fields' })}
+                    className="adminNewNode__bonus__value adminNewNode__bonus__value--l"
+                  />
+                  <SmartSelect
+                    control={control}
+                    inputName={`actions.action-${actionId}.type`}
+                    rules={{
+                      required: t('actionType.required', { ns: 'fields' }),
+                    }}
+                    label={t('actionType.label', { ns: 'fields' })}
+                    options={actionTypeSelect}
+                    className="adminNewNode__bonus__select adminNewNode__bonus__value--s"
+                  />
+                  <SmartSelect
+                    control={control}
+                    inputName={`actions.action-${actionId}.duration`}
+                    rules={{
+                      required: t('actionDuration.required', { ns: 'fields' }),
+                    }}
+                    label={t('actionDuration.label', { ns: 'fields' })}
+                    options={actionDurationSelect}
+                    className="adminNewNode__bonus__select adminNewNode__bonus__value--s"
+                  />
+                  <Input
+                    control={control}
+                    type="textarea"
+                    inputName={`actions.action-${actionId}.summary`}
+                    rules={{
+                      required: t('actionSummary.required', { ns: 'fields' }),
+                    }}
+                    label={t('actionSummary.label', { ns: 'fields' })}
+                    className="adminNewNode__bonus__value adminNewNode__bonus__value--l"
+                  />
+                  <Input
+                    control={control}
+                    inputName={`actions.action-${actionId}.time`}
+                    label={t('actionTime.label', { ns: 'fields' })}
+                    className="adminNewNode__bonus__value adminNewNode__bonus__value--s"
+                  />
+                  <Input
+                    control={control}
+                    inputName={`actions.action-${actionId}.damages`}
+                    label={t('actionDamages.label', { ns: 'fields' })}
+                    className="adminNewNode__bonus__value adminNewNode__bonus__value--s"
+                  />
+                  <SmartSelect
+                    control={control}
+                    inputName={`actions.action-${actionId}.skill`}
+                    label={t('actionSkill.label', { ns: 'fields' })}
+                    options={[
+                      {
+                        value: '',
+                        label: '',
+                      },
+                      ...skillSelect,
+                    ]}
+                    className="adminNewNode__bonus__select adminNewNode__bonus__value--s"
+                  />
+                  <Input
+                    control={control}
+                    inputName={`actions.action-${actionId}.offsetSkill`}
+                    label={t('actionOffsetSkill.label', { ns: 'fields' })}
+                    className="adminNewNode__bonus__value adminNewNode__bonus__value--s"
+                  />
+                  <SmartSelect
+                    control={control}
+                    inputName={`actions.action-${actionId}.isKarmic`}
+                    label={t('actionIsKarmic.label', { ns: 'fields' })}
+                    options={boolRange}
+                    className="adminNewNode__bonus__select adminNewNode__bonus__value--s"
+                  />
+                  <Input
+                    control={control}
+                    type="number"
+                    inputName={`actions.action-${actionId}.karmicCost`}
+                    label={t('actionKarmicCost.label', { ns: 'fields' })}
+                    className="adminNewNode__bonus__value adminNewNode__bonus__value--s"
+                  />
+                  <Input
+                    control={control}
+                    type="number"
+                    inputName={`actions.action-${actionId}.uses`}
+                    label={t('actionUses.label', { ns: 'fields' })}
+                    className="adminNewNode__bonus__value adminNewNode__bonus__value--l"
+                  />
+                  <Atitle className="adminNewNode__bonus__title" level={4}>
+                    {t('adminNewNode.actionInt', { ns: 'pages' })}
+                  </Atitle>
+                  <Input
+                    control={control}
+                    inputName={`actions.action-${actionId}.titleFr`}
+                    label={`${t('actionTitle.label', { ns: 'fields' })} (FR)`}
+                    className="adminNewNode__bonus__value adminNewNode__bonus__value--l"
+                  />
+                  <Input
+                    control={control}
+                    type="textarea"
+                    inputName={`actions.action-${actionId}.summaryFr`}
+                    label={`${t('actionSummary.label', { ns: 'fields' })} (FR)`}
+                    className="adminNewNode__bonus__value adminNewNode__bonus__value--l"
+                  />
+                  <Input
+                    control={control}
+                    inputName={`actions.action-${actionId}.timeFr`}
+                    label={`${t('actionTime.label', { ns: 'fields' })} (FR)`}
+                    className="adminNewNode__bonus__value adminNewNode__bonus__value--l"
+                  />
+                </div>
+                <Button
+                  icon="delete"
+                  theme="afterglow"
+                  onClick={() => {
+                    setActionIds((prev) =>
+                      prev.reduce((result: number[], elt) => {
+                        if (elt !== actionId) {
+                          result.push(elt);
+                        }
+                        return result;
+                      }, [])
+                    );
+                    unregister(`actions.action-${actionId}`);
+                  }}
+                  className="adminNewNode__bonus__button"
+                />
               </div>
             ))}
           </div>
@@ -730,6 +1058,12 @@ const AdminNewNode: FC = () => {
             </Button>
             <Button onClick={onAddCharParamBonus}>
               {t('adminNewNode.createCharParamBonusButton', { ns: 'pages' })}
+            </Button>
+            <Button onClick={onAddAction}>
+              {t('adminNewNode.createActionButton', { ns: 'pages' })}
+            </Button>
+            <Button onClick={onAddEffect}>
+              {t('adminNewNode.createEffectButton', { ns: 'pages' })}
             </Button>
           </div>
         </div>

@@ -375,7 +375,7 @@
   "adminNewNode": {
     "title": "New Node",
     "i18n": "Internationalization",
-    "effects": "Effects",
+    "values": "Values",
     "skillBonusTitle": "Skill Bonus",
     "createSkillBonusButton": "Add Skill Bonus",
     "errorDuplicateSkill": "Two or more skill bonuses are based on the same skill. Merge them before proceeding",
@@ -385,6 +385,12 @@
     "charParamBonusTitle": "Character Param Bonus",
     "createCharParamBonusButton": "Add Character Param Bonus",
     "errorDuplicateCharParam": "Two or more character param bonuses are based on the same skill. Merge them before proceeding",
+    "effectTitle": "Effect",
+    "createEffectButton": "Add Effect",
+    "effectInt": "Effect Internationalization",
+    "actionTitle": "Action",
+    "createActionButton": "Add Action",
+    "actionInt": "Action Internationalization",
     "createButton": "Create Node",
     "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
     "successCreate": "Node successfully created !"

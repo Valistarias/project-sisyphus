@@ -1,6 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import type { IActionType, ISkill } from '../index';
+import type { IActionDuration, IActionType, ISkill } from '../index';
 
 interface IAction {
   /** The title of the action */
@@ -11,20 +11,29 @@ interface IAction {
   i18n?: string;
   /** The action type */
   type: ObjectId;
+  /** The action duration */
+  duration: ObjectId;
+  /** Is this action a karma offering ? */
+  isKarmic: boolean;
+  /** Cost of karma, if karmic offering */
+  karmicCost?: number;
   /** The time spent to execute this action */
   time?: string;
   /** The skill associated to this action (for skill checks and attacks) */
   skill?: ObjectId;
   /** The offset used for the skill check */
-  offsetSkill?: string;
+  offsetSkill?: number;
+  /** How many times the action is usable in a day */
+  uses?: number;
   /** The formula for the damages caused */
   damages?: string;
   /** When the action was created */
   createdAt: Date;
 }
 
-interface HydratedIAction extends Omit<HydratedDocument<IAction>, 'type' | 'skill'> {
+interface HydratedIAction extends Omit<HydratedDocument<IAction>, 'type' | 'skill' | 'duration'> {
   type: IActionType;
+  duration: IActionDuration;
   skill: ISkill;
 }
 
@@ -36,6 +45,13 @@ const actionSchema = new Schema<IAction>({
     type: Schema.Types.ObjectId,
     ref: 'ActionType',
   },
+  duration: {
+    type: Schema.Types.ObjectId,
+    ref: 'ActionDuration',
+  },
+  isKarmic: Boolean,
+  karmicCost: Number,
+  uses: Number,
   time: String,
   skill: {
     type: Schema.Types.ObjectId,

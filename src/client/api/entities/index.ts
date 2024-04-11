@@ -1,5 +1,6 @@
 import Pages from './pages';
 
+import ActionDurations from './actionDurations';
 import Actions from './actions';
 import ActionTypes from './actionTypes';
 import Auth from './auth';
@@ -26,6 +27,7 @@ import Stats from './stats';
 import Users from './users';
 
 export {
+  ActionDurations,
   Actions,
   ActionTypes,
   Auth,

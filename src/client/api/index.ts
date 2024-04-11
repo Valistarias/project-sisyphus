@@ -1,13 +1,14 @@
 import {
-  Actions,
+  ActionDurations,
   ActionTypes,
+  Actions,
   Auth,
   Campaigns,
-  Chapters,
   ChapterTypes,
-  Characters,
+  Chapters,
   CharParamBonuses,
   CharParams,
+  Characters,
   CyberFrameBranches,
   CyberFrames,
   Effects,
@@ -16,8 +17,8 @@ import {
   Notions,
   Pages,
   Rolls,
-  RuleBooks,
   RuleBookTypes,
+  RuleBooks,
   SkillBonuses,
   SkillBranches,
   Skills,
@@ -29,6 +30,7 @@ import {
 export default class Api {
   actions: Actions;
   actionTypes: ActionTypes;
+  actionDurations: ActionDurations;
   auth: Auth;
   campaigns: Campaigns;
   chapters: Chapters;
@@ -55,6 +57,7 @@ export default class Api {
 
   constructor() {
     this.actions = new Actions();
+    this.actionDurations = new ActionDurations();
     this.actionTypes = new ActionTypes();
     this.auth = new Auth();
     this.campaigns = new Campaigns();

@@ -185,5 +185,60 @@
   "charParamBonusStat": {
     "required": "A character parameter is required for this bonus",
     "label": "Character Parameter"
+  },
+  "effectTitle": {
+    "required": "A title is required for this effect",
+    "label": "Title"
+  },
+  "effectType": {
+    "required": "A type is required for this effect",
+    "label": "Type"
+  },
+  "effectSummary": {
+    "required": "A summary is required for this effect",
+    "label": "Summary"
+  },
+  "effectFormula": {
+    "label": "Formula"
+  },
+  "actionTitle": {
+    "required": "A title is required for this action",
+    "label": "Title"
+  },
+  "actionType": {
+    "required": "A type is required for this action",
+    "label": "Type"
+  },
+  "actionDuration": {
+    "required": "A duration is required for this action",
+    "label": "Duration"
+  },
+  "actionDurationDetails": {
+    "label": "Duration details"
+  },
+  "actionSummary": {
+    "required": "A summary is required for this action",
+    "label": "Summary"
+  },
+  "actionSkill": {
+    "label": "Associated skill"
+  },
+  "actionIsKarmic": {
+    "label": "Is kamic offering ?"
+  },
+  "actionKarmicCost": {
+    "label": "Kamic Cost (if any)"
+  },
+  "actionTime": {
+    "label": "Time spent (if more than an action)"
+  },
+  "actionDamages": {
+    "label": "Damages (if any)"
+  },
+  "actionUses": {
+    "label": "How many uses per day (if limited)"
+  },
+  "actionOffsetSkill": {
+    "label": "Formula with the skill check (if any)"
   }
 }

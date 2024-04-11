@@ -11,7 +11,7 @@ import './input.scss';
 
 interface IInput extends IReactHookFormInputs {
   /** The type of input */
-  type?: 'text' | 'password' | 'email' | 'number';
+  type?: 'text' | 'password' | 'email' | 'number' | 'textarea';
   /** The size of the input */
   size?: 'medium' | 'small';
   /** The class of the Textarea element */
@@ -47,6 +47,7 @@ const Input: FC<IInput> = ({
       className={classTrim(`
       input
       input--${size}
+      input--${type}
       ${readOnly === true ? 'input--readonly' : ''}
       ${isFocus ? 'input--focus' : ''}
       ${className ?? ''}
@@ -64,23 +65,42 @@ const Input: FC<IInput> = ({
               </Alabel>
             ) : null}
             <div className="input__decor">
-              <input
-                type={type}
-                readOnly={readOnly}
-                hidden={hidden}
-                placeholder={placeholder}
-                className="input__field"
-                autoComplete={autoComplete ?? undefined}
-                onChange={onChange}
-                value={value ?? ''}
-                onFocus={() => {
-                  setFocus(true);
-                }}
-                onBlur={(e) => {
-                  setFocus(false);
-                  onBlur();
-                }}
-              />
+              {type === 'textarea' ? (
+                <textarea
+                  readOnly={readOnly}
+                  hidden={hidden}
+                  placeholder={placeholder}
+                  className="input__field"
+                  autoComplete={autoComplete ?? undefined}
+                  onChange={onChange}
+                  value={value ?? ''}
+                  onFocus={() => {
+                    setFocus(true);
+                  }}
+                  onBlur={(e) => {
+                    setFocus(false);
+                    onBlur();
+                  }}
+                />
+              ) : (
+                <input
+                  type={type}
+                  readOnly={readOnly}
+                  hidden={hidden}
+                  placeholder={placeholder}
+                  className="input__field"
+                  autoComplete={autoComplete ?? undefined}
+                  onChange={onChange}
+                  value={value ?? ''}
+                  onFocus={() => {
+                    setFocus(true);
+                  }}
+                  onBlur={(e) => {
+                    setFocus(false);
+                    onBlur();
+                  }}
+                />
+              )}
             </div>
             {error?.message !== undefined ? (
               <Aerror className="input__error">{error.message}</Aerror>
