@@ -16,6 +16,7 @@ import type {
 } from './rulebook';
 import type {
   IAction,
+  IActionDuration,
   IActionType,
   ICharParam,
   ICharParamBonus,
@@ -41,6 +42,7 @@ import type {
 
 export type {
   IAction,
+  IActionDuration,
   IActionType,
   ICampaign,
   IChapter,

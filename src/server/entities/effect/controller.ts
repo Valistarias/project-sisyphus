@@ -2,6 +2,7 @@ import { type Request, type Response } from 'express';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import { type IActionType } from '../index';
 
 import { type HydratedIEffect } from './model';
 
@@ -10,6 +11,7 @@ const { Effect } = db;
 const findEffects = async (): Promise<HydratedIEffect[]> =>
   await new Promise((resolve, reject) => {
     Effect.find()
+      .populate<{ type: IActionType }>('type')
       .then(async (res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Effects'));
@@ -25,6 +27,7 @@ const findEffects = async (): Promise<HydratedIEffect[]> =>
 const findEffectById = async (id: string): Promise<HydratedIEffect> =>
   await new Promise((resolve, reject) => {
     Effect.findById(id)
+      .populate<{ type: IActionType }>('type')
       .then(async (res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Effect'));
@@ -38,8 +41,8 @@ const findEffectById = async (id: string): Promise<HydratedIEffect> =>
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, summary, i18n = null, formula } = req.body;
-  if (title === undefined || summary === undefined) {
+  const { title, summary, type, i18n = null, formula } = req.body;
+  if (title === undefined || summary === undefined || type === undefined) {
     res.status(400).send(gemInvalidField('Effect'));
     return;
   }
@@ -48,6 +51,7 @@ const create = (req: Request, res: Response): void => {
     title,
     summary,
     formula,
+    type,
   });
 
   if (i18n !== null) {
@@ -65,7 +69,7 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, title = null, summary = null, i18n, formula = null } = req.body;
+  const { id, title = null, summary = null, i18n, formula = null, type = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Effect ID'));
     return;
@@ -80,6 +84,9 @@ const update = (req: Request, res: Response): void => {
       }
       if (formula !== null) {
         effect.formula = formula;
+      }
+      if (type !== null) {
+        effect.type = type;
       }
 
       if (i18n !== null) {

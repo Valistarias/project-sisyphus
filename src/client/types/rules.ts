@@ -90,6 +90,13 @@ export interface IActionType {
   name: string;
 }
 
+export interface IActionDuration {
+  /** The ID of the action duration */
+  _id: string;
+  /** The name of the action duration */
+  name: string;
+}
+
 export interface IAction {
   /** The ID of the action */
   _id: string;
@@ -120,6 +127,8 @@ export interface ICuratedAction {
 export interface IEffect {
   /** The ID of the effect */
   _id: string;
+  /** The type of the effect */
+  type: IActionType;
   /** The title of the effect */
   title: string;
   /** The summary of the effect */

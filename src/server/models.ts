@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 import {
+  ActionDurationModel,
   ActionModel,
   ActionTypeModel,
   CampaignModel,
@@ -27,6 +28,7 @@ import {
   StatModel,
   UserModel,
   type IAction,
+  type IActionDuration,
   type IActionType,
   type ICampaign,
   type IChapter,
@@ -84,6 +86,8 @@ interface DBType {
   Action: mongoose.Model<IAction>;
   /** The Action Type Model */
   ActionType: mongoose.Model<IActionType>;
+  /** The Action Duration Model */
+  ActionDuration: mongoose.Model<IActionDuration>;
   /** The Effect Model */
   Effect: mongoose.Model<IEffect>;
   /** The Stat Model */
@@ -130,6 +134,7 @@ const db: DBType = {
   Character: CharacterModel(),
   // Rules models
   Action: ActionModel(),
+  ActionDuration: ActionDurationModel(),
   ActionType: ActionTypeModel(),
   Effect: EffectModel(),
   Stat: StatModel(),

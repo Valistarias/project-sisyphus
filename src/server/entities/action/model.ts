@@ -13,7 +13,7 @@ interface IAction {
   type: ObjectId;
   /** The time spent to execute this action */
   time?: string;
-  /** The skill associated to this action (foir skill checks and attacks) */
+  /** The skill associated to this action (for skill checks and attacks) */
   skill?: ObjectId;
   /** The offset used for the skill check */
   offsetSkill?: string;
