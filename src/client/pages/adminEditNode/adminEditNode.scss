@@ -8,7 +8,14 @@
   }
 
   &__head {
-    margin-bottom: 2rem;
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4rem;
+
+    .atitle {
+      margin: 0;
+    }
   }
 
   &__visual {

@@ -171,6 +171,10 @@ const AdminEditSkillBranch: FC = () => {
         confirmCta: t('adminEditSkillBranch.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
       (evtId: string) => {
+        const skillId =
+          typeof skillBranchData?.skillBranch.skill === 'string'
+            ? skillBranchData?.skillBranch.skill
+            : skillBranchData?.skillBranch.skill?._id;
         const confirmDelete = ({ detail }): void => {
           if (detail.proceed === true) {
             api.skillBranches
@@ -185,7 +189,7 @@ const AdminEditSkillBranch: FC = () => {
                     </Alert>
                   ),
                 });
-                navigate(`/admin/skill/${skillBranchData?.skillBranch.skill?._id}`);
+                navigate(`/admin/skill/${skillId}`);
               })
               .catch(({ response }) => {
                 const { data } = response;
@@ -288,8 +292,12 @@ const AdminEditSkillBranch: FC = () => {
         <div className="adminEditSkillBranch__ariane">
           <Ap className="adminEditSkillBranch__ariane__elt">
             {`${t(`terms.skill.name`)}: `}
-            <Aa href={`/admin/skill/${skillBranchData?.skillBranch.skill?._id}`}>
-              {skillBranchData?.skillBranch.skill.title as string}
+            <Aa
+              href={`/admin/skill/${typeof skillBranchData?.skillBranch.skill === 'string' ? skillBranchData?.skillBranch.skill : skillBranchData?.skillBranch.skill._id}`}
+            >
+              {typeof skillBranchData?.skillBranch.skill !== 'string'
+                ? skillBranchData?.skillBranch.skill.title
+                : ''}
             </Aa>
           </Ap>
         </div>

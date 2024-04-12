@@ -88,7 +88,7 @@ const AdminEditSkill: FC = () => {
       defaultData.name = skill.title;
       const selectedfield = stats.find((statType) => statType.value === skill.stat._id);
       if (selectedfield !== undefined) {
-        defaultData.stat = selectedfield.value;
+        defaultData.stat = String(selectedfield.value);
       }
       if (i18n.fr !== undefined) {
         defaultData.nameFr = i18n.fr.title ?? '';

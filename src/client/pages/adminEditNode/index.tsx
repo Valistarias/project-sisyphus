@@ -4,9 +4,9 @@ import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import { useApi, useSystemAlerts } from '../../providers';
+import { useApi, useConfirmMessage, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input, NodeIconSelect, SmartSelect } from '../../molecules';
@@ -107,7 +107,12 @@ const AdminEditNode: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+    setConfirmContent: () => {},
+    ConfMessageEvent: {},
+  };
   const { createAlert, getNewId } = useSystemAlerts();
+  const navigate = useNavigate();
 
   const [displayInt, setDisplayInt] = useState(false);
 
@@ -595,6 +600,81 @@ const AdminEditNode: FC = () => {
     [introEditor, introFrEditor, api, id, nodeData, setError, t, getNewId, createAlert]
   );
 
+  const onAskDelete = useCallback(() => {
+    if (api === undefined || nodeData === null) {
+      return;
+    }
+    setConfirmContent(
+      {
+        title: t('adminEditNode.confirmDeletion.title', { ns: 'pages' }),
+        text: t('adminEditNode.confirmDeletion.text', {
+          ns: 'pages',
+          elt: nodeData?.node.title,
+        }),
+        confirmCta: t('adminEditNode.confirmDeletion.confirmCta', { ns: 'pages' }),
+      },
+      (evtId: string) => {
+        const { node } = nodeData;
+        const route = node.skillBranch !== undefined ? 'skill' : 'cyberframe';
+        let routeId: string;
+        if (node.skillBranch !== undefined) {
+          routeId = node.skillBranch.skill as string;
+        } else if (node.cyberFrameBranch !== undefined) {
+          routeId = node.cyberFrameBranch.cyberFrame as string;
+        }
+        const confirmDelete = ({ detail }): void => {
+          if (detail.proceed === true) {
+            api.nodes
+              .delete({ id })
+              .then(() => {
+                const newId = getNewId();
+                createAlert({
+                  key: newId,
+                  dom: (
+                    <Alert key={newId} id={newId} timer={5}>
+                      <Ap>{t('adminEditNode.successDelete', { ns: 'pages' })}</Ap>
+                    </Alert>
+                  ),
+                });
+                navigate(`/admin/${route}/${routeId}`);
+              })
+              .catch(({ response }) => {
+                const { data } = response;
+                if (data.code === 'CYPU-104') {
+                  setError('root.serverError', {
+                    type: 'server',
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize'),
+                    }),
+                  });
+                } else {
+                  setError('root.serverError', {
+                    type: 'server',
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize'),
+                    }),
+                  });
+                }
+              });
+          }
+          ConfMessageEvent.removeEventListener(evtId, confirmDelete);
+        };
+        ConfMessageEvent.addEventListener(evtId, confirmDelete);
+      }
+    );
+  }, [
+    api,
+    nodeData,
+    setConfirmContent,
+    t,
+    ConfMessageEvent,
+    id,
+    getNewId,
+    createAlert,
+    navigate,
+    setError,
+  ]);
+
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
       calledApi.current = true;
@@ -814,9 +894,17 @@ const AdminEditNode: FC = () => {
       `)}
     >
       <form className="adminEditNode__content" onSubmit={handleSubmit(onSaveNode)} noValidate>
-        <Atitle className="adminEditNode__head" rank={1}>
+        {/* <Atitle className="adminEditNode__head" rank={1}>
           {t('adminEditNode.title', { ns: 'pages' })}
-        </Atitle>
+        </Atitle> */}
+        <div className="adminEditNode__head">
+          <Atitle className="adminEditNode__head" rank={1}>
+            {t('adminEditNode.title', { ns: 'pages' })}
+          </Atitle>
+          <Button onClick={onAskDelete} color="error">
+            {t('adminEditNode.delete', { ns: 'pages' })}
+          </Button>
+        </div>
         <div className="adminEditNode__ariane">
           <Ap className="adminEditNode__ariane__elt">
             {skill !== null
