@@ -30,6 +30,8 @@ interface IGlobalVarsContext {
   triggerCampaignReload: () => void;
   /** Used to trigger the reload of the campaigns */
   triggerRuleBookReload: () => void;
+  /** Used to trigger the reload of all dynamic elements */
+  triggerFullReload: () => void;
 }
 
 interface GlobalVarsProviderProps {
@@ -113,6 +115,10 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       loading,
       ruleBooks,
       campaigns,
+      triggerFullReload: () => {
+        loadCampaigns();
+        loadRuleBooks();
+      },
       triggerCampaignReload: loadCampaigns,
       triggerRuleBookReload: loadRuleBooks,
     }),

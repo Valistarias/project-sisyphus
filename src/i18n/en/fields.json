@@ -152,10 +152,10 @@
     "label": "Branch",
     "select": "Branch Node"
   },
-  "levelNode": {
-    "required": "A Node Level is required",
-    "label": "Level",
-    "select": "Node Level"
+  "rankNode": {
+    "required": "A Node Rank is required",
+    "label": "Rank",
+    "select": "Node Rank"
   },
   "iconNode": {
     "required": "A Node Icon is required",

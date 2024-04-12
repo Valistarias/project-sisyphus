@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
+import i18next from 'i18next';
 import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useApi, useSystemAlerts } from '../../providers';
 
@@ -33,7 +34,7 @@ interface FormValues {
   nameFr: string;
   quote: string;
   quoteFr: string;
-  level: number;
+  rank: number;
   icon: string;
   branch: string;
   skillBonuses?: Record<
@@ -103,6 +104,7 @@ const AdminNewNode: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { search } = useLocation();
+  const navigate = useNavigate();
   const { createAlert, getNewId } = useSystemAlerts();
 
   const params = useMemo(() => new URLSearchParams(search), [search]);
@@ -141,7 +143,7 @@ const AdminNewNode: FC = () => {
 
   const [branches, setBranches] = useState<ICuratedSkillBranch[] | ICuratedCyberFrameBranch[]>([]);
 
-  const [levelSelect, setLevelSelect] = useState<
+  const [rankSelect, setLevelSelect] = useState<
     Array<{
       value: number;
       label: string;
@@ -297,26 +299,6 @@ const AdminNewNode: FC = () => {
               ),
             });
           });
-        // api.skills
-        //   .get({
-        //     skillId: params.get('skillId') ?? '',
-        //   })
-        //   .then((sentSkill: ICuratedSkill) => {
-        //     setLoading(false);
-        //     setSkill(sentSkill);
-        //   })
-        //   .catch(() => {
-        //     setLoading(false);
-        //     const newId = getNewId();
-        //     createAlert({
-        //       key: newId,
-        //       dom: (
-        //         <Alert key={newId} id={newId} timer={5}>
-        //           <Ap>{t('serverErrors.CYPU-301')}</Ap>
-        //         </Alert>
-        //       ),
-        //     });
-        //   });
       } else if (cyberFrameId !== null) {
         api.cyberFrameBranches
           .getAllByCyberFrame({ cyberFrameId })
@@ -468,7 +450,7 @@ const AdminNewNode: FC = () => {
   }, [api, createAlert, getNewId, params, t]);
 
   const onSaveNode: SubmitHandler<FormValues> = useCallback(
-    (elts) => {
+    ({ name, nameFr, quote, quoteFr, rank, icon, branch, ...elts }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -519,64 +501,85 @@ const AdminNewNode: FC = () => {
         });
         return;
       }
-      console.log('elts', elts);
-      console.log('onSaveNode');
-      // let html: string | null = introEditor.getHTML();
-      // const htmlFr = introFrEditor.getHTML();
-      // if (html === '<p class="ap"></p>') {
-      //   html = null;
-      // }
 
-      // let i18n: any | null = null;
+      const skillId = params.get('skillId');
+      const curatedSkillBonuses = skillBonuses.map(({ skill, value }) => ({
+        skill,
+        value: Number(value),
+      }));
+      const curatedStatBonuses = statBonuses.map(({ stat, value }) => ({
+        stat,
+        value: Number(value),
+      }));
+      const curatedCharParamBonuses = charParamBonuses.map(({ charParam, value }) => ({
+        charParam,
+        value: Number(value),
+      }));
 
-      // if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-      //   i18n = {
-      //     fr: {
-      //       title: nameFr,
-      //       summary: htmlFr,
-      //     },
-      //   };
-      // }
+      let html: string | null = introEditor.getHTML();
+      const htmlFr = introFrEditor.getHTML();
+      if (html === '<p class="ap"></p>') {
+        html = null;
+      }
 
-      // api.quotees
-      //   .create({
-      //     title: name,
-      //     skill: params.get('skillId'),
-      //     summary: html,
-      //     i18n,
-      //   })
-      //   .then((quote) => {
-      //     const newId = getNewId();
-      //     createAlert({
-      //       key: newId,
-      //       dom: (
-      //         <Alert key={newId} id={newId} timer={5}>
-      //           <Ap>{t('adminNewNode.successCreate', { ns: 'pages' })}</Ap>
-      //         </Alert>
-      //       ),
-      //     });
-      //     navigate(`/admin/skillbranch/${quote._id}`);
-      //   })
-      //   .catch(({ response }) => {
-      //     const { data } = response;
-      //     if (data.code === 'CYPU-104') {
-      //       setError('root.serverError', {
-      //         type: 'server',
-      //         message: t(`serverErrors.${data.code}`, {
-      //           field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
-      //         }),
-      //       });
-      //     } else {
-      //       setError('root.serverError', {
-      //         type: 'server',
-      //         message: t(`serverErrors.${data.code}`, {
-      //           field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
-      //         }),
-      //       });
-      //     }
-      //   });
+      let i18n: any | null = null;
+
+      if (nameFr !== '' || htmlFr !== '<p class="ap"></p>' || quoteFr !== '') {
+        i18n = {
+          fr: {
+            title: nameFr,
+            summary: htmlFr,
+            quote: quoteFr,
+          },
+        };
+      }
+
+      api.nodes
+        .create({
+          title: name,
+          ...(skillId !== undefined ? { skillBranch: branch } : { cyberFrameBranch: branch }),
+          summary: html,
+          rank: Number(rank),
+          icon,
+          quote,
+          i18n,
+          skillBonuses: curatedSkillBonuses,
+          statBonuses: curatedStatBonuses,
+          charParamBonuses: curatedCharParamBonuses,
+        })
+        .then((quote) => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert key={newId} id={newId} timer={5}>
+                <Ap>{t('adminNewNode.successCreate', { ns: 'pages' })}</Ap>
+              </Alert>
+            ),
+          });
+          navigate(`/admin/node/${quote._id}`);
+        })
+        .catch(({ response }) => {
+          const { data } = response;
+          console.log('response', response);
+          if (data.code === 'CYPU-104') {
+            setError('root.serverError', {
+              type: 'server',
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
+              }),
+            });
+          } else {
+            setError('root.serverError', {
+              type: 'server',
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
+              }),
+            });
+          }
+        });
     },
-    [introEditor, introFrEditor, api, setError, t]
+    [introEditor, introFrEditor, api, params, setError, t, getNewId, createAlert, navigate]
   );
 
   useEffect(() => {
@@ -588,10 +591,10 @@ const AdminNewNode: FC = () => {
   }, [api, createAlert, getNewId, getData, t]);
 
   useEffect(() => {
-    if (levelSelect.length > 0) {
-      setValue('level', levelSelect[0].value);
+    if (rankSelect.length > 0) {
+      setValue('rank', rankSelect[0].value);
     }
-  }, [levelSelect, setValue]);
+  }, [rankSelect, setValue]);
 
   return (
     <div
@@ -601,7 +604,7 @@ const AdminNewNode: FC = () => {
       `)}
     >
       <form className="adminNewNode__content" onSubmit={handleSubmit(onSaveNode)} noValidate>
-        <Atitle className="adminNewNode__head" level={1}>
+        <Atitle className="adminNewNode__head" rank={1}>
           {t('adminNewNode.title', { ns: 'pages' })}
         </Atitle>
         <div className="adminNewNode__ariane">
@@ -668,14 +671,14 @@ const AdminNewNode: FC = () => {
           <SmartSelect
             control={control}
             placeholder={'0'}
-            inputName="level"
+            inputName="rank"
             rules={{
-              required: t('levelNode.required', { ns: 'fields' }),
+              required: t('rankNode.required', { ns: 'fields' }),
             }}
-            label={t('levelNode.label', { ns: 'fields' })}
-            options={levelSelect}
-            className="adminNewNode__basics__level"
-            disabled={levelSelect.length === 0}
+            label={t('rankNode.label', { ns: 'fields' })}
+            options={rankSelect}
+            className="adminNewNode__basics__rank"
+            disabled={rankSelect.length === 0}
           />
         </div>
         <div className="adminNewNode__details">
@@ -694,14 +697,14 @@ const AdminNewNode: FC = () => {
             className="adminNewNode__details__quote"
           />
         </div>
-        <Atitle className="adminNewNode__bonus-title" level={2}>
+        <Atitle className="adminNewNode__bonus-title" rank={2}>
           {t('adminNewNode.values', { ns: 'pages' })}
         </Atitle>
         <div className="adminNewNode__bonuses">
           <div className="adminNewNode__bonuses__elts">
             {skillBonusIds.map((skillBonusId) => (
               <div className="adminNewNode__bonus" key={`skill-${skillBonusId}`}>
-                <Atitle className="adminNewNode__bonus__title" level={4}>
+                <Atitle className="adminNewNode__bonus__title" rank={4}>
                   {t('adminNewNode.skillBonusTitle', { ns: 'pages' })}
                 </Atitle>
                 <div className="adminNewNode__bonus__fields">
@@ -746,7 +749,7 @@ const AdminNewNode: FC = () => {
             ))}
             {statBonusIds.map((statBonusId) => (
               <div className="adminNewNode__bonus" key={`stat-${statBonusId}`}>
-                <Atitle className="adminNewNode__bonus__title" level={4}>
+                <Atitle className="adminNewNode__bonus__title" rank={4}>
                   {t('adminNewNode.statBonusTitle', { ns: 'pages' })}
                 </Atitle>
                 <div className="adminNewNode__bonus__fields">
@@ -791,7 +794,7 @@ const AdminNewNode: FC = () => {
             ))}
             {charParamBonusIds.map((charParamBonusId) => (
               <div className="adminNewNode__bonus" key={`charParam-${charParamBonusId}`}>
-                <Atitle className="adminNewNode__bonus__title" level={4}>
+                <Atitle className="adminNewNode__bonus__title" rank={4}>
                   {t('adminNewNode.charParamBonusTitle', { ns: 'pages' })}
                 </Atitle>
                 <div className="adminNewNode__bonus__fields">
@@ -836,7 +839,7 @@ const AdminNewNode: FC = () => {
             ))}
             {effectIds.map((effectId) => (
               <div className="adminNewNode__bonus" key={`charParam-${effectId}`}>
-                <Atitle className="adminNewNode__bonus__title" level={4}>
+                <Atitle className="adminNewNode__bonus__title" rank={4}>
                   {t('adminNewNode.effectTitle', { ns: 'pages' })}
                 </Atitle>
                 <div className="adminNewNode__bonus__fields adminNewNode__bonus__fields--large">
@@ -875,7 +878,7 @@ const AdminNewNode: FC = () => {
                     label={t('effectFormula.label', { ns: 'fields' })}
                     className="adminNewNode__bonus__value adminNewNode__bonus__value--l"
                   />
-                  <Atitle className="adminNewNode__bonus__title" level={4}>
+                  <Atitle className="adminNewNode__bonus__title" rank={4}>
                     {t('adminNewNode.effectInt', { ns: 'pages' })}
                   </Atitle>
                   <Input
@@ -912,7 +915,7 @@ const AdminNewNode: FC = () => {
             ))}
             {actionIds.map((actionId) => (
               <div className="adminNewNode__bonus" key={`charParam-${actionId}`}>
-                <Atitle className="adminNewNode__bonus__title" level={4}>
+                <Atitle className="adminNewNode__bonus__title" rank={4}>
                   {t('adminNewNode.actionTitle', { ns: 'pages' })}
                 </Atitle>
                 <div className="adminNewNode__bonus__fields adminNewNode__bonus__fields--large">
@@ -1007,7 +1010,7 @@ const AdminNewNode: FC = () => {
                     label={t('actionUses.label', { ns: 'fields' })}
                     className="adminNewNode__bonus__value adminNewNode__bonus__value--l"
                   />
-                  <Atitle className="adminNewNode__bonus__title" level={4}>
+                  <Atitle className="adminNewNode__bonus__title" rank={4}>
                     {t('adminNewNode.actionInt', { ns: 'pages' })}
                   </Atitle>
                   <Input
@@ -1069,7 +1072,7 @@ const AdminNewNode: FC = () => {
         </div>
         <div className="adminNewNode__intl-title">
           <div className="adminNewNode__intl-title__content">
-            <Atitle className="adminNewNode__intl-title__title" level={2}>
+            <Atitle className="adminNewNode__intl-title__title" rank={2}>
               {t('adminNewNode.i18n', { ns: 'pages' })}
             </Atitle>
             <Ap className="adminNewNode__intl-title__info">

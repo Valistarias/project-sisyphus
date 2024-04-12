@@ -92,11 +92,16 @@ const verifyToken = (
     config.secret(process.env) as Secret | GetPublicKeyOrSecret,
     (err, decoded: jwt.JwtPayload) => {
       if (err !== null || decoded === undefined) {
-        res
-          .status(mute !== undefined ? 200 : 401)
-          .send(mute !== undefined ? {} : gemUnauthorized());
-        return;
+        if (err !== null) {
+          const isMute = mute !== undefined;
+          res.status(isMute ? 200 : 401).send(isMute ? {} : gemUnauthorized());
+          return;
+        }
       }
+      // Re-sign the token
+      jwt.sign({ id: decoded.id }, config.secret(process.env) as Secret, {
+        expiresIn: 86400, // 24 hours
+      });
       req.userId = decoded.id as string;
       next();
     }
@@ -114,6 +119,10 @@ const getUserFromToken = async (req: IVerifyTokenRequest): Promise<HydratedIUser
           if (err !== null || decoded === undefined) {
             reject(err);
           }
+          // Re-sign the token
+          jwt.sign({ id: decoded.id }, config.secret(process.env) as Secret, {
+            expiresIn: 86400, // 24 hours
+          });
           findUserById(decoded.id as string)
             .then((user) => {
               if (user === undefined) {
@@ -197,8 +206,13 @@ const checkRouteRights = (req: Request, res: Response, next: () => void): void =
           }
         }
       })
-      .catch(() => {
-        next();
+      .catch((err: Error) => {
+        if (err.name === 'TokenExpiredError') {
+          req.session = null;
+          res.redirect('/');
+        } else {
+          next();
+        }
       });
   }
 };

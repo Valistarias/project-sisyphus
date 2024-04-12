@@ -119,11 +119,6 @@ const create = (req: Request, res: Response): void => {
     skillBranch,
     cyberFrameBranch,
     rank,
-    effects,
-    actions,
-    skillBonuses,
-    statBonuses,
-    charParamBonuses,
     overrides,
   });
 
@@ -131,14 +126,16 @@ const create = (req: Request, res: Response): void => {
     node.i18n = JSON.stringify(i18n);
   }
 
-  node
-    .save()
-    .then(() => {
-      res.send(node);
-    })
-    .catch((err: Error) => {
-      res.status(500).send(gemServerError(err));
-    });
+  console.log('node', node);
+
+  // node
+  //   .save()
+  //   .then(() => {
+  //     res.send(node);
+  //   })
+  //   .catch((err: Error) => {
+  //     res.status(500).send(gemServerError(err));
+  //   });
 };
 
 const update = (req: Request, res: Response): void => {
