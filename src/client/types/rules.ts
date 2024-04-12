@@ -101,9 +101,9 @@ export interface IAction {
   /** The ID of the action */
   _id: string;
   /** The type of the action */
-  type: IActionType;
+  type: string;
   /** The duration of the action */
-  duration: IActionDuration;
+  duration: string;
   /** The title of the action */
   title: string;
   /** The summary of the action */
@@ -111,7 +111,7 @@ export interface IAction {
   /** The time to execute the action ? */
   time?: string;
   /** The associated skill */
-  skill?: ISkill;
+  skill?: string;
   /** The bonus (or malus) associated with the skill */
   offsetSkill?: number;
   /** Is this action a karma offering ? */
@@ -124,6 +124,8 @@ export interface IAction {
   damages: string;
   /** When the action was created */
   createdAt: string;
+  /** The internationalization */
+  i18n: InternationalizationType;
 }
 
 export interface ICuratedAction {
@@ -136,7 +138,7 @@ export interface IEffect {
   /** The ID of the effect */
   _id: string;
   /** The type of the effect */
-  type: IActionType;
+  type: string;
   /** The title of the effect */
   title: string;
   /** The summary of the effect */
@@ -145,6 +147,8 @@ export interface IEffect {
   formula?: string;
   /** When the effect was created */
   createdAt: string;
+  /** The internationalization */
+  i18n: InternationalizationType;
 }
 
 export interface ICuratedEffect {

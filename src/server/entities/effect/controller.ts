@@ -39,6 +39,121 @@ const findEffectById = async (id: string): Promise<HydratedIEffect> =>
         reject(err);
       });
   });
+interface ISentEffect {
+  id?: string;
+  title: string;
+  summary: string;
+  formula?: string;
+  type: string;
+  i18n?: {
+    title: string;
+    summary: string;
+  };
+}
+
+const updateEffects = (
+  elts: ISentEffect[],
+  ids: string[],
+  cb: (err: Error | null, res?: string[]) => void
+): void => {
+  if (elts.length === 0) {
+    cb(null, ids);
+    return;
+  }
+  const { id, title, summary, type, i18n = null, formula } = elts[0];
+  if (id === undefined) {
+    const effect = new Effect({
+      title,
+      summary,
+      formula,
+      type,
+    });
+
+    if (i18n !== null) {
+      effect.i18n = JSON.stringify(i18n);
+    }
+
+    effect
+      .save()
+      .then(() => {
+        ids.push(String(effect._id));
+        elts.shift();
+        updateEffects([...elts], ids, cb);
+      })
+      .catch(() => {
+        cb(new Error('Error reading or creating effect'));
+      });
+  } else {
+    findEffectById(id)
+      .then((effect) => {
+        if (title !== null) {
+          effect.title = title;
+        }
+        if (summary !== null) {
+          effect.summary = summary;
+        }
+        if (formula !== null) {
+          effect.formula = formula;
+        }
+        if (type !== null) {
+          effect.type = type;
+        }
+
+        if (i18n !== null) {
+          const newIntl = {
+            ...(effect.i18n !== null && effect.i18n !== undefined && effect.i18n !== ''
+              ? JSON.parse(effect.i18n)
+              : {}),
+          };
+
+          Object.keys(i18n as Record<string, any>).forEach((lang) => {
+            newIntl[lang] = i18n[lang];
+          });
+
+          effect.i18n = JSON.stringify(newIntl);
+        }
+
+        effect
+          .save()
+          .then(() => {
+            ids.push(id);
+            elts.shift();
+            updateEffects([...elts], ids, cb);
+          })
+          .catch(() => {
+            cb(new Error('Error reading or creating effect'));
+          });
+      })
+      .catch(() => {
+        cb(new Error('Error reading or creating effect'));
+      });
+  }
+};
+
+const smartUpdateEffects = async ({
+  effectsToRemove,
+  effectsToUpdate,
+}: {
+  effectsToRemove: string[];
+  effectsToUpdate: ISentEffect[];
+}): Promise<string[]> =>
+  await new Promise((resolve, reject) => {
+    Effect.deleteMany({
+      _id: { $in: effectsToRemove },
+    })
+      .then(() => {
+        updateEffects(effectsToUpdate, [], (err: Error | null, ids?: string[]) => {
+          if (err !== null) {
+            reject(err);
+          } else {
+            resolve(ids ?? []);
+          }
+        });
+      })
+      .catch((err: Error) => {
+        reject(err);
+      });
+  });
 
 const create = (req: Request, res: Response): void => {
   const { title, summary, type, i18n = null, formula } = req.body;
@@ -191,4 +306,4 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteEffect, findAll, findEffectById, findSingle, update };
+export { create, deleteEffect, findAll, findEffectById, findSingle, smartUpdateEffects, update };

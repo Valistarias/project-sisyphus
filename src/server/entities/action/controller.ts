@@ -45,6 +45,172 @@ const findActionById = async (id: string): Promise<HydratedIAction> =>
       });
   });
 
+interface ISentAction {
+  id?: string;
+  title: string;
+  summary: string;
+  type: string;
+  skill: string;
+  duration: string;
+  time?: string;
+  damages?: string;
+  offsetSkill?: number;
+  uses?: number;
+  isKarmic?: boolean;
+  karmicCost?: number;
+  i18n?: {
+    title: string;
+    summary: string;
+    time: string;
+  };
+}
+
+const updateActions = (
+  elts: ISentAction[],
+  ids: string[],
+  cb: (err: Error | null, res?: string[]) => void
+): void => {
+  if (elts.length === 0) {
+    cb(null, ids);
+    return;
+  }
+  const {
+    id,
+    title = null,
+    summary = null,
+    i18n = null,
+    type = null,
+    duration = null,
+    time = null,
+    skill = null,
+    uses = null,
+    offsetSkill = null,
+    damages = null,
+    isKarmic = null,
+    karmicCost = null,
+  } = elts[0];
+  if (id === undefined) {
+    const action = new Action({
+      title,
+      summary,
+      type,
+      duration,
+      time,
+      skill,
+      uses,
+      offsetSkill,
+      damages,
+      isKarmic,
+      karmicCost,
+    });
+
+    if (i18n !== null) {
+      action.i18n = JSON.stringify(i18n);
+    }
+
+    action
+      .save()
+      .then(() => {
+        ids.push(String(action._id));
+        elts.shift();
+        updateActions([...elts], ids, cb);
+      })
+      .catch(() => {
+        cb(new Error('Error reading or creating action'));
+      });
+  } else {
+    findActionById(id)
+      .then((action) => {
+        if (title !== null) {
+          action.title = title;
+        }
+        if (summary !== null) {
+          action.summary = summary;
+        }
+        if (type !== null) {
+          action.type = type;
+        }
+        if (time !== null) {
+          action.time = time;
+        }
+        if (skill !== null) {
+          action.skill = skill;
+        }
+        if (offsetSkill !== null) {
+          action.offsetSkill = offsetSkill;
+        }
+        if (damages !== null) {
+          action.damages = damages;
+        }
+        if (duration !== null) {
+          action.duration = duration;
+        }
+        if (isKarmic !== null) {
+          action.isKarmic = isKarmic;
+        }
+        if (karmicCost !== null) {
+          action.karmicCost = karmicCost;
+        }
+        if (uses !== null) {
+          action.uses = uses;
+        }
+
+        if (i18n !== null) {
+          const newIntl = {
+            ...(action.i18n !== null && action.i18n !== undefined && action.i18n !== ''
+              ? JSON.parse(action.i18n)
+              : {}),
+          };
+
+          Object.keys(i18n as Record<string, any>).forEach((lang) => {
+            newIntl[lang] = i18n[lang];
+          });
+
+          action.i18n = JSON.stringify(newIntl);
+        }
+
+        action
+          .save()
+          .then(() => {
+            ids.push(id);
+            elts.shift();
+            updateActions([...elts], ids, cb);
+          })
+          .catch(() => {
+            cb(new Error('Error reading or creating action'));
+          });
+      })
+      .catch(() => {
+        cb(new Error('Error reading or creating action'));
+      });
+  }
+};
+
+const smartUpdateActions = async ({
+  actionsToRemove,
+  actionsToUpdate,
+}: {
+  actionsToRemove: string[];
+  actionsToUpdate: ISentAction[];
+}): Promise<string[]> =>
+  await new Promise((resolve, reject) => {
+    Action.deleteMany({
+      _id: { $in: actionsToRemove },
+    })
+      .then(() => {
+        updateActions(actionsToUpdate, [], (err: Error | null, ids?: string[]) => {
+          if (err !== null) {
+            reject(err);
+          } else {
+            resolve(ids ?? []);
+          }
+        });
+      })
+      .catch((err: Error) => {
+        reject(err);
+      });
+  });
+
 const create = (req: Request, res: Response): void => {
   const {
     title,
@@ -256,4 +422,4 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteAction, findActionById, findAll, findSingle, update };
+export { create, deleteAction, findActionById, findAll, findSingle, smartUpdateActions, update };

@@ -32,9 +32,9 @@ interface IAction {
 }
 
 interface HydratedIAction extends Omit<HydratedDocument<IAction>, 'type' | 'skill' | 'duration'> {
-  type: IActionType;
-  duration: IActionDuration;
-  skill: ISkill;
+  type: IActionType | string;
+  duration: IActionDuration | string;
+  skill: ISkill | string;
 }
 
 const actionSchema = new Schema<IAction>({

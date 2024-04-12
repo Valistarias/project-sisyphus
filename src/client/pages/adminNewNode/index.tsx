@@ -58,7 +58,7 @@ interface FormValues {
       value: number;
     }
   >;
-  effect?: Record<
+  effects?: Record<
     string,
     {
       title: string;
@@ -69,7 +69,7 @@ interface FormValues {
       formula?: string;
     }
   >;
-  action?: Record<
+  actions?: Record<
     string,
     {
       title: string;
@@ -450,7 +450,7 @@ const AdminNewNode: FC = () => {
   }, [api, createAlert, getNewId, params, t]);
 
   const onSaveNode: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, quote, quoteFr, rank, icon, branch, ...elts }) => {
+    ({ name, nameFr, quote, quoteFr, rank, icon, branch, effects, actions, ...elts }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -516,6 +516,70 @@ const AdminNewNode: FC = () => {
         value: Number(value),
       }));
 
+      const effectsArr = effects !== undefined ? Object.values(effects) : [];
+      const curatedEffects = effectsArr.map(
+        ({ formula, type, title, summary, titleFr, summaryFr }) => ({
+          title,
+          summary,
+          formula,
+          type,
+          i18n: {
+            ...(titleFr !== undefined || summaryFr !== undefined
+              ? {
+                  fr: {
+                    title: titleFr,
+                    summary: summaryFr,
+                  },
+                }
+              : {}),
+          },
+        })
+      );
+
+      const actionsArr = actions !== undefined ? Object.values(actions) : [];
+
+      const curatedActions = actionsArr.map(
+        ({
+          type,
+          title,
+          summary,
+          titleFr,
+          skill,
+          duration,
+          time,
+          timeFr,
+          damages,
+          offsetSkill,
+          uses,
+          isKarmic,
+          karmicCost,
+          summaryFr,
+        }) => ({
+          title,
+          summary,
+          type,
+          skill,
+          duration,
+          time,
+          damages,
+          offsetSkill,
+          uses,
+          isKarmic,
+          karmicCost,
+          i18n: {
+            ...(titleFr !== undefined || summaryFr !== undefined || timeFr !== undefined
+              ? {
+                  fr: {
+                    title: titleFr,
+                    summary: summaryFr,
+                    time: timeFr,
+                  },
+                }
+              : {}),
+          },
+        })
+      );
+
       let html: string | null = introEditor.getHTML();
       const htmlFr = introFrEditor.getHTML();
       if (html === '<p class="ap"></p>') {
@@ -546,6 +610,8 @@ const AdminNewNode: FC = () => {
           skillBonuses: curatedSkillBonuses,
           statBonuses: curatedStatBonuses,
           charParamBonuses: curatedCharParamBonuses,
+          effects: curatedEffects,
+          actions: curatedActions,
         })
         .then((quote) => {
           const newId = getNewId();

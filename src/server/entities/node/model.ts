@@ -28,9 +28,9 @@ interface INode {
   /** The position/rank where the node is located */
   rank: number;
   /** The effects related to the node */
-  effects?: ObjectId[];
+  effects?: string[] | ObjectId[];
   /** The actions related to the node */
-  actions?: ObjectId[];
+  actions?: string[] | ObjectId[];
   /** The skill bonuses related to the node */
   skillBonuses?: string[] | ObjectId[];
   /** The stat bonuses related to the node */
@@ -54,8 +54,8 @@ interface HydratedINode
     | 'skillBranch'
     | 'cyberFrameBranch'
   > {
-  effects: IEffect[];
-  actions: IAction[];
+  effects: IEffect[] | string[];
+  actions: IAction[] | string[];
   skillBonuses: ISkillBonus[] | string[];
   statBonuses: IStatBonus[] | string[];
   charParamBonuses: ICharParamBonus[] | string[];

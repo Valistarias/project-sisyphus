@@ -59,9 +59,10 @@ interface FormValues {
       value: number;
     }
   >;
-  effect?: Record<
+  effects?: Record<
     string,
     {
+      id: string;
       title: string;
       titleFr?: string;
       summary: string;
@@ -70,22 +71,23 @@ interface FormValues {
       formula?: string;
     }
   >;
-  action?: Record<
+  actions?: Record<
     string,
     {
+      id: string;
       title: string;
       titleFr?: string;
       summary: string;
       summaryFr?: string;
       type: string;
-      skill: string;
+      skill?: string;
       duration: string;
       time?: string;
       timeFr?: string;
       damages?: string;
       offsetSkill?: number;
       uses?: number;
-      isKarmic?: boolean;
+      isKarmic?: string;
       karmicCost?: number;
     }
   >;
@@ -208,11 +210,9 @@ const AdminEditNode: FC = () => {
         defaultData.skillBonuses = {};
       }
       defaultData.skillBonuses[`skill-${idIncrement.current}`] = {
-        skill: '',
-        value: 0,
+        skill: skillBonus.skill,
+        value: skillBonus.value,
       };
-      defaultData.skillBonuses[`skill-${idIncrement.current}`].skill = skillBonus.skill;
-      defaultData.skillBonuses[`skill-${idIncrement.current}`].value = skillBonus.value;
 
       tempSkillBonusId.push(idIncrement.current);
       idIncrement.current += 1;
@@ -226,11 +226,9 @@ const AdminEditNode: FC = () => {
         defaultData.statBonuses = {};
       }
       defaultData.statBonuses[`stat-${idIncrement.current}`] = {
-        stat: '',
-        value: 0,
+        stat: statBonus.stat,
+        value: statBonus.value,
       };
-      defaultData.statBonuses[`stat-${idIncrement.current}`].stat = statBonus.stat;
-      defaultData.statBonuses[`stat-${idIncrement.current}`].value = statBonus.value;
 
       tempStatBonusId.push(idIncrement.current);
       idIncrement.current += 1;
@@ -244,17 +242,64 @@ const AdminEditNode: FC = () => {
         defaultData.charParamBonuses = {};
       }
       defaultData.charParamBonuses[`charParam-${idIncrement.current}`] = {
-        charParam: '',
-        value: 0,
+        charParam: charParamBonus.charParam,
+        value: charParamBonus.value,
       };
-      defaultData.charParamBonuses[`charParam-${idIncrement.current}`].charParam =
-        charParamBonus.charParam;
-      defaultData.charParamBonuses[`charParam-${idIncrement.current}`].value = charParamBonus.value;
 
       tempCharParamBonusId.push(idIncrement.current);
       idIncrement.current += 1;
     });
     setCharParamBonusIds(tempCharParamBonusId);
+
+    // Init Actions
+    const tempActionId: number[] = [];
+    node.actions?.forEach((action) => {
+      if (defaultData.actions === undefined) {
+        defaultData.actions = {};
+      }
+      defaultData.actions[`action-${idIncrement.current}`] = {
+        id: action._id,
+        title: action.title,
+        type: action.type,
+        duration: action.duration,
+        ...(action.skill !== undefined ? { skill: action.skill } : {}),
+        ...(action.damages !== undefined ? { damages: action.damages } : {}),
+        ...(action.offsetSkill !== undefined ? { offsetSkill: action.offsetSkill } : {}),
+        ...(action.uses !== undefined ? { uses: action.uses } : {}),
+        ...(action.isKarmic !== undefined ? { isKarmic: action.isKarmic ? '1' : '0' } : {}),
+        ...(action.karmicCost !== undefined ? { karmicCost: action.karmicCost } : {}),
+        ...(action.time !== undefined ? { time: action.time } : {}),
+        summary: action.summary,
+        titleFr: action.i18n?.fr?.title,
+        summaryFr: action.i18n?.fr?.summary,
+        timeFr: action.i18n?.fr?.time,
+      };
+
+      tempActionId.push(idIncrement.current);
+      idIncrement.current += 1;
+    });
+    setActionIds(tempActionId);
+
+    // Init Effects
+    const tempEffectId: number[] = [];
+    node.effects?.forEach((effect) => {
+      if (defaultData.effects === undefined) {
+        defaultData.effects = {};
+      }
+      defaultData.effects[`effect-${idIncrement.current}`] = {
+        id: effect._id,
+        title: effect.title,
+        type: effect.type,
+        formula: effect.formula,
+        summary: effect.summary,
+        titleFr: effect.i18n?.fr?.title,
+        summaryFr: effect.i18n?.fr?.summary,
+      };
+
+      tempEffectId.push(idIncrement.current);
+      idIncrement.current += 1;
+    });
+    setEffectIds(tempEffectId);
 
     return defaultData;
   }, []);
@@ -358,7 +403,7 @@ const AdminEditNode: FC = () => {
   }, []);
 
   const onSaveNode: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, quote, quoteFr, rank, icon, branch, ...elts }) => {
+    ({ name, nameFr, quote, quoteFr, rank, icon, branch, effects, actions, ...elts }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -419,6 +464,73 @@ const AdminEditNode: FC = () => {
         charParam,
         value: Number(value),
       }));
+
+      const effectsArr = effects !== undefined ? Object.values(effects) : [];
+      const curatedEffects = effectsArr.map(
+        ({ id, formula, type, title, summary, titleFr, summaryFr }) => ({
+          ...(id !== undefined ? { id } : {}),
+          title,
+          summary,
+          formula,
+          type,
+          i18n: {
+            ...(titleFr !== undefined || summaryFr !== undefined
+              ? {
+                  fr: {
+                    title: titleFr,
+                    summary: summaryFr,
+                  },
+                }
+              : {}),
+          },
+        })
+      );
+
+      const actionsArr = actions !== undefined ? Object.values(actions) : [];
+      const curatedActions = actionsArr.map(
+        ({
+          id,
+          title,
+          summary,
+          titleFr,
+          skill,
+          duration,
+          type,
+          time,
+          timeFr,
+          damages,
+          offsetSkill,
+          uses,
+          isKarmic,
+          karmicCost,
+          summaryFr,
+        }) => ({
+          ...(id !== undefined ? { id } : {}),
+          title,
+          summary,
+          skill,
+          duration,
+          damages,
+          offsetSkill,
+          isKarmic,
+          karmicCost,
+          uses,
+          time,
+          type,
+          i18n: {
+            ...(titleFr !== undefined || summaryFr !== undefined || timeFr !== undefined
+              ? {
+                  fr: {
+                    title: titleFr,
+                    summary: summaryFr,
+                    time: timeFr,
+                  },
+                }
+              : {}),
+          },
+        })
+      );
+
       let html: string | null = introEditor.getHTML();
       const htmlFr = introFrEditor.getHTML();
       if (html === '<p class="ap"></p>') {
@@ -447,6 +559,8 @@ const AdminEditNode: FC = () => {
           skillBonuses: curatedSkillBonuses,
           statBonuses: curatedStatBonuses,
           charParamBonuses: curatedCharParamBonuses,
+          effects: curatedEffects,
+          actions: curatedActions,
         })
         .then((quote) => {
           const newId = getNewId();
@@ -680,14 +794,6 @@ const AdminEditNode: FC = () => {
         });
     }
   }, [api, createAlert, getNewId, id, t]);
-
-  // useEffect(() => {
-  //   if (api !== undefined && !calledApi.current) {
-  //     setLoading(true);
-  //     calledApi.current = true;
-  //     getData();
-  //   }
-  // }, [api, createAlert, getNewId, getData, t]);
 
   useEffect(() => {
     if (rankSelect.length > 0) {

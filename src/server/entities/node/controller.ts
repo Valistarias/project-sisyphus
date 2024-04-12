@@ -3,7 +3,9 @@ import { type ObjectId } from 'mongoose';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import { smartUpdateActions } from '../action/controller';
 import { curateCharParamBonusIds } from '../charParamBonus/controller';
+import { smartUpdateEffects } from '../effect/controller';
 import {
   type IAction,
   type ICharParamBonus,
@@ -172,10 +174,34 @@ const create = (req: Request, res: Response): void => {
                   String(charParamBonusId)
                 );
               }
-              node
-                .save()
-                .then(() => {
-                  res.send(node);
+              smartUpdateEffects({
+                effectsToRemove: [],
+                effectsToUpdate: effects,
+              })
+                .then((effectsIds) => {
+                  if (effectsIds.length > 0) {
+                    node.effects = effectsIds.map((effectsId) => String(effectsId));
+                  }
+                  smartUpdateActions({
+                    actionsToRemove: [],
+                    actionsToUpdate: actions,
+                  })
+                    .then((actionsIds) => {
+                      if (actionsIds.length > 0) {
+                        node.actions = actionsIds.map((actionsId) => String(actionsId));
+                      }
+                      node
+                        .save()
+                        .then(() => {
+                          res.send(node);
+                        })
+                        .catch((err: Error) => {
+                          res.status(500).send(gemServerError(err));
+                        });
+                    })
+                    .catch((err: Error) => {
+                      res.status(500).send(gemServerError(err));
+                    });
                 })
                 .catch((err: Error) => {
                   res.status(500).send(gemServerError(err));
@@ -377,6 +403,32 @@ const update = (req: Request, res: Response): void => {
         []
       );
 
+      interface IEffectElt extends IEffect {
+        _id: ObjectId;
+      }
+      const effectsToRemove = node.effects.reduce((result: string[], elt: IEffectElt) => {
+        const foundEffect = effects.find(
+          (effect) => effect.id !== undefined && String(effect.id) === String(elt._id)
+        );
+        if (foundEffect === undefined) {
+          result.push(String(elt._id));
+        }
+        return result;
+      }, []);
+
+      interface IActionElt extends IAction {
+        _id: ObjectId;
+      }
+      const actionsToRemove = node.actions.reduce((result: string[], elt: IActionElt) => {
+        const foundAction = actions.find(
+          (action) => action.id !== undefined && String(action.id) === String(elt._id)
+        );
+        if (foundAction === undefined) {
+          result.push(String(elt._id));
+        }
+        return result;
+      }, []);
+
       if (i18n !== null) {
         const newIntl = {
           ...(node.i18n !== null && node.i18n !== undefined && node.i18n !== ''
@@ -420,10 +472,34 @@ const update = (req: Request, res: Response): void => {
                       String(charParamBonusId)
                     );
                   }
-                  node
-                    .save()
-                    .then(() => {
-                      res.send({ message: 'Node was updated successfully!', node });
+                  smartUpdateEffects({
+                    effectsToRemove,
+                    effectsToUpdate: effects,
+                  })
+                    .then((effectsIds) => {
+                      if (effectsIds.length > 0) {
+                        node.effects = effectsIds.map((effectsId) => String(effectsId));
+                      }
+                      smartUpdateActions({
+                        actionsToRemove,
+                        actionsToUpdate: actions,
+                      })
+                        .then((actionsIds) => {
+                          if (actionsIds.length > 0) {
+                            node.actions = actionsIds.map((actionsId) => String(actionsId));
+                          }
+                          node
+                            .save()
+                            .then(() => {
+                              res.send({ message: 'Node was updated successfully!', node });
+                            })
+                            .catch((err: Error) => {
+                              res.status(500).send(gemServerError(err));
+                            });
+                        })
+                        .catch((err: Error) => {
+                          res.status(500).send(gemServerError(err));
+                        });
                     })
                     .catch((err: Error) => {
                       res.status(500).send(gemServerError(err));
@@ -474,7 +550,7 @@ const deleteNode = (req: Request, res: Response): void => {
 
 interface CuratedINode {
   i18n: Record<string, any> | Record<string, unknown>;
-  node: HydratedINode;
+  node: any;
 }
 
 const curateNode = (node: HydratedINode): Record<string, any> => {
@@ -491,10 +567,33 @@ const findSingle = (req: Request, res: Response): void => {
     return;
   }
   findNodeById(nodeId)
-    .then((node) => {
+    .then((nodeSent) => {
+      const curatedActions =
+        nodeSent.actions.length > 0
+          ? nodeSent.actions.map((action) => {
+              const data = action.toJSON();
+              return {
+                ...data,
+                ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+              };
+            })
+          : [];
+      const curatedEffects =
+        nodeSent.effects.length > 0
+          ? nodeSent.effects.map((effect) => {
+              const data = effect.toJSON();
+              return {
+                ...data,
+                ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+              };
+            })
+          : [];
+      const node = nodeSent.toJSON();
+      node.actions = curatedActions;
+      node.effects = curatedEffects;
       const sentObj = {
         node,
-        i18n: curateNode(node),
+        i18n: curateNode(nodeSent),
       };
       res.send(sentObj);
     })
@@ -507,11 +606,33 @@ const findAll = (req: Request, res: Response): void => {
   findNodes()
     .then((nodes) => {
       const curatedNodes: CuratedINode[] = [];
-
-      nodes.forEach((node) => {
+      nodes.forEach((nodeSent) => {
+        const curatedActions =
+          nodeSent.actions.length > 0
+            ? nodeSent.actions.map((action) => {
+                const data = action.toJSON();
+                return {
+                  ...data,
+                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                };
+              })
+            : [];
+        const curatedEffects =
+          nodeSent.effects.length > 0
+            ? nodeSent.effects.map((effect) => {
+                const data = effect.toJSON();
+                return {
+                  ...data,
+                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                };
+              })
+            : [];
+        const node = nodeSent.toJSON();
+        node.actions = curatedActions;
+        node.effects = curatedEffects;
         curatedNodes.push({
           node,
-          i18n: curateNode(node),
+          i18n: curateNode(nodeSent),
         });
       });
 
@@ -533,10 +654,34 @@ const findAllByBranch = (req: Request, res: Response): void => {
     .then((nodes) => {
       const curatedCyberFrameBranches: CuratedINode[] = [];
 
-      nodes.forEach((node) => {
+      nodes.forEach((nodeSent) => {
+        console.log('nodeSent.actions', nodeSent.actions);
+        const curatedActions =
+          nodeSent.actions.length > 0
+            ? nodeSent.actions.map((action) => {
+                const data = action.toJSON();
+                return {
+                  ...data,
+                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                };
+              })
+            : [];
+        const curatedEffects =
+          nodeSent.effects.length > 0
+            ? nodeSent.effects.map((effect) => {
+                const data = effect.toJSON();
+                return {
+                  ...data,
+                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                };
+              })
+            : [];
+        const node = nodeSent.toJSON();
+        node.actions = curatedActions;
+        node.effects = curatedEffects;
         curatedCyberFrameBranches.push({
           node,
-          i18n: curateNode(node),
+          i18n: curateNode(nodeSent),
         });
       });
 

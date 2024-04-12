@@ -92,9 +92,9 @@ const AdminEditRuleBook: FC = () => {
       defaultData.draft = ruleBook.draft ? 'draft' : 'published';
       defaultData.name = ruleBook.title ?? '';
       if (sentApiType != null && ruleBookTypes.length > 0) {
-        defaultData.type = ruleBookTypes.find(
-          (ruleBookType) => ruleBookType.value === sentApiType
-        )?.value;
+        defaultData.type = String(
+          ruleBookTypes.find((ruleBookType) => ruleBookType.value === sentApiType)?.value
+        );
       }
       if (i18n.fr !== undefined) {
         defaultData.nameFr = i18n.fr.title ?? '';
