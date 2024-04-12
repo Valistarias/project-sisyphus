@@ -105,6 +105,9 @@ const smartDeleteCharParamBonus = (elts: string[], cb: (err: Error | null) => vo
           .catch(() => {
             cb(new Error('Error deleting charParam bonus'));
           });
+      } else {
+        elts.shift();
+        smartDeleteCharParamBonus([...elts], cb);
       }
     })
     .catch(async () => {

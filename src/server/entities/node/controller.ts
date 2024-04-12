@@ -242,6 +242,7 @@ const update = (req: Request, res: Response): void => {
     res.status(400).send(gemInvalidField('Node ID'));
     return;
   }
+
   findNodeById(id as string)
     .then((node) => {
       if (title !== null) {
@@ -451,6 +452,8 @@ const update = (req: Request, res: Response): void => {
         .then((skillBonusIds) => {
           if (skillBonusIds.length > 0) {
             node.skillBonuses = skillBonusIds.map((skillBonusId) => String(skillBonusId));
+          } else if (skillBonuses !== null && skillBonuses.length === 0) {
+            node.skillBonuses = [];
           }
           curateStatBonusIds({
             statBonusesToRemove,
@@ -539,12 +542,73 @@ const deleteNodeById = async (id: string): Promise<boolean> =>
 
 const deleteNode = (req: Request, res: Response): void => {
   const { id } = req.body;
-  deleteNodeById(id as string)
-    .then(() => {
-      res.send({ message: 'Node was deleted successfully!' });
+
+  findNodeById(id as string)
+    .then((node) => {
+      const skillBonusesToRemove = node.skillBonuses.map((elt) => elt._id);
+      const statBonusesToRemove = node.statBonuses.map((elt) => elt._id);
+      const charParamBonusesToRemove = node.charParamBonuses.map((elt) => elt._id);
+      const effectsToRemove = node.effects.map((elt) => elt._id);
+      const actionsToRemove = node.actions.map((elt) => elt._id);
+
+      curateSkillBonusIds({
+        skillBonusesToRemove,
+        skillBonusesToAdd: [],
+        skillBonusesToStay: [],
+      })
+        .then(() => {
+          curateStatBonusIds({
+            statBonusesToRemove,
+            statBonusesToAdd: [],
+            statBonusesToStay: [],
+          })
+            .then(() => {
+              curateCharParamBonusIds({
+                charParamBonusesToRemove,
+                charParamBonusesToAdd: [],
+                charParamBonusesToStay: [],
+              })
+                .then(() => {
+                  smartUpdateEffects({
+                    effectsToRemove,
+                    effectsToUpdate: [],
+                  })
+                    .then(() => {
+                      smartUpdateActions({
+                        actionsToRemove,
+                        actionsToUpdate: [],
+                      })
+                        .then(() => {
+                          deleteNodeById(id as string)
+                            .then(() => {
+                              res.send({ message: 'Node was deleted successfully!' });
+                            })
+                            .catch((err: Error) => {
+                              res.status(500).send(gemServerError(err));
+                            });
+                        })
+                        .catch((err: Error) => {
+                          res.status(500).send(gemServerError(err));
+                        });
+                    })
+                    .catch((err: Error) => {
+                      res.status(500).send(gemServerError(err));
+                    });
+                })
+                .catch((err: Error) => {
+                  res.status(500).send(gemServerError(err));
+                });
+            })
+            .catch((err: Error) => {
+              res.status(500).send(gemServerError(err));
+            });
+        })
+        .catch((err: Error) => {
+          res.status(500).send(gemServerError(err));
+        });
     })
-    .catch((err: Error) => {
-      res.status(500).send(gemServerError(err));
+    .catch(() => {
+      res.status(404).send(gemNotFound('Node'));
     });
 };
 
@@ -655,7 +719,6 @@ const findAllByBranch = (req: Request, res: Response): void => {
       const curatedCyberFrameBranches: CuratedINode[] = [];
 
       nodes.forEach((nodeSent) => {
-        console.log('nodeSent.actions', nodeSent.actions);
         const curatedActions =
           nodeSent.actions.length > 0
             ? nodeSent.actions.map((action) => {

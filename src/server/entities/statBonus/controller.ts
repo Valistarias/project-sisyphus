@@ -105,6 +105,9 @@ const smartDeleteStatBonus = (elts: string[], cb: (err: Error | null) => void): 
           .catch(() => {
             cb(new Error('Error deleting stat bonus'));
           });
+      } else {
+        elts.shift();
+        smartDeleteStatBonus([...elts], cb);
       }
     })
     .catch(async () => {

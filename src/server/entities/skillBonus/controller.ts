@@ -105,6 +105,9 @@ const smartDeleteSkillBonus = (elts: string[], cb: (err: Error | null) => void):
           .catch(() => {
             cb(new Error('Error deleting skill bonus'));
           });
+      } else {
+        elts.shift();
+        smartDeleteSkillBonus([...elts], cb);
       }
     })
     .catch(async () => {
