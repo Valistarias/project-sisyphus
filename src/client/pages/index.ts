@@ -5,6 +5,7 @@ import AdminEditChapterPage from './adminEditChapter';
 import AdminEditCharParamPage from './adminEditCharParam';
 import AdminEditCyberFramePage from './adminEditCyberFrame';
 import AdminEditCyberFrameBranchPage from './adminEditCyberFrameBranch';
+import AdminEditNodePage from './adminEditNode';
 import AdminEditNotionPage from './adminEditNotion';
 import AdminEditPage from './adminEditPage';
 import AdminEditRuleBookPage from './adminEditRuleBook';
@@ -51,6 +52,7 @@ export {
   AdminEditCharParamPage,
   AdminEditCyberFrameBranchPage,
   AdminEditCyberFramePage,
+  AdminEditNodePage,
   AdminEditNotionPage,
   AdminEditPage,
   AdminEditRuleBookPage,

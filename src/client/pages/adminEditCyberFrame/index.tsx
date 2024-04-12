@@ -102,7 +102,7 @@ const AdminEditCyberFrame: FC = () => {
         (singleSelect) => singleSelect.value === cyberFrame.ruleBook?._id
       );
       if (selectedfield !== undefined) {
-        defaultData.ruleBook = selectedfield.value;
+        defaultData.ruleBook = String(selectedfield.value);
       }
       if (i18n.fr !== undefined) {
         defaultData.nameFr = i18n.fr.title ?? '';
@@ -317,7 +317,7 @@ const AdminEditCyberFrame: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, ruleBooks, id, t]);
+  }, [api, createAlert, getNewId, id, t]);
 
   // The Autosave
   useEffect(() => {

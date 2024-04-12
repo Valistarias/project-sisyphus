@@ -1,10 +1,11 @@
 import { type Request, type Response } from 'express';
+import { type HydratedDocument } from 'mongoose';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { type ISkill } from '../index';
 
-import { type HydratedISkillBonus } from './model';
+import { type HydratedISkillBonus, type ISkillBonus } from './model';
 
 const { SkillBonus } = db;
 
@@ -12,11 +13,11 @@ const findSkillBonuses = async (): Promise<HydratedISkillBonus[]> =>
   await new Promise((resolve, reject) => {
     SkillBonus.find()
       .populate<{ skill: ISkill }>('skill')
-      .then(async (res) => {
+      .then(async (res: HydratedISkillBonus[]) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('SkillBonuses'));
         } else {
-          resolve(res as HydratedISkillBonus[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -28,16 +29,81 @@ const findSkillBonusById = async (id: string): Promise<HydratedISkillBonus> =>
   await new Promise((resolve, reject) => {
     SkillBonus.findById(id)
       .populate<{ skill: ISkill }>('skill')
-      .then(async (res) => {
+      .then(async (res: HydratedISkillBonus) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('SkillBonus'));
         } else {
-          resolve(res as HydratedISkillBonus);
+          resolve(res);
         }
       })
       .catch(async (err) => {
         reject(err);
       });
+  });
+
+const createReadSkillBonus = (
+  elts: Array<{
+    skill: string;
+    value: number;
+  }>,
+  ids: string[],
+  cb: (err: Error | null, res?: string[]) => void
+): void => {
+  const actualElt = elts[0];
+  SkillBonus.findOne(actualElt)
+    .then(async (sentSkillBonus: HydratedDocument<ISkillBonus>) => {
+      if (sentSkillBonus === undefined || sentSkillBonus === null) {
+        // Need to create it
+        const skillBonus = new SkillBonus(actualElt);
+
+        skillBonus
+          .save()
+          .then(() => {
+            ids.push(String(skillBonus._id));
+            if (elts.length > 1) {
+              elts.shift();
+              createReadSkillBonus([...elts], ids, cb);
+            } else {
+              cb(null, ids);
+            }
+          })
+          .catch(() => {
+            cb(new Error('Error reading or creating skill bonus'));
+          });
+      } else {
+        // Exists already
+        ids.push(String(sentSkillBonus._id));
+        if (elts.length > 1) {
+          elts.shift();
+          createReadSkillBonus([...elts], ids, cb);
+        } else {
+          cb(null, ids);
+        }
+      }
+    })
+    .catch(async () => {
+      cb(new Error('Error reading or creating skill bonus'));
+    });
+};
+
+const getSkillBonusIds = async (
+  elts: Array<{
+    skill: string;
+    value: number;
+  }>
+): Promise<string[]> =>
+  await new Promise((resolve, reject) => {
+    if (elts === undefined || elts.length === 0) {
+      resolve([]);
+      return;
+    }
+    createReadSkillBonus(elts, [], (err: Error | null, res?: string[]) => {
+      if (err !== null) {
+        reject(err);
+      } else {
+        resolve(res ?? []);
+      }
+    });
   });
 
 const create = (req: Request, res: Response): void => {
@@ -140,4 +206,12 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteSkillBonus, findAll, findSingle, findSkillBonusById, update };
+export {
+  create,
+  deleteSkillBonus,
+  findAll,
+  findSingle,
+  findSkillBonusById,
+  getSkillBonusIds,
+  update,
+};

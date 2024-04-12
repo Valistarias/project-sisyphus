@@ -25,7 +25,7 @@ export interface IStatBonus {
   /** The ID of the stat bonus */
   _id: string;
   /** The stat itself */
-  stat: IStat;
+  stat: string;
   /** The value of the bonus */
   value: number;
   /** When the stat bonus was created */
@@ -56,7 +56,7 @@ export interface ISkillBonus {
   /** The ID of the skill bonus */
   _id: string;
   /** The skill itself */
-  skill: ISkill;
+  skill: string;
   /** The value of the bonus */
   value: number;
   /** When the skill bonus was created */
@@ -72,7 +72,7 @@ export interface ISkillBranch {
   /** The summary of the Skill Branch */
   summary: string;
   /** The skill linked to this branch */
-  skill: ISkill;
+  skill: ISkill | string;
   /** When the skill Branch was created */
   createdAt: string;
 }
@@ -176,7 +176,7 @@ export interface ICharParamBonus {
   /** The ID of the charParam bonus */
   _id: string;
   /** The char param */
-  charParam: ICharParam;
+  charParam: string;
   /** The value of the bonus */
   value: number;
   /** When the charParam bonus was created */
@@ -211,7 +211,7 @@ export interface ICyberFrameBranch {
   /** The summary of the CyberFrame Branch */
   summary: string;
   /** The cyberframe of this branch */
-  cyberFrame: ICyberFrame;
+  cyberFrame: ICyberFrame | string;
   /** When the cyberFrame Branch was created */
   createdAt: string;
 }

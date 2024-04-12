@@ -11,6 +11,7 @@ import {
   AdminEditCharParamPage,
   AdminEditCyberFrameBranchPage,
   AdminEditCyberFramePage,
+  AdminEditNodePage,
   AdminEditNotionPage,
   AdminEditPage,
   AdminEditRuleBookPage,
@@ -254,6 +255,10 @@ const App: FC = () => {
             {
               path: '/admin/node/new',
               element: <AdminNewNodePage />,
+            },
+            {
+              path: '/admin/node/:id',
+              element: <AdminEditNodePage />,
             },
             // {
             //   path: '/admin/skillbranch/:id',

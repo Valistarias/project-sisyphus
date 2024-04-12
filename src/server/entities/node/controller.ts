@@ -5,10 +5,13 @@ import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/global
 import {
   type IAction,
   type ICharParamBonus,
+  type ICyberFrameBranch,
   type IEffect,
   type ISkillBonus,
+  type ISkillBranch,
   type IStatBonus,
 } from '../index';
+import { getSkillBonusIds } from '../skillBonus/controller';
 
 import { type HydratedINode } from './model';
 
@@ -72,6 +75,8 @@ const findNodeById = async (id: string): Promise<HydratedINode> =>
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
+      .populate<{ skillBranch: ISkillBranch }>('skillBranch')
+      .populate<{ cyberFrameBranch: ICyberFrameBranch }>('cyberFrameBranch')
       .then(async (res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Node'));
@@ -126,16 +131,28 @@ const create = (req: Request, res: Response): void => {
     node.i18n = JSON.stringify(i18n);
   }
 
-  console.log('node', node);
-
-  // node
-  //   .save()
-  //   .then(() => {
-  //     res.send(node);
-  //   })
-  //   .catch((err: Error) => {
-  //     res.status(500).send(gemServerError(err));
-  //   });
+  getSkillBonusIds(
+    skillBonuses as Array<{
+      skill: string;
+      value: number;
+    }>
+  )
+    .then((skillBonusIds) => {
+      if (skillBonusIds.length > 0) {
+        node.skillBonuses = skillBonusIds.map((skillBonusId) => String(skillBonusId));
+      }
+      node
+        .save()
+        .then(() => {
+          res.send(node);
+        })
+        .catch((err: Error) => {
+          res.status(500).send(gemServerError(err));
+        });
+    })
+    .catch((err: Error) => {
+      res.status(500).send(gemServerError(err));
+    });
 };
 
 const update = (req: Request, res: Response): void => {

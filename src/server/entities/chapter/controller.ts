@@ -218,7 +218,7 @@ const deleteChaptersAndPagesByPagesId = (
     .then(() => {
       if (chapters.length > 1) {
         chapters.shift();
-        updateMultiplePagesPosition([...chapters], cb);
+        deleteChaptersAndPagesByPagesId([...chapters], cb);
       } else {
         cb(null);
       }

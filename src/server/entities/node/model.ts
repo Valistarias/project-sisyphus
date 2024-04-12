@@ -3,8 +3,10 @@ import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 
 import {
   type IAction,
   type ICharParamBonus,
+  type ICyberFrameBranch,
   type IEffect,
   type ISkillBonus,
+  type ISkillBranch,
   type IStatBonus,
 } from '../index';
 
@@ -30,13 +32,13 @@ interface INode {
   /** The actions related to the node */
   actions?: ObjectId[];
   /** The skill bonuses related to the node */
-  skillBonuses?: ObjectId[];
+  skillBonuses?: string[] | ObjectId[];
   /** The stat bonuses related to the node */
-  statBonuses?: ObjectId[];
+  statBonuses?: string[] | ObjectId[];
   /** The charParam bonuses related to the node */
-  charParamBonuses?: ObjectId[];
+  charParamBonuses?: string[] | ObjectId[];
   /** The overriden nodes by this one (to upgrade a previous node) */
-  overrides?: ObjectId[];
+  overrides?: string[] | ObjectId[];
   /** When the node was created */
   createdAt: Date;
 }
@@ -44,13 +46,21 @@ interface INode {
 interface HydratedINode
   extends Omit<
     HydratedDocument<INode>,
-    'effects' | 'actions' | 'skillBonuses' | 'statBonuses' | 'charParamBonuses'
+    | 'effects'
+    | 'actions'
+    | 'skillBonuses'
+    | 'statBonuses'
+    | 'charParamBonuses'
+    | 'skillBranch'
+    | 'cyberFrameBranch'
   > {
   effects: IEffect[];
   actions: IAction[];
   skillBonuses: ISkillBonus[];
   statBonuses: IStatBonus[];
   charParamBonuses: ICharParamBonus[];
+  skillBranch?: ISkillBranch | ObjectId;
+  cyberFrameBranch?: ICyberFrameBranch | ObjectId;
 }
 
 const effectSchema = new Schema<INode>({
