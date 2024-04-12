@@ -3,11 +3,11 @@ import { type HydratedDocument } from 'mongoose';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
-import { type ISkill } from '../index';
+import { type INode, type ISkill } from '../index';
 
 import { type HydratedISkillBonus, type ISkillBonus } from './model';
 
-const { SkillBonus } = db;
+const { SkillBonus, Node } = db;
 
 const findSkillBonuses = async (): Promise<HydratedISkillBonus[]> =>
   await new Promise((resolve, reject) => {
@@ -86,22 +86,56 @@ const createReadSkillBonus = (
     });
 };
 
-const getSkillBonusIds = async (
-  elts: Array<{
+const smartDeleteSkillBonus = (elts: string[], cb: (err: Error | null) => void): void => {
+  if (elts.length === 0) {
+    cb(null);
+    return;
+  }
+  const actualElt = elts[0];
+  let counter = 0;
+  Node.find({ skillBonuses: actualElt })
+    .then(async (sentNodes: INode[]) => {
+      counter += sentNodes.length;
+      if (counter <= 1) {
+        SkillBonus.findByIdAndDelete(actualElt)
+          .then(() => {
+            elts.shift();
+            smartDeleteSkillBonus([...elts], cb);
+          })
+          .catch(() => {
+            cb(new Error('Error deleting skill bonus'));
+          });
+      }
+    })
+    .catch(async () => {
+      cb(new Error('Error deleting skill bonus'));
+    });
+};
+
+const curateSkillBonusIds = async ({
+  skillBonusesToRemove,
+  skillBonusesToAdd,
+  skillBonusesToStay,
+}: {
+  skillBonusesToRemove: string[];
+  skillBonusesToAdd: Array<{
     skill: string;
     value: number;
-  }>
-): Promise<string[]> =>
+  }>;
+  skillBonusesToStay: string[];
+}): Promise<string[]> =>
   await new Promise((resolve, reject) => {
-    if (elts === undefined || elts.length === 0) {
-      resolve([]);
-      return;
-    }
-    createReadSkillBonus(elts, [], (err: Error | null, res?: string[]) => {
+    smartDeleteSkillBonus(skillBonusesToRemove, (err: Error | null) => {
       if (err !== null) {
         reject(err);
       } else {
-        resolve(res ?? []);
+        createReadSkillBonus(skillBonusesToAdd, [], (err: Error | null, res?: string[]) => {
+          if (err !== null) {
+            reject(err);
+          } else {
+            resolve([...skillBonusesToStay, ...(res ?? [])]);
+          }
+        });
       }
     });
   });
@@ -208,10 +242,10 @@ const findAll = (req: Request, res: Response): void => {
 
 export {
   create,
+  curateSkillBonusIds,
   deleteSkillBonus,
   findAll,
   findSingle,
   findSkillBonusById,
-  getSkillBonusIds,
   update,
 };

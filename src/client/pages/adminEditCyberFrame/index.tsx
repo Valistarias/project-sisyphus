@@ -165,7 +165,7 @@ const AdminEditCyberFrame: FC = () => {
           summary: htmlText,
           i18n,
         })
-        .then((cyberFrame) => {
+        .then(() => {
           const newId = getNewId();
           createAlert({
             key: newId,

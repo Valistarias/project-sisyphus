@@ -1,4 +1,5 @@
 import { type Request, type Response } from 'express';
+import { type ObjectId } from 'mongoose';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
@@ -11,7 +12,7 @@ import {
   type ISkillBranch,
   type IStatBonus,
 } from '../index';
-import { getSkillBonusIds } from '../skillBonus/controller';
+import { curateSkillBonusIds } from '../skillBonus/controller';
 
 import { type HydratedINode } from './model';
 
@@ -131,12 +132,14 @@ const create = (req: Request, res: Response): void => {
     node.i18n = JSON.stringify(i18n);
   }
 
-  getSkillBonusIds(
-    skillBonuses as Array<{
+  curateSkillBonusIds({
+    skillBonusesToRemove: [],
+    skillBonusesToStay: [],
+    skillBonusesToAdd: skillBonuses as Array<{
       skill: string;
       value: number;
-    }>
-  )
+    }>,
+  })
     .then((skillBonusIds) => {
       if (skillBonusIds.length > 0) {
         node.skillBonuses = skillBonusIds.map((skillBonusId) => String(skillBonusId));
@@ -200,24 +203,68 @@ const update = (req: Request, res: Response): void => {
       if (rank !== null) {
         node.rank = rank;
       }
-      if (effects !== null) {
-        node.effects = effects;
-      }
-      if (actions !== null) {
-        node.actions = actions;
-      }
-      if (skillBonuses !== null) {
-        node.skillBonuses = skillBonuses;
-      }
-      if (statBonuses !== null) {
-        node.statBonuses = statBonuses;
-      }
-      if (charParamBonuses !== null) {
-        node.charParamBonuses = charParamBonuses;
-      }
+      // if (effects !== null) {
+      //   node.effects = effects;
+      // }
+      // if (actions !== null) {
+      //   node.actions = actions;
+      // }
+      // if (skillBonuses !== null) {
+      //   node.skillBonuses = skillBonuses;
+      // }
+      // if (statBonuses !== null) {
+      //   node.statBonuses = statBonuses;
+      // }
+      // if (charParamBonuses !== null) {
+      //   node.charParamBonuses = charParamBonuses;
+      // }
       if (overrides !== null) {
         node.overrides = overrides;
       }
+
+      const skillBonusesToStay: string[] = [];
+      interface ISkillBonusElt extends ISkillBonus {
+        _id: ObjectId;
+      }
+      const skillBonusesToRemove = node.skillBonuses.reduce(
+        (result: string[], elt: ISkillBonusElt) => {
+          const foundSkillBonus = skillBonuses.find(
+            (skillBonus) => skillBonus.skill === String(elt.skill) && skillBonus.value === elt.value
+          );
+          if (foundSkillBonus === undefined) {
+            result.push(String(elt._id));
+          } else {
+            skillBonusesToStay.push(String(elt._id));
+          }
+          return result;
+        },
+        []
+      );
+
+      const skillBonusesToAdd = skillBonuses.reduce(
+        (
+          result: Array<{
+            skill: string;
+            value: number;
+          }>,
+          elt: {
+            skill: string;
+            value: number;
+          }
+        ) => {
+          const foundSkillBonus = node.skillBonuses.find(
+            (skillBonus) =>
+              typeof skillBonus !== 'string' &&
+              String(skillBonus.skill) === elt.skill &&
+              skillBonus.value === elt.value
+          );
+          if (foundSkillBonus === undefined) {
+            result.push(elt);
+          }
+          return result;
+        },
+        []
+      );
 
       if (i18n !== null) {
         const newIntl = {
@@ -233,10 +280,23 @@ const update = (req: Request, res: Response): void => {
         node.i18n = JSON.stringify(newIntl);
       }
 
-      node
-        .save()
-        .then(() => {
-          res.send({ message: 'Node was updated successfully!', node });
+      curateSkillBonusIds({
+        skillBonusesToRemove,
+        skillBonusesToAdd,
+        skillBonusesToStay,
+      })
+        .then((skillBonusIds) => {
+          if (skillBonusIds.length > 0) {
+            node.skillBonuses = skillBonusIds.map((skillBonusId) => String(skillBonusId));
+          }
+          node
+            .save()
+            .then(() => {
+              res.send({ message: 'Node was updated successfully!', node });
+            })
+            .catch((err: Error) => {
+              res.status(500).send(gemServerError(err));
+            });
         })
         .catch((err: Error) => {
           res.status(500).send(gemServerError(err));

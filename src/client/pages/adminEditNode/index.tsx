@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
+import i18next from 'i18next';
 import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { useApi, useSystemAlerts } from '../../providers';
 
@@ -25,7 +26,7 @@ import {
 } from '../../types';
 import { type InternationalizationType } from '../../types/global';
 
-import { classTrim } from '../../utils';
+import { classTrim, isThereDuplicate } from '../../utils';
 
 import './adminEditNode.scss';
 
@@ -104,7 +105,6 @@ const AdminEditNode: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const navigate = useNavigate();
   const { createAlert, getNewId } = useSystemAlerts();
 
   const [displayInt, setDisplayInt] = useState(false);
@@ -166,7 +166,6 @@ const AdminEditNode: FC = () => {
 
   const [actionIds, setActionIds] = useState<number[]>([]);
 
-  const [, setLoading] = useState(true);
   const calledApi = useRef(false);
 
   const [nodeData, setNodeData] = useState<ICuratedNode | null>(null);
@@ -186,7 +185,6 @@ const AdminEditNode: FC = () => {
     if (nodeData == null) {
       return {};
     }
-    console.log('nodeData', nodeData);
     const { node, i18n } = nodeData;
     const defaultData: Partial<FormValues> = {};
     defaultData.name = node.title;
@@ -361,126 +359,126 @@ const AdminEditNode: FC = () => {
 
   const onSaveNode: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, quote, quoteFr, rank, icon, branch, ...elts }) => {
-      //     if (introEditor === null || introFrEditor === null || api === undefined) {
-      //       return;
-      //     }
-      //     // Check duplicate on skills
-      //     const skillBonuses = elts.skillBonuses !== undefined ? Object.values(elts.skillBonuses) : [];
-      //     let duplicateSkillBonuses = false;
-      //     if (skillBonuses.length > 0) {
-      //       duplicateSkillBonuses = isThereDuplicate(
-      //         skillBonuses.map((skillBonus) => skillBonus.skill)
-      //       );
-      //     }
-      //     if (duplicateSkillBonuses) {
-      //       setError('root.serverError', {
-      //         type: 'duplicate',
-      //         message: t('adminEditNode.errorDuplicateSkill', { ns: 'pages' }),
-      //       });
-      //       return;
-      //     }
-      //     // Check duplicate on stats
-      //     const statBonuses = elts.statBonuses !== undefined ? Object.values(elts.statBonuses) : [];
-      //     let duplicateStatBonuses = false;
-      //     if (statBonuses.length > 0) {
-      //       duplicateStatBonuses = isThereDuplicate(statBonuses.map((statBonus) => statBonus.stat));
-      //     }
-      //     if (duplicateStatBonuses) {
-      //       setError('root.serverError', {
-      //         type: 'duplicate',
-      //         message: t('adminEditNode.errorDuplicateStat', { ns: 'pages' }),
-      //       });
-      //       return;
-      //     }
-      //     // Check duplicate on character param
-      //     const charParamBonuses =
-      //       elts.charParamBonuses !== undefined ? Object.values(elts.charParamBonuses) : [];
-      //     let duplicateCharParamBonuses = false;
-      //     if (charParamBonuses.length > 0) {
-      //       duplicateCharParamBonuses = isThereDuplicate(
-      //         charParamBonuses.map((charParamBonus) => charParamBonus.charParam)
-      //       );
-      //     }
-      //     if (duplicateCharParamBonuses) {
-      //       setError('root.serverError', {
-      //         type: 'duplicate',
-      //         message: t('adminEditNode.errorDuplicateCharParam', { ns: 'pages' }),
-      //       });
-      //       return;
-      //     }
-      //     const skillId = params.get('skillId');
-      //     const curatedSkillBonuses = skillBonuses.map(({ skill, value }) => ({
-      //       skill,
-      //       value: Number(value),
-      //     }));
-      //     const curatedStatBonuses = statBonuses.map(({ stat, value }) => ({
-      //       stat,
-      //       value: Number(value),
-      //     }));
-      //     const curatedCharParamBonuses = charParamBonuses.map(({ charParam, value }) => ({
-      //       charParam,
-      //       value: Number(value),
-      //     }));
-      //     let html: string | null = introEditor.getHTML();
-      //     const htmlFr = introFrEditor.getHTML();
-      //     if (html === '<p class="ap"></p>') {
-      //       html = null;
-      //     }
-      //     let i18n: any | null = null;
-      //     if (nameFr !== '' || htmlFr !== '<p class="ap"></p>' || quoteFr !== '') {
-      //       i18n = {
-      //         fr: {
-      //           title: nameFr,
-      //           summary: htmlFr,
-      //           quote: quoteFr,
-      //         },
-      //       };
-      //     }
-      //     api.nodes
-      //       .create({
-      //         title: name,
-      //         ...(skillId !== undefined ? { skillBranch: branch } : { cyberFrameBranch: branch }),
-      //         summary: html,
-      //         rank: Number(rank),
-      //         icon,
-      //         quote,
-      //         i18n,
-      //         skillBonuses: curatedSkillBonuses,
-      //         statBonuses: curatedStatBonuses,
-      //         charParamBonuses: curatedCharParamBonuses,
-      //       })
-      //       .then((quote) => {
-      //         const newId = getNewId();
-      //         createAlert({
-      //           key: newId,
-      //           dom: (
-      //             <Alert key={newId} id={newId} timer={5}>
-      //               <Ap>{t('adminEditNode.successCreate', { ns: 'pages' })}</Ap>
-      //             </Alert>
-      //           ),
-      //         });
-      //         navigate(`/admin/node/${quote._id}`);
-      //       })
-      //       .catch(({ response }) => {
-      //         const { data } = response;
-      //         if (data.code === 'CYPU-104') {
-      //           setError('root.serverError', {
-      //             type: 'server',
-      //             message: t(`serverErrors.${data.code}`, {
-      //               field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
-      //             }),
-      //           });
-      //         } else {
-      //           setError('root.serverError', {
-      //             type: 'server',
-      //             message: t(`serverErrors.${data.code}`, {
-      //               field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
-      //             }),
-      //           });
-      //         }
-      //       });
+      if (introEditor === null || introFrEditor === null || api === undefined) {
+        return;
+      }
+      // Check duplicate on skills
+      const skillBonuses = elts.skillBonuses !== undefined ? Object.values(elts.skillBonuses) : [];
+      let duplicateSkillBonuses = false;
+      if (skillBonuses.length > 0) {
+        duplicateSkillBonuses = isThereDuplicate(
+          skillBonuses.map((skillBonus) => skillBonus.skill)
+        );
+      }
+      if (duplicateSkillBonuses) {
+        setError('root.serverError', {
+          type: 'duplicate',
+          message: t('adminEditNode.errorDuplicateSkill', { ns: 'pages' }),
+        });
+        return;
+      }
+      // Check duplicate on stats
+      const statBonuses = elts.statBonuses !== undefined ? Object.values(elts.statBonuses) : [];
+      let duplicateStatBonuses = false;
+      if (statBonuses.length > 0) {
+        duplicateStatBonuses = isThereDuplicate(statBonuses.map((statBonus) => statBonus.stat));
+      }
+      if (duplicateStatBonuses) {
+        setError('root.serverError', {
+          type: 'duplicate',
+          message: t('adminEditNode.errorDuplicateStat', { ns: 'pages' }),
+        });
+        return;
+      }
+      // Check duplicate on character param
+      const charParamBonuses =
+        elts.charParamBonuses !== undefined ? Object.values(elts.charParamBonuses) : [];
+      let duplicateCharParamBonuses = false;
+      if (charParamBonuses.length > 0) {
+        duplicateCharParamBonuses = isThereDuplicate(
+          charParamBonuses.map((charParamBonus) => charParamBonus.charParam)
+        );
+      }
+      if (duplicateCharParamBonuses) {
+        setError('root.serverError', {
+          type: 'duplicate',
+          message: t('adminEditNode.errorDuplicateCharParam', { ns: 'pages' }),
+        });
+        return;
+      }
+      const skillId = nodeData?.node.skillBranch?._id;
+      const curatedSkillBonuses = skillBonuses.map(({ skill, value }) => ({
+        skill,
+        value: Number(value),
+      }));
+      const curatedStatBonuses = statBonuses.map(({ stat, value }) => ({
+        stat,
+        value: Number(value),
+      }));
+      const curatedCharParamBonuses = charParamBonuses.map(({ charParam, value }) => ({
+        charParam,
+        value: Number(value),
+      }));
+      let html: string | null = introEditor.getHTML();
+      const htmlFr = introFrEditor.getHTML();
+      if (html === '<p class="ap"></p>') {
+        html = null;
+      }
+      let i18n: any | null = null;
+      if (nameFr !== '' || htmlFr !== '<p class="ap"></p>' || quoteFr !== '') {
+        i18n = {
+          fr: {
+            title: nameFr,
+            summary: htmlFr,
+            quote: quoteFr,
+          },
+        };
+      }
+      api.nodes
+        .update({
+          id,
+          title: name,
+          ...(skillId !== undefined ? { skillBranch: branch } : { cyberFrameBranch: branch }),
+          summary: html,
+          rank: Number(rank),
+          icon,
+          quote,
+          i18n,
+          skillBonuses: curatedSkillBonuses,
+          statBonuses: curatedStatBonuses,
+          charParamBonuses: curatedCharParamBonuses,
+        })
+        .then((quote) => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert key={newId} id={newId} timer={5}>
+                <Ap>{t('adminEditNode.successUpdate', { ns: 'pages' })}</Ap>
+              </Alert>
+            ),
+          });
+        })
+        .catch(({ response }) => {
+          const { data } = response;
+          if (data.code === 'CYPU-104') {
+            setError('root.serverError', {
+              type: 'server',
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
+              }),
+            });
+          } else {
+            setError('root.serverError', {
+              type: 'server',
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
+              }),
+            });
+          }
+        });
     },
-    [introEditor, introFrEditor, api, setError, t, getNewId, createAlert, navigate]
+    [introEditor, introFrEditor, api, id, nodeData, setError, t, getNewId, createAlert]
   );
 
   useEffect(() => {
