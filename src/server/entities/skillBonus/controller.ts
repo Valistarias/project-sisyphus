@@ -49,6 +49,10 @@ const createReadSkillBonus = (
   ids: string[],
   cb: (err: Error | null, res?: string[]) => void
 ): void => {
+  if (elts.length === 0) {
+    cb(null, ids);
+    return;
+  }
   const actualElt = elts[0];
   SkillBonus.findOne(actualElt)
     .then(async (sentSkillBonus: HydratedDocument<ISkillBonus>) => {
@@ -60,12 +64,8 @@ const createReadSkillBonus = (
           .save()
           .then(() => {
             ids.push(String(skillBonus._id));
-            if (elts.length > 1) {
-              elts.shift();
-              createReadSkillBonus([...elts], ids, cb);
-            } else {
-              cb(null, ids);
-            }
+            elts.shift();
+            createReadSkillBonus([...elts], ids, cb);
           })
           .catch(() => {
             cb(new Error('Error reading or creating skill bonus'));

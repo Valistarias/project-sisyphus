@@ -1,12 +1,13 @@
 import { type Request, type Response } from 'express';
+import { type HydratedDocument } from 'mongoose';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
-import { type ICharParam } from '../index';
+import { type ICharParam, type INode } from '../index';
 
-import { type HydratedICharParamBonus } from './model';
+import { type HydratedICharParamBonus, type ICharParamBonus } from './model';
 
-const { CharParamBonus } = db;
+const { CharParamBonus, Node } = db;
 
 const findCharParamBonuses = async (): Promise<HydratedICharParamBonus[]> =>
   await new Promise((resolve, reject) => {
@@ -38,6 +39,105 @@ const findCharParamBonusById = async (id: string): Promise<HydratedICharParamBon
       .catch(async (err) => {
         reject(err);
       });
+  });
+
+const createReadCharParamBonus = (
+  elts: Array<{
+    charParam: string;
+    value: number;
+  }>,
+  ids: string[],
+  cb: (err: Error | null, res?: string[]) => void
+): void => {
+  if (elts.length === 0) {
+    cb(null, ids);
+    return;
+  }
+  const actualElt = elts[0];
+  CharParamBonus.findOne(actualElt)
+    .then(async (sentCharParamBonus: HydratedDocument<ICharParamBonus>) => {
+      if (sentCharParamBonus === undefined || sentCharParamBonus === null) {
+        // Need to create it
+        const charParamBonus = new CharParamBonus(actualElt);
+
+        charParamBonus
+          .save()
+          .then(() => {
+            ids.push(String(charParamBonus._id));
+            elts.shift();
+            createReadCharParamBonus([...elts], ids, cb);
+          })
+          .catch(() => {
+            cb(new Error('Error reading or creating charParam bonus'));
+          });
+      } else {
+        // Exists already
+        ids.push(String(sentCharParamBonus._id));
+        if (elts.length > 1) {
+          elts.shift();
+          createReadCharParamBonus([...elts], ids, cb);
+        } else {
+          cb(null, ids);
+        }
+      }
+    })
+    .catch(async () => {
+      cb(new Error('Error reading or creating charParam bonus'));
+    });
+};
+
+const smartDeleteCharParamBonus = (elts: string[], cb: (err: Error | null) => void): void => {
+  if (elts.length === 0) {
+    cb(null);
+    return;
+  }
+  const actualElt = elts[0];
+  let counter = 0;
+  Node.find({ charParamBonuses: actualElt })
+    .then(async (sentNodes: INode[]) => {
+      counter += sentNodes.length;
+      if (counter <= 1) {
+        CharParamBonus.findByIdAndDelete(actualElt)
+          .then(() => {
+            elts.shift();
+            smartDeleteCharParamBonus([...elts], cb);
+          })
+          .catch(() => {
+            cb(new Error('Error deleting charParam bonus'));
+          });
+      }
+    })
+    .catch(async () => {
+      cb(new Error('Error deleting charParam bonus'));
+    });
+};
+
+const curateCharParamBonusIds = async ({
+  charParamBonusesToRemove,
+  charParamBonusesToAdd,
+  charParamBonusesToStay,
+}: {
+  charParamBonusesToRemove: string[];
+  charParamBonusesToAdd: Array<{
+    charParam: string;
+    value: number;
+  }>;
+  charParamBonusesToStay: string[];
+}): Promise<string[]> =>
+  await new Promise((resolve, reject) => {
+    smartDeleteCharParamBonus(charParamBonusesToRemove, (err: Error | null) => {
+      if (err !== null) {
+        reject(err);
+      } else {
+        createReadCharParamBonus(charParamBonusesToAdd, [], (err: Error | null, res?: string[]) => {
+          if (err !== null) {
+            reject(err);
+          } else {
+            resolve([...charParamBonusesToStay, ...(res ?? [])]);
+          }
+        });
+      }
+    });
   });
 
 const create = (req: Request, res: Response): void => {
@@ -140,4 +240,12 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteCharParamBonus, findAll, findCharParamBonusById, findSingle, update };
+export {
+  create,
+  curateCharParamBonusIds,
+  deleteCharParamBonus,
+  findAll,
+  findCharParamBonusById,
+  findSingle,
+  update,
+};

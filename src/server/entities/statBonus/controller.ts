@@ -1,12 +1,13 @@
 import { type Request, type Response } from 'express';
+import { type HydratedDocument } from 'mongoose';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
-import { type IStat } from '../index';
+import { type INode, type IStat } from '../index';
 
-import { type HydratedIStatBonus } from './model';
+import { type HydratedIStatBonus, type IStatBonus } from './model';
 
-const { StatBonus } = db;
+const { StatBonus, Node } = db;
 
 const findStatBonuses = async (): Promise<HydratedIStatBonus[]> =>
   await new Promise((resolve, reject) => {
@@ -38,6 +39,105 @@ const findStatBonusById = async (id: string): Promise<HydratedIStatBonus> =>
       .catch(async (err) => {
         reject(err);
       });
+  });
+
+const createReadStatBonus = (
+  elts: Array<{
+    stat: string;
+    value: number;
+  }>,
+  ids: string[],
+  cb: (err: Error | null, res?: string[]) => void
+): void => {
+  if (elts.length === 0) {
+    cb(null, ids);
+    return;
+  }
+  const actualElt = elts[0];
+  StatBonus.findOne(actualElt)
+    .then(async (sentStatBonus: HydratedDocument<IStatBonus>) => {
+      if (sentStatBonus === undefined || sentStatBonus === null) {
+        // Need to create it
+        const statBonus = new StatBonus(actualElt);
+
+        statBonus
+          .save()
+          .then(() => {
+            ids.push(String(statBonus._id));
+            elts.shift();
+            createReadStatBonus([...elts], ids, cb);
+          })
+          .catch(() => {
+            cb(new Error('Error reading or creating stat bonus'));
+          });
+      } else {
+        // Exists already
+        ids.push(String(sentStatBonus._id));
+        if (elts.length > 1) {
+          elts.shift();
+          createReadStatBonus([...elts], ids, cb);
+        } else {
+          cb(null, ids);
+        }
+      }
+    })
+    .catch(async () => {
+      cb(new Error('Error reading or creating stat bonus'));
+    });
+};
+
+const smartDeleteStatBonus = (elts: string[], cb: (err: Error | null) => void): void => {
+  if (elts.length === 0) {
+    cb(null);
+    return;
+  }
+  const actualElt = elts[0];
+  let counter = 0;
+  Node.find({ statBonuses: actualElt })
+    .then(async (sentNodes: INode[]) => {
+      counter += sentNodes.length;
+      if (counter <= 1) {
+        StatBonus.findByIdAndDelete(actualElt)
+          .then(() => {
+            elts.shift();
+            smartDeleteStatBonus([...elts], cb);
+          })
+          .catch(() => {
+            cb(new Error('Error deleting stat bonus'));
+          });
+      }
+    })
+    .catch(async () => {
+      cb(new Error('Error deleting stat bonus'));
+    });
+};
+
+const curateStatBonusIds = async ({
+  statBonusesToRemove,
+  statBonusesToAdd,
+  statBonusesToStay,
+}: {
+  statBonusesToRemove: string[];
+  statBonusesToAdd: Array<{
+    stat: string;
+    value: number;
+  }>;
+  statBonusesToStay: string[];
+}): Promise<string[]> =>
+  await new Promise((resolve, reject) => {
+    smartDeleteStatBonus(statBonusesToRemove, (err: Error | null) => {
+      if (err !== null) {
+        reject(err);
+      } else {
+        createReadStatBonus(statBonusesToAdd, [], (err: Error | null, res?: string[]) => {
+          if (err !== null) {
+            reject(err);
+          } else {
+            resolve([...statBonusesToStay, ...(res ?? [])]);
+          }
+        });
+      }
+    });
   });
 
 const create = (req: Request, res: Response): void => {
@@ -140,4 +240,12 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteStatBonus, findAll, findSingle, findStatBonusById, update };
+export {
+  create,
+  curateStatBonusIds,
+  deleteStatBonus,
+  findAll,
+  findSingle,
+  findStatBonusById,
+  update,
+};

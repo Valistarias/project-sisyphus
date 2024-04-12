@@ -3,6 +3,7 @@ import { type ObjectId } from 'mongoose';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import { curateCharParamBonusIds } from '../charParamBonus/controller';
 import {
   type IAction,
   type ICharParamBonus,
@@ -13,6 +14,7 @@ import {
   type IStatBonus,
 } from '../index';
 import { curateSkillBonusIds } from '../skillBonus/controller';
+import { curateStatBonusIds } from '../statBonus/controller';
 
 import { type HydratedINode } from './model';
 
@@ -144,10 +146,44 @@ const create = (req: Request, res: Response): void => {
       if (skillBonusIds.length > 0) {
         node.skillBonuses = skillBonusIds.map((skillBonusId) => String(skillBonusId));
       }
-      node
-        .save()
-        .then(() => {
-          res.send(node);
+      curateStatBonusIds({
+        statBonusesToRemove: [],
+        statBonusesToStay: [],
+        statBonusesToAdd: statBonuses as Array<{
+          stat: string;
+          value: number;
+        }>,
+      })
+        .then((statBonusIds) => {
+          if (statBonusIds.length > 0) {
+            node.statBonuses = statBonusIds.map((statBonusId) => String(statBonusId));
+          }
+          curateCharParamBonusIds({
+            charParamBonusesToRemove: [],
+            charParamBonusesToStay: [],
+            charParamBonusesToAdd: charParamBonuses as Array<{
+              charParam: string;
+              value: number;
+            }>,
+          })
+            .then((charParamBonusIds) => {
+              if (charParamBonusIds.length > 0) {
+                node.charParamBonuses = charParamBonusIds.map((charParamBonusId) =>
+                  String(charParamBonusId)
+                );
+              }
+              node
+                .save()
+                .then(() => {
+                  res.send(node);
+                })
+                .catch((err: Error) => {
+                  res.status(500).send(gemServerError(err));
+                });
+            })
+            .catch((err: Error) => {
+              res.status(500).send(gemServerError(err));
+            });
         })
         .catch((err: Error) => {
           res.status(500).send(gemServerError(err));
@@ -203,21 +239,6 @@ const update = (req: Request, res: Response): void => {
       if (rank !== null) {
         node.rank = rank;
       }
-      // if (effects !== null) {
-      //   node.effects = effects;
-      // }
-      // if (actions !== null) {
-      //   node.actions = actions;
-      // }
-      // if (skillBonuses !== null) {
-      //   node.skillBonuses = skillBonuses;
-      // }
-      // if (statBonuses !== null) {
-      //   node.statBonuses = statBonuses;
-      // }
-      // if (charParamBonuses !== null) {
-      //   node.charParamBonuses = charParamBonuses;
-      // }
       if (overrides !== null) {
         node.overrides = overrides;
       }
@@ -266,6 +287,96 @@ const update = (req: Request, res: Response): void => {
         []
       );
 
+      const statBonusesToStay: string[] = [];
+      interface IStatBonusElt extends IStatBonus {
+        _id: ObjectId;
+      }
+      const statBonusesToRemove = node.statBonuses.reduce(
+        (result: string[], elt: IStatBonusElt) => {
+          const foundStatBonus = statBonuses.find(
+            (statBonus) => statBonus.stat === String(elt.stat) && statBonus.value === elt.value
+          );
+          if (foundStatBonus === undefined) {
+            result.push(String(elt._id));
+          } else {
+            statBonusesToStay.push(String(elt._id));
+          }
+          return result;
+        },
+        []
+      );
+
+      const statBonusesToAdd = statBonuses.reduce(
+        (
+          result: Array<{
+            stat: string;
+            value: number;
+          }>,
+          elt: {
+            stat: string;
+            value: number;
+          }
+        ) => {
+          const foundStatBonus = node.statBonuses.find(
+            (statBonus) =>
+              typeof statBonus !== 'string' &&
+              String(statBonus.stat) === elt.stat &&
+              statBonus.value === elt.value
+          );
+          if (foundStatBonus === undefined) {
+            result.push(elt);
+          }
+          return result;
+        },
+        []
+      );
+
+      const charParamBonusesToStay: string[] = [];
+      interface ICharParamBonusElt extends ICharParamBonus {
+        _id: ObjectId;
+      }
+      const charParamBonusesToRemove = node.charParamBonuses.reduce(
+        (result: string[], elt: ICharParamBonusElt) => {
+          const foundCharParamBonus = charParamBonuses.find(
+            (charParamBonus) =>
+              charParamBonus.charParam === String(elt.charParam) &&
+              charParamBonus.value === elt.value
+          );
+          if (foundCharParamBonus === undefined) {
+            result.push(String(elt._id));
+          } else {
+            charParamBonusesToStay.push(String(elt._id));
+          }
+          return result;
+        },
+        []
+      );
+
+      const charParamBonusesToAdd = charParamBonuses.reduce(
+        (
+          result: Array<{
+            charParam: string;
+            value: number;
+          }>,
+          elt: {
+            charParam: string;
+            value: number;
+          }
+        ) => {
+          const foundCharParamBonus = node.charParamBonuses.find(
+            (charParamBonus) =>
+              typeof charParamBonus !== 'string' &&
+              String(charParamBonus.charParam) === elt.charParam &&
+              charParamBonus.value === elt.value
+          );
+          if (foundCharParamBonus === undefined) {
+            result.push(elt);
+          }
+          return result;
+        },
+        []
+      );
+
       if (i18n !== null) {
         const newIntl = {
           ...(node.i18n !== null && node.i18n !== undefined && node.i18n !== ''
@@ -289,10 +400,38 @@ const update = (req: Request, res: Response): void => {
           if (skillBonusIds.length > 0) {
             node.skillBonuses = skillBonusIds.map((skillBonusId) => String(skillBonusId));
           }
-          node
-            .save()
-            .then(() => {
-              res.send({ message: 'Node was updated successfully!', node });
+          curateStatBonusIds({
+            statBonusesToRemove,
+            statBonusesToAdd,
+            statBonusesToStay,
+          })
+            .then((statBonusIds) => {
+              if (statBonusIds.length > 0) {
+                node.statBonuses = statBonusIds.map((statBonusId) => String(statBonusId));
+              }
+              curateCharParamBonusIds({
+                charParamBonusesToRemove,
+                charParamBonusesToAdd,
+                charParamBonusesToStay,
+              })
+                .then((charParamBonusIds) => {
+                  if (charParamBonusIds.length > 0) {
+                    node.charParamBonuses = charParamBonusIds.map((charParamBonusId) =>
+                      String(charParamBonusId)
+                    );
+                  }
+                  node
+                    .save()
+                    .then(() => {
+                      res.send({ message: 'Node was updated successfully!', node });
+                    })
+                    .catch((err: Error) => {
+                      res.status(500).send(gemServerError(err));
+                    });
+                })
+                .catch((err: Error) => {
+                  res.status(500).send(gemServerError(err));
+                });
             })
             .catch((err: Error) => {
               res.status(500).send(gemServerError(err));

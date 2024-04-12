@@ -57,8 +57,8 @@ interface HydratedINode
   effects: IEffect[];
   actions: IAction[];
   skillBonuses: ISkillBonus[] | string[];
-  statBonuses: IStatBonus[];
-  charParamBonuses: ICharParamBonus[];
+  statBonuses: IStatBonus[] | string[];
+  charParamBonuses: ICharParamBonus[] | string[];
   skillBranch?: ISkillBranch | ObjectId;
   cyberFrameBranch?: ICyberFrameBranch | ObjectId;
 }

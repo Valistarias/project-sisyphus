@@ -417,7 +417,7 @@
     "actionTitle": "Action",
     "createActionButton": "Add Action",
     "actionInt": "Action Internationalization",
-    "createButton": "Create Node",
+    "createButton": "Edit Node",
     "successUpdate": "Node successfully updated !",
     "successDelete": "Node successfully deleted !",
     "confirmDeletion": {
