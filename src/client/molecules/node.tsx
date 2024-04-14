@@ -33,6 +33,8 @@ const Node: FC<INode> = ({ node, onNodeClick }) => {
   // TODO: Internationalization in ALL the file
   const content = nodeElt;
 
+  console.log('nodeElt', nodeElt);
+
   const { charParamBonuses, statBonuses, skillBonuses, bonusCount } = useMemo<{
     charParamBonuses: Array<{
       value: number;
@@ -107,7 +109,57 @@ const Node: FC<INode> = ({ node, onNodeClick }) => {
               rawStringContent={content.summary}
               readOnly
             />
+            {content.quote !== undefined ? (
+              <Ap className="node__content__main__quote">{`"${content.quote}"`}</Ap>
+            ) : null}
           </div>
+          {nodeElt.actions !== undefined
+            ? nodeElt.actions.map((action) => (
+                <div className="node__content__action" key={`action-${action._id}`}>
+                  <div className="node__content__action__title">
+                    <Ap className="node__content__action__title__elt">{`${action.isKarmic ? `${t('terms.node.offering')}: ` : ''}${action.title}`}</Ap>
+                    {action.time !== undefined ? (
+                      <Ap className="node__content__action__title__detail">
+                        {`${t(`terms.node.time`)}: ${action.time}`}
+                      </Ap>
+                    ) : null}
+                    <Ap className="node__content__action__title__detail">
+                      {t(`terms.node.action`)}
+                    </Ap>
+                  </div>
+                  <div className="node__content__action__summary">
+                    <Ap>{action.summary}</Ap>
+                    {action.uses !== undefined ? (
+                      <Ap className="node__content__action__detail">
+                        {t(`terms.node.perDay`, { count: action.uses, field: action.uses })}
+                      </Ap>
+                    ) : null}
+                  </div>
+                  {action.isKarmic ? (
+                    <div className="node__content__action__details">
+                      <Ap className="node__content__action__detail">
+                        {`${t(`terms.node.karmaCost`)}: ${action.karmicCost ?? 0}`}
+                      </Ap>
+                    </div>
+                  ) : null}
+                </div>
+              ))
+            : null}
+          {nodeElt.effects !== undefined
+            ? nodeElt.effects.map((effect) => (
+                <div className="node__content__effect" key={`effect-${effect._id}`}>
+                  <div className="node__content__effect__title">
+                    <Ap className="node__content__effect__title__elt">{effect.title}</Ap>
+                    <Ap className="node__content__effect__title__detail">
+                      {t(`terms.node.effect`)}
+                    </Ap>
+                  </div>
+                  <div className="node__content__effect__summary">
+                    <Ap>{effect.summary}</Ap>
+                  </div>
+                </div>
+              ))
+            : null}
         </div>
         {bonusCount > 0 ? (
           <div className="node__content__bonuses">

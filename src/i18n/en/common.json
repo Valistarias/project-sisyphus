@@ -50,6 +50,13 @@
     "node": {
       "generalBranch": "Main Branch",
       "rank": "Rank",
+      "offering": "Karma Offering",
+      "action": "Action",
+      "effect": "Effect",
+      "time": "Time",
+      "karmaCost": "Karma cost",
+      "perDay_one": "{{field}} use per day",
+      "perDay_other": "{{field}} uses per day",
       "bonus_one": "Bonus",
       "bonus_other": "Bonuses"
     },
