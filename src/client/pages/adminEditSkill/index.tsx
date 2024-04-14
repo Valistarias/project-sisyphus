@@ -9,7 +9,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ali, Ap, Atitle, Aul } from '../../atoms';
-import { Button, Input, SmartSelect, type ISingleValueSelect } from '../../molecules';
+import { Button, Input, Node, SmartSelect, type ISingleValueSelect } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
 import { type ICuratedNode, type ICuratedSkill } from '../../types';
 
@@ -40,6 +40,8 @@ const AdminEditSkill: FC = () => {
   const silentSave = useRef(false);
 
   const [displayInt, setDisplayInt] = useState(false);
+
+  const [nodes, setNodes] = useState<ICuratedNode[] | null>(null);
 
   const [skillData, setSkillData] = useState<ICuratedSkill | null>(null);
 
@@ -301,8 +303,7 @@ const AdminEditSkill: FC = () => {
       api.nodes
         .getAllBySkill({ skillId: id })
         .then((curatedNodes: ICuratedNode[]) => {
-          console.log('curatedNodes', curatedNodes);
-          // setSkillBranches(curatedSkillBranches ?? []);
+          setNodes(curatedNodes);
         })
         .catch(() => {
           const newId = getNewId();
@@ -326,7 +327,7 @@ const AdminEditSkill: FC = () => {
         () => {},
         () => {}
       );
-    }, 300000);
+    }, 600000);
     return () => {
       if (saveTimer.current !== null) {
         clearInterval(saveTimer.current);
@@ -422,7 +423,17 @@ const AdminEditSkill: FC = () => {
         </div>
         <div className="adminEditSkill__nodes">
           <Atitle level={2}>{t('adminEditSkill.nodes', { ns: 'pages' })}</Atitle>
-          <div className="adminEditSkill__nodes__list" />
+          <div className="adminEditSkill__nodes__list">
+            {nodes?.map((node) => (
+              <Node
+                key={node.node._id}
+                node={node}
+                onNodeClick={() => {
+                  navigate(`/admin/node/${node.node._id}`);
+                }}
+              />
+            ))}
+          </div>
           <Button href={`/admin/node/new?skillId=${id}`}>
             {t('adminNewNode.title', { ns: 'pages' })}
           </Button>

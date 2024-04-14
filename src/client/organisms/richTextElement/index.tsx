@@ -124,6 +124,7 @@ const RichTextElement: FC<IRichTextElement> = ({
 }) => {
   const basicEditor = useEditor({
     extensions: completeRichTextElementExtentions,
+    editable: !readOnly,
   });
 
   useEffect(() => {

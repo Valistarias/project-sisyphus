@@ -4,6 +4,7 @@ import DropDownMenu from './dropDownMenu';
 import EmbedNotion from './embedNotion';
 import Highlight from './highlight';
 import Input from './input';
+import Node from './node';
 import { NodeIconSelect, defaultNodeIcon } from './nodeIconSelect';
 import { SmartSelect, type IGroupedOption, type ISingleValueSelect } from './select';
 
@@ -14,6 +15,7 @@ export {
   EmbedNotion,
   Highlight,
   Input,
+  Node,
   NodeIconSelect,
   SmartSelect,
   defaultNodeIcon,

@@ -228,7 +228,7 @@ const AdminEditPages: FC = () => {
 
           setPageContent(page.content);
           if (curatedPage.i18n.fr !== undefined) {
-            setPageContentFr((i18n.fr.content as string) ?? '');
+            setPageContentFr(i18n.fr.content ?? '');
           }
         })
         .catch(() => {
@@ -253,7 +253,7 @@ const AdminEditPages: FC = () => {
         () => {},
         () => {}
       );
-    }, 300000);
+    }, 600000);
     return () => {
       if (saveTimer.current !== null) {
         clearInterval(saveTimer.current);

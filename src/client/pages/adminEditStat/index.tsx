@@ -265,7 +265,7 @@ const AdminEditStat: FC = () => {
         () => {},
         () => {}
       );
-    }, 300000);
+    }, 600000);
     return () => {
       if (saveTimer.current !== null) {
         clearInterval(saveTimer.current);

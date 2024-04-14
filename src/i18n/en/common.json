@@ -48,7 +48,10 @@
       "title": "campaign"
     },
     "node": {
-      "generalBranch": "Main Branch"
+      "generalBranch": "Main Branch",
+      "rank": "Rank",
+      "bonus_one": "Bonus",
+      "bonus_other": "Bonuses"
     },
     "actionType": {
       "combatmelee": "Melee Action",
