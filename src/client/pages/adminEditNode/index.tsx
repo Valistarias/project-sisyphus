@@ -6,25 +6,18 @@ import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useSystemAlerts } from '../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input, NodeIconSelect, SmartSelect } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
 import {
-  type IActionDuration,
-  type IActionType,
-  type ICuratedCharParam,
   type ICuratedCyberFrame,
-  type ICuratedCyberFrameBranch,
   type ICuratedNode,
   type ICuratedSkill,
-  type ICuratedSkillBranch,
-  type ICuratedStat,
   type ICyberFrameBranch,
   type ISkillBranch,
 } from '../../types';
-import { type InternationalizationType } from '../../types/global';
 
 import { classTrim, isThereDuplicate } from '../../utils';
 
@@ -111,6 +104,7 @@ const AdminEditNode: FC = () => {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
+  const { skills, stats, charParams, actionTypes, actionDurations } = useGlobalVars();
   const { createAlert, getNewId } = useSystemAlerts();
   const navigate = useNavigate();
 
@@ -121,32 +115,41 @@ const AdminEditNode: FC = () => {
   const [cyberFrame, setCyberFrame] = useState<ICuratedCyberFrame | null>(null);
 
   // General elements, for bonuses
-  const [skillSelect, setSkillSelect] = useState<
-    Array<{
-      value: string;
-      label: string;
-    }>
-  >([]);
+  const skillSelect = useMemo(
+    () =>
+      skills.map(({ skill }) => ({
+        value: skill._id,
+        // TODO : Handle Internationalization
+        label: skill.title,
+      })),
+    [skills]
+  );
   const [skillBonusIds, setSkillBonusIds] = useState<number[]>([]);
   const idIncrement = useRef(0);
 
-  const [statSelect, setStatSelect] = useState<
-    Array<{
-      value: string;
-      label: string;
-    }>
-  >([]);
+  const statSelect = useMemo(
+    () =>
+      stats.map(({ stat }) => ({
+        value: stat._id,
+        // TODO : Handle Internationalization
+        label: stat.title,
+      })),
+    [stats]
+  );
   const [statBonusIds, setStatBonusIds] = useState<number[]>([]);
 
-  const [charParamSelect, setCharParamSelect] = useState<
-    Array<{
-      value: string;
-      label: string;
-    }>
-  >([]);
+  const charParamSelect = useMemo(
+    () =>
+      charParams.map(({ charParam }) => ({
+        value: charParam._id,
+        // TODO : Handle Internationalization
+        label: charParam.title,
+      })),
+    [charParams]
+  );
   const [charParamBonusIds, setCharParamBonusIds] = useState<number[]>([]);
 
-  const [branches, setBranches] = useState<ICuratedSkillBranch[] | ICuratedCyberFrameBranch[]>([]);
+  const [branches, setBranches] = useState<ISkillBranch[] | ICyberFrameBranch[]>([]);
 
   const [rankSelect, setLevelSelect] = useState<
     Array<{
@@ -155,19 +158,23 @@ const AdminEditNode: FC = () => {
     }>
   >([]);
 
-  const [actionTypeSelect, setActionTypeSelect] = useState<
-    Array<{
-      value: string;
-      label: string;
-    }>
-  >([]);
+  const actionTypeSelect = useMemo(
+    () =>
+      actionTypes.map(({ name, _id }) => ({
+        value: _id,
+        label: t(`terms.actionType.${name}`),
+      })),
+    [actionTypes, t]
+  );
 
-  const [actionDurationSelect, setActionDurationSelect] = useState<
-    Array<{
-      value: string;
-      label: string;
-    }>
-  >([]);
+  const actionDurationSelect = useMemo(
+    () =>
+      actionDurations.map(({ name, _id }) => ({
+        value: _id,
+        label: t(`terms.actionDuration.${name}`),
+      })),
+    [actionDurations, t]
+  );
 
   const [effectIds, setEffectIds] = useState<number[]>([]);
 
@@ -342,18 +349,13 @@ const AdminEditNode: FC = () => {
           value: string;
           label: string;
         }>,
-        elt: {
-          i18n: InternationalizationType;
-          skillBranch?: ISkillBranch;
-          cyberFrameBranch?: ICyberFrameBranch;
-        }
+        elt: ISkillBranch | ICyberFrameBranch
       ) => {
-        const data = elt.skillBranch ?? elt.cyberFrameBranch;
-        if (data !== undefined) {
+        if (elt !== undefined) {
           result.push({
-            value: data._id,
+            value: elt._id,
             // TODO : Handle Internationalization
-            label: data.title === '_general' ? t('terms.node.generalBranch') : data.title,
+            label: elt.title === '_general' ? t('terms.node.generalBranch') : elt.title,
           });
         }
         return result;
@@ -696,10 +698,13 @@ const AdminEditNode: FC = () => {
           }
           if (node.skillBranch !== undefined) {
             const skillId = String(node.skillBranch.skill);
-            api.skillBranches
-              .getAllBySkill({ skillId })
-              .then((curatedSkillBranches: ICuratedSkillBranch[]) => {
-                setBranches(curatedSkillBranches ?? []);
+            api.skills
+              .get({
+                skillId,
+              })
+              .then((curatedSkill: ICuratedSkill) => {
+                setSkill(curatedSkill);
+                setBranches(curatedSkill.skill.branches ?? []);
               })
               .catch(() => {
                 const newId = getNewId();
@@ -714,30 +719,16 @@ const AdminEditNode: FC = () => {
               });
           } else if (node.cyberFrameBranch !== undefined) {
             const cyberFrameId = String(node.cyberFrameBranch.cyberFrame);
-            api.cyberFrameBranches
-              .getAllByCyberFrame({ cyberFrameId })
-              .then((curatedSkillBranches: ICuratedCyberFrameBranch[]) => {
-                setBranches(curatedSkillBranches ?? []);
-              })
-              .catch(() => {
-                const newId = getNewId();
-                createAlert({
-                  key: newId,
-                  dom: (
-                    <Alert key={newId} id={newId} timer={5}>
-                      <Ap>{t('serverErrors.CYPU-301')}</Ap>
-                    </Alert>
-                  ),
-                });
-              });
             api.cyberFrames
               .get({
                 cyberFrameId,
               })
               .then((sentCyberFrame: ICuratedCyberFrame) => {
                 setCyberFrame(sentCyberFrame);
+                setBranches(sentCyberFrame.cyberFrame.branches ?? []);
               })
               .catch(() => {
+                // setLoading(false);
                 const newId = getNewId();
                 createAlert({
                   key: newId,
@@ -760,12 +751,6 @@ const AdminEditNode: FC = () => {
                   setSkill(foundSkill);
                 }
               }
-              const curatedSelect = curatedSkills.map(({ skill }) => ({
-                value: skill._id,
-                // TODO : Handle Internationalization
-                label: skill.title,
-              }));
-              setSkillSelect(curatedSelect);
             })
             .catch(() => {
               const newId = getNewId();
@@ -778,88 +763,6 @@ const AdminEditNode: FC = () => {
                 ),
               });
             });
-        })
-        .catch(() => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
-        });
-      api.stats
-        .getAll()
-        .then((curatedStats: ICuratedStat[]) => {
-          const curatedSelect = curatedStats.map(({ stat }) => ({
-            value: stat._id,
-            // TODO : Handle Internationalization
-            label: stat.title,
-          }));
-          setStatSelect(curatedSelect);
-        })
-        .catch(() => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
-        });
-      api.charParams
-        .getAll()
-        .then((curatedCharParams: ICuratedCharParam[]) => {
-          const curatedSelect = curatedCharParams.map(({ charParam }) => ({
-            value: charParam._id,
-            // TODO : Handle Internationalization
-            label: charParam.title,
-          }));
-          setCharParamSelect(curatedSelect);
-        })
-        .catch(() => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
-        });
-      api.actionTypes
-        .getAll()
-        .then((actionTypes: IActionType[]) => {
-          const curatedSelect = actionTypes.map(({ name, _id }) => ({
-            value: _id,
-            label: t(`terms.actionType.${name}`),
-          }));
-          setActionTypeSelect(curatedSelect);
-        })
-        .catch(() => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
-        });
-      api.actionDurations
-        .getAll()
-        .then((actionDurations: IActionDuration[]) => {
-          const curatedSelect = actionDurations.map(({ name, _id }) => ({
-            value: _id,
-            label: t(`terms.actionDuration.${name}`),
-          }));
-          setActionDurationSelect(curatedSelect);
         })
         .catch(() => {
           const newId = getNewId();
@@ -946,18 +849,11 @@ const AdminEditNode: FC = () => {
             options={branchSelect}
             onChange={(e) => {
               let titleBranch: string | null = null;
-              branches.forEach(
-                (branch: {
-                  i18n: InternationalizationType;
-                  skillBranch?: ISkillBranch;
-                  cyberFrameBranch?: ICyberFrameBranch;
-                }) => {
-                  const data = branch.skillBranch ?? branch.cyberFrameBranch;
-                  if (data !== undefined && data._id === e) {
-                    titleBranch = data.title;
-                  }
+              branches.forEach((elt: ISkillBranch | ICyberFrameBranch) => {
+                if (elt !== undefined && elt._id === e) {
+                  titleBranch = elt.title;
                 }
-              );
+              });
               if (titleBranch === '_general') {
                 setLevelSelect(generalRange);
               } else {

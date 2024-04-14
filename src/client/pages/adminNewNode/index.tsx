@@ -12,8 +12,6 @@ import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input, NodeIconSelect, SmartSelect } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
 import {
-  type IActionDuration,
-  type IActionType,
   type ICuratedCyberFrame,
   type ICuratedSkill,
   type ICyberFrameBranch,
@@ -101,7 +99,7 @@ const AdminNewNode: FC = () => {
   const { search } = useLocation();
   const navigate = useNavigate();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { skills, stats, charParams } = useGlobalVars();
+  const { skills, stats, charParams, actionTypes, actionDurations } = useGlobalVars();
 
   const params = useMemo(() => new URLSearchParams(search), [search]);
 
@@ -155,19 +153,23 @@ const AdminNewNode: FC = () => {
     }>
   >([]);
 
-  const [actionTypeSelect, setActionTypeSelect] = useState<
-    Array<{
-      value: string;
-      label: string;
-    }>
-  >([]);
+  const actionTypeSelect = useMemo(
+    () =>
+      actionTypes.map(({ name, _id }) => ({
+        value: _id,
+        label: t(`terms.actionType.${name}`),
+      })),
+    [actionTypes, t]
+  );
 
-  const [actionDurationSelect, setActionDurationSelect] = useState<
-    Array<{
-      value: string;
-      label: string;
-    }>
-  >([]);
+  const actionDurationSelect = useMemo(
+    () =>
+      actionDurations.map(({ name, _id }) => ({
+        value: _id,
+        label: t(`terms.actionDuration.${name}`),
+      })),
+    [actionDurations, t]
+  );
 
   const [effectIds, setEffectIds] = useState<number[]>([]);
 
@@ -324,47 +326,6 @@ const AdminNewNode: FC = () => {
             });
           });
       }
-
-      api.actionTypes
-        .getAll()
-        .then((actionTypes: IActionType[]) => {
-          const curatedSelect = actionTypes.map(({ name, _id }) => ({
-            value: _id,
-            label: t(`terms.actionType.${name}`),
-          }));
-          setActionTypeSelect(curatedSelect);
-        })
-        .catch(() => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
-        });
-      api.actionDurations
-        .getAll()
-        .then((actionDurations: IActionDuration[]) => {
-          const curatedSelect = actionDurations.map(({ name, _id }) => ({
-            value: _id,
-            label: t(`terms.actionDuration.${name}`),
-          }));
-          setActionDurationSelect(curatedSelect);
-        })
-        .catch(() => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
-        });
     }
   }, [api, createAlert, getNewId, params, t]);
 
