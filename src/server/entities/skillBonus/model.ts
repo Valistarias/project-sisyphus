@@ -15,7 +15,7 @@ interface HydratedISkillBonus extends Omit<HydratedDocument<ISkillBonus>, 'skill
   skill: ISkill;
 }
 
-const effectSchema = new Schema<ISkillBonus>({
+const skillBonusSchema = new Schema<ISkillBonus>({
   skill: {
     type: Schema.Types.ObjectId,
     ref: 'Skill',
@@ -27,6 +27,6 @@ const effectSchema = new Schema<ISkillBonus>({
   },
 });
 
-const SkillBonusModel = (): Model<ISkillBonus> => model('SkillBonus', effectSchema);
+const SkillBonusModel = (): Model<ISkillBonus> => model('SkillBonus', skillBonusSchema);
 
 export { SkillBonusModel, type HydratedISkillBonus, type ISkillBonus };

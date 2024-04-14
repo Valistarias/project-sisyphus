@@ -6,7 +6,7 @@ import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { useApi, useSystemAlerts } from '../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input, NodeIconSelect, SmartSelect } from '../../molecules';
@@ -14,16 +14,11 @@ import { Alert, RichTextElement, completeRichTextElementExtentions } from '../..
 import {
   type IActionDuration,
   type IActionType,
-  type ICuratedCharParam,
   type ICuratedCyberFrame,
-  type ICuratedCyberFrameBranch,
   type ICuratedSkill,
-  type ICuratedSkillBranch,
-  type ICuratedStat,
   type ICyberFrameBranch,
   type ISkillBranch,
 } from '../../types';
-import { type InternationalizationType } from '../../types/global';
 
 import { classTrim, isThereDuplicate } from '../../utils';
 
@@ -106,6 +101,7 @@ const AdminNewNode: FC = () => {
   const { search } = useLocation();
   const navigate = useNavigate();
   const { createAlert, getNewId } = useSystemAlerts();
+  const { skills, stats, charParams } = useGlobalVars();
 
   const params = useMemo(() => new URLSearchParams(search), [search]);
 
@@ -116,32 +112,41 @@ const AdminNewNode: FC = () => {
   const [cyberFrame, setCyberFrame] = useState<ICuratedCyberFrame | null>(null);
 
   // General elements, for bonuses
-  const [skillSelect, setSkillSelect] = useState<
-    Array<{
-      value: string;
-      label: string;
-    }>
-  >([]);
+  const skillSelect = useMemo(
+    () =>
+      skills.map(({ skill }) => ({
+        value: skill._id,
+        // TODO : Handle Internationalization
+        label: skill.title,
+      })),
+    [skills]
+  );
   const [skillBonusIds, setSkillBonusIds] = useState<number[]>([]);
   const idIncrement = useRef(0);
 
-  const [statSelect, setStatSelect] = useState<
-    Array<{
-      value: string;
-      label: string;
-    }>
-  >([]);
+  const statSelect = useMemo(
+    () =>
+      stats.map(({ stat }) => ({
+        value: stat._id,
+        // TODO : Handle Internationalization
+        label: stat.title,
+      })),
+    [stats]
+  );
   const [statBonusIds, setStatBonusIds] = useState<number[]>([]);
 
-  const [charParamSelect, setCharParamSelect] = useState<
-    Array<{
-      value: string;
-      label: string;
-    }>
-  >([]);
+  const charParamSelect = useMemo(
+    () =>
+      charParams.map(({ charParam }) => ({
+        value: charParam._id,
+        // TODO : Handle Internationalization
+        label: charParam.title,
+      })),
+    [charParams]
+  );
   const [charParamBonusIds, setCharParamBonusIds] = useState<number[]>([]);
 
-  const [branches, setBranches] = useState<ICuratedSkillBranch[] | ICuratedCyberFrameBranch[]>([]);
+  const [branches, setBranches] = useState<ISkillBranch[] | ICyberFrameBranch[]>([]);
 
   const [rankSelect, setLevelSelect] = useState<
     Array<{
@@ -213,18 +218,13 @@ const AdminNewNode: FC = () => {
           value: string;
           label: string;
         }>,
-        elt: {
-          i18n: InternationalizationType;
-          skillBranch?: ISkillBranch;
-          cyberFrameBranch?: ICyberFrameBranch;
-        }
+        elt: ISkillBranch | ICyberFrameBranch
       ) => {
-        const data = elt.skillBranch ?? elt.cyberFrameBranch;
-        if (data !== undefined) {
+        if (elt !== undefined) {
           result.push({
-            value: data._id,
+            value: elt._id,
             // TODO : Handle Internationalization
-            label: data.title === '_general' ? t('terms.node.generalBranch') : data.title,
+            label: elt.title === '_general' ? t('terms.node.generalBranch') : elt.title,
           });
         }
         return result;
@@ -282,50 +282,37 @@ const AdminNewNode: FC = () => {
     if (api !== undefined) {
       const skillId = params.get('skillId');
       const cyberFrameId = params.get('cyberFrameId');
-      if (skillId !== null) {
-        api.skillBranches
-          .getAllBySkill({ skillId })
-          .then((curatedSkillBranches: ICuratedSkillBranch[]) => {
-            setBranches(curatedSkillBranches ?? []);
-          })
-          .catch(() => {
-            const newId = getNewId();
-            createAlert({
-              key: newId,
-              dom: (
-                <Alert key={newId} id={newId} timer={5}>
-                  <Ap>{t('serverErrors.CYPU-301')}</Ap>
-                </Alert>
-              ),
-            });
-          });
-      } else if (cyberFrameId !== null) {
-        api.cyberFrameBranches
-          .getAllByCyberFrame({ cyberFrameId })
-          .then((curatedSkillBranches: ICuratedCyberFrameBranch[]) => {
-            setBranches(curatedSkillBranches ?? []);
-          })
-          .catch(() => {
-            const newId = getNewId();
-            createAlert({
-              key: newId,
-              dom: (
-                <Alert key={newId} id={newId} timer={5}>
-                  <Ap>{t('serverErrors.CYPU-301')}</Ap>
-                </Alert>
-              ),
-            });
-          });
+      if (cyberFrameId !== null) {
         api.cyberFrames
           .get({
-            cyberFrameId: params.get('cyberFrameId') ?? '',
+            cyberFrameId,
           })
           .then((sentCyberFrame: ICuratedCyberFrame) => {
-            // setLoading(false);
             setCyberFrame(sentCyberFrame);
+            setBranches(sentCyberFrame.cyberFrame.branches ?? []);
           })
           .catch(() => {
             // setLoading(false);
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{t('serverErrors.CYPU-301')}</Ap>
+                </Alert>
+              ),
+            });
+          });
+      } else if (skillId !== null) {
+        api.skills
+          .get({
+            skillId,
+          })
+          .then((curatedSkill: ICuratedSkill) => {
+            setSkill(curatedSkill);
+            setBranches(curatedSkill.skill.branches ?? []);
+          })
+          .catch(() => {
             const newId = getNewId();
             createAlert({
               key: newId,
@@ -337,75 +324,7 @@ const AdminNewNode: FC = () => {
             });
           });
       }
-      api.skills
-        .getAll()
-        .then((curatedSkills: ICuratedSkill[]) => {
-          if (skillId !== null) {
-            const foundSkill = curatedSkills.find(({ skill }) => skill._id === skillId);
-            if (foundSkill !== undefined) {
-              setSkill(foundSkill);
-            }
-          }
-          const curatedSelect = curatedSkills.map(({ skill }) => ({
-            value: skill._id,
-            // TODO : Handle Internationalization
-            label: skill.title,
-          }));
-          setSkillSelect(curatedSelect);
-        })
-        .catch(() => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
-        });
-      api.stats
-        .getAll()
-        .then((curatedStats: ICuratedStat[]) => {
-          const curatedSelect = curatedStats.map(({ stat }) => ({
-            value: stat._id,
-            // TODO : Handle Internationalization
-            label: stat.title,
-          }));
-          setStatSelect(curatedSelect);
-        })
-        .catch(() => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
-        });
-      api.charParams
-        .getAll()
-        .then((curatedCharParams: ICuratedCharParam[]) => {
-          const curatedSelect = curatedCharParams.map(({ charParam }) => ({
-            value: charParam._id,
-            // TODO : Handle Internationalization
-            label: charParam.title,
-          }));
-          setCharParamSelect(curatedSelect);
-        })
-        .catch(() => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
-        });
+
       api.actionTypes
         .getAll()
         .then((actionTypes: IActionType[]) => {
@@ -713,18 +632,11 @@ const AdminNewNode: FC = () => {
             options={branchSelect}
             onChange={(e) => {
               let titleBranch: string | null = null;
-              branches.forEach(
-                (branch: {
-                  i18n: InternationalizationType;
-                  skillBranch?: ISkillBranch;
-                  cyberFrameBranch?: ICyberFrameBranch;
-                }) => {
-                  const data = branch.skillBranch ?? branch.cyberFrameBranch;
-                  if (data !== undefined && data._id === e) {
-                    titleBranch = data.title;
-                  }
+              branches.forEach((elt: ISkillBranch | ICyberFrameBranch) => {
+                if (elt !== undefined && elt._id === e) {
+                  titleBranch = elt.title;
                 }
-              );
+              });
               if (titleBranch === '_general') {
                 setLevelSelect(generalRange);
               } else {

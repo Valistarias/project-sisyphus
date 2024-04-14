@@ -6,7 +6,7 @@ import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useSystemAlerts } from '../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input } from '../../molecules';
@@ -26,6 +26,7 @@ const AdminEditCharParam: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
+  const { reloadCharParams } = useGlobalVars();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
@@ -127,6 +128,7 @@ const AdminEditCharParam: FC = () => {
               </Alert>
             ),
           });
+          reloadCharParams();
         })
         .catch(({ response }) => {
           const { data } = response;
@@ -157,6 +159,7 @@ const AdminEditCharParam: FC = () => {
       getNewId,
       createAlert,
       t,
+      reloadCharParams,
       setError,
     ]
   );
@@ -189,6 +192,7 @@ const AdminEditCharParam: FC = () => {
                     </Alert>
                   ),
                 });
+                reloadCharParams();
                 navigate('/admin/charparams');
               })
               .catch(({ response }) => {
@@ -224,6 +228,7 @@ const AdminEditCharParam: FC = () => {
     id,
     getNewId,
     createAlert,
+    reloadCharParams,
     navigate,
     setError,
   ]);

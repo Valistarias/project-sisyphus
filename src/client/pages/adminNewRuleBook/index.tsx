@@ -26,7 +26,7 @@ const AdminNewRuleBooks: FC = () => {
   const { api } = useApi();
   const navigate = useNavigate();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { triggerRuleBookReload } = useGlobalVars();
+  const { reloadRuleBooks } = useGlobalVars();
 
   const [ruleBookTypes, setRuleBookTypes] = useState<ISingleValueSelect[]>([]);
 
@@ -84,7 +84,7 @@ const AdminNewRuleBooks: FC = () => {
               </Alert>
             ),
           });
-          triggerRuleBookReload();
+          reloadRuleBooks();
           navigate(`/admin/ruleBook/${ruleBook._id}`);
         })
         .catch(({ response }) => {
@@ -106,17 +106,7 @@ const AdminNewRuleBooks: FC = () => {
           }
         });
     },
-    [
-      introEditor,
-      introFrEditor,
-      api,
-      getNewId,
-      createAlert,
-      t,
-      triggerRuleBookReload,
-      navigate,
-      setError,
-    ]
+    [introEditor, introFrEditor, api, getNewId, createAlert, t, reloadRuleBooks, navigate, setError]
   );
 
   useEffect(() => {

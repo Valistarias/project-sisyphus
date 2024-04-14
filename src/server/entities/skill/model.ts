@@ -1,6 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type IStat } from '../index';
+import { type HydratedISkillBranch, type IStat } from '../index';
 
 interface ISkill {
   /** The title of the skill */
@@ -17,22 +17,37 @@ interface ISkill {
 
 interface HydratedISkill extends Omit<HydratedDocument<ISkill>, 'stat'> {
   stat: IStat;
+  branches: HydratedISkillBranch[];
 }
 
-const effectSchema = new Schema<ISkill>({
-  title: String,
-  summary: String,
-  i18n: String,
-  stat: {
-    type: Schema.Types.ObjectId,
-    ref: 'Stat',
+const skillSchema = new Schema<ISkill>(
+  {
+    title: String,
+    summary: String,
+    i18n: String,
+    stat: {
+      type: Schema.Types.ObjectId,
+      ref: 'Stat',
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+);
+
+// Virtuals -------------------------
+
+skillSchema.virtual('branches', {
+  ref: 'SkillBranch',
+  localField: '_id',
+  foreignField: 'skill',
 });
 
-const SkillModel = (): Model<ISkill> => model('Skill', effectSchema);
+const SkillModel = (): Model<ISkill> => model('Skill', skillSchema);
 
 export { SkillModel, type HydratedISkill, type ISkill };

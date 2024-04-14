@@ -2,7 +2,7 @@ import { type Request, type Response } from 'express';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
-import { type IStat } from '../index';
+import { type HydratedISkillBranch, type IStat } from '../index';
 import { createGeneralForSkillId, deleteSkillBranchesBySkillId } from '../skillBranch/controller';
 
 import { type HydratedISkill } from './model';
@@ -13,6 +13,10 @@ const findSkills = async (): Promise<HydratedISkill[]> =>
   await new Promise((resolve, reject) => {
     Skill.find()
       .populate<{ stat: IStat }>('stat')
+      .populate<{ branches: HydratedISkillBranch[] }>({
+        path: 'branches',
+        select: '_id title skill summary i18n',
+      })
       .then(async (res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Skills'));
@@ -29,6 +33,10 @@ const findSkillById = async (id: string): Promise<HydratedISkill> =>
   await new Promise((resolve, reject) => {
     Skill.findById(id)
       .populate<{ stat: IStat }>('stat')
+      .populate<{ branches: HydratedISkillBranch[] }>({
+        path: 'branches',
+        select: '_id title skill summary i18n',
+      })
       .then(async (res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Skill'));

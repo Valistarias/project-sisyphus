@@ -15,7 +15,7 @@ interface HydratedIStatBonus extends Omit<HydratedDocument<IStatBonus>, 'stat'> 
   stat: IStat;
 }
 
-const effectSchema = new Schema<IStatBonus>({
+const statBonusSchema = new Schema<IStatBonus>({
   stat: {
     type: Schema.Types.ObjectId,
     ref: 'Stat',
@@ -27,6 +27,6 @@ const effectSchema = new Schema<IStatBonus>({
   },
 });
 
-const StatBonusModel = (): Model<IStatBonus> => model('StatBonus', effectSchema);
+const StatBonusModel = (): Model<IStatBonus> => model('StatBonus', statBonusSchema);
 
 export { StatBonusModel, type HydratedIStatBonus, type IStatBonus };

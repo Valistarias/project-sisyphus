@@ -41,7 +41,7 @@ const AdminEditRuleBook: FC = () => {
     ConfMessageEvent: {},
   };
   const navigate = useNavigate();
-  const { triggerRuleBookReload } = useGlobalVars();
+  const { reloadRuleBooks } = useGlobalVars();
 
   const calledApi = useRef<string | null>(null);
   const saveTimer = useRef<NodeJS.Timeout | null>(null);
@@ -206,7 +206,7 @@ const AdminEditRuleBook: FC = () => {
                 </Alert>
               ),
             });
-            triggerRuleBookReload();
+            reloadRuleBooks();
           } else {
             const date = formatDate(new Date(Date.now()));
             setAutoSaved(
@@ -238,7 +238,7 @@ const AdminEditRuleBook: FC = () => {
           }
         });
     },
-    [introEditor, introFrEditor, api, id, getNewId, createAlert, t, triggerRuleBookReload, setError]
+    [introEditor, introFrEditor, api, id, getNewId, createAlert, t, reloadRuleBooks, setError]
   );
 
   const onUpdateOrder = useCallback(() => {
@@ -334,7 +334,7 @@ const AdminEditRuleBook: FC = () => {
                     </Alert>
                   ),
                 });
-                triggerRuleBookReload();
+                reloadRuleBooks();
                 navigate('/admin/rulebooks');
               })
               .catch(({ response }) => {
@@ -371,7 +371,7 @@ const AdminEditRuleBook: FC = () => {
     ConfMessageEvent,
     getNewId,
     createAlert,
-    triggerRuleBookReload,
+    reloadRuleBooks,
     navigate,
     setError,
   ]);

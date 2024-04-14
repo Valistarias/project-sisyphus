@@ -63,7 +63,7 @@ interface HydratedINode
   cyberFrameBranch?: ICyberFrameBranch | ObjectId;
 }
 
-const effectSchema = new Schema<INode>({
+const nodeSchema = new Schema<INode>({
   title: String,
   summary: String,
   icon: String,
@@ -120,6 +120,6 @@ const effectSchema = new Schema<INode>({
   },
 });
 
-const NodeModel = (): Model<INode> => model('Node', effectSchema);
+const NodeModel = (): Model<INode> => model('Node', nodeSchema);
 
 export { NodeModel, type HydratedINode, type INode };

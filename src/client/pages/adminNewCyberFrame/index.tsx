@@ -25,7 +25,7 @@ const AdminNewCyberFrame: FC = () => {
   const { api } = useApi();
   const navigate = useNavigate();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { ruleBooks } = useGlobalVars();
+  const { ruleBooks, reloadCyberFrames } = useGlobalVars();
 
   const introEditor = useEditor({
     extensions: completeRichTextElementExtentions,
@@ -90,6 +90,7 @@ const AdminNewCyberFrame: FC = () => {
               </Alert>
             ),
           });
+          reloadCyberFrames();
           navigate(`/admin/cyberframe/${cyberFrame._id}`);
         })
         .catch(({ response }) => {
@@ -111,7 +112,17 @@ const AdminNewCyberFrame: FC = () => {
           }
         });
     },
-    [introEditor, introFrEditor, api, getNewId, createAlert, t, navigate, setError]
+    [
+      introEditor,
+      introFrEditor,
+      api,
+      getNewId,
+      createAlert,
+      t,
+      reloadCyberFrames,
+      navigate,
+      setError,
+    ]
   );
 
   return (

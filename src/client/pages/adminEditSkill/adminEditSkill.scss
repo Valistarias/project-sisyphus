@@ -45,13 +45,20 @@
     margin-bottom: 2rem;
   }
 
-  &__intl {
-    margin-bottom: 1rem;
+  &__intl-title {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4rem;
     margin-top: 6rem;
+
+    &__title {
+      margin: 0;
+    }
   }
 
-  &__intl-info {
-    margin-bottom: 4rem;
+  &__intl {
+    display: none;
   }
 
   &__branches,
@@ -95,6 +102,16 @@
         margin-bottom: 2rem;
         text-transform: uppercase;
       }
+    }
+  }
+
+  &--int-visible {
+    .adminEditSkill__intl {
+      display: block;
+    }
+
+    .adminEditSkill__intl-title__btn {
+      transform: rotate(180deg);
     }
   }
 }

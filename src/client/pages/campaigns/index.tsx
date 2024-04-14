@@ -16,7 +16,7 @@ const Campaigns: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { user, campaigns, triggerCampaignReload } = useGlobalVars();
+  const { user, campaigns, reloadCampaigns } = useGlobalVars();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
@@ -49,7 +49,7 @@ const Campaigns: FC = () => {
                       </Alert>
                     ),
                   });
-                  triggerCampaignReload();
+                  reloadCampaigns();
                 })
                 .catch(({ response }) => {
                   const newId = getNewId();
@@ -69,7 +69,7 @@ const Campaigns: FC = () => {
         }
       );
     },
-    [api, setConfirmContent, t, ConfMessageEvent, getNewId, createAlert, triggerCampaignReload]
+    [api, setConfirmContent, t, ConfMessageEvent, getNewId, createAlert, reloadCampaigns]
   );
 
   const campaignList = useMemo(() => {

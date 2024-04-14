@@ -15,7 +15,7 @@ interface IStat {
 
 interface HydratedIStat extends HydratedDocument<IStat> {}
 
-const effectSchema = new Schema<IStat>({
+const statSchema = new Schema<IStat>({
   title: String,
   summary: String,
   short: String,
@@ -26,6 +26,6 @@ const effectSchema = new Schema<IStat>({
   },
 });
 
-const StatModel = (): Model<IStat> => model('Stat', effectSchema);
+const StatModel = (): Model<IStat> => model('Stat', statSchema);
 
 export { StatModel, type HydratedIStat, type IStat };

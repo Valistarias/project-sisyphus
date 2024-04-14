@@ -6,12 +6,12 @@ import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useSystemAlerts } from '../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ali, Ap, Atitle, Aul } from '../../atoms';
 import { Button, Input, SmartSelect, type ISingleValueSelect } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
-import { type ICuratedSkill, type ICuratedSkillBranch, type ICuratedStat } from '../../types';
+import { type ICuratedNode, type ICuratedSkill } from '../../types';
 
 import { classTrim } from '../../utils';
 
@@ -27,6 +27,7 @@ const AdminEditSkill: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
+  const { stats, reloadSkills } = useGlobalVars();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
@@ -38,14 +39,12 @@ const AdminEditSkill: FC = () => {
   const saveTimer = useRef<NodeJS.Timeout | null>(null);
   const silentSave = useRef(false);
 
-  const [stats, setStats] = useState<ISingleValueSelect[]>([]);
+  const [displayInt, setDisplayInt] = useState(false);
 
   const [skillData, setSkillData] = useState<ICuratedSkill | null>(null);
 
   const [skillText, setSkillText] = useState('');
   const [skillTextFr, setSkillTextFr] = useState('');
-
-  const [skillBranches, setSkillBranches] = useState<ICuratedSkillBranch[] | null>(null);
 
   const textEditor = useEditor({
     extensions: completeRichTextElementExtentions,
@@ -56,27 +55,38 @@ const AdminEditSkill: FC = () => {
   });
 
   const skillBranchesList = useMemo(() => {
-    if (skillBranches === null || skillBranches.length === 0) {
+    const branches = skillData?.skill.branches;
+    if (branches === undefined || branches.length === 0) {
       return null;
     }
     return (
       <Aul className="adminEditSkill__skillbranch-list" noPoints>
-        {skillBranches.map(({ skillBranch }) => (
+        {branches.map(({ _id, title }) => (
           <Ali
             className={classTrim(`
               adminEditSkill__skillbranch-list__elt
             `)}
-            key={skillBranch._id}
+            key={_id}
           >
-            <Atitle level={3}>{skillBranch.title}</Atitle>
-            <Button href={`/admin/skillbranch/${skillBranch._id}`}>
+            <Atitle level={3}>{title}</Atitle>
+            <Button href={`/admin/skillbranch/${_id}`}>
               {t('adminSkills.editSkill', { ns: 'pages' })}
             </Button>
           </Ali>
         ))}
       </Aul>
     );
-  }, [skillBranches, t]);
+  }, [skillData, t]);
+
+  const statSelect = useMemo(
+    () =>
+      stats.map(({ stat }) => ({
+        value: stat._id,
+        // TODO : Handle Internationalization
+        label: stat.title,
+      })),
+    [stats]
+  );
 
   const createDefaultData = useCallback(
     (skillData: ICuratedSkill | null, stats: ISingleValueSelect[]) => {
@@ -106,8 +116,8 @@ const AdminEditSkill: FC = () => {
     reset,
   } = useForm<FieldValues>({
     defaultValues: useMemo(
-      () => createDefaultData(skillData, stats),
-      [createDefaultData, stats, skillData]
+      () => createDefaultData(skillData, statSelect),
+      [createDefaultData, statSelect, skillData]
     ),
   });
 
@@ -159,6 +169,7 @@ const AdminEditSkill: FC = () => {
               </Alert>
             ),
           });
+          reloadSkills();
         })
         .catch(({ response }) => {
           const { data } = response;
@@ -179,7 +190,19 @@ const AdminEditSkill: FC = () => {
           }
         });
     },
-    [skillText, skillTextFr, textEditor, textFrEditor, api, id, getNewId, createAlert, t, setError]
+    [
+      skillText,
+      skillTextFr,
+      textEditor,
+      textFrEditor,
+      api,
+      id,
+      getNewId,
+      createAlert,
+      t,
+      reloadSkills,
+      setError,
+    ]
   );
 
   const onAskDelete = useCallback(() => {
@@ -210,6 +233,7 @@ const AdminEditSkill: FC = () => {
                     </Alert>
                   ),
                 });
+                reloadSkills();
                 navigate('/admin/skills');
               })
               .catch(({ response }) => {
@@ -245,6 +269,7 @@ const AdminEditSkill: FC = () => {
     id,
     getNewId,
     createAlert,
+    reloadSkills,
     navigate,
     setError,
   ]);
@@ -273,32 +298,11 @@ const AdminEditSkill: FC = () => {
             ),
           });
         });
-      api.stats
-        .getAll()
-        .then((data: ICuratedStat[]) => {
-          setStats(
-            data.map(({ stat }) => ({
-              value: stat._id,
-              // TODO : Handle Internationalization
-              label: stat.title,
-            }))
-          );
-        })
-        .catch(() => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
-        });
-      api.skillBranches
+      api.nodes
         .getAllBySkill({ skillId: id })
-        .then((curatedSkillBranches: ICuratedSkillBranch[]) => {
-          setSkillBranches(curatedSkillBranches ?? []);
+        .then((curatedNodes: ICuratedNode[]) => {
+          console.log('curatedNodes', curatedNodes);
+          // setSkillBranches(curatedSkillBranches ?? []);
         })
         .catch(() => {
           const newId = getNewId();
@@ -332,30 +336,21 @@ const AdminEditSkill: FC = () => {
 
   // To affect default data
   useEffect(() => {
-    reset(createDefaultData(skillData, stats));
-  }, [skillData, reset, createDefaultData, stats]);
+    reset(createDefaultData(skillData, statSelect));
+  }, [skillData, reset, createDefaultData, statSelect]);
 
   return (
-    <div className="adminEditSkill">
+    <div
+      className={classTrim(`
+        adminEditSkill
+        ${displayInt ? 'adminEditSkill--int-visible' : ''}
+      `)}
+    >
       <form onSubmit={handleSubmit(onSaveSkill)} noValidate className="adminEditSkill__content">
         <div className="adminEditSkill__head">
           <Atitle level={1}>{skillData?.skill.title}</Atitle>
           <Button onClick={onAskDelete} color="error">
             {t('adminEditSkill.delete', { ns: 'pages' })}
-          </Button>
-        </div>
-        <div className="adminEditSkill__nodes">
-          <Atitle level={2}>{t('adminEditSkill.nodes', { ns: 'pages' })}</Atitle>
-          <div className="adminEditSkill__nodes__list" />
-          <Button href={`/admin/node/new?skillId=${id}`}>
-            {t('adminNewNode.title', { ns: 'pages' })}
-          </Button>
-        </div>
-        <div className="adminEditSkill__branches">
-          <Atitle level={2}>{t('adminEditSkill.branches', { ns: 'pages' })}</Atitle>
-          <div className="adminEditSkill__branches__list">{skillBranchesList}</div>
-          <Button href={`/admin/skillbranch/new?skillId=${id}`}>
-            {t('adminNewSkillBranch.title', { ns: 'pages' })}
           </Button>
         </div>
         <Atitle level={2}>{t('adminEditSkill.edit', { ns: 'pages' })}</Atitle>
@@ -376,7 +371,7 @@ const AdminEditSkill: FC = () => {
             inputName="stat"
             label={t('statSkill.label', { ns: 'fields' })}
             rules={{ required: t('statSkill.required', { ns: 'fields' }) }}
-            options={stats}
+            options={statSelect}
             className="adminEditSkill__basics__stat"
           />
         </div>
@@ -388,29 +383,56 @@ const AdminEditSkill: FC = () => {
             small
           />
         </div>
-
-        <Atitle className="adminEditSkill__intl" level={2}>
-          {t('adminEditSkill.i18n', { ns: 'pages' })}
-        </Atitle>
-        <Ap className="adminEditSkill__intl-info">
-          {t('adminEditSkill.i18nInfo', { ns: 'pages' })}
-        </Ap>
-        <div className="adminEditSkill__basics">
-          <Input
-            control={control}
-            inputName="nameFr"
-            type="text"
-            label={`${t('nameSkill.label', { ns: 'fields' })} (FR)`}
-            className="adminEditSkill__basics__name"
+        <div className="adminEditSkill__intl-title">
+          <div className="adminEditSkill__intl-title__content">
+            <Atitle className="adminEditSkill__intl-title__title" level={2}>
+              {t('adminEditSkill.i18n', { ns: 'pages' })}
+            </Atitle>
+            <Ap className="adminEditSkill__intl-title__info">
+              {t('adminEditSkill.i18nInfo', { ns: 'pages' })}
+            </Ap>
+          </div>
+          <Button
+            icon="arrow"
+            theme="afterglow"
+            onClick={() => {
+              setDisplayInt((prev) => !prev);
+            }}
+            className="adminEditSkill__intl-title__btn"
           />
         </div>
-        <div className="adminEditSkill__details">
-          <RichTextElement
-            label={`${t('skillText.title', { ns: 'fields' })} (FR)`}
-            editor={textFrEditor ?? undefined}
-            rawStringContent={skillTextFr}
-            small
-          />
+        <div className="adminEditSkill__intl">
+          <div className="adminEditSkill__basics">
+            <Input
+              control={control}
+              inputName="nameFr"
+              type="text"
+              label={`${t('nameSkill.label', { ns: 'fields' })} (FR)`}
+              className="adminEditSkill__basics__name"
+            />
+          </div>
+          <div className="adminEditSkill__details">
+            <RichTextElement
+              label={`${t('skillText.title', { ns: 'fields' })} (FR)`}
+              editor={textFrEditor ?? undefined}
+              rawStringContent={skillTextFr}
+              small
+            />
+          </div>
+        </div>
+        <div className="adminEditSkill__nodes">
+          <Atitle level={2}>{t('adminEditSkill.nodes', { ns: 'pages' })}</Atitle>
+          <div className="adminEditSkill__nodes__list" />
+          <Button href={`/admin/node/new?skillId=${id}`}>
+            {t('adminNewNode.title', { ns: 'pages' })}
+          </Button>
+        </div>
+        <div className="adminEditSkill__branches">
+          <Atitle level={2}>{t('adminEditSkill.branches', { ns: 'pages' })}</Atitle>
+          <div className="adminEditSkill__branches__list">{skillBranchesList}</div>
+          <Button href={`/admin/skillbranch/new?skillId=${id}`}>
+            {t('adminNewSkillBranch.title', { ns: 'pages' })}
+          </Button>
         </div>
         <Button type="submit">{t('adminEditSkill.button', { ns: 'pages' })}</Button>
       </form>

@@ -42,6 +42,8 @@ export interface ISkill {
   summary: string;
   /** The correlated stat */
   stat: IStat;
+  /** The correlated branches */
+  branches: ISkillBranch[];
   /** When the Skill was created */
   createdAt: string;
 }
@@ -197,6 +199,8 @@ export interface ICyberFrame {
   summary: string;
   /** The rulebook where the CyberFrame is present */
   ruleBook: IRuleBook;
+  /** The correlated branches */
+  branches: ICyberFrameBranch[];
   /** When the CyberFrame was created */
   createdAt: string;
 }

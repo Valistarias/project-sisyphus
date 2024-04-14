@@ -306,6 +306,7 @@ export {
   findAll,
   findAllByFrame,
   findCyberFrameBranchById,
+  findCyberFrameBranchesByFrame,
   findSingle,
   update,
 };

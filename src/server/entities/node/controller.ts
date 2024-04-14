@@ -5,6 +5,7 @@ import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { smartUpdateActions } from '../action/controller';
 import { curateCharParamBonusIds } from '../charParamBonus/controller';
+import { findCyberFrameBranchesByFrame } from '../cyberFrameBranch/controller';
 import { smartUpdateEffects } from '../effect/controller';
 import {
   type IAction,
@@ -16,45 +17,21 @@ import {
   type IStatBonus,
 } from '../index';
 import { curateSkillBonusIds } from '../skillBonus/controller';
+import { findSkillBranchesBySkill } from '../skillBranch/controller';
 import { curateStatBonusIds } from '../statBonus/controller';
 
 import { type HydratedINode } from './model';
 
 const { Node } = db;
 
-const findNodes = async (): Promise<HydratedINode[]> =>
-  await new Promise((resolve, reject) => {
-    Node.find()
-      .populate<{ effects: IEffect[] }>('effects')
-      .populate<{ actions: IAction[] }>('actions')
-      .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
-      .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
-      .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
-      .then(async (res) => {
-        if (res === undefined || res === null) {
-          reject(gemNotFound('Nodes'));
-        } else {
-          resolve(res as HydratedINode[]);
-        }
-      })
-      .catch(async (err: Error) => {
-        reject(err);
-      });
-  });
+interface findAllPayload {
+  cyberFrameBranch?: string | Record<string, string[]>;
+  skillBranch?: string | Record<string, string[]>;
+}
 
-const findNodesByBranch = async ({
-  cyberFrameBranchId,
-  skillBranchId,
-}: {
-  cyberFrameBranchId?: string;
-  skillBranchId?: string;
-}): Promise<HydratedINode[]> =>
+const findNodes = async (options?: findAllPayload): Promise<HydratedINode[]> =>
   await new Promise((resolve, reject) => {
-    Node.find(
-      cyberFrameBranchId !== undefined
-        ? { cyberFrameBranch: cyberFrameBranchId }
-        : { skillBranch: skillBranchId }
-    )
+    Node.find(options ?? {})
       .populate<{ effects: IEffect[] }>('effects')
       .populate<{ actions: IAction[] }>('actions')
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
@@ -714,9 +691,9 @@ const findAllByBranch = (req: Request, res: Response): void => {
     res.status(400).send(gemInvalidField('ID'));
     return;
   }
-  findNodesByBranch({ cyberFrameBranchId, skillBranchId })
+  findNodes({ cyberFrameBranch: cyberFrameBranchId, skillBranch: skillBranchId })
     .then((nodes) => {
-      const curatedCyberFrameBranches: CuratedINode[] = [];
+      const curatedNodes: CuratedINode[] = [];
 
       nodes.forEach((nodeSent) => {
         const curatedActions =
@@ -742,15 +719,118 @@ const findAllByBranch = (req: Request, res: Response): void => {
         const node = nodeSent.toJSON();
         node.actions = curatedActions;
         node.effects = curatedEffects;
-        curatedCyberFrameBranches.push({
+        curatedNodes.push({
           node,
           i18n: curateNode(nodeSent),
         });
       });
 
-      res.send(curatedCyberFrameBranches);
+      res.send(curatedNodes);
     })
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteNode, findAll, findAllByBranch, findNodeById, findSingle, update };
+const findAndCurateNodesByParent = async ({
+  cyberFrameBranchIds,
+  skillBranchIds,
+}: {
+  cyberFrameBranchIds?: string[];
+  skillBranchIds?: string[];
+}): Promise<CuratedINode[]> =>
+  await new Promise((resolve, reject) => {
+    const opts: findAllPayload = {};
+    if (skillBranchIds !== undefined) {
+      opts.skillBranch = { $in: skillBranchIds };
+    }
+    if (cyberFrameBranchIds !== undefined) {
+      opts.cyberFrameBranch = { $in: cyberFrameBranchIds };
+    }
+    findNodes(opts)
+      .then((nodes) => {
+        const curatedNodes: CuratedINode[] = [];
+
+        nodes.forEach((nodeSent) => {
+          const curatedActions =
+            nodeSent.actions.length > 0
+              ? nodeSent.actions.map((action) => {
+                  const data = action.toJSON();
+                  return {
+                    ...data,
+                    ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                  };
+                })
+              : [];
+          const curatedEffects =
+            nodeSent.effects.length > 0
+              ? nodeSent.effects.map((effect) => {
+                  const data = effect.toJSON();
+                  return {
+                    ...data,
+                    ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                  };
+                })
+              : [];
+          const node = nodeSent.toJSON();
+          node.actions = curatedActions;
+          node.effects = curatedEffects;
+          curatedNodes.push({
+            node,
+            i18n: curateNode(nodeSent),
+          });
+        });
+        resolve(curatedNodes);
+      })
+      .catch((err: Error) => {
+        reject(err);
+      });
+  });
+
+const findAllBySkill = (req: Request, res: Response): void => {
+  const { skillId } = req.query;
+  if (skillId === undefined) {
+    res.status(400).send(gemInvalidField('Skill ID'));
+    return;
+  }
+  findSkillBranchesBySkill(skillId as string)
+    .then((skillBranches) => {
+      const skillBranchIds = skillBranches.map((skillBranch) => String(skillBranch._id));
+      findAndCurateNodesByParent({ skillBranchIds })
+        .then((nodes) => {
+          res.send(nodes);
+        })
+        .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    })
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+};
+
+const findAllByCyberFrame = (req: Request, res: Response): void => {
+  const { cyberFrameId } = req.query;
+  if (cyberFrameId === undefined) {
+    res.status(400).send(gemInvalidField('Skill ID'));
+    return;
+  }
+  findCyberFrameBranchesByFrame(cyberFrameId as string)
+    .then((cyberFrameBranches) => {
+      const cyberFrameBranchIds = cyberFrameBranches.map((cyberFrameBranch) =>
+        String(cyberFrameBranch._id)
+      );
+      findAndCurateNodesByParent({ cyberFrameBranchIds })
+        .then((nodes) => {
+          res.send(nodes);
+        })
+        .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    })
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+};
+
+export {
+  create,
+  deleteNode,
+  findAll,
+  findAllByBranch,
+  findAllByCyberFrame,
+  findAllBySkill,
+  findNodeById,
+  findSingle,
+  update,
+};

@@ -19,7 +19,7 @@ interface HydratedISkillBranch extends Omit<HydratedDocument<ISkillBranch>, 'ski
   skill: ISkill;
 }
 
-const effectSchema = new Schema<ISkillBranch>({
+const skillBranchSchema = new Schema<ISkillBranch>({
   title: String,
   summary: String,
   i18n: String,
@@ -33,6 +33,6 @@ const effectSchema = new Schema<ISkillBranch>({
   },
 });
 
-const SkillBranchModel = (): Model<ISkillBranch> => model('SkillBranch', effectSchema);
+const SkillBranchModel = (): Model<ISkillBranch> => model('SkillBranch', skillBranchSchema);
 
 export { SkillBranchModel, type HydratedISkillBranch, type ISkillBranch };

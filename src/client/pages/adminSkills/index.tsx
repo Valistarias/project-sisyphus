@@ -1,13 +1,11 @@
-import React, { useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, { useMemo, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { useApi, useSystemAlerts } from '../../providers';
+import { useGlobalVars } from '../../providers';
 
-import { Ali, Ap, Atitle, Aul } from '../../atoms';
+import { Ali, Atitle, Aul } from '../../atoms';
 import { Button } from '../../molecules';
-import { Alert } from '../../organisms';
-import { type ICuratedSkill } from '../../types';
 
 import { classTrim } from '../../utils';
 
@@ -15,15 +13,10 @@ import './adminSkills.scss';
 
 const AdminSkills: FC = () => {
   const { t } = useTranslation();
-  const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const { skills } = useGlobalVars();
 
-  const calledApi = useRef<boolean>(false);
-
-  const [skills, setSkills] = useState<ICuratedSkill[] | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  // Handle i18n in place of basic english language
+  // TODO: Handle i18n in place of basic english language
+  // TODO: Display all branches on one skill
   const skillsList = useMemo(() => {
     if (skills === null || skills.length === 0) {
       return null;
@@ -46,34 +39,6 @@ const AdminSkills: FC = () => {
       </Aul>
     );
   }, [skills, t]);
-
-  useEffect(() => {
-    if (api !== undefined && !calledApi.current) {
-      calledApi.current = true;
-      api.skills
-        .getAll()
-        .then((res: ICuratedSkill[]) => {
-          setLoading(false);
-          setSkills(res ?? []);
-        })
-        .catch((res) => {
-          setLoading(false);
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
-        });
-    }
-  }, [api, createAlert, getNewId, t]);
-
-  if (loading) {
-    return null;
-  }
 
   return (
     <div className="adminSkills">

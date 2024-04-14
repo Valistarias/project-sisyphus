@@ -6,12 +6,11 @@ import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { useApi, useSystemAlerts } from '../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input, SmartSelect } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
-import { type ICuratedStat } from '../../types';
 
 import './adminNewSkill.scss';
 
@@ -26,8 +25,7 @@ const AdminNewSkill: FC = () => {
   const { api } = useApi();
   const navigate = useNavigate();
   const { createAlert, getNewId } = useSystemAlerts();
-
-  const [stats, setStats] = useState<ICuratedStat[]>([]);
+  const { stats, reloadSkills } = useGlobalVars();
 
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
@@ -53,29 +51,6 @@ const AdminNewSkill: FC = () => {
       label: stat.title,
     }));
   }, [stats]);
-
-  const getStats = useCallback(() => {
-    if (api !== undefined) {
-      api.stats
-        .getAll()
-        .then((sentStats: ICuratedStat[]) => {
-          setLoading(false);
-          setStats(sentStats);
-        })
-        .catch(() => {
-          setLoading(false);
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
-        });
-    }
-  }, [api, createAlert, getNewId, t]);
 
   const onSaveSkill: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, stat }) => {
@@ -116,6 +91,7 @@ const AdminNewSkill: FC = () => {
               </Alert>
             ),
           });
+          reloadSkills();
           navigate(`/admin/skill/${skill._id}`);
         })
         .catch(({ response }) => {
@@ -137,16 +113,15 @@ const AdminNewSkill: FC = () => {
           }
         });
     },
-    [introEditor, introFrEditor, api, getNewId, createAlert, t, navigate, setError]
+    [introEditor, introFrEditor, api, getNewId, createAlert, t, reloadSkills, navigate, setError]
   );
 
   useEffect(() => {
     if (api !== undefined && !calledApi.current) {
       setLoading(true);
       calledApi.current = true;
-      getStats();
     }
-  }, [api, createAlert, getNewId, getStats, t]);
+  }, [api, createAlert, getNewId, t]);
 
   return (
     <div className="adminNewSkill">

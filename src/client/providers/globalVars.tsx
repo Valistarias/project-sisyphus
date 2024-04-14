@@ -13,7 +13,15 @@ import { useTranslation } from 'react-i18next';
 
 import { useApi } from './api';
 
-import type { ICampaign, ICuratedRuleBook, IUser } from '../types';
+import type {
+  ICampaign,
+  ICuratedCharParam,
+  ICuratedCyberFrame,
+  ICuratedRuleBook,
+  ICuratedSkill,
+  ICuratedStat,
+  IUser,
+} from '../types';
 
 interface IGlobalVarsContext {
   /** The logged user */
@@ -26,12 +34,28 @@ interface IGlobalVarsContext {
   ruleBooks: ICuratedRuleBook[];
   /** All the loaded campaigns */
   campaigns: ICampaign[];
+  /** All the loaded stats */
+  stats: ICuratedStat[];
+  /** All the loaded skills */
+  skills: ICuratedSkill[];
+  /** All the loaded character parameters */
+  charParams: ICuratedCharParam[];
+  /** All the loaded CyberFrames */
+  cyberFrames: ICuratedCyberFrame[];
   /** Used to trigger the reload of the rulebooks */
-  triggerCampaignReload: () => void;
+  reloadCampaigns: () => void;
   /** Used to trigger the reload of the campaigns */
-  triggerRuleBookReload: () => void;
+  reloadRuleBooks: () => void;
+  /** Used to trigger the reload of the skills */
+  reloadSkills: () => void;
+  /** Used to trigger the reload of the stats */
+  reloadStats: () => void;
+  /** Used to trigger the reload of the character parameters */
+  reloadCharParams: () => void;
+  /** Used to trigger the reload of the cyber frames */
+  reloadCyberFrames: () => void;
   /** Used to trigger the reload of all dynamic elements */
-  triggerFullReload: () => void;
+  reloadAll: () => void;
 }
 
 interface GlobalVarsProviderProps {
@@ -50,8 +74,67 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
   const [user, setUser] = useState<IUser | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const [stats, setStats] = useState<ICuratedStat[]>([]);
+  const [skills, setSkills] = useState<ICuratedSkill[]>([]);
+  const [charParams, setCharParams] = useState<ICuratedCharParam[]>([]);
+  const [cyberFrames, setCyberFrames] = useState<ICuratedCyberFrame[]>([]);
   const [ruleBooks, setRuleBooks] = useState<ICuratedRuleBook[]>([]);
   const [campaigns, setCampaigns] = useState<ICampaign[]>([]);
+
+  const loadStats = useCallback(() => {
+    if (api === undefined) {
+      return;
+    }
+    api.stats
+      .getAll()
+      .then((data: ICuratedStat[]) => {
+        setStats(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, [api]);
+
+  const loadSkills = useCallback(() => {
+    if (api === undefined) {
+      return;
+    }
+    api.skills
+      .getAll()
+      .then((data: ICuratedSkill[]) => {
+        setSkills(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, [api]);
+  const loadCharParams = useCallback(() => {
+    if (api === undefined) {
+      return;
+    }
+    api.charParams
+      .getAll()
+      .then((data: ICuratedCharParam[]) => {
+        setCharParams(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, [api]);
+
+  const loadCyberFrames = useCallback(() => {
+    if (api === undefined) {
+      return;
+    }
+    api.cyberFrames
+      .getAll()
+      .then((data: ICuratedCyberFrame[]) => {
+        setCyberFrames(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, [api]);
 
   const loadRuleBooks = useCallback(() => {
     if (api === undefined) {
@@ -91,6 +174,10 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
             setUser(data);
             loadRuleBooks();
             loadCampaigns();
+            loadStats();
+            loadCharParams();
+            loadSkills();
+            loadCyberFrames();
           }
           setLoading(false);
         })
@@ -98,7 +185,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
           console.error(err);
         });
     }
-  }, [api, loadRuleBooks, loadCampaigns]);
+  }, [api, loadRuleBooks, loadCampaigns, loadSkills, loadCharParams, loadStats, loadCyberFrames]);
 
   useEffect(() => {
     if (user !== null) {
@@ -114,15 +201,42 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       setUser,
       loading,
       ruleBooks,
+      charParams,
       campaigns,
-      triggerFullReload: () => {
+      stats,
+      skills,
+      cyberFrames,
+      reloadAll: () => {
         loadCampaigns();
         loadRuleBooks();
+        loadStats();
+        loadSkills();
+        loadCharParams();
+        loadCyberFrames();
       },
-      triggerCampaignReload: loadCampaigns,
-      triggerRuleBookReload: loadRuleBooks,
+      reloadCampaigns: loadCampaigns,
+      reloadRuleBooks: loadRuleBooks,
+      reloadStats: loadStats,
+      reloadSkills: loadSkills,
+      reloadCharParams: loadCharParams,
+      reloadCyberFrames: loadCyberFrames,
     }),
-    [user, setUser, loading, ruleBooks, campaigns, loadCampaigns, loadRuleBooks]
+    [
+      campaigns,
+      charParams,
+      cyberFrames,
+      loadCampaigns,
+      loadCharParams,
+      loadCyberFrames,
+      loadRuleBooks,
+      loadSkills,
+      loadStats,
+      loading,
+      ruleBooks,
+      skills,
+      stats,
+      user,
+    ]
   );
 
   return <GlobalVarsContext.Provider value={providerValues}>{children}</GlobalVarsContext.Provider>;

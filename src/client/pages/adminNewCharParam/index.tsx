@@ -6,7 +6,7 @@ import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { useApi, useSystemAlerts } from '../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input } from '../../molecules';
@@ -26,6 +26,7 @@ const AdminNewCharParam: FC = () => {
   const { api } = useApi();
   const navigate = useNavigate();
   const { createAlert, getNewId } = useSystemAlerts();
+  const { reloadCharParams } = useGlobalVars();
 
   const introEditor = useEditor({
     extensions: completeRichTextElementExtentions,
@@ -82,6 +83,7 @@ const AdminNewCharParam: FC = () => {
               </Alert>
             ),
           });
+          reloadCharParams();
           navigate(`/admin/charparam/${charParams._id}`);
         })
         .catch(({ response }) => {
@@ -103,7 +105,17 @@ const AdminNewCharParam: FC = () => {
           }
         });
     },
-    [introEditor, introFrEditor, api, getNewId, createAlert, t, navigate, setError]
+    [
+      introEditor,
+      introFrEditor,
+      api,
+      getNewId,
+      createAlert,
+      t,
+      reloadCharParams,
+      navigate,
+      setError,
+    ]
   );
 
   return (

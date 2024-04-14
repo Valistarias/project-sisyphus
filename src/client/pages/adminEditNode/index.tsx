@@ -995,7 +995,7 @@ const AdminEditNode: FC = () => {
             className="adminEditNode__details__quote"
           />
         </div>
-        <Atitle className="adminEditNode__bonus-title" rank={2}>
+        <Atitle className="adminEditNode__bonus-title" level={2}>
           {t('adminEditNode.values', { ns: 'pages' })}
         </Atitle>
         <div className="adminEditNode__bonuses">
@@ -1370,7 +1370,7 @@ const AdminEditNode: FC = () => {
         </div>
         <div className="adminEditNode__intl-title">
           <div className="adminEditNode__intl-title__content">
-            <Atitle className="adminEditNode__intl-title__title" rank={2}>
+            <Atitle className="adminEditNode__intl-title__title" level={2}>
               {t('adminEditNode.i18n', { ns: 'pages' })}
             </Atitle>
             <Ap className="adminEditNode__intl-title__info">

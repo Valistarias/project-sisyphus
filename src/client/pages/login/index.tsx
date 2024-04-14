@@ -25,7 +25,7 @@ interface FormValues {
 const Login: FC = () => {
   const { api } = useApi();
   const { t } = useTranslation();
-  const { setUser, triggerFullReload } = useGlobalVars();
+  const { setUser, reloadAll } = useGlobalVars();
   const navigate = useNavigate();
   const { search } = useLocation();
   const { createAlert, getNewId } = useSystemAlerts();
@@ -66,7 +66,7 @@ const Login: FC = () => {
           })
           .then((data: IUser) => {
             setUser(data);
-            triggerFullReload();
+            reloadAll();
             // triggerRuleBookReload();
             navigate('/campaigns');
           })
@@ -90,7 +90,7 @@ const Login: FC = () => {
           });
       }
     },
-    [api, navigate, setError, setUser, t, triggerFullReload]
+    [api, navigate, setError, setUser, t, reloadAll]
   );
 
   return (

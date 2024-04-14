@@ -6,7 +6,7 @@ import {
   createGeneralForCyberFrameId,
   deleteCyberFrameBranchesByCyberFrameId,
 } from '../cyberFrameBranch/controller';
-import { type IRuleBook } from '../index';
+import { type HydratedICyberFrameBranch, type IRuleBook } from '../index';
 
 import { type HydratedICyberFrame } from './model';
 
@@ -16,6 +16,10 @@ const findCyberFrames = async (): Promise<HydratedICyberFrame[]> =>
   await new Promise((resolve, reject) => {
     CyberFrame.find()
       .populate<{ ruleBook: IRuleBook }>('ruleBook')
+      .populate<{ branches: HydratedICyberFrameBranch[] }>({
+        path: 'branches',
+        select: '_id title cyberFrame summary i18n',
+      })
       .then(async (res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('CyberFrames'));
@@ -32,6 +36,10 @@ const findCyberFrameById = async (id: string): Promise<HydratedICyberFrame> =>
   await new Promise((resolve, reject) => {
     CyberFrame.findById(id)
       .populate<{ ruleBook: IRuleBook }>('ruleBook')
+      .populate<{ branches: HydratedICyberFrameBranch[] }>({
+        path: 'branches',
+        select: '_id title cyberFrame summary i18n',
+      })
       .then(async (res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('CyberFrame'));

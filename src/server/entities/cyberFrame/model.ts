@@ -1,6 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type IRuleBook } from '../index';
+import { type HydratedICyberFrameBranch, type IRuleBook } from '../index';
 
 interface ICyberFrame {
   /** The title of the Character Param */
@@ -17,22 +17,37 @@ interface ICyberFrame {
 
 interface HydratedICyberFrame extends Omit<HydratedDocument<ICyberFrame>, 'ruleBook'> {
   ruleBook: IRuleBook;
+  branches: HydratedICyberFrameBranch[];
 }
 
-const effectSchema = new Schema<ICyberFrame>({
-  title: String,
-  summary: String,
-  i18n: String,
-  ruleBook: {
-    type: Schema.Types.ObjectId,
-    ref: 'RuleBook',
+const cyberFrameSchema = new Schema<ICyberFrame>(
+  {
+    title: String,
+    summary: String,
+    i18n: String,
+    ruleBook: {
+      type: Schema.Types.ObjectId,
+      ref: 'RuleBook',
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+);
+
+// Virtuals -------------------------
+
+cyberFrameSchema.virtual('branches', {
+  ref: 'CyberFrameBranch',
+  localField: '_id',
+  foreignField: 'cyberFrame',
 });
 
-const CyberFrameModel = (): Model<ICyberFrame> => model('CyberFrame', effectSchema);
+const CyberFrameModel = (): Model<ICyberFrame> => model('CyberFrame', cyberFrameSchema);
 
 export { CyberFrameModel, type HydratedICyberFrame, type ICyberFrame };

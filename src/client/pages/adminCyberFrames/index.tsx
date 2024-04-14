@@ -1,13 +1,11 @@
-import React, { useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, { useMemo, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { useApi, useSystemAlerts } from '../../providers';
+import { useGlobalVars } from '../../providers';
 
-import { Ali, Ap, Atitle, Aul } from '../../atoms';
+import { Ali, Atitle, Aul } from '../../atoms';
 import { Button } from '../../molecules';
-import { Alert } from '../../organisms';
-import { type ICuratedCyberFrame } from '../../types';
 
 import { classTrim } from '../../utils';
 
@@ -15,15 +13,10 @@ import './adminCyberFrames.scss';
 
 const AdminCyberFrames: FC = () => {
   const { t } = useTranslation();
-  const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const { cyberFrames } = useGlobalVars();
 
-  const calledApi = useRef<boolean>(false);
-
-  const [cyberFrames, setCyberFrames] = useState<ICuratedCyberFrame[] | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  // Handle i18n in place of basic english language
+  // TODO: Handle i18n in place of basic english language
+  // TODO: Display all branches on one cyber frame
   const cyberFramesList = useMemo(() => {
     if (cyberFrames === null || cyberFrames.length === 0) {
       return null;
@@ -38,9 +31,6 @@ const AdminCyberFrames: FC = () => {
             key={cyberFrame._id}
           >
             <Atitle level={3}>{cyberFrame.title}</Atitle>
-            {/* <Ap className="adminCyberFrames__cyberframe-list__elt__details">{`${
-              cyberFrame.archived ? t('terms.cyberFrame.archived') : ''
-            } ${cyberFrame.draft ? t('terms.cyberFrame.draft') : ''}`}</Ap> */}
             <Button href={`/admin/cyberframe/${cyberFrame._id}`}>
               {t('adminCyberFrames.editCyberFrame', { ns: 'pages' })}
             </Button>
@@ -49,34 +39,6 @@ const AdminCyberFrames: FC = () => {
       </Aul>
     );
   }, [cyberFrames, t]);
-
-  useEffect(() => {
-    if (api !== undefined && !calledApi.current) {
-      calledApi.current = true;
-      api.cyberFrames
-        .getAll()
-        .then((res: ICuratedCyberFrame[]) => {
-          setLoading(false);
-          setCyberFrames(res ?? []);
-        })
-        .catch((res) => {
-          setLoading(false);
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
-        });
-    }
-  }, [api, createAlert, getNewId, t]);
-
-  if (loading) {
-    return null;
-  }
 
   return (
     <div className="adminCyberFrames">

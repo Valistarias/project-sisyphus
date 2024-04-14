@@ -20,7 +20,7 @@ interface HydratedICyberFrameBranch
   cyberFrame: ICyberFrame;
 }
 
-const effectSchema = new Schema<ICyberFrameBranch>({
+const cyberFrameBranchSchema = new Schema<ICyberFrameBranch>({
   title: String,
   summary: String,
   i18n: String,
@@ -35,6 +35,6 @@ const effectSchema = new Schema<ICyberFrameBranch>({
 });
 
 const CyberFrameBranchModel = (): Model<ICyberFrameBranch> =>
-  model('CyberFrameBranch', effectSchema);
+  model('CyberFrameBranch', cyberFrameBranchSchema);
 
 export { CyberFrameBranchModel, type HydratedICyberFrameBranch, type ICyberFrameBranch };

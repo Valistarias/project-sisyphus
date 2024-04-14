@@ -2,7 +2,16 @@ import { type Router } from 'express';
 
 import { adminNeeded, verifyToken } from '../../middlewares';
 
-import { create, deleteNode, findAll, findAllByBranch, findSingle, update } from './controller';
+import {
+  create,
+  deleteNode,
+  findAll,
+  findAllByBranch,
+  findAllByCyberFrame,
+  findAllBySkill,
+  findSingle,
+  update,
+} from './controller';
 
 export default (app: Router): void => {
   app.use((req, res, next) => {
@@ -11,6 +20,10 @@ export default (app: Router): void => {
   });
 
   app.get('/nodes/', [verifyToken], findAll);
+
+  app.get('/nodes/byskill', [verifyToken], findAllBySkill);
+
+  app.get('/nodes/bycyberframe', [verifyToken], findAllByCyberFrame);
 
   app.get('/nodes/bybranch', [verifyToken], findAllByBranch);
 

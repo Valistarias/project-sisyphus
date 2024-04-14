@@ -6,7 +6,7 @@ import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useSystemAlerts } from '../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input } from '../../molecules';
@@ -26,6 +26,7 @@ const AdminEditStat: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
+  const { reloadStats } = useGlobalVars();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
@@ -124,6 +125,7 @@ const AdminEditStat: FC = () => {
               </Alert>
             ),
           });
+          reloadStats();
         })
         .catch(({ response }) => {
           const { data } = response;
@@ -144,7 +146,19 @@ const AdminEditStat: FC = () => {
           }
         });
     },
-    [statText, statTextFr, textEditor, textFrEditor, api, id, getNewId, createAlert, t, setError]
+    [
+      statText,
+      statTextFr,
+      textEditor,
+      textFrEditor,
+      api,
+      id,
+      getNewId,
+      createAlert,
+      t,
+      reloadStats,
+      setError,
+    ]
   );
 
   const onAskDelete = useCallback(() => {
@@ -175,6 +189,7 @@ const AdminEditStat: FC = () => {
                     </Alert>
                   ),
                 });
+                reloadStats();
                 navigate('/admin/stats');
               })
               .catch(({ response }) => {
@@ -210,6 +225,7 @@ const AdminEditStat: FC = () => {
     id,
     getNewId,
     createAlert,
+    reloadStats,
     navigate,
     setError,
   ]);

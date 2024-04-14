@@ -15,7 +15,7 @@ interface ICharParam {
 
 interface HydratedICharParam extends HydratedDocument<ICharParam> {}
 
-const effectSchema = new Schema<ICharParam>({
+const charParamSchema = new Schema<ICharParam>({
   title: String,
   summary: String,
   short: String,
@@ -26,6 +26,6 @@ const effectSchema = new Schema<ICharParam>({
   },
 });
 
-const CharParamModel = (): Model<ICharParam> => model('CharParam', effectSchema);
+const CharParamModel = (): Model<ICharParam> => model('CharParam', charParamSchema);
 
 export { CharParamModel, type HydratedICharParam, type ICharParam };

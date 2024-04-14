@@ -1,13 +1,11 @@
-import React, { useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, { useMemo, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { useApi, useSystemAlerts } from '../../providers';
+import { useGlobalVars } from '../../providers';
 
-import { Ali, Ap, Atitle, Aul } from '../../atoms';
+import { Ali, Atitle, Aul } from '../../atoms';
 import { Button } from '../../molecules';
-import { Alert } from '../../organisms';
-import { type ICuratedStat } from '../../types';
 
 import { classTrim } from '../../utils';
 
@@ -15,13 +13,7 @@ import './adminStats.scss';
 
 const AdminStats: FC = () => {
   const { t } = useTranslation();
-  const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
-
-  const calledApi = useRef<boolean>(false);
-
-  const [stats, setStats] = useState<ICuratedStat[] | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { stats } = useGlobalVars();
 
   // Handle i18n in place of basic english language
   const statsList = useMemo(() => {
@@ -46,34 +38,6 @@ const AdminStats: FC = () => {
       </Aul>
     );
   }, [stats, t]);
-
-  useEffect(() => {
-    if (api !== undefined && !calledApi.current) {
-      calledApi.current = true;
-      api.stats
-        .getAll()
-        .then((res: ICuratedStat[]) => {
-          setLoading(false);
-          setStats(res ?? []);
-        })
-        .catch((res) => {
-          setLoading(false);
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
-        });
-    }
-  }, [api, createAlert, getNewId, t]);
-
-  if (loading) {
-    return null;
-  }
 
   return (
     <div className="adminStats">

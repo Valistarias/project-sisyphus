@@ -32,7 +32,7 @@ const AdminEditCyberFrame: FC = () => {
     ConfMessageEvent: {},
   };
   const { id } = useParams();
-  const { ruleBooks } = useGlobalVars();
+  const { ruleBooks, reloadCyberFrames } = useGlobalVars();
   const navigate = useNavigate();
 
   const calledApi = useRef(false);
@@ -175,6 +175,7 @@ const AdminEditCyberFrame: FC = () => {
               </Alert>
             ),
           });
+          reloadCyberFrames();
         })
         .catch(({ response }) => {
           const { data } = response;
@@ -205,6 +206,7 @@ const AdminEditCyberFrame: FC = () => {
       getNewId,
       createAlert,
       t,
+      reloadCyberFrames,
       setError,
     ]
   );
@@ -237,6 +239,7 @@ const AdminEditCyberFrame: FC = () => {
                     </Alert>
                   ),
                 });
+                reloadCyberFrames();
                 navigate('/admin/cyberframes');
               })
               .catch(({ response }) => {
@@ -272,6 +275,7 @@ const AdminEditCyberFrame: FC = () => {
     id,
     getNewId,
     createAlert,
+    reloadCyberFrames,
     navigate,
     setError,
   ]);

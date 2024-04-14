@@ -6,7 +6,7 @@ import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { useApi, useSystemAlerts } from '../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input } from '../../molecules';
@@ -26,6 +26,7 @@ const AdminNewStat: FC = () => {
   const { api } = useApi();
   const navigate = useNavigate();
   const { createAlert, getNewId } = useSystemAlerts();
+  const { reloadStats } = useGlobalVars();
 
   const introEditor = useEditor({
     extensions: completeRichTextElementExtentions,
@@ -82,6 +83,7 @@ const AdminNewStat: FC = () => {
               </Alert>
             ),
           });
+          reloadStats();
           navigate(`/admin/stat/${stat._id}`);
         })
         .catch(({ response }) => {
@@ -103,7 +105,7 @@ const AdminNewStat: FC = () => {
           }
         });
     },
-    [introEditor, introFrEditor, api, getNewId, createAlert, t, navigate, setError]
+    [introEditor, introFrEditor, api, getNewId, createAlert, t, reloadStats, navigate, setError]
   );
 
   return (

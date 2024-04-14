@@ -15,7 +15,7 @@ interface HydratedICharParamBonus extends Omit<HydratedDocument<ICharParamBonus>
   charParam: ICharParam;
 }
 
-const effectSchema = new Schema<ICharParamBonus>({
+const charParamBonusSchema = new Schema<ICharParamBonus>({
   charParam: {
     type: Schema.Types.ObjectId,
     ref: 'CharParam',
@@ -27,6 +27,7 @@ const effectSchema = new Schema<ICharParamBonus>({
   },
 });
 
-const CharParamBonusModel = (): Model<ICharParamBonus> => model('CharParamBonus', effectSchema);
+const CharParamBonusModel = (): Model<ICharParamBonus> =>
+  model('CharParamBonus', charParamBonusSchema);
 
 export { CharParamBonusModel, type HydratedICharParamBonus, type ICharParamBonus };
