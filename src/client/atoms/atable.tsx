@@ -7,8 +7,6 @@ import { classTrim } from '../utils';
 import './atable.scss';
 
 interface IAtable extends IQuarkProps {
-  /** The class of the Table element */
-  className?: string;
   /** The childrens of the Table element */
   children: ReactNode;
 }

@@ -9,9 +9,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ali, Ap, Atitle, Aul } from '../../atoms';
-import { Button, Input, Node, SmartSelect, type ISingleValueSelect } from '../../molecules';
+import { Button, Input, NodeTree, SmartSelect, type ISingleValueSelect } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
-import { type ICuratedNode, type ICuratedSkill } from '../../types';
+import { type ICuratedNode, type ICuratedSkill, type ISkillBranch } from '../../types';
 
 import { classTrim } from '../../utils';
 
@@ -80,7 +80,30 @@ const AdminEditSkill: FC = () => {
     );
   }, [skillData, t]);
 
-  const statSelect = useMemo(
+  const nodeTree = useMemo(() => {
+    const branches = skillData?.skill.branches;
+    const tempTree: Record<
+      string,
+      {
+        branch: ISkillBranch;
+        nodes: ICuratedNode[];
+      }
+    > = {};
+    branches?.forEach((branch) => {
+      tempTree[branch._id] = {
+        branch,
+        nodes: [],
+      };
+    });
+    nodes?.forEach((node) => {
+      if (node.node.skillBranch !== undefined) {
+        tempTree[node.node.skillBranch as string].nodes.push(node);
+      }
+    });
+    return Object.values(tempTree);
+  }, [nodes, skillData]);
+
+  const statSelect = useMemo<ISingleValueSelect[]>(
     () =>
       stats.map(({ stat }) => ({
         value: stat._id,
@@ -424,7 +447,8 @@ const AdminEditSkill: FC = () => {
         <div className="adminEditSkill__nodes">
           <Atitle level={2}>{t('adminEditSkill.nodes', { ns: 'pages' })}</Atitle>
           <div className="adminEditSkill__nodes__list">
-            {nodes?.map((node) => (
+            <NodeTree tree={nodeTree} />
+            {/* {nodes?.map((node) => (
               <Node
                 key={node.node._id}
                 node={node}
@@ -432,7 +456,7 @@ const AdminEditSkill: FC = () => {
                   navigate(`/admin/node/${node.node._id}`);
                 }}
               />
-            ))}
+            ))} */}
           </div>
           <Button href={`/admin/node/new?skillId=${id}`}>
             {t('adminNewNode.title', { ns: 'pages' })}

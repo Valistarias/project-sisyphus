@@ -22,7 +22,7 @@ interface INode {
   /** The Node to display */
   node: ICuratedNode;
   /** When the node is clicked */
-  onNodeClick?: () => void;
+  onNodeClick?: (id: string) => void;
 }
 
 const Node: FC<INode> = ({ node, onNodeClick }) => {
@@ -32,8 +32,6 @@ const Node: FC<INode> = ({ node, onNodeClick }) => {
 
   // TODO: Internationalization in ALL the file
   const content = nodeElt;
-
-  console.log('nodeElt', nodeElt);
 
   const { charParamBonuses, statBonuses, skillBonuses, bonusCount } = useMemo<{
     charParamBonuses: Array<{
@@ -92,7 +90,17 @@ const Node: FC<INode> = ({ node, onNodeClick }) => {
         node
       `)}
     >
-      <Abutton type="button" onClick={onNodeClick} className="node__icon">
+      <Abutton
+        type="button"
+        onClick={
+          onNodeClick !== undefined
+            ? () => {
+                onNodeClick(nodeElt._id);
+              }
+            : undefined
+        }
+        className="node__icon"
+      >
         <AnodeIcon type={nodeElt.icon} />
       </Abutton>
       <div className="node__content">

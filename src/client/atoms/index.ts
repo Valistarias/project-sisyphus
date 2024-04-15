@@ -8,9 +8,11 @@ import Ali from './ali';
 import AnodeIcon from './anodeIcon';
 import Ap from './ap';
 import Atable from './atable';
+import Atbody from './atbody';
 import Atd from './atd';
 import Atextarea from './atextarea';
 import Ath from './ath';
+import Athead from './athead';
 import Atitle from './atitle';
 import Atr from './atr';
 import Aul from './aul';
@@ -27,9 +29,11 @@ export {
   AnodeIcon,
   Ap,
   Atable,
+  Atbody,
   Atd,
   Atextarea,
   Ath,
+  Athead,
   Atitle,
   Atr,
   Aul,

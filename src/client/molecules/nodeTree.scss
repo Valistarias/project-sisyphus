@@ -1,0 +1,14 @@
+.node-tree {
+  &__table {
+    margin: 0;
+  }
+
+  &__rank {
+    text-align: center;
+    width: 10rem;
+  }
+
+  &__cell {
+    height: 6.5rem;
+  }
+}

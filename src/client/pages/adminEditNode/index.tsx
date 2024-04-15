@@ -205,9 +205,9 @@ const AdminEditNode: FC = () => {
     defaultData.quote = node.quote;
     defaultData.rank = node.rank;
     defaultData.icon = node.icon;
-    if (node.skillBranch !== undefined) {
+    if (node.skillBranch !== undefined && typeof node.skillBranch !== 'string') {
       defaultData.branch = node.skillBranch._id;
-    } else if (node.cyberFrameBranch !== undefined) {
+    } else if (node.cyberFrameBranch !== undefined && typeof node.cyberFrameBranch !== 'string') {
       defaultData.branch = node.cyberFrameBranch._id;
     }
     if (i18n.fr !== undefined) {
@@ -458,7 +458,7 @@ const AdminEditNode: FC = () => {
         });
         return;
       }
-      const skillId = nodeData?.node.skillBranch?._id;
+      const skillId = (nodeData?.node.skillBranch as ISkillBranch)?._id;
       const curatedSkillBonuses = skillBonuses.map(({ skill, value }) => ({
         skill,
         value: Number(value),
@@ -619,9 +619,12 @@ const AdminEditNode: FC = () => {
         const { node } = nodeData;
         const route = node.skillBranch !== undefined ? 'skill' : 'cyberframe';
         let routeId: string;
-        if (node.skillBranch !== undefined) {
+        if (node.skillBranch !== undefined && typeof node.skillBranch !== 'string') {
           routeId = node.skillBranch.skill as string;
-        } else if (node.cyberFrameBranch !== undefined) {
+        } else if (
+          node.cyberFrameBranch !== undefined &&
+          typeof node.cyberFrameBranch !== 'string'
+        ) {
           routeId = node.cyberFrameBranch.cyberFrame as string;
         }
         const confirmDelete = ({ detail }): void => {
@@ -689,14 +692,21 @@ const AdminEditNode: FC = () => {
           if (i18n.fr !== undefined) {
             setNodeTextFr(i18n.fr.summary ?? '');
           }
-          const titleBranch =
-            node.skillBranch !== undefined ? node.skillBranch.title : node.cyberFrameBranch?.title;
+          let titleBranch = '';
+          if (node.skillBranch !== undefined && typeof node.skillBranch !== 'string') {
+            titleBranch = node.skillBranch.title;
+          } else if (
+            node.cyberFrameBranch !== undefined &&
+            typeof node.cyberFrameBranch !== 'string'
+          ) {
+            titleBranch = node.cyberFrameBranch.title;
+          }
           if (titleBranch === '_general') {
             setLevelSelect(generalRange);
           } else {
             setLevelSelect(branchRange);
           }
-          if (node.skillBranch !== undefined) {
+          if (node.skillBranch !== undefined && typeof node.skillBranch !== 'string') {
             const skillId = String(node.skillBranch.skill);
             api.skills
               .get({
@@ -717,7 +727,10 @@ const AdminEditNode: FC = () => {
                   ),
                 });
               });
-          } else if (node.cyberFrameBranch !== undefined) {
+          } else if (
+            node.cyberFrameBranch !== undefined &&
+            typeof node.cyberFrameBranch !== 'string'
+          ) {
             const cyberFrameId = String(node.cyberFrameBranch.cyberFrame);
             api.cyberFrames
               .get({
@@ -743,9 +756,9 @@ const AdminEditNode: FC = () => {
           api.skills
             .getAll()
             .then((curatedSkills: ICuratedSkill[]) => {
-              if (node.skillBranch !== undefined) {
+              if (node.skillBranch !== undefined && typeof node.skillBranch !== 'string') {
                 const foundSkill = curatedSkills.find(
-                  ({ skill }) => skill._id === String(node.skillBranch?.skill)
+                  ({ skill }) => skill._id === String((node.skillBranch as ISkillBranch)?.skill)
                 );
                 if (foundSkill !== undefined) {
                   setSkill(foundSkill);

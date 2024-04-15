@@ -331,9 +331,9 @@ export interface INode {
   /** Some lore for this node, MTG style */
   quote?: string;
   /** The correlated skill branch, id any */
-  skillBranch?: ISkillBranch;
+  skillBranch?: ISkillBranch | string;
   /** The correlated cyberFrame branch, id any */
-  cyberFrameBranch?: ICyberFrameBranch;
+  cyberFrameBranch?: ICyberFrameBranch | string;
   /** The position/rank where the node is located */
   rank: number;
   /** The effects related to the node */
