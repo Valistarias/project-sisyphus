@@ -23,9 +23,11 @@ interface INode {
   node: ICuratedNode;
   /** When the node is clicked */
   onNodeClick?: (id: string) => void;
+  /** The size of the node icon */
+  size?: 'small' | 'medium' | 'large';
 }
 
-const Node: FC<INode> = ({ node, onNodeClick }) => {
+const Node: FC<INode> = ({ node, size = 'medium', onNodeClick }) => {
   const { t } = useTranslation();
   const { node: nodeElt, i18n } = node;
   const { skills, stats, charParams } = useGlobalVars();
@@ -88,6 +90,7 @@ const Node: FC<INode> = ({ node, onNodeClick }) => {
       quarkType="div"
       className={classTrim(`
         node
+        node--${size}
       `)}
     >
       <Abutton
@@ -101,7 +104,7 @@ const Node: FC<INode> = ({ node, onNodeClick }) => {
         }
         className="node__icon"
       >
-        <AnodeIcon type={nodeElt.icon} />
+        <AnodeIcon size={size} type={nodeElt.icon} />
       </Abutton>
       <div className="node__content">
         <div className="node__content__vertical">

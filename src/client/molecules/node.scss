@@ -1,5 +1,4 @@
 .node {
-  --size-node: 5.5rem;
   position: relative;
 
   width: fit-content;
@@ -132,6 +131,18 @@
         text-transform: uppercase;
       }
     }
+  }
+
+  &--small {
+    --size-node: 4.5rem;
+  }
+
+  &--medium {
+    --size-node: 5.5rem;
+  }
+
+  &--large {
+    --size-node: 6.5rem;
   }
 
   &:hover {
