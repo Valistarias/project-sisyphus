@@ -60,12 +60,8 @@
       }
     }
 
-    &--general {
-      .node-tree__table__line:not(.node-tree__table__line--first) {
-        .node-tree__cell--node {
-          border-top: 0.2rem solid var(--tertiary-10);
-        }
-      }
+    .node-tree__table__line--last .node-tree__cell--node {
+      border-top: 0.2rem solid var(--tertiary-10);
     }
   }
 

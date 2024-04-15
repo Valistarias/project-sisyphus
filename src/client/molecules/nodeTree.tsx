@@ -24,7 +24,7 @@ interface INodeTree {
   onNodeClick?: (id: string) => void;
 }
 
-const NodeTree: FC<INodeTree> = ({ tree, onNodeClick }) => {
+const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {} }) => {
   const { t } = useTranslation();
 
   const specializationBranches = useMemo(
@@ -52,6 +52,7 @@ const NodeTree: FC<INodeTree> = ({ tree, onNodeClick }) => {
           className={classTrim(`
         node-tree__table__line
         ${i === specBeginRank ? 'node-tree__table__line--first' : ''}
+        ${i === ranks ? 'node-tree__table__line--last' : ''}
       `)}
         >
           <div className="node-tree__rank node-tree__cell">{roman}</div>
@@ -62,9 +63,9 @@ const NodeTree: FC<INodeTree> = ({ tree, onNodeClick }) => {
                   key={node.node._id}
                   node={node}
                   size="small"
-                  // onNodeClick={() => {
-                  //   navigate(`/admin/node/${node.node._id}`);
-                  // }}
+                  onNodeClick={() => {
+                    onNodeClick(node.node._id);
+                  }}
                 />
               ))}
             </div>
@@ -73,20 +74,20 @@ const NodeTree: FC<INodeTree> = ({ tree, onNodeClick }) => {
       );
     }
     return lines;
-  }, [specializationBranches]);
+  }, [specializationBranches, onNodeClick]);
 
   const rankLinesGeneral = useMemo(() => {
     const lines: React.JSX.Element[] = [];
     for (let i = specBeginRank - 1; i >= 1; i--) {
       const relatedNodes = generalBranch?.nodes.filter(({ node }) => node.rank === i) ?? [];
       const roman = romanize(i);
-      console.log('roman', roman);
       lines.push(
         <div
           key={roman as string}
           className={classTrim(`
         node-tree__table__line
         ${i === 1 ? 'node-tree__table__line--first' : ''}
+        ${i === specBeginRank - 1 ? 'node-tree__table__line--last' : ''}
       `)}
         >
           <div className="node-tree__rank node-tree__cell">{roman}</div>
@@ -95,9 +96,9 @@ const NodeTree: FC<INodeTree> = ({ tree, onNodeClick }) => {
               <Node
                 key={node.node._id}
                 node={node}
-                // onNodeClick={() => {
-                //   navigate(`/admin/node/${node.node._id}`);
-                // }}
+                onNodeClick={() => {
+                  onNodeClick(node.node._id);
+                }}
               />
             ))}
           </div>
@@ -105,7 +106,7 @@ const NodeTree: FC<INodeTree> = ({ tree, onNodeClick }) => {
       );
     }
     return lines;
-  }, [generalBranch]);
+  }, [generalBranch, onNodeClick]);
 
   return (
     <Quark
