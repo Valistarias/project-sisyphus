@@ -2,10 +2,11 @@ import React, { useMemo, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
+import { Ap } from '../atoms';
 import { Quark } from '../quark';
 import { type ICuratedNode, type ISkillBranch } from '../types';
 
-import { Node } from './index';
+import { Button, Node } from './index';
 
 import { classTrim, romanize } from '../utils';
 
@@ -15,6 +16,8 @@ const ranks = 10;
 const specBeginRank = 3;
 
 interface INodeTree {
+  /** Is the Tree in admin mode ? */
+  isAdmin?: boolean;
   /** The tree to be displayed */
   tree: Array<{
     branch: ISkillBranch;
@@ -24,7 +27,7 @@ interface INodeTree {
   onNodeClick?: (id: string) => void;
 }
 
-const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {} }) => {
+const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {}, isAdmin = false }) => {
   const { t } = useTranslation();
 
   const specializationBranches = useMemo(
@@ -96,6 +99,7 @@ const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {} }) => {
               <Node
                 key={node.node._id}
                 node={node}
+                size="small"
                 onNodeClick={() => {
                   onNodeClick(node.node._id);
                 }}
@@ -113,6 +117,7 @@ const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {} }) => {
       quarkType="div"
       className={classTrim(`
         node-tree
+        ${isAdmin ? 'node-tree--is-admin' : ''}
       `)}
     >
       <div className="node-tree__table node-tree__table--specs">
@@ -121,7 +126,15 @@ const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {} }) => {
             <div className="node-tree__rank node-tree__cell">{t('terms.node.rank')}</div>
             {specializationBranches.map(({ branch }) => (
               <div className="node-tree__cell" key={branch._id}>
-                {branch.title}
+                <Ap>{branch.title}</Ap>
+                {isAdmin ? (
+                  <Button
+                    href={`/admin/${branch.skill !== undefined ? 'skillbranch' : 'cyberframebranch'}/${branch._id}`}
+                    size="small"
+                  >
+                    {t('terms.general.edit')}
+                  </Button>
+                ) : null}
               </div>
             ))}
           </div>

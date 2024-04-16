@@ -8,7 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../providers';
 
-import { Aerror, Ap, Atitle } from '../../atoms';
+import { Aa, Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input, NodeIconSelect, SmartSelect } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
 import {
@@ -823,9 +823,19 @@ const AdminEditNode: FC = () => {
         </div>
         <div className="adminEditNode__ariane">
           <Ap className="adminEditNode__ariane__elt">
-            {skill !== null
-              ? `${t(`terms.skill.name`)}: ${skill?.skill.title}`
-              : `${t(`terms.cyberFrame.name`)}: ${cyberFrame?.cyberFrame.title}`}
+            {skill !== null ? (
+              <>
+                {`${t(`terms.skill.name`)}:`}
+                <Aa href={`/admin/skill/${skill?.skill._id}`}>{skill?.skill.title}</Aa>
+              </>
+            ) : (
+              <>
+                {`${t(`terms.cyberFrame.name`)}:`}
+                <Aa href={`/admin/cyberframe/${cyberFrame?.cyberFrame._id}`}>
+                  {cyberFrame?.cyberFrame.title}
+                </Aa>
+              </>
+            )}
           </Ap>
         </div>
         {errors.root?.serverError?.message !== undefined ? (

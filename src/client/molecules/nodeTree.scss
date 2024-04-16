@@ -111,4 +111,14 @@
       background-color 0.2s ease;
     width: 10rem;
   }
+
+  &--is-admin {
+    .node-tree__table__head {
+      .node-tree__cell {
+        display: flex;
+        flex-direction: column;
+        height: 8rem;
+      }
+    }
+  }
 }

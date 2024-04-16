@@ -49,7 +49,7 @@
     }
 
     &__main {
-      width: 40rem;
+      width: 35rem;
 
       &__title {
         color: var(--primary);
@@ -74,7 +74,7 @@
 
     &__action,
     &__effect {
-      width: 40rem;
+      width: 35rem;
 
       &__title {
         font-family: var(--mono-font);
@@ -111,7 +111,7 @@
     }
 
     &__bonuses {
-      width: 30rem;
+      width: 25rem;
 
       &__list {
         display: flex;

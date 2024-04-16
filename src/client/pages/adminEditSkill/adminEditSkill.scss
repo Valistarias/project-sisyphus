@@ -71,6 +71,20 @@
     }
   }
 
+  &__nodes {
+    &__list {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+    }
+
+    &__btns {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+    }
+  }
+
   .adminEditSkill__skillbranch-list {
     display: flex;
     flex-direction: column;

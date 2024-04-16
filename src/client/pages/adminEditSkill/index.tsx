@@ -8,7 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../providers';
 
-import { Aerror, Ali, Ap, Atitle, Aul } from '../../atoms';
+import { Aerror, Ap, Atitle } from '../../atoms';
 import { Button, Input, NodeTree, SmartSelect, type ISingleValueSelect } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
 import { type ICuratedNode, type ICuratedSkill, type ISkillBranch } from '../../types';
@@ -55,30 +55,6 @@ const AdminEditSkill: FC = () => {
   const textFrEditor = useEditor({
     extensions: completeRichTextElementExtentions,
   });
-
-  const skillBranchesList = useMemo(() => {
-    const branches = skillData?.skill.branches;
-    if (branches === undefined || branches.length === 0) {
-      return null;
-    }
-    return (
-      <Aul className="adminEditSkill__skillbranch-list" noPoints>
-        {branches.map(({ _id, title }) => (
-          <Ali
-            className={classTrim(`
-              adminEditSkill__skillbranch-list__elt
-            `)}
-            key={_id}
-          >
-            <Atitle level={3}>{title}</Atitle>
-            <Button href={`/admin/skillbranch/${_id}`}>
-              {t('adminSkills.editSkill', { ns: 'pages' })}
-            </Button>
-          </Ali>
-        ))}
-      </Aul>
-    );
-  }, [skillData, t]);
 
   const nodeTree = useMemo(() => {
     const branches = skillData?.skill.branches;
@@ -447,27 +423,22 @@ const AdminEditSkill: FC = () => {
         <div className="adminEditSkill__nodes">
           <Atitle level={2}>{t('adminEditSkill.nodes', { ns: 'pages' })}</Atitle>
           <div className="adminEditSkill__nodes__list">
-            <NodeTree tree={nodeTree} />
-            {/* {nodes?.map((node) => (
-              <Node
-                key={node.node._id}
-                node={node}
-                onNodeClick={() => {
-                  navigate(`/admin/node/${node.node._id}`);
-                }}
-              />
-            ))} */}
+            <NodeTree
+              tree={nodeTree}
+              onNodeClick={(id) => {
+                navigate(`/admin/node/${id}`);
+              }}
+              isAdmin
+            />
           </div>
-          <Button href={`/admin/node/new?skillId=${id}`}>
-            {t('adminNewNode.title', { ns: 'pages' })}
-          </Button>
-        </div>
-        <div className="adminEditSkill__branches">
-          <Atitle level={2}>{t('adminEditSkill.branches', { ns: 'pages' })}</Atitle>
-          <div className="adminEditSkill__branches__list">{skillBranchesList}</div>
-          <Button href={`/admin/skillbranch/new?skillId=${id}`}>
-            {t('adminNewSkillBranch.title', { ns: 'pages' })}
-          </Button>
+          <div className="adminEditSkill__nodes__btns">
+            <Button href={`/admin/node/new?skillId=${id}`}>
+              {t('adminNewNode.title', { ns: 'pages' })}
+            </Button>
+            <Button href={`/admin/skillbranch/new?skillId=${id}`}>
+              {t('adminNewSkillBranch.title', { ns: 'pages' })}
+            </Button>
+          </div>
         </div>
         <Button type="submit">{t('adminEditSkill.button', { ns: 'pages' })}</Button>
       </form>
