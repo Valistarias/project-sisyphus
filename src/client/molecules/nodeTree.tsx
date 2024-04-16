@@ -59,13 +59,18 @@ const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {}, isAdmin = false
       `)}
         >
           <div className="node-tree__rank node-tree__cell">{roman}</div>
-          {relatedNodes.map(({ branch, nodes }) => (
+          {relatedNodes.map(({ branch, nodes }, indexNode) => (
             <div className="node-tree__cell node-tree__cell--node" key={branch._id}>
               {nodes.map((node) => (
                 <Node
                   key={node.node._id}
                   node={node}
                   size="small"
+                  menuDirection={
+                    relatedNodes.length !== 1 && relatedNodes.length === indexNode + 1
+                      ? 'left'
+                      : 'right'
+                  }
                   onNodeClick={() => {
                     onNodeClick(node.node._id);
                   }}
@@ -95,11 +100,16 @@ const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {}, isAdmin = false
         >
           <div className="node-tree__rank node-tree__cell">{roman}</div>
           <div className="node-tree__cell node-tree__cell--node node-tree__cell--full">
-            {relatedNodes.map((node) => (
+            {relatedNodes.map((node, indexNode) => (
               <Node
                 key={node.node._id}
                 node={node}
                 size="small"
+                menuDirection={
+                  relatedNodes.length !== 1 && relatedNodes.length === indexNode + 1
+                    ? 'left'
+                    : 'right'
+                }
                 onNodeClick={() => {
                   onNodeClick(node.node._id);
                 }}

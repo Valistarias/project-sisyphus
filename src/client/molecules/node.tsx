@@ -25,9 +25,11 @@ interface INode {
   onNodeClick?: (id: string) => void;
   /** The size of the node icon */
   size?: 'small' | 'medium' | 'large';
+  /** The position of the menu */
+  menuDirection?: 'left' | 'right';
 }
 
-const Node: FC<INode> = ({ node, size = 'medium', onNodeClick }) => {
+const Node: FC<INode> = ({ node, size = 'medium', onNodeClick, menuDirection = 'right' }) => {
   const { t } = useTranslation();
   const { node: nodeElt, i18n } = node;
   const { skills, stats, charParams } = useGlobalVars();
@@ -91,6 +93,7 @@ const Node: FC<INode> = ({ node, size = 'medium', onNodeClick }) => {
       className={classTrim(`
         node
         node--${size}
+        node--${menuDirection}
       `)}
     >
       <Abutton
