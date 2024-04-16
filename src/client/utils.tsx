@@ -1,4 +1,4 @@
-import { type TypeDice } from './types';
+import { type ICharacter, type TypeDice } from './types';
 
 export const degToRad = (degrees: number): number => degrees * (Math.PI / 180);
 
@@ -157,7 +157,7 @@ export const throwDices = (dices: DiceRequest[]): DiceResult[] => {
       total,
       best,
       worst,
-      average: Math.floor((total / (qty || 1)) * 10) / 10,
+      average: Math.floor((total / (qty ?? 1)) * 10) / 10,
     });
   });
 
@@ -203,7 +203,7 @@ export const strTodiceResult = (text: string): DiceResult[] => {
     let total = 0;
     let best = 0;
     let worst = 0;
-    if (data) {
+    if (data !== undefined) {
       data.forEach((val: number, i: number) => {
         total += val;
         if (best < val || i === 0) {
@@ -217,11 +217,11 @@ export const strTodiceResult = (text: string): DiceResult[] => {
 
     return {
       type,
-      results: data || [],
+      results: data ?? [],
       total,
       best,
       worst,
-      average: Math.floor((total / (data?.length || 1)) * 10) / 10,
+      average: Math.floor((total / (data !== undefined ? data.length : 1)) * 10) / 10,
     };
   });
 };
@@ -248,4 +248,39 @@ export const calculateDices = (diceGroups: DiceResult[]): TotalResult => {
     total,
     ...(optionnalParams != null && canUseOptionnal ? optionnalParams : {}),
   };
+};
+
+const applyFormula = (text: string, formula: string, char: ICharacter | null | false): string => {
+  return 'TAKE FORMULA IN CONSIDERATION';
+};
+
+export const curateStringFormula = (
+  text: string,
+  formula: string,
+  char: ICharacter | null | false
+): string => {
+  const splitted = text.split('{{formula}}');
+  if (splitted.length === 1) {
+    return text;
+  }
+  if (char === false || char === null) {
+    return [splitted[0], 'X', [splitted[1]]].join(' ');
+  }
+  return applyFormula(text, formula, char);
+};
+
+export const curateStringDamage = (
+  text: string,
+  damages: string,
+  formula: string,
+  char: ICharacter | null | false
+): string => {
+  const splitted = text.split('{{damage}}');
+  if (splitted.length === 1) {
+    return text;
+  }
+  if (char === false || char === null) {
+    return [splitted[0], 'X', [splitted[1]]].join(' ');
+  }
+  return applyFormula(text, `${damages}+${formula}`, char);
 };

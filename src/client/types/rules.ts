@@ -119,7 +119,7 @@ export interface IAction {
   /** The associated skill */
   skill?: string;
   /** The bonus (or malus) associated with the skill */
-  offsetSkill?: number;
+  offsetSkill?: string;
   /** Is this action a karma offering ? */
   isKarmic: boolean;
   /** Cost of karma, if karmic offering */

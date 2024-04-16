@@ -75,7 +75,7 @@ interface FormValues {
       time?: string;
       timeFr?: string;
       damages?: string;
-      offsetSkill?: number;
+      offsetSkill?: string;
       uses?: number;
       isKarmic?: boolean;
       karmicCost?: number;

@@ -54,7 +54,7 @@ interface ISentAction {
   duration: string;
   time?: string;
   damages?: string;
-  offsetSkill?: number;
+  offsetSkill?: string;
   uses?: number;
   isKarmic?: boolean;
   karmicCost?: number;

@@ -14,7 +14,7 @@ import {
   type ICuratedStat,
 } from '../types';
 
-import { classTrim } from '../utils';
+import { classTrim, curateStringDamage, curateStringFormula } from '../utils';
 
 import './node.scss';
 
@@ -31,6 +31,7 @@ interface INode {
 
 const Node: FC<INode> = ({ node, size = 'medium', onNodeClick, menuDirection = 'right' }) => {
   const { t } = useTranslation();
+  const { character } = useGlobalVars();
   const { node: nodeElt, i18n } = node;
   const { skills, stats, charParams } = useGlobalVars();
 
@@ -142,7 +143,14 @@ const Node: FC<INode> = ({ node, size = 'medium', onNodeClick, menuDirection = '
                     </Ap>
                   </div>
                   <div className="node__content__action__summary">
-                    <Ap>{action.summary}</Ap>
+                    <Ap>
+                      {curateStringDamage(
+                        action.summary,
+                        action.damages,
+                        action.offsetSkill ?? '',
+                        character
+                      )}
+                    </Ap>
                     {action.uses !== undefined ? (
                       <Ap className="node__content__action__detail">
                         {t(`terms.node.perDay`, { count: action.uses, field: action.uses })}
@@ -169,7 +177,7 @@ const Node: FC<INode> = ({ node, size = 'medium', onNodeClick, menuDirection = '
                     </Ap>
                   </div>
                   <div className="node__content__effect__summary">
-                    <Ap>{effect.summary}</Ap>
+                    <Ap>{curateStringFormula(effect.summary, effect.formula ?? '', character)}</Ap>
                   </div>
                 </div>
               ))

@@ -22,7 +22,7 @@ interface IAction {
   /** The skill associated to this action (for skill checks and attacks) */
   skill?: ObjectId;
   /** The offset used for the skill check */
-  offsetSkill?: number;
+  offsetSkill?: string;
   /** How many times the action is usable in a day */
   uses?: number;
   /** The formula for the damages caused */
@@ -57,7 +57,7 @@ const actionSchema = new Schema<IAction>({
     type: Schema.Types.ObjectId,
     ref: 'Skill',
   },
-  offsetSkill: Number,
+  offsetSkill: String,
   damages: String,
   createdAt: {
     type: Date,
