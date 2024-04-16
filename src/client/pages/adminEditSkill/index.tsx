@@ -381,7 +381,7 @@ const AdminEditSkill: FC = () => {
         </div>
         <div className="adminEditSkill__details">
           <RichTextElement
-            label={t('skillText.title', { ns: 'fields' })}
+            label={t('skillSummary.title', { ns: 'fields' })}
             editor={textEditor ?? undefined}
             rawStringContent={skillText}
             small
@@ -430,7 +430,7 @@ const AdminEditSkill: FC = () => {
           </div>
           <div className="adminEditSkill__details">
             <RichTextElement
-              label={`${t('skillText.title', { ns: 'fields' })} (FR)`}
+              label={`${t('skillSummary.title', { ns: 'fields' })} (FR)`}
               editor={textFrEditor ?? undefined}
               rawStringContent={skillTextFr}
               small

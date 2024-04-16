@@ -17,6 +17,7 @@ import type {
   IActionDuration,
   IActionType,
   ICampaign,
+  ICharacter,
   ICuratedCharParam,
   ICuratedCyberFrame,
   ICuratedRuleBook,
@@ -32,6 +33,8 @@ interface IGlobalVarsContext {
   setUser: React.Dispatch<React.SetStateAction<IUser | null>>;
   /** Is the provider loading */
   loading: boolean;
+  /** The actual character */
+  character: ICharacter | null | false;
   /** All the loaded rulebooks */
   ruleBooks: ICuratedRuleBook[];
   /** All the loaded campaigns */
@@ -48,6 +51,10 @@ interface IGlobalVarsContext {
   actionTypes: IActionType[];
   /** All the loaded action durations */
   actionDurations: IActionDuration[];
+  /** Used to set the actual character */
+  setCharacter: (id: string) => void;
+  /** Used to reset the actual character */
+  resetCharacter: () => void;
   /** Used to trigger the reload of the rulebooks */
   reloadCampaigns: () => void;
   /** Used to trigger the reload of the campaigns */
@@ -80,6 +87,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
   const [user, setUser] = useState<IUser | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const [character, setCharacter] = useState<ICharacter | null | false>(null);
   const [actionTypes, setActionTypes] = useState<IActionType[]>([]);
   const [actionDurations, setActionDurations] = useState<IActionDuration[]>([]);
   const [stats, setStats] = useState<ICuratedStat[]>([]);
@@ -201,6 +209,37 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       });
   }, [api]);
 
+  const setCharacterFromId = useCallback(
+    (id: string) => {
+      if (api === undefined || id === undefined) {
+        return;
+      }
+      setLoading(true);
+      api.characters
+        .get({
+          characterId: id,
+        })
+        .then((character: ICharacter) => {
+          setLoading(false);
+          if (character === undefined) {
+            setCharacter(false);
+          } else {
+            setCharacter(character);
+          }
+        })
+        .catch((err) => {
+          setLoading(false);
+          setCharacter(false);
+          console.error(err);
+        });
+    },
+    [api]
+  );
+
+  const resetCharacter = useCallback(() => {
+    setCharacter(null);
+  }, []);
+
   useEffect(() => {
     if (api !== undefined && !calledApi.current) {
       calledApi.current = true;
@@ -268,7 +307,10 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       reloadRuleBooks: loadRuleBooks,
       reloadSkills: loadSkills,
       reloadStats: loadStats,
+      setCharacter: setCharacterFromId,
+      character,
       ruleBooks,
+      resetCharacter,
       setUser,
       skills,
       stats,
@@ -280,19 +322,22 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       campaigns,
       charParams,
       cyberFrames,
-      loadActionDurations,
-      loadActionTypes,
+      loading,
       loadCampaigns,
       loadCharParams,
       loadCyberFrames,
       loadRuleBooks,
       loadSkills,
       loadStats,
-      loading,
+      setCharacterFromId,
+      character,
       ruleBooks,
+      resetCharacter,
       skills,
       stats,
       user,
+      loadActionTypes,
+      loadActionDurations,
     ]
   );
 
