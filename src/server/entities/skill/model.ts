@@ -7,6 +7,8 @@ interface ISkill {
   title: string;
   /** A summary of the skill */
   summary: string;
+  /** A 3 letter string used for the formulas */
+  formulaId: string;
   /** The internationnal content, as a json, stringified */
   i18n?: string;
   /** The associated stat */
@@ -24,6 +26,7 @@ const skillSchema = new Schema<ISkill>(
   {
     title: String,
     summary: String,
+    formulaId: String,
     i18n: String,
     stat: {
       type: Schema.Types.ObjectId,

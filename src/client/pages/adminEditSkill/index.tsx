@@ -21,6 +21,7 @@ interface FormValues {
   name: string;
   nameFr: string;
   stat: string;
+  formulaId: string;
 }
 
 const AdminEditSkill: FC = () => {
@@ -97,6 +98,7 @@ const AdminEditSkill: FC = () => {
       const { skill, i18n } = skillData;
       const defaultData: Partial<FormValues> = {};
       defaultData.name = skill.title;
+      defaultData.formulaId = skill.formulaId;
       const selectedfield = stats.find((statType) => statType.value === skill.stat._id);
       if (selectedfield !== undefined) {
         defaultData.stat = String(selectedfield.value);
@@ -123,12 +125,13 @@ const AdminEditSkill: FC = () => {
   });
 
   const onSaveSkill: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, stat }) => {
+    ({ name, nameFr, stat, formulaId }) => {
       if (
         skillText === null ||
         skillTextFr === null ||
         textEditor === null ||
         textFrEditor === null ||
+        formulaId === null ||
         api === undefined
       ) {
         return;
@@ -157,6 +160,7 @@ const AdminEditSkill: FC = () => {
           id,
           title: name,
           stat,
+          formulaId,
           summary: htmlText,
           i18n,
         })
@@ -177,15 +181,15 @@ const AdminEditSkill: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.skillType.${data.sent}`), 'capitalize'),
-              }),
+              message: `${t(`serverErrors.${data.code}`, {
+                field: 'Formula Id',
+              })} by ${data.sent}`,
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.skillType.${data.sent}`), 'capitalize'),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
               }),
             });
           }
@@ -381,6 +385,19 @@ const AdminEditSkill: FC = () => {
             editor={textEditor ?? undefined}
             rawStringContent={skillText}
             small
+          />
+          <Input
+            control={control}
+            inputName="formulaId"
+            type="text"
+            rules={{
+              required: t('skillFormula.required', { ns: 'fields' }),
+              pattern: {
+                value: /^([a-z]){3}$/,
+                message: t('skillFormula.format', { ns: 'fields' }),
+              },
+            }}
+            label={t('skillFormula.label', { ns: 'fields' })}
           />
         </div>
         <div className="adminEditSkill__intl-title">

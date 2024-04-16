@@ -19,6 +19,7 @@ interface FormValues {
   short: string;
   nameFr: string;
   shortFr: string;
+  formulaId: string;
 }
 
 const AdminNewCharParam: FC = () => {
@@ -44,7 +45,7 @@ const AdminNewCharParam: FC = () => {
   } = useForm<FieldValues>();
 
   const onSaveCharParam: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, short, shortFr }) => {
+    ({ name, nameFr, short, shortFr, formulaId }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -69,6 +70,7 @@ const AdminNewCharParam: FC = () => {
       api.charParams
         .create({
           title: name,
+          formulaId,
           short,
           summary: html,
           i18n,
@@ -91,9 +93,9 @@ const AdminNewCharParam: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-              }),
+              message: `${t(`serverErrors.${data.code}`, {
+                field: 'Formula Id',
+              })} by ${data.sent}`,
             });
           } else {
             setError('root.serverError', {
@@ -153,11 +155,24 @@ const AdminNewCharParam: FC = () => {
         </div>
         <div className="adminNewCharParam__details">
           <RichTextElement
-            label={t('charparamsSummary.title', { ns: 'fields' })}
+            label={t('charParamSummary.title', { ns: 'fields' })}
             editor={introEditor}
             rawStringContent={''}
             small
             complete
+          />
+          <Input
+            control={control}
+            inputName="formulaId"
+            type="text"
+            rules={{
+              required: t('charParamFormula.required', { ns: 'fields' }),
+              pattern: {
+                value: /^([a-z]){3}$/,
+                message: t('charParamFormula.format', { ns: 'fields' }),
+              },
+            }}
+            label={t('charParamFormula.label', { ns: 'fields' })}
           />
         </div>
 
@@ -185,7 +200,7 @@ const AdminNewCharParam: FC = () => {
         </div>
         <div className="adminNewCharParam__details">
           <RichTextElement
-            label={`${t('charparamsSummary.title', { ns: 'fields' })} (FR)`}
+            label={`${t('charParamSummary.title', { ns: 'fields' })} (FR)`}
             editor={introFrEditor}
             rawStringContent={''}
             small

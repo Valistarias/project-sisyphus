@@ -1,7 +1,14 @@
 import { type Request, type Response } from 'express';
 
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemDuplicate,
+  gemInvalidField,
+  gemNotFound,
+  gemServerError,
+} from '../../utils/globalErrorMessage';
+import { checkDuplicateSkillFormulaId } from '../skill/controller';
+import { checkDuplicateStatFormulaId } from '../stat/controller';
 
 import { type HydratedICharParam } from './model';
 
@@ -37,27 +44,98 @@ const findCharParamById = async (id: string): Promise<HydratedICharParam> =>
       });
   });
 
+const checkDuplicateCharParamFormulaId = async (
+  formulaId: string,
+  alreadyExistOnce: boolean = false
+): Promise<string | boolean> =>
+  await new Promise((resolve, reject) => {
+    CharParam.find({ formulaId })
+      .then(async (res) => {
+        if (res.length === 0 || (alreadyExistOnce && res.length === 1)) {
+          resolve(false);
+        } else {
+          resolve(res[0].title);
+        }
+      })
+      .catch(async (err) => {
+        reject(err);
+      });
+  });
+
+const checkDuplicateFormulaId = async (
+  formulaId: string,
+  alreadyExistOnce: boolean
+): Promise<string | boolean> =>
+  await new Promise((resolve, reject) => {
+    checkDuplicateCharParamFormulaId(formulaId, alreadyExistOnce)
+      .then((responseCharParam: string | boolean) => {
+        if (typeof responseCharParam === 'boolean') {
+          checkDuplicateSkillFormulaId(formulaId, false)
+            .then((responseSkill: string | boolean) => {
+              if (typeof responseSkill === 'boolean') {
+                checkDuplicateStatFormulaId(formulaId, false)
+                  .then((responseStat: string | boolean) => {
+                    if (typeof responseStat === 'boolean') {
+                      resolve(false);
+                    } else {
+                      resolve(responseStat);
+                    }
+                  })
+                  .catch((err: Error) => {
+                    reject(err);
+                  });
+              } else {
+                resolve(responseSkill);
+              }
+            })
+            .catch((err: Error) => {
+              reject(err);
+            });
+        } else {
+          resolve(responseCharParam);
+        }
+      })
+      .catch((err: Error) => {
+        reject(err);
+      });
+  });
+
 const create = (req: Request, res: Response): void => {
-  const { title, summary, short, i18n = null } = req.body;
-  if (title === undefined || summary === undefined || short === undefined) {
+  const { title, summary, short, i18n = null, formulaId } = req.body;
+  if (
+    title === undefined ||
+    summary === undefined ||
+    short === undefined ||
+    formulaId === undefined
+  ) {
     res.status(400).send(gemInvalidField('CharParam'));
     return;
   }
+  checkDuplicateFormulaId(formulaId as string, false)
+    .then((response) => {
+      if (typeof response === 'boolean') {
+        const charParam = new CharParam({
+          title,
+          summary,
+          formulaId,
+          short,
+        });
 
-  const charParam = new CharParam({
-    title,
-    summary,
-    short,
-  });
+        if (i18n !== null) {
+          charParam.i18n = JSON.stringify(i18n);
+        }
 
-  if (i18n !== null) {
-    charParam.i18n = JSON.stringify(i18n);
-  }
-
-  charParam
-    .save()
-    .then(() => {
-      res.send(charParam);
+        charParam
+          .save()
+          .then(() => {
+            res.send(charParam);
+          })
+          .catch((err: Error) => {
+            res.status(500).send(gemServerError(err));
+          });
+      } else {
+        res.status(400).send(gemDuplicate(response));
+      }
     })
     .catch((err: Error) => {
       res.status(500).send(gemServerError(err));
@@ -65,41 +143,55 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, title = null, summary = null, i18n, short = null } = req.body;
+  const { id, title = null, summary = null, i18n, short = null, formulaId = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('CharParam ID'));
     return;
   }
   findCharParamById(id as string)
     .then((charParam) => {
-      if (title !== null) {
-        charParam.title = title;
-      }
-      if (summary !== null) {
-        charParam.summary = summary;
-      }
-      if (short !== null) {
-        charParam.short = short;
-      }
+      const alreadyExistOnce = typeof formulaId === 'string' && formulaId === charParam.formulaId;
+      checkDuplicateFormulaId(formulaId as string, alreadyExistOnce)
+        .then((response) => {
+          if (typeof response === 'boolean') {
+            if (title !== null) {
+              charParam.title = title;
+            }
+            if (summary !== null) {
+              charParam.summary = summary;
+            }
+            if (formulaId !== null) {
+              charParam.formulaId = formulaId;
+            }
+            if (short !== null) {
+              charParam.short = short;
+            }
 
-      if (i18n !== null) {
-        const newIntl = {
-          ...(charParam.i18n !== null && charParam.i18n !== undefined && charParam.i18n !== ''
-            ? JSON.parse(charParam.i18n)
-            : {}),
-        };
+            if (i18n !== null) {
+              const newIntl = {
+                ...(charParam.i18n !== null && charParam.i18n !== undefined && charParam.i18n !== ''
+                  ? JSON.parse(charParam.i18n)
+                  : {}),
+              };
 
-        Object.keys(i18n as Record<string, any>).forEach((lang) => {
-          newIntl[lang] = i18n[lang];
-        });
+              Object.keys(i18n as Record<string, any>).forEach((lang) => {
+                newIntl[lang] = i18n[lang];
+              });
 
-        charParam.i18n = JSON.stringify(newIntl);
-      }
+              charParam.i18n = JSON.stringify(newIntl);
+            }
 
-      charParam
-        .save()
-        .then(() => {
-          res.send({ message: 'CharParam was updated successfully!', charParam });
+            charParam
+              .save()
+              .then(() => {
+                res.send({ message: 'CharParam was updated successfully!', charParam });
+              })
+              .catch((err: Error) => {
+                res.status(500).send(gemServerError(err));
+              });
+          } else {
+            res.status(400).send(gemDuplicate(response));
+          }
         })
         .catch((err: Error) => {
           res.status(500).send(gemServerError(err));
@@ -184,4 +276,12 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteCharParam, findAll, findCharParamById, findSingle, update };
+export {
+  checkDuplicateCharParamFormulaId,
+  create,
+  deleteCharParam,
+  findAll,
+  findCharParamById,
+  findSingle,
+  update,
+};

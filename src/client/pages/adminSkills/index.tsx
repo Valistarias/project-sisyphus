@@ -47,7 +47,7 @@ const AdminSkills: FC = () => {
         <div className="adminSkills__books">
           <Atitle level={2}>{t('adminSkills.list', { ns: 'pages' })}</Atitle>
           <div className="adminSkills__books__list">{skillsList}</div>
-          <Button href="/admin/skill/new">{t('adminNewStat.title', { ns: 'pages' })}</Button>
+          <Button href="/admin/skill/new">{t('adminNewSkill.title', { ns: 'pages' })}</Button>
         </div>
       </div>
     </div>

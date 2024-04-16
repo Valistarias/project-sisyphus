@@ -101,8 +101,13 @@
     "required": "A Short Name is required",
     "label": "Short"
   },
-  "statText": {
+  "statSummary": {
     "title": "Stat Details"
+  },
+  "statFormula": {
+    "required": "A Formula Identifier is required",
+    "format": "The format of the formula identifier is wrong. you need three letters in lower case",
+    "label": "Fomula identifier (For formula purposes, never displayed as is). This needs to be a lower case three letter string"
   },
   "nameSkill": {
     "required": "A Skill Name is required",
@@ -112,8 +117,13 @@
     "required": "You need to link a Stat with this Skill",
     "label": "Stat"
   },
-  "skillText": {
+  "skillSummary": {
     "title": "Skill Details"
+  },
+  "skillFormula": {
+    "required": "A Formula Identifier is required",
+    "format": "The format of the formula identifier is wrong. you need three letters in lower case",
+    "label": "Fomula identifier (For formula purposes, never displayed as is). This needs to be a lower case three letter string"
   },
   "nameCharParam": {
     "required": "A Character Parameter Name is required",
@@ -121,9 +131,14 @@
   },
   "nameCharParamShort": {
     "required": "A Short Name is required",
-    "label": "Short"
+    "label": "Short (Displayed to the player)"
   },
-  "charParamText": {
+  "charParamFormula": {
+    "required": "A Formula Identifier is required",
+    "format": "The format of the formula identifier is wrong. you need three letters in lower case",
+    "label": "Fomula identifier (For formula purposes, never displayed as is). This needs to be a lower case three letter string"
+  },
+  "charParamSummary": {
     "title": "Character Parameter Details"
   },
   "nameCyberFrameBranch": {

@@ -5,6 +5,8 @@ interface IStat {
   title: string;
   /** A summary of the stat */
   summary: string;
+  /** A 3 letter string used for the formulas */
+  formulaId: string;
   /** A short version of the stat */
   short: string;
   /** The internationnal content, as a json, stringified */
@@ -18,6 +20,7 @@ interface HydratedIStat extends HydratedDocument<IStat> {}
 const statSchema = new Schema<IStat>({
   title: String,
   summary: String,
+  formulaId: String,
   short: String,
   i18n: String,
   createdAt: {

@@ -18,6 +18,7 @@ interface FormValues {
   name: string;
   nameFr: string;
   stat: string;
+  formulaId: string;
 }
 
 const AdminNewSkill: FC = () => {
@@ -53,7 +54,7 @@ const AdminNewSkill: FC = () => {
   }, [stats]);
 
   const onSaveSkill: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, stat }) => {
+    ({ name, nameFr, stat, formulaId }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -78,6 +79,7 @@ const AdminNewSkill: FC = () => {
         .create({
           title: name,
           stat,
+          formulaId,
           summary: html,
           i18n,
         })
@@ -99,15 +101,15 @@ const AdminNewSkill: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.skillType.${data.sent}`), 'capitalize'),
-              }),
+              message: `${t(`serverErrors.${data.code}`, {
+                field: 'Formula Id',
+              })} by ${data.sent}`,
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.skillType.${data.sent}`), 'capitalize'),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
               }),
             });
           }
@@ -157,6 +159,19 @@ const AdminNewSkill: FC = () => {
             rawStringContent={''}
             small
             complete
+          />
+          <Input
+            control={control}
+            inputName="formulaId"
+            type="text"
+            rules={{
+              required: t('skillFormula.required', { ns: 'fields' }),
+              pattern: {
+                value: /^([a-z]){3}$/,
+                message: t('skillFormula.format', { ns: 'fields' }),
+              },
+            }}
+            label={t('skillFormula.label', { ns: 'fields' })}
           />
         </div>
 

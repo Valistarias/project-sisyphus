@@ -19,6 +19,7 @@ interface FormValues {
   short: string;
   nameFr: string;
   shortFr: string;
+  formulaId: string;
 }
 
 const AdminNewStat: FC = () => {
@@ -44,7 +45,7 @@ const AdminNewStat: FC = () => {
   } = useForm<FieldValues>();
 
   const onSaveStat: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, short, shortFr }) => {
+    ({ name, nameFr, short, shortFr, formulaId }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -70,6 +71,7 @@ const AdminNewStat: FC = () => {
         .create({
           title: name,
           short,
+          formulaId,
           summary: html,
           i18n,
         })
@@ -91,15 +93,15 @@ const AdminNewStat: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.statType.${data.sent}`), 'capitalize'),
-              }),
+              message: `${t(`serverErrors.${data.code}`, {
+                field: 'Formula Id',
+              })} by ${data.sent}`,
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.statType.${data.sent}`), 'capitalize'),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
               }),
             });
           }
@@ -144,6 +146,19 @@ const AdminNewStat: FC = () => {
             rawStringContent={''}
             small
             complete
+          />
+          <Input
+            control={control}
+            inputName="formulaId"
+            type="text"
+            rules={{
+              required: t('statFormula.required', { ns: 'fields' }),
+              pattern: {
+                value: /^([a-z]){3}$/,
+                message: t('statFormula.format', { ns: 'fields' }),
+              },
+            }}
+            label={t('statFormula.label', { ns: 'fields' })}
           />
         </div>
 

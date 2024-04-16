@@ -20,6 +20,7 @@ interface FormValues {
   short: string;
   nameFr: string;
   shortFr: string;
+  formulaId: string;
 }
 
 const AdminEditStat: FC = () => {
@@ -59,6 +60,7 @@ const AdminEditStat: FC = () => {
     const defaultData: Partial<FormValues> = {};
     defaultData.name = stat.title;
     defaultData.short = stat.short;
+    defaultData.formulaId = stat.formulaId;
     if (i18n.fr !== undefined) {
       defaultData.nameFr = i18n.fr.title ?? '';
       defaultData.shortFr = i18n.fr.short ?? '';
@@ -77,12 +79,13 @@ const AdminEditStat: FC = () => {
   });
 
   const onSaveStat: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, short, shortFr }) => {
+    ({ name, nameFr, short, shortFr, formulaId }) => {
       if (
         statText === null ||
         statTextFr === null ||
         textEditor === null ||
         textFrEditor === null ||
+        formulaId === null ||
         api === undefined
       ) {
         return;
@@ -112,6 +115,7 @@ const AdminEditStat: FC = () => {
           id,
           title: name,
           short,
+          formulaId,
           summary: htmlText,
           i18n,
         })
@@ -132,15 +136,15 @@ const AdminEditStat: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.statType.${data.sent}`), 'capitalize'),
-              }),
+              message: `${t(`serverErrors.${data.code}`, {
+                field: 'Formula Id',
+              })} by ${data.sent}`,
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.statType.${data.sent}`), 'capitalize'),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
               }),
             });
           }
@@ -316,6 +320,19 @@ const AdminEditStat: FC = () => {
             editor={textEditor ?? undefined}
             rawStringContent={statText}
             small
+          />
+          <Input
+            control={control}
+            inputName="formulaId"
+            type="text"
+            rules={{
+              required: t('statFormula.required', { ns: 'fields' }),
+              pattern: {
+                value: /^([a-z]){3}$/,
+                message: t('statFormula.format', { ns: 'fields' }),
+              },
+            }}
+            label={t('statFormula.label', { ns: 'fields' })}
           />
         </div>
 

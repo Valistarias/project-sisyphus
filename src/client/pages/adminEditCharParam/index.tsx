@@ -20,6 +20,7 @@ interface FormValues {
   short: string;
   nameFr: string;
   shortFr: string;
+  formulaId: string;
 }
 
 const AdminEditCharParam: FC = () => {
@@ -59,6 +60,7 @@ const AdminEditCharParam: FC = () => {
     const defaultData: Partial<FormValues> = {};
     defaultData.name = charParam.title;
     defaultData.short = charParam.short;
+    defaultData.formulaId = charParam.formulaId;
     if (i18n.fr !== undefined) {
       defaultData.nameFr = i18n.fr.title ?? '';
       defaultData.shortFr = i18n.fr.short ?? '';
@@ -80,12 +82,13 @@ const AdminEditCharParam: FC = () => {
   });
 
   const onSaveCharParam: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, short, shortFr }) => {
+    ({ name, nameFr, short, shortFr, formulaId }) => {
       if (
         charParamText === null ||
         charParamTextFr === null ||
         textEditor === null ||
         textFrEditor === null ||
+        formulaId === null ||
         api === undefined
       ) {
         return;
@@ -115,6 +118,7 @@ const AdminEditCharParam: FC = () => {
           id,
           title: name,
           short,
+          formulaId,
           summary: htmlText,
           i18n,
         })
@@ -135,15 +139,15 @@ const AdminEditCharParam: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charParamType.${data.sent}`), 'capitalize'),
-              }),
+              message: `${t(`serverErrors.${data.code}`, {
+                field: 'Formula Id',
+              })} by ${data.sent}`,
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charParamType.${data.sent}`), 'capitalize'),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
               }),
             });
           }
@@ -323,6 +327,19 @@ const AdminEditCharParam: FC = () => {
             editor={textEditor ?? undefined}
             rawStringContent={charParamText}
             small
+          />
+          <Input
+            control={control}
+            inputName="formulaId"
+            type="text"
+            rules={{
+              required: t('charParamFormula.required', { ns: 'fields' }),
+              pattern: {
+                value: /^([a-z]){3}$/,
+                message: t('charParamFormula.format', { ns: 'fields' }),
+              },
+            }}
+            label={t('charParamFormula.label', { ns: 'fields' })}
           />
         </div>
 

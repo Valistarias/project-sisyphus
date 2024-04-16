@@ -9,6 +9,8 @@ export interface IStat {
   title: string;
   /** The summary of the Stat */
   summary: string;
+  /** A 3 letter string used for the formulas */
+  formulaId: string;
   /** The short version of the Stat name */
   short: string;
   /** When the Stat was created */
@@ -40,6 +42,8 @@ export interface ISkill {
   title: string;
   /** The summary of the Skill */
   summary: string;
+  /** A 3 letter string used for the formulas */
+  formulaId: string;
   /** The correlated stat */
   stat: IStat;
   /** The correlated branches */
@@ -164,6 +168,8 @@ export interface ICharParam {
   _id: string;
   /** The title of the charParam */
   title: string;
+  /** A 3 letter string used for the formulas */
+  formulaId: string;
   /** The summary of the charParam */
   summary: string;
   /** The time to execute the charParam ? */

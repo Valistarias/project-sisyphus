@@ -1,9 +1,16 @@
 import { type Request, type Response } from 'express';
 
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemDuplicate,
+  gemInvalidField,
+  gemNotFound,
+  gemServerError,
+} from '../../utils/globalErrorMessage';
+import { checkDuplicateCharParamFormulaId } from '../charParam/controller';
 import { type HydratedISkillBranch, type IStat } from '../index';
 import { createGeneralForSkillId, deleteSkillBranchesBySkillId } from '../skillBranch/controller';
+import { checkDuplicateStatFormulaId } from '../stat/controller';
 
 import { type HydratedISkill } from './model';
 
@@ -49,33 +56,105 @@ const findSkillById = async (id: string): Promise<HydratedISkill> =>
       });
   });
 
+const checkDuplicateSkillFormulaId = async (
+  formulaId: string,
+  alreadyExistOnce: boolean = false
+): Promise<string | boolean> =>
+  await new Promise((resolve, reject) => {
+    Skill.find({ formulaId })
+      .then(async (res) => {
+        if (res.length === 0 || (alreadyExistOnce && res.length === 1)) {
+          resolve(false);
+        } else {
+          resolve(res[0].title);
+        }
+      })
+      .catch(async (err) => {
+        reject(err);
+      });
+  });
+
+const checkDuplicateFormulaId = async (
+  formulaId: string,
+  alreadyExistOnce: boolean
+): Promise<string | boolean> =>
+  await new Promise((resolve, reject) => {
+    checkDuplicateCharParamFormulaId(formulaId, false)
+      .then((responseCharParam: string | boolean) => {
+        if (typeof responseCharParam === 'boolean') {
+          checkDuplicateSkillFormulaId(formulaId, alreadyExistOnce)
+            .then((responseSkill: string | boolean) => {
+              if (typeof responseSkill === 'boolean') {
+                checkDuplicateStatFormulaId(formulaId, false)
+                  .then((responseStat: string | boolean) => {
+                    if (typeof responseStat === 'boolean') {
+                      resolve(false);
+                    } else {
+                      resolve(responseStat);
+                    }
+                  })
+                  .catch((err: Error) => {
+                    reject(err);
+                  });
+              } else {
+                resolve(responseSkill);
+              }
+            })
+            .catch((err: Error) => {
+              reject(err);
+            });
+        } else {
+          resolve(responseCharParam);
+        }
+      })
+      .catch((err: Error) => {
+        reject(err);
+      });
+  });
+
 const create = (req: Request, res: Response): void => {
-  const { title, summary, stat, i18n = null } = req.body;
-  if (title === undefined || summary === undefined || stat === undefined) {
+  const { title, summary, stat, i18n = null, formulaId } = req.body;
+  if (
+    title === undefined ||
+    summary === undefined ||
+    stat === undefined ||
+    formulaId === undefined
+  ) {
     res.status(400).send(gemInvalidField('Skill'));
     return;
   }
 
-  const skill = new Skill({
-    title,
-    summary,
-    stat,
-  });
-
-  if (i18n !== null) {
-    skill.i18n = JSON.stringify(i18n);
-  }
-
-  skill
-    .save()
-    .then(() => {
-      createGeneralForSkillId(String(skill._id))
-        .then(() => {
-          res.send(skill);
-        })
-        .catch((err: Error) => {
-          res.status(500).send(gemServerError(err));
+  checkDuplicateFormulaId(formulaId as string, false)
+    .then((response) => {
+      if (typeof response === 'boolean') {
+        const skill = new Skill({
+          title,
+          summary,
+          formulaId,
+          stat,
         });
+
+        if (i18n !== null) {
+          skill.i18n = JSON.stringify(i18n);
+        }
+
+        skill
+          .save()
+          .then(() => {
+            createGeneralForSkillId(String(skill._id))
+              .then(() => {
+                res.send(skill);
+              })
+              .catch((err: Error) => {
+                res.status(500).send(gemServerError(err));
+              });
+          })
+          .catch((err: Error) => {
+            res.status(500).send(gemServerError(err));
+          });
+      } else {
+        res.status(400).send(gemDuplicate(response));
+      }
     })
     .catch((err: Error) => {
       res.status(500).send(gemServerError(err));
@@ -83,41 +162,55 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, title = null, summary = null, stat = null, i18n } = req.body;
+  const { id, title = null, summary = null, stat = null, i18n, formulaId = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Skill ID'));
     return;
   }
   findSkillById(id as string)
     .then((skill) => {
-      if (title !== null) {
-        skill.title = title;
-      }
-      if (summary !== null) {
-        skill.summary = summary;
-      }
-      if (stat !== null) {
-        skill.stat = stat;
-      }
+      const alreadyExistOnce = typeof formulaId === 'string' && formulaId === skill.formulaId;
+      checkDuplicateFormulaId(formulaId as string, alreadyExistOnce)
+        .then((response) => {
+          if (typeof response === 'boolean') {
+            if (title !== null) {
+              skill.title = title;
+            }
+            if (summary !== null) {
+              skill.summary = summary;
+            }
+            if (formulaId !== null) {
+              skill.formulaId = formulaId;
+            }
+            if (stat !== null) {
+              skill.stat = stat;
+            }
 
-      if (i18n !== null) {
-        const newIntl = {
-          ...(skill.i18n !== null && skill.i18n !== undefined && skill.i18n !== ''
-            ? JSON.parse(skill.i18n)
-            : {}),
-        };
+            if (i18n !== null) {
+              const newIntl = {
+                ...(skill.i18n !== null && skill.i18n !== undefined && skill.i18n !== ''
+                  ? JSON.parse(skill.i18n)
+                  : {}),
+              };
 
-        Object.keys(i18n as Record<string, any>).forEach((lang) => {
-          newIntl[lang] = i18n[lang];
-        });
+              Object.keys(i18n as Record<string, any>).forEach((lang) => {
+                newIntl[lang] = i18n[lang];
+              });
 
-        skill.i18n = JSON.stringify(newIntl);
-      }
+              skill.i18n = JSON.stringify(newIntl);
+            }
 
-      skill
-        .save()
-        .then(() => {
-          res.send({ message: 'Skill was updated successfully!', skill });
+            skill
+              .save()
+              .then(() => {
+                res.send({ message: 'Skill was updated successfully!', skill });
+              })
+              .catch((err: Error) => {
+                res.status(500).send(gemServerError(err));
+              });
+          } else {
+            res.status(400).send(gemDuplicate(response));
+          }
         })
         .catch((err: Error) => {
           res.status(500).send(gemServerError(err));
@@ -208,4 +301,12 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteSkill, findAll, findSingle, findSkillById, update };
+export {
+  checkDuplicateSkillFormulaId,
+  create,
+  deleteSkill,
+  findAll,
+  findSingle,
+  findSkillById,
+  update,
+};
