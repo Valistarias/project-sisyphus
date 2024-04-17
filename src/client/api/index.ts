@@ -12,10 +12,12 @@ import {
   CyberFrameBranches,
   CyberFrames,
   Effects,
+  ItemModifiers,
   MailToken,
   Nodes,
   Notions,
   Pages,
+  Rarities,
   Rolls,
   RuleBookTypes,
   RuleBooks,
@@ -25,12 +27,15 @@ import {
   StatBonuses,
   Stats,
   Users,
+  WeaponScopes,
+  WeaponStyles,
+  WeaponTypes,
 } from './entities/index';
 
 export default class Api {
+  actionDurations: ActionDurations;
   actions: Actions;
   actionTypes: ActionTypes;
-  actionDurations: ActionDurations;
   auth: Auth;
   campaigns: Campaigns;
   chapters: Chapters;
@@ -41,10 +46,12 @@ export default class Api {
   cyberFrameBranches: CyberFrameBranches;
   cyberFrames: CyberFrames;
   effects: Effects;
+  itemModifiers: ItemModifiers;
   mailToken: MailToken;
   nodes: Nodes;
   notions: Notions;
   pages: Pages;
+  rarities: Rarities;
   rolls: Rolls;
   ruleBooks: RuleBooks;
   ruleBookTypes: RuleBookTypes;
@@ -54,10 +61,13 @@ export default class Api {
   statBonuses: StatBonuses;
   stats: Stats;
   users: Users;
+  weaponScopes: WeaponScopes;
+  weaponStyles: WeaponStyles;
+  weaponTypes: WeaponTypes;
 
   constructor() {
-    this.actions = new Actions();
     this.actionDurations = new ActionDurations();
+    this.actions = new Actions();
     this.actionTypes = new ActionTypes();
     this.auth = new Auth();
     this.campaigns = new Campaigns();
@@ -69,10 +79,12 @@ export default class Api {
     this.cyberFrameBranches = new CyberFrameBranches();
     this.cyberFrames = new CyberFrames();
     this.effects = new Effects();
+    this.itemModifiers = new ItemModifiers();
     this.mailToken = new MailToken();
     this.nodes = new Nodes();
     this.notions = new Notions();
     this.pages = new Pages();
+    this.rarities = new Rarities();
     this.rolls = new Rolls();
     this.ruleBooks = new RuleBooks();
     this.ruleBookTypes = new RuleBookTypes();
@@ -82,5 +94,8 @@ export default class Api {
     this.statBonuses = new StatBonuses();
     this.stats = new Stats();
     this.users = new Users();
+    this.weaponScopes = new WeaponScopes();
+    this.weaponStyles = new WeaponStyles();
+    this.weaponTypes = new WeaponTypes();
   }
 }
