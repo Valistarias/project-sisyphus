@@ -238,6 +238,7 @@
   "adminEditCyberFrame": {
     "branches": "CyberFrame Specialisations",
     "edit": "Edit CyberFrame",
+    "nodes": "Node Tree",
     "delete": "Delete CyberFrame",
     "i18n": "Internationalization",
     "button": "Update CyberFrame Data",

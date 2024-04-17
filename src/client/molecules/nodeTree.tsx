@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Ap } from '../atoms';
 import { Quark } from '../quark';
-import { type ICuratedNode, type ISkillBranch } from '../types';
+import { type ICuratedNode, type ICyberFrameBranch, type ISkillBranch } from '../types';
 
 import { Button, Node } from './index';
 
@@ -20,7 +20,7 @@ interface INodeTree {
   isAdmin?: boolean;
   /** The tree to be displayed */
   tree: Array<{
-    branch: ISkillBranch;
+    branch: ISkillBranch | ICyberFrameBranch;
     nodes: ICuratedNode[];
   }>;
   /** When a node is clicked */
@@ -34,6 +34,7 @@ const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {}, isAdmin = false
     () => tree.filter(({ branch }) => branch.title !== '_general'),
     [tree]
   );
+
   const generalBranch = useMemo(
     () => tree.find(({ branch }) => branch.title === '_general'),
     [tree]
@@ -122,6 +123,14 @@ const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {}, isAdmin = false
     return lines;
   }, [generalBranch, onNodeClick]);
 
+  if (tree.length <= 1) {
+    return (
+      <div className="node-tree__table node-tree__table--empty">
+        <Ap>{t('nodeTree.empty', { ns: 'components' })}</Ap>
+      </div>
+    );
+  }
+
   return (
     <Quark
       quarkType="div"
@@ -139,7 +148,7 @@ const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {}, isAdmin = false
                 <Ap>{branch.title}</Ap>
                 {isAdmin ? (
                   <Button
-                    href={`/admin/${branch.skill !== undefined ? 'skillbranch' : 'cyberframebranch'}/${branch._id}`}
+                    href={`/admin/${(branch as ISkillBranch).skill !== undefined ? 'skillbranch' : 'cyberframebranch'}/${branch._id}`}
                     size="small"
                   >
                     {t('terms.general.edit')}

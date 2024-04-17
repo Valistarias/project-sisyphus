@@ -481,7 +481,7 @@ const AdminNewNode: FC = () => {
       api.nodes
         .create({
           title: name,
-          ...(skillId !== undefined ? { skillBranch: branch } : { cyberFrameBranch: branch }),
+          ...(skillId !== null ? { skillBranch: branch } : { cyberFrameBranch: branch }),
           summary: html,
           rank: Number(rank),
           icon,

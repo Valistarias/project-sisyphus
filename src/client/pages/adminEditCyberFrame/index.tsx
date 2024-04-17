@@ -8,10 +8,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../providers';
 
-import { Aerror, Ali, Ap, Atitle, Aul } from '../../atoms';
-import { Button, Input, SmartSelect, type ISingleValueSelect } from '../../molecules';
+import { Aerror, Ap, Atitle } from '../../atoms';
+import { Button, Input, NodeTree, SmartSelect, type ISingleValueSelect } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
-import { type ICuratedCyberFrame, type ICuratedCyberFrameBranch } from '../../types';
+import { type ICuratedCyberFrame, type ICuratedNode, type ICyberFrameBranch } from '../../types';
 
 import { classTrim } from '../../utils';
 
@@ -39,14 +39,14 @@ const AdminEditCyberFrame: FC = () => {
   const saveTimer = useRef<NodeJS.Timeout | null>(null);
   const silentSave = useRef(false);
 
+  const [displayInt, setDisplayInt] = useState(false);
+
+  const [nodes, setNodes] = useState<ICuratedNode[] | null>(null);
+
   const [cyberFrameData, setCyberFrameData] = useState<ICuratedCyberFrame | null>(null);
 
   const [cyberFrameText, setCyberFrameText] = useState('');
   const [cyberFrameTextFr, setCyberFrameTextFr] = useState('');
-
-  const [cyberFrameBranches, setCyberFrameBranches] = useState<ICuratedCyberFrameBranch[] | null>(
-    null
-  );
 
   const textEditor = useEditor({
     extensions: completeRichTextElementExtentions,
@@ -56,30 +56,30 @@ const AdminEditCyberFrame: FC = () => {
     extensions: completeRichTextElementExtentions,
   });
 
-  const cyberFrameBranchesList = useMemo(() => {
-    if (cyberFrameBranches === null || cyberFrameBranches.length === 0) {
-      return null;
-    }
-    return (
-      <Aul className="adminEditCyberFrame__cyberframebranch-list" noPoints>
-        {cyberFrameBranches.map(({ cyberFrameBranch }) => {
-          return cyberFrameBranch.title !== '_general' ? (
-            <Ali
-              className={classTrim(`
-              adminEditCyberFrame__cyberframebranch-list__elt
-            `)}
-              key={cyberFrameBranch._id}
-            >
-              <Atitle level={3}>{cyberFrameBranch.title}</Atitle>
-              <Button href={`/admin/cyberframebranch/${cyberFrameBranch._id}`}>
-                {t('adminCyberFrames.editCyberFrame', { ns: 'pages' })}
-              </Button>
-            </Ali>
-          ) : null;
-        })}
-      </Aul>
-    );
-  }, [cyberFrameBranches, t]);
+  const nodeTree = useMemo(() => {
+    const branches = cyberFrameData?.cyberFrame.branches;
+    const tempTree: Record<
+      string,
+      {
+        branch: ICyberFrameBranch;
+        nodes: ICuratedNode[];
+      }
+    > = {};
+    branches?.forEach((branch) => {
+      tempTree[branch._id] = {
+        branch,
+        nodes: [],
+      };
+    });
+    nodes?.forEach((node) => {
+      if (node.node.skillBranch !== undefined) {
+        tempTree[node.node.skillBranch as string].nodes.push(node);
+      } else if (node.node.cyberFrameBranch !== undefined) {
+        tempTree[node.node.cyberFrameBranch as string].nodes.push(node);
+      }
+    });
+    return Object.values(tempTree);
+  }, [nodes, cyberFrameData]);
 
   const ruleBookSelect = useMemo(() => {
     return ruleBooks.map(({ ruleBook }) => ({
@@ -304,10 +304,10 @@ const AdminEditCyberFrame: FC = () => {
             ),
           });
         });
-      api.cyberFrameBranches
+      api.nodes
         .getAllByCyberFrame({ cyberFrameId: id })
-        .then((curatedCyberFrameBranches: ICuratedCyberFrameBranch[]) => {
-          setCyberFrameBranches(curatedCyberFrameBranches ?? []);
+        .then((curatedNodes: ICuratedNode[]) => {
+          setNodes(curatedNodes);
         })
         .catch(() => {
           const newId = getNewId();
@@ -345,7 +345,12 @@ const AdminEditCyberFrame: FC = () => {
   }, [cyberFrameData, ruleBookSelect, reset, createDefaultData]);
 
   return (
-    <div className="adminEditCyberFrame">
+    <div
+      className={classTrim(`
+        adminEditCyberFrame
+        ${displayInt ? 'adminEditCyberFrame--int-visible' : ''}
+      `)}
+    >
       <form
         onSubmit={handleSubmit(onSaveCyberFrame)}
         noValidate
@@ -355,13 +360,6 @@ const AdminEditCyberFrame: FC = () => {
           <Atitle level={1}>{cyberFrameData?.cyberFrame.title}</Atitle>
           <Button onClick={onAskDelete} color="error">
             {t('adminEditCyberFrame.delete', { ns: 'pages' })}
-          </Button>
-        </div>
-        <div className="adminEditCyberFrame__branches">
-          <Atitle level={2}>{t('adminEditCyberFrame.branches', { ns: 'pages' })}</Atitle>
-          <div className="adminEditCyberFrame__branches__list">{cyberFrameBranchesList}</div>
-          <Button href={`/admin/cyberframebranch/new?cyberFrameId=${id}`}>
-            {t('adminNewCyberFrameBranch.title', { ns: 'pages' })}
           </Button>
         </div>
         <Atitle level={2}>{t('adminEditCyberFrame.edit', { ns: 'pages' })}</Atitle>
@@ -399,30 +397,64 @@ const AdminEditCyberFrame: FC = () => {
           />
         </div>
 
-        <Atitle className="adminEditCyberFrame__intl" level={2}>
-          {t('adminEditCyberFrame.i18n', { ns: 'pages' })}
-        </Atitle>
-        <Ap className="adminEditCyberFrame__intl-info">
-          {t('adminEditCyberFrame.i18nInfo', { ns: 'pages' })}
-        </Ap>
-        <div className="adminEditCyberFrame__basics">
-          <Input
-            control={control}
-            inputName="nameFr"
-            type="text"
-            label={`${t('nameCyberFrame.label', { ns: 'fields' })} (FR)`}
-            className="adminEditCyberFrame__basics__name"
+        <div className="adminEditCyberFrame__intl-title">
+          <div className="adminEditCyberFrame__intl-title__content">
+            <Atitle className="adminEditCyberFrame__intl-title__title" level={2}>
+              {t('adminEditCyberFrame.i18n', { ns: 'pages' })}
+            </Atitle>
+            <Ap className="adminEditCyberFrame__intl-title__info">
+              {t('adminEditCyberFrame.i18nInfo', { ns: 'pages' })}
+            </Ap>
+          </div>
+          <Button
+            icon="arrow"
+            theme="afterglow"
+            onClick={() => {
+              setDisplayInt((prev) => !prev);
+            }}
+            className="adminEditCyberFrame__intl-title__btn"
           />
         </div>
-        <div className="adminEditCyberFrame__details">
-          <RichTextElement
-            label={`${t('cyberFrameText.title', { ns: 'fields' })} (FR)`}
-            editor={textFrEditor ?? undefined}
-            rawStringContent={cyberFrameTextFr}
-            ruleBookId={ruleBook?._id ?? undefined}
-            small
-            complete
-          />
+        <div className="adminEditCyberFrame__intl">
+          <div className="adminEditCyberFrame__basics">
+            <Input
+              control={control}
+              inputName="nameFr"
+              type="text"
+              label={`${t('nameCyberFrame.label', { ns: 'fields' })} (FR)`}
+              className="adminEditCyberFrame__basics__name"
+            />
+          </div>
+          <div className="adminEditCyberFrame__details">
+            <RichTextElement
+              label={`${t('cyberFrameText.title', { ns: 'fields' })} (FR)`}
+              editor={textFrEditor ?? undefined}
+              rawStringContent={cyberFrameTextFr}
+              ruleBookId={ruleBook?._id ?? undefined}
+              small
+              complete
+            />
+          </div>
+        </div>
+        <div className="adminEditCyberFrame__nodes">
+          <Atitle level={2}>{t('adminEditCyberFrame.nodes', { ns: 'pages' })}</Atitle>
+          <div className="adminEditCyberFrame__nodes__list">
+            <NodeTree
+              tree={nodeTree}
+              onNodeClick={(id) => {
+                navigate(`/admin/node/${id}`);
+              }}
+              isAdmin
+            />
+          </div>
+          <div className="adminEditCyberFrame__nodes__btns">
+            <Button href={`/admin/node/new?cyberFrameId=${id}`}>
+              {t('adminNewNode.title', { ns: 'pages' })}
+            </Button>
+            <Button href={`/admin/cyberframebranch/new?cyberFrameId=${id}`}>
+              {t('adminNewSkillBranch.title', { ns: 'pages' })}
+            </Button>
+          </div>
         </div>
         <Button type="submit">{t('adminEditCyberFrame.button', { ns: 'pages' })}</Button>
       </form>

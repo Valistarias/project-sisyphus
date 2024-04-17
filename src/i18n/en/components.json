@@ -64,5 +64,8 @@
     "placeholder": "Select one...",
     "notfound": "No field found"
   },
+  "nodeTree": {
+    "empty": "You need to create a branch to visualize the tree"
+  },
   "autosave": "Autosaved the {{date}} at {{hour}}"
 }
