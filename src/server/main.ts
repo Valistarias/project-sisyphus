@@ -28,11 +28,13 @@ import CharParamBonusRoutes from './entities/charParamBonus/routes';
 import CyberFrameRoutes from './entities/cyberFrame/routes';
 import CyberFrameBranchRoutes from './entities/cyberFrameBranch/routes';
 import EffectRoutes from './entities/effect/routes';
+import ItemModifierRoutes from './entities/itemModifier/routes';
 import { verifyMailToken } from './entities/mailToken/controller';
 import MailTokenRoutes from './entities/mailToken/routes';
 import NodeRoutes from './entities/node/routes';
 import NotionRoutes from './entities/notion/routes';
 import PageRoutes from './entities/page/routes';
+import RarityRoutes from './entities/rarity/routes';
 import RollRoutes from './entities/roll/routes';
 import RuleBookRoutes from './entities/ruleBook/routes';
 import RuleBookTypeRoutes from './entities/ruleBookType/routes';
@@ -42,6 +44,9 @@ import SkillBranchRoutes from './entities/skillBranch/routes';
 import StatRoutes from './entities/stat/routes';
 import StatBonusRoutes from './entities/statBonus/routes';
 import UserRoutes from './entities/user/routes';
+import WeaponScopeRoutes from './entities/weaponScope/routes';
+import WeaponStyleRoutes from './entities/weaponStyle/routes';
+import WeaponTypeRoutes from './entities/weaponType/routes';
 import { checkRouteRights } from './middlewares/authJwt';
 import { gemInvalidField } from './utils/globalErrorMessage';
 
@@ -97,16 +102,16 @@ const apiRouter = express.Router();
 
 // Global routes
 AuthRoutes(apiRouter, mg);
-UserRoutes(apiRouter);
 MailTokenRoutes(apiRouter, mg);
+UserRoutes(apiRouter);
 
 // Rulebook routes
-NotionRoutes(apiRouter);
-RuleBookRoutes(apiRouter);
-RuleBookTypeRoutes(apiRouter);
 ChapterRoutes(apiRouter);
 ChapterTypeRoutes(apiRouter);
+NotionRoutes(apiRouter);
 PageRoutes(apiRouter);
+RuleBookRoutes(apiRouter);
+RuleBookTypeRoutes(apiRouter);
 
 // Campaign routes
 CampaignRoutes(apiRouter);
@@ -116,20 +121,27 @@ RollRoutes(apiRouter);
 CharacterRoutes(apiRouter);
 
 // Rules routes
-ActionRoutes(apiRouter);
 ActionDurationRoutes(apiRouter);
+ActionRoutes(apiRouter);
 ActionTypeRoutes(apiRouter);
+CharParamBonusRoutes(apiRouter);
+CharParamRoutes(apiRouter);
+CyberFrameBranchRoutes(apiRouter);
+CyberFrameRoutes(apiRouter);
 EffectRoutes(apiRouter);
-StatRoutes(apiRouter);
-StatBonusRoutes(apiRouter);
-SkillRoutes(apiRouter);
+NodeRoutes(apiRouter);
 SkillBonusRoutes(apiRouter);
 SkillBranchRoutes(apiRouter);
-CharParamRoutes(apiRouter);
-CharParamBonusRoutes(apiRouter);
-CyberFrameRoutes(apiRouter);
-CyberFrameBranchRoutes(apiRouter);
-NodeRoutes(apiRouter);
+SkillRoutes(apiRouter);
+StatBonusRoutes(apiRouter);
+StatRoutes(apiRouter);
+
+// Items routes
+ItemModifierRoutes(apiRouter);
+RarityRoutes(apiRouter);
+WeaponScopeRoutes(apiRouter);
+WeaponStyleRoutes(apiRouter);
+WeaponTypeRoutes(apiRouter);
 
 // Global Router
 app.use('/api/', apiRouter);

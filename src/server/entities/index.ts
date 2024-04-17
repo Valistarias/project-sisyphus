@@ -23,10 +23,16 @@ export {
   type ICyberFrameBranch,
 } from './cyberFrameBranch/model';
 export { EffectModel, type HydratedIEffect, type IEffect } from './effect/model';
+export {
+  ItemModifierModel,
+  type HydratedIItemModifier,
+  type IItemModifier,
+} from './itemModifier/model';
 export { MailTokenModel, type IMailToken } from './mailToken/model';
 export { NodeModel, type HydratedINode, type INode } from './node/model';
 export { NotionModel, type HydratedNotion, type INotion } from './notion/model';
 export { PageModel, type HydratedIPage, type IPage } from './page/model';
+export { RarityModel, type HydratedIRarity, type IRarity } from './rarity/model';
 export { RoleModel, type IRole } from './role/model';
 export { RollModel, type IRoll } from './roll/model';
 export { RuleBookModel, type HydratedIRuleBook, type IRuleBook } from './ruleBook/model';
@@ -41,3 +47,14 @@ export {
 export { StatModel, type HydratedIStat, type IStat } from './stat/model';
 export { StatBonusModel, type HydratedIStatBonus, type IStatBonus } from './statBonus/model';
 export { UserModel, type HydratedIUser, type IUser } from './user/model';
+export {
+  WeaponScopeModel,
+  type HydratedIWeaponScope,
+  type IWeaponScope,
+} from './weaponScope/model';
+export {
+  WeaponStyleModel,
+  type HydratedIWeaponStyle,
+  type IWeaponStyle,
+} from './weaponStyle/model';
+export { WeaponTypeModel, type HydratedIWeaponType, type IWeaponType } from './weaponType/model';

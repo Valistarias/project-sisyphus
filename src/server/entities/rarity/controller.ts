@@ -1,0 +1,218 @@
+import { type Request, type Response } from 'express';
+
+import db from '../../models';
+import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+
+import { type HydratedIRarity } from './model';
+
+const { Rarity } = db;
+
+const findRarities = async (): Promise<HydratedIRarity[]> =>
+  await new Promise((resolve, reject) => {
+    Rarity.find()
+      .then(async (res) => {
+        if (res === undefined || res === null) {
+          reject(gemNotFound('Rarities'));
+        } else {
+          resolve(res as HydratedIRarity[]);
+        }
+      })
+      .catch(async (err) => {
+        reject(err);
+      });
+  });
+
+const findRarityById = async (id: string): Promise<HydratedIRarity> =>
+  await new Promise((resolve, reject) => {
+    Rarity.findById(id)
+      .then(async (res) => {
+        if (res === undefined || res === null) {
+          reject(gemNotFound('Rarity'));
+        } else {
+          resolve(res as HydratedIRarity);
+        }
+      })
+      .catch(async (err) => {
+        reject(err);
+      });
+  });
+
+const create = (req: Request, res: Response): void => {
+  const { title, summary, i18n = null } = req.body;
+  if (title === undefined || summary === undefined) {
+    res.status(400).send(gemInvalidField('Item Modifier'));
+    return;
+  }
+
+  findRarities()
+    .then((rarities) => {
+      const rarity = new Rarity({
+        title,
+        summary,
+        position: rarities.length,
+      });
+
+      if (i18n !== null) {
+        rarity.i18n = JSON.stringify(i18n);
+      }
+
+      rarity
+        .save()
+        .then(() => {
+          res.send(rarity);
+        })
+        .catch((err: Error) => {
+          res.status(500).send(gemServerError(err));
+        });
+    })
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+};
+
+const update = (req: Request, res: Response): void => {
+  const { id, title = null, summary = null, i18n } = req.body;
+  if (id === undefined) {
+    res.status(400).send(gemInvalidField('Item Modifier ID'));
+    return;
+  }
+  findRarityById(id as string)
+    .then((rarity) => {
+      if (title !== null) {
+        rarity.title = title;
+      }
+      if (summary !== null) {
+        rarity.summary = summary;
+      }
+
+      if (i18n !== null) {
+        const newIntl = {
+          ...(rarity.i18n !== null && rarity.i18n !== undefined && rarity.i18n !== ''
+            ? JSON.parse(rarity.i18n)
+            : {}),
+        };
+
+        Object.keys(i18n as Record<string, any>).forEach((lang) => {
+          newIntl[lang] = i18n[lang];
+        });
+
+        rarity.i18n = JSON.stringify(newIntl);
+      }
+
+      rarity
+        .save()
+        .then(() => {
+          res.send({ message: 'Item Modifier was updated successfully!', rarity });
+        })
+        .catch((err: Error) => {
+          res.status(500).send(gemServerError(err));
+        });
+    })
+    .catch(() => {
+      res.status(404).send(gemNotFound('Rarity'));
+    });
+};
+
+const updateMultipleRaritiesPosition = (order: any, cb: (res: Error | null) => void): void => {
+  Rarity.findOneAndUpdate({ _id: order[0].id }, { position: order[0].position })
+    .then(() => {
+      if (order.length > 1) {
+        order.shift();
+        updateMultipleRaritiesPosition([...order], cb);
+      } else {
+        cb(null);
+      }
+    })
+    .catch(() => {
+      cb(new Error('Rulebook not found'));
+    });
+};
+
+const changeRaritiesOrder = (req: Request, res: Response): void => {
+  const { id, order } = req.body;
+  if (id === undefined || order === undefined) {
+    res.status(400).send(gemInvalidField('Rarity Reordering'));
+    return;
+  }
+  updateMultipleRaritiesPosition(order, (err) => {
+    if (err !== null) {
+      res.status(404).send(gemNotFound('Rarity'));
+    } else {
+      res.send({ message: 'Rarities were updated successfully!' });
+    }
+  });
+};
+
+const deleteRarityById = async (id: string): Promise<boolean> =>
+  await new Promise((resolve, reject) => {
+    if (id === undefined) {
+      reject(gemInvalidField('Item Modifier ID'));
+      return;
+    }
+    Rarity.findByIdAndDelete(id)
+      .then(() => {
+        resolve(true);
+      })
+      .catch((err: Error) => {
+        reject(gemServerError(err));
+      });
+  });
+
+const deleteRarity = (req: Request, res: Response): void => {
+  const { id } = req.body;
+  deleteRarityById(id as string)
+    .then(() => {
+      res.send({ message: 'Item Modifier was deleted successfully!' });
+    })
+    .catch((err: Error) => {
+      res.status(500).send(gemServerError(err));
+    });
+};
+
+interface CuratedIRarity {
+  i18n: Record<string, any> | Record<string, unknown>;
+  rarity: HydratedIRarity;
+}
+
+const curateRarity = (rarity: HydratedIRarity): Record<string, any> => {
+  if (rarity.i18n === null || rarity.i18n === '' || rarity.i18n === undefined) {
+    return {};
+  }
+  return JSON.parse(rarity.i18n);
+};
+
+const findSingle = (req: Request, res: Response): void => {
+  const { rarityId } = req.query;
+  if (rarityId === undefined || typeof rarityId !== 'string') {
+    res.status(400).send(gemInvalidField('Rarity ID'));
+    return;
+  }
+  findRarityById(rarityId)
+    .then((rarity) => {
+      const sentObj = {
+        rarity,
+        i18n: curateRarity(rarity),
+      };
+      res.send(sentObj);
+    })
+    .catch((err: Error) => {
+      res.status(404).send(err);
+    });
+};
+
+const findAll = (req: Request, res: Response): void => {
+  findRarities()
+    .then((rarities) => {
+      const curatedRarities: CuratedIRarity[] = [];
+
+      rarities.forEach((rarity) => {
+        curatedRarities.push({
+          rarity,
+          i18n: curateRarity(rarity),
+        });
+      });
+
+      res.send(curatedRarities);
+    })
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+};
+
+export { changeRaritiesOrder, create, deleteRarity, findAll, findRarityById, findSingle, update };

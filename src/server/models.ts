@@ -13,10 +13,12 @@ import {
   CyberFrameBranchModel,
   CyberFrameModel,
   EffectModel,
+  ItemModifierModel,
   MailTokenModel,
   NodeModel,
   NotionModel,
   PageModel,
+  RarityModel,
   RoleModel,
   RollModel,
   RuleBookModel,
@@ -27,6 +29,9 @@ import {
   StatBonusModel,
   StatModel,
   UserModel,
+  WeaponScopeModel,
+  WeaponStyleModel,
+  WeaponTypeModel,
   type IAction,
   type IActionDuration,
   type IActionType,
@@ -39,10 +44,12 @@ import {
   type ICyberFrame,
   type ICyberFrameBranch,
   type IEffect,
+  type IItemModifier,
   type IMailToken,
   type INode,
   type INotion,
   type IPage,
+  type IRarity,
   type IRole,
   type IRoll,
   type IRuleBook,
@@ -53,6 +60,9 @@ import {
   type IStat,
   type IStatBonus,
   type IUser,
+  type IWeaponScope,
+  type IWeaponStyle,
+  type IWeaponType,
 } from './entities';
 
 mongoose.Promise = global.Promise;
@@ -110,6 +120,16 @@ interface DBType {
   CyberFrameBranch: mongoose.Model<ICyberFrameBranch>;
   /** The Node Model */
   Node: mongoose.Model<INode>;
+  /** The ItemModifier Model */
+  ItemModifier: mongoose.Model<IItemModifier>;
+  /** The RarityModel Model */
+  Rarity: mongoose.Model<IRarity>;
+  /** The WeaponScopeModel Model */
+  WeaponScope: mongoose.Model<IWeaponScope>;
+  /** The WeaponStyleModel Model */
+  WeaponStyle: mongoose.Model<IWeaponStyle>;
+  /** The WeaponTypeModel Model */
+  WeaponType: mongoose.Model<IWeaponType>;
   /** The possible Roles */
   ROLES: string[];
 }
@@ -147,6 +167,12 @@ const db: DBType = {
   CyberFrame: CyberFrameModel(),
   CyberFrameBranch: CyberFrameBranchModel(),
   Node: NodeModel(),
+  // Items models
+  ItemModifier: ItemModifierModel(),
+  Rarity: RarityModel(),
+  WeaponScope: WeaponScopeModel(),
+  WeaponStyle: WeaponStyleModel(),
+  WeaponType: WeaponTypeModel(),
 };
 
 export default db;
