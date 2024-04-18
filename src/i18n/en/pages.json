@@ -440,8 +440,8 @@
     "successCreate": "Item Modifier successfully created !"
   },
   "adminEditItemModifier": {
-    "edit": "Edit ItemModifier",
-    "delete": "Delete ItemModifier",
+    "edit": "Edit Item Modifier",
+    "delete": "Delete Item Modifier",
     "i18n": "Internationalization",
     "button": "Update ItemModifier Data",
     "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
@@ -451,6 +451,32 @@
       "title": "ItemModifier Deletion",
       "text": "Are you sure you want to delete {{elt}} ? All the related branches will be lost !",
       "confirmCta": "Delete ItemModifier"
+    }
+  },
+  "adminRarities": {
+    "title": "Item Modifiers",
+    "list": "List",
+    "editItemModifier": "Edit"
+  },
+  "adminNewRarity": {
+    "title": "New Rarity",
+    "i18n": "Internationalization",
+    "button": "Create Rarity",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successCreate": "Rarity successfully created !"
+  },
+  "adminEditRarity": {
+    "edit": "Edit Rarity",
+    "delete": "Delete Rarity",
+    "i18n": "Internationalization",
+    "button": "Update Rarity Data",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successUpdate": "Rarity successfully updated !",
+    "successDelete": "Rarity successfully deleted !",
+    "confirmDeletion": {
+      "title": "Rarity Deletion",
+      "text": "Are you sure you want to delete {{elt}} ? All the related branches will be lost !",
+      "confirmCta": "Delete Rarity"
     }
   }
 }

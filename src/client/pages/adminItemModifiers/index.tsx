@@ -16,7 +16,6 @@ const AdminItemModifiers: FC = () => {
   const { itemModifiers } = useGlobalVars();
 
   // TODO: Handle i18n in place of basic english language
-  // TODO: Display all branches on one itemModifier
   const itemModifiersList = useMemo(() => {
     if (itemModifiers === null || itemModifiers.length === 0) {
       return null;
@@ -31,7 +30,7 @@ const AdminItemModifiers: FC = () => {
             key={itemModifier._id}
           >
             <Atitle level={3}>{itemModifier.title}</Atitle>
-            <Button href={`/admin/itemModifier/${itemModifier._id}`}>
+            <Button href={`/admin/itemmodifier/${itemModifier._id}`}>
               {t('adminItemModifiers.editItemModifier', { ns: 'pages' })}
             </Button>
           </Ali>
@@ -47,7 +46,7 @@ const AdminItemModifiers: FC = () => {
         <div className="adminItemModifiers__books">
           <Atitle level={2}>{t('adminItemModifiers.list', { ns: 'pages' })}</Atitle>
           <div className="adminItemModifiers__books__list">{itemModifiersList}</div>
-          <Button href="/admin/itemModifier/new">
+          <Button href="/admin/itemmodifier/new">
             {t('adminNewItemModifier.title', { ns: 'pages' })}
           </Button>
         </div>

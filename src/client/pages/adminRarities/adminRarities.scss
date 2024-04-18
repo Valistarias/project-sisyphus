@@ -1,6 +1,6 @@
 @use '../../assets/scss/index';
 
-.adminItemModifiers {
+.adminRarities {
   @include index.basic-page;
 
   &__content {
@@ -18,7 +18,7 @@
     }
   }
 
-  .adminItemModifiers__item-modifier-list {
+  .adminRarities__rarity-list {
     display: flex;
     flex-direction: column;
     gap: 2rem;
