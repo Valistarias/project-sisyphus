@@ -11,6 +11,7 @@ import {
   AdminEditCharParamPage,
   AdminEditCyberFrameBranchPage,
   AdminEditCyberFramePage,
+  AdminEditItemModifierPage,
   AdminEditNodePage,
   AdminEditNotionPage,
   AdminEditPage,
@@ -18,10 +19,12 @@ import {
   AdminEditSkillBranchPage,
   AdminEditSkillPage,
   AdminEditStatPage,
+  AdminItemModifiersPage,
   AdminNewChapterPage,
   AdminNewCharParamPage,
   AdminNewCyberFrameBranchPage,
   AdminNewCyberFramePage,
+  AdminNewItemModifierPage,
   AdminNewNodePage,
   AdminNewNotionPage,
   AdminNewPage,
@@ -259,6 +262,18 @@ const App: FC = () => {
             {
               path: '/admin/node/:id',
               element: <AdminEditNodePage />,
+            },
+            {
+              path: '/admin/itemmodifiers',
+              element: <AdminItemModifiersPage />,
+            },
+            {
+              path: '/admin/itemmodifier/new',
+              element: <AdminNewItemModifierPage />,
+            },
+            {
+              path: '/admin/itemmodifier/:id',
+              element: <AdminEditItemModifierPage />,
             },
             // {
             //   path: '/admin/skillbranch/:id',

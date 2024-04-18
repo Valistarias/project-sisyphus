@@ -19,7 +19,7 @@ export interface IItemModifier {
 
 export interface ICuratedItemModifier {
   i18n: InternationalizationType;
-  action: IItemModifier;
+  itemModifier: IItemModifier;
 }
 
 // Rarities ------------------------------------
@@ -40,7 +40,7 @@ export interface IRarity {
 
 export interface ICuratedRarity {
   i18n: InternationalizationType;
-  action: IRarity;
+  rarity: IRarity;
 }
 
 // WeaponScopes ------------------------------------
@@ -61,7 +61,7 @@ export interface IWeaponScope {
 
 export interface ICuratedWeaponScope {
   i18n: InternationalizationType;
-  action: IWeaponScope;
+  weaponScope: IWeaponScope;
 }
 
 // WeaponStyles ------------------------------------
@@ -82,7 +82,7 @@ export interface IWeaponStyle {
 
 export interface ICuratedWeaponStyle {
   i18n: InternationalizationType;
-  action: IWeaponStyle;
+  weaponStyle: IWeaponStyle;
 }
 
 // WeaponTypes ------------------------------------
@@ -103,5 +103,5 @@ export interface IWeaponType {
 
 export interface ICuratedWeaponType {
   i18n: InternationalizationType;
-  action: IWeaponType;
+  weaponType: IWeaponType;
 }

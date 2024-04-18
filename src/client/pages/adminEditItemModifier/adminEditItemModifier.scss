@@ -1,0 +1,73 @@
+@use '../../assets/scss/index';
+
+.adminEditItemMOdifier {
+  @include index.basic-page;
+
+  &__content {
+    margin-bottom: 10vh;
+  }
+
+  &__head {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4rem;
+
+    .atitle {
+      margin: 0;
+    }
+  }
+
+  &__basics {
+    display: flex;
+    flex-direction: row;
+    gap: 10rem;
+    margin-bottom: 2em;
+
+    &__name {
+      width: 100%;
+    }
+
+    &__type {
+      flex-shrink: 0;
+      width: 20rem;
+    }
+  }
+
+  &__details {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  &__error {
+    margin-bottom: 2rem;
+  }
+
+  &__intl-title {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4rem;
+    margin-top: 6rem;
+
+    &__title {
+      margin: 0;
+    }
+  }
+
+  &__intl {
+    display: none;
+  }
+
+  &--int-visible {
+    .adminEditItemMOdifier__intl {
+      display: block;
+    }
+
+    .adminEditItemMOdifier__intl-title__btn {
+      transform: rotate(180deg);
+    }
+  }
+}

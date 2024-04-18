@@ -5,6 +5,7 @@ import AdminEditChapterPage from './adminEditChapter';
 import AdminEditCharParamPage from './adminEditCharParam';
 import AdminEditCyberFramePage from './adminEditCyberFrame';
 import AdminEditCyberFrameBranchPage from './adminEditCyberFrameBranch';
+import AdminEditItemModifierPage from './adminEditItemModifier';
 import AdminEditNodePage from './adminEditNode';
 import AdminEditNotionPage from './adminEditNotion';
 import AdminEditPage from './adminEditPage';
@@ -12,10 +13,12 @@ import AdminEditRuleBookPage from './adminEditRuleBook';
 import AdminEditSkillPage from './adminEditSkill';
 import AdminEditSkillBranchPage from './adminEditSkillBranch';
 import AdminEditStatPage from './adminEditStat';
+import AdminItemModifiersPage from './adminItemModifiers';
 import AdminNewChapterPage from './adminNewChapter';
 import AdminNewCharParamPage from './adminNewCharParam';
 import AdminNewCyberFramePage from './adminNewCyberFrame';
 import AdminNewCyberFrameBranchPage from './adminNewCyberFrameBranch';
+import AdminNewItemModifierPage from './adminNewItemModifier';
 import AdminNewNodePage from './adminNewNode';
 import AdminNewNotionPage from './adminNewNotion';
 import AdminNewPage from './adminNewPage';
@@ -52,6 +55,7 @@ export {
   AdminEditCharParamPage,
   AdminEditCyberFrameBranchPage,
   AdminEditCyberFramePage,
+  AdminEditItemModifierPage,
   AdminEditNodePage,
   AdminEditNotionPage,
   AdminEditPage,
@@ -59,10 +63,12 @@ export {
   AdminEditSkillBranchPage,
   AdminEditSkillPage,
   AdminEditStatPage,
+  AdminItemModifiersPage,
   AdminNewChapterPage,
   AdminNewCharParamPage,
   AdminNewCyberFrameBranchPage,
   AdminNewCyberFramePage,
+  AdminNewItemModifierPage,
   AdminNewNodePage,
   AdminNewNotionPage,
   AdminNewPage,

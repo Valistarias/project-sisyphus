@@ -258,5 +258,17 @@
   },
   "actionOffsetSkill": {
     "label": "Formula with the skill check (if any)"
+  },
+  "nameItemModifier": {
+    "required": "An Item Modifier Name is required",
+    "label": "Item Modifier Name"
+  },
+  "itemModifierSummary": {
+    "title": "Item Modifier Details"
+  },
+  "itemModifierFormula": {
+    "required": "An Identifier is required",
+    "format": "The format of the formula identifier is wrong. you need three letters in lower case",
+    "label": "Modifier ID (For formula purposes, never displayed as is). This needs to be a lower case three letter string"
   }
 }

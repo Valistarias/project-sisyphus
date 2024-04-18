@@ -20,9 +20,14 @@ import type {
   ICharacter,
   ICuratedCharParam,
   ICuratedCyberFrame,
+  ICuratedItemModifier,
+  ICuratedRarity,
   ICuratedRuleBook,
   ICuratedSkill,
   ICuratedStat,
+  ICuratedWeaponScope,
+  ICuratedWeaponStyle,
+  ICuratedWeaponType,
   IUser,
 } from '../types';
 
@@ -51,6 +56,16 @@ interface IGlobalVarsContext {
   actionTypes: IActionType[];
   /** All the loaded action durations */
   actionDurations: IActionDuration[];
+  /** All the loaded item modifiers */
+  itemModifiers: ICuratedItemModifier[];
+  /** All the loaded rarities */
+  rarities: ICuratedRarity[];
+  /** All the loaded weapon scopes */
+  weaponScopes: ICuratedWeaponScope[];
+  /** All the loaded weapon styles */
+  weaponStyles: ICuratedWeaponStyle[];
+  /** All the loaded weapon types */
+  weaponTypes: ICuratedWeaponType[];
   /** Used to set the actual character */
   setCharacter: (id: string) => void;
   /** Used to reset the actual character */
@@ -67,6 +82,16 @@ interface IGlobalVarsContext {
   reloadCharParams: () => void;
   /** Used to trigger the reload of the cyber frames */
   reloadCyberFrames: () => void;
+  /** Used to trigger the reload of the item modifiers */
+  reloadItemModifiers: () => void;
+  /** Used to trigger the reload of the rarities */
+  reloadRarities: () => void;
+  /** Used to trigger the reload of the weapon scopes */
+  reloadWeaponScopes: () => void;
+  /** Used to trigger the reload of the weapon styles */
+  reloadWeaponStyles: () => void;
+  /** Used to trigger the reload of the weapon types */
+  reloadWeaponTypes: () => void;
   /** Used to trigger the reload of all dynamic elements */
   reloadAll: () => void;
 }
@@ -87,127 +112,96 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
   const [user, setUser] = useState<IUser | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
+  // Character
   const [character, setCharacter] = useState<ICharacter | null | false>(null);
+  const [campaigns, setCampaigns] = useState<ICampaign[]>([]);
+
+  // Rulebooks
+  const [ruleBooks, setRuleBooks] = useState<ICuratedRuleBook[]>([]);
+
+  // Rules
   const [actionTypes, setActionTypes] = useState<IActionType[]>([]);
   const [actionDurations, setActionDurations] = useState<IActionDuration[]>([]);
   const [stats, setStats] = useState<ICuratedStat[]>([]);
   const [skills, setSkills] = useState<ICuratedSkill[]>([]);
   const [charParams, setCharParams] = useState<ICuratedCharParam[]>([]);
   const [cyberFrames, setCyberFrames] = useState<ICuratedCyberFrame[]>([]);
-  const [ruleBooks, setRuleBooks] = useState<ICuratedRuleBook[]>([]);
-  const [campaigns, setCampaigns] = useState<ICampaign[]>([]);
+
+  // Items
+  const [itemModifiers, setItemModifiers] = useState<ICuratedItemModifier[]>([]);
+  const [rarities, setRarities] = useState<ICuratedRarity[]>([]);
+  const [weaponScopes, setWeaponScopes] = useState<ICuratedWeaponScope[]>([]);
+  const [weaponStyles, setWeaponStyles] = useState<ICuratedWeaponStyle[]>([]);
+  const [weaponTypes, setWeaponTypes] = useState<ICuratedWeaponType[]>([]);
+
+  const getAllFromApi = useCallback(
+    (request: string, setState: React.Dispatch<React.SetStateAction<any>>) => {
+      if (api === undefined) {
+        return;
+      }
+      api[request]
+        .getAll()
+        .then((data) => {
+          setState(data);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+    [api]
+  );
 
   const loadActionTypes = useCallback(() => {
-    if (api === undefined) {
-      return;
-    }
-    api.actionTypes
-      .getAll()
-      .then((data: IActionType[]) => {
-        setActionTypes(data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, [api]);
+    getAllFromApi('actionTypes', setActionTypes);
+  }, [getAllFromApi]);
 
   const loadActionDurations = useCallback(() => {
-    if (api === undefined) {
-      return;
-    }
-    api.actionDurations
-      .getAll()
-      .then((data: IActionDuration[]) => {
-        setActionDurations(data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, [api]);
+    getAllFromApi('actionDurations', setActionDurations);
+  }, [getAllFromApi]);
 
   const loadStats = useCallback(() => {
-    if (api === undefined) {
-      return;
-    }
-    api.stats
-      .getAll()
-      .then((data: ICuratedStat[]) => {
-        setStats(data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, [api]);
+    getAllFromApi('stats', setStats);
+  }, [getAllFromApi]);
 
   const loadSkills = useCallback(() => {
-    if (api === undefined) {
-      return;
-    }
-    api.skills
-      .getAll()
-      .then((data: ICuratedSkill[]) => {
-        setSkills(data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, [api]);
+    getAllFromApi('skills', setSkills);
+  }, [getAllFromApi]);
 
   const loadCharParams = useCallback(() => {
-    if (api === undefined) {
-      return;
-    }
-    api.charParams
-      .getAll()
-      .then((data: ICuratedCharParam[]) => {
-        setCharParams(data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, [api]);
+    getAllFromApi('charParams', setCharParams);
+  }, [getAllFromApi]);
 
   const loadCyberFrames = useCallback(() => {
-    if (api === undefined) {
-      return;
-    }
-    api.cyberFrames
-      .getAll()
-      .then((data: ICuratedCyberFrame[]) => {
-        setCyberFrames(data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, [api]);
+    getAllFromApi('cyberFrames', setCyberFrames);
+  }, [getAllFromApi]);
 
   const loadRuleBooks = useCallback(() => {
-    if (api === undefined) {
-      return;
-    }
-    api.ruleBooks
-      .getAll()
-      .then((data: ICuratedRuleBook[]) => {
-        setRuleBooks(data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, [api]);
+    getAllFromApi('ruleBooks', setRuleBooks);
+  }, [getAllFromApi]);
 
   const loadCampaigns = useCallback(() => {
-    if (api === undefined) {
-      return;
-    }
-    api.campaigns
-      .getAll()
-      .then((sentCampaigns: ICampaign[]) => {
-        setCampaigns(sentCampaigns);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, [api]);
+    getAllFromApi('campaigns', setCampaigns);
+  }, [getAllFromApi]);
+
+  const loadItemModifiers = useCallback(() => {
+    getAllFromApi('itemModifiers', setItemModifiers);
+  }, [getAllFromApi]);
+
+  const loadRarities = useCallback(() => {
+    getAllFromApi('rarities', setRarities);
+  }, [getAllFromApi]);
+
+  const loadWeaponScopes = useCallback(() => {
+    getAllFromApi('weaponScopes', setWeaponScopes);
+  }, [getAllFromApi]);
+
+  const loadWeaponStyles = useCallback(() => {
+    getAllFromApi('weaponStyles', setWeaponStyles);
+  }, [getAllFromApi]);
+
+  const loadWeaponTypes = useCallback(() => {
+    getAllFromApi('weaponTypes', setWeaponTypes);
+  }, [getAllFromApi]);
 
   const setCharacterFromId = useCallback(
     (id: string) => {
@@ -256,6 +250,11 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
             loadCharParams();
             loadSkills();
             loadCyberFrames();
+            loadItemModifiers();
+            loadRarities();
+            loadWeaponScopes();
+            loadWeaponStyles();
+            loadWeaponTypes();
           }
           setLoading(false);
         })
@@ -273,6 +272,11 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
     loadCyberFrames,
     loadActionTypes,
     loadActionDurations,
+    loadItemModifiers,
+    loadRarities,
+    loadWeaponScopes,
+    loadWeaponStyles,
+    loadWeaponTypes,
   ]);
 
   useEffect(() => {
@@ -291,6 +295,11 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       charParams,
       cyberFrames,
       loading,
+      itemModifiers,
+      rarities,
+      weaponScopes,
+      weaponStyles,
+      weaponTypes,
       reloadAll: () => {
         loadCampaigns();
         loadRuleBooks();
@@ -300,6 +309,11 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
         loadCyberFrames();
         loadActionTypes();
         loadActionDurations();
+        loadItemModifiers();
+        loadRarities();
+        loadWeaponScopes();
+        loadWeaponStyles();
+        loadWeaponTypes();
       },
       reloadCampaigns: loadCampaigns,
       reloadCharParams: loadCharParams,
@@ -308,6 +322,11 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       reloadSkills: loadSkills,
       reloadStats: loadStats,
       setCharacter: setCharacterFromId,
+      reloadItemModifiers: loadItemModifiers,
+      reloadRarities: loadRarities,
+      reloadWeaponScopes: loadWeaponScopes,
+      reloadWeaponStyles: loadWeaponStyles,
+      reloadWeaponTypes: loadWeaponTypes,
       character,
       ruleBooks,
       resetCharacter,
@@ -323,6 +342,11 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       charParams,
       cyberFrames,
       loading,
+      itemModifiers,
+      rarities,
+      weaponScopes,
+      weaponStyles,
+      weaponTypes,
       loadCampaigns,
       loadCharParams,
       loadCyberFrames,
@@ -338,6 +362,11 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       user,
       loadActionTypes,
       loadActionDurations,
+      loadItemModifiers,
+      loadRarities,
+      loadWeaponScopes,
+      loadWeaponStyles,
+      loadWeaponTypes,
     ]
   );
 

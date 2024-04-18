@@ -426,5 +426,31 @@
       "text": "Are you sure you want to delete {{elt}} ?",
       "confirmCta": "Delete Node"
     }
+  },
+  "adminItemModifiers": {
+    "title": "Item Modifiers",
+    "list": "List",
+    "editItemModifier": "Edit"
+  },
+  "adminNewItemModifier": {
+    "title": "New Item Modifier",
+    "i18n": "Internationalization",
+    "button": "Create Item Modifier",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successCreate": "Item Modifier successfully created !"
+  },
+  "adminEditItemModifier": {
+    "edit": "Edit ItemModifier",
+    "delete": "Delete ItemModifier",
+    "i18n": "Internationalization",
+    "button": "Update ItemModifier Data",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successUpdate": "ItemModifier successfully updated !",
+    "successDelete": "ItemModifier successfully deleted !",
+    "confirmDeletion": {
+      "title": "ItemModifier Deletion",
+      "text": "Are you sure you want to delete {{elt}} ? All the related branches will be lost !",
+      "confirmCta": "Delete ItemModifier"
+    }
   }
 }
