@@ -454,9 +454,11 @@
     }
   },
   "adminRarities": {
-    "title": "Item Modifiers",
+    "title": "Rarities",
     "list": "List",
-    "editItemModifier": "Edit"
+    "listText": "You can reagence this list to define the rarity level (the rarest on top)",
+    "updateOrder": "Update order",
+    "editRarity": "Edit"
   },
   "adminNewRarity": {
     "title": "New Rarity",

@@ -10,11 +10,21 @@
     margin-top: 2rem;
   }
 
-  &__books {
+  &__rarities {
     width: 100%;
+
+    &__sub {
+      margin-bottom: 2rem;
+    }
 
     &__list {
       margin-bottom: 2rem;
+    }
+
+    &__btns {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
     }
   }
 

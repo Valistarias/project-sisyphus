@@ -9,6 +9,7 @@ import AdminEditItemModifierPage from './adminEditItemModifier';
 import AdminEditNodePage from './adminEditNode';
 import AdminEditNotionPage from './adminEditNotion';
 import AdminEditPage from './adminEditPage';
+import AdminEditRarityPage from './adminEditRarity';
 import AdminEditRuleBookPage from './adminEditRuleBook';
 import AdminEditSkillPage from './adminEditSkill';
 import AdminEditSkillBranchPage from './adminEditSkillBranch';
@@ -22,10 +23,12 @@ import AdminNewItemModifierPage from './adminNewItemModifier';
 import AdminNewNodePage from './adminNewNode';
 import AdminNewNotionPage from './adminNewNotion';
 import AdminNewPage from './adminNewPage';
+import AdminNewRarityPage from './adminNewRarity';
 import AdminNewRuleBookPage from './adminNewRuleBook';
 import AdminNewSkillPage from './adminNewSkill';
 import AdminNewSkillBranchPage from './adminNewSkillBranch';
 import AdminNewStatPage from './adminNewStat';
+import AdminRaritiesPage from './adminRarities';
 import AdminRuleBooksPage from './adminRuleBooks';
 import AdminSkillsPage from './adminSkills';
 import AdminStatsPage from './adminStats';
@@ -59,6 +62,7 @@ export {
   AdminEditNodePage,
   AdminEditNotionPage,
   AdminEditPage,
+  AdminEditRarityPage,
   AdminEditRuleBookPage,
   AdminEditSkillBranchPage,
   AdminEditSkillPage,
@@ -72,11 +76,13 @@ export {
   AdminNewNodePage,
   AdminNewNotionPage,
   AdminNewPage,
+  AdminNewRarityPage,
   AdminNewRuleBookPage,
   AdminNewSkillBranchPage,
   AdminNewSkillPage,
   AdminNewStatPage,
   AdminPage,
+  AdminRaritiesPage,
   AdminRuleBooksPage,
   AdminSkillsPage,
   AdminStatsPage,

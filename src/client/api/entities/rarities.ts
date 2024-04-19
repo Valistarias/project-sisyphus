@@ -5,11 +5,10 @@ import { type ICuratedRarity } from '../../types';
 import Entity from './entity';
 
 interface IRarityPayload {
-  chapterId: string;
+  rarityId: string;
 }
 
 interface IChangeRaritiesOrder {
-  id: string;
   order: Array<{
     id: string;
     position: number;

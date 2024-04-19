@@ -15,6 +15,7 @@ import {
   AdminEditNodePage,
   AdminEditNotionPage,
   AdminEditPage,
+  AdminEditRarityPage,
   AdminEditRuleBookPage,
   AdminEditSkillBranchPage,
   AdminEditSkillPage,
@@ -28,11 +29,13 @@ import {
   AdminNewNodePage,
   AdminNewNotionPage,
   AdminNewPage,
+  AdminNewRarityPage,
   AdminNewRuleBookPage,
   AdminNewSkillBranchPage,
   AdminNewSkillPage,
   AdminNewStatPage,
   AdminPage,
+  AdminRaritiesPage,
   AdminRuleBooksPage,
   AdminSkillsPage,
   AdminStatsPage,
@@ -274,6 +277,18 @@ const App: FC = () => {
             {
               path: '/admin/itemmodifier/:id',
               element: <AdminEditItemModifierPage />,
+            },
+            {
+              path: '/admin/rarities',
+              element: <AdminRaritiesPage />,
+            },
+            {
+              path: '/admin/rarity/new',
+              element: <AdminNewRarityPage />,
+            },
+            {
+              path: '/admin/rarity/:id',
+              element: <AdminEditRarityPage />,
             },
             // {
             //   path: '/admin/skillbranch/:id',

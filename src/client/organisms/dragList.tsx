@@ -12,6 +12,7 @@ import './dragList.scss';
 interface IDragElt {
   id: string;
   title: string;
+  titleLevel?: 1 | 2 | 3 | 4;
   button?: {
     href: string;
     content: string;
@@ -64,7 +65,7 @@ const DragList: FC<IDragList> = ({ data, className, id, onChange }) => {
             {...providedDraggable.draggableProps}
             {...providedDraggable.dragHandleProps}
           >
-            <Atitle className="draglist__elt__title" level={4}>
+            <Atitle className="draglist__elt__title" level={singleData.titleLevel ?? 3}>
               {singleData.title}
             </Atitle>
             {singleData.button !== undefined ? (

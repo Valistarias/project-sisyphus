@@ -10,6 +10,9 @@ const { Rarity } = db;
 const findRarities = async (): Promise<HydratedIRarity[]> =>
   await new Promise((resolve, reject) => {
     Rarity.find()
+      .sort({
+        position: 'asc',
+      })
       .then(async (res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Rarities'));
@@ -127,8 +130,8 @@ const updateMultipleRaritiesPosition = (order: any, cb: (res: Error | null) => v
 };
 
 const changeRaritiesOrder = (req: Request, res: Response): void => {
-  const { id, order } = req.body;
-  if (id === undefined || order === undefined) {
+  const { order } = req.body;
+  if (order === undefined) {
     res.status(400).send(gemInvalidField('Rarity Reordering'));
     return;
   }
