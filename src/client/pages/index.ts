@@ -1,10 +1,12 @@
 import AdminPage from './admin';
 import AdminCharParamsPage from './adminCharParams';
 import AdminCyberFramesPage from './adminCyberFrames';
+import AdminDamageTypesPage from './adminDamageTypes';
 import AdminEditChapterPage from './adminEditChapter';
 import AdminEditCharParamPage from './adminEditCharParam';
 import AdminEditCyberFramePage from './adminEditCyberFrame';
 import AdminEditCyberFrameBranchPage from './adminEditCyberFrameBranch';
+import AdminEditDamageTypePage from './adminEditDamageType';
 import AdminEditItemModifierPage from './adminEditItemModifier';
 import AdminEditNodePage from './adminEditNode';
 import AdminEditNotionPage from './adminEditNotion';
@@ -22,6 +24,7 @@ import AdminNewChapterPage from './adminNewChapter';
 import AdminNewCharParamPage from './adminNewCharParam';
 import AdminNewCyberFramePage from './adminNewCyberFrame';
 import AdminNewCyberFrameBranchPage from './adminNewCyberFrameBranch';
+import AdminNewDamageTypePage from './adminNewDamageType';
 import AdminNewItemModifierPage from './adminNewItemModifier';
 import AdminNewNodePage from './adminNewNode';
 import AdminNewNotionPage from './adminNewNotion';
@@ -63,10 +66,12 @@ import SignupPage from './signup';
 export {
   AdminCharParamsPage,
   AdminCyberFramesPage,
+  AdminDamageTypesPage,
   AdminEditChapterPage,
   AdminEditCharParamPage,
   AdminEditCyberFrameBranchPage,
   AdminEditCyberFramePage,
+  AdminEditDamageTypePage,
   AdminEditItemModifierPage,
   AdminEditNodePage,
   AdminEditNotionPage,
@@ -84,6 +89,7 @@ export {
   AdminNewCharParamPage,
   AdminNewCyberFrameBranchPage,
   AdminNewCyberFramePage,
+  AdminNewDamageTypePage,
   AdminNewItemModifierPage,
   AdminNewNodePage,
   AdminNewNotionPage,

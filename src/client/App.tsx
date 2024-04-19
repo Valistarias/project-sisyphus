@@ -7,10 +7,12 @@ import { useGlobalVars } from './providers';
 import {
   AdminCharParamsPage,
   AdminCyberFramesPage,
+  AdminDamageTypesPage,
   AdminEditChapterPage,
   AdminEditCharParamPage,
   AdminEditCyberFrameBranchPage,
   AdminEditCyberFramePage,
+  AdminEditDamageTypePage,
   AdminEditItemModifierPage,
   AdminEditNodePage,
   AdminEditNotionPage,
@@ -28,6 +30,7 @@ import {
   AdminNewCharParamPage,
   AdminNewCyberFrameBranchPage,
   AdminNewCyberFramePage,
+  AdminNewDamageTypePage,
   AdminNewItemModifierPage,
   AdminNewNodePage,
   AdminNewNotionPage,
@@ -334,6 +337,18 @@ const App: FC = () => {
             {
               path: '/admin/weapontype/:id',
               element: <AdminEditWeaponTypePage />,
+            },
+            {
+              path: '/admin/damagetypes',
+              element: <AdminDamageTypesPage />,
+            },
+            {
+              path: '/admin/damagetype/new',
+              element: <AdminNewDamageTypePage />,
+            },
+            {
+              path: '/admin/damagetype/:id',
+              element: <AdminEditDamageTypePage />,
             },
             // {
             //   path: '/admin/skillbranch/:id',

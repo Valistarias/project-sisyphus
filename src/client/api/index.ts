@@ -11,6 +11,8 @@ import {
   Characters,
   CyberFrameBranches,
   CyberFrames,
+  DamageTypes,
+  Damages,
   Effects,
   ItemModifiers,
   MailToken,
@@ -30,6 +32,7 @@ import {
   WeaponScopes,
   WeaponStyles,
   WeaponTypes,
+  Weapons,
 } from './entities/index';
 
 export default class Api {
@@ -45,6 +48,8 @@ export default class Api {
   charParams: CharParams;
   cyberFrameBranches: CyberFrameBranches;
   cyberFrames: CyberFrames;
+  damages: Damages;
+  damageTypes: DamageTypes;
   effects: Effects;
   itemModifiers: ItemModifiers;
   mailToken: MailToken;
@@ -61,6 +66,7 @@ export default class Api {
   statBonuses: StatBonuses;
   stats: Stats;
   users: Users;
+  weapons: Weapons;
   weaponScopes: WeaponScopes;
   weaponStyles: WeaponStyles;
   weaponTypes: WeaponTypes;
@@ -78,6 +84,8 @@ export default class Api {
     this.charParams = new CharParams();
     this.cyberFrameBranches = new CyberFrameBranches();
     this.cyberFrames = new CyberFrames();
+    this.damages = new Damages();
+    this.damageTypes = new DamageTypes();
     this.effects = new Effects();
     this.itemModifiers = new ItemModifiers();
     this.mailToken = new MailToken();
@@ -94,6 +102,7 @@ export default class Api {
     this.statBonuses = new StatBonuses();
     this.stats = new Stats();
     this.users = new Users();
+    this.weapons = new Weapons();
     this.weaponScopes = new WeaponScopes();
     this.weaponStyles = new WeaponStyles();
     this.weaponTypes = new WeaponTypes();

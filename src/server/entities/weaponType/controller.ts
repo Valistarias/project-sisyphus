@@ -41,8 +41,13 @@ const findWeaponTypeById = async (id: string): Promise<HydratedIWeaponType> =>
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, summary, i18n = null, weaponStyle } = req.body;
-  if (title === undefined || summary === undefined || weaponStyle === undefined) {
+  const { title, summary, i18n = null, weaponStyle, icon } = req.body;
+  if (
+    title === undefined ||
+    summary === undefined ||
+    weaponStyle === undefined ||
+    icon === undefined
+  ) {
     res.status(400).send(gemInvalidField('Weapon Type'));
     return;
   }
@@ -50,6 +55,7 @@ const create = (req: Request, res: Response): void => {
   const weaponType = new WeaponType({
     title,
     summary,
+    icon,
     weaponStyle,
   });
 
@@ -68,7 +74,7 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, title = null, summary = null, weaponStyle = null, i18n } = req.body;
+  const { id, title = null, summary = null, weaponStyle = null, icon = null, i18n } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Weapon Type ID'));
     return;
@@ -83,6 +89,9 @@ const update = (req: Request, res: Response): void => {
       }
       if (weaponStyle !== null) {
         weaponType.weaponStyle = weaponStyle;
+      }
+      if (icon !== null) {
+        weaponType.icon = icon;
       }
 
       if (i18n !== null) {

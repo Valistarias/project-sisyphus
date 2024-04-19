@@ -12,6 +12,8 @@ import {
   CharacterModel,
   CyberFrameBranchModel,
   CyberFrameModel,
+  DamageModel,
+  DamageTypeModel,
   EffectModel,
   ItemModifierModel,
   MailTokenModel,
@@ -29,6 +31,7 @@ import {
   StatBonusModel,
   StatModel,
   UserModel,
+  WeaponModel,
   WeaponScopeModel,
   WeaponStyleModel,
   WeaponTypeModel,
@@ -43,6 +46,8 @@ import {
   type ICharacter,
   type ICyberFrame,
   type ICyberFrameBranch,
+  type IDamage,
+  type IDamageType,
   type IEffect,
   type IItemModifier,
   type IMailToken,
@@ -60,6 +65,7 @@ import {
   type IStat,
   type IStatBonus,
   type IUser,
+  type IWeapon,
   type IWeaponScope,
   type IWeaponStyle,
   type IWeaponType,
@@ -122,14 +128,20 @@ interface DBType {
   Node: mongoose.Model<INode>;
   /** The ItemModifier Model */
   ItemModifier: mongoose.Model<IItemModifier>;
-  /** The RarityModel Model */
+  /** The Rarity model */
   Rarity: mongoose.Model<IRarity>;
-  /** The WeaponScopeModel Model */
+  /** The WeaponScope model */
   WeaponScope: mongoose.Model<IWeaponScope>;
-  /** The WeaponStyleModel Model */
+  /** The WeaponStyle model */
   WeaponStyle: mongoose.Model<IWeaponStyle>;
-  /** The WeaponTypeModel Model */
+  /** The WeaponType model */
   WeaponType: mongoose.Model<IWeaponType>;
+  /** The Weapon model */
+  Weapon: mongoose.Model<IWeapon>;
+  /** The Damage model */
+  Damage: mongoose.Model<IDamage>;
+  /** The Damage Type model */
+  DamageType: mongoose.Model<IDamageType>;
   /** The possible Roles */
   ROLES: string[];
 }
@@ -173,6 +185,9 @@ const db: DBType = {
   WeaponScope: WeaponScopeModel(),
   WeaponStyle: WeaponStyleModel(),
   WeaponType: WeaponTypeModel(),
+  Weapon: WeaponModel(),
+  Damage: DamageModel(),
+  DamageType: DamageTypeModel(),
 };
 
 export default db;

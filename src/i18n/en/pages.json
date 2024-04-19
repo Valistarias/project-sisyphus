@@ -558,5 +558,31 @@
       "text": "Are you sure you want to delete {{elt}} ? All the related branches will be lost !",
       "confirmCta": "Delete Weapon Type"
     }
+  },
+  "adminDamageTypes": {
+    "title": "Damage Types",
+    "list": "List",
+    "editDamageType": "Edit"
+  },
+  "adminNewDamageType": {
+    "title": "New Damage Type",
+    "i18n": "Internationalization",
+    "button": "Create Damage Type",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successCreate": "Damage Type successfully created !"
+  },
+  "adminEditDamageType": {
+    "edit": "Edit Damage Type",
+    "delete": "Delete Damage Type",
+    "i18n": "Internationalization",
+    "button": "Update Damage Type Data",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successUpdate": "Damage Type successfully updated !",
+    "successDelete": "Damage Type successfully deleted !",
+    "confirmDeletion": {
+      "title": "Damage Type Deletion",
+      "text": "Are you sure you want to delete {{elt}} ? All the related branches will be lost !",
+      "confirmCta": "Delete Damage Type"
+    }
   }
 }

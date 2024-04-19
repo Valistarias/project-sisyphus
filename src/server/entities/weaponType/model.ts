@@ -9,6 +9,8 @@ interface IWeaponType {
   summary: string;
   /** The associated weapon style */
   weaponStyle: ObjectId;
+  /** The icon of the weapon */
+  icon: string;
   /** The internationnal content, as a json, stringified */
   i18n?: string;
   /** When the weapon style was created */
@@ -22,6 +24,7 @@ interface HydratedIWeaponType extends Omit<HydratedDocument<IWeaponType>, 'weapo
 const userSchema = new Schema<IWeaponType>({
   title: String,
   summary: String,
+  icon: String,
   weaponStyle: {
     type: Schema.Types.ObjectId,
     ref: 'WeaponStyle',

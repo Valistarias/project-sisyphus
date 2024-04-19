@@ -1,6 +1,6 @@
 @use '../../assets/scss/index';
 
-.adminEditWeaponType {
+.adminEditDamageType {
   @include index.basic-page;
 
   &__content {
@@ -18,19 +18,11 @@
     }
   }
 
-  &__visual {
-    margin-top: 2rem;
-  }
-
-  &__visual,
-  &__basics {
-    margin-bottom: 2rem;
-  }
-
   &__basics {
     display: flex;
     flex-direction: row;
     gap: 10rem;
+    margin-bottom: 2em;
 
     &__name {
       width: 100%;
@@ -69,36 +61,12 @@
     display: none;
   }
 
-  &__nodes {
-    margin-bottom: 10rem;
-    width: 100%;
-
-    &__list {
-      margin-bottom: 2rem;
-    }
-  }
-
-  &__nodes {
-    &__list {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-    }
-
-    &__btns {
-      display: flex;
-      flex-direction: row;
-      gap: 1rem;
-      justify-content: center;
-    }
-  }
-
   &--int-visible {
-    .adminEditWeaponType__intl {
+    .adminEditDamageType__intl {
       display: block;
     }
 
-    .adminEditWeaponType__intl-title__btn {
+    .adminEditDamageType__intl-title__btn {
       transform: rotate(180deg);
     }
   }

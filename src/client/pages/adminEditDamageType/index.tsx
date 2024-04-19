@@ -9,32 +9,24 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ap, Atitle } from '../../atoms';
-import {
-  Button,
-  Input,
-  NodeIconSelect,
-  SmartSelect,
-  type ISingleValueSelect,
-} from '../../molecules';
+import { Button, Input } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
-import { type ICuratedWeaponType } from '../../types';
+import { type ICuratedDamageType } from '../../types';
 
 import { classTrim } from '../../utils';
 
-import './adminEditWeaponType.scss';
+import './adminEditDamageType.scss';
 
 interface FormValues {
   name: string;
   nameFr: string;
-  weaponStyle: string;
-  icon: string;
 }
 
-const AdminEditWeaponType: FC = () => {
+const AdminEditDamageType: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { weaponStyles, reloadWeaponTypes } = useGlobalVars();
+  const { reloadDamageTypes } = useGlobalVars();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
@@ -48,10 +40,10 @@ const AdminEditWeaponType: FC = () => {
 
   const [displayInt, setDisplayInt] = useState(false);
 
-  const [weaponTypeData, setWeaponTypeData] = useState<ICuratedWeaponType | null>(null);
+  const [damageTypeData, setDamageTypeData] = useState<ICuratedDamageType | null>(null);
 
-  const [weaponTypeText, setWeaponTypeText] = useState('');
-  const [weaponTypeTextFr, setWeaponTypeTextFr] = useState('');
+  const [damageTypeText, setDamageTypeText] = useState('');
+  const [damageTypeTextFr, setDamageTypeTextFr] = useState('');
 
   const textEditor = useEditor({
     extensions: completeRichTextElementExtentions,
@@ -61,38 +53,18 @@ const AdminEditWeaponType: FC = () => {
     extensions: completeRichTextElementExtentions,
   });
 
-  const weaponStyleSelect = useMemo<ISingleValueSelect[]>(
-    () =>
-      weaponStyles.map(({ weaponStyle }) => ({
-        value: weaponStyle._id,
-        // TODO : Handle Internationalization
-        label: weaponStyle.title,
-      })),
-    [weaponStyles]
-  );
-
-  const createDefaultData = useCallback(
-    (weaponTypeData: ICuratedWeaponType | null, weaponStyles: ISingleValueSelect[]) => {
-      if (weaponTypeData == null) {
-        return {};
-      }
-      const { weaponType, i18n } = weaponTypeData;
-      const defaultData: Partial<FormValues> = {};
-      defaultData.name = weaponType.title;
-      defaultData.icon = weaponType.icon;
-      const selectedfield = weaponStyles.find(
-        (weaponStyleType) => weaponStyleType.value === weaponType.weaponStyle._id
-      );
-      if (selectedfield !== undefined) {
-        defaultData.weaponStyle = String(selectedfield.value);
-      }
-      if (i18n.fr !== undefined) {
-        defaultData.nameFr = i18n.fr.title ?? '';
-      }
-      return defaultData;
-    },
-    []
-  );
+  const createDefaultData = useCallback((damageTypeData: ICuratedDamageType | null) => {
+    if (damageTypeData == null) {
+      return {};
+    }
+    const { damageType, i18n } = damageTypeData;
+    const defaultData: Partial<FormValues> = {};
+    defaultData.name = damageType.title;
+    if (i18n.fr !== undefined) {
+      defaultData.nameFr = i18n.fr.title ?? '';
+    }
+    return defaultData;
+  }, []);
 
   const {
     handleSubmit,
@@ -102,19 +74,18 @@ const AdminEditWeaponType: FC = () => {
     reset,
   } = useForm<FieldValues>({
     defaultValues: useMemo(
-      () => createDefaultData(weaponTypeData, weaponStyleSelect),
-      [createDefaultData, weaponStyleSelect, weaponTypeData]
+      () => createDefaultData(damageTypeData),
+      [createDefaultData, damageTypeData]
     ),
   });
 
-  const onSaveWeaponType: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, weaponStyle, icon }) => {
+  const onSaveDamageType: SubmitHandler<FormValues> = useCallback(
+    ({ name, nameFr }) => {
       if (
-        weaponTypeText === null ||
-        weaponTypeTextFr === null ||
+        damageTypeText === null ||
+        damageTypeTextFr === null ||
         textEditor === null ||
         textFrEditor === null ||
-        icon === null ||
         api === undefined
       ) {
         return;
@@ -138,26 +109,24 @@ const AdminEditWeaponType: FC = () => {
         };
       }
 
-      api.weaponTypes
+      api.damageTypes
         .update({
           id,
           title: name,
-          weaponStyle,
-          icon,
           summary: htmlText,
           i18n,
         })
-        .then(() => {
+        .then((damageType) => {
           const newId = getNewId();
           createAlert({
             key: newId,
             dom: (
               <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('adminEditWeaponType.successUpdate', { ns: 'pages' })}</Ap>
+                <Ap>{t('adminEditDamageType.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
             ),
           });
-          reloadWeaponTypes();
+          reloadDamageTypes();
         })
         .catch(({ response }) => {
           const { data } = response;
@@ -179,8 +148,8 @@ const AdminEditWeaponType: FC = () => {
         });
     },
     [
-      weaponTypeText,
-      weaponTypeTextFr,
+      damageTypeText,
+      damageTypeTextFr,
       textEditor,
       textFrEditor,
       api,
@@ -188,7 +157,7 @@ const AdminEditWeaponType: FC = () => {
       getNewId,
       createAlert,
       t,
-      reloadWeaponTypes,
+      reloadDamageTypes,
       setError,
     ]
   );
@@ -199,17 +168,17 @@ const AdminEditWeaponType: FC = () => {
     }
     setConfirmContent(
       {
-        title: t('adminEditWeaponType.confirmDeletion.title', { ns: 'pages' }),
-        text: t('adminEditWeaponType.confirmDeletion.text', {
+        title: t('adminEditDamageType.confirmDeletion.title', { ns: 'pages' }),
+        text: t('adminEditDamageType.confirmDeletion.text', {
           ns: 'pages',
-          elt: weaponTypeData?.weaponType.title,
+          elt: damageTypeData?.damageType.title,
         }),
-        confirmCta: t('adminEditWeaponType.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditDamageType.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
           if (detail.proceed === true) {
-            api.weaponTypes
+            api.damageTypes
               .delete({ id })
               .then(() => {
                 const newId = getNewId();
@@ -217,12 +186,12 @@ const AdminEditWeaponType: FC = () => {
                   key: newId,
                   dom: (
                     <Alert key={newId} id={newId} timer={5}>
-                      <Ap>{t('adminEditWeaponType.successDelete', { ns: 'pages' })}</Ap>
+                      <Ap>{t('adminEditDamageType.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
                   ),
                 });
-                reloadWeaponTypes();
-                navigate('/admin/weapontypes');
+                reloadDamageTypes();
+                navigate('/admin/damagetypes');
               })
               .catch(({ response }) => {
                 const { data } = response;
@@ -230,14 +199,14 @@ const AdminEditWeaponType: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.weaponType.name`), 'capitalize'),
+                      field: i18next.format(t(`terms.damageType.name`), 'capitalize'),
                     }),
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.weaponType.name`), 'capitalize'),
+                      field: i18next.format(t(`terms.damageType.name`), 'capitalize'),
                     }),
                   });
                 }
@@ -252,12 +221,12 @@ const AdminEditWeaponType: FC = () => {
     api,
     setConfirmContent,
     t,
-    weaponTypeData,
+    damageTypeData?.damageType.title,
     ConfMessageEvent,
     id,
     getNewId,
     createAlert,
-    reloadWeaponTypes,
+    reloadDamageTypes,
     navigate,
     setError,
   ]);
@@ -265,14 +234,14 @@ const AdminEditWeaponType: FC = () => {
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
       calledApi.current = true;
-      api.weaponTypes
-        .get({ weaponTypeId: id })
-        .then((curatedWeaponType: ICuratedWeaponType) => {
-          const { weaponType, i18n } = curatedWeaponType;
-          setWeaponTypeData(curatedWeaponType);
-          setWeaponTypeText(weaponType.summary);
+      api.damageTypes
+        .get({ damageTypeId: id })
+        .then((curatedDamageType: ICuratedDamageType) => {
+          const { damageType, i18n } = curatedDamageType;
+          setDamageTypeData(curatedDamageType);
+          setDamageTypeText(damageType.summary);
           if (i18n.fr !== undefined) {
-            setWeaponTypeTextFr(i18n.fr.text ?? '');
+            setDamageTypeTextFr(i18n.fr.text ?? '');
           }
         })
         .catch(() => {
@@ -293,7 +262,7 @@ const AdminEditWeaponType: FC = () => {
   useEffect(() => {
     saveTimer.current = setInterval(() => {
       silentSave.current = true;
-      handleSubmit(onSaveWeaponType)().then(
+      handleSubmit(onSaveDamageType)().then(
         () => {},
         () => {}
       );
@@ -303,78 +272,60 @@ const AdminEditWeaponType: FC = () => {
         clearInterval(saveTimer.current);
       }
     };
-  }, [handleSubmit, onSaveWeaponType]);
+  }, [handleSubmit, onSaveDamageType]);
 
   // To affect default data
   useEffect(() => {
-    reset(createDefaultData(weaponTypeData, weaponStyleSelect));
-  }, [weaponTypeData, reset, createDefaultData, weaponStyleSelect]);
+    reset(createDefaultData(damageTypeData));
+  }, [damageTypeData, reset, createDefaultData]);
 
   return (
     <div
       className={classTrim(`
-        adminEditWeaponType
-        ${displayInt ? 'adminEditWeaponType--int-visible' : ''}
+        adminEditDamageType
+        ${displayInt ? 'adminEditDamageType--int-visible' : ''}
       `)}
     >
       <form
-        onSubmit={handleSubmit(onSaveWeaponType)}
+        onSubmit={handleSubmit(onSaveDamageType)}
         noValidate
-        className="adminEditWeaponType__content"
+        className="adminEditDamageType__content"
       >
-        <div className="adminEditWeaponType__head">
-          <Atitle level={1}>{weaponTypeData?.weaponType.title}</Atitle>
+        <div className="adminEditDamageType__head">
+          <Atitle level={1}>{damageTypeData?.damageType.title}</Atitle>
           <Button onClick={onAskDelete} color="error">
-            {t('adminEditWeaponType.delete', { ns: 'pages' })}
+            {t('adminEditDamageType.delete', { ns: 'pages' })}
           </Button>
         </div>
-        <Atitle level={2}>{t('adminEditWeaponType.edit', { ns: 'pages' })}</Atitle>
+        <Atitle level={2}>{t('adminEditDamageType.edit', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError?.message !== undefined ? (
-          <Aerror className="adminEditWeaponType__error">{errors.root.serverError.message}</Aerror>
+          <Aerror className="adminEditDamageType__error">{errors.root.serverError.message}</Aerror>
         ) : null}
-        <div className="adminEditWeaponType__visual">
-          <NodeIconSelect
-            label={t('iconWeaponType.label', { ns: 'fields' })}
-            control={control}
-            inputName="icon"
-            rules={{
-              required: t('iconWeaponType.required', { ns: 'fields' }),
-            }}
-          />
-        </div>
-        <div className="adminEditWeaponType__basics">
+        <div className="adminEditDamageType__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
-            rules={{ required: t('nameWeaponType.required', { ns: 'fields' }) }}
-            label={t('nameWeaponType.label', { ns: 'fields' })}
-            className="adminEditWeaponType__basics__name"
-          />
-          <SmartSelect
-            control={control}
-            inputName="weaponStyle"
-            label={t('weaponTypeWeaponSkill.label', { ns: 'fields' })}
-            rules={{ required: t('weaponTypeWeaponSkill.required', { ns: 'fields' }) }}
-            options={weaponStyleSelect}
-            className="adminEditWeaponType__basics__weaponStyle"
+            rules={{ required: t('nameDamageType.required', { ns: 'fields' }) }}
+            label={t('nameDamageType.label', { ns: 'fields' })}
+            className="adminEditDamageType__basics__name"
           />
         </div>
-        <div className="adminEditWeaponType__details">
+        <div className="adminEditDamageType__details">
           <RichTextElement
-            label={t('weaponTypeSummary.title', { ns: 'fields' })}
+            label={t('damageTypeSummary.title', { ns: 'fields' })}
             editor={textEditor ?? undefined}
-            rawStringContent={weaponTypeText}
+            rawStringContent={damageTypeText}
             small
           />
         </div>
-        <div className="adminEditWeaponType__intl-title">
-          <div className="adminEditWeaponType__intl-title__content">
-            <Atitle className="adminEditWeaponType__intl-title__title" level={2}>
-              {t('adminEditWeaponType.i18n', { ns: 'pages' })}
+        <div className="adminEditDamageType__intl-title">
+          <div className="adminEditDamageType__intl-title__content">
+            <Atitle className="adminEditDamageType__intl-title__title" level={2}>
+              {t('adminEditDamageType.i18n', { ns: 'pages' })}
             </Atitle>
-            <Ap className="adminEditWeaponType__intl-title__info">
-              {t('adminEditWeaponType.i18nInfo', { ns: 'pages' })}
+            <Ap className="adminEditDamageType__intl-title__info">
+              {t('adminEditDamageType.i18nInfo', { ns: 'pages' })}
             </Ap>
           </div>
           <Button
@@ -383,32 +334,32 @@ const AdminEditWeaponType: FC = () => {
             onClick={() => {
               setDisplayInt((prev) => !prev);
             }}
-            className="adminEditWeaponType__intl-title__btn"
+            className="adminEditDamageType__intl-title__btn"
           />
         </div>
-        <div className="adminEditWeaponType__intl">
-          <div className="adminEditWeaponType__basics">
+        <div className="adminEditDamageType__intl">
+          <div className="adminEditDamageType__basics">
             <Input
               control={control}
               inputName="nameFr"
               type="text"
-              label={`${t('nameWeaponType.label', { ns: 'fields' })} (FR)`}
-              className="adminEditWeaponType__basics__name"
+              label={`${t('nameDamageType.label', { ns: 'fields' })} (FR)`}
+              className="adminEditDamageType__basics__name"
             />
           </div>
-          <div className="adminEditWeaponType__details">
+          <div className="adminEditDamageType__details">
             <RichTextElement
-              label={`${t('weaponTypeSummary.title', { ns: 'fields' })} (FR)`}
+              label={`${t('damageTypeSummary.title', { ns: 'fields' })} (FR)`}
               editor={textFrEditor ?? undefined}
-              rawStringContent={weaponTypeTextFr}
+              rawStringContent={damageTypeTextFr}
               small
             />
           </div>
         </div>
-        <Button type="submit">{t('adminEditWeaponType.button', { ns: 'pages' })}</Button>
+        <Button type="submit">{t('adminEditDamageType.button', { ns: 'pages' })}</Button>
       </form>
     </div>
   );
 };
 
-export default AdminEditWeaponType;
+export default AdminEditDamageType;

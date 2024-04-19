@@ -27,6 +27,8 @@ import CharParamRoutes from './entities/charParam/routes';
 import CharParamBonusRoutes from './entities/charParamBonus/routes';
 import CyberFrameRoutes from './entities/cyberFrame/routes';
 import CyberFrameBranchRoutes from './entities/cyberFrameBranch/routes';
+import DamageRoutes from './entities/damage/routes';
+import DamageTypeRoutes from './entities/damageType/routes';
 import EffectRoutes from './entities/effect/routes';
 import ItemModifierRoutes from './entities/itemModifier/routes';
 import { verifyMailToken } from './entities/mailToken/controller';
@@ -44,6 +46,7 @@ import SkillBranchRoutes from './entities/skillBranch/routes';
 import StatRoutes from './entities/stat/routes';
 import StatBonusRoutes from './entities/statBonus/routes';
 import UserRoutes from './entities/user/routes';
+import WeaponRoutes from './entities/weapon/routes';
 import WeaponScopeRoutes from './entities/weaponScope/routes';
 import WeaponStyleRoutes from './entities/weaponStyle/routes';
 import WeaponTypeRoutes from './entities/weaponType/routes';
@@ -142,6 +145,9 @@ RarityRoutes(apiRouter);
 WeaponScopeRoutes(apiRouter);
 WeaponStyleRoutes(apiRouter);
 WeaponTypeRoutes(apiRouter);
+DamageTypeRoutes(apiRouter);
+DamageRoutes(apiRouter);
+WeaponRoutes(apiRouter);
 
 // Global Router
 app.use('/api/', apiRouter);

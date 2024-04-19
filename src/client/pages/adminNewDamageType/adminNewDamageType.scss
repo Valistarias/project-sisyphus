@@ -1,19 +1,10 @@
 @use '../../assets/scss/index';
 
-.adminNewWeaponType {
+.adminNewDamageType {
   @include index.basic-page;
 
   &__content {
     margin-bottom: 10vh;
-  }
-
-  &__visual {
-    margin-top: 2rem;
-  }
-
-  &__visual,
-  &__basics {
-    margin-bottom: 2rem;
   }
 
   &__basics {

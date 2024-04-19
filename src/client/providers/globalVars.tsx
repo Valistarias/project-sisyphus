@@ -20,6 +20,7 @@ import type {
   ICharacter,
   ICuratedCharParam,
   ICuratedCyberFrame,
+  ICuratedDamageType,
   ICuratedItemModifier,
   ICuratedRarity,
   ICuratedRuleBook,
@@ -44,6 +45,8 @@ interface IGlobalVarsContext {
   ruleBooks: ICuratedRuleBook[];
   /** All the loaded campaigns */
   campaigns: ICampaign[];
+  /** All the loaded damage types */
+  damageTypes: ICuratedDamageType[];
   /** All the loaded stats */
   stats: ICuratedStat[];
   /** All the loaded skills */
@@ -82,6 +85,8 @@ interface IGlobalVarsContext {
   reloadCharParams: () => void;
   /** Used to trigger the reload of the cyber frames */
   reloadCyberFrames: () => void;
+  /** Used to trigger the reload of the damage types */
+  reloadDamageTypes: () => void;
   /** Used to trigger the reload of the item modifiers */
   reloadItemModifiers: () => void;
   /** Used to trigger the reload of the rarities */
@@ -128,6 +133,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
   const [cyberFrames, setCyberFrames] = useState<ICuratedCyberFrame[]>([]);
 
   // Items
+  const [damageTypes, setDamageTypes] = useState<ICuratedDamageType[]>([]);
   const [itemModifiers, setItemModifiers] = useState<ICuratedItemModifier[]>([]);
   const [rarities, setRarities] = useState<ICuratedRarity[]>([]);
   const [weaponScopes, setWeaponScopes] = useState<ICuratedWeaponScope[]>([]);
@@ -203,6 +209,10 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
     getAllFromApi('weaponTypes', setWeaponTypes);
   }, [getAllFromApi]);
 
+  const loadDamageTypes = useCallback(() => {
+    getAllFromApi('damageTypes', setDamageTypes);
+  }, [getAllFromApi]);
+
   const setCharacterFromId = useCallback(
     (id: string) => {
       if (api === undefined || id === undefined) {
@@ -246,6 +256,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
             loadActionDurations();
             loadRuleBooks();
             loadCampaigns();
+            loadDamageTypes();
             loadStats();
             loadCharParams();
             loadSkills();
@@ -277,6 +288,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
     loadWeaponScopes,
     loadWeaponStyles,
     loadWeaponTypes,
+    loadDamageTypes,
   ]);
 
   useEffect(() => {
@@ -300,6 +312,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       weaponScopes,
       weaponStyles,
       weaponTypes,
+      damageTypes,
       reloadAll: () => {
         loadCampaigns();
         loadRuleBooks();
@@ -307,6 +320,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
         loadSkills();
         loadCharParams();
         loadCyberFrames();
+        loadDamageTypes();
         loadActionTypes();
         loadActionDurations();
         loadItemModifiers();
@@ -327,6 +341,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       reloadWeaponScopes: loadWeaponScopes,
       reloadWeaponStyles: loadWeaponStyles,
       reloadWeaponTypes: loadWeaponTypes,
+      reloadDamageTypes: loadDamageTypes,
       character,
       ruleBooks,
       resetCharacter,
@@ -347,6 +362,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       weaponScopes,
       weaponStyles,
       weaponTypes,
+      damageTypes,
       loadCampaigns,
       loadCharParams,
       loadCyberFrames,
@@ -354,6 +370,12 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       loadSkills,
       loadStats,
       setCharacterFromId,
+      loadItemModifiers,
+      loadRarities,
+      loadWeaponScopes,
+      loadWeaponStyles,
+      loadWeaponTypes,
+      loadDamageTypes,
       character,
       ruleBooks,
       resetCharacter,
@@ -362,11 +384,6 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       user,
       loadActionTypes,
       loadActionDurations,
-      loadItemModifiers,
-      loadRarities,
-      loadWeaponScopes,
-      loadWeaponStyles,
-      loadWeaponTypes,
     ]
   );
 

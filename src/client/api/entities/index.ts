@@ -12,6 +12,8 @@ import CharParamBonuses from './charParamBonuses';
 import CharParams from './charParams';
 import CyberFrameBranches from './cyberFrameBranches';
 import CyberFrames from './cyberFrames';
+import Damages from './damages';
+import DamageTypes from './damageTypes';
 import Effects from './effects';
 import ItemModifiers from './itemModifiers';
 import MailToken from './mailToken';
@@ -27,6 +29,7 @@ import Skills from './skills';
 import StatBonuses from './statBonuses';
 import Stats from './stats';
 import Users from './users';
+import Weapons from './weapons';
 import WeaponScopes from './weaponScopes';
 import WeaponStyles from './weaponStyles';
 import WeaponTypes from './weaponTypes';
@@ -44,6 +47,8 @@ export {
   CharParams,
   CyberFrameBranches,
   CyberFrames,
+  Damages,
+  DamageTypes,
   Effects,
   ItemModifiers,
   MailToken,
@@ -60,6 +65,7 @@ export {
   StatBonuses,
   Stats,
   Users,
+  Weapons,
   WeaponScopes,
   WeaponStyles,
   WeaponTypes,

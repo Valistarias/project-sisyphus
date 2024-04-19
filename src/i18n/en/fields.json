@@ -311,5 +311,17 @@
   "weaponTypeWeaponSkill": {
     "required": "You need to link a Weapon Type with a Weapon Skill",
     "label": "Weapon Skill"
+  },
+  "iconWeaponType": {
+    "required": "A Weapon Type Icon is required",
+    "label": "Icon",
+    "select": "Weapon Type Icon"
+  },
+  "nameDamageType": {
+    "required": "A Damage Type Name is required",
+    "label": "Name"
+  },
+  "damageTypeSummary": {
+    "title": "Damage Type Details"
   }
 }

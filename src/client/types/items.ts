@@ -1,5 +1,38 @@
+import { type IAction, type IEffect } from '../../server/entities';
+
 import { type InternationalizationType } from './global';
 import { type ISkill } from './rules';
+
+// DamageTypes ------------------------------------
+export interface IDamageType {
+  /** The ID of the damage type */
+  _id: string;
+  /** The title of the damage type */
+  title: string;
+  /** A summary of the damage type */
+  summary: string;
+  /** The internationnal content, as a json, stringified */
+  i18n?: InternationalizationType;
+  /** When the damage type was created */
+  createdAt: string;
+}
+
+export interface ICuratedDamageType {
+  i18n: InternationalizationType;
+  damageType: IDamageType;
+}
+
+// Damages ------------------------------------
+export interface IDamage {
+  /** The ID of the damage */
+  _id: string;
+  /** The associated damageType */
+  damageType: string;
+  /** The dices formula of the damage (ex: 2d6 + 1) */
+  dices: string;
+  /** When the damage was created */
+  createdAt: string;
+}
 
 // ItemModifiers ------------------------------------
 export interface IItemModifier {
@@ -95,6 +128,8 @@ export interface IWeaponType {
   summary: string;
   /** The associated weapon style */
   weaponStyle: IWeaponStyle;
+  /** The icon of the weapon */
+  icon: string;
   /** When the weapon scope was created */
   createdAt: string;
   /** The internationalization */
@@ -104,4 +139,45 @@ export interface IWeaponType {
 export interface ICuratedWeaponType {
   i18n: InternationalizationType;
   weaponType: IWeaponType;
+}
+
+// Weapons ------------------------------------
+export interface IWeapon {
+  /** The ID of the stat bonus */
+  _id: string;
+  /** The title of the weapon */
+  title: string;
+  /** A summary of the weapon */
+  summary: string;
+  /** A quote or text, MTG style */
+  quote?: string;
+  /** The internationnal content, as a json, stringified */
+  i18n?: string;
+  /** The associated weaponType */
+  weaponType: string;
+  /** The rarity of the weapon */
+  rarity: string;
+  /** The range of the weapon */
+  weaponScope: string;
+  /** The item modifiers of the weapon */
+  itemModifiers?: string[];
+  /** The cost of the weapon */
+  cost: number;
+  /** The size of the magasine */
+  magasine?: number;
+  /** How many ammos are usef for each shot */
+  ammoPerShot?: number;
+  /** The effects related to the weapon */
+  effects?: IEffect[];
+  /** The actions related to the weapon */
+  actions?: IAction[];
+  /** The damages of the weapon */
+  damages: IDamage[];
+  /** When the stat bonus was created */
+  createdAt: string;
+}
+
+export interface ICuratedWeapon {
+  i18n: InternationalizationType;
+  weaponType: IWeapon;
 }

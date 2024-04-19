@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useApi, useGlobalVars, useSystemAlerts } from '../../providers';
 
 import { Aerror, Ap, Atitle } from '../../atoms';
-import { Button, Input, SmartSelect } from '../../molecules';
+import { Button, Input, NodeIconSelect, SmartSelect } from '../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../organisms';
 
 import './adminNewWeaponType.scss';
@@ -18,6 +18,7 @@ interface FormValues {
   name: string;
   nameFr: string;
   weaponStyle: string;
+  icon: string;
 }
 
 const AdminNewWeaponType: FC = () => {
@@ -53,8 +54,13 @@ const AdminNewWeaponType: FC = () => {
   }, [weaponStyles]);
 
   const onSaveWeaponType: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, weaponStyle }) => {
-      if (introEditor === null || introFrEditor === null || api === undefined) {
+    ({ name, nameFr, weaponStyle, icon }) => {
+      if (
+        introEditor === null ||
+        introFrEditor === null ||
+        api === undefined ||
+        icon === undefined
+      ) {
         return;
       }
       let html: string | null = introEditor.getHTML();
@@ -78,6 +84,7 @@ const AdminNewWeaponType: FC = () => {
         .create({
           title: name,
           weaponStyle,
+          icon,
           summary: html,
           i18n,
         })
@@ -135,6 +142,16 @@ const AdminNewWeaponType: FC = () => {
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
+        <div className="adminNewWeaponType__visual">
+          <NodeIconSelect
+            label={t('iconWeaponType.label', { ns: 'fields' })}
+            control={control}
+            inputName="icon"
+            rules={{
+              required: t('iconWeaponType.required', { ns: 'fields' }),
+            }}
+          />
+        </div>
         <div className="adminNewWeaponType__basics">
           <Input
             control={control}

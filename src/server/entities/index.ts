@@ -22,6 +22,8 @@ export {
   type HydratedICyberFrameBranch,
   type ICyberFrameBranch,
 } from './cyberFrameBranch/model';
+export { DamageModel, type HydratedIDamage, type IDamage } from './damage/model';
+export { DamageTypeModel, type HydratedIDamageType, type IDamageType } from './damageType/model';
 export { EffectModel, type HydratedIEffect, type IEffect } from './effect/model';
 export {
   ItemModifierModel,
@@ -47,6 +49,7 @@ export {
 export { StatModel, type HydratedIStat, type IStat } from './stat/model';
 export { StatBonusModel, type HydratedIStatBonus, type IStatBonus } from './statBonus/model';
 export { UserModel, type HydratedIUser, type IUser } from './user/model';
+export { WeaponModel, type HydratedIWeapon, type IWeapon } from './weapon/model';
 export {
   WeaponScopeModel,
   type HydratedIWeaponScope,
