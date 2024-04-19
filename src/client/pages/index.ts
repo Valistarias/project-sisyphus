@@ -14,6 +14,9 @@ import AdminEditRuleBookPage from './adminEditRuleBook';
 import AdminEditSkillPage from './adminEditSkill';
 import AdminEditSkillBranchPage from './adminEditSkillBranch';
 import AdminEditStatPage from './adminEditStat';
+import AdminEditWeaponScopePage from './adminEditWeaponScope';
+import AdminEditWeaponStylePage from './adminEditWeaponStyle';
+import AdminEditWeaponTypePage from './adminEditWeaponType';
 import AdminItemModifiersPage from './adminItemModifiers';
 import AdminNewChapterPage from './adminNewChapter';
 import AdminNewCharParamPage from './adminNewCharParam';
@@ -28,11 +31,17 @@ import AdminNewRuleBookPage from './adminNewRuleBook';
 import AdminNewSkillPage from './adminNewSkill';
 import AdminNewSkillBranchPage from './adminNewSkillBranch';
 import AdminNewStatPage from './adminNewStat';
+import AdminNewWeaponScopePage from './adminNewWeaponScope';
+import AdminNewWeaponStylePage from './adminNewWeaponStyle';
+import AdminNewWeaponTypePage from './adminNewWeaponType';
 import AdminRaritiesPage from './adminRarities';
 import AdminRuleBooksPage from './adminRuleBooks';
 import AdminSkillsPage from './adminSkills';
 import AdminStatsPage from './adminStats';
 import AdminTestDiceCompPage from './adminTestDiceComp';
+import AdminWeaponScopesPage from './adminWeaponScopes';
+import AdminWeaponStylesPage from './adminWeaponStyles';
+import AdminWeaponTypesPage from './adminWeaponTypes';
 import CampaignPage from './campaign';
 import CampaignsPage from './campaigns';
 import ChapterPage from './chapter';
@@ -67,6 +76,9 @@ export {
   AdminEditSkillBranchPage,
   AdminEditSkillPage,
   AdminEditStatPage,
+  AdminEditWeaponScopePage,
+  AdminEditWeaponStylePage,
+  AdminEditWeaponTypePage,
   AdminItemModifiersPage,
   AdminNewChapterPage,
   AdminNewCharParamPage,
@@ -81,12 +93,18 @@ export {
   AdminNewSkillBranchPage,
   AdminNewSkillPage,
   AdminNewStatPage,
+  AdminNewWeaponScopePage,
+  AdminNewWeaponStylePage,
+  AdminNewWeaponTypePage,
   AdminPage,
   AdminRaritiesPage,
   AdminRuleBooksPage,
   AdminSkillsPage,
   AdminStatsPage,
   AdminTestDiceCompPage,
+  AdminWeaponScopesPage,
+  AdminWeaponStylesPage,
+  AdminWeaponTypesPage,
   CampaignPage,
   CampaignsPage,
   ChapterPage,

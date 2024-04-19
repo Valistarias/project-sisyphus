@@ -277,5 +277,39 @@
   },
   "raritySummary": {
     "title": "Rarity Details"
+  },
+  "nameWeaponScope": {
+    "required": "A Weapon Range Denomination is required",
+    "label": "Denomination"
+  },
+  "weaponScopeSummary": {
+    "title": "Weapon Range Details"
+  },
+  "weaponScopeFormula": {
+    "required": "An Identifier is required",
+    "format": "The format of the identifier is wrong. you need three letters in lower case",
+    "label": "Weapon Scope ID (For displaying purposes, never displayed as is). This needs to be a lower case three letter string"
+  },
+  "nameWeaponStyle": {
+    "required": "A Weapon Style Name is required",
+    "label": "Name"
+  },
+  "weaponStyleSummary": {
+    "title": "Weapon Style Details"
+  },
+  "weaponStyleSkill": {
+    "required": "You need to link a Weapon Style with a Skill",
+    "label": "Skill"
+  },
+  "nameWeaponType": {
+    "required": "A Weapon Type Name is required",
+    "label": "Name"
+  },
+  "weaponTypeSummary": {
+    "title": "Weapon Type Details"
+  },
+  "weaponTypeWeaponSkill": {
+    "required": "You need to link a Weapon Type with a Weapon Skill",
+    "label": "Weapon Skill"
   }
 }

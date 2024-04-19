@@ -213,12 +213,12 @@ const curateWeaponScope = (weaponScope: HydratedIWeaponScope): Record<string, an
 };
 
 const findSingle = (req: Request, res: Response): void => {
-  const { itemScopeId } = req.query;
-  if (itemScopeId === undefined || typeof itemScopeId !== 'string') {
+  const { weaponScopeId } = req.query;
+  if (weaponScopeId === undefined || typeof weaponScopeId !== 'string') {
     res.status(400).send(gemInvalidField('WeaponScope ID'));
     return;
   }
-  findWeaponScopeById(itemScopeId)
+  findWeaponScopeById(weaponScopeId)
     .then((weaponScope) => {
       const sentObj = {
         weaponScope,

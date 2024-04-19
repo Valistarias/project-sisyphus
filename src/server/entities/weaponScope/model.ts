@@ -18,6 +18,7 @@ interface HydratedIWeaponScope extends HydratedDocument<IWeaponScope> {}
 const userSchema = new Schema<IWeaponScope>({
   title: String,
   summary: String,
+  scopeId: String,
   i18n: String,
   createdAt: {
     type: Date,

@@ -1,5 +1,7 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
+import { type IWeaponStyle } from '../weaponStyle/model';
+
 interface IWeaponType {
   /** The title of the weapon style */
   title: string;
@@ -13,7 +15,9 @@ interface IWeaponType {
   createdAt: Date;
 }
 
-interface HydratedIWeaponType extends HydratedDocument<IWeaponType> {}
+interface HydratedIWeaponType extends Omit<HydratedDocument<IWeaponType>, 'weaponStyle'> {
+  weaponStyle: IWeaponStyle;
+}
 
 const userSchema = new Schema<IWeaponType>({
   title: String,

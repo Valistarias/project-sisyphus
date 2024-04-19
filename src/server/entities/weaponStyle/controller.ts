@@ -2,6 +2,7 @@ import { type Request, type Response } from 'express';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import { type ISkill } from '../skill/model';
 
 import { type HydratedIWeaponStyle } from './model';
 
@@ -10,6 +11,7 @@ const { WeaponStyle } = db;
 const findWeaponStyles = async (): Promise<HydratedIWeaponStyle[]> =>
   await new Promise((resolve, reject) => {
     WeaponStyle.find()
+      .populate<{ skill: ISkill }>('skill')
       .then(async (res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('WeaponStyles'));
@@ -25,6 +27,7 @@ const findWeaponStyles = async (): Promise<HydratedIWeaponStyle[]> =>
 const findWeaponStyleById = async (id: string): Promise<HydratedIWeaponStyle> =>
   await new Promise((resolve, reject) => {
     WeaponStyle.findById(id)
+      .populate<{ skill: ISkill }>('skill')
       .then(async (res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('WeaponStyle'));

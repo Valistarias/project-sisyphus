@@ -20,6 +20,9 @@ import {
   AdminEditSkillBranchPage,
   AdminEditSkillPage,
   AdminEditStatPage,
+  AdminEditWeaponScopePage,
+  AdminEditWeaponStylePage,
+  AdminEditWeaponTypePage,
   AdminItemModifiersPage,
   AdminNewChapterPage,
   AdminNewCharParamPage,
@@ -34,12 +37,18 @@ import {
   AdminNewSkillBranchPage,
   AdminNewSkillPage,
   AdminNewStatPage,
+  AdminNewWeaponScopePage,
+  AdminNewWeaponStylePage,
+  AdminNewWeaponTypePage,
   AdminPage,
   AdminRaritiesPage,
   AdminRuleBooksPage,
   AdminSkillsPage,
   AdminStatsPage,
   AdminTestDiceCompPage,
+  AdminWeaponScopesPage,
+  AdminWeaponStylesPage,
+  AdminWeaponTypesPage,
   CampaignPage,
   CampaignsPage,
   ChapterPage,
@@ -289,6 +298,42 @@ const App: FC = () => {
             {
               path: '/admin/rarity/:id',
               element: <AdminEditRarityPage />,
+            },
+            {
+              path: '/admin/weaponscopes',
+              element: <AdminWeaponScopesPage />,
+            },
+            {
+              path: '/admin/weaponscope/new',
+              element: <AdminNewWeaponScopePage />,
+            },
+            {
+              path: '/admin/weaponscope/:id',
+              element: <AdminEditWeaponScopePage />,
+            },
+            {
+              path: '/admin/weaponstyles',
+              element: <AdminWeaponStylesPage />,
+            },
+            {
+              path: '/admin/weaponstyle/new',
+              element: <AdminNewWeaponStylePage />,
+            },
+            {
+              path: '/admin/weaponstyle/:id',
+              element: <AdminEditWeaponStylePage />,
+            },
+            {
+              path: '/admin/weapontypes',
+              element: <AdminWeaponTypesPage />,
+            },
+            {
+              path: '/admin/weapontype/new',
+              element: <AdminNewWeaponTypePage />,
+            },
+            {
+              path: '/admin/weapontype/:id',
+              element: <AdminEditWeaponTypePage />,
             },
             // {
             //   path: '/admin/skillbranch/:id',

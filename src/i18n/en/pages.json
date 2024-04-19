@@ -480,5 +480,83 @@
       "text": "Are you sure you want to delete {{elt}} ? All the related branches will be lost !",
       "confirmCta": "Delete Rarity"
     }
+  },
+  "adminWeaponScopes": {
+    "title": "Weapon Ranges",
+    "list": "List",
+    "editWeaponScope": "Edit"
+  },
+  "adminNewWeaponScope": {
+    "title": "New Weapon Range",
+    "i18n": "Internationalization",
+    "button": "Create Weapon Range",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successCreate": "Weapon Range successfully created !"
+  },
+  "adminEditWeaponScope": {
+    "edit": "Edit Weapon Range",
+    "delete": "Delete Weapon Range",
+    "i18n": "Internationalization",
+    "button": "Update Weapon Range Data",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successUpdate": "Weapon Range successfully updated !",
+    "successDelete": "Weapon Range successfully deleted !",
+    "confirmDeletion": {
+      "title": "Weapon Range Deletion",
+      "text": "Are you sure you want to delete {{elt}} ? All the related branches will be lost !",
+      "confirmCta": "Delete Weapon Range"
+    }
+  },
+  "adminWeaponStyles": {
+    "title": "Weapon Styles",
+    "list": "List",
+    "editWeaponStyle": "Edit"
+  },
+  "adminNewWeaponStyle": {
+    "title": "New Weapon Style",
+    "i18n": "Internationalization",
+    "button": "Create Weapon Style",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successCreate": "Weapon Style successfully created !"
+  },
+  "adminEditWeaponStyle": {
+    "edit": "Edit Weapon Style",
+    "delete": "Delete Weapon Style",
+    "i18n": "Internationalization",
+    "button": "Update Weapon Style Data",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successUpdate": "Weapon Style successfully updated !",
+    "successDelete": "Weapon Style successfully deleted !",
+    "confirmDeletion": {
+      "title": "Weapon Style Deletion",
+      "text": "Are you sure you want to delete {{elt}} ? All the related branches will be lost !",
+      "confirmCta": "Delete Weapon Style"
+    }
+  },
+  "adminWeaponTypes": {
+    "title": "Weapon Types",
+    "list": "List",
+    "editWeaponType": "Edit"
+  },
+  "adminNewWeaponType": {
+    "title": "New Weapon Type",
+    "i18n": "Internationalization",
+    "button": "Create Weapon Type",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successCreate": "Weapon Type successfully created !"
+  },
+  "adminEditWeaponType": {
+    "edit": "Edit Weapon Type",
+    "delete": "Delete Weapon Type",
+    "i18n": "Internationalization",
+    "button": "Update Weapon Type Data",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successUpdate": "Weapon Type successfully updated !",
+    "successDelete": "Weapon Type successfully deleted !",
+    "confirmDeletion": {
+      "title": "Weapon Type Deletion",
+      "text": "Are you sure you want to delete {{elt}} ? All the related branches will be lost !",
+      "confirmCta": "Delete Weapon Type"
+    }
   }
 }

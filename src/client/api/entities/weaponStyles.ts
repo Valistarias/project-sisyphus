@@ -5,7 +5,7 @@ import { type ICuratedWeaponStyle } from '../../types';
 import Entity from './entity';
 
 interface IWeaponStylePayload {
-  itemModifierId: string;
+  weaponStyleId: string;
 }
 
 export default class WeaponStyles extends Entity {
