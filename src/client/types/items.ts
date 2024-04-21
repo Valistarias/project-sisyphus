@@ -1,7 +1,5 @@
-import { type IAction, type IEffect } from '../../server/entities';
-
 import { type InternationalizationType } from './global';
-import { type ISkill } from './rules';
+import { type IAction, type IEffect, type ISkill } from './rules';
 
 // DamageTypes ------------------------------------
 export interface IDamageType {

@@ -22,6 +22,7 @@ import {
   AdminEditSkillBranchPage,
   AdminEditSkillPage,
   AdminEditStatPage,
+  AdminEditWeaponPage,
   AdminEditWeaponScopePage,
   AdminEditWeaponStylePage,
   AdminEditWeaponTypePage,
@@ -360,10 +361,10 @@ const App: FC = () => {
               path: '/admin/weapon/new',
               element: <AdminNewWeaponPage />,
             },
-            // {
-            //   path: '/admin/weapon/:id',
-            //   element: <AdminEditDamageTypePage />,
-            // },
+            {
+              path: '/admin/weapon/:id',
+              element: <AdminEditWeaponPage />,
+            },
             // {
             //   path: '/admin/skillbranch/:id',
             //   element: <AdminEditSkillBranchPage />,

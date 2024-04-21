@@ -16,6 +16,7 @@ import AdminEditRuleBookPage from './adminEditRuleBook';
 import AdminEditSkillPage from './adminEditSkill';
 import AdminEditSkillBranchPage from './adminEditSkillBranch';
 import AdminEditStatPage from './adminEditStat';
+import AdminEditWeaponPage from './adminEditWeapon';
 import AdminEditWeaponScopePage from './adminEditWeaponScope';
 import AdminEditWeaponStylePage from './adminEditWeaponStyle';
 import AdminEditWeaponTypePage from './adminEditWeaponType';
@@ -83,6 +84,7 @@ export {
   AdminEditSkillBranchPage,
   AdminEditSkillPage,
   AdminEditStatPage,
+  AdminEditWeaponPage,
   AdminEditWeaponScopePage,
   AdminEditWeaponStylePage,
   AdminEditWeaponTypePage,

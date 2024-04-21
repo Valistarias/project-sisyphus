@@ -611,12 +611,21 @@
     "delete": "Delete Weapon",
     "i18n": "Internationalization",
     "button": "Update Weapon Data",
+    "damageTitle": "Damage",
+    "createDamageButton": "Add Damage",
+    "effectTitle": "Effect",
+    "createEffectButton": "Add Effect",
+    "effectInt": "Effect Internationalization",
+    "actionTitle": "Action",
+    "createActionButton": "Add Action",
+    "values": "Values",
+    "actionInt": "Action Internationalization",
     "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
     "successUpdate": "Weapon successfully updated !",
     "successDelete": "Weapon successfully deleted !",
     "confirmDeletion": {
       "title": "Weapon Deletion",
-      "text": "Are you sure you want to delete {{elt}} ? All the related branches will be lost !",
+      "text": "Are you sure you want to delete {{elt}} ?",
       "confirmCta": "Delete Weapon"
     }
   }

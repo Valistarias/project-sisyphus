@@ -67,14 +67,6 @@ const formatGroupLabel: FC = (data: IGroupedOption) => (
   </div>
 );
 
-// const MultiValueContainer: FC = (props: MultiValueGenericProps) => {
-//   return (
-//     <div className="smartselect__multi-value-elt">
-//       <components.MultiValueContainer {...props} />
-//     </div>
-//   );
-// };
-
 const SmartSelect: FC<IAp> = ({
   control,
   isMulti = false,
@@ -89,7 +81,6 @@ const SmartSelect: FC<IAp> = ({
   rules,
 }) => {
   const { t } = useTranslation();
-
   return (
     <div
       className={classTrim(`
@@ -103,11 +94,7 @@ const SmartSelect: FC<IAp> = ({
         control={control}
         name={inputName}
         rules={rules}
-        render={({
-          field: { onChange, onBlur, value, name, ref },
-          fieldState: { error },
-          // formState,
-        }) => (
+        render={({ field: { onChange, onBlur, value, name, ref }, fieldState: { error } }) => (
           <>
             {label !== undefined ? (
               <Alabel className="smartselect__label" htmlFor={name}>
@@ -117,7 +104,11 @@ const SmartSelect: FC<IAp> = ({
             <Select
               options={options}
               isMulti={isMulti}
-              value={options.find((c) => c.value === value)}
+              value={
+                isMulti
+                  ? options.filter((c) => value?.includes(c.value))
+                  : options.find((c) => c.value === value)
+              }
               onChange={(val) => {
                 if (val != null && !isMulti) {
                   onChange((val as ISingleValueSelect).value);
