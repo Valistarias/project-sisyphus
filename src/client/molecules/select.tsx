@@ -2,7 +2,7 @@ import React, { type FC } from 'react';
 
 import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import Select, { components, type OptionProps } from 'react-select';
+import Select, { components, type MultiValue, type OptionProps } from 'react-select';
 
 import { Aerror, Alabel, Ap } from '../atoms';
 import { type IReactHookFormInputs } from '../types/form';
@@ -30,10 +30,12 @@ interface IAp extends IReactHookFormInputs {
   placeholder?: string;
   /** The label, if any */
   label?: string;
+  /** Is the selector a multi select */
+  isMulti?: boolean;
   /** The classname of the select */
   className?: string;
   /** Triggered when the selected field is changing */
-  onChange?: (val: string | number) => void;
+  onChange?: (val: string | number | string[]) => void;
   /** The size of the select */
   size?: 'medium' | 'small';
   /** Is the field disabled */
@@ -65,8 +67,17 @@ const formatGroupLabel: FC = (data: IGroupedOption) => (
   </div>
 );
 
+// const MultiValueContainer: FC = (props: MultiValueGenericProps) => {
+//   return (
+//     <div className="smartselect__multi-value-elt">
+//       <components.MultiValueContainer {...props} />
+//     </div>
+//   );
+// };
+
 const SmartSelect: FC<IAp> = ({
   control,
+  isMulti = false,
   inputName,
   options,
   size = 'medium',
@@ -105,13 +116,16 @@ const SmartSelect: FC<IAp> = ({
             ) : null}
             <Select
               options={options}
+              isMulti={isMulti}
               value={options.find((c) => c.value === value)}
               onChange={(val) => {
-                if (val != null) {
-                  onChange(val.value);
+                if (val != null && !isMulti) {
+                  onChange((val as ISingleValueSelect).value);
                   if (exteriorChange !== undefined) {
-                    exteriorChange(val.value);
+                    exteriorChange((val as ISingleValueSelect).value);
                   }
+                } else if (val != null && isMulti) {
+                  onChange((val as MultiValue<ISingleValueSelect>).map((valElt) => valElt.value));
                 }
               }}
               className="smartselect__field"

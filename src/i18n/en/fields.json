@@ -323,5 +323,48 @@
   },
   "damageTypeSummary": {
     "title": "Damage Type Details"
+  },
+  "damagesType": {
+    "label": "Damage Type",
+    "required": "A Damage Type is required"
+  },
+  "damagesValue": {
+    "label": "Value (in dices)",
+    "required": "A Damage Value is required"
+  },
+  "nameWeapon": {
+    "required": "A Weapon Name is required",
+    "label": "Name"
+  },
+  "weaponSummary": {
+    "title": "Weapon Details"
+  },
+  "weaponType": {
+    "required": "You need to link a Weapon Type with this weapon",
+    "label": "Weapon Type"
+  },
+  "weaponCost": {
+    "required": "You need to define a Weapon Cost to this weapon",
+    "label": "Weapon Cost"
+  },
+  "weaponRarity": {
+    "required": "You need to define a Rarity to this weapon",
+    "label": "Weapon Rarity"
+  },
+  "quoteWeapon": {
+    "label": "Quote"
+  },
+  "weaponScope": {
+    "required": "You need to define a Range to this weapon",
+    "label": "Weapon Range"
+  },
+  "itemModifiers": {
+    "label": "Weapon Modifiers"
+  },
+  "magasineWeapon": {
+    "label": "Weapon Magasine, if any"
+  },
+  "ammoPerShotWeapon": {
+    "label": "Ammo Per Shot, if any"
   }
 }

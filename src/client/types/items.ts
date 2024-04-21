@@ -179,5 +179,5 @@ export interface IWeapon {
 
 export interface ICuratedWeapon {
   i18n: InternationalizationType;
-  weaponType: IWeapon;
+  weapon: IWeapon;
 }

@@ -73,6 +73,24 @@
     justify-content: space-between;
   }
 
+  .smartselect__multi-value {
+    background: var(--primary-20);
+
+    &__label {
+      color: var(--font-color);
+    }
+
+    &__remove {
+      color: var(--error);
+
+      &:hover {
+        background: var(--error-40);
+        color: var(--error);
+        cursor: pointer;
+      }
+    }
+  }
+
   // Others ----------------------------------
   &--disabled {
     opacity: 0.6;

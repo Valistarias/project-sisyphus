@@ -40,6 +40,7 @@ import {
   AdminNewSkillBranchPage,
   AdminNewSkillPage,
   AdminNewStatPage,
+  AdminNewWeaponPage,
   AdminNewWeaponScopePage,
   AdminNewWeaponStylePage,
   AdminNewWeaponTypePage,
@@ -52,6 +53,7 @@ import {
   AdminWeaponScopesPage,
   AdminWeaponStylesPage,
   AdminWeaponTypesPage,
+  AdminWeaponsPage,
   CampaignPage,
   CampaignsPage,
   ChapterPage,
@@ -350,6 +352,18 @@ const App: FC = () => {
               path: '/admin/damagetype/:id',
               element: <AdminEditDamageTypePage />,
             },
+            {
+              path: '/admin/weapons',
+              element: <AdminWeaponsPage />,
+            },
+            {
+              path: '/admin/weapon/new',
+              element: <AdminNewWeaponPage />,
+            },
+            // {
+            //   path: '/admin/weapon/:id',
+            //   element: <AdminEditDamageTypePage />,
+            // },
             // {
             //   path: '/admin/skillbranch/:id',
             //   element: <AdminEditSkillBranchPage />,

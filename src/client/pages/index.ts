@@ -34,6 +34,7 @@ import AdminNewRuleBookPage from './adminNewRuleBook';
 import AdminNewSkillPage from './adminNewSkill';
 import AdminNewSkillBranchPage from './adminNewSkillBranch';
 import AdminNewStatPage from './adminNewStat';
+import AdminNewWeaponPage from './adminNewWeapon';
 import AdminNewWeaponScopePage from './adminNewWeaponScope';
 import AdminNewWeaponStylePage from './adminNewWeaponStyle';
 import AdminNewWeaponTypePage from './adminNewWeaponType';
@@ -42,6 +43,7 @@ import AdminRuleBooksPage from './adminRuleBooks';
 import AdminSkillsPage from './adminSkills';
 import AdminStatsPage from './adminStats';
 import AdminTestDiceCompPage from './adminTestDiceComp';
+import AdminWeaponsPage from './adminWeapons';
 import AdminWeaponScopesPage from './adminWeaponScopes';
 import AdminWeaponStylesPage from './adminWeaponStyles';
 import AdminWeaponTypesPage from './adminWeaponTypes';
@@ -99,6 +101,7 @@ export {
   AdminNewSkillBranchPage,
   AdminNewSkillPage,
   AdminNewStatPage,
+  AdminNewWeaponPage,
   AdminNewWeaponScopePage,
   AdminNewWeaponStylePage,
   AdminNewWeaponTypePage,
@@ -109,6 +112,7 @@ export {
   AdminStatsPage,
   AdminTestDiceCompPage,
   AdminWeaponScopesPage,
+  AdminWeaponsPage,
   AdminWeaponStylesPage,
   AdminWeaponTypesPage,
   CampaignPage,
