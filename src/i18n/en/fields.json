@@ -106,7 +106,7 @@
   },
   "statFormula": {
     "required": "A Formula Identifier is required",
-    "format": "The format of the formula identifier is wrong. you need three letters in lower case",
+    "format": "The format of the formula identifier is wrong. You need three letters in lower case",
     "label": "Fomula identifier (For formula purposes, never displayed as is). This needs to be a lower case three letter string"
   },
   "nameSkill": {
@@ -122,7 +122,7 @@
   },
   "skillFormula": {
     "required": "A Formula Identifier is required",
-    "format": "The format of the formula identifier is wrong. you need three letters in lower case",
+    "format": "The format of the formula identifier is wrong. You need three letters in lower case",
     "label": "Fomula identifier (For formula purposes, never displayed as is). This needs to be a lower case three letter string"
   },
   "nameCharParam": {
@@ -135,7 +135,7 @@
   },
   "charParamFormula": {
     "required": "A Formula Identifier is required",
-    "format": "The format of the formula identifier is wrong. you need three letters in lower case",
+    "format": "The format of the formula identifier is wrong. You need three letters in lower case",
     "label": "Fomula identifier (For formula purposes, never displayed as is). This needs to be a lower case three letter string"
   },
   "charParamSummary": {
@@ -259,6 +259,11 @@
   "actionOffsetSkill": {
     "label": "Formula with the skill check (if any)"
   },
+  "nameItemType": {
+    "required": "An Item Type Name is required",
+    "format": "The format of the item type is wrong. You need three letters in lower case",
+    "label": "Item Type Name"
+  },
   "nameItemModifier": {
     "required": "An Item Modifier Name is required",
     "label": "Item Modifier Name"
@@ -268,7 +273,7 @@
   },
   "itemModifierFormula": {
     "required": "An Identifier is required",
-    "format": "The format of the formula identifier is wrong. you need three letters in lower case",
+    "format": "The format of the formula identifier is wrong. You need three letters in lower case",
     "label": "Modifier ID (For formula purposes, never displayed as is). This needs to be a lower case three letter string"
   },
   "nameRarity": {
@@ -287,7 +292,7 @@
   },
   "weaponScopeFormula": {
     "required": "An Identifier is required",
-    "format": "The format of the identifier is wrong. you need three letters in lower case",
+    "format": "The format of the identifier is wrong. You need three letters in lower case",
     "label": "Weapon Scope ID (For displaying purposes, never displayed as is). This needs to be a lower case three letter string"
   },
   "nameWeaponStyle": {
@@ -311,6 +316,10 @@
   "weaponTypeWeaponSkill": {
     "required": "You need to link a Weapon Type with a Weapon Skill",
     "label": "Weapon Skill"
+  },
+  "weaponTypeItemType": {
+    "required": "You need to link an Item Type with this Weapon Type",
+    "label": "Item Type"
   },
   "iconWeaponType": {
     "required": "A Weapon Type Icon is required",

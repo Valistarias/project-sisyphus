@@ -16,6 +16,7 @@ import {
   DamageTypeModel,
   EffectModel,
   ItemModifierModel,
+  ItemTypeModel,
   MailTokenModel,
   NodeModel,
   NotionModel,
@@ -50,6 +51,7 @@ import {
   type IDamageType,
   type IEffect,
   type IItemModifier,
+  type IItemType,
   type IMailToken,
   type INode,
   type INotion,
@@ -126,6 +128,8 @@ interface DBType {
   CyberFrameBranch: mongoose.Model<ICyberFrameBranch>;
   /** The Node Model */
   Node: mongoose.Model<INode>;
+  /** The ItemType Model */
+  ItemType: mongoose.Model<IItemType>;
   /** The ItemModifier Model */
   ItemModifier: mongoose.Model<IItemModifier>;
   /** The Rarity model */
@@ -181,6 +185,7 @@ const db: DBType = {
   Node: NodeModel(),
   // Items models
   ItemModifier: ItemModifierModel(),
+  ItemType: ItemTypeModel(),
   Rarity: RarityModel(),
   WeaponScope: WeaponScopeModel(),
   WeaponStyle: WeaponStyleModel(),

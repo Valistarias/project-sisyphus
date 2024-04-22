@@ -1,10 +1,21 @@
 @use '../../assets/scss/index';
 
-.adminNewWeaponType {
+.adminEditItemType {
   @include index.basic-page;
 
   &__content {
     margin-bottom: 10vh;
+  }
+
+  &__head {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4rem;
+
+    .atitle {
+      margin: 0;
+    }
   }
 
   &__visual {
@@ -31,27 +42,11 @@
       flex-direction: row;
       flex-shrink: 0;
       gap: 2rem;
-      width: 60%;
+      width: 40%;
     }
-  }
-
-  &__details {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    margin-bottom: 2rem;
   }
 
   &__error {
     margin-bottom: 2rem;
-  }
-
-  &__intl {
-    margin-bottom: 1rem;
-    margin-top: 6rem;
-  }
-
-  &__intl-info {
-    margin-bottom: 4rem;
   }
 }

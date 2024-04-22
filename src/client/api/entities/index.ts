@@ -16,6 +16,7 @@ import Damages from './damages';
 import DamageTypes from './damageTypes';
 import Effects from './effects';
 import ItemModifiers from './itemModifiers';
+import ItemTypes from './itemTypes';
 import MailToken from './mailToken';
 import Nodes from './nodes';
 import Notions from './notions';
@@ -51,6 +52,7 @@ export {
   DamageTypes,
   Effects,
   ItemModifiers,
+  ItemTypes,
   MailToken,
   Nodes,
   Notions,

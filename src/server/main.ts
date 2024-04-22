@@ -31,6 +31,7 @@ import DamageRoutes from './entities/damage/routes';
 import DamageTypeRoutes from './entities/damageType/routes';
 import EffectRoutes from './entities/effect/routes';
 import ItemModifierRoutes from './entities/itemModifier/routes';
+import ItemTypeRoutes from './entities/itemType/routes';
 import { verifyMailToken } from './entities/mailToken/controller';
 import MailTokenRoutes from './entities/mailToken/routes';
 import NodeRoutes from './entities/node/routes';
@@ -140,6 +141,7 @@ StatBonusRoutes(apiRouter);
 StatRoutes(apiRouter);
 
 // Items routes
+ItemTypeRoutes(apiRouter);
 ItemModifierRoutes(apiRouter);
 RarityRoutes(apiRouter);
 WeaponScopeRoutes(apiRouter);

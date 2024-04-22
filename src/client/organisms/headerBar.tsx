@@ -136,6 +136,10 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
                   text: t('adminCharParams.title', { ns: 'pages' }),
                 },
                 {
+                  href: '/admin/itemtypes',
+                  text: t('adminItemTypes.title', { ns: 'pages' }),
+                },
+                {
                   href: '/admin/itemmodifiers',
                   text: t('adminItemModifiers.title', { ns: 'pages' }),
                 },

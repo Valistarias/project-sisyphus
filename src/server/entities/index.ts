@@ -30,6 +30,7 @@ export {
   type HydratedIItemModifier,
   type IItemModifier,
 } from './itemModifier/model';
+export { ItemTypeModel, type IItemType } from './itemType/model';
 export { MailTokenModel, type IMailToken } from './mailToken/model';
 export { NodeModel, type HydratedINode, type INode } from './node/model';
 export { NotionModel, type HydratedNotion, type INotion } from './notion/model';

@@ -15,6 +15,7 @@ import {
   Damages,
   Effects,
   ItemModifiers,
+  ItemTypes,
   MailToken,
   Nodes,
   Notions,
@@ -51,6 +52,7 @@ export default class Api {
   damages: Damages;
   damageTypes: DamageTypes;
   effects: Effects;
+  itemTypes: ItemTypes;
   itemModifiers: ItemModifiers;
   mailToken: MailToken;
   nodes: Nodes;
@@ -87,6 +89,7 @@ export default class Api {
     this.damages = new Damages();
     this.damageTypes = new DamageTypes();
     this.effects = new Effects();
+    this.itemTypes = new ItemTypes();
     this.itemModifiers = new ItemModifiers();
     this.mailToken = new MailToken();
     this.nodes = new Nodes();

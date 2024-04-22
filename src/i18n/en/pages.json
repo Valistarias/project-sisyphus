@@ -427,6 +427,29 @@
       "confirmCta": "Delete Node"
     }
   },
+  "adminItemTypes": {
+    "title": "Item Types",
+    "list": "List",
+    "editItemType": "Edit"
+  },
+  "adminNewItemType": {
+    "title": "New Item Type",
+    "button": "Create Item Type",
+    "values": "Values",
+    "successCreate": "Item Type successfully created !"
+  },
+  "adminEditItemType": {
+    "edit": "Edit Item Type",
+    "button": "Edit Item Type",
+    "delete": "Delete Item Type",
+    "successUpdate": "Item Type successfully updated !",
+    "successDelete": "Item Type successfully deleted !",
+    "confirmDeletion": {
+      "title": "Item Type Deletion",
+      "text": "Are you sure you want to delete {{elt}} ?",
+      "confirmCta": "Delete Item Type"
+    }
+  },
   "adminItemModifiers": {
     "title": "Item Modifiers",
     "list": "List",

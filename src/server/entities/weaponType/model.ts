@@ -1,5 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
+import { type IItemType } from '../itemType/model';
 import { type IWeaponStyle } from '../weaponStyle/model';
 
 interface IWeaponType {
@@ -9,6 +10,8 @@ interface IWeaponType {
   summary: string;
   /** The associated weapon style */
   weaponStyle: ObjectId;
+  /** The type of item */
+  itemType: ObjectId;
   /** The icon of the weapon */
   icon: string;
   /** Is this weapon type needs training to be used ? */
@@ -19,8 +22,10 @@ interface IWeaponType {
   createdAt: Date;
 }
 
-interface HydratedIWeaponType extends Omit<HydratedDocument<IWeaponType>, 'weaponStyle'> {
+interface HydratedIWeaponType
+  extends Omit<HydratedDocument<IWeaponType>, 'weaponStyle' | 'itemType'> {
   weaponStyle: IWeaponStyle;
+  itemType: IItemType;
 }
 
 const userSchema = new Schema<IWeaponType>({
@@ -34,6 +39,10 @@ const userSchema = new Schema<IWeaponType>({
   weaponStyle: {
     type: Schema.Types.ObjectId,
     ref: 'WeaponStyle',
+  },
+  itemType: {
+    type: Schema.Types.ObjectId,
+    ref: 'ItemType',
   },
   i18n: String,
   createdAt: {

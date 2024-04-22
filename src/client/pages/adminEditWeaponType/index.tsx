@@ -27,6 +27,7 @@ interface FormValues {
   name: string;
   nameFr: string;
   weaponStyle: string;
+  itemType: string;
   icon: string;
   needTraining: string;
 }
@@ -35,7 +36,7 @@ const AdminEditWeaponType: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { weaponStyles, reloadWeaponTypes } = useGlobalVars();
+  const { weaponStyles, itemTypes, reloadWeaponTypes } = useGlobalVars();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
@@ -86,8 +87,28 @@ const AdminEditWeaponType: FC = () => {
     [weaponStyles]
   );
 
+  const itemTypeList = useMemo(() => {
+    const curatedList: Array<{
+      value: string;
+      label: string;
+    }> = [];
+    itemTypes.forEach((itemType) => {
+      if (itemType.name === 'wep' || itemType.name === 'psm') {
+        curatedList.push({
+          value: itemType._id,
+          label: t(`itemTypeNames.${itemType.name}`),
+        });
+      }
+    });
+    return curatedList;
+  }, [itemTypes, t]);
+
   const createDefaultData = useCallback(
-    (weaponTypeData: ICuratedWeaponType | null, weaponStyles: ISingleValueSelect[]) => {
+    (
+      weaponTypeData: ICuratedWeaponType | null,
+      weaponStylesSelect: ISingleValueSelect[],
+      itemTypesSelect: ISingleValueSelect[]
+    ) => {
       if (weaponTypeData == null) {
         return {};
       }
@@ -96,11 +117,17 @@ const AdminEditWeaponType: FC = () => {
       defaultData.name = weaponType.title;
       defaultData.icon = weaponType.icon;
       defaultData.needTraining = weaponType.needTraining ? '1' : '0';
-      const selectedfield = weaponStyles.find(
-        (weaponStyleType) => weaponStyleType.value === weaponType.weaponStyle._id
+      const selectedWeaponStyle = weaponStylesSelect.find(
+        (weaponStyleType) => weaponStyleType.value === weaponType.weaponStyle?._id
       );
-      if (selectedfield !== undefined) {
-        defaultData.weaponStyle = String(selectedfield.value);
+      if (selectedWeaponStyle !== undefined) {
+        defaultData.weaponStyle = String(selectedWeaponStyle.value);
+      }
+      const selectedItemType = itemTypesSelect.find(
+        (itemType) => itemType.value === weaponType.itemType?._id
+      );
+      if (selectedItemType !== undefined) {
+        defaultData.itemType = String(selectedItemType.value);
       }
       if (i18n.fr !== undefined) {
         defaultData.nameFr = i18n.fr.title ?? '';
@@ -118,13 +145,13 @@ const AdminEditWeaponType: FC = () => {
     reset,
   } = useForm<FieldValues>({
     defaultValues: useMemo(
-      () => createDefaultData(weaponTypeData, weaponStyleSelect),
-      [createDefaultData, weaponStyleSelect, weaponTypeData]
+      () => createDefaultData(weaponTypeData, weaponStyleSelect, itemTypeList),
+      [createDefaultData, weaponStyleSelect, weaponTypeData, itemTypeList]
     ),
   });
 
   const onSaveWeaponType: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, weaponStyle, icon, needTraining }) => {
+    ({ name, nameFr, weaponStyle, icon, needTraining, itemType }) => {
       if (
         weaponTypeText === null ||
         weaponTypeTextFr === null ||
@@ -132,6 +159,7 @@ const AdminEditWeaponType: FC = () => {
         textFrEditor === null ||
         icon === null ||
         needTraining === null ||
+        itemType === null ||
         api === undefined
       ) {
         return;
@@ -161,6 +189,7 @@ const AdminEditWeaponType: FC = () => {
           title: name,
           weaponStyle,
           icon,
+          itemType,
           needTraining: needTraining === '1',
           summary: htmlText,
           i18n,
@@ -325,8 +354,8 @@ const AdminEditWeaponType: FC = () => {
 
   // To affect default data
   useEffect(() => {
-    reset(createDefaultData(weaponTypeData, weaponStyleSelect));
-  }, [weaponTypeData, reset, createDefaultData, weaponStyleSelect]);
+    reset(createDefaultData(weaponTypeData, weaponStyleSelect, itemTypeList));
+  }, [weaponTypeData, reset, createDefaultData, weaponStyleSelect, itemTypeList]);
 
   return (
     <div
@@ -369,7 +398,7 @@ const AdminEditWeaponType: FC = () => {
             label={t('nameWeaponType.label', { ns: 'fields' })}
             className="adminEditWeaponType__basics__name"
           />
-          <div className="adminNewWeapon__basics__class">
+          <div className="adminEditWeaponType__basics__class">
             <SmartSelect
               control={control}
               inputName="weaponStyle"
@@ -377,6 +406,14 @@ const AdminEditWeaponType: FC = () => {
               rules={{ required: t('weaponTypeWeaponSkill.required', { ns: 'fields' }) }}
               options={weaponStyleSelect}
               className="adminEditWeaponType__basics__weaponStyle"
+            />
+            <SmartSelect
+              control={control}
+              inputName="itemType"
+              label={t('weaponTypeItemType.label', { ns: 'fields' })}
+              rules={{ required: t('weaponTypeItemType.required', { ns: 'fields' }) }}
+              options={itemTypeList}
+              className="adminNewWeaponType__basics__needTraining"
             />
             <SmartSelect
               control={control}

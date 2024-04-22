@@ -2,6 +2,7 @@ import { type Request, type Response } from 'express';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import { type IItemType } from '../itemType/model';
 import { type IWeaponStyle } from '../weaponStyle/model';
 
 import { type HydratedIWeaponType } from './model';
@@ -12,6 +13,7 @@ const findWeaponTypes = async (): Promise<HydratedIWeaponType[]> =>
   await new Promise((resolve, reject) => {
     WeaponType.find()
       .populate<{ weaponStyle: IWeaponStyle }>('weaponStyle')
+      .populate<{ itemType: IItemType }>('itemType')
       .then(async (res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('WeaponTypes'));
@@ -28,6 +30,7 @@ const findWeaponTypeById = async (id: string): Promise<HydratedIWeaponType> =>
   await new Promise((resolve, reject) => {
     WeaponType.findById(id)
       .populate<{ weaponStyle: IWeaponStyle }>('weaponStyle')
+      .populate<{ itemType: IItemType }>('itemType')
       .then(async (res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('WeaponType'));
@@ -41,11 +44,12 @@ const findWeaponTypeById = async (id: string): Promise<HydratedIWeaponType> =>
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, summary, i18n = null, weaponStyle, icon, needTraining } = req.body;
+  const { title, summary, i18n = null, weaponStyle, icon, needTraining, itemType } = req.body;
   if (
     title === undefined ||
     summary === undefined ||
     weaponStyle === undefined ||
+    itemType === undefined ||
     icon === undefined
   ) {
     res.status(400).send(gemInvalidField('Weapon Type'));
@@ -56,6 +60,7 @@ const create = (req: Request, res: Response): void => {
     title,
     summary,
     icon,
+    itemType,
     needTraining,
     weaponStyle,
   });
@@ -81,6 +86,7 @@ const update = (req: Request, res: Response): void => {
     summary = null,
     weaponStyle = null,
     icon = null,
+    itemType = null,
     i18n,
     needTraining = null,
   } = req.body;
@@ -104,6 +110,9 @@ const update = (req: Request, res: Response): void => {
       }
       if (needTraining !== null) {
         weaponType.needTraining = needTraining;
+      }
+      if (itemType !== null) {
+        weaponType.itemType = itemType;
       }
 
       if (i18n !== null) {

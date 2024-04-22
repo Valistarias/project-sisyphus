@@ -32,7 +32,14 @@ export interface IDamage {
   createdAt: string;
 }
 
-// ItemModifiers ------------------------------------
+// Items ------------------------------------
+export interface IItemType {
+  /** The ID of the item type */
+  _id: string;
+  /** A 3 letter string as name of the item type (never displayed as is) */
+  name: string;
+}
+
 export interface IItemModifier {
   /** The ID of the effect */
   _id: string;
@@ -126,6 +133,8 @@ export interface IWeaponType {
   summary: string;
   /** The associated weapon style */
   weaponStyle: IWeaponStyle;
+  /** The associated item type */
+  itemType: IItemType;
   /** The icon of the weapon */
   icon: string;
   /** Is this weapon type needs training to be used ? */

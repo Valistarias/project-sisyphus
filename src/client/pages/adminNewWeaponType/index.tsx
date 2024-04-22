@@ -18,6 +18,7 @@ interface FormValues {
   name: string;
   nameFr: string;
   weaponStyle: string;
+  itemType: string;
   icon: string;
   needTraining: string;
 }
@@ -27,7 +28,7 @@ const AdminNewWeaponType: FC = () => {
   const { api } = useApi();
   const navigate = useNavigate();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { weaponStyles, reloadWeaponTypes } = useGlobalVars();
+  const { weaponStyles, itemTypes, reloadWeaponTypes } = useGlobalVars();
 
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
@@ -67,6 +68,22 @@ const AdminNewWeaponType: FC = () => {
       label: weaponStyle.title,
     }));
   }, [weaponStyles]);
+
+  const itemTypeList = useMemo(() => {
+    const curatedList: Array<{
+      value: string;
+      label: string;
+    }> = [];
+    itemTypes.forEach((itemType) => {
+      if (itemType.name === 'wep' || itemType.name === 'psm') {
+        curatedList.push({
+          value: itemType._id,
+          label: t(`itemTypeNames.${itemType.name}`),
+        });
+      }
+    });
+    return curatedList;
+  }, [itemTypes, t]);
 
   const onSaveWeaponType: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, weaponStyle, icon, needTraining }) => {
@@ -179,7 +196,7 @@ const AdminNewWeaponType: FC = () => {
             label={t('nameWeaponType.label', { ns: 'fields' })}
             className="adminNewWeaponType__basics__name"
           />
-          <div className="adminNewWeapon__basics__class">
+          <div className="adminNewWeaponType__basics__class">
             <SmartSelect
               control={control}
               inputName="weaponStyle"
@@ -190,7 +207,15 @@ const AdminNewWeaponType: FC = () => {
             />
             <SmartSelect
               control={control}
-              inputName={`needTraining`}
+              inputName="itemType"
+              label={t('weaponTypeItemType.label', { ns: 'fields' })}
+              rules={{ required: t('weaponTypeItemType.required', { ns: 'fields' }) }}
+              options={itemTypeList}
+              className="adminNewWeaponType__basics__needTraining"
+            />
+            <SmartSelect
+              control={control}
+              inputName="needTraining"
               label={t('weaponTypeNeedTraining.label', { ns: 'fields' })}
               rules={{ required: t('weaponTypeNeedTraining.required', { ns: 'fields' }) }}
               options={boolRange}

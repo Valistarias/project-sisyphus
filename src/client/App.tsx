@@ -14,6 +14,7 @@ import {
   AdminEditCyberFramePage,
   AdminEditDamageTypePage,
   AdminEditItemModifierPage,
+  AdminEditItemTypePage,
   AdminEditNodePage,
   AdminEditNotionPage,
   AdminEditPage,
@@ -27,12 +28,14 @@ import {
   AdminEditWeaponStylePage,
   AdminEditWeaponTypePage,
   AdminItemModifiersPage,
+  AdminItemTypesPage,
   AdminNewChapterPage,
   AdminNewCharParamPage,
   AdminNewCyberFrameBranchPage,
   AdminNewCyberFramePage,
   AdminNewDamageTypePage,
   AdminNewItemModifierPage,
+  AdminNewItemTypePage,
   AdminNewNodePage,
   AdminNewNotionPage,
   AdminNewPage,
@@ -364,6 +367,18 @@ const App: FC = () => {
             {
               path: '/admin/weapon/:id',
               element: <AdminEditWeaponPage />,
+            },
+            {
+              path: '/admin/itemtypes',
+              element: <AdminItemTypesPage />,
+            },
+            {
+              path: '/admin/itemtype/new',
+              element: <AdminNewItemTypePage />,
+            },
+            {
+              path: '/admin/itemtype/:id',
+              element: <AdminEditItemTypePage />,
             },
             // {
             //   path: '/admin/skillbranch/:id',

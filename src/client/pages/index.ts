@@ -8,6 +8,7 @@ import AdminEditCyberFramePage from './adminEditCyberFrame';
 import AdminEditCyberFrameBranchPage from './adminEditCyberFrameBranch';
 import AdminEditDamageTypePage from './adminEditDamageType';
 import AdminEditItemModifierPage from './adminEditItemModifier';
+import AdminEditItemTypePage from './adminEditItemType';
 import AdminEditNodePage from './adminEditNode';
 import AdminEditNotionPage from './adminEditNotion';
 import AdminEditPage from './adminEditPage';
@@ -21,12 +22,14 @@ import AdminEditWeaponScopePage from './adminEditWeaponScope';
 import AdminEditWeaponStylePage from './adminEditWeaponStyle';
 import AdminEditWeaponTypePage from './adminEditWeaponType';
 import AdminItemModifiersPage from './adminItemModifiers';
+import AdminItemTypesPage from './adminItemTypes';
 import AdminNewChapterPage from './adminNewChapter';
 import AdminNewCharParamPage from './adminNewCharParam';
 import AdminNewCyberFramePage from './adminNewCyberFrame';
 import AdminNewCyberFrameBranchPage from './adminNewCyberFrameBranch';
 import AdminNewDamageTypePage from './adminNewDamageType';
 import AdminNewItemModifierPage from './adminNewItemModifier';
+import AdminNewItemTypePage from './adminNewItemType';
 import AdminNewNodePage from './adminNewNode';
 import AdminNewNotionPage from './adminNewNotion';
 import AdminNewPage from './adminNewPage';
@@ -76,6 +79,7 @@ export {
   AdminEditCyberFramePage,
   AdminEditDamageTypePage,
   AdminEditItemModifierPage,
+  AdminEditItemTypePage,
   AdminEditNodePage,
   AdminEditNotionPage,
   AdminEditPage,
@@ -89,12 +93,14 @@ export {
   AdminEditWeaponStylePage,
   AdminEditWeaponTypePage,
   AdminItemModifiersPage,
+  AdminItemTypesPage,
   AdminNewChapterPage,
   AdminNewCharParamPage,
   AdminNewCyberFrameBranchPage,
   AdminNewCyberFramePage,
   AdminNewDamageTypePage,
   AdminNewItemModifierPage,
+  AdminNewItemTypePage,
   AdminNewNodePage,
   AdminNewNotionPage,
   AdminNewPage,

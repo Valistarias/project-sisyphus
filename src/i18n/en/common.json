@@ -72,6 +72,10 @@
       "long": "Long"
     }
   },
+  "itemTypeNames": {
+    "psm": "Pistol & SMG",
+    "wep": "Weapon"
+  },
   "chapterTypeNames": {
     "default_one": "Info",
     "default_other": "Infos",
