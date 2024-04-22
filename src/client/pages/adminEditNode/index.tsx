@@ -519,7 +519,7 @@ const AdminEditNode: FC = () => {
           duration,
           damages,
           offsetSkill,
-          isKarmic,
+          isKarmic: String(isKarmic) === '1',
           karmicCost,
           uses,
           time,

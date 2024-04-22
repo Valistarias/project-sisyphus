@@ -19,6 +19,7 @@ interface FormValues {
   nameFr: string;
   weaponStyle: string;
   icon: string;
+  needTraining: string;
 }
 
 const AdminNewWeaponType: FC = () => {
@@ -39,6 +40,20 @@ const AdminNewWeaponType: FC = () => {
     extensions: completeRichTextElementExtentions,
   });
 
+  const boolRange = useMemo(
+    () => [
+      {
+        value: '1',
+        label: t('terms.general.yes'),
+      },
+      {
+        value: '0',
+        label: t('terms.general.no'),
+      },
+    ],
+    [t]
+  );
+
   const {
     handleSubmit,
     setError,
@@ -54,7 +69,7 @@ const AdminNewWeaponType: FC = () => {
   }, [weaponStyles]);
 
   const onSaveWeaponType: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, weaponStyle, icon }) => {
+    ({ name, nameFr, weaponStyle, icon, needTraining }) => {
       if (
         introEditor === null ||
         introFrEditor === null ||
@@ -85,6 +100,7 @@ const AdminNewWeaponType: FC = () => {
           title: name,
           weaponStyle,
           icon,
+          needTraining: needTraining === '1',
           summary: html,
           i18n,
         })
@@ -163,14 +179,24 @@ const AdminNewWeaponType: FC = () => {
             label={t('nameWeaponType.label', { ns: 'fields' })}
             className="adminNewWeaponType__basics__name"
           />
-          <SmartSelect
-            control={control}
-            inputName="weaponStyle"
-            label={t('weaponTypeWeaponSkill.label', { ns: 'fields' })}
-            rules={{ required: t('weaponTypeWeaponSkill.required', { ns: 'fields' }) }}
-            options={weaponStyleList}
-            className="adminNewWeaponType__basics__weaponStyle"
-          />
+          <div className="adminNewWeapon__basics__class">
+            <SmartSelect
+              control={control}
+              inputName="weaponStyle"
+              label={t('weaponTypeWeaponSkill.label', { ns: 'fields' })}
+              rules={{ required: t('weaponTypeWeaponSkill.required', { ns: 'fields' }) }}
+              options={weaponStyleList}
+              className="adminNewWeaponType__basics__weaponStyle"
+            />
+            <SmartSelect
+              control={control}
+              inputName={`needTraining`}
+              label={t('weaponTypeNeedTraining.label', { ns: 'fields' })}
+              rules={{ required: t('weaponTypeNeedTraining.required', { ns: 'fields' }) }}
+              options={boolRange}
+              className="adminNewWeaponType__basics__needTraining"
+            />
+          </div>
         </div>
         <div className="adminNewWeaponType__details">
           <RichTextElement

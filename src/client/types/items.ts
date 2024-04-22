@@ -128,6 +128,8 @@ export interface IWeaponType {
   weaponStyle: IWeaponStyle;
   /** The icon of the weapon */
   icon: string;
+  /** Is this weapon type needs training to be used ? */
+  needTraining: boolean;
   /** When the weapon scope was created */
   createdAt: string;
   /** The internationalization */

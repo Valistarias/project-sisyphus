@@ -343,6 +343,10 @@
     "required": "You need to link a Weapon Type with this weapon",
     "label": "Weapon Type"
   },
+  "weaponTypeNeedTraining": {
+    "required": "You need to specify if the weapon needs training",
+    "label": "Need Training ?"
+  },
   "weaponCost": {
     "required": "You need to define a Weapon Cost to this weapon",
     "label": "Weapon Cost"

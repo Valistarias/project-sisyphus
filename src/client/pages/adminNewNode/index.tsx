@@ -444,7 +444,7 @@ const AdminNewNode: FC = () => {
           damages,
           offsetSkill,
           uses,
-          isKarmic,
+          isKarmic: String(isKarmic) === '1',
           karmicCost,
           i18n: {
             ...(titleFr !== undefined || summaryFr !== undefined || timeFr !== undefined

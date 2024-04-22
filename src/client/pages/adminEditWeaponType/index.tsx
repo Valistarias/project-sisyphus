@@ -28,6 +28,7 @@ interface FormValues {
   nameFr: string;
   weaponStyle: string;
   icon: string;
+  needTraining: string;
 }
 
 const AdminEditWeaponType: FC = () => {
@@ -61,6 +62,20 @@ const AdminEditWeaponType: FC = () => {
     extensions: completeRichTextElementExtentions,
   });
 
+  const boolRange = useMemo(
+    () => [
+      {
+        value: '1',
+        label: t('terms.general.yes'),
+      },
+      {
+        value: '0',
+        label: t('terms.general.no'),
+      },
+    ],
+    [t]
+  );
+
   const weaponStyleSelect = useMemo<ISingleValueSelect[]>(
     () =>
       weaponStyles.map(({ weaponStyle }) => ({
@@ -80,6 +95,7 @@ const AdminEditWeaponType: FC = () => {
       const defaultData: Partial<FormValues> = {};
       defaultData.name = weaponType.title;
       defaultData.icon = weaponType.icon;
+      defaultData.needTraining = weaponType.needTraining ? '1' : '0';
       const selectedfield = weaponStyles.find(
         (weaponStyleType) => weaponStyleType.value === weaponType.weaponStyle._id
       );
@@ -108,13 +124,14 @@ const AdminEditWeaponType: FC = () => {
   });
 
   const onSaveWeaponType: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, weaponStyle, icon }) => {
+    ({ name, nameFr, weaponStyle, icon, needTraining }) => {
       if (
         weaponTypeText === null ||
         weaponTypeTextFr === null ||
         textEditor === null ||
         textFrEditor === null ||
         icon === null ||
+        needTraining === null ||
         api === undefined
       ) {
         return;
@@ -144,6 +161,7 @@ const AdminEditWeaponType: FC = () => {
           title: name,
           weaponStyle,
           icon,
+          needTraining: needTraining === '1',
           summary: htmlText,
           i18n,
         })
@@ -351,14 +369,24 @@ const AdminEditWeaponType: FC = () => {
             label={t('nameWeaponType.label', { ns: 'fields' })}
             className="adminEditWeaponType__basics__name"
           />
-          <SmartSelect
-            control={control}
-            inputName="weaponStyle"
-            label={t('weaponTypeWeaponSkill.label', { ns: 'fields' })}
-            rules={{ required: t('weaponTypeWeaponSkill.required', { ns: 'fields' }) }}
-            options={weaponStyleSelect}
-            className="adminEditWeaponType__basics__weaponStyle"
-          />
+          <div className="adminNewWeapon__basics__class">
+            <SmartSelect
+              control={control}
+              inputName="weaponStyle"
+              label={t('weaponTypeWeaponSkill.label', { ns: 'fields' })}
+              rules={{ required: t('weaponTypeWeaponSkill.required', { ns: 'fields' }) }}
+              options={weaponStyleSelect}
+              className="adminEditWeaponType__basics__weaponStyle"
+            />
+            <SmartSelect
+              control={control}
+              inputName={`needTraining`}
+              label={t('weaponTypeNeedTraining.label', { ns: 'fields' })}
+              rules={{ required: t('weaponTypeNeedTraining.required', { ns: 'fields' }) }}
+              options={boolRange}
+              className="adminEditWeaponType__basics__needTraining"
+            />
+          </div>
         </div>
         <div className="adminEditWeaponType__details">
           <RichTextElement
