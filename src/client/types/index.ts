@@ -7,6 +7,8 @@ import type {
   ICuratedBag,
   ICuratedDamageType,
   ICuratedItemModifier,
+  ICuratedProgram,
+  ICuratedProgramScope,
   ICuratedRarity,
   ICuratedWeapon,
   ICuratedWeaponScope,
@@ -20,6 +22,7 @@ import type {
   IWeaponStyle,
   IWeaponType,
 } from './items';
+import type { ICuratedEnnemyAttack, ICuratedNPC } from './npc';
 import type {
   IChapter,
   IChapterType,
@@ -77,10 +80,14 @@ export type {
   ICuratedCyberFrameBranch,
   ICuratedDamageType,
   ICuratedEffect,
+  ICuratedEnnemyAttack,
   ICuratedItemModifier,
+  ICuratedNPC,
   ICuratedNode,
   ICuratedNotion,
   ICuratedPage,
+  ICuratedProgram,
+  ICuratedProgramScope,
   ICuratedRarity,
   ICuratedRuleBook,
   ICuratedSkill,

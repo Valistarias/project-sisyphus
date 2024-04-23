@@ -28,6 +28,11 @@ export { DamageModel, type HydratedIDamage, type IDamage } from './damage/model'
 export { DamageTypeModel, type HydratedIDamageType, type IDamageType } from './damageType/model';
 export { EffectModel, type HydratedIEffect, type IEffect } from './effect/model';
 export {
+  EnnemyAttackModel,
+  type HydratedIEnnemyAttack,
+  type IEnnemyAttack,
+} from './ennemyAttack/model';
+export {
   ItemModifierModel,
   type HydratedIItemModifier,
   type IItemModifier,
@@ -36,7 +41,14 @@ export { ItemTypeModel, type IItemType } from './itemType/model';
 export { MailTokenModel, type IMailToken } from './mailToken/model';
 export { NodeModel, type HydratedINode, type INode } from './node/model';
 export { NotionModel, type HydratedNotion, type INotion } from './notion/model';
+export { NPCModel, type HydratedINPC, type INPC } from './npc/model';
 export { PageModel, type HydratedIPage, type IPage } from './page/model';
+export { ProgramModel, type HydratedIProgram, type IProgram } from './program/model';
+export {
+  ProgramScopeModel,
+  type HydratedIProgramScope,
+  type IProgramScope,
+} from './programScope/model';
 export { RarityModel, type HydratedIRarity, type IRarity } from './rarity/model';
 export { RoleModel, type IRole } from './role/model';
 export { RollModel, type IRoll } from './roll/model';

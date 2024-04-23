@@ -17,11 +17,15 @@ import CyberFrames from './cyberFrames';
 import Damages from './damages';
 import DamageTypes from './damageTypes';
 import Effects from './effects';
+import EnnemyAttacks from './ennemyAttacks';
 import ItemModifiers from './itemModifiers';
 import ItemTypes from './itemTypes';
 import MailToken from './mailToken';
 import Nodes from './nodes';
 import Notions from './notions';
+import NPCs from './npcs';
+import Programs from './programs';
+import ProgramScopes from './programScopes';
 import Rarities from './rarities';
 import Rolls from './rolls';
 import RuleBooks from './ruleBooks';
@@ -55,12 +59,16 @@ export {
   Damages,
   DamageTypes,
   Effects,
+  EnnemyAttacks,
   ItemModifiers,
   ItemTypes,
   MailToken,
   Nodes,
   Notions,
+  NPCs,
   Pages,
+  Programs,
+  ProgramScopes,
   Rarities,
   Rolls,
   RuleBooks,

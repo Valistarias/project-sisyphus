@@ -16,12 +16,15 @@ import {
   DamageTypes,
   Damages,
   Effects,
+  EnnemyAttacks,
   ItemModifiers,
   ItemTypes,
   MailToken,
+  NPCs,
   Nodes,
   Notions,
   Pages,
+  ProgramScopes,
   Rarities,
   Rolls,
   RuleBookTypes,
@@ -76,6 +79,9 @@ export default class Api {
   weaponScopes: WeaponScopes;
   weaponStyles: WeaponStyles;
   weaponTypes: WeaponTypes;
+  programScopes: ProgramScopes;
+  nPCs: NPCs;
+  ennemyAttacks: EnnemyAttacks;
 
   constructor() {
     this.actionDurations = new ActionDurations();
@@ -95,12 +101,15 @@ export default class Api {
     this.damages = new Damages();
     this.damageTypes = new DamageTypes();
     this.effects = new Effects();
-    this.itemTypes = new ItemTypes();
+    this.ennemyAttacks = new EnnemyAttacks();
     this.itemModifiers = new ItemModifiers();
+    this.itemTypes = new ItemTypes();
     this.mailToken = new MailToken();
     this.nodes = new Nodes();
     this.notions = new Notions();
+    this.nPCs = new NPCs();
     this.pages = new Pages();
+    this.programScopes = new ProgramScopes();
     this.rarities = new Rarities();
     this.rolls = new Rolls();
     this.ruleBooks = new RuleBooks();

@@ -17,12 +17,16 @@ import {
   DamageModel,
   DamageTypeModel,
   EffectModel,
+  EnnemyAttackModel,
   ItemModifierModel,
   ItemTypeModel,
   MailTokenModel,
+  NPCModel,
   NodeModel,
   NotionModel,
   PageModel,
+  ProgramModel,
+  ProgramScopeModel,
   RarityModel,
   RoleModel,
   RollModel,
@@ -54,12 +58,16 @@ import {
   type IDamage,
   type IDamageType,
   type IEffect,
+  type IEnnemyAttack,
   type IItemModifier,
   type IItemType,
   type IMailToken,
+  type INPC,
   type INode,
   type INotion,
   type IPage,
+  type IProgram,
+  type IProgramScope,
   type IRarity,
   type IRole,
   type IRoll,
@@ -152,6 +160,14 @@ interface DBType {
   Weapon: mongoose.Model<IWeapon>;
   /** The Damage model */
   Damage: mongoose.Model<IDamage>;
+  /** The Program Scope model */
+  ProgramScope: mongoose.Model<IProgramScope>;
+  /** The Program model */
+  Program: mongoose.Model<IProgram>;
+  /** The NPC model */
+  NPC: mongoose.Model<INPC>;
+  /** The EnnemyAttack model */
+  EnnemyAttack: mongoose.Model<IEnnemyAttack>;
   /** The Damage Type model */
   DamageType: mongoose.Model<IDamageType>;
   /** The possible Roles */
@@ -165,12 +181,12 @@ const db: DBType = {
   MailToken: MailTokenModel(),
   ROLES: ['user', 'admin'],
   // Rulebook models
-  Notion: NotionModel(),
-  RuleBook: RuleBookModel(),
-  RuleBookType: RuleBookTypeModel(),
   Chapter: ChapterModel(),
   ChapterType: ChapterTypeModel(),
+  Notion: NotionModel(),
   Page: PageModel(),
+  RuleBook: RuleBookModel(),
+  RuleBookType: RuleBookTypeModel(),
   // Campaign models
   Campaign: CampaignModel(),
   Roll: RollModel(),
@@ -180,29 +196,34 @@ const db: DBType = {
   Action: ActionModel(),
   ActionDuration: ActionDurationModel(),
   ActionType: ActionTypeModel(),
-  Effect: EffectModel(),
-  Stat: StatModel(),
-  StatBonus: StatBonusModel(),
-  Skill: SkillModel(),
-  SkillBonus: SkillBonusModel(),
-  SkillBranch: SkillBranchModel(),
   CharParam: CharParamModel(),
   CharParamBonus: CharParamBonusModel(),
   CyberFrame: CyberFrameModel(),
   CyberFrameBranch: CyberFrameBranchModel(),
+  Effect: EffectModel(),
   Node: NodeModel(),
+  Skill: SkillModel(),
+  SkillBonus: SkillBonusModel(),
+  SkillBranch: SkillBranchModel(),
+  Stat: StatModel(),
+  StatBonus: StatBonusModel(),
   // Items models
   Ammo: AmmoModel(),
   Bag: BagModel(),
+  Damage: DamageModel(),
+  DamageType: DamageTypeModel(),
   ItemModifier: ItemModifierModel(),
   ItemType: ItemTypeModel(),
+  Program: ProgramModel(),
+  ProgramScope: ProgramScopeModel(),
   Rarity: RarityModel(),
+  Weapon: WeaponModel(),
   WeaponScope: WeaponScopeModel(),
   WeaponStyle: WeaponStyleModel(),
   WeaponType: WeaponTypeModel(),
-  Weapon: WeaponModel(),
-  Damage: DamageModel(),
-  DamageType: DamageTypeModel(),
+  // NPC models
+  EnnemyAttack: EnnemyAttackModel(),
+  NPC: NPCModel(),
 };
 
 export default db;

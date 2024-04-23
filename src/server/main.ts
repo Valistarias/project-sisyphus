@@ -32,13 +32,17 @@ import CyberFrameBranchRoutes from './entities/cyberFrameBranch/routes';
 import DamageRoutes from './entities/damage/routes';
 import DamageTypeRoutes from './entities/damageType/routes';
 import EffectRoutes from './entities/effect/routes';
+import EnnemyAttackRoutes from './entities/ennemyAttack/routes';
 import ItemModifierRoutes from './entities/itemModifier/routes';
 import ItemTypeRoutes from './entities/itemType/routes';
 import { verifyMailToken } from './entities/mailToken/controller';
 import MailTokenRoutes from './entities/mailToken/routes';
 import NodeRoutes from './entities/node/routes';
 import NotionRoutes from './entities/notion/routes';
+import NPCRoutes from './entities/npc/routes';
 import PageRoutes from './entities/page/routes';
+import ProgramRoutes from './entities/program/routes';
+import ProgramScopeRoutes from './entities/programScope/routes';
 import RarityRoutes from './entities/rarity/routes';
 import RollRoutes from './entities/roll/routes';
 import RuleBookRoutes from './entities/ruleBook/routes';
@@ -65,7 +69,7 @@ const io = new Server(httpServer);
 
 // Env vars
 const port = process.env.PORT ?? 3000;
-const mailgunApi = process.env.MAILGUN_API_KEY ?? '';
+const mailgunApi = process.env.MNPCLGUN_API_KEY ?? '';
 const cookieSecret = process.env.COOKIE_SECRET;
 
 const mailgun = new Mailgun(formData);
@@ -143,17 +147,23 @@ StatBonusRoutes(apiRouter);
 StatRoutes(apiRouter);
 
 // Items routes
-ItemTypeRoutes(apiRouter);
+AmmoRoutes(apiRouter);
+BagRoutes(apiRouter);
+DamageRoutes(apiRouter);
+DamageTypeRoutes(apiRouter);
 ItemModifierRoutes(apiRouter);
+ItemTypeRoutes(apiRouter);
+ProgramRoutes(apiRouter);
+ProgramScopeRoutes(apiRouter);
 RarityRoutes(apiRouter);
+WeaponRoutes(apiRouter);
 WeaponScopeRoutes(apiRouter);
 WeaponStyleRoutes(apiRouter);
 WeaponTypeRoutes(apiRouter);
-DamageTypeRoutes(apiRouter);
-DamageRoutes(apiRouter);
-BagRoutes(apiRouter);
-AmmoRoutes(apiRouter);
-WeaponRoutes(apiRouter);
+
+// NPC routes
+EnnemyAttackRoutes(apiRouter);
+NPCRoutes(apiRouter);
 
 // Global Router
 app.use('/api/', apiRouter);

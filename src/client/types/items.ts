@@ -1,4 +1,5 @@
 import { type InternationalizationType } from './global';
+import { type INPC } from './npc';
 import { type IAction, type IEffect, type ISkill } from './rules';
 
 // DamageTypes ------------------------------------
@@ -206,7 +207,7 @@ export interface IWeaponType {
   /** When the weapon scope was created */
   createdAt: Date;
   /** The internationalization */
-  i18n: InternationalizationType;
+  i18n?: InternationalizationType;
 }
 
 export interface ICuratedWeaponType {
@@ -225,7 +226,7 @@ export interface IWeapon {
   /** A quote or text, MTG style */
   quote?: string;
   /** The internationnal content, as a json, stringified */
-  i18n?: string;
+  i18n?: InternationalizationType;
   /** The associated weaponType */
   weaponType: string;
   /** The rarity of the weapon */
@@ -253,4 +254,63 @@ export interface IWeapon {
 export interface ICuratedWeapon {
   i18n: InternationalizationType;
   weapon: IWeapon;
+}
+
+// Program Scope ------------------------------------
+export interface IProgramScope {
+  /** The ID of the weapon scope */
+  _id: string;
+  /** The title of the weapon scope */
+  title: string;
+  /** A summary of the weapon scope */
+  summary: string;
+  /** A 3 letter string used for displaying accurate range */
+  scopeId: string;
+  /** The internationnal content, as a json, stringified */
+  i18n?: InternationalizationType;
+  /** When the weapon scope was created */
+  createdAt: Date;
+}
+
+export interface ICuratedProgramScope {
+  i18n: InternationalizationType;
+  programScope: IProgramScope;
+}
+
+// Program ------------------------------------
+
+export interface IProgram {
+  /** The ID of the weapon scope */
+  _id: string;
+  /** The title of the program */
+  title: string;
+  /** A summary of the program */
+  summary: string;
+  /** The internationnal content, as a json, stringified */
+  i18n?: string;
+  /** The rarity of the program */
+  rarity: string;
+  /** The type of item */
+  itemType: string;
+  /** The type of program, as his range or type */
+  programScope: string;
+  /** Is the program deleted after use */
+  disposable: boolean;
+  /** How many RAM it costs */
+  ram: number;
+  /** How many meters it blasts (in meter) */
+  radius?: number;
+  /** The cost of the program */
+  cost: number;
+  /** The summon of the program */
+  ai?: INPC;
+  /** The damages of the program */
+  damages?: IDamage[];
+  /** When the program was created */
+  createdAt: Date;
+}
+
+export interface ICuratedProgram {
+  i18n: InternationalizationType;
+  program: IProgram;
 }

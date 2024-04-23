@@ -3,7 +3,7 @@ import { type HydratedDocument } from 'mongoose';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
-import { type IDamageType, type ISkill, type IWeapon } from '../index';
+import { type IDamageType, type IWeapon } from '../index';
 
 import { type HydratedIDamage, type IDamage } from './model';
 
@@ -12,7 +12,7 @@ const { Damage, Weapon } = db;
 const findDamages = async (): Promise<HydratedIDamage[]> =>
   await new Promise((resolve, reject) => {
     Damage.find()
-      .populate<{ damageType: ISkill }>('damageType')
+      .populate<{ damageType: IDamageType }>('damageType')
       .then(async (res: HydratedIDamage[]) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Damages'));

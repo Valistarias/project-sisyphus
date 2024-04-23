@@ -1,6 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model } from 'mongoose';
 
-interface IWeaponScope {
+interface IProgramScope {
   /** The title of the weapon scope */
   title: string;
   /** A summary of the weapon scope */
@@ -13,9 +13,9 @@ interface IWeaponScope {
   createdAt: Date;
 }
 
-interface HydratedIWeaponScope extends HydratedDocument<IWeaponScope> {}
+interface HydratedIProgramScope extends HydratedDocument<IProgramScope> {}
 
-const weaponScope = new Schema<IWeaponScope>({
+const programScope = new Schema<IProgramScope>({
   title: String,
   summary: String,
   scopeId: String,
@@ -26,6 +26,6 @@ const weaponScope = new Schema<IWeaponScope>({
   },
 });
 
-const WeaponScopeModel = (): Model<IWeaponScope> => model('WeaponScope', weaponScope);
+const ProgramScopeModel = (): Model<IProgramScope> => model('ProgramScope', programScope);
 
-export { WeaponScopeModel, type HydratedIWeaponScope, type IWeaponScope };
+export { ProgramScopeModel, type HydratedIProgramScope, type IProgramScope };
