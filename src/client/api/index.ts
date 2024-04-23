@@ -3,6 +3,7 @@ import {
   ActionTypes,
   Actions,
   Auth,
+  Bags,
   Campaigns,
   ChapterTypes,
   Chapters,
@@ -41,6 +42,7 @@ export default class Api {
   actions: Actions;
   actionTypes: ActionTypes;
   auth: Auth;
+  bags: Bags;
   campaigns: Campaigns;
   chapters: Chapters;
   chapterTypes: ChapterTypes;
@@ -78,6 +80,7 @@ export default class Api {
     this.actions = new Actions();
     this.actionTypes = new ActionTypes();
     this.auth = new Auth();
+    this.bags = new Bags();
     this.campaigns = new Campaigns();
     this.chapters = new Chapters();
     this.chapterTypes = new ChapterTypes();

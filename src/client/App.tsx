@@ -5,9 +5,11 @@ import { Outlet, RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { useGlobalVars } from './providers';
 
 import {
+  AdminBagsPage,
   AdminCharParamsPage,
   AdminCyberFramesPage,
   AdminDamageTypesPage,
+  AdminEditBagPage,
   AdminEditChapterPage,
   AdminEditCharParamPage,
   AdminEditCyberFrameBranchPage,
@@ -29,6 +31,7 @@ import {
   AdminEditWeaponTypePage,
   AdminItemModifiersPage,
   AdminItemTypesPage,
+  AdminNewBagPage,
   AdminNewChapterPage,
   AdminNewCharParamPage,
   AdminNewCyberFrameBranchPage,
@@ -379,6 +382,18 @@ const App: FC = () => {
             {
               path: '/admin/itemtype/:id',
               element: <AdminEditItemTypePage />,
+            },
+            {
+              path: '/admin/bags',
+              element: <AdminBagsPage />,
+            },
+            {
+              path: '/admin/bag/new',
+              element: <AdminNewBagPage />,
+            },
+            {
+              path: '/admin/bag/:id',
+              element: <AdminEditBagPage />,
             },
             // {
             //   path: '/admin/skillbranch/:id',

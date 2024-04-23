@@ -4,6 +4,7 @@ import {
   ActionDurationModel,
   ActionModel,
   ActionTypeModel,
+  BagModel,
   CampaignModel,
   ChapterModel,
   ChapterTypeModel,
@@ -39,6 +40,7 @@ import {
   type IAction,
   type IActionDuration,
   type IActionType,
+  type IBag,
   type ICampaign,
   type IChapter,
   type IChapterType,
@@ -80,6 +82,8 @@ interface DBType {
   User: mongoose.Model<IUser>;
   /** The Role Model */
   Role: mongoose.Model<IRole>;
+  /** The Bag Model */
+  Bag: mongoose.Model<IBag>;
   /** The Notion Model */
   Notion: mongoose.Model<INotion>;
   /** The RuleBook Model */
@@ -184,6 +188,7 @@ const db: DBType = {
   CyberFrameBranch: CyberFrameBranchModel(),
   Node: NodeModel(),
   // Items models
+  Bag: BagModel(),
   ItemModifier: ItemModifierModel(),
   ItemType: ItemTypeModel(),
   Rarity: RarityModel(),

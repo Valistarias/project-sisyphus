@@ -19,6 +19,7 @@ import ActionDurationRoutes from './entities/actionDuration/routes';
 import ActionTypeRoutes from './entities/actionType/routes';
 import { verifyTokenSingIn } from './entities/auth/controller';
 import AuthRoutes from './entities/auth/routes';
+import BagRoutes from './entities/bag/routes';
 import CampaignRoutes from './entities/campaign/routes';
 import ChapterRoutes from './entities/chapter/routes';
 import ChapterTypeRoutes from './entities/chapterType/routes';
@@ -149,6 +150,7 @@ WeaponStyleRoutes(apiRouter);
 WeaponTypeRoutes(apiRouter);
 DamageTypeRoutes(apiRouter);
 DamageRoutes(apiRouter);
+BagRoutes(apiRouter);
 WeaponRoutes(apiRouter);
 
 // Global Router

@@ -12,5 +12,5 @@ export interface ICharacter {
   /** The players of the character */
   campaign: ICampaign;
   /** When the character was created */
-  createdAt: string;
+  createdAt: Date;
 }

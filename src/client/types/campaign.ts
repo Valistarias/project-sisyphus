@@ -13,5 +13,5 @@ export interface ICampaign {
   /** The players of the campaign */
   players: IUser[];
   /** When the campaign was created */
-  createdAt: string;
+  createdAt: Date;
 }

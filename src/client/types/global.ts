@@ -50,5 +50,5 @@ export interface IRoll {
   /** The campaign of the roll */
   campaign: ICampaign;
   /** When the roll was executed */
-  createdAt: string;
+  createdAt: Date;
 }

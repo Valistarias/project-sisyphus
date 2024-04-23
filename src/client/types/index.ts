@@ -3,6 +3,7 @@ import type { ICharacter } from './character';
 import type { IReactHookFormInputs } from './form';
 import type { IRoll, IUser, TypeDice, TypeRoll } from './global';
 import type {
+  ICuratedBag,
   ICuratedDamageType,
   ICuratedItemModifier,
   ICuratedRarity,
@@ -67,6 +68,7 @@ export type {
   ICharParamBonus,
   ICharacter,
   ICuratedAction,
+  ICuratedBag,
   ICuratedChapter,
   ICuratedCharParam,
   ICuratedCyberFrame,

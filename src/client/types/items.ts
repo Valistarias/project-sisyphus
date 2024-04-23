@@ -12,7 +12,7 @@ export interface IDamageType {
   /** The internationnal content, as a json, stringified */
   i18n?: InternationalizationType;
   /** When the damage type was created */
-  createdAt: string;
+  createdAt: Date;
 }
 
 export interface ICuratedDamageType {
@@ -29,7 +29,7 @@ export interface IDamage {
   /** The dices formula of the damage (ex: 2d6 + 1) */
   dices: string;
   /** When the damage was created */
-  createdAt: string;
+  createdAt: Date;
 }
 
 // Items ------------------------------------
@@ -50,7 +50,7 @@ export interface IItemModifier {
   /** A 3 letter string used for displaying accurate effects */
   modifierId: string;
   /** When the effect was created */
-  createdAt: string;
+  createdAt: Date;
   /** The internationalization */
   i18n: InternationalizationType;
 }
@@ -71,7 +71,7 @@ export interface IRarity {
   /** The position of this rarity, in reference with others */
   position: number;
   /** When the rarity was created */
-  createdAt: string;
+  createdAt: Date;
   /** The internationalization */
   i18n: InternationalizationType;
 }
@@ -79,6 +79,37 @@ export interface IRarity {
 export interface ICuratedRarity {
   i18n: InternationalizationType;
   rarity: IRarity;
+}
+
+// Bags ------------------------------------
+export interface IBag {
+  /** The ID of the rarity */
+  _id: string;
+  /** The title of the bag */
+  title: string;
+  /** A summary of the bag */
+  summary: string;
+  /** The internationnal content, as a json, stringified */
+  i18n: InternationalizationType;
+  /** The rarity of the bag */
+  rarity: string;
+  /** The range of the item storable in the bag */
+  storableItemTypes: string[];
+  /** The item modifiers of the bag */
+  itemModifiers?: string[];
+  /** The type of item */
+  itemType: string;
+  /** How many item it can store */
+  size: number;
+  /** The cost of the bag */
+  cost: number;
+  /** When the bag was created */
+  createdAt: Date;
+}
+
+export interface ICuratedBag {
+  i18n: InternationalizationType;
+  bag: IBag;
 }
 
 // WeaponScopes ------------------------------------
@@ -92,7 +123,7 @@ export interface IWeaponScope {
   /** A 3 letter string used for displaying accurate range */
   scopeId: string;
   /** When the weapon scope was created */
-  createdAt: string;
+  createdAt: Date;
   /** The internationalization */
   i18n: InternationalizationType;
 }
@@ -113,7 +144,7 @@ export interface IWeaponStyle {
   /** The associated skill */
   skill: ISkill;
   /** When the weapon scope was created */
-  createdAt: string;
+  createdAt: Date;
   /** The internationalization */
   i18n: InternationalizationType;
 }
@@ -140,7 +171,7 @@ export interface IWeaponType {
   /** Is this weapon type needs training to be used ? */
   needTraining: boolean;
   /** When the weapon scope was created */
-  createdAt: string;
+  createdAt: Date;
   /** The internationalization */
   i18n: InternationalizationType;
 }
@@ -183,7 +214,7 @@ export interface IWeapon {
   /** The damages of the weapon */
   damages: IDamage[];
   /** When the stat bonus was created */
-  createdAt: string;
+  createdAt: Date;
 }
 
 export interface ICuratedWeapon {

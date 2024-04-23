@@ -25,7 +25,7 @@ export interface IRuleBook {
   /** Is the RuleBook archived ? */
   archived: boolean;
   /** When the rulebook was created */
-  createdAt: string;
+  createdAt: Date;
   /** All the related Notions */
   notions: INotion[];
   /** All the related Chapters */
@@ -63,7 +63,7 @@ export interface IChapter {
   /** The position of this chapter, in reference with others */
   position: number;
   /** When the chapter was created */
-  createdAt: string;
+  createdAt: Date;
   /** All the related Pages */
   pages: IPage[];
 }
@@ -87,7 +87,7 @@ export interface IPage {
   /** The position of this page, in reference with others */
   position: number;
   /** When the page was created */
-  createdAt: string;
+  createdAt: Date;
 }
 
 export interface ICuratedPage {
@@ -107,7 +107,7 @@ export interface INotion {
   /** The rulebook associated with this notion */
   ruleBook: string;
   /** When the notion was created */
-  createdAt: string;
+  createdAt: Date;
 }
 
 export interface ICuratedNotion {

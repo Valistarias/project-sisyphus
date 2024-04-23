@@ -4,6 +4,7 @@ import ActionDurations from './actionDurations';
 import Actions from './actions';
 import ActionTypes from './actionTypes';
 import Auth from './auth';
+import Bags from './bags';
 import Campaigns from './campaigns';
 import Chapters from './chapters';
 import ChapterTypes from './chapterTypes';
@@ -40,6 +41,7 @@ export {
   Actions,
   ActionTypes,
   Auth,
+  Bags,
   Campaigns,
   Chapters,
   ChapterTypes,

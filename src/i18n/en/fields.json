@@ -379,5 +379,31 @@
   },
   "ammoPerShotWeapon": {
     "label": "Ammo Per Shot, if any"
+  },
+  "nameBag": {
+    "required": "A Bag Name is required",
+    "label": "Name"
+  },
+  "bagSummary": {
+    "title": "Bag Details"
+  },
+  "bagItemModifiers": {
+    "label": "Bag Modifiers"
+  },
+  "bagCost": {
+    "required": "A Bag Cost is required",
+    "label": "Cost"
+  },
+  "bagRarity": {
+    "required": "You need to define a Rarity to this bag",
+    "label": "Bag Rarity"
+  },
+  "bagSize": {
+    "required": "You need to define a size to this bag",
+    "label": "Bag Size"
+  },
+  "bagStorableItemTypes": {
+    "required": "You need to define storable item to this bag",
+    "label": "Storable Item Types"
   }
 }

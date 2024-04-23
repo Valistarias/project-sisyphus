@@ -14,7 +14,7 @@ export interface IStat {
   /** The short version of the Stat name */
   short: string;
   /** When the Stat was created */
-  createdAt: string;
+  createdAt: Date;
 }
 
 export interface ICuratedStat {
@@ -31,7 +31,7 @@ export interface IStatBonus {
   /** The value of the bonus */
   value: number;
   /** When the stat bonus was created */
-  createdAt: string;
+  createdAt: Date;
 }
 
 // Skill ------------------------------------
@@ -49,7 +49,7 @@ export interface ISkill {
   /** The correlated branches */
   branches: ISkillBranch[];
   /** When the Skill was created */
-  createdAt: string;
+  createdAt: Date;
 }
 
 export interface ICuratedSkill {
@@ -66,7 +66,7 @@ export interface ISkillBonus {
   /** The value of the bonus */
   value: number;
   /** When the skill bonus was created */
-  createdAt: string;
+  createdAt: Date;
 }
 
 // Skill Branch ------------------------------------
@@ -80,7 +80,7 @@ export interface ISkillBranch {
   /** The skill linked to this branch */
   skill: ISkill | string;
   /** When the skill Branch was created */
-  createdAt: string;
+  createdAt: Date;
 }
 
 export interface ICuratedSkillBranch {
@@ -129,7 +129,7 @@ export interface IAction {
   /** All the related Chapters */
   damages: string;
   /** When the action was created */
-  createdAt: string;
+  createdAt: Date;
   /** The internationalization */
   i18n: InternationalizationType;
 }
@@ -152,7 +152,7 @@ export interface IEffect {
   /** The formula used for this effect */
   formula?: string;
   /** When the effect was created */
-  createdAt: string;
+  createdAt: Date;
   /** The internationalization */
   i18n: InternationalizationType;
 }
@@ -175,7 +175,7 @@ export interface ICharParam {
   /** The time to execute the charParam ? */
   short: string;
   /** When the charParam was created */
-  createdAt: string;
+  createdAt: Date;
 }
 
 export interface ICuratedCharParam {
@@ -192,7 +192,7 @@ export interface ICharParamBonus {
   /** The value of the bonus */
   value: number;
   /** When the charParam bonus was created */
-  createdAt: string;
+  createdAt: Date;
 }
 
 // CyberFrame ------------------------------------
@@ -208,7 +208,7 @@ export interface ICyberFrame {
   /** The correlated branches */
   branches: ICyberFrameBranch[];
   /** When the CyberFrame was created */
-  createdAt: string;
+  createdAt: Date;
 }
 
 export interface ICuratedCyberFrame {
@@ -227,7 +227,7 @@ export interface ICyberFrameBranch {
   /** The cyberframe of this branch */
   cyberFrame: ICyberFrame | string;
   /** When the cyberFrame Branch was created */
-  createdAt: string;
+  createdAt: Date;
 }
 
 export interface ICuratedCyberFrameBranch {
@@ -355,7 +355,7 @@ export interface INode {
   /** The overriden nodes by this one (to upgrade a previous node) */
   overrides?: string[];
   /** When the Node was created */
-  createdAt: string;
+  createdAt: Date;
 }
 
 export interface ICuratedNode {
