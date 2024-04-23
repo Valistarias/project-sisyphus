@@ -3,6 +3,7 @@ import Pages from './pages';
 import ActionDurations from './actionDurations';
 import Actions from './actions';
 import ActionTypes from './actionTypes';
+import Ammos from './ammos';
 import Auth from './auth';
 import Bags from './bags';
 import Campaigns from './campaigns';
@@ -40,6 +41,7 @@ export {
   ActionDurations,
   Actions,
   ActionTypes,
+  Ammos,
   Auth,
   Bags,
   Campaigns,

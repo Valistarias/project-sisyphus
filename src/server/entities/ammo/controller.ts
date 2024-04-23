@@ -3,18 +3,18 @@ import { type Request, type Response } from 'express';
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
-import { type HydratedIBag } from './model';
+import { type HydratedIAmmo } from './model';
 
-const { Bag } = db;
+const { Ammo } = db;
 
-const findBags = async (): Promise<HydratedIBag[]> =>
+const findAmmos = async (): Promise<HydratedIAmmo[]> =>
   await new Promise((resolve, reject) => {
-    Bag.find()
+    Ammo.find()
       .then(async (res) => {
         if (res === undefined || res === null) {
-          reject(gemNotFound('Bags'));
+          reject(gemNotFound('Ammos'));
         } else {
-          resolve(res as HydratedIBag[]);
+          resolve(res as HydratedIAmmo[]);
         }
       })
       .catch(async (err: Error) => {
@@ -22,14 +22,14 @@ const findBags = async (): Promise<HydratedIBag[]> =>
       });
   });
 
-const findBagById = async (id: string): Promise<HydratedIBag> =>
+const findAmmoById = async (id: string): Promise<HydratedIAmmo> =>
   await new Promise((resolve, reject) => {
-    Bag.findById(id)
+    Ammo.findById(id)
       .then(async (res) => {
         if (res === undefined || res === null) {
-          reject(gemNotFound('Bag'));
+          reject(gemNotFound('Ammo'));
         } else {
-          resolve(res as HydratedIBag);
+          resolve(res as HydratedIAmmo);
         }
       })
       .catch(async (err: Error) => {
@@ -42,45 +42,46 @@ const create = (req: Request, res: Response): void => {
     title,
     summary,
     i18n = null,
-    storableItemTypes,
+    offsetToHit,
+    offsetDamage,
     rarity,
     itemType,
+    weaponTypes,
     itemModifiers,
     cost,
-    size,
   } = req.body;
   if (
     title === undefined ||
     summary === undefined ||
-    storableItemTypes === undefined ||
     rarity === undefined ||
-    size === undefined ||
     itemType === undefined ||
+    weaponTypes === undefined ||
     cost === undefined
   ) {
-    res.status(400).send(gemInvalidField('Bag'));
+    res.status(400).send(gemInvalidField('Ammo'));
     return;
   }
 
-  const bag = new Bag({
+  const ammo = new Ammo({
     title,
     summary,
     rarity,
     cost,
-    size,
     itemType,
-    storableItemTypes,
+    weaponTypes,
+    offsetToHit,
+    offsetDamage,
     itemModifiers,
   });
 
   if (i18n !== null) {
-    bag.i18n = JSON.stringify(i18n);
+    ammo.i18n = JSON.stringify(i18n);
   }
 
-  bag
+  ammo
     .save()
     .then(() => {
-      res.send(bag);
+      res.send(ammo);
     })
     .catch((err: Error) => {
       res.status(500).send(gemServerError(err));
@@ -93,49 +94,53 @@ const update = (req: Request, res: Response): void => {
     title = null,
     summary = null,
     i18n,
-    storableItemTypes = null,
+    offsetToHit = null,
+    offsetDamage = null,
     rarity = null,
+    itemType = null,
+    weaponTypes = null,
     itemModifiers = null,
     cost = null,
-    itemType = null,
-    size = null,
   } = req.body;
   if (id === undefined) {
-    res.status(400).send(gemInvalidField('Bag ID'));
+    res.status(400).send(gemInvalidField('Ammo ID'));
     return;
   }
 
-  findBagById(id as string)
-    .then((bag) => {
+  findAmmoById(id as string)
+    .then((ammo) => {
       if (title !== null) {
-        bag.title = title;
+        ammo.title = title;
       }
-      if (storableItemTypes !== null) {
-        bag.storableItemTypes = storableItemTypes;
+      if (offsetToHit !== null) {
+        ammo.offsetToHit = offsetToHit;
+      }
+      if (weaponTypes !== null) {
+        ammo.weaponTypes = weaponTypes;
       }
       if (summary !== null) {
-        bag.summary = summary;
+        ammo.summary = summary;
       }
-      if (size !== null) {
-        bag.size = size;
+      if (offsetDamage !== null) {
+        ammo.offsetDamage = offsetDamage;
       }
       if (rarity !== null) {
-        bag.rarity = rarity;
+        ammo.rarity = rarity;
       }
       if (itemType !== null) {
-        bag.itemType = itemType;
+        ammo.itemType = itemType;
       }
       if (itemModifiers !== null) {
-        bag.itemModifiers = itemModifiers;
+        ammo.itemModifiers = itemModifiers;
       }
       if (cost !== null) {
-        bag.cost = cost;
+        ammo.cost = cost;
       }
 
       if (i18n !== null) {
         const newIntl = {
-          ...(bag.i18n !== null && bag.i18n !== undefined && bag.i18n !== ''
-            ? JSON.parse(bag.i18n)
+          ...(ammo.i18n !== null && ammo.i18n !== undefined && ammo.i18n !== ''
+            ? JSON.parse(ammo.i18n)
             : {}),
         };
 
@@ -143,30 +148,30 @@ const update = (req: Request, res: Response): void => {
           newIntl[lang] = i18n[lang];
         });
 
-        bag.i18n = JSON.stringify(newIntl);
+        ammo.i18n = JSON.stringify(newIntl);
       }
 
-      bag
+      ammo
         .save()
         .then(() => {
-          res.send({ message: 'Bag was updated successfully!', bag });
+          res.send({ message: 'Ammo was updated successfully!', ammo });
         })
         .catch((err: Error) => {
           res.status(500).send(gemServerError(err));
         });
     })
     .catch(() => {
-      res.status(404).send(gemNotFound('Bag'));
+      res.status(404).send(gemNotFound('Ammo'));
     });
 };
 
-const deleteBagById = async (id: string): Promise<boolean> =>
+const deleteAmmoById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
-      reject(gemInvalidField('Bag ID'));
+      reject(gemInvalidField('Ammo ID'));
       return;
     }
-    Bag.findByIdAndDelete(id)
+    Ammo.findByIdAndDelete(id)
       .then(() => {
         resolve(true);
       })
@@ -175,48 +180,48 @@ const deleteBagById = async (id: string): Promise<boolean> =>
       });
   });
 
-const deleteBag = (req: Request, res: Response): void => {
+const deleteAmmo = (req: Request, res: Response): void => {
   const { id } = req.body;
 
-  findBagById(id as string)
+  findAmmoById(id as string)
     .then(() => {
-      deleteBagById(id as string)
+      deleteAmmoById(id as string)
         .then(() => {
-          res.send({ message: 'Bag was deleted successfully!' });
+          res.send({ message: 'Ammo was deleted successfully!' });
         })
         .catch((err: Error) => {
           res.status(500).send(gemServerError(err));
         });
     })
     .catch(() => {
-      res.status(404).send(gemNotFound('Bag'));
+      res.status(404).send(gemNotFound('Ammo'));
     });
 };
 
-interface CuratedIBag {
+interface CuratedIAmmo {
   i18n: Record<string, any> | Record<string, unknown>;
-  bag: any;
+  ammo: any;
 }
 
-const curateBag = (bag: HydratedIBag): Record<string, any> => {
-  if (bag.i18n === null || bag.i18n === '' || bag.i18n === undefined) {
+const curateAmmo = (ammo: HydratedIAmmo): Record<string, any> => {
+  if (ammo.i18n === null || ammo.i18n === '' || ammo.i18n === undefined) {
     return {};
   }
-  return JSON.parse(bag.i18n);
+  return JSON.parse(ammo.i18n);
 };
 
 const findSingle = (req: Request, res: Response): void => {
-  const { bagId } = req.query;
-  if (bagId === undefined || typeof bagId !== 'string') {
-    res.status(400).send(gemInvalidField('Bag ID'));
+  const { ammoId } = req.query;
+  if (ammoId === undefined || typeof ammoId !== 'string') {
+    res.status(400).send(gemInvalidField('Ammo ID'));
     return;
   }
-  findBagById(bagId)
-    .then((bagSent) => {
-      const bag = bagSent.toJSON();
+  findAmmoById(ammoId)
+    .then((ammoSent) => {
+      const ammo = ammoSent.toJSON();
       const sentObj = {
-        bag,
-        i18n: curateBag(bagSent),
+        ammo,
+        i18n: curateAmmo(ammoSent),
       };
       res.send(sentObj);
     })
@@ -226,20 +231,20 @@ const findSingle = (req: Request, res: Response): void => {
 };
 
 const findAll = (req: Request, res: Response): void => {
-  findBags()
-    .then((bags) => {
-      const curatedBags: CuratedIBag[] = [];
-      bags.forEach((bagSent) => {
-        const bag = bagSent.toJSON();
-        curatedBags.push({
-          bag,
-          i18n: curateBag(bagSent),
+  findAmmos()
+    .then((ammos) => {
+      const curatedAmmos: CuratedIAmmo[] = [];
+      ammos.forEach((ammoSent) => {
+        const ammo = ammoSent.toJSON();
+        curatedAmmos.push({
+          ammo,
+          i18n: curateAmmo(ammoSent),
         });
       });
 
-      res.send(curatedBags);
+      res.send(curatedAmmos);
     })
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteBag, findAll, findBagById, findSingle, update };
+export { create, deleteAmmo, findAll, findAmmoById, findSingle, update };

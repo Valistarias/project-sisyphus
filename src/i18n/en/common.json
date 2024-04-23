@@ -75,7 +75,8 @@
   "itemTypeNames": {
     "psm": "Pistol & SMG",
     "wep": "Weapon",
-    "bag": "Bag"
+    "bag": "Bag",
+    "amo": "Ammo"
   },
   "chapterTypeNames": {
     "default_one": "Info",

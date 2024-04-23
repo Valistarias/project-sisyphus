@@ -1,8 +1,10 @@
 import AdminPage from './admin';
+import AdminAmmosPage from './adminAmmos';
 import AdminBagsPage from './adminBags';
 import AdminCharParamsPage from './adminCharParams';
 import AdminCyberFramesPage from './adminCyberFrames';
 import AdminDamageTypesPage from './adminDamageTypes';
+import AdminEditAmmoPage from './adminEditAmmo';
 import AdminEditBagPage from './adminEditBag';
 import AdminEditChapterPage from './adminEditChapter';
 import AdminEditCharParamPage from './adminEditCharParam';
@@ -25,6 +27,7 @@ import AdminEditWeaponStylePage from './adminEditWeaponStyle';
 import AdminEditWeaponTypePage from './adminEditWeaponType';
 import AdminItemModifiersPage from './adminItemModifiers';
 import AdminItemTypesPage from './adminItemTypes';
+import AdminNewAmmoPage from './adminNewAmmo';
 import AdminNewBagPage from './adminNewBag';
 import AdminNewChapterPage from './adminNewChapter';
 import AdminNewCharParamPage from './adminNewCharParam';
@@ -73,10 +76,12 @@ import RuleBooksPage from './ruleBooks';
 import SignupPage from './signup';
 
 export {
+  AdminAmmosPage,
   AdminBagsPage,
   AdminCharParamsPage,
   AdminCyberFramesPage,
   AdminDamageTypesPage,
+  AdminEditAmmoPage,
   AdminEditBagPage,
   AdminEditChapterPage,
   AdminEditCharParamPage,
@@ -99,6 +104,7 @@ export {
   AdminEditWeaponTypePage,
   AdminItemModifiersPage,
   AdminItemTypesPage,
+  AdminNewAmmoPage,
   AdminNewBagPage,
   AdminNewChapterPage,
   AdminNewCharParamPage,

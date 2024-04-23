@@ -17,6 +17,7 @@ import DBConfig from './config/db.config';
 import ActionRoutes from './entities/action/routes';
 import ActionDurationRoutes from './entities/actionDuration/routes';
 import ActionTypeRoutes from './entities/actionType/routes';
+import AmmoRoutes from './entities/ammo/routes';
 import { verifyTokenSingIn } from './entities/auth/controller';
 import AuthRoutes from './entities/auth/routes';
 import BagRoutes from './entities/bag/routes';
@@ -151,6 +152,7 @@ WeaponTypeRoutes(apiRouter);
 DamageTypeRoutes(apiRouter);
 DamageRoutes(apiRouter);
 BagRoutes(apiRouter);
+AmmoRoutes(apiRouter);
 WeaponRoutes(apiRouter);
 
 // Global Router

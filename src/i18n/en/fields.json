@@ -405,5 +405,29 @@
   "bagStorableItemTypes": {
     "required": "You need to define storable item to this bag",
     "label": "Storable Item Types"
+  },
+  "nameAmmo": {
+    "required": "A Ammo Name is required",
+    "label": "Name"
+  },
+  "ammoSummary": {
+    "title": "Ammo Details"
+  },
+  "ammoItemModifiers": {
+    "label": "Ammo Modifiers"
+  },
+  "ammoCost": {
+    "required": "A Ammo Cost is required",
+    "label": "Cost for 1 ammo"
+  },
+  "ammoRarity": {
+    "required": "You need to define a Rarity to this ammo",
+    "label": "Ammo Rarity"
+  },
+  "ammoSize": {
+    "label": "Offset Damages"
+  },
+  "ammoOffsetToHit": {
+    "label": "Offset to Hit"
   }
 }

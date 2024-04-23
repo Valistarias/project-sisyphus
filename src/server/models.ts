@@ -4,6 +4,7 @@ import {
   ActionDurationModel,
   ActionModel,
   ActionTypeModel,
+  AmmoModel,
   BagModel,
   CampaignModel,
   ChapterModel,
@@ -40,6 +41,7 @@ import {
   type IAction,
   type IActionDuration,
   type IActionType,
+  type IAmmo,
   type IBag,
   type ICampaign,
   type IChapter,
@@ -138,6 +140,8 @@ interface DBType {
   ItemModifier: mongoose.Model<IItemModifier>;
   /** The Rarity model */
   Rarity: mongoose.Model<IRarity>;
+  /** The WeaponStyle model */
+  Ammo: mongoose.Model<IAmmo>;
   /** The WeaponScope model */
   WeaponScope: mongoose.Model<IWeaponScope>;
   /** The WeaponStyle model */
@@ -188,6 +192,7 @@ const db: DBType = {
   CyberFrameBranch: CyberFrameBranchModel(),
   Node: NodeModel(),
   // Items models
+  Ammo: AmmoModel(),
   Bag: BagModel(),
   ItemModifier: ItemModifierModel(),
   ItemType: ItemTypeModel(),

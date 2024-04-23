@@ -2,6 +2,7 @@ import {
   ActionDurations,
   ActionTypes,
   Actions,
+  Ammos,
   Auth,
   Bags,
   Campaigns,
@@ -38,6 +39,7 @@ import {
 } from './entities/index';
 
 export default class Api {
+  ammos: Ammos;
   actionDurations: ActionDurations;
   actions: Actions;
   actionTypes: ActionTypes;
@@ -79,6 +81,7 @@ export default class Api {
     this.actionDurations = new ActionDurations();
     this.actions = new Actions();
     this.actionTypes = new ActionTypes();
+    this.ammos = new Ammos();
     this.auth = new Auth();
     this.bags = new Bags();
     this.campaigns = new Campaigns();

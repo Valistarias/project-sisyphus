@@ -1,6 +1,6 @@
 @use '../../assets/scss/index';
 
-.adminEditBag {
+.adminEditAmmo {
   @include index.basic-page;
 
   &__head {
@@ -146,11 +146,11 @@
   }
 
   &--int-visible {
-    .adminEditBag__intl {
+    .adminEditAmmo__intl {
       display: block;
     }
 
-    .adminEditBag__intl-title__btn {
+    .adminEditAmmo__intl-title__btn {
       transform: rotate(180deg);
     }
   }
