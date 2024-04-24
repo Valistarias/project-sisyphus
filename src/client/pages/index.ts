@@ -15,7 +15,9 @@ import AdminEditItemModifierPage from './adminEditItemModifier';
 import AdminEditItemTypePage from './adminEditItemType';
 import AdminEditNodePage from './adminEditNode';
 import AdminEditNotionPage from './adminEditNotion';
+import AdminEditNPCPage from './adminEditNPC';
 import AdminEditPage from './adminEditPage';
+import AdminEditProgramScopePage from './adminEditProgramScope';
 import AdminEditRarityPage from './adminEditRarity';
 import AdminEditRuleBookPage from './adminEditRuleBook';
 import AdminEditSkillPage from './adminEditSkill';
@@ -38,7 +40,9 @@ import AdminNewItemModifierPage from './adminNewItemModifier';
 import AdminNewItemTypePage from './adminNewItemType';
 import AdminNewNodePage from './adminNewNode';
 import AdminNewNotionPage from './adminNewNotion';
+import AdminNewNPCPage from './adminNewNPC';
 import AdminNewPage from './adminNewPage';
+import AdminNewProgramScopePage from './adminNewProgramScope';
 import AdminNewRarityPage from './adminNewRarity';
 import AdminNewRuleBookPage from './adminNewRuleBook';
 import AdminNewSkillPage from './adminNewSkill';
@@ -48,6 +52,8 @@ import AdminNewWeaponPage from './adminNewWeapon';
 import AdminNewWeaponScopePage from './adminNewWeaponScope';
 import AdminNewWeaponStylePage from './adminNewWeaponStyle';
 import AdminNewWeaponTypePage from './adminNewWeaponType';
+import AdminNPCsPage from './adminNPCs';
+import AdminProgramScopesPage from './adminProgramScopes';
 import AdminRaritiesPage from './adminRarities';
 import AdminRuleBooksPage from './adminRuleBooks';
 import AdminSkillsPage from './adminSkills';
@@ -92,7 +98,9 @@ export {
   AdminEditItemTypePage,
   AdminEditNodePage,
   AdminEditNotionPage,
+  AdminEditNPCPage,
   AdminEditPage,
+  AdminEditProgramScopePage,
   AdminEditRarityPage,
   AdminEditRuleBookPage,
   AdminEditSkillBranchPage,
@@ -115,7 +123,9 @@ export {
   AdminNewItemTypePage,
   AdminNewNodePage,
   AdminNewNotionPage,
+  AdminNewNPCPage,
   AdminNewPage,
+  AdminNewProgramScopePage,
   AdminNewRarityPage,
   AdminNewRuleBookPage,
   AdminNewSkillBranchPage,
@@ -125,7 +135,9 @@ export {
   AdminNewWeaponScopePage,
   AdminNewWeaponStylePage,
   AdminNewWeaponTypePage,
+  AdminNPCsPage,
   AdminPage,
+  AdminProgramScopesPage,
   AdminRaritiesPage,
   AdminRuleBooksPage,
   AdminSkillsPage,

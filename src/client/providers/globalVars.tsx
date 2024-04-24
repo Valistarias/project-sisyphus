@@ -22,6 +22,7 @@ import type {
   ICuratedCyberFrame,
   ICuratedDamageType,
   ICuratedItemModifier,
+  ICuratedProgramScope,
   ICuratedRarity,
   ICuratedRuleBook,
   ICuratedSkill,
@@ -72,6 +73,8 @@ interface IGlobalVarsContext {
   weaponStyles: ICuratedWeaponStyle[];
   /** All the loaded weapon types */
   weaponTypes: ICuratedWeaponType[];
+  /** All the loaded program scopes */
+  programScopes: ICuratedProgramScope[];
   /** Used to set the actual character */
   setCharacter: (id: string) => void;
   /** Used to reset the actual character */
@@ -102,6 +105,8 @@ interface IGlobalVarsContext {
   reloadWeaponStyles: () => void;
   /** Used to trigger the reload of the weapon types */
   reloadWeaponTypes: () => void;
+  /** Used to trigger the reload of the program scopes */
+  reloadProgramScopes: () => void;
   /** Used to trigger the reload of all dynamic elements */
   reloadAll: () => void;
 }
@@ -145,6 +150,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
   const [weaponScopes, setWeaponScopes] = useState<ICuratedWeaponScope[]>([]);
   const [weaponStyles, setWeaponStyles] = useState<ICuratedWeaponStyle[]>([]);
   const [weaponTypes, setWeaponTypes] = useState<ICuratedWeaponType[]>([]);
+  const [programScopes, setProgramScopes] = useState<ICuratedProgramScope[]>([]);
 
   const getAllFromApi = useCallback(
     (request: string, setState: React.Dispatch<React.SetStateAction<any>>) => {
@@ -223,6 +229,10 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
     getAllFromApi('damageTypes', setDamageTypes);
   }, [getAllFromApi]);
 
+  const loadProgramScopes = useCallback(() => {
+    getAllFromApi('programScopes', setProgramScopes);
+  }, [getAllFromApi]);
+
   const setCharacterFromId = useCallback(
     (id: string) => {
       if (api === undefined || id === undefined) {
@@ -277,6 +287,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
             loadWeaponScopes();
             loadWeaponStyles();
             loadWeaponTypes();
+            loadProgramScopes();
           }
           setLoading(false);
         })
@@ -301,6 +312,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
     loadWeaponTypes,
     loadDamageTypes,
     loadItemTypes,
+    loadProgramScopes,
   ]);
 
   useEffect(() => {
@@ -325,6 +337,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       weaponStyles,
       weaponTypes,
       damageTypes,
+      programScopes,
       itemTypes,
       reloadAll: () => {
         loadCampaigns();
@@ -342,6 +355,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
         loadWeaponStyles();
         loadWeaponTypes();
         loadItemTypes();
+        loadProgramScopes();
       },
       reloadCampaigns: loadCampaigns,
       reloadCharParams: loadCharParams,
@@ -357,6 +371,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       reloadWeaponTypes: loadWeaponTypes,
       reloadDamageTypes: loadDamageTypes,
       reloadItemTypes: loadItemTypes,
+      reloadProgramScopes: loadProgramScopes,
       character,
       ruleBooks,
       resetCharacter,
@@ -378,6 +393,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       weaponStyles,
       weaponTypes,
       damageTypes,
+      programScopes,
       itemTypes,
       loadCampaigns,
       loadCharParams,
@@ -393,6 +409,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       loadWeaponTypes,
       loadDamageTypes,
       loadItemTypes,
+      loadProgramScopes,
       character,
       ruleBooks,
       resetCharacter,

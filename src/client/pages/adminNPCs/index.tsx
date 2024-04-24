@@ -7,52 +7,52 @@ import { useApi, useSystemAlerts } from '../../providers';
 import { Ali, Ap, Atitle, Aul } from '../../atoms';
 import { Button } from '../../molecules';
 import { Alert } from '../../organisms';
-import { type ICuratedWeapon } from '../../types';
+import { type ICuratedNPC } from '../../types';
 
 import { classTrim } from '../../utils';
 
-import './adminWeapons.scss';
+import './adminNPCs.scss';
 
-const AdminWeapons: FC = () => {
+const AdminNPCs: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
 
   const calledApi = useRef(false);
 
-  const [weapons, setWeapons] = useState<ICuratedWeapon[]>([]);
+  const [nPCs, setNPCs] = useState<ICuratedNPC[]>([]);
 
   // TODO: Handle i18n in place of basic english language
-  const weaponsList = useMemo(() => {
-    if (weapons === null || weapons.length === 0) {
+  const nPCsList = useMemo(() => {
+    if (nPCs === null || nPCs.length === 0) {
       return null;
     }
     return (
-      <Aul className="adminWeapons__weapon-list" noPoints>
-        {weapons.map(({ weapon }) => (
+      <Aul className="adminNPCs__nPC-list" noPoints>
+        {nPCs.map(({ nPC }) => (
           <Ali
             className={classTrim(`
-              adminWeapons__weapon-list__elt
+              adminNPCs__nPC-list__elt
             `)}
-            key={weapon._id}
+            key={nPC._id}
           >
-            <Atitle level={3}>{weapon.title}</Atitle>
-            <Button href={`/admin/weapon/${weapon._id}`}>
-              {t('adminWeapons.editWeapon', { ns: 'pages' })}
+            <Atitle level={3}>{nPC.title}</Atitle>
+            <Button href={`/admin/npc/${nPC._id}`}>
+              {t('adminNPCs.editNPC', { ns: 'pages' })}
             </Button>
           </Ali>
         ))}
       </Aul>
     );
-  }, [weapons, t]);
+  }, [nPCs, t]);
 
   useEffect(() => {
     if (api !== undefined && !calledApi.current) {
       calledApi.current = true;
-      api.weapons
+      api.nPCs
         .getAll()
-        .then((curatedWeapons: ICuratedWeapon[]) => {
-          setWeapons(curatedWeapons);
+        .then((curatedNPCs: ICuratedNPC[]) => {
+          setNPCs(curatedNPCs);
         })
         .catch(() => {
           const newId = getNewId();
@@ -69,17 +69,17 @@ const AdminWeapons: FC = () => {
   }, [api, createAlert, getNewId, t]);
 
   return (
-    <div className="adminWeapons">
-      <Atitle level={1}>{t('adminWeapons.title', { ns: 'pages' })}</Atitle>
-      <div className="adminWeapons__content">
-        <div className="adminWeapons__weapons">
-          <Atitle level={2}>{t('adminWeapons.list', { ns: 'pages' })}</Atitle>
-          <div className="adminWeapons__weapons__list">{weaponsList}</div>
-          <Button href="/admin/weapon/new">{t('adminNewWeapon.title', { ns: 'pages' })}</Button>
+    <div className="adminNPCs">
+      <Atitle level={1}>{t('adminNPCs.title', { ns: 'pages' })}</Atitle>
+      <div className="adminNPCs__content">
+        <div className="adminNPCs__nPCs">
+          <Atitle level={2}>{t('adminNPCs.list', { ns: 'pages' })}</Atitle>
+          <div className="adminNPCs__nPCs__list">{nPCsList}</div>
+          <Button href="/admin/nPC/new">{t('adminNewNPC.title', { ns: 'pages' })}</Button>
         </div>
       </div>
     </div>
   );
 };
 
-export default AdminWeapons;
+export default AdminNPCs;

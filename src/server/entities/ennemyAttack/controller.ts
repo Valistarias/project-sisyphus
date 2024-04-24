@@ -48,6 +48,7 @@ interface ISentEnnemyAttack {
   damageType: string;
   weaponScope: string;
   dices: string;
+  bonusToHit: number;
   i18n?: {
     title: string;
     summary: string;
@@ -72,6 +73,7 @@ const updateEnnemyAttacks = (
     damageType = null,
     weaponScope = null,
     dices = null,
+    bonusToHit = null,
   } = elts[0];
   if (id === undefined) {
     const ennemyAttack = new EnnemyAttack({
@@ -80,6 +82,7 @@ const updateEnnemyAttacks = (
       damageType,
       weaponScope,
       dices,
+      bonusToHit,
     });
 
     if (i18n !== null) {
@@ -113,6 +116,9 @@ const updateEnnemyAttacks = (
         }
         if (weaponScope !== null) {
           ennemyAttack.weaponScope = weaponScope;
+        }
+        if (bonusToHit !== null) {
+          ennemyAttack.bonusToHit = bonusToHit;
         }
 
         if (i18n !== null) {
@@ -174,7 +180,7 @@ const smartUpdateAttacks = async ({
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, summary, i18n = null, damageType, dices, weaponScope } = req.body;
+  const { title, summary, i18n = null, damageType, dices, weaponScope, bonusToHit } = req.body;
   if (
     title === undefined ||
     summary === undefined ||
@@ -192,6 +198,7 @@ const create = (req: Request, res: Response): void => {
     damageType,
     weaponScope,
     dices,
+    bonusToHit,
   });
 
   if (i18n !== null) {
@@ -217,6 +224,7 @@ const update = (req: Request, res: Response): void => {
     damageType = null,
     dices = null,
     weaponScope = null,
+    bonusToHit = null,
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('EnnemyAttack ID'));
@@ -238,6 +246,9 @@ const update = (req: Request, res: Response): void => {
       }
       if (weaponScope !== null) {
         ennemyAttack.weaponScope = weaponScope;
+      }
+      if (bonusToHit !== null) {
+        ennemyAttack.bonusToHit = bonusToHit;
       }
 
       if (i18n !== null) {

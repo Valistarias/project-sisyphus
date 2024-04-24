@@ -1,0 +1,40 @@
+@use '../../assets/scss/index';
+
+.adminNewProgramScope {
+  @include index.basic-page;
+
+  &__content {
+    margin-bottom: 10vh;
+  }
+
+  &__basics {
+    display: flex;
+    flex-direction: row;
+    gap: 10rem;
+    margin-bottom: 2em;
+
+    &__name {
+      width: 100%;
+    }
+  }
+
+  &__details {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  &__error {
+    margin-bottom: 2rem;
+  }
+
+  &__intl {
+    margin-bottom: 1rem;
+    margin-top: 6rem;
+  }
+
+  &__intl-info {
+    margin-bottom: 4rem;
+  }
+}

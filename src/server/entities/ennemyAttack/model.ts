@@ -15,6 +15,8 @@ interface IEnnemyAttack {
   weaponScope: ObjectId | string;
   /** The dices formula of the damage (ex: 2d6 + 1) */
   dices: string;
+  /** The bonus to roll this attack */
+  bonusToHit?: number;
   /** When the Ennemy Attack was created */
   createdAt: Date;
 }
@@ -36,6 +38,7 @@ const ennemyAttackSchema = new Schema<IEnnemyAttack>({
     ref: 'WeaponScope',
   },
   dices: String,
+  bonusToHit: Number,
   createdAt: {
     type: Date,
     default: Date.now,

@@ -56,7 +56,8 @@ const create = (req: Request, res: Response): void => {
     programScope,
     cost,
     ai,
-    disposable,
+    aiSummoned,
+    uses,
     radius,
     damages,
   } = req.body;
@@ -83,8 +84,9 @@ const create = (req: Request, res: Response): void => {
     itemType,
     radius,
     ai,
+    aiSummoned,
     programScope,
-    disposable,
+    uses,
   });
 
   if (i18n !== null) {
@@ -129,7 +131,8 @@ const update = (req: Request, res: Response): void => {
     programScope = null,
     cost = null,
     ai = null,
-    disposable = null,
+    aiSummoned = null,
+    uses = null,
     radius = null,
     damages = null,
   } = req.body;
@@ -158,11 +161,14 @@ const update = (req: Request, res: Response): void => {
       if (itemType !== null) {
         program.itemType = itemType;
       }
+      if (aiSummoned !== null) {
+        program.aiSummoned = aiSummoned;
+      }
       if (ai !== null) {
         program.ai = ai;
       }
-      if (disposable !== null) {
-        program.disposable = disposable;
+      if (uses !== null) {
+        program.uses = uses;
       }
       if (radius !== null) {
         program.radius = radius;

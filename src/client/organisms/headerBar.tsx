@@ -172,8 +172,16 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
                   text: t('adminWeaponTypes.title', { ns: 'pages' }),
                 },
                 {
+                  href: '/admin/programscopes',
+                  text: t('adminProgramScopes.title', { ns: 'pages' }),
+                },
+                {
                   href: '/admin/damagetypes',
                   text: t('adminDamageTypes.title', { ns: 'pages' }),
+                },
+                {
+                  href: '/admin/npcs',
+                  text: t('adminNPCs.title', { ns: 'pages' }),
                 },
                 {
                   href: '/admin/dicecomp',

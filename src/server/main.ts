@@ -69,7 +69,7 @@ const io = new Server(httpServer);
 
 // Env vars
 const port = process.env.PORT ?? 3000;
-const mailgunApi = process.env.MNPCLGUN_API_KEY ?? '';
+const mailgunApi = process.env.MAILGUN_API_KEY ?? '';
 const cookieSecret = process.env.COOKIE_SECRET;
 
 const mailgun = new Mailgun(formData);

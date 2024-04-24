@@ -15,8 +15,8 @@ interface IProgram {
   itemType: ObjectId;
   /** The type of program, as his range or type */
   programScope: ObjectId;
-  /** Is the program deleted after use */
-  disposable: boolean;
+  /** How many times the program is usable before detroying itseld (undefined | 0 = no limits) */
+  uses: number;
   /** How many RAM it costs */
   ram: number;
   /** How many meters it blasts (in meter) */
@@ -25,6 +25,8 @@ interface IProgram {
   cost: number;
   /** The summon of the program */
   ai?: ObjectId;
+  /** How many AIs the program summons */
+  aiSummoned?: number;
   /** The damages of the program */
   damages?: string[] | ObjectId[];
   /** When the program was created */
@@ -41,6 +43,7 @@ const programSchema = new Schema<IProgram>({
   summary: String,
   ram: Number,
   radius: Number,
+  aiSummoned: Number,
   i18n: String,
   rarity: {
     type: Schema.Types.ObjectId,
@@ -64,10 +67,7 @@ const programSchema = new Schema<IProgram>({
       ref: 'Damage',
     },
   ],
-  disposable: {
-    type: Boolean,
-    default: false,
-  },
+  uses: Number,
   cost: Number,
   createdAt: {
     type: Date,

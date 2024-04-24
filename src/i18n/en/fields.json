@@ -429,5 +429,72 @@
   },
   "ammoOffsetToHit": {
     "label": "Offset to Hit"
+  },
+  "nameProgramScope": {
+    "required": "A Program Class is required",
+    "label": "Class"
+  },
+  "programScopeSummary": {
+    "title": "Program Class Details"
+  },
+  "programScopeFormula": {
+    "required": "An Identifier is required",
+    "format": "The format of the identifier is wrong. You need three letters in lower case",
+    "label": "Program Scope ID (For displaying purposes, never displayed as is). This needs to be a lower case three letter string"
+  },
+  "nameNPC": {
+    "required": "A name is required for this NPC",
+    "label": "NPC Name"
+  },
+  "nPCSummary": {
+    "title": "NPC Details"
+  },
+  "hpNPC": {
+    "required": "HP value is required for all NPCs",
+    "label": "Health Points"
+  },
+  "arNPC": {
+    "required": "ArtNet Resistance value is required for all NPCs",
+    "label": "ArtNet Resistance"
+  },
+  "prNPC": {
+    "label": "Physical Resistance"
+  },
+  "speedNPC": {
+    "required": "A Speed is required for all NPCs",
+    "label": "Speed (in m)"
+  },
+  "flightSpeedNPC": {
+    "label": "Flight Speed (in m)"
+  },
+  "swimSpeedNPC": {
+    "label": "Swim Speed (in m)"
+  },
+  "isVirtualNPC": {
+    "required": "You need to specify of the NPC is an AI",
+    "label": "Is an AI ?"
+  },
+  "attackTitle": {
+    "required": "A title is required for this attack",
+    "label": "Title"
+  },
+  "attackDamageType": {
+    "required": "A Damage Type is required for this attack",
+    "label": "Damage Type"
+  },
+  "attackWeaponScope": {
+    "required": "A range is required for this attack",
+    "label": "Range"
+  },
+  "attackSummary": {
+    "required": "A summary is required for this attack",
+    "label": "Summary"
+  },
+  "attackDices": {
+    "required": "A title is required for this attack",
+    "label": "Damage Dices (ex: 2d6+1)"
+  },
+  "attackBonusToHit": {
+    "label": "Bonus to hit the target"
   }
 }

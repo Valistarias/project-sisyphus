@@ -810,9 +810,6 @@ const AdminEditNode: FC = () => {
       `)}
     >
       <form className="adminEditNode__content" onSubmit={handleSubmit(onSaveNode)} noValidate>
-        {/* <Atitle className="adminEditNode__head" rank={1}>
-          {t('adminEditNode.title', { ns: 'pages' })}
-        </Atitle> */}
         <div className="adminEditNode__head">
           <Atitle className="adminEditNode__head" rank={1}>
             {t('adminEditNode.title', { ns: 'pages' })}

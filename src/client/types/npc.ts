@@ -9,13 +9,15 @@ export interface IEnnemyAttack {
   /** A summary of the Ennemy Attack */
   summary: string;
   /** The internationnal content, as a json, stringified */
-  i18n?: string;
+  i18n: InternationalizationType;
   /** The associated damageType */
   damageType: string;
   /** The range of the attack */
   weaponScope: string;
   /** The dices formula of the damage (ex: 2d6 + 1) */
   dices: string;
+  /** The bonus to roll this attack */
+  bonusToHit?: number;
   /** When the Ennemy Attack was created */
   createdAt: Date;
 }

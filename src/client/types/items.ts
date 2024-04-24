@@ -294,8 +294,8 @@ export interface IProgram {
   itemType: string;
   /** The type of program, as his range or type */
   programScope: string;
-  /** Is the program deleted after use */
-  disposable: boolean;
+  /** How many times the program is usable before detroying itseld (undefined | 0 = no limits) */
+  uses: number;
   /** How many RAM it costs */
   ram: number;
   /** How many meters it blasts (in meter) */
@@ -304,6 +304,8 @@ export interface IProgram {
   cost: number;
   /** The summon of the program */
   ai?: INPC;
+  /** How many AIs the program summons */
+  aiSummoned?: number;
   /** The damages of the program */
   damages?: IDamage[];
   /** When the program was created */

@@ -261,12 +261,22 @@ const findSingle = (req: Request, res: Response): void => {
   }
   findNPCById(nPCId)
     .then((nPCSent) => {
+      const curatedActions =
+        nPCSent.attacks.length > 0
+          ? nPCSent.attacks.map((action) => {
+              const data = action.toJSON();
+              return {
+                ...data,
+                ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+              };
+            })
+          : [];
       const nPC = nPCSent.toJSON();
-      const sentObj = {
+      nPC.attacks = curatedActions;
+      res.send({
         nPC,
         i18n: curateNPC(nPCSent),
-      };
-      res.send(sentObj);
+      });
     })
     .catch((err: Error) => {
       res.status(404).send(err);
@@ -277,8 +287,20 @@ const findAll = (req: Request, res: Response): void => {
   findNPCs()
     .then((nPCs) => {
       const curatedNPCs: CuratedINPC[] = [];
+
       nPCs.forEach((nPCSent) => {
+        const curatedActions =
+          nPCSent.attacks.length > 0
+            ? nPCSent.attacks.map((action) => {
+                const data = action.toJSON();
+                return {
+                  ...data,
+                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                };
+              })
+            : [];
         const nPC = nPCSent.toJSON();
+        nPC.attacks = curatedActions;
         curatedNPCs.push({
           nPC,
           i18n: curateNPC(nPCSent),
