@@ -22,7 +22,7 @@ import type {
   IWeaponStyle,
   IWeaponType,
 } from './items';
-import type { ICuratedEnnemyAttack, ICuratedNPC } from './npc';
+import type { ICuratedBasicNPC, ICuratedEnnemyAttack, ICuratedNPC } from './npc';
 import type {
   IChapter,
   IChapterType,
@@ -74,6 +74,7 @@ export type {
   ICuratedAction,
   ICuratedAmmo,
   ICuratedBag,
+  ICuratedBasicNPC,
   ICuratedChapter,
   ICuratedCharParam,
   ICuratedCyberFrame,

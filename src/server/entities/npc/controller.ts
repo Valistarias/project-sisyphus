@@ -6,7 +6,7 @@ import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/global
 import { smartUpdateAttacks } from '../ennemyAttack/controller';
 import { type IEnnemyAttack } from '../index';
 
-import { type HydratedINPC } from './model';
+import { type BasicHydratedINPC, type HydratedINPC } from './model';
 
 const { NPC } = db;
 
@@ -19,6 +19,21 @@ const findNPCs = async (): Promise<HydratedINPC[]> =>
           reject(gemNotFound('NPCs'));
         } else {
           resolve(res as HydratedINPC[]);
+        }
+      })
+      .catch(async (err: Error) => {
+        reject(err);
+      });
+  });
+
+const basicListNPCs = async (): Promise<BasicHydratedINPC[]> =>
+  await new Promise((resolve, reject) => {
+    NPC.find()
+      .then(async (res) => {
+        if (res === undefined || res === null) {
+          reject(gemNotFound('NPCs'));
+        } else {
+          resolve(res as BasicHydratedINPC[]);
         }
       })
       .catch(async (err: Error) => {
@@ -246,7 +261,7 @@ interface CuratedINPC {
   nPC: any;
 }
 
-const curateNPC = (nPC: HydratedINPC): Record<string, any> => {
+const curateNPC = (nPC: HydratedINPC | BasicHydratedINPC): Record<string, any> => {
   if (nPC.i18n === null || nPC.i18n === '' || nPC.i18n === undefined) {
     return {};
   }
@@ -312,4 +327,22 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteNPC, findAll, findNPCById, findSingle, update };
+const findAllBasic = (req: Request, res: Response): void => {
+  basicListNPCs()
+    .then((nPCs) => {
+      const curatedNPCs: CuratedINPC[] = [];
+
+      nPCs.forEach((nPCSent) => {
+        const nPC = nPCSent.toJSON();
+        curatedNPCs.push({
+          nPC,
+          i18n: curateNPC(nPCSent),
+        });
+      });
+
+      res.send(curatedNPCs);
+    })
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+};
+
+export { create, deleteNPC, findAll, findAllBasic, findNPCById, findSingle, update };

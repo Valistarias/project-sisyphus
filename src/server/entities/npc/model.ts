@@ -29,7 +29,9 @@ interface INPC {
   createdAt: Date;
 }
 
-interface HydratedINPC extends Omit<HydratedDocument<INPC>, 'attacks'> {
+interface BasicHydratedINPC extends HydratedDocument<INPC> {}
+
+interface HydratedINPC extends Omit<BasicHydratedINPC, 'attacks'> {
   attacks: IEnnemyAttack[] | string[];
 }
 
@@ -61,4 +63,4 @@ const nPCSchema = new Schema<INPC>({
 
 const NPCModel = (): Model<INPC> => model('NPC', nPCSchema);
 
-export { NPCModel, type HydratedINPC, type INPC };
+export { NPCModel, type BasicHydratedINPC, type HydratedINPC, type INPC };

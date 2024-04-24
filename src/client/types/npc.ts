@@ -57,7 +57,17 @@ export interface INPC {
   createdAt: Date;
 }
 
+export interface BasicNPC extends Omit<INPC, 'attacks'> {
+  /** The attacks of the NPC */
+  attacks: string[];
+}
+
 export interface ICuratedNPC {
   i18n: InternationalizationType;
   nPC: INPC;
+}
+
+export interface ICuratedBasicNPC {
+  i18n: InternationalizationType;
+  nPC: BasicNPC;
 }

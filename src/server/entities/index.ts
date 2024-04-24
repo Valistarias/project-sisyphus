@@ -41,7 +41,7 @@ export { ItemTypeModel, type IItemType } from './itemType/model';
 export { MailTokenModel, type IMailToken } from './mailToken/model';
 export { NodeModel, type HydratedINode, type INode } from './node/model';
 export { NotionModel, type HydratedNotion, type INotion } from './notion/model';
-export { NPCModel, type HydratedINPC, type INPC } from './npc/model';
+export { NPCModel, type BasicHydratedINPC, type HydratedINPC, type INPC } from './npc/model';
 export { PageModel, type HydratedIPage, type IPage } from './page/model';
 export { ProgramModel, type HydratedIProgram, type IProgram } from './program/model';
 export {

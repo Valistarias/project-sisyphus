@@ -25,6 +25,7 @@ import {
   Notions,
   Pages,
   ProgramScopes,
+  Programs,
   Rarities,
   Rolls,
   RuleBookTypes,
@@ -42,10 +43,10 @@ import {
 } from './entities/index';
 
 export default class Api {
-  ammos: Ammos;
   actionDurations: ActionDurations;
   actions: Actions;
   actionTypes: ActionTypes;
+  ammos: Ammos;
   auth: Auth;
   bags: Bags;
   campaigns: Campaigns;
@@ -59,12 +60,16 @@ export default class Api {
   damages: Damages;
   damageTypes: DamageTypes;
   effects: Effects;
-  itemTypes: ItemTypes;
+  ennemyAttacks: EnnemyAttacks;
   itemModifiers: ItemModifiers;
+  itemTypes: ItemTypes;
   mailToken: MailToken;
   nodes: Nodes;
   notions: Notions;
+  nPCs: NPCs;
   pages: Pages;
+  programs: Programs;
+  programScopes: ProgramScopes;
   rarities: Rarities;
   rolls: Rolls;
   ruleBooks: RuleBooks;
@@ -79,9 +84,6 @@ export default class Api {
   weaponScopes: WeaponScopes;
   weaponStyles: WeaponStyles;
   weaponTypes: WeaponTypes;
-  programScopes: ProgramScopes;
-  nPCs: NPCs;
-  ennemyAttacks: EnnemyAttacks;
 
   constructor() {
     this.actionDurations = new ActionDurations();
@@ -109,6 +111,7 @@ export default class Api {
     this.notions = new Notions();
     this.nPCs = new NPCs();
     this.pages = new Pages();
+    this.programs = new Programs();
     this.programScopes = new ProgramScopes();
     this.rarities = new Rarities();
     this.rolls = new Rolls();
