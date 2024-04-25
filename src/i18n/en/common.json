@@ -76,7 +76,8 @@
     "psm": "Pistol & SMG",
     "wep": "Weapon",
     "bag": "Bag",
-    "amo": "Ammo"
+    "amo": "Ammo",
+    "pro": "Program"
   },
   "chapterTypeNames": {
     "default_one": "Info",

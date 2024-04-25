@@ -18,6 +18,7 @@ import {
   Damages,
   Effects,
   EnnemyAttacks,
+  Implants,
   ItemModifiers,
   ItemTypes,
   MailToken,
@@ -50,6 +51,7 @@ export default class Api {
   ammos: Ammos;
   auth: Auth;
   bags: Bags;
+  bodyParts: BodyParts;
   campaigns: Campaigns;
   chapters: Chapters;
   chapterTypes: ChapterTypes;
@@ -62,6 +64,7 @@ export default class Api {
   damageTypes: DamageTypes;
   effects: Effects;
   ennemyAttacks: EnnemyAttacks;
+  implants: Implants;
   itemModifiers: ItemModifiers;
   itemTypes: ItemTypes;
   mailToken: MailToken;
@@ -85,7 +88,6 @@ export default class Api {
   weaponScopes: WeaponScopes;
   weaponStyles: WeaponStyles;
   weaponTypes: WeaponTypes;
-  bodyParts: BodyParts;
 
   constructor() {
     this.actionDurations = new ActionDurations();
@@ -107,6 +109,7 @@ export default class Api {
     this.damageTypes = new DamageTypes();
     this.effects = new Effects();
     this.ennemyAttacks = new EnnemyAttacks();
+    this.implants = new Implants();
     this.itemModifiers = new ItemModifiers();
     this.itemTypes = new ItemTypes();
     this.mailToken = new MailToken();

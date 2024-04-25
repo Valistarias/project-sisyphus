@@ -19,6 +19,7 @@ import Damages from './damages';
 import DamageTypes from './damageTypes';
 import Effects from './effects';
 import EnnemyAttacks from './ennemyAttacks';
+import Implants from './implants';
 import ItemModifiers from './itemModifiers';
 import ItemTypes from './itemTypes';
 import MailToken from './mailToken';
@@ -62,6 +63,7 @@ export {
   DamageTypes,
   Effects,
   EnnemyAttacks,
+  Implants,
   ItemModifiers,
   ItemTypes,
   MailToken,

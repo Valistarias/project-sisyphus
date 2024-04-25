@@ -1,6 +1,13 @@
 import { type InternationalizationType } from './global';
 import { type ICuratedNPC } from './npc';
-import { type IAction, type IEffect, type ISkill } from './rules';
+import {
+  type IAction,
+  type ICharParamBonus,
+  type IEffect,
+  type ISkill,
+  type ISkillBonus,
+  type IStatBonus,
+} from './rules';
 
 // DamageTypes ------------------------------------
 export interface IDamageType {
@@ -278,7 +285,6 @@ export interface ICuratedProgramScope {
 }
 
 // Program ------------------------------------
-
 export interface IProgram {
   /** The ID of the weapon scope */
   _id: string;
@@ -315,4 +321,40 @@ export interface IProgram {
 export interface ICuratedProgram {
   i18n: InternationalizationType;
   program: IProgram;
+}
+// Implants ------------------------------------
+export interface IImplant {
+  /** The ID of the stat bonus */
+  _id: string;
+  /** The title of the implant */
+  title: string;
+  /** A summary of the implant */
+  summary: string;
+  /** The internationnal content, as a json, stringified */
+  i18n?: InternationalizationType;
+  /** The rarity of the implant */
+  rarity: string;
+  /** The cost of the implant */
+  cost: number;
+  /** The type of item */
+  itemType: string;
+  /** All the body parts that can install this implant */
+  bodyParts: string[];
+  /** The effects related to the implant */
+  effects?: IEffect[];
+  /** The actions related to the implant */
+  actions?: IAction[];
+  /** The skill bonuses related to the implant */
+  skillBonuses?: ISkillBonus[];
+  /** The stat bonuses related to the implant */
+  statBonuses?: IStatBonus[];
+  /** The charParam bonuses related to the implant */
+  charParamBonuses?: ICharParamBonus[];
+  /** When the stat bonus was created */
+  createdAt: Date;
+}
+
+export interface ICuratedImplant {
+  i18n: InternationalizationType;
+  implant: IImplant;
 }

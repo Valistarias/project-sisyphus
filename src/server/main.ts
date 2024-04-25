@@ -34,6 +34,7 @@ import DamageRoutes from './entities/damage/routes';
 import DamageTypeRoutes from './entities/damageType/routes';
 import EffectRoutes from './entities/effect/routes';
 import EnnemyAttackRoutes from './entities/ennemyAttack/routes';
+import ImplantRoutes from './entities/implant/routes';
 import ItemModifierRoutes from './entities/itemModifier/routes';
 import ItemTypeRoutes from './entities/itemType/routes';
 import { verifyMailToken } from './entities/mailToken/controller';
@@ -162,6 +163,7 @@ WeaponRoutes(apiRouter);
 WeaponScopeRoutes(apiRouter);
 WeaponStyleRoutes(apiRouter);
 WeaponTypeRoutes(apiRouter);
+ImplantRoutes(apiRouter);
 
 // NPC routes
 EnnemyAttackRoutes(apiRouter);

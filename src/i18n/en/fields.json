@@ -430,6 +430,9 @@
   "ammoOffsetToHit": {
     "label": "Offset to Hit"
   },
+  "ammoOffsetDamage": {
+    "label": "Offset Damages"
+  },
   "nameProgramScope": {
     "required": "A Program Class is required",
     "label": "Class"

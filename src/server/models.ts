@@ -19,6 +19,7 @@ import {
   DamageTypeModel,
   EffectModel,
   EnnemyAttackModel,
+  ImplantModel,
   ItemModifierModel,
   ItemTypeModel,
   MailTokenModel,
@@ -61,6 +62,7 @@ import {
   type IDamageType,
   type IEffect,
   type IEnnemyAttack,
+  type IImplant,
   type IItemModifier,
   type IItemType,
   type IMailToken,
@@ -174,6 +176,8 @@ interface DBType {
   EnnemyAttack: mongoose.Model<IEnnemyAttack>;
   /** The Damage Type model */
   DamageType: mongoose.Model<IDamageType>;
+  /** The Damage Type model */
+  Implant: mongoose.Model<IImplant>;
   /** The possible Roles */
   ROLES: string[];
 }
@@ -226,6 +230,7 @@ const db: DBType = {
   WeaponScope: WeaponScopeModel(),
   WeaponStyle: WeaponStyleModel(),
   WeaponType: WeaponTypeModel(),
+  Implant: ImplantModel(),
   // NPC models
   EnnemyAttack: EnnemyAttackModel(),
   NPC: NPCModel(),

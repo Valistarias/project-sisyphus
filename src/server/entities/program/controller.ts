@@ -53,6 +53,7 @@ const create = (req: Request, res: Response): void => {
     ram,
     rarity,
     programScope,
+    itemType,
     cost,
     ai,
     aiSummoned,
@@ -66,6 +67,7 @@ const create = (req: Request, res: Response): void => {
     ram === undefined ||
     rarity === undefined ||
     programScope === undefined ||
+    itemType === undefined ||
     cost === undefined
   ) {
     res.status(400).send(gemInvalidField('Program'));
@@ -82,6 +84,7 @@ const create = (req: Request, res: Response): void => {
     ai,
     aiSummoned,
     programScope,
+    itemType,
     uses,
   });
 
@@ -130,6 +133,7 @@ const update = (req: Request, res: Response): void => {
     uses = null,
     radius = null,
     damages = null,
+    itemType = null,
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Program ID'));
@@ -167,6 +171,9 @@ const update = (req: Request, res: Response): void => {
       }
       if (cost !== null) {
         program.cost = cost;
+      }
+      if (itemType !== null) {
+        program.itemType = itemType;
       }
 
       const damagesToStay: string[] = [];

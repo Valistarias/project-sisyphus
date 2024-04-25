@@ -33,6 +33,7 @@ export {
   type HydratedIEnnemyAttack,
   type IEnnemyAttack,
 } from './ennemyAttack/model';
+export { ImplantModel, type HydratedIImplant, type IImplant } from './implant/model';
 export {
   ItemModifierModel,
   type HydratedIItemModifier,
