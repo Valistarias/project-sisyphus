@@ -6,6 +6,7 @@ import ActionTypes from './actionTypes';
 import Ammos from './ammos';
 import Auth from './auth';
 import Bags from './bags';
+import BodyParts from './bodyParts';
 import Campaigns from './campaigns';
 import Chapters from './chapters';
 import ChapterTypes from './chapterTypes';
@@ -48,6 +49,7 @@ export {
   Ammos,
   Auth,
   Bags,
+  BodyParts,
   Campaigns,
   Chapters,
   ChapterTypes,

@@ -6,6 +6,7 @@ import {
   ActionTypeModel,
   AmmoModel,
   BagModel,
+  BodyPartModel,
   CampaignModel,
   ChapterModel,
   ChapterTypeModel,
@@ -47,6 +48,7 @@ import {
   type IActionType,
   type IAmmo,
   type IBag,
+  type IBodyPart,
   type ICampaign,
   type IChapter,
   type IChapterType,
@@ -110,6 +112,8 @@ interface DBType {
   Campaign: mongoose.Model<ICampaign>;
   /** The Character Model */
   Character: mongoose.Model<ICharacter>;
+  /** The Body Part Model */
+  BodyPart: mongoose.Model<IBodyPart>;
   /** The Roll Model */
   Roll: mongoose.Model<IRoll>;
   /** The Mail Token Model (for forgotten password) */
@@ -192,6 +196,7 @@ const db: DBType = {
   Roll: RollModel(),
   // Character models
   Character: CharacterModel(),
+  BodyPart: BodyPartModel(),
   // Rules models
   Action: ActionModel(),
   ActionDuration: ActionDurationModel(),

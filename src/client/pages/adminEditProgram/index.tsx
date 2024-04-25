@@ -322,7 +322,6 @@ const AdminEditProgram: FC = () => {
         .get({ programId: id })
         .then((curatedProgram: ICuratedProgram) => {
           const { program, i18n } = curatedProgram;
-          console.log('curatedProgram', curatedProgram);
           setProgramData(curatedProgram);
           setProgramText(program.summary);
           if (i18n.fr !== undefined) {

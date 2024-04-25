@@ -7,11 +7,13 @@ import { useGlobalVars } from './providers';
 import {
   AdminAmmosPage,
   AdminBagsPage,
+  AdminBodyPartsPage,
   AdminCharParamsPage,
   AdminCyberFramesPage,
   AdminDamageTypesPage,
   AdminEditAmmoPage,
   AdminEditBagPage,
+  AdminEditBodyPartPage,
   AdminEditChapterPage,
   AdminEditCharParamPage,
   AdminEditCyberFrameBranchPage,
@@ -39,6 +41,7 @@ import {
   AdminNPCsPage,
   AdminNewAmmoPage,
   AdminNewBagPage,
+  AdminNewBodyPartPage,
   AdminNewChapterPage,
   AdminNewCharParamPage,
   AdminNewCyberFrameBranchPage,
@@ -454,6 +457,18 @@ const App: FC = () => {
             {
               path: '/admin/program/:id',
               element: <AdminEditProgramPage />,
+            },
+            {
+              path: '/admin/bodyparts',
+              element: <AdminBodyPartsPage />,
+            },
+            {
+              path: '/admin/bodypart/new',
+              element: <AdminNewBodyPartPage />,
+            },
+            {
+              path: '/admin/bodypart/:id',
+              element: <AdminEditBodyPartPage />,
             },
             // {
             //   path: '/admin/skillbranch/:id',

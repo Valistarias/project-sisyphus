@@ -5,6 +5,7 @@ import {
   Ammos,
   Auth,
   Bags,
+  BodyParts,
   Campaigns,
   ChapterTypes,
   Chapters,
@@ -84,6 +85,7 @@ export default class Api {
   weaponScopes: WeaponScopes;
   weaponStyles: WeaponStyles;
   weaponTypes: WeaponTypes;
+  bodyParts: BodyParts;
 
   constructor() {
     this.actionDurations = new ActionDurations();
@@ -92,6 +94,7 @@ export default class Api {
     this.ammos = new Ammos();
     this.auth = new Auth();
     this.bags = new Bags();
+    this.bodyParts = new BodyParts();
     this.campaigns = new Campaigns();
     this.chapters = new Chapters();
     this.chapterTypes = new ChapterTypes();

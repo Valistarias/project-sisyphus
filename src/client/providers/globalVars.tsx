@@ -18,6 +18,7 @@ import type {
   IActionType,
   ICampaign,
   ICharacter,
+  ICuratedBodyPart,
   ICuratedCharParam,
   ICuratedCyberFrame,
   ICuratedDamageType,
@@ -43,6 +44,8 @@ interface IGlobalVarsContext {
   loading: boolean;
   /** The actual character */
   character: ICharacter | null | false;
+  /** All the loaded body parts */
+  bodyParts: ICuratedBodyPart[];
   /** All the loaded rulebooks */
   ruleBooks: ICuratedRuleBook[];
   /** All the loaded campaigns */
@@ -79,6 +82,8 @@ interface IGlobalVarsContext {
   setCharacter: (id: string) => void;
   /** Used to reset the actual character */
   resetCharacter: () => void;
+  /** Used to trigger the reload of the program scopes */
+  reloadBodyParts: () => void;
   /** Used to trigger the reload of the rulebooks */
   reloadCampaigns: () => void;
   /** Used to trigger the reload of the campaigns */
@@ -130,6 +135,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
   // Character
   const [character, setCharacter] = useState<ICharacter | null | false>(null);
   const [campaigns, setCampaigns] = useState<ICampaign[]>([]);
+  const [bodyParts, setBodyParts] = useState<ICuratedBodyPart[]>([]);
 
   // Rulebooks
   const [ruleBooks, setRuleBooks] = useState<ICuratedRuleBook[]>([]);
@@ -175,6 +181,10 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
 
   const loadActionDurations = useCallback(() => {
     getAllFromApi('actionDurations', setActionDurations);
+  }, [getAllFromApi]);
+
+  const loadBodyParts = useCallback(() => {
+    getAllFromApi('bodyParts', setBodyParts);
   }, [getAllFromApi]);
 
   const loadStats = useCallback(() => {
@@ -278,6 +288,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
             loadCampaigns();
             loadDamageTypes();
             loadStats();
+            loadBodyParts();
             loadCharParams();
             loadSkills();
             loadCyberFrames();
@@ -297,22 +308,23 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
     }
   }, [
     api,
-    loadRuleBooks,
-    loadCampaigns,
-    loadSkills,
-    loadCharParams,
-    loadStats,
-    loadCyberFrames,
-    loadActionTypes,
     loadActionDurations,
+    loadActionTypes,
+    loadBodyParts,
+    loadCampaigns,
+    loadCharParams,
+    loadCyberFrames,
+    loadDamageTypes,
     loadItemModifiers,
+    loadItemTypes,
+    loadProgramScopes,
     loadRarities,
+    loadRuleBooks,
+    loadSkills,
+    loadStats,
     loadWeaponScopes,
     loadWeaponStyles,
     loadWeaponTypes,
-    loadDamageTypes,
-    loadItemTypes,
-    loadProgramScopes,
   ]);
 
   useEffect(() => {
@@ -327,18 +339,24 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
     () => ({
       actionDurations,
       actionTypes,
+      bodyParts,
       campaigns,
+      character,
       charParams,
       cyberFrames,
-      loading,
+      damageTypes,
       itemModifiers,
+      itemTypes,
+      loading,
+      programScopes,
       rarities,
+      ruleBooks,
+      skills,
+      stats,
+      user,
       weaponScopes,
       weaponStyles,
       weaponTypes,
-      damageTypes,
-      programScopes,
-      itemTypes,
       reloadAll: () => {
         loadCampaigns();
         loadRuleBooks();
@@ -357,28 +375,24 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
         loadItemTypes();
         loadProgramScopes();
       },
+      reloadBodyParts: loadBodyParts,
       reloadCampaigns: loadCampaigns,
       reloadCharParams: loadCharParams,
       reloadCyberFrames: loadCyberFrames,
+      reloadDamageTypes: loadDamageTypes,
+      reloadItemModifiers: loadItemModifiers,
+      reloadItemTypes: loadItemTypes,
+      reloadProgramScopes: loadProgramScopes,
+      reloadRarities: loadRarities,
       reloadRuleBooks: loadRuleBooks,
       reloadSkills: loadSkills,
       reloadStats: loadStats,
-      setCharacter: setCharacterFromId,
-      reloadItemModifiers: loadItemModifiers,
-      reloadRarities: loadRarities,
       reloadWeaponScopes: loadWeaponScopes,
       reloadWeaponStyles: loadWeaponStyles,
       reloadWeaponTypes: loadWeaponTypes,
-      reloadDamageTypes: loadDamageTypes,
-      reloadItemTypes: loadItemTypes,
-      reloadProgramScopes: loadProgramScopes,
-      character,
-      ruleBooks,
+      setCharacter: setCharacterFromId,
       resetCharacter,
       setUser,
-      skills,
-      stats,
-      user,
     }),
     [
       actionDurations,
@@ -395,6 +409,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       damageTypes,
       programScopes,
       itemTypes,
+      bodyParts,
       loadCampaigns,
       loadCharParams,
       loadCyberFrames,
@@ -410,6 +425,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       loadDamageTypes,
       loadItemTypes,
       loadProgramScopes,
+      loadBodyParts,
       character,
       ruleBooks,
       resetCharacter,

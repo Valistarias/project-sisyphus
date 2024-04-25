@@ -531,5 +531,21 @@
   },
   "aiSummonedProgram": {
     "label": "How many AI are summoned"
+  },
+  "nameBodyPart": {
+    "required": "A Body Part Denomination is required",
+    "label": "Denomination"
+  },
+  "bodyPartSummary": {
+    "title": "Body Part Details"
+  },
+  "bodyPartFormula": {
+    "required": "An Identifier is required",
+    "format": "The format of the identifier is wrong. You need three letters in lower case",
+    "label": "Body Part ID (For displaying purposes, never displayed as is). This needs to be a lower case three letter string"
+  },
+  "bodyPartLimit": {
+    "label": "Implant limit for this body part",
+    "required": "You need an implant limit for this body part"
   }
 }

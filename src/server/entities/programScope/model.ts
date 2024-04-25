@@ -1,15 +1,15 @@
 import { Schema, model, type HydratedDocument, type Model } from 'mongoose';
 
 interface IProgramScope {
-  /** The title of the weapon scope */
+  /** The title of the program scope */
   title: string;
-  /** A summary of the weapon scope */
+  /** A summary of the program scope */
   summary: string;
   /** A 3 letter string used for displaying accurate range */
   scopeId: string;
   /** The internationnal content, as a json, stringified */
   i18n?: string;
-  /** When the weapon scope was created */
+  /** When the program scope was created */
   createdAt: Date;
 }
 

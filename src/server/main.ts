@@ -21,6 +21,7 @@ import AmmoRoutes from './entities/ammo/routes';
 import { verifyTokenSingIn } from './entities/auth/controller';
 import AuthRoutes from './entities/auth/routes';
 import BagRoutes from './entities/bag/routes';
+import BodyPartRoutes from './entities/bodyPart/routes';
 import CampaignRoutes from './entities/campaign/routes';
 import ChapterRoutes from './entities/chapter/routes';
 import ChapterTypeRoutes from './entities/chapterType/routes';
@@ -129,6 +130,7 @@ RollRoutes(apiRouter);
 
 // Character routes
 CharacterRoutes(apiRouter);
+BodyPartRoutes(apiRouter);
 
 // Rules routes
 ActionDurationRoutes(apiRouter);

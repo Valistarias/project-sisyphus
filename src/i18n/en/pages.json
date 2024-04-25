@@ -805,5 +805,31 @@
       "text": "Are you sure you want to delete {{elt}} ?",
       "confirmCta": "Delete Program"
     }
+  },
+  "adminBodyParts": {
+    "title": "Body Parts",
+    "list": "List",
+    "editBodyPart": "Edit"
+  },
+  "adminNewBodyPart": {
+    "title": "New Body Part",
+    "i18n": "Internationalization",
+    "button": "Create Body Part",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successCreate": "Body Part successfully created !"
+  },
+  "adminEditBodyPart": {
+    "edit": "Edit Body Part",
+    "delete": "Delete Body Part",
+    "i18n": "Internationalization",
+    "button": "Update Body Part Data",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successUpdate": "Body Part successfully updated !",
+    "successDelete": "Body Part successfully deleted !",
+    "confirmDeletion": {
+      "title": "Body Part Deletion",
+      "text": "Are you sure you want to delete {{elt}} ? All the related branches will be lost !",
+      "confirmCta": "Delete Body Part"
+    }
   }
 }

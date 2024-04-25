@@ -1,0 +1,61 @@
+@use '../../assets/scss/index';
+
+.adminBodyParts {
+  @include index.basic-page;
+
+  &__content {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 10vh;
+    margin-top: 2rem;
+  }
+
+  &__body-parts {
+    width: 100%;
+
+    &__list {
+      margin-bottom: 2rem;
+    }
+  }
+
+  .adminBodyParts__body-part-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 2rem;
+
+    &__elt {
+      background-color: var(--primary-05);
+      border: 1px solid var(--primary);
+      box-shadow: 0 0 2rem var(--primary-10);
+      box-sizing: border-box;
+      padding: 2rem;
+
+      &__type {
+        margin-top: 2rem;
+      }
+
+      &__buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 3rem;
+      }
+
+      &__details {
+        color: var(--primary);
+        font-family: var(--mono-font);
+        font-size: 1.2rem;
+        margin: 0;
+        margin-bottom: 2rem;
+        text-transform: uppercase;
+      }
+
+      &--archived {
+        background-color: var(--tertiary-00);
+        border: 1px solid var(--grey);
+        box-shadow: 0 0 0;
+        opacity: 0.6;
+      }
+    }
+  }
+}

@@ -3,6 +3,7 @@ export { ActionDurationModel, type IActionDuration } from './actionDuration/mode
 export { ActionTypeModel, type IActionType } from './actionType/model';
 export { AmmoModel, type HydratedIAmmo, type IAmmo } from './ammo/model';
 export { BagModel, type HydratedIBag, type IBag } from './bag/model';
+export { BodyPartModel, type HydratedIBodyPart, type IBodyPart } from './bodyPart/model';
 export {
   CampaignModel,
   type HydratedICompleteCampaign,
