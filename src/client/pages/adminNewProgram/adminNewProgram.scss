@@ -1,0 +1,120 @@
+@use '../../assets/scss/index';
+
+.adminNewProgram {
+  @include index.basic-page;
+
+  &__content {
+    margin-bottom: 10vh;
+  }
+
+  &__visual {
+    margin-top: 2rem;
+  }
+
+  &__visual,
+  &__basics {
+    margin-bottom: 2rem;
+  }
+
+  &__basics {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    margin-bottom: 2em;
+
+    &__name {
+      width: 100%;
+    }
+
+    &__class {
+      display: flex;
+      flex-direction: row;
+      flex-shrink: 0;
+      gap: 2rem;
+      width: 50%;
+    }
+  }
+
+  &__details {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 2rem;
+
+    &__fields {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      gap: 2rem;
+    }
+  }
+
+  &__error {
+    margin-bottom: 2rem;
+  }
+
+  &__bonuses,
+  &__bonuses__elts {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  &__bonus {
+    background-color: var(--primary-10);
+    border: 1px solid var(--primary);
+    border-radius: 0.2rem;
+    box-shadow: 0 0 2rem var(--primary-20);
+    padding: 1rem;
+    position: relative;
+
+    &__title {
+      margin-bottom: 2rem;
+    }
+
+    &__fields {
+      align-items: center;
+      display: flex;
+      gap: 5rem;
+
+      &--large {
+        flex-wrap: wrap;
+        gap: 1rem 5rem;
+        justify-content: space-between;
+      }
+    }
+
+    &__button {
+      position: absolute;
+      right: 1rem;
+      top: 1rem;
+    }
+
+    &__value {
+      &--s {
+        width: calc(50% - 2.5rem);
+      }
+
+      &--l {
+        width: 100%;
+      }
+    }
+  }
+
+  &__bonuses {
+    &__buttons {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+    }
+  }
+
+  &__intl {
+    margin-bottom: 1rem;
+    margin-top: 6rem;
+  }
+
+  &__intl-info {
+    margin-bottom: 4rem;
+  }
+}

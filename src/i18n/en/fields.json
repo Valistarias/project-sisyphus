@@ -496,5 +496,40 @@
   },
   "attackBonusToHit": {
     "label": "Bonus to hit the target"
+  },
+  "nameProgram": {
+    "required": "A Program Name is required",
+    "label": "Name"
+  },
+  "programSummary": {
+    "title": "Program Details"
+  },
+  "programCost": {
+    "required": "You need to define a Program Cost to this program",
+    "label": "Program Cost"
+  },
+  "programRarity": {
+    "required": "You need to define a Rarity to this program",
+    "label": "Program Rarity"
+  },
+  "programScope": {
+    "required": "You need to define a Range to this program",
+    "label": "Class"
+  },
+  "ramProgram": {
+    "required": "You need to define a cost in RAM to this program",
+    "label": "RAM Cost"
+  },
+  "usesProgram": {
+    "label": "How many uses before program destruction (0 or empty if unlimited)"
+  },
+  "radiusProgram": {
+    "label": "The radius of the program effect (in m)"
+  },
+  "aiProgram": {
+    "label": "The summoned AI"
+  },
+  "aiSummonedProgram": {
+    "label": "How many AI are summoned"
   }
 }

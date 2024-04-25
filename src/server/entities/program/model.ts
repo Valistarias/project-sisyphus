@@ -59,7 +59,7 @@ const programSchema = new Schema<IProgram>({
   },
   ai: {
     type: Schema.Types.ObjectId,
-    ref: 'AI',
+    ref: 'NPC',
   },
   damages: [
     {

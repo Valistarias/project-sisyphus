@@ -23,6 +23,7 @@ import {
   AdminEditNodePage,
   AdminEditNotionPage,
   AdminEditPage,
+  AdminEditProgramPage,
   AdminEditProgramScopePage,
   AdminEditRarityPage,
   AdminEditRuleBookPage,
@@ -49,6 +50,7 @@ import {
   AdminNewNodePage,
   AdminNewNotionPage,
   AdminNewPage,
+  AdminNewProgramPage,
   AdminNewProgramScopePage,
   AdminNewRarityPage,
   AdminNewRuleBookPage,
@@ -61,6 +63,7 @@ import {
   AdminNewWeaponTypePage,
   AdminPage,
   AdminProgramScopesPage,
+  AdminProgramsPage,
   AdminRaritiesPage,
   AdminRuleBooksPage,
   AdminSkillsPage,
@@ -439,6 +442,18 @@ const App: FC = () => {
             {
               path: '/admin/programscope/:id',
               element: <AdminEditProgramScopePage />,
+            },
+            {
+              path: '/admin/programs',
+              element: <AdminProgramsPage />,
+            },
+            {
+              path: '/admin/program/new',
+              element: <AdminNewProgramPage />,
+            },
+            {
+              path: '/admin/program/:id',
+              element: <AdminEditProgramPage />,
             },
             // {
             //   path: '/admin/skillbranch/:id',

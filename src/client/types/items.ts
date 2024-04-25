@@ -1,5 +1,5 @@
 import { type InternationalizationType } from './global';
-import { type INPC } from './npc';
+import { type ICuratedNPC } from './npc';
 import { type IAction, type IEffect, type ISkill } from './rules';
 
 // DamageTypes ------------------------------------
@@ -303,7 +303,7 @@ export interface IProgram {
   /** The cost of the program */
   cost: number;
   /** The summon of the program */
-  ai?: INPC;
+  ai?: ICuratedNPC;
   /** How many AIs the program summons */
   aiSummoned?: number;
   /** The damages of the program */

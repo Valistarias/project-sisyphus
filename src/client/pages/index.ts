@@ -17,6 +17,7 @@ import AdminEditNodePage from './adminEditNode';
 import AdminEditNotionPage from './adminEditNotion';
 import AdminEditNPCPage from './adminEditNPC';
 import AdminEditPage from './adminEditPage';
+import AdminEditProgramPage from './adminEditProgram';
 import AdminEditProgramScopePage from './adminEditProgramScope';
 import AdminEditRarityPage from './adminEditRarity';
 import AdminEditRuleBookPage from './adminEditRuleBook';
@@ -42,6 +43,7 @@ import AdminNewNodePage from './adminNewNode';
 import AdminNewNotionPage from './adminNewNotion';
 import AdminNewNPCPage from './adminNewNPC';
 import AdminNewPage from './adminNewPage';
+import AdminNewProgramPage from './adminNewProgram';
 import AdminNewProgramScopePage from './adminNewProgramScope';
 import AdminNewRarityPage from './adminNewRarity';
 import AdminNewRuleBookPage from './adminNewRuleBook';
@@ -53,6 +55,7 @@ import AdminNewWeaponScopePage from './adminNewWeaponScope';
 import AdminNewWeaponStylePage from './adminNewWeaponStyle';
 import AdminNewWeaponTypePage from './adminNewWeaponType';
 import AdminNPCsPage from './adminNPCs';
+import AdminProgramsPage from './adminPrograms';
 import AdminProgramScopesPage from './adminProgramScopes';
 import AdminRaritiesPage from './adminRarities';
 import AdminRuleBooksPage from './adminRuleBooks';
@@ -100,6 +103,7 @@ export {
   AdminEditNotionPage,
   AdminEditNPCPage,
   AdminEditPage,
+  AdminEditProgramPage,
   AdminEditProgramScopePage,
   AdminEditRarityPage,
   AdminEditRuleBookPage,
@@ -125,6 +129,7 @@ export {
   AdminNewNotionPage,
   AdminNewNPCPage,
   AdminNewPage,
+  AdminNewProgramPage,
   AdminNewProgramScopePage,
   AdminNewRarityPage,
   AdminNewRuleBookPage,
@@ -138,6 +143,7 @@ export {
   AdminNPCsPage,
   AdminPage,
   AdminProgramScopesPage,
+  AdminProgramsPage,
   AdminRaritiesPage,
   AdminRuleBooksPage,
   AdminSkillsPage,

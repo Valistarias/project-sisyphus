@@ -7,7 +7,7 @@ import { curateDamageIds } from '../damage/controller';
 import { type IDamage } from '../damage/model';
 import { type INPC } from '../index';
 
-import { type HydratedIProgram } from './model';
+import { type HydratedIProgram, type IProgram } from './model';
 
 const { Program } = db;
 
@@ -52,7 +52,6 @@ const create = (req: Request, res: Response): void => {
     i18n = null,
     ram,
     rarity,
-    itemType,
     programScope,
     cost,
     ai,
@@ -66,8 +65,6 @@ const create = (req: Request, res: Response): void => {
     summary === undefined ||
     ram === undefined ||
     rarity === undefined ||
-    ram === undefined ||
-    itemType === undefined ||
     programScope === undefined ||
     cost === undefined
   ) {
@@ -81,7 +78,6 @@ const create = (req: Request, res: Response): void => {
     rarity,
     cost,
     ram,
-    itemType,
     radius,
     ai,
     aiSummoned,
@@ -127,7 +123,6 @@ const update = (req: Request, res: Response): void => {
     i18n,
     ram = null,
     rarity = null,
-    itemType = null,
     programScope = null,
     cost = null,
     ai = null,
@@ -157,9 +152,6 @@ const update = (req: Request, res: Response): void => {
       }
       if (rarity !== null) {
         program.rarity = rarity;
-      }
-      if (itemType !== null) {
-        program.itemType = itemType;
       }
       if (aiSummoned !== null) {
         program.aiSummoned = aiSummoned;
@@ -294,9 +286,16 @@ const deleteProgram = (req: Request, res: Response): void => {
     });
 };
 
+interface InternationalizedProgram extends Omit<IProgram, 'ai'> {
+  ai?: {
+    i18n: Record<string, any> | Record<string, unknown>;
+    nPC: any;
+  };
+}
+
 interface CuratedIProgram {
   i18n: Record<string, any> | Record<string, unknown>;
-  program: any;
+  program: InternationalizedProgram;
 }
 
 const curateProgram = (program: HydratedIProgram): Record<string, any> => {
@@ -314,7 +313,13 @@ const findSingle = (req: Request, res: Response): void => {
   }
   findProgramById(programId)
     .then((programSent) => {
-      const program = programSent.toJSON();
+      const program: InternationalizedProgram = programSent.toJSON();
+      if (programSent.ai !== undefined) {
+        program.ai = {
+          nPC: program.ai,
+          i18n: programSent.ai.i18n !== undefined ? JSON.parse(programSent.ai.i18n) : {},
+        };
+      }
       const sentObj = {
         program,
         i18n: curateProgram(programSent),
@@ -331,7 +336,13 @@ const findAll = (req: Request, res: Response): void => {
     .then((programs) => {
       const curatedPrograms: CuratedIProgram[] = [];
       programs.forEach((programSent) => {
-        const program = programSent.toJSON();
+        const program: InternationalizedProgram = programSent.toJSON();
+        if (programSent.ai !== undefined) {
+          program.ai = {
+            nPC: program.ai,
+            i18n: programSent.ai.i18n !== undefined ? JSON.parse(programSent.ai.i18n) : {},
+          };
+        }
         curatedPrograms.push({
           program,
           i18n: curateProgram(programSent),
