@@ -192,6 +192,22 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
                   text: t('adminBodyParts.title', { ns: 'pages' }),
                 },
                 {
+                  href: '/admin/implants',
+                  text: t('adminImplants.title', { ns: 'pages' }),
+                },
+                {
+                  href: '/admin/armortypes',
+                  text: t('adminArmorTypes.title', { ns: 'pages' }),
+                },
+                {
+                  href: '/admin/armors',
+                  text: t('adminArmors.title', { ns: 'pages' }),
+                },
+                {
+                  href: '/admin/items',
+                  text: t('adminItems.title', { ns: 'pages' }),
+                },
+                {
                   href: '/admin/dicecomp',
                   text: t('adminTestDiceComp.title', { ns: 'pages' }),
                 },

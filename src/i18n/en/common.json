@@ -77,7 +77,10 @@
     "wep": "Weapon",
     "bag": "Bag",
     "amo": "Ammo",
-    "pro": "Program"
+    "pro": "Program",
+    "imp": "Implant",
+    "shi": "Armor",
+    "itm": "Item"
   },
   "chapterTypeNames": {
     "default_one": "Info",

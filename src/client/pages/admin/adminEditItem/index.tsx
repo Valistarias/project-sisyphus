@@ -8,29 +8,20 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import { Aa, Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input, NodeIconSelect, SmartSelect } from '../../../molecules';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input, SmartSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import {
-  type ICuratedCyberFrame,
-  type ICuratedNode,
-  type ICuratedSkill,
-  type ICyberFrameBranch,
-  type ISkillBranch,
-} from '../../../types';
+import { type ICuratedItem } from '../../../types';
 
 import { classTrim, isThereDuplicate } from '../../../utils';
 
-import './adminEditNode.scss';
+import './adminEditItem.scss';
 
 interface FormValues {
   name: string;
   nameFr: string;
-  quote: string;
-  quoteFr: string;
-  rank: number;
-  icon: string;
-  branch: string;
+  cost: number;
+  rarity: string;
   skillBonuses?: Record<
     string,
     {
@@ -86,17 +77,7 @@ interface FormValues {
   >;
 }
 
-const generalRange = [...Array(2)].map((_, i) => ({
-  value: i + 1,
-  label: String(i + 1),
-}));
-
-const branchRange = [...Array(8)].map((_, i) => ({
-  value: i + 3,
-  label: String(i + 3),
-}));
-
-const AdminEditNode: FC = () => {
+const AdminEditItem: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
@@ -104,15 +85,11 @@ const AdminEditNode: FC = () => {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
-  const { skills, stats, charParams, actionTypes, actionDurations } = useGlobalVars();
+  const { skills, stats, charParams, actionTypes, actionDurations, rarities } = useGlobalVars();
   const { createAlert, getNewId } = useSystemAlerts();
   const navigate = useNavigate();
 
   const [displayInt, setDisplayInt] = useState(false);
-
-  // Selected element via ID in url
-  const [skill, setSkill] = useState<ICuratedSkill | null>(null);
-  const [cyberFrame, setCyberFrame] = useState<ICuratedCyberFrame | null>(null);
 
   // General elements, for bonuses
   const skillSelect = useMemo(
@@ -149,15 +126,6 @@ const AdminEditNode: FC = () => {
   );
   const [charParamBonusIds, setCharParamBonusIds] = useState<number[]>([]);
 
-  const [branches, setBranches] = useState<ISkillBranch[] | ICyberFrameBranch[]>([]);
-
-  const [rankSelect, setLevelSelect] = useState<
-    Array<{
-      value: number;
-      label: string;
-    }>
-  >([]);
-
   const actionTypeSelect = useMemo(
     () =>
       actionTypes.map(({ name, _id }) => ({
@@ -176,16 +144,22 @@ const AdminEditNode: FC = () => {
     [actionDurations, t]
   );
 
-  const [effectIds, setEffectIds] = useState<number[]>([]);
+  const rarityList = useMemo(() => {
+    return rarities.map(({ rarity }) => ({
+      value: rarity._id,
+      label: rarity.title,
+    }));
+  }, [rarities]);
 
+  const [effectIds, setEffectIds] = useState<number[]>([]);
   const [actionIds, setActionIds] = useState<number[]>([]);
 
   const calledApi = useRef(false);
 
-  const [nodeData, setNodeData] = useState<ICuratedNode | null>(null);
+  const [itemData, setItemData] = useState<ICuratedItem | null>(null);
 
-  const [nodeText, setNodeText] = useState('');
-  const [nodeTextFr, setNodeTextFr] = useState('');
+  const [itemText, setItemText] = useState('');
+  const [itemTextFr, setItemTextFr] = useState('');
 
   const introEditor = useEditor({
     extensions: completeRichTextElementExtentions,
@@ -195,29 +169,22 @@ const AdminEditNode: FC = () => {
     extensions: completeRichTextElementExtentions,
   });
 
-  const createDefaultData = useCallback((nodeData: ICuratedNode | null) => {
-    if (nodeData == null) {
+  const createDefaultData = useCallback((itemData: ICuratedItem | null) => {
+    if (itemData == null) {
       return {};
     }
-    const { node, i18n } = nodeData;
+    const { item, i18n } = itemData;
     const defaultData: Partial<FormValues> = {};
-    defaultData.name = node.title;
-    defaultData.quote = node.quote;
-    defaultData.rank = node.rank;
-    defaultData.icon = node.icon;
-    if (node.skillBranch !== undefined && typeof node.skillBranch !== 'string') {
-      defaultData.branch = node.skillBranch._id;
-    } else if (node.cyberFrameBranch !== undefined && typeof node.cyberFrameBranch !== 'string') {
-      defaultData.branch = node.cyberFrameBranch._id;
-    }
+    defaultData.name = item.title;
+    defaultData.cost = item.cost;
+    defaultData.rarity = item.rarity;
     if (i18n.fr !== undefined) {
       defaultData.nameFr = i18n.fr.title ?? '';
-      defaultData.quoteFr = i18n.fr.quote ?? '';
     }
 
     // Init Bonus Skill
     const tempSkillBonusId: number[] = [];
-    node.skillBonuses?.forEach((skillBonus) => {
+    item.skillBonuses?.forEach((skillBonus) => {
       if (defaultData.skillBonuses === undefined) {
         defaultData.skillBonuses = {};
       }
@@ -233,7 +200,7 @@ const AdminEditNode: FC = () => {
 
     // Init Bonus Stat
     const tempStatBonusId: number[] = [];
-    node.statBonuses?.forEach((statBonus) => {
+    item.statBonuses?.forEach((statBonus) => {
       if (defaultData.statBonuses === undefined) {
         defaultData.statBonuses = {};
       }
@@ -249,7 +216,7 @@ const AdminEditNode: FC = () => {
 
     // Init Bonus CharParam
     const tempCharParamBonusId: number[] = [];
-    node.charParamBonuses?.forEach((charParamBonus) => {
+    item.charParamBonuses?.forEach((charParamBonus) => {
       if (defaultData.charParamBonuses === undefined) {
         defaultData.charParamBonuses = {};
       }
@@ -265,7 +232,7 @@ const AdminEditNode: FC = () => {
 
     // Init Actions
     const tempActionId: number[] = [];
-    node.actions?.forEach((action) => {
+    item.actions?.forEach((action) => {
       if (defaultData.actions === undefined) {
         defaultData.actions = {};
       }
@@ -294,7 +261,7 @@ const AdminEditNode: FC = () => {
 
     // Init Effects
     const tempEffectId: number[] = [];
-    node.effects?.forEach((effect) => {
+    item.effects?.forEach((effect) => {
       if (defaultData.effects === undefined) {
         defaultData.effects = {};
       }
@@ -319,13 +286,12 @@ const AdminEditNode: FC = () => {
   const {
     handleSubmit,
     setError,
-    setValue,
     unregister,
     control,
     formState: { errors },
     reset,
   } = useForm<FieldValues>({
-    defaultValues: useMemo(() => createDefaultData(nodeData), [createDefaultData, nodeData]),
+    defaultValues: useMemo(() => createDefaultData(itemData), [createDefaultData, itemData]),
   });
 
   const boolRange = useMemo(
@@ -341,28 +307,6 @@ const AdminEditNode: FC = () => {
     ],
     [t]
   );
-
-  const branchSelect = useMemo(() => {
-    return branches.reduce(
-      (
-        result: Array<{
-          value: string;
-          label: string;
-        }>,
-        elt: ISkillBranch | ICyberFrameBranch
-      ) => {
-        if (elt !== undefined) {
-          result.push({
-            value: elt._id,
-            // TODO : Handle Internationalization
-            label: elt.title === '_general' ? t('terms.node.generalBranch') : elt.title,
-          });
-        }
-        return result;
-      },
-      []
-    );
-  }, [branches, t]);
 
   const onAddSkillBonus = useCallback(() => {
     setSkillBonusIds((prev) => {
@@ -409,8 +353,8 @@ const AdminEditNode: FC = () => {
     });
   }, []);
 
-  const onSaveNode: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, quote, quoteFr, rank, icon, branch, effects, actions, ...elts }) => {
+  const onSaveItem: SubmitHandler<FormValues> = useCallback(
+    ({ name, nameFr, cost, rarity, effects, actions, ...elts }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -425,7 +369,7 @@ const AdminEditNode: FC = () => {
       if (duplicateSkillBonuses) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminEditNode.errorDuplicateSkill', { ns: 'pages' }),
+          message: t('adminEditItem.errorDuplicateSkill', { ns: 'pages' }),
         });
         return;
       }
@@ -438,7 +382,7 @@ const AdminEditNode: FC = () => {
       if (duplicateStatBonuses) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminEditNode.errorDuplicateStat', { ns: 'pages' }),
+          message: t('adminEditItem.errorDuplicateStat', { ns: 'pages' }),
         });
         return;
       }
@@ -454,11 +398,10 @@ const AdminEditNode: FC = () => {
       if (duplicateCharParamBonuses) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminEditNode.errorDuplicateCharParam', { ns: 'pages' }),
+          message: t('adminEditItem.errorDuplicateCharParam', { ns: 'pages' }),
         });
         return;
       }
-      const skillId = (nodeData?.node.skillBranch as ISkillBranch)?._id;
       const curatedSkillBonuses = skillBonuses.map(({ skill, value }) => ({
         skill,
         value: Number(value),
@@ -544,24 +487,22 @@ const AdminEditNode: FC = () => {
         html = null;
       }
       let i18n: any | null = null;
-      if (nameFr !== '' || htmlFr !== '<p class="ap"></p>' || quoteFr !== '') {
+      if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = {
           fr: {
             title: nameFr,
             summary: htmlFr,
-            quote: quoteFr,
           },
         };
       }
-      api.nodes
+      api.items
         .update({
           id,
           title: name,
-          ...(skillId !== undefined ? { skillBranch: branch } : { cyberFrameBranch: branch }),
+          cost: Number(cost),
+          rarity,
+          itemType: itemData?.item.itemType,
           summary: html,
-          rank: Number(rank),
-          icon,
-          quote,
           i18n,
           skillBonuses: curatedSkillBonuses,
           statBonuses: curatedStatBonuses,
@@ -575,7 +516,7 @@ const AdminEditNode: FC = () => {
             key: newId,
             dom: (
               <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('adminEditNode.successUpdate', { ns: 'pages' })}</Ap>
+                <Ap>{t('adminEditItem.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
             ),
           });
@@ -599,37 +540,26 @@ const AdminEditNode: FC = () => {
           }
         });
     },
-    [introEditor, introFrEditor, api, id, nodeData, setError, t, getNewId, createAlert]
+    [introEditor, introFrEditor, api, id, itemData, setError, t, getNewId, createAlert]
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || nodeData === null) {
+    if (api === undefined || itemData === null) {
       return;
     }
     setConfirmContent(
       {
-        title: t('adminEditNode.confirmDeletion.title', { ns: 'pages' }),
-        text: t('adminEditNode.confirmDeletion.text', {
+        title: t('adminEditItem.confirmDeletion.title', { ns: 'pages' }),
+        text: t('adminEditItem.confirmDeletion.text', {
           ns: 'pages',
-          elt: nodeData?.node.title,
+          elt: itemData?.item.title,
         }),
-        confirmCta: t('adminEditNode.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditItem.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
       (evtId: string) => {
-        const { node } = nodeData;
-        const route = node.skillBranch !== undefined ? 'skill' : 'cyberframe';
-        let routeId: string;
-        if (node.skillBranch !== undefined && typeof node.skillBranch !== 'string') {
-          routeId = node.skillBranch.skill as string;
-        } else if (
-          node.cyberFrameBranch !== undefined &&
-          typeof node.cyberFrameBranch !== 'string'
-        ) {
-          routeId = node.cyberFrameBranch.cyberFrame as string;
-        }
         const confirmDelete = ({ detail }): void => {
           if (detail.proceed === true) {
-            api.nodes
+            api.items
               .delete({ id })
               .then(() => {
                 const newId = getNewId();
@@ -637,11 +567,11 @@ const AdminEditNode: FC = () => {
                   key: newId,
                   dom: (
                     <Alert key={newId} id={newId} timer={5}>
-                      <Ap>{t('adminEditNode.successDelete', { ns: 'pages' })}</Ap>
+                      <Ap>{t('adminEditItem.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
                   ),
                 });
-                navigate(`/admin/${route}/${routeId}`);
+                navigate('/admin/items');
               })
               .catch(({ response }) => {
                 const { data } = response;
@@ -669,7 +599,7 @@ const AdminEditNode: FC = () => {
     );
   }, [
     api,
-    nodeData,
+    itemData,
     setConfirmContent,
     t,
     ConfMessageEvent,
@@ -681,85 +611,16 @@ const AdminEditNode: FC = () => {
   ]);
 
   useEffect(() => {
-    if (api !== undefined && id !== undefined && !calledApi.current && skills.length !== 0) {
+    if (api !== undefined && id !== undefined && !calledApi.current) {
       calledApi.current = true;
-      api.nodes
-        .get({ nodeId: id })
-        .then((curatedNode: ICuratedNode) => {
-          const { node, i18n } = curatedNode;
-          setNodeData(curatedNode);
-          setNodeText(node.summary);
+      api.items
+        .get({ itemId: id })
+        .then((curatedItem: ICuratedItem) => {
+          const { item, i18n } = curatedItem;
+          setItemData(curatedItem);
+          setItemText(item.summary);
           if (i18n.fr !== undefined) {
-            setNodeTextFr(i18n.fr.summary ?? '');
-          }
-          let titleBranch = '';
-          if (node.skillBranch !== undefined && typeof node.skillBranch !== 'string') {
-            titleBranch = node.skillBranch.title;
-          } else if (
-            node.cyberFrameBranch !== undefined &&
-            typeof node.cyberFrameBranch !== 'string'
-          ) {
-            titleBranch = node.cyberFrameBranch.title;
-          }
-          if (titleBranch === '_general') {
-            setLevelSelect(generalRange);
-          } else {
-            setLevelSelect(branchRange);
-          }
-          if (node.skillBranch !== undefined && typeof node.skillBranch !== 'string') {
-            const skillId = String(node.skillBranch.skill);
-            api.skills
-              .get({
-                skillId,
-              })
-              .then((curatedSkill: ICuratedSkill) => {
-                setSkill(curatedSkill);
-                setBranches(curatedSkill.skill.branches ?? []);
-              })
-              .catch(() => {
-                const newId = getNewId();
-                createAlert({
-                  key: newId,
-                  dom: (
-                    <Alert key={newId} id={newId} timer={5}>
-                      <Ap>{t('serverErrors.CYPU-301')}</Ap>
-                    </Alert>
-                  ),
-                });
-              });
-          } else if (
-            node.cyberFrameBranch !== undefined &&
-            typeof node.cyberFrameBranch !== 'string'
-          ) {
-            const cyberFrameId = String(node.cyberFrameBranch.cyberFrame);
-            api.cyberFrames
-              .get({
-                cyberFrameId,
-              })
-              .then((sentCyberFrame: ICuratedCyberFrame) => {
-                setCyberFrame(sentCyberFrame);
-                setBranches(sentCyberFrame.cyberFrame.branches ?? []);
-              })
-              .catch(() => {
-                // setLoading(false);
-                const newId = getNewId();
-                createAlert({
-                  key: newId,
-                  dom: (
-                    <Alert key={newId} id={newId} timer={5}>
-                      <Ap>{t('serverErrors.CYPU-301')}</Ap>
-                    </Alert>
-                  ),
-                });
-              });
-          }
-          if (node.skillBranch !== undefined && typeof node.skillBranch !== 'string') {
-            const foundSkill = skills.find(
-              ({ skill }) => skill._id === String((node.skillBranch as ISkillBranch)?.skill)
-            );
-            if (foundSkill !== undefined) {
-              setSkill(foundSkill);
-            }
+            setItemTextFr(i18n.fr.summary ?? '');
           }
         })
         .catch(() => {
@@ -774,139 +635,84 @@ const AdminEditNode: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, skills, id, t]);
-
-  useEffect(() => {
-    if (rankSelect.length > 0) {
-      setValue('rank', rankSelect[0].value);
-    }
-  }, [rankSelect, setValue]);
+  }, [api, createAlert, getNewId, id, t]);
 
   // To affect default data
   useEffect(() => {
-    reset(createDefaultData(nodeData));
-  }, [nodeData, reset, createDefaultData]);
+    reset(createDefaultData(itemData));
+  }, [itemData, reset, createDefaultData]);
 
   return (
     <div
       className={classTrim(`
-        adminEditNode
-        ${displayInt ? 'adminEditNode--int-visible' : ''}
+        adminEditItem
+        ${displayInt ? 'adminEditItem--int-visible' : ''}
       `)}
     >
-      <form className="adminEditNode__content" onSubmit={handleSubmit(onSaveNode)} noValidate>
-        <div className="adminEditNode__head">
-          <Atitle className="adminEditNode__head" rank={1}>
-            {t('adminEditNode.title', { ns: 'pages' })}
+      <form className="adminEditItem__content" onSubmit={handleSubmit(onSaveItem)} noValidate>
+        <div className="adminEditItem__head">
+          <Atitle className="adminEditItem__head" rank={1}>
+            {t('adminEditItem.title', { ns: 'pages' })}
           </Atitle>
           <Button onClick={onAskDelete} color="error">
-            {t('adminEditNode.delete', { ns: 'pages' })}
+            {t('adminEditItem.delete', { ns: 'pages' })}
           </Button>
-        </div>
-        <div className="adminEditNode__ariane">
-          <Ap className="adminEditNode__ariane__elt">
-            {skill !== null ? (
-              <>
-                {`${t(`terms.skill.name`)}:`}
-                <Aa href={`/admin/skill/${skill?.skill._id}`}>{skill?.skill.title}</Aa>
-              </>
-            ) : (
-              <>
-                {`${t(`terms.cyberFrame.name`)}:`}
-                <Aa href={`/admin/cyberframe/${cyberFrame?.cyberFrame._id}`}>
-                  {cyberFrame?.cyberFrame.title}
-                </Aa>
-              </>
-            )}
-          </Ap>
         </div>
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
-        <div className="adminEditNode__visual">
-          <NodeIconSelect
-            label={t('iconNode.label', { ns: 'fields' })}
-            control={control}
-            inputName="icon"
-            rules={{
-              required: t('iconNode.required', { ns: 'fields' }),
-            }}
-          />
-        </div>
-        <div className="adminEditNode__basics">
+        <div className="adminEditItem__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameNode.required', { ns: 'fields' }),
+              required: t('nameItem.required', { ns: 'fields' }),
             }}
-            label={t('nameNode.label', { ns: 'fields' })}
-            className="adminEditNode__basics__name"
-          />
-          <SmartSelect
-            control={control}
-            inputName="branch"
-            rules={{
-              required: t('branchNode.required', { ns: 'fields' }),
-            }}
-            label={t('branchNode.label', { ns: 'fields' })}
-            options={branchSelect}
-            onChange={(e) => {
-              let titleBranch: string | null = null;
-              branches.forEach((elt: ISkillBranch | ICyberFrameBranch) => {
-                if (elt !== undefined && elt._id === e) {
-                  titleBranch = elt.title;
-                }
-              });
-              if (titleBranch === '_general') {
-                setLevelSelect(generalRange);
-              } else {
-                setLevelSelect(branchRange);
-              }
-            }}
-            className="adminEditNode__basics__type"
-          />
-          <SmartSelect
-            control={control}
-            placeholder={'0'}
-            inputName="rank"
-            rules={{
-              required: t('rankNode.required', { ns: 'fields' }),
-            }}
-            label={t('rankNode.label', { ns: 'fields' })}
-            options={rankSelect}
-            className="adminEditNode__basics__rank"
-            disabled={rankSelect.length === 0}
+            label={t('nameItem.label', { ns: 'fields' })}
+            className="adminEditItem__basics__name"
           />
         </div>
-        <div className="adminEditNode__details">
+        <div className="adminEditItem__details">
           <RichTextElement
-            label={t('nodeSummary.title', { ns: 'fields' })}
+            label={t('itemSummary.title', { ns: 'fields' })}
             editor={introEditor}
-            rawStringContent={nodeText}
+            rawStringContent={itemText}
             small
             complete
           />
-          <Input
-            control={control}
-            inputName="quote"
-            type="text"
-            label={t('quoteNode.label', { ns: 'fields' })}
-            className="adminEditNode__details__quote"
-          />
+          <div className="adminEditItem__details__fields">
+            <Input
+              control={control}
+              inputName="cost"
+              type="number"
+              rules={{
+                required: t('itemCost.required', { ns: 'fields' }),
+              }}
+              label={t('itemCost.label', { ns: 'fields' })}
+              className="adminEditItem__details__fields__elt"
+            />
+            <SmartSelect
+              control={control}
+              inputName="rarity"
+              label={t('itemRarity.label', { ns: 'fields' })}
+              rules={{ required: t('itemRarity.required', { ns: 'fields' }) }}
+              options={rarityList}
+              className="adminNewImplan__details__fields__elt"
+            />
+          </div>
         </div>
-        <Atitle className="adminEditNode__bonus-title" level={2}>
-          {t('adminEditNode.values', { ns: 'pages' })}
+        <Atitle className="adminEditItem__bonus-title" level={2}>
+          {t('adminEditItem.values', { ns: 'pages' })}
         </Atitle>
-        <div className="adminEditNode__bonuses">
-          <div className="adminEditNode__bonuses__elts">
+        <div className="adminEditItem__bonuses">
+          <div className="adminEditItem__bonuses__elts">
             {skillBonusIds.map((skillBonusId) => (
-              <div className="adminEditNode__bonus" key={`skill-${skillBonusId}`}>
-                <Atitle className="adminEditNode__bonus__title" level={4}>
-                  {t('adminEditNode.skillBonusTitle', { ns: 'pages' })}
+              <div className="adminEditItem__bonus" key={`skill-${skillBonusId}`}>
+                <Atitle className="adminEditItem__bonus__title" level={4}>
+                  {t('adminEditItem.skillBonusTitle', { ns: 'pages' })}
                 </Atitle>
-                <div className="adminEditNode__bonus__fields">
+                <div className="adminEditItem__bonus__fields">
                   <SmartSelect
                     control={control}
                     inputName={`skillBonuses.skill-${skillBonusId}.skill`}
@@ -915,7 +721,7 @@ const AdminEditNode: FC = () => {
                     }}
                     label={t('skillBonusSkill.label', { ns: 'fields' })}
                     options={skillSelect}
-                    className="adminEditNode__bonus__select"
+                    className="adminEditItem__bonus__select"
                   />
                   <Input
                     control={control}
@@ -925,7 +731,7 @@ const AdminEditNode: FC = () => {
                       required: t('skillBonusValue.required', { ns: 'fields' }),
                     }}
                     label={t('skillBonusValue.label', { ns: 'fields' })}
-                    className="adminEditNode__bonus__value"
+                    className="adminEditItem__bonus__value"
                   />
                 </div>
                 <Button
@@ -942,16 +748,16 @@ const AdminEditNode: FC = () => {
                     );
                     unregister(`skillBonuses.skill-${skillBonusId}`);
                   }}
-                  className="adminEditNode__bonus__button"
+                  className="adminEditItem__bonus__button"
                 />
               </div>
             ))}
             {statBonusIds.map((statBonusId) => (
-              <div className="adminEditNode__bonus" key={`stat-${statBonusId}`}>
-                <Atitle className="adminEditNode__bonus__title" level={4}>
-                  {t('adminEditNode.statBonusTitle', { ns: 'pages' })}
+              <div className="adminEditItem__bonus" key={`stat-${statBonusId}`}>
+                <Atitle className="adminEditItem__bonus__title" level={4}>
+                  {t('adminEditItem.statBonusTitle', { ns: 'pages' })}
                 </Atitle>
-                <div className="adminEditNode__bonus__fields">
+                <div className="adminEditItem__bonus__fields">
                   <SmartSelect
                     control={control}
                     inputName={`statBonuses.stat-${statBonusId}.stat`}
@@ -960,7 +766,7 @@ const AdminEditNode: FC = () => {
                     }}
                     label={t('statBonusStat.label', { ns: 'fields' })}
                     options={statSelect}
-                    className="adminEditNode__bonus__select"
+                    className="adminEditItem__bonus__select"
                   />
                   <Input
                     control={control}
@@ -970,7 +776,7 @@ const AdminEditNode: FC = () => {
                       required: t('statBonusValue.required', { ns: 'fields' }),
                     }}
                     label={t('statBonusValue.label', { ns: 'fields' })}
-                    className="adminEditNode__bonus__value"
+                    className="adminEditItem__bonus__value"
                   />
                 </div>
                 <Button
@@ -987,16 +793,16 @@ const AdminEditNode: FC = () => {
                     );
                     unregister(`statBonuses.stat-${statBonusId}`);
                   }}
-                  className="adminEditNode__bonus__button"
+                  className="adminEditItem__bonus__button"
                 />
               </div>
             ))}
             {charParamBonusIds.map((charParamBonusId) => (
-              <div className="adminEditNode__bonus" key={`charParam-${charParamBonusId}`}>
-                <Atitle className="adminEditNode__bonus__title" level={4}>
-                  {t('adminEditNode.charParamBonusTitle', { ns: 'pages' })}
+              <div className="adminEditItem__bonus" key={`charParam-${charParamBonusId}`}>
+                <Atitle className="adminEditItem__bonus__title" level={4}>
+                  {t('adminEditItem.charParamBonusTitle', { ns: 'pages' })}
                 </Atitle>
-                <div className="adminEditNode__bonus__fields">
+                <div className="adminEditItem__bonus__fields">
                   <SmartSelect
                     control={control}
                     inputName={`charParamBonuses.charParam-${charParamBonusId}.charParam`}
@@ -1005,7 +811,7 @@ const AdminEditNode: FC = () => {
                     }}
                     label={t('charParamBonusStat.label', { ns: 'fields' })}
                     options={charParamSelect}
-                    className="adminEditNode__bonus__select"
+                    className="adminEditItem__bonus__select"
                   />
                   <Input
                     control={control}
@@ -1015,7 +821,7 @@ const AdminEditNode: FC = () => {
                       required: t('charParamBonusValue.required', { ns: 'fields' }),
                     }}
                     label={t('charParamBonusValue.label', { ns: 'fields' })}
-                    className="adminEditNode__bonus__value"
+                    className="adminEditItem__bonus__value"
                   />
                 </div>
                 <Button
@@ -1032,16 +838,16 @@ const AdminEditNode: FC = () => {
                     );
                     unregister(`charParamBonuses.charParam-${charParamBonusId}`);
                   }}
-                  className="adminEditNode__bonus__button"
+                  className="adminEditItem__bonus__button"
                 />
               </div>
             ))}
             {effectIds.map((effectId) => (
-              <div className="adminEditNode__bonus" key={`charParam-${effectId}`}>
-                <Atitle className="adminEditNode__bonus__title" level={4}>
-                  {t('adminEditNode.effectTitle', { ns: 'pages' })}
+              <div className="adminEditItem__bonus" key={`charParam-${effectId}`}>
+                <Atitle className="adminEditItem__bonus__title" level={4}>
+                  {t('adminEditItem.effectTitle', { ns: 'pages' })}
                 </Atitle>
-                <div className="adminEditNode__bonus__fields adminEditNode__bonus__fields--large">
+                <div className="adminEditItem__bonus__fields adminEditItem__bonus__fields--large">
                   <Input
                     control={control}
                     inputName={`effects.effect-${effectId}.title`}
@@ -1049,7 +855,7 @@ const AdminEditNode: FC = () => {
                       required: t('effectTitle.required', { ns: 'fields' }),
                     }}
                     label={t('effectTitle.label', { ns: 'fields' })}
-                    className="adminEditNode__bonus__value adminEditNode__bonus__value--s"
+                    className="adminEditItem__bonus__value adminEditItem__bonus__value--s"
                   />
                   <SmartSelect
                     control={control}
@@ -1059,7 +865,7 @@ const AdminEditNode: FC = () => {
                     }}
                     label={t('effectType.label', { ns: 'fields' })}
                     options={actionTypeSelect}
-                    className="adminEditNode__bonus__select adminEditNode__bonus__value--s"
+                    className="adminEditItem__bonus__select adminEditItem__bonus__value--s"
                   />
                   <Input
                     control={control}
@@ -1069,29 +875,29 @@ const AdminEditNode: FC = () => {
                       required: t('effectSummary.required', { ns: 'fields' }),
                     }}
                     label={t('effectSummary.label', { ns: 'fields' })}
-                    className="adminEditNode__bonus__value adminEditNode__bonus__value--l"
+                    className="adminEditItem__bonus__value adminEditItem__bonus__value--l"
                   />
                   <Input
                     control={control}
                     inputName={`effects.effect-${effectId}.formula`}
                     label={t('effectFormula.label', { ns: 'fields' })}
-                    className="adminEditNode__bonus__value adminEditNode__bonus__value--l"
+                    className="adminEditItem__bonus__value adminEditItem__bonus__value--l"
                   />
-                  <Atitle className="adminEditNode__bonus__title" level={4}>
-                    {t('adminEditNode.effectInt', { ns: 'pages' })}
+                  <Atitle className="adminEditItem__bonus__title" level={4}>
+                    {t('adminEditItem.effectInt', { ns: 'pages' })}
                   </Atitle>
                   <Input
                     control={control}
                     inputName={`effects.effect-${effectId}.titleFr`}
                     label={`${t('effectTitle.label', { ns: 'fields' })} (FR)`}
-                    className="adminEditNode__bonus__value adminEditNode__bonus__value--l"
+                    className="adminEditItem__bonus__value adminEditItem__bonus__value--l"
                   />
                   <Input
                     control={control}
                     type="textarea"
                     inputName={`effects.effect-${effectId}.summaryFr`}
                     label={`${t('effectSummary.label', { ns: 'fields' })} (FR)`}
-                    className="adminEditNode__bonus__value adminEditNode__bonus__value--l"
+                    className="adminEditItem__bonus__value adminEditItem__bonus__value--l"
                   />
                 </div>
                 <Button
@@ -1108,16 +914,16 @@ const AdminEditNode: FC = () => {
                     );
                     unregister(`effects.effect-${effectId}`);
                   }}
-                  className="adminEditNode__bonus__button"
+                  className="adminEditItem__bonus__button"
                 />
               </div>
             ))}
             {actionIds.map((actionId) => (
-              <div className="adminEditNode__bonus" key={`charParam-${actionId}`}>
-                <Atitle className="adminEditNode__bonus__title" level={4}>
-                  {t('adminEditNode.actionTitle', { ns: 'pages' })}
+              <div className="adminEditItem__bonus" key={`charParam-${actionId}`}>
+                <Atitle className="adminEditItem__bonus__title" level={4}>
+                  {t('adminEditItem.actionTitle', { ns: 'pages' })}
                 </Atitle>
-                <div className="adminEditNode__bonus__fields adminEditNode__bonus__fields--large">
+                <div className="adminEditItem__bonus__fields adminEditItem__bonus__fields--large">
                   <Input
                     control={control}
                     inputName={`actions.action-${actionId}.title`}
@@ -1125,7 +931,7 @@ const AdminEditNode: FC = () => {
                       required: t('actionTitle.required', { ns: 'fields' }),
                     }}
                     label={t('actionTitle.label', { ns: 'fields' })}
-                    className="adminEditNode__bonus__value adminEditNode__bonus__value--l"
+                    className="adminEditItem__bonus__value adminEditItem__bonus__value--l"
                   />
                   <SmartSelect
                     control={control}
@@ -1135,7 +941,7 @@ const AdminEditNode: FC = () => {
                     }}
                     label={t('actionType.label', { ns: 'fields' })}
                     options={actionTypeSelect}
-                    className="adminEditNode__bonus__select adminEditNode__bonus__value--s"
+                    className="adminEditItem__bonus__select adminEditItem__bonus__value--s"
                   />
                   <SmartSelect
                     control={control}
@@ -1145,7 +951,7 @@ const AdminEditNode: FC = () => {
                     }}
                     label={t('actionDuration.label', { ns: 'fields' })}
                     options={actionDurationSelect}
-                    className="adminEditNode__bonus__select adminEditNode__bonus__value--s"
+                    className="adminEditItem__bonus__select adminEditItem__bonus__value--s"
                   />
                   <Input
                     control={control}
@@ -1155,19 +961,19 @@ const AdminEditNode: FC = () => {
                       required: t('actionSummary.required', { ns: 'fields' }),
                     }}
                     label={t('actionSummary.label', { ns: 'fields' })}
-                    className="adminEditNode__bonus__value adminEditNode__bonus__value--l"
+                    className="adminEditItem__bonus__value adminEditItem__bonus__value--l"
                   />
                   <Input
                     control={control}
                     inputName={`actions.action-${actionId}.time`}
                     label={t('actionTime.label', { ns: 'fields' })}
-                    className="adminEditNode__bonus__value adminEditNode__bonus__value--s"
+                    className="adminEditItem__bonus__value adminEditItem__bonus__value--s"
                   />
                   <Input
                     control={control}
                     inputName={`actions.action-${actionId}.damages`}
                     label={t('actionDamages.label', { ns: 'fields' })}
-                    className="adminEditNode__bonus__value adminEditNode__bonus__value--s"
+                    className="adminEditItem__bonus__value adminEditItem__bonus__value--s"
                   />
                   <SmartSelect
                     control={control}
@@ -1180,56 +986,56 @@ const AdminEditNode: FC = () => {
                       },
                       ...skillSelect,
                     ]}
-                    className="adminEditNode__bonus__select adminEditNode__bonus__value--s"
+                    className="adminEditItem__bonus__select adminEditItem__bonus__value--s"
                   />
                   <Input
                     control={control}
                     inputName={`actions.action-${actionId}.offsetSkill`}
                     label={t('actionOffsetSkill.label', { ns: 'fields' })}
-                    className="adminEditNode__bonus__value adminEditNode__bonus__value--s"
+                    className="adminEditItem__bonus__value adminEditItem__bonus__value--s"
                   />
                   <SmartSelect
                     control={control}
                     inputName={`actions.action-${actionId}.isKarmic`}
                     label={t('actionIsKarmic.label', { ns: 'fields' })}
                     options={boolRange}
-                    className="adminEditNode__bonus__select adminEditNode__bonus__value--s"
+                    className="adminEditItem__bonus__select adminEditItem__bonus__value--s"
                   />
                   <Input
                     control={control}
                     type="number"
                     inputName={`actions.action-${actionId}.karmicCost`}
                     label={t('actionKarmicCost.label', { ns: 'fields' })}
-                    className="adminEditNode__bonus__value adminEditNode__bonus__value--s"
+                    className="adminEditItem__bonus__value adminEditItem__bonus__value--s"
                   />
                   <Input
                     control={control}
                     type="number"
                     inputName={`actions.action-${actionId}.uses`}
                     label={t('actionUses.label', { ns: 'fields' })}
-                    className="adminEditNode__bonus__value adminEditNode__bonus__value--l"
+                    className="adminEditItem__bonus__value adminEditItem__bonus__value--l"
                   />
-                  <Atitle className="adminEditNode__bonus__title" level={4}>
-                    {t('adminEditNode.actionInt', { ns: 'pages' })}
+                  <Atitle className="adminEditItem__bonus__title" level={4}>
+                    {t('adminEditItem.actionInt', { ns: 'pages' })}
                   </Atitle>
                   <Input
                     control={control}
                     inputName={`actions.action-${actionId}.titleFr`}
                     label={`${t('actionTitle.label', { ns: 'fields' })} (FR)`}
-                    className="adminEditNode__bonus__value adminEditNode__bonus__value--l"
+                    className="adminEditItem__bonus__value adminEditItem__bonus__value--l"
                   />
                   <Input
                     control={control}
                     type="textarea"
                     inputName={`actions.action-${actionId}.summaryFr`}
                     label={`${t('actionSummary.label', { ns: 'fields' })} (FR)`}
-                    className="adminEditNode__bonus__value adminEditNode__bonus__value--l"
+                    className="adminEditItem__bonus__value adminEditItem__bonus__value--l"
                   />
                   <Input
                     control={control}
                     inputName={`actions.action-${actionId}.timeFr`}
                     label={`${t('actionTime.label', { ns: 'fields' })} (FR)`}
-                    className="adminEditNode__bonus__value adminEditNode__bonus__value--l"
+                    className="adminEditItem__bonus__value adminEditItem__bonus__value--l"
                   />
                 </div>
                 <Button
@@ -1246,36 +1052,36 @@ const AdminEditNode: FC = () => {
                     );
                     unregister(`actions.action-${actionId}`);
                   }}
-                  className="adminEditNode__bonus__button"
+                  className="adminEditItem__bonus__button"
                 />
               </div>
             ))}
           </div>
-          <div className="adminEditNode__bonuses__buttons">
+          <div className="adminEditItem__bonuses__buttons">
             <Button onClick={onAddSkillBonus}>
-              {t('adminEditNode.createSkillBonusButton', { ns: 'pages' })}
+              {t('adminEditItem.createSkillBonusButton', { ns: 'pages' })}
             </Button>
             <Button onClick={onAddStatBonus}>
-              {t('adminEditNode.createStatBonusButton', { ns: 'pages' })}
+              {t('adminEditItem.createStatBonusButton', { ns: 'pages' })}
             </Button>
             <Button onClick={onAddCharParamBonus}>
-              {t('adminEditNode.createCharParamBonusButton', { ns: 'pages' })}
+              {t('adminEditItem.createCharParamBonusButton', { ns: 'pages' })}
             </Button>
             <Button onClick={onAddAction}>
-              {t('adminEditNode.createActionButton', { ns: 'pages' })}
+              {t('adminEditItem.createActionButton', { ns: 'pages' })}
             </Button>
             <Button onClick={onAddEffect}>
-              {t('adminEditNode.createEffectButton', { ns: 'pages' })}
+              {t('adminEditItem.createEffectButton', { ns: 'pages' })}
             </Button>
           </div>
         </div>
-        <div className="adminEditNode__intl-title">
-          <div className="adminEditNode__intl-title__content">
-            <Atitle className="adminEditNode__intl-title__title" level={2}>
-              {t('adminEditNode.i18n', { ns: 'pages' })}
+        <div className="adminEditItem__intl-title">
+          <div className="adminEditItem__intl-title__content">
+            <Atitle className="adminEditItem__intl-title__title" level={2}>
+              {t('adminEditItem.i18n', { ns: 'pages' })}
             </Atitle>
-            <Ap className="adminEditNode__intl-title__info">
-              {t('adminEditNode.i18nInfo', { ns: 'pages' })}
+            <Ap className="adminEditItem__intl-title__info">
+              {t('adminEditItem.i18nInfo', { ns: 'pages' })}
             </Ap>
           </div>
           <Button
@@ -1284,40 +1090,33 @@ const AdminEditNode: FC = () => {
             onClick={() => {
               setDisplayInt((prev) => !prev);
             }}
-            className="adminEditNode__intl-title__btn"
+            className="adminEditItem__intl-title__btn"
           />
         </div>
-        <div className="adminEditNode__intl">
-          <div className="adminEditNode__basics">
+        <div className="adminEditItem__intl">
+          <div className="adminEditItem__basics">
             <Input
               control={control}
               inputName="nameFr"
               type="text"
-              label={`${t('nameNode.label', { ns: 'fields' })} (FR)`}
-              className="adminEditNode__basics__name"
+              label={`${t('nameItem.label', { ns: 'fields' })} (FR)`}
+              className="adminEditItem__basics__name"
             />
           </div>
-          <div className="adminEditNode__details">
+          <div className="adminEditItem__details">
             <RichTextElement
-              label={`${t('nodeSummary.title', { ns: 'fields' })} (FR)`}
+              label={`${t('itemSummary.title', { ns: 'fields' })} (FR)`}
               editor={introFrEditor}
-              rawStringContent={nodeTextFr}
+              rawStringContent={itemTextFr}
               small
               complete
             />
-            <Input
-              control={control}
-              inputName="quoteFr"
-              type="text"
-              label={`${t('quoteNode.label', { ns: 'fields' })} (FR)`}
-              className="adminEditNode__details__quote"
-            />
           </div>
         </div>
-        <Button type="submit">{t('adminEditNode.createButton', { ns: 'pages' })}</Button>
+        <Button type="submit">{t('adminEditItem.createButton', { ns: 'pages' })}</Button>
       </form>
     </div>
   );
 };
 
-export default AdminEditNode;
+export default AdminEditItem;

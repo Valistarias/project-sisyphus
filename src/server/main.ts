@@ -18,6 +18,8 @@ import ActionRoutes from './entities/action/routes';
 import ActionDurationRoutes from './entities/actionDuration/routes';
 import ActionTypeRoutes from './entities/actionType/routes';
 import AmmoRoutes from './entities/ammo/routes';
+import ArmorRoutes from './entities/armor/routes';
+import ArmorTypeRoutes from './entities/armorType/routes';
 import { verifyTokenSingIn } from './entities/auth/controller';
 import AuthRoutes from './entities/auth/routes';
 import BagRoutes from './entities/bag/routes';
@@ -35,6 +37,7 @@ import DamageTypeRoutes from './entities/damageType/routes';
 import EffectRoutes from './entities/effect/routes';
 import EnnemyAttackRoutes from './entities/ennemyAttack/routes';
 import ImplantRoutes from './entities/implant/routes';
+import ItemRoutes from './entities/item/routes';
 import ItemModifierRoutes from './entities/itemModifier/routes';
 import ItemTypeRoutes from './entities/itemType/routes';
 import { verifyMailToken } from './entities/mailToken/controller';
@@ -164,6 +167,9 @@ WeaponScopeRoutes(apiRouter);
 WeaponStyleRoutes(apiRouter);
 WeaponTypeRoutes(apiRouter);
 ImplantRoutes(apiRouter);
+ArmorTypeRoutes(apiRouter);
+ArmorRoutes(apiRouter);
+ItemRoutes(apiRouter);
 
 // NPC routes
 EnnemyAttackRoutes(apiRouter);

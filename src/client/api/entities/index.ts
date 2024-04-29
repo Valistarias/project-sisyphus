@@ -4,6 +4,8 @@ import ActionDurations from './actionDurations';
 import Actions from './actions';
 import ActionTypes from './actionTypes';
 import Ammos from './ammos';
+import Armors from './armors';
+import ArmorTypes from './armorTypes';
 import Auth from './auth';
 import Bags from './bags';
 import BodyParts from './bodyParts';
@@ -21,6 +23,7 @@ import Effects from './effects';
 import EnnemyAttacks from './ennemyAttacks';
 import Implants from './implants';
 import ItemModifiers from './itemModifiers';
+import Items from './items';
 import ItemTypes from './itemTypes';
 import MailToken from './mailToken';
 import Nodes from './nodes';
@@ -48,6 +51,8 @@ export {
   Actions,
   ActionTypes,
   Ammos,
+  Armors,
+  ArmorTypes,
   Auth,
   Bags,
   BodyParts,
@@ -65,6 +70,7 @@ export {
   EnnemyAttacks,
   Implants,
   ItemModifiers,
+  Items,
   ItemTypes,
   MailToken,
   Nodes,

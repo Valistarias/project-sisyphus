@@ -1,11 +1,15 @@
 import AdminPage from './admin';
 import AdminAmmosPage from './adminAmmos';
+import AdminArmorsPage from './adminArmors';
+import AdminArmorTypesPage from './adminArmorTypes';
 import AdminBagsPage from './adminBags';
 import AdminBodyPartsPage from './adminBodyParts';
 import AdminCharParamsPage from './adminCharParams';
 import AdminCyberFramesPage from './adminCyberFrames';
 import AdminDamageTypesPage from './adminDamageTypes';
 import AdminEditAmmoPage from './adminEditAmmo';
+import AdminEditArmorPage from './adminEditArmor';
+import AdminEditArmorTypePage from './adminEditArmorType';
 import AdminEditBagPage from './adminEditBag';
 import AdminEditBodyPartPage from './adminEditBodyPart';
 import AdminEditChapterPage from './adminEditChapter';
@@ -13,6 +17,8 @@ import AdminEditCharParamPage from './adminEditCharParam';
 import AdminEditCyberFramePage from './adminEditCyberFrame';
 import AdminEditCyberFrameBranchPage from './adminEditCyberFrameBranch';
 import AdminEditDamageTypePage from './adminEditDamageType';
+import AdminEditImplantPage from './adminEditImplant';
+import AdminEditItemPage from './adminEditItem';
 import AdminEditItemModifierPage from './adminEditItemModifier';
 import AdminEditItemTypePage from './adminEditItemType';
 import AdminEditNodePage from './adminEditNode';
@@ -30,9 +36,13 @@ import AdminEditWeaponPage from './adminEditWeapon';
 import AdminEditWeaponScopePage from './adminEditWeaponScope';
 import AdminEditWeaponStylePage from './adminEditWeaponStyle';
 import AdminEditWeaponTypePage from './adminEditWeaponType';
+import AdminImplantsPage from './adminImplants';
 import AdminItemModifiersPage from './adminItemModifiers';
+import AdminItemsPage from './adminItems';
 import AdminItemTypesPage from './adminItemTypes';
 import AdminNewAmmoPage from './adminNewAmmo';
+import AdminNewArmorPage from './adminNewArmor';
+import AdminNewArmorTypePage from './adminNewArmorType';
 import AdminNewBagPage from './adminNewBag';
 import AdminNewBodyPartPage from './adminNewBodyPart';
 import AdminNewChapterPage from './adminNewChapter';
@@ -40,6 +50,8 @@ import AdminNewCharParamPage from './adminNewCharParam';
 import AdminNewCyberFramePage from './adminNewCyberFrame';
 import AdminNewCyberFrameBranchPage from './adminNewCyberFrameBranch';
 import AdminNewDamageTypePage from './adminNewDamageType';
+import AdminNewImplantPage from './adminNewImplant';
+import AdminNewItemPage from './adminNewItem';
 import AdminNewItemModifierPage from './adminNewItemModifier';
 import AdminNewItemTypePage from './adminNewItemType';
 import AdminNewNodePage from './adminNewNode';
@@ -72,12 +84,16 @@ import AdminWeaponTypesPage from './adminWeaponTypes';
 
 export {
   AdminAmmosPage,
+  AdminArmorsPage,
+  AdminArmorTypesPage,
   AdminBagsPage,
   AdminBodyPartsPage,
   AdminCharParamsPage,
   AdminCyberFramesPage,
   AdminDamageTypesPage,
   AdminEditAmmoPage,
+  AdminEditArmorPage,
+  AdminEditArmorTypePage,
   AdminEditBagPage,
   AdminEditBodyPartPage,
   AdminEditChapterPage,
@@ -85,7 +101,9 @@ export {
   AdminEditCyberFrameBranchPage,
   AdminEditCyberFramePage,
   AdminEditDamageTypePage,
+  AdminEditImplantPage,
   AdminEditItemModifierPage,
+  AdminEditItemPage,
   AdminEditItemTypePage,
   AdminEditNodePage,
   AdminEditNotionPage,
@@ -102,9 +120,13 @@ export {
   AdminEditWeaponScopePage,
   AdminEditWeaponStylePage,
   AdminEditWeaponTypePage,
+  AdminImplantsPage,
   AdminItemModifiersPage,
+  AdminItemsPage,
   AdminItemTypesPage,
   AdminNewAmmoPage,
+  AdminNewArmorPage,
+  AdminNewArmorTypePage,
   AdminNewBagPage,
   AdminNewBodyPartPage,
   AdminNewChapterPage,
@@ -112,7 +134,9 @@ export {
   AdminNewCyberFrameBranchPage,
   AdminNewCyberFramePage,
   AdminNewDamageTypePage,
+  AdminNewImplantPage,
   AdminNewItemModifierPage,
+  AdminNewItemPage,
   AdminNewItemTypePage,
   AdminNewNodePage,
   AdminNewNotionPage,

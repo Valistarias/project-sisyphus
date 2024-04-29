@@ -3,6 +3,8 @@ import {
   ActionTypes,
   Actions,
   Ammos,
+  ArmorTypes,
+  Armors,
   Auth,
   Bags,
   BodyParts,
@@ -21,6 +23,7 @@ import {
   Implants,
   ItemModifiers,
   ItemTypes,
+  Items,
   MailToken,
   NPCs,
   Nodes,
@@ -49,6 +52,7 @@ export default class Api {
   actions: Actions;
   actionTypes: ActionTypes;
   ammos: Ammos;
+  armors: Armors;
   auth: Auth;
   bags: Bags;
   bodyParts: BodyParts;
@@ -66,6 +70,7 @@ export default class Api {
   ennemyAttacks: EnnemyAttacks;
   implants: Implants;
   itemModifiers: ItemModifiers;
+  items: Items;
   itemTypes: ItemTypes;
   mailToken: MailToken;
   nodes: Nodes;
@@ -88,12 +93,14 @@ export default class Api {
   weaponScopes: WeaponScopes;
   weaponStyles: WeaponStyles;
   weaponTypes: WeaponTypes;
+  armorTypes: ArmorTypes;
 
   constructor() {
     this.actionDurations = new ActionDurations();
     this.actions = new Actions();
     this.actionTypes = new ActionTypes();
     this.ammos = new Ammos();
+    this.armors = new Armors();
     this.auth = new Auth();
     this.bags = new Bags();
     this.bodyParts = new BodyParts();
@@ -111,6 +118,7 @@ export default class Api {
     this.ennemyAttacks = new EnnemyAttacks();
     this.implants = new Implants();
     this.itemModifiers = new ItemModifiers();
+    this.items = new Items();
     this.itemTypes = new ItemTypes();
     this.mailToken = new MailToken();
     this.nodes = new Nodes();
@@ -133,5 +141,6 @@ export default class Api {
     this.weaponScopes = new WeaponScopes();
     this.weaponStyles = new WeaponStyles();
     this.weaponTypes = new WeaponTypes();
+    this.armorTypes = new ArmorTypes();
   }
 }

@@ -5,6 +5,8 @@ import {
   ActionModel,
   ActionTypeModel,
   AmmoModel,
+  ArmorModel,
+  ArmorTypeModel,
   BagModel,
   BodyPartModel,
   CampaignModel,
@@ -20,6 +22,7 @@ import {
   EffectModel,
   EnnemyAttackModel,
   ImplantModel,
+  ItemModel,
   ItemModifierModel,
   ItemTypeModel,
   MailTokenModel,
@@ -48,6 +51,8 @@ import {
   type IActionDuration,
   type IActionType,
   type IAmmo,
+  type IArmor,
+  type IArmorType,
   type IBag,
   type IBodyPart,
   type ICampaign,
@@ -63,6 +68,7 @@ import {
   type IEffect,
   type IEnnemyAttack,
   type IImplant,
+  type IItem,
   type IItemModifier,
   type IItemType,
   type IMailToken,
@@ -178,6 +184,12 @@ interface DBType {
   DamageType: mongoose.Model<IDamageType>;
   /** The Damage Type model */
   Implant: mongoose.Model<IImplant>;
+  /** The Armor Type model */
+  ArmorType: mongoose.Model<IArmorType>;
+  /** The Armor model */
+  Armor: mongoose.Model<IArmor>;
+  /** The Item model */
+  Item: mongoose.Model<IItem>;
   /** The possible Roles */
   ROLES: string[];
 }
@@ -231,6 +243,9 @@ const db: DBType = {
   WeaponStyle: WeaponStyleModel(),
   WeaponType: WeaponTypeModel(),
   Implant: ImplantModel(),
+  ArmorType: ArmorTypeModel(),
+  Armor: ArmorModel(),
+  Item: ItemModel(),
   // NPC models
   EnnemyAttack: EnnemyAttackModel(),
   NPC: NPCModel(),

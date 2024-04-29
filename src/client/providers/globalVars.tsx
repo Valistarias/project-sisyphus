@@ -18,6 +18,7 @@ import type {
   IActionType,
   ICampaign,
   ICharacter,
+  ICuratedArmorType,
   ICuratedBodyPart,
   ICuratedCharParam,
   ICuratedCyberFrame,
@@ -76,6 +77,8 @@ interface IGlobalVarsContext {
   weaponStyles: ICuratedWeaponStyle[];
   /** All the loaded weapon types */
   weaponTypes: ICuratedWeaponType[];
+  /** All the loaded armor types */
+  armorTypes: ICuratedArmorType[];
   /** All the loaded program scopes */
   programScopes: ICuratedProgramScope[];
   /** Used to set the actual character */
@@ -110,6 +113,8 @@ interface IGlobalVarsContext {
   reloadWeaponStyles: () => void;
   /** Used to trigger the reload of the weapon types */
   reloadWeaponTypes: () => void;
+  /** Used to trigger the reload of the armor types */
+  reloadArmorTypes: () => void;
   /** Used to trigger the reload of the program scopes */
   reloadProgramScopes: () => void;
   /** Used to trigger the reload of all dynamic elements */
@@ -157,6 +162,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
   const [weaponStyles, setWeaponStyles] = useState<ICuratedWeaponStyle[]>([]);
   const [weaponTypes, setWeaponTypes] = useState<ICuratedWeaponType[]>([]);
   const [programScopes, setProgramScopes] = useState<ICuratedProgramScope[]>([]);
+  const [armorTypes, setArmorTypes] = useState<ICuratedArmorType[]>([]);
 
   const getAllFromApi = useCallback(
     (request: string, setState: React.Dispatch<React.SetStateAction<any>>) => {
@@ -239,6 +245,10 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
     getAllFromApi('damageTypes', setDamageTypes);
   }, [getAllFromApi]);
 
+  const loadArmorTypes = useCallback(() => {
+    getAllFromApi('armorTypes', setArmorTypes);
+  }, [getAllFromApi]);
+
   const loadProgramScopes = useCallback(() => {
     getAllFromApi('programScopes', setProgramScopes);
   }, [getAllFromApi]);
@@ -299,6 +309,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
             loadWeaponStyles();
             loadWeaponTypes();
             loadProgramScopes();
+            loadArmorTypes();
           }
           setLoading(false);
         })
@@ -309,6 +320,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
   }, [
     api,
     loadActionDurations,
+    loadArmorTypes,
     loadActionTypes,
     loadBodyParts,
     loadCampaigns,
@@ -357,6 +369,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       weaponScopes,
       weaponStyles,
       weaponTypes,
+      armorTypes,
       reloadAll: () => {
         loadCampaigns();
         loadRuleBooks();
@@ -374,6 +387,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
         loadWeaponTypes();
         loadItemTypes();
         loadProgramScopes();
+        loadArmorTypes();
       },
       reloadBodyParts: loadBodyParts,
       reloadCampaigns: loadCampaigns,
@@ -390,6 +404,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       reloadWeaponScopes: loadWeaponScopes,
       reloadWeaponStyles: loadWeaponStyles,
       reloadWeaponTypes: loadWeaponTypes,
+      reloadArmorTypes: loadArmorTypes,
       setCharacter: setCharacterFromId,
       resetCharacter,
       setUser,
@@ -397,41 +412,43 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
     [
       actionDurations,
       actionTypes,
+      bodyParts,
       campaigns,
+      character,
       charParams,
       cyberFrames,
-      loading,
-      itemModifiers,
-      rarities,
-      weaponScopes,
-      weaponStyles,
-      weaponTypes,
       damageTypes,
-      programScopes,
+      itemModifiers,
       itemTypes,
-      bodyParts,
-      loadCampaigns,
-      loadCharParams,
-      loadCyberFrames,
-      loadRuleBooks,
-      loadSkills,
-      loadStats,
-      setCharacterFromId,
-      loadItemModifiers,
-      loadRarities,
-      loadWeaponScopes,
-      loadWeaponStyles,
-      loadWeaponTypes,
-      loadDamageTypes,
-      loadItemTypes,
-      loadProgramScopes,
-      loadBodyParts,
-      character,
+      loading,
+      programScopes,
+      rarities,
       ruleBooks,
-      resetCharacter,
       skills,
       stats,
       user,
+      weaponScopes,
+      weaponStyles,
+      weaponTypes,
+      armorTypes,
+      loadBodyParts,
+      loadCampaigns,
+      loadCharParams,
+      loadCyberFrames,
+      loadDamageTypes,
+      loadItemModifiers,
+      loadItemTypes,
+      loadProgramScopes,
+      loadRarities,
+      loadRuleBooks,
+      loadSkills,
+      loadStats,
+      loadWeaponScopes,
+      loadWeaponStyles,
+      loadWeaponTypes,
+      loadArmorTypes,
+      setCharacterFromId,
+      resetCharacter,
       loadActionTypes,
       loadActionDurations,
     ]

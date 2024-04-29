@@ -2,6 +2,8 @@ export { ActionModel, type HydratedIAction, type IAction } from './action/model'
 export { ActionDurationModel, type IActionDuration } from './actionDuration/model';
 export { ActionTypeModel, type IActionType } from './actionType/model';
 export { AmmoModel, type HydratedIAmmo, type IAmmo } from './ammo/model';
+export { ArmorModel, type HydratedIArmor, type IArmor } from './armor/model';
+export { ArmorTypeModel, type HydratedIArmorType, type IArmorType } from './armorType/model';
 export { BagModel, type HydratedIBag, type IBag } from './bag/model';
 export { BodyPartModel, type HydratedIBodyPart, type IBodyPart } from './bodyPart/model';
 export {
@@ -34,6 +36,7 @@ export {
   type IEnnemyAttack,
 } from './ennemyAttack/model';
 export { ImplantModel, type HydratedIImplant, type IImplant } from './implant/model';
+export { ItemModel, type HydratedIItem, type IItem } from './item/model';
 export {
   ItemModifierModel,
   type HydratedIItemModifier,

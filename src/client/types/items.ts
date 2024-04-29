@@ -358,3 +358,94 @@ export interface ICuratedImplant {
   i18n: InternationalizationType;
   implant: IImplant;
 }
+
+// ArmorTypes ------------------------------------
+export interface IArmorType {
+  /** The ID of the armor type */
+  _id: string;
+  /** The title of the armor type */
+  title: string;
+  /** A summary of the armor type */
+  summary: string;
+  /** The internationnal content, as a json, stringified */
+  i18n?: InternationalizationType;
+  /** When the armor type was created */
+  createdAt: Date;
+}
+
+export interface ICuratedArmorType {
+  i18n: InternationalizationType;
+  armorType: IArmorType;
+}
+
+// Armors ------------------------------------
+export interface IArmor {
+  /** The ID of the stat bonus */
+  _id: string;
+  /** The title of the armor */
+  title: string;
+  /** A summary of the armor */
+  summary: string;
+  /** The internationnal content, as a json, stringified */
+  i18n?: InternationalizationType;
+  /** The rarity of the armor */
+  rarity: string;
+  /** The cost of the armor */
+  cost: number;
+  /** The type of item */
+  itemType: string;
+  /** All the body parts that can install this armor */
+  armorType: string;
+  /** The effects related to the armor */
+  effects?: IEffect[];
+  /** The actions related to the armor */
+  actions?: IAction[];
+  /** The skill bonuses related to the armor */
+  skillBonuses?: ISkillBonus[];
+  /** The stat bonuses related to the armor */
+  statBonuses?: IStatBonus[];
+  /** The charParam bonuses related to the armor */
+  charParamBonuses?: ICharParamBonus[];
+  /** When the stat bonus was created */
+  createdAt: Date;
+}
+
+export interface ICuratedArmor {
+  i18n: InternationalizationType;
+  armor: IArmor;
+}
+
+// Items ------------------------------------
+export interface IItem {
+  /** The ID of the stat bonus */
+  _id: string;
+  /** The title of the item */
+  title: string;
+  /** A summary of the item */
+  summary: string;
+  /** The internationnal content, as a json, stringified */
+  i18n?: InternationalizationType;
+  /** The rarity of the item */
+  rarity: string;
+  /** The cost of the item */
+  cost: number;
+  /** The type of item */
+  itemType: string;
+  /** The effects related to the item */
+  effects?: IEffect[];
+  /** The actions related to the item */
+  actions?: IAction[];
+  /** The skill bonuses related to the item */
+  skillBonuses?: ISkillBonus[];
+  /** The stat bonuses related to the item */
+  statBonuses?: IStatBonus[];
+  /** The charParam bonuses related to the item */
+  charParamBonuses?: ICharParamBonus[];
+  /** When the stat bonus was created */
+  createdAt: Date;
+}
+
+export interface ICuratedItem {
+  i18n: InternationalizationType;
+  item: IItem;
+}

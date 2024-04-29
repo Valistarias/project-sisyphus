@@ -6,12 +6,16 @@ import { useGlobalVars } from './providers';
 
 import {
   AdminAmmosPage,
+  AdminArmorTypesPage,
+  AdminArmorsPage,
   AdminBagsPage,
   AdminBodyPartsPage,
   AdminCharParamsPage,
   AdminCyberFramesPage,
   AdminDamageTypesPage,
   AdminEditAmmoPage,
+  AdminEditArmorPage,
+  AdminEditArmorTypePage,
   AdminEditBagPage,
   AdminEditBodyPartPage,
   AdminEditChapterPage,
@@ -19,7 +23,9 @@ import {
   AdminEditCyberFrameBranchPage,
   AdminEditCyberFramePage,
   AdminEditDamageTypePage,
+  AdminEditImplantPage,
   AdminEditItemModifierPage,
+  AdminEditItemPage,
   AdminEditItemTypePage,
   AdminEditNPCPage,
   AdminEditNodePage,
@@ -36,10 +42,14 @@ import {
   AdminEditWeaponScopePage,
   AdminEditWeaponStylePage,
   AdminEditWeaponTypePage,
+  AdminImplantsPage,
   AdminItemModifiersPage,
   AdminItemTypesPage,
+  AdminItemsPage,
   AdminNPCsPage,
   AdminNewAmmoPage,
+  AdminNewArmorPage,
+  AdminNewArmorTypePage,
   AdminNewBagPage,
   AdminNewBodyPartPage,
   AdminNewChapterPage,
@@ -47,7 +57,9 @@ import {
   AdminNewCyberFrameBranchPage,
   AdminNewCyberFramePage,
   AdminNewDamageTypePage,
+  AdminNewImplantPage,
   AdminNewItemModifierPage,
+  AdminNewItemPage,
   AdminNewItemTypePage,
   AdminNewNPCPage,
   AdminNewNodePage,
@@ -469,6 +481,54 @@ const App: FC = () => {
             {
               path: '/admin/bodypart/:id',
               element: <AdminEditBodyPartPage />,
+            },
+            {
+              path: '/admin/implants',
+              element: <AdminImplantsPage />,
+            },
+            {
+              path: '/admin/implant/new',
+              element: <AdminNewImplantPage />,
+            },
+            {
+              path: '/admin/implant/:id',
+              element: <AdminEditImplantPage />,
+            },
+            {
+              path: '/admin/armortypes',
+              element: <AdminArmorTypesPage />,
+            },
+            {
+              path: '/admin/armortype/new',
+              element: <AdminNewArmorTypePage />,
+            },
+            {
+              path: '/admin/armortype/:id',
+              element: <AdminEditArmorTypePage />,
+            },
+            {
+              path: '/admin/armors',
+              element: <AdminArmorsPage />,
+            },
+            {
+              path: '/admin/armor/new',
+              element: <AdminNewArmorPage />,
+            },
+            {
+              path: '/admin/armor/:id',
+              element: <AdminEditArmorPage />,
+            },
+            {
+              path: '/admin/items',
+              element: <AdminItemsPage />,
+            },
+            {
+              path: '/admin/item/new',
+              element: <AdminNewItemPage />,
+            },
+            {
+              path: '/admin/item/:id',
+              element: <AdminEditItemPage />,
             },
             // {
             //   path: '/admin/skillbranch/:id',

@@ -550,5 +550,65 @@
   "bodyPartLimit": {
     "label": "Implant limit for this body part",
     "required": "You need an implant limit for this body part"
+  },
+  "nameImplant": {
+    "required": "A name is required for this node",
+    "label": "Implant Name"
+  },
+  "implantSummary": {
+    "title": "Implant Details"
+  },
+  "implantCost": {
+    "required": "You need to define a Implant Cost to this implant",
+    "label": "Implant Cost"
+  },
+  "implantRarity": {
+    "required": "You need to define a Rarity to this implant",
+    "label": "Implant Rarity"
+  },
+  "implantBodyPart": {
+    "required": "You need to define one or multiple Body Part to this implant",
+    "label": "Implant Body Part"
+  },
+  "nameArmorType": {
+    "required": "A Armor Type name is required",
+    "label": "Name"
+  },
+  "armorTypeSummary": {
+    "title": "Armor Type Details"
+  },
+  "nameArmor": {
+    "required": "A name is required for this node",
+    "label": "Armor Name"
+  },
+  "armorSummary": {
+    "title": "Armor Details"
+  },
+  "armorCost": {
+    "required": "You need to define a Armor Cost to this armor",
+    "label": "Armor Cost"
+  },
+  "armorRarity": {
+    "required": "You need to define a Rarity to this armor",
+    "label": "Armor Rarity"
+  },
+  "armorType": {
+    "required": "You need to define an Armor Type to this armor",
+    "label": "Armor Type"
+  },
+  "nameItem": {
+    "required": "A name is required for this node",
+    "label": "Item Name"
+  },
+  "itemSummary": {
+    "title": "Item Details"
+  },
+  "itemCost": {
+    "required": "You need to define a Item Cost to this item",
+    "label": "Item Cost"
+  },
+  "itemRarity": {
+    "required": "You need to define a Rarity to this item",
+    "label": "Item Rarity"
   }
 }

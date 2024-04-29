@@ -18,13 +18,13 @@ import {
 import { curateSkillBonusIds } from '../skillBonus/controller';
 import { curateStatBonusIds } from '../statBonus/controller';
 
-import { type HydratedIImplant } from './model';
+import { type HydratedIItem } from './model';
 
-const { Implant } = db;
+const { Item } = db;
 
-const findImplants = async (): Promise<HydratedIImplant[]> =>
+const findItems = async (): Promise<HydratedIItem[]> =>
   await new Promise((resolve, reject) => {
-    Implant.find()
+    Item.find()
       .populate<{ effects: IEffect[] }>('effects')
       .populate<{ actions: IAction[] }>('actions')
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
@@ -32,9 +32,9 @@ const findImplants = async (): Promise<HydratedIImplant[]> =>
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
       .then(async (res) => {
         if (res === undefined || res === null) {
-          reject(gemNotFound('Implants'));
+          reject(gemNotFound('Items'));
         } else {
-          resolve(res as HydratedIImplant[]);
+          resolve(res as HydratedIItem[]);
         }
       })
       .catch(async (err: Error) => {
@@ -42,9 +42,9 @@ const findImplants = async (): Promise<HydratedIImplant[]> =>
       });
   });
 
-const findImplantById = async (id: string): Promise<HydratedIImplant> =>
+const findItemById = async (id: string): Promise<HydratedIItem> =>
   await new Promise((resolve, reject) => {
-    Implant.findById(id)
+    Item.findById(id)
       .populate<{ effects: IEffect[] }>('effects')
       .populate<{ actions: IAction[] }>('actions')
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
@@ -54,9 +54,9 @@ const findImplantById = async (id: string): Promise<HydratedIImplant> =>
       .populate<{ cyberFrameBranch: ICyberFrameBranch }>('cyberFrameBranch')
       .then(async (res) => {
         if (res === undefined || res === null) {
-          reject(gemNotFound('Implant'));
+          reject(gemNotFound('Item'));
         } else {
-          resolve(res as HydratedIImplant);
+          resolve(res as HydratedIItem);
         }
       })
       .catch(async (err: Error) => {
@@ -72,7 +72,6 @@ const create = (req: Request, res: Response): void => {
     rarity,
     cost,
     itemType,
-    bodyParts,
     effects,
     actions,
     skillBonuses,
@@ -84,24 +83,22 @@ const create = (req: Request, res: Response): void => {
     summary === undefined ||
     rarity === undefined ||
     cost === undefined ||
-    itemType === undefined ||
-    bodyParts === undefined
+    itemType === undefined
   ) {
-    res.status(400).send(gemInvalidField('Implant'));
+    res.status(400).send(gemInvalidField('Item'));
     return;
   }
 
-  const implant = new Implant({
+  const item = new Item({
     title,
     summary,
     rarity,
     cost,
     itemType,
-    bodyParts,
   });
 
   if (i18n !== null) {
-    implant.i18n = JSON.stringify(i18n);
+    item.i18n = JSON.stringify(i18n);
   }
 
   curateSkillBonusIds({
@@ -114,7 +111,7 @@ const create = (req: Request, res: Response): void => {
   })
     .then((skillBonusIds) => {
       if (skillBonusIds.length > 0) {
-        implant.skillBonuses = skillBonusIds.map((skillBonusId) => String(skillBonusId));
+        item.skillBonuses = skillBonusIds.map((skillBonusId) => String(skillBonusId));
       }
       curateStatBonusIds({
         statBonusesToRemove: [],
@@ -126,7 +123,7 @@ const create = (req: Request, res: Response): void => {
       })
         .then((statBonusIds) => {
           if (statBonusIds.length > 0) {
-            implant.statBonuses = statBonusIds.map((statBonusId) => String(statBonusId));
+            item.statBonuses = statBonusIds.map((statBonusId) => String(statBonusId));
           }
           curateCharParamBonusIds({
             charParamBonusesToRemove: [],
@@ -138,7 +135,7 @@ const create = (req: Request, res: Response): void => {
           })
             .then((charParamBonusIds) => {
               if (charParamBonusIds.length > 0) {
-                implant.charParamBonuses = charParamBonusIds.map((charParamBonusId) =>
+                item.charParamBonuses = charParamBonusIds.map((charParamBonusId) =>
                   String(charParamBonusId)
                 );
               }
@@ -148,7 +145,7 @@ const create = (req: Request, res: Response): void => {
               })
                 .then((effectsIds) => {
                   if (effectsIds.length > 0) {
-                    implant.effects = effectsIds.map((effectsId) => String(effectsId));
+                    item.effects = effectsIds.map((effectsId) => String(effectsId));
                   }
                   smartUpdateActions({
                     actionsToRemove: [],
@@ -156,12 +153,12 @@ const create = (req: Request, res: Response): void => {
                   })
                     .then((actionsIds) => {
                       if (actionsIds.length > 0) {
-                        implant.actions = actionsIds.map((actionsId) => String(actionsId));
+                        item.actions = actionsIds.map((actionsId) => String(actionsId));
                       }
-                      implant
+                      item
                         .save()
                         .then(() => {
-                          res.send(implant);
+                          res.send(item);
                         })
                         .catch((err: Error) => {
                           res.status(500).send(gemServerError(err));
@@ -197,7 +194,6 @@ const update = (req: Request, res: Response): void => {
     rarity,
     cost,
     itemType,
-    bodyParts,
     effects = null,
     actions = null,
     skillBonuses = null,
@@ -205,36 +201,33 @@ const update = (req: Request, res: Response): void => {
     charParamBonuses = null,
   } = req.body;
   if (id === undefined) {
-    res.status(400).send(gemInvalidField('Implant ID'));
+    res.status(400).send(gemInvalidField('Item ID'));
     return;
   }
 
-  findImplantById(id as string)
-    .then((implant) => {
+  findItemById(id as string)
+    .then((item) => {
       if (title !== null) {
-        implant.title = title;
+        item.title = title;
       }
       if (rarity !== null) {
-        implant.rarity = rarity;
+        item.rarity = rarity;
       }
       if (summary !== null) {
-        implant.summary = summary;
+        item.summary = summary;
       }
       if (cost !== null) {
-        implant.cost = cost;
+        item.cost = cost;
       }
       if (itemType !== null) {
-        implant.itemType = itemType;
-      }
-      if (bodyParts !== null) {
-        implant.bodyParts = bodyParts;
+        item.itemType = itemType;
       }
 
       const skillBonusesToStay: string[] = [];
       interface ISkillBonusElt extends ISkillBonus {
         _id: ObjectId;
       }
-      const skillBonusesToRemove = implant.skillBonuses.reduce(
+      const skillBonusesToRemove = item.skillBonuses.reduce(
         (result: string[], elt: ISkillBonusElt) => {
           const foundSkillBonus = skillBonuses.find(
             (skillBonus) => skillBonus.skill === String(elt.skill) && skillBonus.value === elt.value
@@ -260,7 +253,7 @@ const update = (req: Request, res: Response): void => {
             value: number;
           }
         ) => {
-          const foundSkillBonus = implant.skillBonuses.find(
+          const foundSkillBonus = item.skillBonuses.find(
             (skillBonus) =>
               typeof skillBonus !== 'string' &&
               String(skillBonus.skill) === elt.skill &&
@@ -278,7 +271,7 @@ const update = (req: Request, res: Response): void => {
       interface IStatBonusElt extends IStatBonus {
         _id: ObjectId;
       }
-      const statBonusesToRemove = implant.statBonuses.reduce(
+      const statBonusesToRemove = item.statBonuses.reduce(
         (result: string[], elt: IStatBonusElt) => {
           const foundStatBonus = statBonuses.find(
             (statBonus) => statBonus.stat === String(elt.stat) && statBonus.value === elt.value
@@ -304,7 +297,7 @@ const update = (req: Request, res: Response): void => {
             value: number;
           }
         ) => {
-          const foundStatBonus = implant.statBonuses.find(
+          const foundStatBonus = item.statBonuses.find(
             (statBonus) =>
               typeof statBonus !== 'string' &&
               String(statBonus.stat) === elt.stat &&
@@ -322,7 +315,7 @@ const update = (req: Request, res: Response): void => {
       interface ICharParamBonusElt extends ICharParamBonus {
         _id: ObjectId;
       }
-      const charParamBonusesToRemove = implant.charParamBonuses.reduce(
+      const charParamBonusesToRemove = item.charParamBonuses.reduce(
         (result: string[], elt: ICharParamBonusElt) => {
           const foundCharParamBonus = charParamBonuses.find(
             (charParamBonus) =>
@@ -350,7 +343,7 @@ const update = (req: Request, res: Response): void => {
             value: number;
           }
         ) => {
-          const foundCharParamBonus = implant.charParamBonuses.find(
+          const foundCharParamBonus = item.charParamBonuses.find(
             (charParamBonus) =>
               typeof charParamBonus !== 'string' &&
               String(charParamBonus.charParam) === elt.charParam &&
@@ -367,7 +360,7 @@ const update = (req: Request, res: Response): void => {
       interface IEffectElt extends IEffect {
         _id: ObjectId;
       }
-      const effectsToRemove = implant.effects.reduce((result: string[], elt: IEffectElt) => {
+      const effectsToRemove = item.effects.reduce((result: string[], elt: IEffectElt) => {
         const foundEffect = effects.find(
           (effect) => effect.id !== undefined && String(effect.id) === String(elt._id)
         );
@@ -380,7 +373,7 @@ const update = (req: Request, res: Response): void => {
       interface IActionElt extends IAction {
         _id: ObjectId;
       }
-      const actionsToRemove = implant.actions.reduce((result: string[], elt: IActionElt) => {
+      const actionsToRemove = item.actions.reduce((result: string[], elt: IActionElt) => {
         const foundAction = actions.find(
           (action) => action.id !== undefined && String(action.id) === String(elt._id)
         );
@@ -392,8 +385,8 @@ const update = (req: Request, res: Response): void => {
 
       if (i18n !== null) {
         const newIntl = {
-          ...(implant.i18n !== null && implant.i18n !== undefined && implant.i18n !== ''
-            ? JSON.parse(implant.i18n)
+          ...(item.i18n !== null && item.i18n !== undefined && item.i18n !== ''
+            ? JSON.parse(item.i18n)
             : {}),
         };
 
@@ -401,7 +394,7 @@ const update = (req: Request, res: Response): void => {
           newIntl[lang] = i18n[lang];
         });
 
-        implant.i18n = JSON.stringify(newIntl);
+        item.i18n = JSON.stringify(newIntl);
       }
 
       curateSkillBonusIds({
@@ -411,9 +404,9 @@ const update = (req: Request, res: Response): void => {
       })
         .then((skillBonusIds) => {
           if (skillBonusIds.length > 0) {
-            implant.skillBonuses = skillBonusIds.map((skillBonusId) => String(skillBonusId));
+            item.skillBonuses = skillBonusIds.map((skillBonusId) => String(skillBonusId));
           } else if (skillBonuses !== null && skillBonuses.length === 0) {
-            implant.skillBonuses = [];
+            item.skillBonuses = [];
           }
           curateStatBonusIds({
             statBonusesToRemove,
@@ -422,7 +415,7 @@ const update = (req: Request, res: Response): void => {
           })
             .then((statBonusIds) => {
               if (statBonusIds.length > 0) {
-                implant.statBonuses = statBonusIds.map((statBonusId) => String(statBonusId));
+                item.statBonuses = statBonusIds.map((statBonusId) => String(statBonusId));
               }
               curateCharParamBonusIds({
                 charParamBonusesToRemove,
@@ -431,7 +424,7 @@ const update = (req: Request, res: Response): void => {
               })
                 .then((charParamBonusIds) => {
                   if (charParamBonusIds.length > 0) {
-                    implant.charParamBonuses = charParamBonusIds.map((charParamBonusId) =>
+                    item.charParamBonuses = charParamBonusIds.map((charParamBonusId) =>
                       String(charParamBonusId)
                     );
                   }
@@ -441,7 +434,7 @@ const update = (req: Request, res: Response): void => {
                   })
                     .then((effectsIds) => {
                       if (effectsIds.length > 0) {
-                        implant.effects = effectsIds.map((effectsId) => String(effectsId));
+                        item.effects = effectsIds.map((effectsId) => String(effectsId));
                       }
                       smartUpdateActions({
                         actionsToRemove,
@@ -449,12 +442,12 @@ const update = (req: Request, res: Response): void => {
                       })
                         .then((actionsIds) => {
                           if (actionsIds.length > 0) {
-                            implant.actions = actionsIds.map((actionsId) => String(actionsId));
+                            item.actions = actionsIds.map((actionsId) => String(actionsId));
                           }
-                          implant
+                          item
                             .save()
                             .then(() => {
-                              res.send({ message: 'Implant was updated successfully!', implant });
+                              res.send({ message: 'Item was updated successfully!', item });
                             })
                             .catch((err: Error) => {
                               res.status(500).send(gemServerError(err));
@@ -481,17 +474,17 @@ const update = (req: Request, res: Response): void => {
         });
     })
     .catch(() => {
-      res.status(404).send(gemNotFound('Implant'));
+      res.status(404).send(gemNotFound('Item'));
     });
 };
 
-const deleteImplantById = async (id: string): Promise<boolean> =>
+const deleteItemById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
-      reject(gemInvalidField('Implant ID'));
+      reject(gemInvalidField('Item ID'));
       return;
     }
-    Implant.findByIdAndDelete(id)
+    Item.findByIdAndDelete(id)
       .then(() => {
         resolve(true);
       })
@@ -500,16 +493,16 @@ const deleteImplantById = async (id: string): Promise<boolean> =>
       });
   });
 
-const deleteImplant = (req: Request, res: Response): void => {
+const deleteItem = (req: Request, res: Response): void => {
   const { id } = req.body;
 
-  findImplantById(id as string)
-    .then((implant) => {
-      const skillBonusesToRemove = implant.skillBonuses.map((elt) => elt._id);
-      const statBonusesToRemove = implant.statBonuses.map((elt) => elt._id);
-      const charParamBonusesToRemove = implant.charParamBonuses.map((elt) => elt._id);
-      const effectsToRemove = implant.effects.map((elt) => elt._id);
-      const actionsToRemove = implant.actions.map((elt) => elt._id);
+  findItemById(id as string)
+    .then((item) => {
+      const skillBonusesToRemove = item.skillBonuses.map((elt) => elt._id);
+      const statBonusesToRemove = item.statBonuses.map((elt) => elt._id);
+      const charParamBonusesToRemove = item.charParamBonuses.map((elt) => elt._id);
+      const effectsToRemove = item.effects.map((elt) => elt._id);
+      const actionsToRemove = item.actions.map((elt) => elt._id);
 
       curateSkillBonusIds({
         skillBonusesToRemove,
@@ -539,9 +532,9 @@ const deleteImplant = (req: Request, res: Response): void => {
                         actionsToUpdate: [],
                       })
                         .then(() => {
-                          deleteImplantById(id as string)
+                          deleteItemById(id as string)
                             .then(() => {
-                              res.send({ message: 'Implant was deleted successfully!' });
+                              res.send({ message: 'Item was deleted successfully!' });
                             })
                             .catch((err: Error) => {
                               res.status(500).send(gemServerError(err));
@@ -568,33 +561,33 @@ const deleteImplant = (req: Request, res: Response): void => {
         });
     })
     .catch(() => {
-      res.status(404).send(gemNotFound('Implant'));
+      res.status(404).send(gemNotFound('Item'));
     });
 };
 
-interface CuratedIImplant {
+interface CuratedIItem {
   i18n: Record<string, any> | Record<string, unknown>;
-  implant: any;
+  item: any;
 }
 
-const curateImplant = (implant: HydratedIImplant): Record<string, any> => {
-  if (implant.i18n === null || implant.i18n === '' || implant.i18n === undefined) {
+const curateItem = (item: HydratedIItem): Record<string, any> => {
+  if (item.i18n === null || item.i18n === '' || item.i18n === undefined) {
     return {};
   }
-  return JSON.parse(implant.i18n);
+  return JSON.parse(item.i18n);
 };
 
 const findSingle = (req: Request, res: Response): void => {
-  const { implantId } = req.query;
-  if (implantId === undefined || typeof implantId !== 'string') {
-    res.status(400).send(gemInvalidField('Implant ID'));
+  const { itemId } = req.query;
+  if (itemId === undefined || typeof itemId !== 'string') {
+    res.status(400).send(gemInvalidField('Item ID'));
     return;
   }
-  findImplantById(implantId)
-    .then((implantSent) => {
+  findItemById(itemId)
+    .then((itemSent) => {
       const curatedActions =
-        implantSent.actions.length > 0
-          ? implantSent.actions.map((action) => {
+        itemSent.actions.length > 0
+          ? itemSent.actions.map((action) => {
               const data = action.toJSON();
               return {
                 ...data,
@@ -603,8 +596,8 @@ const findSingle = (req: Request, res: Response): void => {
             })
           : [];
       const curatedEffects =
-        implantSent.effects.length > 0
-          ? implantSent.effects.map((effect) => {
+        itemSent.effects.length > 0
+          ? itemSent.effects.map((effect) => {
               const data = effect.toJSON();
               return {
                 ...data,
@@ -612,12 +605,12 @@ const findSingle = (req: Request, res: Response): void => {
               };
             })
           : [];
-      const implant = implantSent.toJSON();
-      implant.actions = curatedActions;
-      implant.effects = curatedEffects;
+      const item = itemSent.toJSON();
+      item.actions = curatedActions;
+      item.effects = curatedEffects;
       const sentObj = {
-        implant,
-        i18n: curateImplant(implantSent),
+        item,
+        i18n: curateItem(itemSent),
       };
       res.send(sentObj);
     })
@@ -627,13 +620,13 @@ const findSingle = (req: Request, res: Response): void => {
 };
 
 const findAll = (req: Request, res: Response): void => {
-  findImplants()
-    .then((implants) => {
-      const curatedImplants: CuratedIImplant[] = [];
-      implants.forEach((implantSent) => {
+  findItems()
+    .then((items) => {
+      const curatedItems: CuratedIItem[] = [];
+      items.forEach((itemSent) => {
         const curatedActions =
-          implantSent.actions.length > 0
-            ? implantSent.actions.map((action) => {
+          itemSent.actions.length > 0
+            ? itemSent.actions.map((action) => {
                 const data = action.toJSON();
                 return {
                   ...data,
@@ -642,8 +635,8 @@ const findAll = (req: Request, res: Response): void => {
               })
             : [];
         const curatedEffects =
-          implantSent.effects.length > 0
-            ? implantSent.effects.map((effect) => {
+          itemSent.effects.length > 0
+            ? itemSent.effects.map((effect) => {
                 const data = effect.toJSON();
                 return {
                   ...data,
@@ -651,18 +644,18 @@ const findAll = (req: Request, res: Response): void => {
                 };
               })
             : [];
-        const implant = implantSent.toJSON();
-        implant.actions = curatedActions;
-        implant.effects = curatedEffects;
-        curatedImplants.push({
-          implant,
-          i18n: curateImplant(implantSent),
+        const item = itemSent.toJSON();
+        item.actions = curatedActions;
+        item.effects = curatedEffects;
+        curatedItems.push({
+          item,
+          i18n: curateItem(itemSent),
         });
       });
 
-      res.send(curatedImplants);
+      res.send(curatedItems);
     })
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteImplant, findAll, findImplantById, findSingle, update };
+export { create, deleteItem, findAll, findItemById, findSingle, update };
