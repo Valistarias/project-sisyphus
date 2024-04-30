@@ -150,9 +150,9 @@ const AdminEditImplant: FC = () => {
     () =>
       bodyParts.map(({ bodyPart }) => ({
         value: bodyPart._id,
-        label: t(`terms.bodyPart.${bodyPart.title}`),
+        label: bodyPart.title,
       })),
-    [bodyParts, t]
+    [bodyParts]
   );
 
   const rarityList = useMemo(() => {

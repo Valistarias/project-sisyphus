@@ -150,9 +150,9 @@ const AdminNewArmor: FC = () => {
     () =>
       armorTypes.map(({ armorType }) => ({
         value: armorType._id,
-        label: t(`terms.armorType.${armorType.title}`),
+        label: armorType.title,
       })),
-    [armorTypes, t]
+    [armorTypes]
   );
 
   const rarityList = useMemo(() => {

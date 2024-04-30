@@ -9,10 +9,8 @@ import { smartUpdateEffects } from '../effect/controller';
 import {
   type IAction,
   type ICharParamBonus,
-  type ICyberFrameBranch,
   type IEffect,
   type ISkillBonus,
-  type ISkillBranch,
   type IStatBonus,
 } from '../index';
 import { curateSkillBonusIds } from '../skillBonus/controller';
@@ -50,8 +48,6 @@ const findImplantById = async (id: string): Promise<HydratedIImplant> =>
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
-      .populate<{ skillBranch: ISkillBranch }>('skillBranch')
-      .populate<{ cyberFrameBranch: ICyberFrameBranch }>('cyberFrameBranch')
       .then(async (res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Implant'));
