@@ -22,6 +22,7 @@ interface FormValues {
   nameFr: string;
   cost: number;
   rarity: string;
+  itemModifiers: string[];
   skillBonuses?: Record<
     string,
     {
@@ -85,7 +86,8 @@ const AdminEditItem: FC = () => {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
-  const { skills, stats, charParams, actionTypes, actionDurations, rarities } = useGlobalVars();
+  const { skills, stats, charParams, actionTypes, actionDurations, rarities, itemModifiers } =
+    useGlobalVars();
   const { createAlert, getNewId } = useSystemAlerts();
   const navigate = useNavigate();
 
@@ -151,6 +153,13 @@ const AdminEditItem: FC = () => {
     }));
   }, [rarities]);
 
+  const itemModifierList = useMemo(() => {
+    return itemModifiers.map(({ itemModifier }) => ({
+      value: itemModifier._id,
+      label: itemModifier.title,
+    }));
+  }, [itemModifiers]);
+
   const [effectIds, setEffectIds] = useState<number[]>([]);
   const [actionIds, setActionIds] = useState<number[]>([]);
 
@@ -178,6 +187,7 @@ const AdminEditItem: FC = () => {
     defaultData.name = item.title;
     defaultData.cost = item.cost;
     defaultData.rarity = item.rarity;
+    defaultData.itemModifiers = item.itemModifiers;
     if (i18n.fr !== undefined) {
       defaultData.nameFr = i18n.fr.title ?? '';
     }
@@ -354,7 +364,7 @@ const AdminEditItem: FC = () => {
   }, []);
 
   const onSaveItem: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, cost, rarity, effects, actions, ...elts }) => {
+    ({ name, nameFr, cost, rarity, itemModifiers, effects, actions, ...elts }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -502,6 +512,7 @@ const AdminEditItem: FC = () => {
           cost: Number(cost),
           rarity,
           itemType: itemData?.item.itemType,
+          itemModifiers,
           summary: html,
           i18n,
           skillBonuses: curatedSkillBonuses,
@@ -698,7 +709,15 @@ const AdminEditItem: FC = () => {
               label={t('itemRarity.label', { ns: 'fields' })}
               rules={{ required: t('itemRarity.required', { ns: 'fields' }) }}
               options={rarityList}
-              className="adminNewImplan__details__fields__elt"
+              className="adminEditItem__details__fields__elt"
+            />
+            <SmartSelect
+              control={control}
+              isMulti
+              inputName="itemModifiers"
+              label={t('itemModifiers.label', { ns: 'fields' })}
+              options={itemModifierList}
+              className="adminEditItem__details__fields__elt"
             />
           </div>
         </div>

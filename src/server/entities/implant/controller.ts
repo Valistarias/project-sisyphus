@@ -68,6 +68,7 @@ const create = (req: Request, res: Response): void => {
     rarity,
     cost,
     itemType,
+    itemModifiers,
     bodyParts,
     effects,
     actions,
@@ -93,6 +94,7 @@ const create = (req: Request, res: Response): void => {
     rarity,
     cost,
     itemType,
+    itemModifiers,
     bodyParts,
   });
 
@@ -193,6 +195,7 @@ const update = (req: Request, res: Response): void => {
     rarity,
     cost,
     itemType,
+    itemModifiers = null,
     bodyParts,
     effects = null,
     actions = null,
@@ -221,6 +224,9 @@ const update = (req: Request, res: Response): void => {
       }
       if (itemType !== null) {
         implant.itemType = itemType;
+      }
+      if (itemModifiers !== null) {
+        implant.itemModifiers = itemModifiers;
       }
       if (bodyParts !== null) {
         implant.bodyParts = bodyParts;

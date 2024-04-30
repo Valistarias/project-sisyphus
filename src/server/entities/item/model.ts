@@ -21,6 +21,8 @@ interface IItem {
   cost: number;
   /** The type of item */
   itemType: ObjectId;
+  /** The item modifiers of the item */
+  itemModifiers?: ObjectId[];
   /** The effects related to the Item */
   effects?: string[] | ObjectId[];
   /** The actions related to the Item */
@@ -56,6 +58,12 @@ const itemSchema = new Schema<IItem>({
     type: Schema.Types.ObjectId,
     ref: 'ItemType',
   },
+  itemModifiers: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'ItemModifier',
+    },
+  ],
   rarity: {
     type: Schema.Types.ObjectId,
     ref: 'Rarity',

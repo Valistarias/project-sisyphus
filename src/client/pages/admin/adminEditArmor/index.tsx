@@ -23,6 +23,7 @@ interface FormValues {
   cost: number;
   rarity: string;
   armorType: string;
+  itemModifiers: string[];
   skillBonuses?: Record<
     string,
     {
@@ -86,8 +87,16 @@ const AdminEditArmor: FC = () => {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
-  const { skills, stats, charParams, actionTypes, actionDurations, armorTypes, rarities } =
-    useGlobalVars();
+  const {
+    skills,
+    stats,
+    charParams,
+    actionTypes,
+    actionDurations,
+    armorTypes,
+    rarities,
+    itemModifiers,
+  } = useGlobalVars();
   const { createAlert, getNewId } = useSystemAlerts();
   const navigate = useNavigate();
 
@@ -162,6 +171,13 @@ const AdminEditArmor: FC = () => {
     }));
   }, [rarities]);
 
+  const itemModifierList = useMemo(() => {
+    return itemModifiers.map(({ itemModifier }) => ({
+      value: itemModifier._id,
+      label: itemModifier.title,
+    }));
+  }, [itemModifiers]);
+
   const [effectIds, setEffectIds] = useState<number[]>([]);
   const [actionIds, setActionIds] = useState<number[]>([]);
 
@@ -190,6 +206,7 @@ const AdminEditArmor: FC = () => {
     defaultData.cost = armor.cost;
     defaultData.rarity = armor.rarity;
     defaultData.armorType = armor.armorType;
+    defaultData.itemModifiers = armor.itemModifiers;
     if (i18n.fr !== undefined) {
       defaultData.nameFr = i18n.fr.title ?? '';
     }
@@ -366,7 +383,7 @@ const AdminEditArmor: FC = () => {
   }, []);
 
   const onSaveArmor: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, cost, rarity, armorType, effects, actions, ...elts }) => {
+    ({ name, nameFr, cost, rarity, itemModifiers, armorType, effects, actions, ...elts }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -514,6 +531,7 @@ const AdminEditArmor: FC = () => {
           cost: Number(cost),
           rarity,
           itemType: armorData?.armor.itemType,
+          itemModifiers,
           summary: html,
           i18n,
           skillBonuses: curatedSkillBonuses,
@@ -722,7 +740,15 @@ const AdminEditArmor: FC = () => {
               label={t('armorRarity.label', { ns: 'fields' })}
               rules={{ required: t('armorRarity.required', { ns: 'fields' }) }}
               options={rarityList}
-              className="adminNewImplan__details__fields__elt"
+              className="adminEditArmor__details__fields__elt"
+            />
+            <SmartSelect
+              control={control}
+              isMulti
+              inputName="itemModifiers"
+              label={t('itemModifiers.label', { ns: 'fields' })}
+              options={itemModifierList}
+              className="adminEditArmor__details__fields__elt"
             />
           </div>
         </div>

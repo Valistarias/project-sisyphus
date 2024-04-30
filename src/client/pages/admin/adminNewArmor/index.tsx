@@ -22,6 +22,7 @@ interface FormValues {
   cost: number;
   rarity: string;
   armorType: string;
+  itemModifiers: string[];
   skillBonuses?: Record<
     string,
     {
@@ -89,6 +90,7 @@ const AdminNewArmor: FC = () => {
     armorTypes,
     rarities,
     itemTypes,
+    itemModifiers,
   } = useGlobalVars();
 
   const [displayInt, setDisplayInt] = useState(false);
@@ -161,6 +163,13 @@ const AdminNewArmor: FC = () => {
       label: rarity.title,
     }));
   }, [rarities]);
+
+  const itemModifierList = useMemo(() => {
+    return itemModifiers.map(({ itemModifier }) => ({
+      value: itemModifier._id,
+      label: itemModifier.title,
+    }));
+  }, [itemModifiers]);
 
   const [effectIds, setEffectIds] = useState<number[]>([]);
 
@@ -246,7 +255,7 @@ const AdminNewArmor: FC = () => {
   }, []);
 
   const onSaveArmor: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, cost, rarity, armorType, effects, actions, ...elts }) => {
+    ({ name, nameFr, cost, rarity, itemModifiers, armorType, effects, actions, ...elts }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -399,6 +408,7 @@ const AdminNewArmor: FC = () => {
           rarity,
           summary: html,
           itemType: itemTypes.find((itemType) => itemType.name === 'shi')?._id ?? undefined,
+          itemModifiers,
           armorType,
           i18n,
           skillBonuses: curatedSkillBonuses,
@@ -505,6 +515,14 @@ const AdminNewArmor: FC = () => {
               label={t('armorRarity.label', { ns: 'fields' })}
               rules={{ required: t('armorRarity.required', { ns: 'fields' }) }}
               options={rarityList}
+              className="adminNewArmor__details__fields__elt"
+            />
+            <SmartSelect
+              control={control}
+              isMulti
+              inputName="itemModifiers"
+              label={t('itemModifiers.label', { ns: 'fields' })}
+              options={itemModifierList}
               className="adminNewArmor__details__fields__elt"
             />
           </div>

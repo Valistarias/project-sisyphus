@@ -68,6 +68,7 @@ const create = (req: Request, res: Response): void => {
     rarity,
     cost,
     itemType,
+    itemModifiers,
     effects,
     actions,
     skillBonuses,
@@ -91,6 +92,7 @@ const create = (req: Request, res: Response): void => {
     rarity,
     cost,
     itemType,
+    itemModifiers,
   });
 
   if (i18n !== null) {
@@ -190,6 +192,7 @@ const update = (req: Request, res: Response): void => {
     rarity,
     cost,
     itemType,
+    itemModifiers = null,
     effects = null,
     actions = null,
     skillBonuses = null,
@@ -217,6 +220,9 @@ const update = (req: Request, res: Response): void => {
       }
       if (itemType !== null) {
         item.itemType = itemType;
+      }
+      if (itemModifiers !== null) {
+        item.itemModifiers = itemModifiers;
       }
 
       const skillBonusesToStay: string[] = [];

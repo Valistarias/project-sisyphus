@@ -23,6 +23,7 @@ interface FormValues {
   cost: number;
   rarity: string;
   bodyParts: string[];
+  itemModifiers: string[];
   skillBonuses?: Record<
     string,
     {
@@ -86,8 +87,16 @@ const AdminEditImplant: FC = () => {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
-  const { skills, stats, charParams, actionTypes, actionDurations, bodyParts, rarities } =
-    useGlobalVars();
+  const {
+    skills,
+    stats,
+    charParams,
+    actionTypes,
+    actionDurations,
+    bodyParts,
+    rarities,
+    itemModifiers,
+  } = useGlobalVars();
   const { createAlert, getNewId } = useSystemAlerts();
   const navigate = useNavigate();
 
@@ -162,6 +171,13 @@ const AdminEditImplant: FC = () => {
     }));
   }, [rarities]);
 
+  const itemModifierList = useMemo(() => {
+    return itemModifiers.map(({ itemModifier }) => ({
+      value: itemModifier._id,
+      label: itemModifier.title,
+    }));
+  }, [itemModifiers]);
+
   const [effectIds, setEffectIds] = useState<number[]>([]);
   const [actionIds, setActionIds] = useState<number[]>([]);
 
@@ -190,6 +206,7 @@ const AdminEditImplant: FC = () => {
     defaultData.cost = implant.cost;
     defaultData.rarity = implant.rarity;
     defaultData.bodyParts = implant.bodyParts;
+    defaultData.itemModifiers = implant.itemModifiers;
     if (i18n.fr !== undefined) {
       defaultData.nameFr = i18n.fr.title ?? '';
     }
@@ -366,7 +383,7 @@ const AdminEditImplant: FC = () => {
   }, []);
 
   const onSaveImplant: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, cost, rarity, bodyParts, effects, actions, ...elts }) => {
+    ({ name, nameFr, cost, rarity, itemModifiers, bodyParts, effects, actions, ...elts }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -514,6 +531,7 @@ const AdminEditImplant: FC = () => {
           cost: Number(cost),
           rarity,
           itemType: implantData?.implant.itemType,
+          itemModifiers,
           summary: html,
           i18n,
           skillBonuses: curatedSkillBonuses,
@@ -723,7 +741,15 @@ const AdminEditImplant: FC = () => {
               label={t('implantRarity.label', { ns: 'fields' })}
               rules={{ required: t('implantRarity.required', { ns: 'fields' }) }}
               options={rarityList}
-              className="adminNewImplan__details__fields__elt"
+              className="adminEditImplant__details__fields__elt"
+            />
+            <SmartSelect
+              control={control}
+              isMulti
+              inputName="itemModifiers"
+              label={t('itemModifiers.label', { ns: 'fields' })}
+              options={itemModifierList}
+              className="adminEditImplant__details__fields__elt"
             />
           </div>
         </div>

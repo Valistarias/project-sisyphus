@@ -22,6 +22,7 @@ interface FormValues {
   cost: number;
   rarity: string;
   bodyParts: string[];
+  itemModifiers: string[];
   skillBonuses?: Record<
     string,
     {
@@ -89,6 +90,7 @@ const AdminNewImplant: FC = () => {
     bodyParts,
     rarities,
     itemTypes,
+    itemModifiers,
   } = useGlobalVars();
 
   const [displayInt, setDisplayInt] = useState(false);
@@ -161,6 +163,13 @@ const AdminNewImplant: FC = () => {
       label: rarity.title,
     }));
   }, [rarities]);
+
+  const itemModifierList = useMemo(() => {
+    return itemModifiers.map(({ itemModifier }) => ({
+      value: itemModifier._id,
+      label: itemModifier.title,
+    }));
+  }, [itemModifiers]);
 
   const [effectIds, setEffectIds] = useState<number[]>([]);
 
@@ -246,7 +255,7 @@ const AdminNewImplant: FC = () => {
   }, []);
 
   const onSaveImplant: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, cost, rarity, bodyParts, effects, actions, ...elts }) => {
+    ({ name, nameFr, cost, rarity, itemModifiers, bodyParts, effects, actions, ...elts }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -399,6 +408,7 @@ const AdminNewImplant: FC = () => {
           rarity,
           summary: html,
           itemType: itemTypes.find((itemType) => itemType.name === 'imp')?._id ?? undefined,
+          itemModifiers,
           bodyParts,
           i18n,
           skillBonuses: curatedSkillBonuses,
@@ -505,6 +515,14 @@ const AdminNewImplant: FC = () => {
               label={t('implantRarity.label', { ns: 'fields' })}
               rules={{ required: t('implantRarity.required', { ns: 'fields' }) }}
               options={rarityList}
+              className="adminNewImplant__details__fields__elt"
+            />
+            <SmartSelect
+              control={control}
+              isMulti
+              inputName="itemModifiers"
+              label={t('itemModifiers.label', { ns: 'fields' })}
+              options={itemModifierList}
               className="adminNewImplant__details__fields__elt"
             />
           </div>

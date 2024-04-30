@@ -21,6 +21,8 @@ interface IArmor {
   cost: number;
   /** The type of item */
   itemType: ObjectId;
+  /** The item modifiers of the armor */
+  itemModifiers?: ObjectId[];
   /** The related armor type */
   armorType: ObjectId;
   /** The effects related to the Armor */
@@ -58,6 +60,12 @@ const ArmorSchema = new Schema<IArmor>({
     type: Schema.Types.ObjectId,
     ref: 'ItemType',
   },
+  itemModifiers: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'ItemModifier',
+    },
+  ],
   armorType: {
     type: Schema.Types.ObjectId,
     ref: 'ArmorType',

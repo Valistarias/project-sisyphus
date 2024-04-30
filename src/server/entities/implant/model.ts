@@ -21,6 +21,8 @@ interface IImplant {
   cost: number;
   /** The type of item */
   itemType: ObjectId;
+  /** The item modifiers of the implant */
+  itemModifiers?: ObjectId[];
   /** All the body parts that can install this implant */
   bodyParts: ObjectId[];
   /** The effects related to the implant */
@@ -58,6 +60,12 @@ const implantSchema = new Schema<IImplant>({
     type: Schema.Types.ObjectId,
     ref: 'ItemType',
   },
+  itemModifiers: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'ItemModifier',
+    },
+  ],
   bodyParts: [
     {
       type: Schema.Types.ObjectId,

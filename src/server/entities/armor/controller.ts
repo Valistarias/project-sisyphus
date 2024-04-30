@@ -68,6 +68,7 @@ const create = (req: Request, res: Response): void => {
     rarity,
     cost,
     itemType,
+    itemModifiers,
     armorType,
     effects,
     actions,
@@ -93,6 +94,7 @@ const create = (req: Request, res: Response): void => {
     rarity,
     cost,
     itemType,
+    itemModifiers,
     armorType,
   });
 
@@ -193,6 +195,7 @@ const update = (req: Request, res: Response): void => {
     rarity,
     cost,
     itemType,
+    itemModifiers = null,
     armorType,
     effects = null,
     actions = null,
@@ -221,6 +224,9 @@ const update = (req: Request, res: Response): void => {
       }
       if (itemType !== null) {
         armor.itemType = itemType;
+      }
+      if (itemModifiers !== null) {
+        armor.itemModifiers = itemModifiers;
       }
       if (armorType !== null) {
         armor.armorType = armorType;

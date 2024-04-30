@@ -338,6 +338,8 @@ export interface IImplant {
   cost: number;
   /** The type of item */
   itemType: string;
+  /** The item modifiers of the implant */
+  itemModifiers?: string[];
   /** All the body parts that can install this implant */
   bodyParts: string[];
   /** The effects related to the implant */
@@ -394,6 +396,8 @@ export interface IArmor {
   cost: number;
   /** The type of item */
   itemType: string;
+  /** The item modifiers of the armor */
+  itemModifiers?: string[];
   /** All the body parts that can install this armor */
   armorType: string;
   /** The effects related to the armor */
@@ -431,6 +435,8 @@ export interface IItem {
   cost: number;
   /** The type of item */
   itemType: string;
+  /** The item modifiers of the item */
+  itemModifiers?: string[];
   /** The effects related to the item */
   effects?: IEffect[];
   /** The actions related to the item */

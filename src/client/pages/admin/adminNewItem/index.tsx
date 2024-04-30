@@ -21,6 +21,7 @@ interface FormValues {
   nameFr: string;
   cost: number;
   rarity: string;
+  itemModifiers: string[];
   skillBonuses?: Record<
     string,
     {
@@ -79,8 +80,16 @@ const AdminNewItem: FC = () => {
   const { api } = useApi();
   const navigate = useNavigate();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { skills, stats, charParams, actionTypes, actionDurations, rarities, itemTypes } =
-    useGlobalVars();
+  const {
+    skills,
+    stats,
+    charParams,
+    actionTypes,
+    actionDurations,
+    rarities,
+    itemTypes,
+    itemModifiers,
+  } = useGlobalVars();
 
   const [displayInt, setDisplayInt] = useState(false);
 
@@ -143,6 +152,13 @@ const AdminNewItem: FC = () => {
       label: rarity.title,
     }));
   }, [rarities]);
+
+  const itemModifierList = useMemo(() => {
+    return itemModifiers.map(({ itemModifier }) => ({
+      value: itemModifier._id,
+      label: itemModifier.title,
+    }));
+  }, [itemModifiers]);
 
   const [effectIds, setEffectIds] = useState<number[]>([]);
 
@@ -228,7 +244,7 @@ const AdminNewItem: FC = () => {
   }, []);
 
   const onSaveItem: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, cost, rarity, effects, actions, ...elts }) => {
+    ({ name, nameFr, cost, rarity, itemModifiers, effects, actions, ...elts }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -381,6 +397,7 @@ const AdminNewItem: FC = () => {
           rarity,
           summary: html,
           itemType: itemTypes.find((itemType) => itemType.name === 'itm')?._id ?? undefined,
+          itemModifiers,
           i18n,
           skillBonuses: curatedSkillBonuses,
           statBonuses: curatedStatBonuses,
@@ -473,6 +490,14 @@ const AdminNewItem: FC = () => {
               label={t('itemRarity.label', { ns: 'fields' })}
               rules={{ required: t('itemRarity.required', { ns: 'fields' }) }}
               options={rarityList}
+              className="adminNewItem__details__fields__elt"
+            />
+            <SmartSelect
+              control={control}
+              isMulti
+              inputName="itemModifiers"
+              label={t('itemModifiers.label', { ns: 'fields' })}
+              options={itemModifierList}
               className="adminNewItem__details__fields__elt"
             />
           </div>
