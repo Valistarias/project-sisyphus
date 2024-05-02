@@ -249,7 +249,7 @@ const AdminEditBodyPart: FC = () => {
           setBodyPartData(curatedBodyPart);
           setBodyPartText(bodyPart.summary);
           if (i18n.fr !== undefined) {
-            setBodyPartTextFr(i18n.fr.text ?? '');
+            setBodyPartTextFr(i18n.fr.summary ?? '');
           }
         })
         .catch(() => {
@@ -344,7 +344,7 @@ const AdminEditBodyPart: FC = () => {
             rules={{
               required: t('bodyPartFormula.required', { ns: 'fields' }),
               pattern: {
-                value: /^([a-z]){3}$/,
+                value: /^([a-z]){2,3}$/,
                 message: t('bodyPartFormula.format', { ns: 'fields' }),
               },
             }}

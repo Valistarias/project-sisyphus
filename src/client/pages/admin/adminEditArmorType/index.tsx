@@ -241,7 +241,7 @@ const AdminEditArmorType: FC = () => {
           setArmorTypeData(curatedArmorType);
           setArmorTypeText(armorType.summary);
           if (i18n.fr !== undefined) {
-            setArmorTypeTextFr(i18n.fr.text ?? '');
+            setArmorTypeTextFr(i18n.fr.summary ?? '');
           }
         })
         .catch(() => {

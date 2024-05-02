@@ -245,7 +245,7 @@ const AdminEditItemModifier: FC = () => {
           setItemModifierData(curatedItemModifier);
           setItemModifierText(itemModifier.summary);
           if (i18n.fr !== undefined) {
-            setItemModifierTextFr(i18n.fr.text ?? '');
+            setItemModifierTextFr(i18n.fr.summary ?? '');
           }
         })
         .catch(() => {
@@ -331,7 +331,7 @@ const AdminEditItemModifier: FC = () => {
             rules={{
               required: t('itemModifierFormula.required', { ns: 'fields' }),
               pattern: {
-                value: /^([a-z]){3}$/,
+                value: /^([a-z]){2,3}$/,
                 message: t('itemModifierFormula.format', { ns: 'fields' }),
               },
             }}

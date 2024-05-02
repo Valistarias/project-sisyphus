@@ -247,7 +247,7 @@ const AdminEditCharParam: FC = () => {
           setCharParamData(curatedCharParam);
           setCharParamText(charParam.summary);
           if (i18n.fr !== undefined) {
-            setCharParamTextFr(i18n.fr.text ?? '');
+            setCharParamTextFr(i18n.fr.summary ?? '');
           }
         })
         .catch(() => {
@@ -335,7 +335,7 @@ const AdminEditCharParam: FC = () => {
             rules={{
               required: t('charParamFormula.required', { ns: 'fields' }),
               pattern: {
-                value: /^([a-z]){3}$/,
+                value: /^([a-z]){2,3}$/,
                 message: t('charParamFormula.format', { ns: 'fields' }),
               },
             }}

@@ -289,7 +289,7 @@ const AdminEditSkill: FC = () => {
           setSkillData(curatedSkill);
           setSkillText(skill.summary);
           if (i18n.fr !== undefined) {
-            setSkillTextFr(i18n.fr.text ?? '');
+            setSkillTextFr(i18n.fr.summary ?? '');
           }
         })
         .catch(() => {
@@ -393,7 +393,7 @@ const AdminEditSkill: FC = () => {
             rules={{
               required: t('skillFormula.required', { ns: 'fields' }),
               pattern: {
-                value: /^([a-z]){3}$/,
+                value: /^([a-z]){2,3}$/,
                 message: t('skillFormula.format', { ns: 'fields' }),
               },
             }}

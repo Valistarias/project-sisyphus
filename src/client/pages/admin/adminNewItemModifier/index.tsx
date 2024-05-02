@@ -164,7 +164,7 @@ const AdminNewItemModifier: FC = () => {
             rules={{
               required: t('itemModifierFormula.required', { ns: 'fields' }),
               pattern: {
-                value: /^([a-z]){3}$/,
+                value: /^([a-z]){2,3}$/,
                 message: t('itemModifierFormula.format', { ns: 'fields' }),
               },
             }}

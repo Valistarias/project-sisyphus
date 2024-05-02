@@ -244,7 +244,7 @@ const AdminEditStat: FC = () => {
           setStatData(curatedStat);
           setStatText(stat.summary);
           if (i18n.fr !== undefined) {
-            setStatTextFr(i18n.fr.text ?? '');
+            setStatTextFr(i18n.fr.summary ?? '');
           }
         })
         .catch(() => {
@@ -328,7 +328,7 @@ const AdminEditStat: FC = () => {
             rules={{
               required: t('statFormula.required', { ns: 'fields' }),
               pattern: {
-                value: /^([a-z]){3}$/,
+                value: /^([a-z]){2,3}$/,
                 message: t('statFormula.format', { ns: 'fields' }),
               },
             }}

@@ -241,7 +241,7 @@ const AdminEditDamageType: FC = () => {
           setDamageTypeData(curatedDamageType);
           setDamageTypeText(damageType.summary);
           if (i18n.fr !== undefined) {
-            setDamageTypeTextFr(i18n.fr.text ?? '');
+            setDamageTypeTextFr(i18n.fr.summary ?? '');
           }
         })
         .catch(() => {

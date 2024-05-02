@@ -160,7 +160,7 @@ const AdminNewCyberFrame: FC = () => {
         </div>
         <div className="adminNewCyberFrame__details">
           <RichTextElement
-            label={t('cyberFrameSummary.title', { ns: 'fields' })}
+            label={t('cyberFrameText.title', { ns: 'fields' })}
             editor={introEditor}
             rawStringContent={''}
             small
@@ -185,7 +185,7 @@ const AdminNewCyberFrame: FC = () => {
         </div>
         <div className="adminNewCyberFrame__details">
           <RichTextElement
-            label={`${t('cyberFrameSummary.title', { ns: 'fields' })} (FR)`}
+            label={`${t('cyberFrameText.title', { ns: 'fields' })} (FR)`}
             editor={introFrEditor}
             rawStringContent={''}
             small

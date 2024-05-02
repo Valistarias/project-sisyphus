@@ -238,7 +238,7 @@ const AdminEditRarity: FC = () => {
           setRarityData(curatedRarity);
           setRarityText(rarity.summary);
           if (i18n.fr !== undefined) {
-            setRarityTextFr(i18n.fr.text ?? '');
+            setRarityTextFr(i18n.fr.summary ?? '');
           }
         })
         .catch(() => {

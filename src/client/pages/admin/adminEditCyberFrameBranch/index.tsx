@@ -188,9 +188,11 @@ const AdminEditCyberFrameBranch: FC = () => {
                     </Alert>
                   ),
                 });
-                navigate(
-                  `/admin/cyberframe/${cyberFrameBranchData?.cyberFrameBranch.cyberFrame?._id}`
-                );
+                if (typeof cyberFrameBranchData?.cyberFrameBranch.cyberFrame !== 'string') {
+                  navigate(
+                    `/admin/cyberframe/${cyberFrameBranchData?.cyberFrameBranch.cyberFrame?._id}`
+                  );
+                }
               })
               .catch(({ response }) => {
                 const { data } = response;
@@ -239,7 +241,7 @@ const AdminEditCyberFrameBranch: FC = () => {
           setCyberFrameBranchData(curatedCyberFrameBranch);
           setCyberFrameBranchText(cyberFrameBranch.summary);
           if (i18n.fr !== undefined) {
-            setCyberFrameBranchTextFr(i18n.fr.text ?? '');
+            setCyberFrameBranchTextFr(i18n.fr.summary ?? '');
           }
         })
         .catch(() => {
@@ -253,23 +255,6 @@ const AdminEditCyberFrameBranch: FC = () => {
             ),
           });
         });
-
-      // api.nodes
-      //   .getAllByBranch({ cyberFrameBranchId: id })
-      //   .then((curatedNodes: ICuratedNode[]) => {
-      //     setNodes(curatedNodes ?? []);
-      //   })
-      //   .catch(() => {
-      //     const newId = getNewId();
-      //     createAlert({
-      //       key: newId,
-      //       dom: (
-      //         <Alert key={newId} id={newId} timer={5}>
-      //           <Ap>{t('serverErrors.CYPU-301')}</Ap>
-      //         </Alert>
-      //       ),
-      //     });
-      //   });
     }
   }, [api, createAlert, getNewId, id, t]);
 
@@ -310,11 +295,15 @@ const AdminEditCyberFrameBranch: FC = () => {
         <div className="adminEditCyberFrameBranch__ariane">
           <Ap className="adminEditCyberFrameBranch__ariane__elt">
             {`${t(`terms.cyberFrame.name`)}: `}
-            <Aa
-              href={`/admin/cyberframe/${cyberFrameBranchData?.cyberFrameBranch.cyberFrame?._id}`}
-            >
-              {cyberFrameBranchData?.cyberFrameBranch.cyberFrame.title as string}
-            </Aa>
+            {typeof cyberFrameBranchData?.cyberFrameBranch.cyberFrame !== 'string' ? (
+              <Aa
+                href={`/admin/cyberframe/${cyberFrameBranchData?.cyberFrameBranch.cyberFrame?._id}`}
+              >
+                {cyberFrameBranchData?.cyberFrameBranch.cyberFrame.title as string}
+              </Aa>
+            ) : (
+              ''
+            )}
           </Ap>
         </div>
         {errors.root?.serverError?.message !== undefined ? (

@@ -173,7 +173,7 @@ const AdminNewBodyPart: FC = () => {
             rules={{
               required: t('bodyPartFormula.required', { ns: 'fields' }),
               pattern: {
-                value: /^([a-z]){3}$/,
+                value: /^([a-z]){2,3}$/,
                 message: t('bodyPartFormula.format', { ns: 'fields' }),
               },
             }}

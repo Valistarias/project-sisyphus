@@ -238,7 +238,7 @@ const AdminEditSkillBranch: FC = () => {
           seSkillBranchData(curatedSkillBranch);
           seSkillBranchText(skillBranch.summary);
           if (i18n.fr !== undefined) {
-            seSkillBranchTextFr(i18n.fr.text ?? '');
+            seSkillBranchTextFr(i18n.fr.summary ?? '');
           }
         })
         .catch(() => {

@@ -253,7 +253,7 @@ const AdminEditNotions: FC = () => {
           setNotionData(curatedNotion);
           setNotionText(notion.text);
           if (i18n.fr !== undefined) {
-            setNotionTextFr(i18n.fr.text ?? '');
+            setNotionTextFr(i18n.fr.summary ?? '');
           }
         })
         .catch(() => {

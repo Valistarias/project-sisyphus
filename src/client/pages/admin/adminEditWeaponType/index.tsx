@@ -319,7 +319,7 @@ const AdminEditWeaponType: FC = () => {
           setWeaponTypeData(curatedWeaponType);
           setWeaponTypeText(weaponType.summary);
           if (i18n.fr !== undefined) {
-            setWeaponTypeTextFr(i18n.fr.text ?? '');
+            setWeaponTypeTextFr(i18n.fr.summary ?? '');
           }
         })
         .catch(() => {

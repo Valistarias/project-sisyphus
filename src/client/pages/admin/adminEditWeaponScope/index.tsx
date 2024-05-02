@@ -245,7 +245,7 @@ const AdminEditWeaponScope: FC = () => {
           setWeaponScopeData(curatedWeaponScope);
           setWeaponScopeText(weaponScope.summary);
           if (i18n.fr !== undefined) {
-            setWeaponScopeTextFr(i18n.fr.text ?? '');
+            setWeaponScopeTextFr(i18n.fr.summary ?? '');
           }
         })
         .catch(() => {
@@ -329,7 +329,7 @@ const AdminEditWeaponScope: FC = () => {
             rules={{
               required: t('weaponScopeFormula.required', { ns: 'fields' }),
               pattern: {
-                value: /^([a-z]){3}$/,
+                value: /^([a-z]){2,3}$/,
                 message: t('weaponScopeFormula.format', { ns: 'fields' }),
               },
             }}

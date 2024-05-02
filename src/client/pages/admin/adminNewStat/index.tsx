@@ -154,7 +154,7 @@ const AdminNewStat: FC = () => {
             rules={{
               required: t('statFormula.required', { ns: 'fields' }),
               pattern: {
-                value: /^([a-z]){3}$/,
+                value: /^([a-z]){2,3}$/,
                 message: t('statFormula.format', { ns: 'fields' }),
               },
             }}

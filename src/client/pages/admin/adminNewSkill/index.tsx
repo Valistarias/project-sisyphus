@@ -167,7 +167,7 @@ const AdminNewSkill: FC = () => {
             rules={{
               required: t('skillFormula.required', { ns: 'fields' }),
               pattern: {
-                value: /^([a-z]){3}$/,
+                value: /^([a-z]){2,3}$/,
                 message: t('skillFormula.format', { ns: 'fields' }),
               },
             }}

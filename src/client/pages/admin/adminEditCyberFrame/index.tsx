@@ -290,7 +290,7 @@ const AdminEditCyberFrame: FC = () => {
           setCyberFrameData(curatedCyberFrame);
           setCyberFrameText(cyberFrame.summary);
           if (i18n.fr !== undefined) {
-            setCyberFrameTextFr(i18n.fr.text ?? '');
+            setCyberFrameTextFr(i18n.fr.summary ?? '');
           }
         })
         .catch(() => {
@@ -452,7 +452,7 @@ const AdminEditCyberFrame: FC = () => {
               {t('adminNewNode.title', { ns: 'pages' })}
             </Button>
             <Button href={`/admin/cyberframebranch/new?cyberFrameId=${id}`}>
-              {t('adminNewSkillBranch.title', { ns: 'pages' })}
+              {t('adminNewCyberFrameBranch.title', { ns: 'pages' })}
             </Button>
           </div>
         </div>

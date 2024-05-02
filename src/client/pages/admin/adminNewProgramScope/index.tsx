@@ -169,7 +169,7 @@ const AdminNewProgramScope: FC = () => {
             rules={{
               required: t('programScopeFormula.required', { ns: 'fields' }),
               pattern: {
-                value: /^([a-z]){3}$/,
+                value: /^([a-z]){2,3}$/,
                 message: t('programScopeFormula.format', { ns: 'fields' }),
               },
             }}

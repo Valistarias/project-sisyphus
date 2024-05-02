@@ -96,7 +96,7 @@ const AdminNewItemType: FC = () => {
             rules={{
               required: t('nameItemType.required', { ns: 'fields' }),
               pattern: {
-                value: /^([a-z]){3}$/,
+                value: /^([a-z]){2,3}$/,
                 message: t('nameItemType.format', { ns: 'fields' }),
               },
             }}

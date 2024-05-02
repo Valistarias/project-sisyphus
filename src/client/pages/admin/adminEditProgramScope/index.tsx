@@ -245,7 +245,7 @@ const AdminEditProgramScope: FC = () => {
           setProgramScopeData(curatedProgramScope);
           setProgramScopeText(programScope.summary);
           if (i18n.fr !== undefined) {
-            setProgramScopeTextFr(i18n.fr.text ?? '');
+            setProgramScopeTextFr(i18n.fr.summary ?? '');
           }
         })
         .catch(() => {
@@ -331,7 +331,7 @@ const AdminEditProgramScope: FC = () => {
             rules={{
               required: t('programScopeFormula.required', { ns: 'fields' }),
               pattern: {
-                value: /^([a-z]){3}$/,
+                value: /^([a-z]){2,3}$/,
                 message: t('programScopeFormula.format', { ns: 'fields' }),
               },
             }}

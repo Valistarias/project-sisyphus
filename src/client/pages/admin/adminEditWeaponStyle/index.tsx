@@ -260,7 +260,7 @@ const AdminEditWeaponStyle: FC = () => {
           setWeaponStyleData(curatedWeaponStyle);
           setWeaponStyleText(weaponStyle.summary);
           if (i18n.fr !== undefined) {
-            setWeaponStyleTextFr(i18n.fr.text ?? '');
+            setWeaponStyleTextFr(i18n.fr.summary ?? '');
           }
         })
         .catch(() => {
