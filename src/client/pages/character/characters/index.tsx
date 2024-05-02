@@ -3,15 +3,15 @@ import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } fro
 import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
 
-import { useApi, useSystemAlerts } from '../../providers';
+import { useApi, useSystemAlerts } from '../../../providers';
 
-import holoBackground from '../../assets/imgs/tvbg.gif';
-import { Ali, Ap, Atitle, Aul, Avideo } from '../../atoms';
-import { Button } from '../../molecules';
-import { Alert } from '../../organisms';
-import { type ICharacter } from '../../types';
+import holoBackground from '../../../assets/imgs/tvbg.gif';
+import { Ali, Ap, Atitle, Aul, Avideo } from '../../../atoms';
+import { Button } from '../../../molecules';
+import { Alert } from '../../../organisms';
+import { type ICharacter } from '../../../types';
 
-import { classTrim } from '../../utils';
+import { classTrim } from '../../../utils';
 
 import './characters.scss';
 
@@ -115,7 +115,9 @@ const Characters: FC = () => {
     <div className="characters">
       <div className="characters__header">
         <Atitle level={1}>{t('characters.title', { ns: 'pages' })}</Atitle>
-        <Button href="/character/new">{t('characters.create', { ns: 'pages' })}</Button>
+        <Button theme="afterglow" href="/character/new">
+          {t('characters.create', { ns: 'pages' })}
+        </Button>
       </div>
       {characterList}
     </div>

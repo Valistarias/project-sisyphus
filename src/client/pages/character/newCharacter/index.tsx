@@ -5,12 +5,12 @@ import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { useApi, useGlobalVars, useSystemAlerts } from '../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../atoms';
-import { Button, Input, SmartSelect } from '../../molecules';
-import { Alert } from '../../organisms';
-import { type ICampaign } from '../../types';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input, SmartSelect } from '../../../molecules';
+import { Alert } from '../../../organisms';
+import { type ICampaign } from '../../../types';
 
 import './newCharacter.scss';
 

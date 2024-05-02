@@ -1,3 +1,4 @@
+/* stylelint-disable */
 $__supports-first-class-calc: calc(1) == 1;
 @function __div($number1, $number2) {
   @if $__supports-first-class-calc {

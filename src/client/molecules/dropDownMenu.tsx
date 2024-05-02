@@ -1,4 +1,6 @@
-import React, { type FC } from 'react';
+import React, { useMemo, type FC } from 'react';
+
+import { Ali, Atitle, Aul } from '../atoms';
 
 import Button from './button';
 
@@ -19,7 +21,13 @@ interface IDropDownMenu {
   /** The main element of the list */
   title: ILinkElt;
   /** The elements present in the dropdown */
-  content: ILinkElt[];
+  content: Array<
+    | ILinkElt
+    | {
+        title: string;
+        list: ILinkElt[];
+      }
+  >;
   /** The class of the DropDownMenu element */
   className?: string;
   /** When the menu is hovered */
@@ -37,54 +45,109 @@ const DropDownMenu: FC<IDropDownMenu> = ({
   onOpen,
   onClose,
   isOpen,
-}) => (
-  <div
-    className={classTrim(`
+}) => {
+  const listElt = useMemo(() => {
+    const sentElts: React.JSX.Element[] = [];
+    content.forEach(
+      (
+        single:
+          | {
+              title: string;
+              list: ILinkElt[];
+            }
+          | ILinkElt
+      ) => {
+        if ((single as ILinkElt).text !== undefined) {
+          const { href, text, onClick } = single as ILinkElt;
+          sentElts.push(
+            <Button
+              key={`eltlist-${href ?? text}`}
+              className="dropdown-menu__list__elt"
+              theme="text-only"
+              onClick={(e) => {
+                if (onClick !== undefined) {
+                  onClick(e);
+                }
+                onClose();
+              }}
+              href={href}
+            >
+              {text}
+            </Button>
+          );
+        } else {
+          const { title, list } = single as {
+            title: string;
+            list: ILinkElt[];
+          };
+          sentElts.push(
+            <div key={`sublist-${title}`} className="dropdown-menu__list__sublist">
+              <Atitle level={4} className="dropdown-menu__list__sublist__title">
+                {title}
+              </Atitle>
+              <Aul className="dropdown-menu__list__sublist__list">
+                {list.map(({ href, text, onClick }) => (
+                  <Ali
+                    className="dropdown-menu__list__sublist__list__elt"
+                    key={`eltsublist-${href ?? text}`}
+                  >
+                    <Button
+                      className="dropdown-menu__list__elt"
+                      theme="text-only"
+                      onClick={(e) => {
+                        if (onClick !== undefined) {
+                          onClick(e);
+                        }
+                        onClose();
+                      }}
+                      href={href}
+                    >
+                      {text}
+                    </Button>
+                  </Ali>
+                ))}
+              </Aul>
+            </div>
+          );
+        }
+      }
+    );
+    return sentElts;
+  }, [content, onClose]);
+  return (
+    <div
+      className={classTrim(`
         dropdown-menu
         ${className ?? ''}
       `)}
-  >
-    <Button
-      className="dropdown-menu__main"
-      theme="bland"
-      onClick={(e) => {
-        if (title.onClick !== undefined) {
-          title.onClick(e);
-        }
-        if (isOpen) {
-          onClose();
-        } else {
-          onOpen();
-        }
-      }}
     >
-      {title.text}
-    </Button>
+      <Button
+        className="dropdown-menu__main"
+        theme="bland"
+        onClick={(e) => {
+          if (title.onClick !== undefined) {
+            title.onClick(e);
+          }
+          if (isOpen) {
+            onClose();
+          } else {
+            onOpen();
+          }
+        }}
+      >
+        {title.text}
+      </Button>
 
-    <div
-      className={classTrim(`
+      <div
+        className={classTrim(`
         dropdown-menu__list
         ${isOpen ? 'dropdown-menu__list--open' : ''}
       `)}
-    >
-      {content.map((single) => (
-        <Button
-          key={single.href ?? single.text}
-          className="dropdown-menu__list__elt"
-          theme="text-only"
-          onClick={(e) => {
-            if (single.onClick !== undefined) {
-              single.onClick(e);
-            }
-            onClose();
-          }}
-          href={single.href}
-        >
-          {single.text}
-        </Button>
-      ))}
+      >
+        {listElt}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default DropDownMenu;

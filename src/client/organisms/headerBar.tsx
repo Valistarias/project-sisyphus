@@ -75,15 +75,33 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
     >
       <div className="headerbar__content">
         <div className="headerbar__content__top">
-          <Aa className="headerbar__menu" href="/">
+          <Aa
+            className="headerbar__menu"
+            onClick={() => {
+              setMenuOpened(null);
+            }}
+            href="/"
+          >
             {t('home.title', { ns: 'pages' })}
           </Aa>
           {userState !== 'unlogged' ? (
             <>
-              <Aa className="headerbar__menu" href="/characters">
+              <Aa
+                className="headerbar__menu"
+                onClick={() => {
+                  setMenuOpened(null);
+                }}
+                href="/characters"
+              >
                 {t('characters.title', { ns: 'pages' })}
               </Aa>
-              <Aa className="headerbar__menu" href="/campaigns">
+              <Aa
+                className="headerbar__menu"
+                onClick={() => {
+                  setMenuOpened(null);
+                }}
+                href="/campaigns"
+              >
                 {t('campaigns.title', { ns: 'pages' })}
               </Aa>
               <DropDownMenu
@@ -116,8 +134,34 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
               }}
               content={[
                 {
-                  href: '/admin/rulebooks',
-                  text: t('adminRuleBooks.title', { ns: 'pages' }),
+                  title: 'Test',
+                  list: [
+                    {
+                      href: '/admin/rulebooks',
+                      text: t('adminRuleBooks.title', { ns: 'pages' }),
+                    },
+                  ],
+                },
+                {
+                  title: 'Core Rules',
+                  list: [
+                    {
+                      href: '/admin/stats',
+                      text: t('adminStats.title', { ns: 'pages' }),
+                    },
+                    {
+                      href: '/admin/skills',
+                      text: t('adminSkills.title', { ns: 'pages' }),
+                    },
+                    {
+                      href: '/admin/charparams',
+                      text: t('adminCharParams.title', { ns: 'pages' }),
+                    },
+                    {
+                      href: '/admin/damagetypes',
+                      text: t('adminDamageTypes.title', { ns: 'pages' }),
+                    },
+                  ],
                 },
                 {
                   href: '/admin/cyberframes',
@@ -130,18 +174,6 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
                 {
                   href: '/admin/bags',
                   text: t('adminBags.title', { ns: 'pages' }),
-                },
-                {
-                  href: '/admin/stats',
-                  text: t('adminStats.title', { ns: 'pages' }),
-                },
-                {
-                  href: '/admin/skills',
-                  text: t('adminSkills.title', { ns: 'pages' }),
-                },
-                {
-                  href: '/admin/charparams',
-                  text: t('adminCharParams.title', { ns: 'pages' }),
                 },
                 {
                   href: '/admin/itemtypes',
@@ -175,10 +207,7 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
                   href: '/admin/programscopes',
                   text: t('adminProgramScopes.title', { ns: 'pages' }),
                 },
-                {
-                  href: '/admin/damagetypes',
-                  text: t('adminDamageTypes.title', { ns: 'pages' }),
-                },
+
                 {
                   href: '/admin/programs',
                   text: t('adminPrograms.title', { ns: 'pages' }),
@@ -208,8 +237,13 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
                   text: t('adminItems.title', { ns: 'pages' }),
                 },
                 {
-                  href: '/admin/dicecomp',
-                  text: t('adminTestDiceComp.title', { ns: 'pages' }),
+                  title: 'Tools',
+                  list: [
+                    {
+                      href: '/admin/dicecomp',
+                      text: t('adminTestDiceComp.title', { ns: 'pages' }),
+                    },
+                  ],
                 },
               ]}
               className="headerbar__menu-list"

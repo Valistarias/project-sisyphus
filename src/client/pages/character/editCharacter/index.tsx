@@ -5,13 +5,13 @@ import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import { ErrorPage } from '..';
-import { Aerror, Ap, Atitle } from '../../atoms';
-import { Button, Input, SmartSelect } from '../../molecules';
-import { Alert } from '../../organisms';
-import { type ICampaign, type ICharacter } from '../../types';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input, SmartSelect } from '../../../molecules';
+import { Alert } from '../../../organisms';
+import { type ICampaign, type ICharacter } from '../../../types';
+import { ErrorPage } from '../../index';
 
 import './editCharacter.scss';
 
