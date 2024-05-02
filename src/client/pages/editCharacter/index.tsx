@@ -3,9 +3,9 @@ import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } fro
 import i18next from 'i18next';
 import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import { useApi, useGlobalVars, useSystemAlerts } from '../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../providers';
 
 import { ErrorPage } from '..';
 import { Aerror, Ap, Atitle } from '../../atoms';
@@ -24,8 +24,13 @@ const EditCharacter: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+    setConfirmContent: () => {},
+    ConfMessageEvent: {},
+  };
   const { user } = useGlobalVars();
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [character, setCharacter] = useState<ICharacter | null>(null);
   const [campaigns, setCampaigns] = useState<ICampaign[]>([]);
@@ -125,6 +130,52 @@ const EditCharacter: FC = () => {
     [api, createAlert, getNewId, id, setError, t]
   );
 
+  const onDeleteCharacter = useCallback(() => {
+    if (api === undefined || character === null) {
+      return;
+    }
+    setConfirmContent(
+      {
+        title: t('characters.confirmDelete.title', { ns: 'pages' }),
+        text: t('characters.confirmDelete.text', { ns: 'pages', elt: character.name }),
+        confirmCta: t('characters.confirmDelete.confirmCta', { ns: 'pages' }),
+      },
+      (evtId: string) => {
+        const confirmDelete = ({ detail }): void => {
+          if (detail.proceed === true) {
+            api.characters
+              .delete({ id })
+              .then(() => {
+                const newId = getNewId();
+                createAlert({
+                  key: newId,
+                  dom: (
+                    <Alert key={newId} id={newId} timer={5}>
+                      <Ap>{t('characters.successDelete', { ns: 'pages' })}</Ap>
+                    </Alert>
+                  ),
+                });
+                navigate('/characters');
+              })
+              .catch(({ response }) => {
+                const newId = getNewId();
+                createAlert({
+                  key: newId,
+                  dom: (
+                    <Alert key={newId} id={newId} timer={5}>
+                      <Ap>{t('serverErrors.CYPU-301')}</Ap>
+                    </Alert>
+                  ),
+                });
+              });
+          }
+          ConfMessageEvent.removeEventListener(evtId, confirmDelete);
+        };
+        ConfMessageEvent.addEventListener(evtId, confirmDelete);
+      }
+    );
+  }, [api, setConfirmContent, t, character, ConfMessageEvent, id, getNewId, createAlert, navigate]);
+
   useEffect(() => {
     if (api !== undefined && !calledApi.current && id !== undefined) {
       setLoading(true);
@@ -177,7 +228,20 @@ const EditCharacter: FC = () => {
 
   return (
     <div className="editcharacter">
-      <Atitle level={1}>{t('editCharacter.title', { ns: 'pages' })}</Atitle>
+      <div className="editcharacter__title">
+        <Atitle className="editcharacter__title__text" level={1}>
+          {t('editCharacter.title', { ns: 'pages' })}
+        </Atitle>
+        <Button
+          theme="text-only"
+          color="error"
+          onClick={() => {
+            onDeleteCharacter();
+          }}
+        >
+          {t('characters.deleteCharacter', { ns: 'pages' })}
+        </Button>
+      </div>
       <form className="editcharacter__form" onSubmit={handleSubmit(onSubmit)} noValidate>
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>

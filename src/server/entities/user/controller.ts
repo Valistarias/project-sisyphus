@@ -34,6 +34,7 @@ const update = (req: Request, res: Response): void => {
     oldPass = null,
     newPass = null,
     theme = null,
+    charCreationTips = null,
     scale = null,
   } = req.body;
   if (id === undefined) {
@@ -61,6 +62,9 @@ const update = (req: Request, res: Response): void => {
       }
       if (scale !== null) {
         user.scale = scale;
+      }
+      if (charCreationTips !== null) {
+        user.charCreationTips = charCreationTips;
       }
 
       user

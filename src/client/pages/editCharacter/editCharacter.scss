@@ -4,6 +4,17 @@
   padding-top: 10vh;
   width: 100%;
 
+  &__title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 4rem;
+
+    &__text {
+      margin: 0;
+    }
+  }
+
   &__form {
     align-items: flex-start;
     display: flex;

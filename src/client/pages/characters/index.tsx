@@ -3,10 +3,10 @@ import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } fro
 import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
 
-import { useApi, useConfirmMessage, useSystemAlerts } from '../../providers';
+import { useApi, useSystemAlerts } from '../../providers';
 
-import { Ali, Ap, Atitle, Aul } from '../../atoms';
-import AP from '../../atoms/ap';
+import holoBackground from '../../assets/imgs/tvbg.gif';
+import { Ali, Ap, Atitle, Aul, Avideo } from '../../atoms';
 import { Button } from '../../molecules';
 import { Alert } from '../../organisms';
 import { type ICharacter } from '../../types';
@@ -19,10 +19,6 @@ const Characters: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
-    setConfirmContent: () => {},
-    ConfMessageEvent: {},
-  };
 
   const [characters, setCharacters] = useState<ICharacter[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,55 +48,6 @@ const Characters: FC = () => {
     }
   }, [api, createAlert, getNewId, t]);
 
-  const onDeleteCharacter = useCallback(
-    (id: string, name: string) => {
-      if (api === undefined) {
-        return;
-      }
-      setConfirmContent(
-        {
-          title: t('characters.confirmDelete.title', { ns: 'pages' }),
-          text: t('characters.confirmDelete.text', { ns: 'pages', elt: name }),
-          confirmCta: t('characters.confirmDelete.confirmCta', { ns: 'pages' }),
-        },
-        (evtId: string) => {
-          const confirmDelete = ({ detail }): void => {
-            if (detail.proceed === true) {
-              api.characters
-                .delete({ id })
-                .then(() => {
-                  const newId = getNewId();
-                  createAlert({
-                    key: newId,
-                    dom: (
-                      <Alert key={newId} id={newId} timer={5}>
-                        <Ap>{t('characters.successDelete', { ns: 'pages' })}</Ap>
-                      </Alert>
-                    ),
-                  });
-                  characterReload();
-                })
-                .catch(({ response }) => {
-                  const newId = getNewId();
-                  createAlert({
-                    key: newId,
-                    dom: (
-                      <Alert key={newId} id={newId} timer={5}>
-                        <Ap>{t('serverErrors.CYPU-301')}</Ap>
-                      </Alert>
-                    ),
-                  });
-                });
-            }
-            ConfMessageEvent.removeEventListener(evtId, confirmDelete);
-          };
-          ConfMessageEvent.addEventListener(evtId, confirmDelete);
-        }
-      );
-    },
-    [api, setConfirmContent, t, ConfMessageEvent, getNewId, createAlert, characterReload]
-  );
-
   const characterList = useMemo(() => {
     if (characters.length === 0) {
       return null;
@@ -114,38 +61,42 @@ const Characters: FC = () => {
             `)}
             key={character._id}
           >
+            <div
+              className="characters__character-list__elt__img"
+              style={{ backgroundImage: `url(${holoBackground})` }}
+            >
+              <Avideo className="characters__character-list__elt__img__animatedbg" video="logo" />
+              <Button
+                className="characters__character-list__elt__img__edit"
+                href={`/character/${character._id}/edit`}
+              >
+                {t('characters.editCharacter', { ns: 'pages' })}
+              </Button>
+            </div>
             <div className="characters__character-list__elt__title">
               <Atitle className="characters__character-list__elt__title__text" level={3}>
                 {character.name}
               </Atitle>
               {character.campaign !== null ? (
-                <AP className="characters__character-list__elt__title__campaign">
+                <Ap className="characters__character-list__elt__title__campaign">
                   {`${i18next.format(t(`terms.campaign.title`), 'capitalize')}: ${character.campaign.name}`}
-                </AP>
+                </Ap>
               ) : null}
             </div>
             <div className="characters__character-list__elt__buttons">
-              <Button href={`/character/${character._id}`}>
-                {t('characters.openCharacter', { ns: 'pages' })}
-              </Button>
-              <Button theme="text-only" href={`/character/${character._id}/edit`}>
-                {t('characters.editCharacter', { ns: 'pages' })}
-              </Button>
               <Button
-                theme="text-only"
-                color="error"
-                onClick={() => {
-                  onDeleteCharacter(character._id, character.name);
-                }}
+                className="characters__character-list__elt__buttons__main"
+                theme="afterglow"
+                href={`/character/${character._id}`}
               >
-                {t('characters.deleteCharacter', { ns: 'pages' })}
+                {t('characters.openCharacter', { ns: 'pages' })}
               </Button>
             </div>
           </Ali>
         ))}
       </Aul>
     );
-  }, [characters, onDeleteCharacter, t]);
+  }, [characters, t]);
 
   useEffect(() => {
     if (api !== undefined && !calledApi.current) {
