@@ -3,57 +3,40 @@ import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } fro
 import i18next from 'i18next';
 import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-import { useApi, useGlobalVars, useSystemAlerts } from '../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import { ErrorPage } from '..';
-import { Aerror, Ap, Atitle } from '../../atoms';
-import { Button, Input, SmartSelect } from '../../molecules';
-import { Alert } from '../../organisms';
-import { type ICampaign, type ICharacter } from '../../types';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input, SmartSelect } from '../../../molecules';
+import { Alert } from '../../../organisms';
+import { type ICampaign } from '../../../types';
 
-import './editCharacter.scss';
+import './newCharacter.scss';
 
 interface FormValues {
   name: string;
   campaign: string;
 }
 
-const EditCharacter: FC = () => {
+const NewCharacter: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { user } = useGlobalVars();
-  const { id } = useParams();
+  const navigate = useNavigate();
 
-  const [character, setCharacter] = useState<ICharacter | null>(null);
   const [campaigns, setCampaigns] = useState<ICampaign[]>([]);
 
   const [loading, setLoading] = useState(true);
-  const [notFound, setNotFound] = useState(false);
-
   const calledApi = useRef(false);
 
-  const createDefaultData = useCallback((character: ICharacter | null) => {
-    if (character == null) {
-      return {};
-    }
-    const defaultData: Partial<FormValues> = {};
-    defaultData.name = character.name;
-    defaultData.campaign = character.campaign?._id ?? '';
-    return defaultData;
-  }, []);
-
   const {
-    reset,
     handleSubmit,
     setError,
     control,
     formState: { errors },
-  } = useForm<FieldValues>({
-    defaultValues: useMemo(() => createDefaultData(character), [createDefaultData, character]),
-  });
+  } = useForm<FieldValues>();
 
   const campaignList = useMemo(() => {
     return campaigns.map(({ _id, name, owner }) => ({
@@ -95,8 +78,7 @@ const EditCharacter: FC = () => {
     ({ name, campaign }) => {
       if (api !== undefined) {
         api.characters
-          .update({
-            id,
+          .create({
             name,
             campaignId: campaign,
           })
@@ -106,10 +88,11 @@ const EditCharacter: FC = () => {
               key: newId,
               dom: (
                 <Alert key={newId} id={newId} timer={5}>
-                  <Ap>{t('editCharacter.successEdit', { ns: 'pages' })}</Ap>
+                  <Ap>{t('newCharacter.successCreate', { ns: 'pages' })}</Ap>
                 </Alert>
               ),
             });
+            navigate(`/character/${characterId}`);
           })
           .catch(({ response }) => {
             const { data } = response;
@@ -122,63 +105,26 @@ const EditCharacter: FC = () => {
           });
       }
     },
-    [api, createAlert, getNewId, id, setError, t]
+    [api, createAlert, getNewId, navigate, setError, t]
   );
 
   useEffect(() => {
-    if (api !== undefined && !calledApi.current && id !== undefined) {
+    if (api !== undefined && !calledApi.current) {
       setLoading(true);
       calledApi.current = true;
       getCampaigns();
-      api.characters
-        .get({
-          characterId: id,
-        })
-        .then((sentCharacter: ICharacter) => {
-          if (sentCharacter === undefined) {
-            setNotFound(true);
-          } else {
-            setCharacter(sentCharacter);
-          }
-          setLoading(false);
-        })
-        .catch((res) => {
-          if (res.response.status === 404) {
-            setNotFound(true);
-          } else {
-            const newId = getNewId();
-            createAlert({
-              key: newId,
-              dom: (
-                <Alert key={newId} id={newId} timer={5}>
-                  <Ap>{t('serverErrors.CYPU-301')}</Ap>
-                </Alert>
-              ),
-            });
-          }
-          setLoading(false);
-        });
     }
-  }, [api, createAlert, getNewId, t, id, getCampaigns]);
-
-  // Default data
-  useEffect(() => {
-    reset(createDefaultData(character));
-  }, [character, reset, createDefaultData]);
+  }, [api, createAlert, getNewId, getCampaigns, t]);
 
   // TODO: Add loading state
   if (loading) {
     return null;
   }
 
-  if (notFound) {
-    return <ErrorPage />;
-  }
-
   return (
-    <div className="editcharacter">
-      <Atitle level={1}>{t('editCharacter.title', { ns: 'pages' })}</Atitle>
-      <form className="editcharacter__form" onSubmit={handleSubmit(onSubmit)} noValidate>
+    <div className="newcharacter">
+      <Atitle level={1}>{t('newCharacter.title', { ns: 'pages' })}</Atitle>
+      <form className="newcharacter__form" onSubmit={handleSubmit(onSubmit)} noValidate>
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
@@ -194,12 +140,12 @@ const EditCharacter: FC = () => {
           inputName="campaign"
           label={t('characterCampaign.label', { ns: 'fields' })}
           options={campaignList}
-          className="editcharacter__campaign"
+          className="newcharacter__campaign"
         />
-        <Button type="submit">{t('editCharacter.formCTA', { ns: 'pages' })}</Button>
+        <Button type="submit">{t('newCharacter.formCTA', { ns: 'pages' })}</Button>
       </form>
     </div>
   );
 };
 
-export default EditCharacter;
+export default NewCharacter;

@@ -17,6 +17,8 @@ interface IUser {
   theme: string;
   /** The scale of the UI */
   scale: number;
+  /** Is the tips automatically displays in the character creation */
+  charCreationTips: boolean;
   /** Is the user verified */
   verified: boolean;
   /** The user roles */
@@ -40,6 +42,10 @@ const userSchema = new Schema<IUser>({
   verified: {
     type: Boolean,
     default: false,
+  },
+  charCreationTips: {
+    type: Boolean,
+    default: true,
   },
   roles: [
     {

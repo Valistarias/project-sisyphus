@@ -1,0 +1,23 @@
+@use '../../../assets/scss/index';
+
+.editcharacter {
+  @include index.basic-page;
+
+  &__title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 4rem;
+
+    &__text {
+      margin: 0;
+    }
+  }
+
+  &__form {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+  }
+}

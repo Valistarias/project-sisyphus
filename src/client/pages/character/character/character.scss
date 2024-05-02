@@ -1,0 +1,9 @@
+@use '../../../assets/scss/index';
+
+.character {
+  @include index.basic-page;
+
+  &__test {
+    fill: var(--primary);
+  }
+}

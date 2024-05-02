@@ -24,6 +24,8 @@ export interface IUser {
   scale: number;
   /** Is the user verified */
   verified: boolean;
+  /** Is the tips automatically displays in the character creation */
+  charCreationTips: boolean;
   /** The user roles */
   roles: Array<{
     _id: string;
