@@ -67,6 +67,7 @@ const Characters: FC = () => {
             >
               <Avideo className="characters__character-list__elt__img__animatedbg" video="logo" />
               <Button
+                theme="text-only"
                 className="characters__character-list__elt__img__edit"
                 href={`/character/${character._id}/edit`}
               >

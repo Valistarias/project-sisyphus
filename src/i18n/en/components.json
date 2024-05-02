@@ -3,7 +3,18 @@
     "close": "Close Alert"
   },
   "headerBar": {
-    "logout": "Log out"
+    "logout": "Log out",
+    "cat": {
+      "rulebooks": "RuleBooks",
+      "core": "Core Rules",
+      "item": "Items",
+      "weapon": "Weapons",
+      "armor": "Armors",
+      "character": "Characters",
+      "npc": "NPCs",
+      "inventory": "Inventory",
+      "tools": "Tools"
+    }
   },
   "richTextElement": {
     "textTitle": "Text",

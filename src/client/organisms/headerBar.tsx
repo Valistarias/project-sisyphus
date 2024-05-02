@@ -134,7 +134,7 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
               }}
               content={[
                 {
-                  title: 'Test',
+                  title: t('headerBar.cat.rulebooks', { ns: 'components' }),
                   list: [
                     {
                       href: '/admin/rulebooks',
@@ -143,7 +143,7 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
                   ],
                 },
                 {
-                  title: 'Core Rules',
+                  title: t('headerBar.cat.core', { ns: 'components' }),
                   list: [
                     {
                       href: '/admin/stats',
@@ -161,83 +161,104 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
                       href: '/admin/damagetypes',
                       text: t('adminDamageTypes.title', { ns: 'pages' }),
                     },
+                    {
+                      href: '/admin/rarities',
+                      text: t('adminRarities.title', { ns: 'pages' }),
+                    },
+                    {
+                      href: '/admin/cyberframes',
+                      text: t('adminCyberFrames.title', { ns: 'pages' }),
+                    },
                   ],
                 },
                 {
-                  href: '/admin/cyberframes',
-                  text: t('adminCyberFrames.title', { ns: 'pages' }),
+                  title: t('headerBar.cat.item', { ns: 'components' }),
+                  list: [
+                    {
+                      href: '/admin/items',
+                      text: t('adminItems.title', { ns: 'pages' }),
+                    },
+                    {
+                      href: '/admin/itemtypes',
+                      text: t('adminItemTypes.title', { ns: 'pages' }),
+                    },
+                    {
+                      href: '/admin/itemmodifiers',
+                      text: t('adminItemModifiers.title', { ns: 'pages' }),
+                    },
+                  ],
                 },
                 {
-                  href: '/admin/ammos',
-                  text: t('adminAmmos.title', { ns: 'pages' }),
+                  title: t('headerBar.cat.weapon', { ns: 'components' }),
+                  list: [
+                    {
+                      href: '/admin/weapons',
+                      text: t('adminWeapons.title', { ns: 'pages' }),
+                    },
+                    {
+                      href: '/admin/weaponscopes',
+                      text: t('adminWeaponScopes.title', { ns: 'pages' }),
+                    },
+                    {
+                      href: '/admin/weaponstyles',
+                      text: t('adminWeaponStyles.title', { ns: 'pages' }),
+                    },
+                  ],
                 },
                 {
-                  href: '/admin/bags',
-                  text: t('adminBags.title', { ns: 'pages' }),
+                  title: t('headerBar.cat.armor', { ns: 'components' }),
+                  list: [
+                    {
+                      href: '/admin/armors',
+                      text: t('adminArmors.title', { ns: 'pages' }),
+                    },
+                    {
+                      href: '/admin/armortypes',
+                      text: t('adminArmorTypes.title', { ns: 'pages' }),
+                    },
+                  ],
                 },
                 {
-                  href: '/admin/itemtypes',
-                  text: t('adminItemTypes.title', { ns: 'pages' }),
+                  title: t('headerBar.cat.inventory', { ns: 'components' }),
+                  list: [
+                    {
+                      href: '/admin/ammos',
+                      text: t('adminAmmos.title', { ns: 'pages' }),
+                    },
+                    {
+                      href: '/admin/bags',
+                      text: t('adminBags.title', { ns: 'pages' }),
+                    },
+                    {
+                      href: '/admin/programs',
+                      text: t('adminPrograms.title', { ns: 'pages' }),
+                    },
+                    {
+                      href: '/admin/implants',
+                      text: t('adminImplants.title', { ns: 'pages' }),
+                    },
+                  ],
                 },
                 {
-                  href: '/admin/itemmodifiers',
-                  text: t('adminItemModifiers.title', { ns: 'pages' }),
+                  title: t('headerBar.cat.npc', { ns: 'components' }),
+                  list: [
+                    {
+                      href: '/admin/npcs',
+                      text: t('adminNPCs.title', { ns: 'pages' }),
+                    },
+                  ],
                 },
                 {
-                  href: '/admin/rarities',
-                  text: t('adminRarities.title', { ns: 'pages' }),
+                  title: t('headerBar.cat.character', { ns: 'components' }),
+                  list: [
+                    {
+                      href: '/admin/bodyparts',
+                      text: t('adminBodyParts.title', { ns: 'pages' }),
+                    },
+                  ],
                 },
                 {
-                  href: '/admin/weapons',
-                  text: t('adminWeapons.title', { ns: 'pages' }),
-                },
-                {
-                  href: '/admin/weaponscopes',
-                  text: t('adminWeaponScopes.title', { ns: 'pages' }),
-                },
-                {
-                  href: '/admin/weaponstyles',
-                  text: t('adminWeaponStyles.title', { ns: 'pages' }),
-                },
-                {
-                  href: '/admin/weapontypes',
-                  text: t('adminWeaponTypes.title', { ns: 'pages' }),
-                },
-                {
-                  href: '/admin/programscopes',
-                  text: t('adminProgramScopes.title', { ns: 'pages' }),
-                },
-
-                {
-                  href: '/admin/programs',
-                  text: t('adminPrograms.title', { ns: 'pages' }),
-                },
-                {
-                  href: '/admin/npcs',
-                  text: t('adminNPCs.title', { ns: 'pages' }),
-                },
-                {
-                  href: '/admin/bodyparts',
-                  text: t('adminBodyParts.title', { ns: 'pages' }),
-                },
-                {
-                  href: '/admin/implants',
-                  text: t('adminImplants.title', { ns: 'pages' }),
-                },
-                {
-                  href: '/admin/armortypes',
-                  text: t('adminArmorTypes.title', { ns: 'pages' }),
-                },
-                {
-                  href: '/admin/armors',
-                  text: t('adminArmors.title', { ns: 'pages' }),
-                },
-                {
-                  href: '/admin/items',
-                  text: t('adminItems.title', { ns: 'pages' }),
-                },
-                {
-                  title: 'Tools',
+                  title: t('headerBar.cat.tools', { ns: 'components' }),
                   list: [
                     {
                       href: '/admin/dicecomp',
