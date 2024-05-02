@@ -5,11 +5,11 @@ import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { useApi, useSystemAlerts } from '../../providers';
+import { useApi, useSystemAlerts } from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../atoms';
-import { Button, Input } from '../../molecules';
-import { Alert } from '../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input } from '../../../molecules';
+import { Alert } from '../../../organisms';
 
 import './newCampaign.scss';
 

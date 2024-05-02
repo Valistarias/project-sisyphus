@@ -1,7 +1,6 @@
 import React, { type FC } from 'react';
 
 // import { useTranslation } from 'react-i18next';
-
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../providers';

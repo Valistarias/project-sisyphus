@@ -3,13 +3,13 @@ import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } fro
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useApi, useGlobalVars, useSystemAlerts } from '../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import { Ap, Atitle } from '../../atoms';
-import { Button } from '../../molecules';
-import { Alert } from '../../organisms';
-import { type ICampaign } from '../../types';
-import { ErrorPage } from '../index';
+import { Ap, Atitle } from '../../../atoms';
+import { Button } from '../../../molecules';
+import { Alert } from '../../../organisms';
+import { type ICampaign } from '../../../types';
+import { ErrorPage } from '../../index';
 
 import './joinCampaign.scss';
 

@@ -1,0 +1,9 @@
+@use '../../../assets/scss/index';
+
+.campaign {
+  @include index.basic-page;
+
+  &__link {
+    margin-bottom: 10vh;
+  }
+}

@@ -1,6 +1,7 @@
-import React, { useMemo, type FC } from 'react';
+import React, { useMemo, useState, type FC } from 'react';
 
-import { Outlet, RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
+import { RouterProvider, createBrowserRouter, useLocation, useOutlet } from 'react-router-dom';
 
 import { useGlobalVars } from './providers';
 
@@ -115,6 +116,47 @@ import { HeaderBar } from './organisms';
 
 import './assets/scss/index.scss';
 
+const AnimatedOutlet: React.FC = () => {
+  const o = useOutlet();
+  const [outlet] = useState(o);
+
+  return <>{outlet}</>;
+};
+
+const RootContainer: FC = () => {
+  const location = useLocation();
+  return (
+    <>
+      <HeaderBar className="app__headerbar" />
+      <AnimatePresence mode="popLayout">
+        <motion.div
+          className="app__content"
+          key={location.pathname}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ ease: 'ease', duration: 0.3 }}
+
+          // className="app__content"
+          // key={location.pathname}
+          // initial={{ height: 0, opacity: 0, overflowY: 'hidden' }}
+          // animate={{
+          //   height: '100%',
+          //   opacity: 1,
+          //   transitionEnd: {
+          //     overflowY: 'auto',
+          //   },
+          // }}
+          // exit={{ height: 0, opacity: 0 }}
+          // transition={{ ease: 'easeIn', duration: 0.5 }}
+        >
+          <AnimatedOutlet />
+        </motion.div>
+      </AnimatePresence>
+    </>
+  );
+};
+
 const App: FC = () => {
   const { loading } = useGlobalVars();
 
@@ -122,14 +164,7 @@ const App: FC = () => {
     () =>
       createBrowserRouter([
         {
-          element: (
-            <>
-              <HeaderBar className="app__headerbar" />
-              <div className="app__content">
-                <Outlet />
-              </div>
-            </>
-          ),
+          element: <RootContainer />,
           children: [
             // Unlogged
             {

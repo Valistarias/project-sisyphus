@@ -3,13 +3,13 @@ import React, { useEffect, useRef, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import { useApi, useSystemAlerts } from '../../providers';
+import { useApi, useSystemAlerts } from '../../../providers';
 
-import { Ap, Atitle } from '../../atoms';
-import { Alert, RichTextElement } from '../../organisms';
-import { ErrorPage } from '../index';
+import { Ap, Atitle } from '../../../atoms';
+import { Alert, RichTextElement } from '../../../organisms';
+import { ErrorPage } from '../../index';
 
-import type { ICuratedChapter } from '../../types';
+import type { ICuratedChapter } from '../../../types';
 
 import './chapter.scss';
 

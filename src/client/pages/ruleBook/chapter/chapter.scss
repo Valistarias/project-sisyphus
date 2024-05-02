@@ -1,0 +1,9 @@
+@use '../../../assets/scss/index';
+
+.chapter {
+  @include index.basic-page;
+
+  &__page {
+    margin-bottom: 4rem;
+  }
+}

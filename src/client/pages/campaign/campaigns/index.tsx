@@ -2,13 +2,13 @@ import React, { useCallback, useMemo, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import { Ali, Ap, Atitle, Aul } from '../../atoms';
-import { Button } from '../../molecules';
-import { Alert } from '../../organisms';
+import { Ali, Ap, Atitle, Aul } from '../../../atoms';
+import { Button } from '../../../molecules';
+import { Alert } from '../../../organisms';
 
-import { classTrim } from '../../utils';
+import { classTrim } from '../../../utils';
 
 import './campaigns.scss';
 

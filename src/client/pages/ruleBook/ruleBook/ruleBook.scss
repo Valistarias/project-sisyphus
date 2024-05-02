@@ -1,8 +1,7 @@
+@use '../../../assets/scss/index';
+
 .rulebook {
-  margin: 0 auto;
-  max-width: 1000px;
-  padding-top: 10vh;
-  width: 100%;
+  @include index.basic-page;
 
   &__title {
     margin-bottom: 2rem;

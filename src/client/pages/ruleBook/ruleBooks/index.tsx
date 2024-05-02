@@ -2,12 +2,12 @@ import React, { useMemo, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { useGlobalVars } from '../../providers';
+import { useGlobalVars } from '../../../providers';
 
-import { Ali, Ap, Atitle, Aul } from '../../atoms';
-import { Button } from '../../molecules';
+import { Ali, Ap, Atitle, Aul } from '../../../atoms';
+import { Button } from '../../../molecules';
 
-import { classTrim } from '../../utils';
+import { classTrim } from '../../../utils';
 
 import './ruleBooks.scss';
 
