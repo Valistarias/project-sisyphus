@@ -33,6 +33,7 @@ const NewCharacter: FC = () => {
 
   const [displayLoading, setDisplayLoading] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [tooltipOpen, setTooltipOpen] = useState(true);
   // 0 -> not began, 1-> is animating, 2-> finished, 3-> hidden
   const [introState, setIntroState] = useState(0);
   const calledApi = useRef(false);
@@ -130,6 +131,7 @@ const NewCharacter: FC = () => {
         ${displayLoading ? 'newcharacter--loading' : ''}
         ${introState > 0 ? 'newcharacter--animating' : ''}
         ${introState === 3 ? 'newcharacter--animate-hide' : ''}
+        ${tooltipOpen ? 'newcharacter--tooltip' : ''}
       `)}
     >
       <div className="newcharacter__loading" style={{ backgroundImage: `url(${tvBackground})` }}>
@@ -170,6 +172,28 @@ const NewCharacter: FC = () => {
               />
             </Ap>
           </div>
+        </div>
+      </div>
+      <div className="newcharacter__tooltip">
+        <div className="newcharacter__tooltip__core">
+          <Atitle className="newcharacter__tooltip__core__title">Title</Atitle>
+          <Ap className="newcharacter__tooltip__core__text">
+            Bacon ipsum dolor amet bresaola pork loin venison landjaeger jerky tri-tip. Ham filet
+            mignon drumstick, flank salami burgdoggen beef boudin buffalo fatback rump. Alcatra
+            porchetta tail, landjaeger salami burgdoggen prosciutto ball tip kevin. Pancetta jowl
+            fatback tongue boudin, flank corned beef. Tri-tip ribeye drumstick turducken biltong
+            bresaola cow cupim burgdoggen pork. Prosciutto alcatra turducken cow doner andouille
+            fatback drumstick ball tip pork loin pork chop short ribs ham hock chuck turkey. Ball
+            tip porchetta tongue tail picanha.
+          </Ap>
+          <Button
+            size="large"
+            onClick={() => {
+              setTooltipOpen(false);
+            }}
+          >
+            Close
+          </Button>
         </div>
       </div>
       <Atitle level={1}>{t('newCharacter.title', { ns: 'pages' })}</Atitle>

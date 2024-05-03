@@ -327,9 +327,9 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, character }) => {
                 {t('rollTab.noCampaign', { ns: 'components' })}
               </p>
             ) : null}
-            <Avideo className="roll-tab__log__table__animatedbg" video="logo" />
             {logRolls}
           </div>
+          <Avideo className="roll-tab__log__animatedbg" video="logo" />
         </div>
         <div className="roll-tab__dice">
           <Ap className="roll-tab__dice__title">{t('rollTab.freeRoll', { ns: 'components' })}</Ap>
