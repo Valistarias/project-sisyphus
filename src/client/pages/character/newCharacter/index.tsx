@@ -8,6 +8,7 @@ import { TypeAnimation } from 'react-type-animation';
 
 import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
+import tvBackground from '../../../assets/imgs/tvbg.gif';
 import { Aerror, Aicon, Ap, Atitle } from '../../../atoms';
 import { Button, Input, SmartSelect } from '../../../molecules';
 import { Alert } from '../../../organisms';
@@ -60,7 +61,7 @@ const NewCharacter: FC = () => {
     setIntroState(1);
     if (api !== undefined) {
       // When data finished loading
-      // setLoading(false);
+      setLoading(false);
     }
   }, [api]);
 
@@ -108,7 +109,9 @@ const NewCharacter: FC = () => {
 
   useEffect(() => {
     if (!loading && introState === 2) {
-      setDisplayLoading(false);
+      setTimeout(() => {
+        setDisplayLoading(false);
+      }, 1000);
     }
   }, [loading, introState]);
 
@@ -125,8 +128,20 @@ const NewCharacter: FC = () => {
         ${introState > 0 ? 'newcharacter--animating' : ''}
       `)}
     >
-      <div className="newcharacter__loading">
+      <div className="newcharacter__loading" style={{ backgroundImage: `url(${tvBackground})` }}>
         <div className="newcharacter__loading__main-block">
+          {!loading ? (
+            <div className="newcharacter__loading__skip">
+              <Button
+                size="large"
+                onClick={() => {
+                  setDisplayLoading(false);
+                }}
+              >
+                {t('newCharacter.skipIntro', { ns: 'pages' })}
+              </Button>
+            </div>
+          ) : null}
           <div className="newcharacter__loading__logo">
             <Aicon className="newcharacter__loading__logo__elt" type="main" size="unsized" />
           </div>
@@ -134,8 +149,14 @@ const NewCharacter: FC = () => {
             <Ap>
               <TypeAnimation
                 className="newcharacter__loading__code__elt"
-                sequence={introSequence()}
-                speed={90}
+                sequence={[
+                  ...introSequence(),
+                  () => {
+                    setIntroState(2);
+                  },
+                ]}
+                speed={94}
+                cursor={false}
                 omitDeletionAnimation={true}
                 style={{ whiteSpace: 'pre-line' }}
               />
