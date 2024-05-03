@@ -1,7 +1,7 @@
-@use '../../../assets/scss/index';
+@use '../../../assets/scss/mixins';
 
 .campaign {
-  @include index.basic-page;
+  @include mixins.basic-page;
 
   &__link {
     margin-bottom: 10vh;

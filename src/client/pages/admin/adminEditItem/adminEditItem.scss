@@ -1,7 +1,7 @@
-@use '../../../assets/scss/index';
+@use '../../../assets/scss/mixins';
 
 .adminEditItem {
-  @include index.basic-page;
+  @include mixins.basic-page;
 
   &__ariane {
     margin-bottom: 2rem;

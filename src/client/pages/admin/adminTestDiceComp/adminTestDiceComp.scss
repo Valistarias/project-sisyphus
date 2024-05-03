@@ -1,7 +1,7 @@
-@use '../../../assets/scss/index';
+@use '../../../assets/scss/mixins';
 
 .adminTestDiceComp {
-  @include index.basic-page;
+  @include mixins.basic-page;
 
   &__form {
     align-items: flex-end;

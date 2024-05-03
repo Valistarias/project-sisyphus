@@ -12,6 +12,7 @@ import D8Logo from '../assets/icons/d8.svg?react';
 import DeleteLogo from '../assets/icons/delete.svg?react';
 import DiscordLogo from '../assets/icons/discord.svg?react';
 import EditLogo from '../assets/icons/edit.svg?react';
+import EidolonLogo from '../assets/icons/eidolon.svg?react';
 import MainLogo from '../assets/icons/logo.svg?react';
 import { Quark, type IQuarkProps } from '../quark';
 
@@ -27,6 +28,7 @@ type typeIcons =
   | 'delete'
   | 'discord'
   | 'main'
+  | 'eidolon'
   | 'd20'
   | 'd12'
   | 'd10'
@@ -66,6 +68,8 @@ const Aicon: FC<IAicon> = ({ type, size = 'medium', className, onClick }) => {
         return <Quark quarkType={DiscordLogo} className={classes} />;
       case 'main':
         return <Quark quarkType={MainLogo} className={classes} />;
+      case 'eidolon':
+        return <Quark quarkType={EidolonLogo} className={classes} />;
       case 'check':
         return <Quark quarkType={CheckLogo} className={classes} />;
       case 'd20':

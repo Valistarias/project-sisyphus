@@ -1,7 +1,7 @@
-@use '../../../assets/scss/index';
+@use '../../../assets/scss/mixins';
 
 .adminBags {
-  @include index.basic-page;
+  @include mixins.basic-page;
 
   &__content {
     display: flex;

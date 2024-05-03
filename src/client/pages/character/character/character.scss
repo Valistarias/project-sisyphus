@@ -1,7 +1,7 @@
-@use '../../../assets/scss/index';
+@use '../../../assets/scss/mixins';
 
 .character {
-  @include index.basic-page;
+  @include mixins.basic-page;
 
   &__test {
     fill: var(--primary);

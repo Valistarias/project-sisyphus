@@ -1,7 +1,7 @@
-@use '../../../assets/scss/index';
+@use '../../../assets/scss/mixins';
 
 .rulebooks {
-  @include index.basic-page;
+  @include mixins.basic-page;
 
   &__books {
     width: 100%;

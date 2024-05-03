@@ -1,7 +1,7 @@
-@use '../../../assets/scss/index';
+@use '../../../assets/scss/mixins';
 
 .adminEditArmorType {
-  @include index.basic-page;
+  @include mixins.basic-page;
 
   &__content {
     margin-bottom: 10vh;

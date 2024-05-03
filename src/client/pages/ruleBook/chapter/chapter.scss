@@ -1,7 +1,7 @@
-@use '../../../assets/scss/index';
+@use '../../../assets/scss/mixins';
 
 .chapter {
-  @include index.basic-page;
+  @include mixins.basic-page;
 
   &__page {
     margin-bottom: 4rem;

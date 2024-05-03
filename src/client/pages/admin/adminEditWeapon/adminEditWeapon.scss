@@ -1,7 +1,7 @@
-@use '../../../assets/scss/index';
+@use '../../../assets/scss/mixins';
 
 .adminEditWeapon {
-  @include index.basic-page;
+  @include mixins.basic-page;
 
   &__head {
     align-items: center;

@@ -33,7 +33,7 @@ const NewCharacter: FC = () => {
 
   const [displayLoading, setDisplayLoading] = useState(true);
   const [loading, setLoading] = useState(true);
-  // 0 -> not began, 1-> is animating, 2-> finished
+  // 0 -> not began, 1-> is animating, 2-> finished, 3-> hidden
   const [introState, setIntroState] = useState(0);
   const calledApi = useRef(false);
 
@@ -111,7 +111,10 @@ const NewCharacter: FC = () => {
     if (!loading && introState === 2) {
       setTimeout(() => {
         setDisplayLoading(false);
-      }, 1000);
+        setTimeout(() => {
+          setIntroState(3);
+        }, 1100);
+      }, 2000);
     }
   }, [loading, introState]);
 
@@ -126,9 +129,14 @@ const NewCharacter: FC = () => {
         newcharacter
         ${displayLoading ? 'newcharacter--loading' : ''}
         ${introState > 0 ? 'newcharacter--animating' : ''}
+        ${introState === 3 ? 'newcharacter--animate-hide' : ''}
       `)}
     >
       <div className="newcharacter__loading" style={{ backgroundImage: `url(${tvBackground})` }}>
+        <div
+          className="newcharacter__loading__accent"
+          style={{ backgroundImage: `url(${tvBackground})` }}
+        />
         <div className="newcharacter__loading__main-block">
           {!loading ? (
             <div className="newcharacter__loading__skip">
@@ -143,7 +151,7 @@ const NewCharacter: FC = () => {
             </div>
           ) : null}
           <div className="newcharacter__loading__logo">
-            <Aicon className="newcharacter__loading__logo__elt" type="main" size="unsized" />
+            <Aicon className="newcharacter__loading__logo__elt" type="eidolon" size="unsized" />
           </div>
           <div className="newcharacter__loading__code">
             <Ap>

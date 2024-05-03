@@ -1,14 +1,15 @@
-@use '../../../assets/scss/index';
+@use '../../../assets/scss/mixins';
 
 .newcharacter {
-  @include index.basic-page;
+  @include mixins.basic-page;
 
   &__loading {
-    background: var(--primary-dark-40);
+    background: var(--primary-dark-10);
     background-blend-mode: lighten;
     height: 100%;
     left: 0;
     opacity: 0;
+    overflow: hidden;
     pointer-events: none;
     // Relative to app__content
     position: absolute;
@@ -18,11 +19,23 @@
     width: 100%;
     z-index: 1;
 
+    &__accent {
+      animation: rotating 10s ease infinite;
+      background: var(--secondary-dark-10);
+      background-blend-mode: lighten;
+      height: calc(100vh + 100vw);
+      left: 50%;
+      opacity: 0.8;
+      position: absolute;
+      top: 50%;
+      width: calc(100vh + 100vw);
+    }
+
     &__main-block {
       align-items: center;
       display: flex;
       flex-direction: column;
-      gap: 8vh;
+      gap: 0;
       height: 100%;
       justify-content: center;
       margin: 0 auto;
@@ -31,7 +44,8 @@
     }
 
     &__logo {
-      width: 30rem;
+      animation: breathing-logo 5s ease infinite;
+      width: 40vh;
 
       &__elt {
         fill: var(--tertiary);
@@ -42,24 +56,24 @@
     }
 
     &__code {
-      background: var(--primary-dark-40);
+      background: var(--dark);
       font-family: var(--mono-font);
       font-size: 1.2rem;
       height: 30rem;
       letter-spacing: 0.2rem;
       line-height: 1.8rem;
-      max-width: 55rem;
+      max-width: 60rem;
       overflow: hidden;
       position: relative;
       width: 100%;
 
       &__elt {
-        bottom: 1rem;
-        left: 1rem;
-        min-height: calc(100% - 2rem);
+        bottom: 2rem;
+        left: 2rem;
+        min-height: calc(100% - 4rem);
         position: absolute;
         right: 0;
-        width: calc(100% - 2rem);
+        width: calc(100% - 4rem);
       }
     }
 
@@ -97,6 +111,36 @@
       opacity: 1;
       pointer-events: all;
       transition: opacity 0 ease;
+    }
+  }
+
+  &--animate-hide {
+    .newcharacter__loading {
+      display: none;
+    }
+  }
+
+  @keyframes breathing-logo {
+    0% {
+      transform: scale3d(0.9, 0.9, 1);
+    }
+
+    50% {
+      transform: scale3d(1, 1, 1);
+    }
+
+    100% {
+      transform: scale3d(0.9, 0.9, 1);
+    }
+  }
+
+  @keyframes rotating {
+    from {
+      transform: translate3d(-50%, -50%, 0) rotate(0);
+    }
+
+    to {
+      transform: translate3d(-50%, -50%, 0) rotate(180deg);
     }
   }
 }
