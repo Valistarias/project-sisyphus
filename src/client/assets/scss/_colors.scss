@@ -42,6 +42,7 @@ $purple-dark: #59121f;
 .dark-theme {
   --background-color: #{$vanta};
   --background-header: #{$dark};
+  --background-header-transparent: #{$dark}9;
   --font-color: #{$white};
   --primary: #{$blue};
   --primary-80: #{$blue}cc;

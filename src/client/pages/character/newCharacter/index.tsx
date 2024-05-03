@@ -4,13 +4,17 @@ import i18next from 'i18next';
 import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { TypeAnimation } from 'react-type-animation';
 
 import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Aerror, Aicon, Ap, Atitle } from '../../../atoms';
 import { Button, Input, SmartSelect } from '../../../molecules';
 import { Alert } from '../../../organisms';
-import { type ICampaign } from '../../../types';
+
+import { introSequence } from './introSequence';
+
+import { classTrim } from '../../../utils';
 
 import './newCharacter.scss';
 
@@ -23,12 +27,13 @@ const NewCharacter: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { user } = useGlobalVars();
+  const { user, campaigns } = useGlobalVars();
   const navigate = useNavigate();
 
-  const [campaigns, setCampaigns] = useState<ICampaign[]>([]);
-
+  const [displayLoading, setDisplayLoading] = useState(true);
   const [loading, setLoading] = useState(true);
+  // 0 -> not began, 1-> is animating, 2-> finished
+  const [introState, setIntroState] = useState(0);
   const calledApi = useRef(false);
 
   const {
@@ -51,28 +56,13 @@ const NewCharacter: FC = () => {
     }));
   }, [campaigns, t, user]);
 
-  const getCampaigns = useCallback(() => {
+  const getData = useCallback(() => {
+    setIntroState(1);
     if (api !== undefined) {
-      api.campaigns
-        .getAll()
-        .then((sentCampaigns: ICampaign[]) => {
-          setLoading(false);
-          setCampaigns(sentCampaigns);
-        })
-        .catch(() => {
-          setLoading(false);
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
-        });
+      // When data finished loading
+      // setLoading(false);
     }
-  }, [api, createAlert, getNewId, t]);
+  }, [api]);
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
     ({ name, campaign }) => {
@@ -112,17 +102,47 @@ const NewCharacter: FC = () => {
     if (api !== undefined && !calledApi.current) {
       setLoading(true);
       calledApi.current = true;
-      getCampaigns();
+      getData();
     }
-  }, [api, createAlert, getNewId, getCampaigns, t]);
+  }, [api, createAlert, getNewId, getData, t]);
+
+  useEffect(() => {
+    if (!loading && introState === 2) {
+      setDisplayLoading(false);
+    }
+  }, [loading, introState]);
 
   // TODO: Add loading state
-  if (loading) {
-    return null;
-  }
+  // if (loading) {
+  //   return null;
+  // }
 
   return (
-    <div className="newcharacter">
+    <div
+      className={classTrim(`
+        newcharacter
+        ${displayLoading ? 'newcharacter--loading' : ''}
+        ${introState > 0 ? 'newcharacter--animating' : ''}
+      `)}
+    >
+      <div className="newcharacter__loading">
+        <div className="newcharacter__loading__main-block">
+          <div className="newcharacter__loading__logo">
+            <Aicon className="newcharacter__loading__logo__elt" type="main" size="unsized" />
+          </div>
+          <div className="newcharacter__loading__code">
+            <Ap>
+              <TypeAnimation
+                className="newcharacter__loading__code__elt"
+                sequence={introSequence()}
+                speed={90}
+                omitDeletionAnimation={true}
+                style={{ whiteSpace: 'pre-line' }}
+              />
+            </Ap>
+          </div>
+        </div>
+      </div>
       <Atitle level={1}>{t('newCharacter.title', { ns: 'pages' })}</Atitle>
       <form className="newcharacter__form" onSubmit={handleSubmit(onSubmit)} noValidate>
         {errors.root?.serverError?.message !== undefined ? (

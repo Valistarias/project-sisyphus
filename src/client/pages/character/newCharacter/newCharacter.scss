@@ -3,10 +3,76 @@
 .newcharacter {
   @include index.basic-page;
 
+  &__loading {
+    background: var(--primary-dark);
+    height: 100%;
+    left: 0;
+    // Relative to app__content
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+
+    &__main-block {
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      margin: 0 auto;
+      max-width: 80rem;
+      width: 100%;
+    }
+
+    &__logo {
+      padding-top: 10vh;
+      width: 30rem;
+
+      &__elt {
+        fill: var(--tertiary);
+        opacity: 0;
+        transform: scale3d(0.9, 0.9, 1);
+        transition: opacity 0.4s ease;
+      }
+    }
+
+    &__code {
+      font-family: var(--mono-font);
+      font-size: 1.2rem;
+      height: 30rem;
+      letter-spacing: 0.3rem;
+      max-width: 60rem;
+      overflow: hidden;
+      padding: 1rem;
+      position: relative;
+      width: 100%;
+
+      &__elt {
+        bottom: 0;
+        left: 0;
+        min-height: 100%;
+        position: absolute;
+        right: 0;
+      }
+    }
+  }
+
   &__form {
     align-items: flex-start;
     display: flex;
     flex-direction: column;
     gap: 4rem;
+  }
+
+  &--animating {
+    .newcharacter__loading {
+      &__logo {
+        &__elt {
+          opacity: 1;
+          transform: scale3d(1, 1, 1);
+          transition:
+            opacity 2s ease 0.3s,
+            transform 2.3s ease;
+        }
+      }
+    }
   }
 }
