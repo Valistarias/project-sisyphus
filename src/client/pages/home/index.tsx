@@ -2,6 +2,7 @@ import React, { type FC } from 'react';
 
 // import { useTranslation } from 'react-i18next';
 import { useTranslation } from 'react-i18next';
+import { TypeAnimation } from 'react-type-animation';
 
 import { useGlobalVars } from '../../providers';
 
@@ -39,9 +40,25 @@ const Home: FC = () => {
     >
       <div className="home__intro" style={{ backgroundImage: `url(${tvBackground})` }}>
         <Avideo video="logo" className="home__intro__logo" />
-        <Atitle level={1} className="home__intro__title" />
+        <Atitle level={1} className="home__intro__title">
+          <TypeAnimation sequence={['Sisyphus']} cursor={true} speed={10} />
+        </Atitle>
         <div className="home__intro__line" />
-        <Ap className="home__intro__text" />
+        <Ap className="home__intro__text">
+          <TypeAnimation
+            sequence={[
+              3000, // Waits 3s
+              'Live again, Die again, Die better',
+              3000, // Waits 3s
+              'A Tabletop RPG set in a strange future',
+              3000, // Waits 3s
+            ]}
+            cursor={false}
+            repeat={Infinity}
+            speed={20}
+            deletionSpeed={80}
+          />
+        </Ap>
         {user?._id === undefined ? (
           <div className="home__intro__buttons">
             <Button size="large" theme="afterglow" href="/signup">

@@ -21,7 +21,7 @@ const Characters: FC = () => {
   const { createAlert, getNewId } = useSystemAlerts();
 
   const [characters, setCharacters] = useState<ICharacter[]>([]);
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
 
   const calledApi = useRef(false);
 
@@ -30,11 +30,11 @@ const Characters: FC = () => {
       api.characters
         .getAll()
         .then((sentCharacters: ICharacter[]) => {
-          setLoading(false);
+          // setLoading(false);
           setCharacters(sentCharacters);
         })
         .catch(() => {
-          setLoading(false);
+          // setLoading(false);
           const newId = getNewId();
           createAlert({
             key: newId,
@@ -101,16 +101,10 @@ const Characters: FC = () => {
 
   useEffect(() => {
     if (api !== undefined && !calledApi.current) {
-      setLoading(true);
       calledApi.current = true;
       characterReload();
     }
   }, [api, createAlert, getNewId, characterReload, t]);
-
-  // TODO: Add loading state
-  if (loading) {
-    return null;
-  }
 
   return (
     <div className="characters">
