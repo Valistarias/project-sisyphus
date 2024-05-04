@@ -55,6 +55,7 @@
     }
 
     &.button--notext {
+      min-width: 5rem;
       padding: 0.8rem;
     }
   }
@@ -74,6 +75,7 @@
     }
 
     &.button--notext {
+      min-width: 4rem;
       padding: 0.6rem;
     }
   }
@@ -92,6 +94,7 @@
     }
 
     &.button--notext {
+      min-width: 3rem;
       padding: 0.4rem;
     }
 
@@ -105,7 +108,7 @@
   &--solid,
   &--afterglow {
     background: var(--button-color-05);
-    border-radius: 0.2rem;
+    border-radius: var(--border-radius);
     box-shadow: 0 0 2rem var(--button-color-05);
 
     transition:
@@ -151,6 +154,10 @@
 
   &--afterglow {
     box-shadow: 0 0 2rem var(--primary-40);
+  }
+
+  &--notext {
+    justify-content: center;
   }
 
   &--text-only {

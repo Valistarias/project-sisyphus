@@ -1,4 +1,4 @@
-import React, { type FC } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 import { Quark, type IQuarkProps } from '../quark';
 
@@ -10,7 +10,7 @@ interface IALabel extends IQuarkProps {
   /** Is the label connected to any field */
   htmlFor?: string;
   /** The childrens of the P element */
-  children: string;
+  children: ReactNode;
 }
 
 const ALabel: FC<IALabel> = ({ className, children, htmlFor }) => (

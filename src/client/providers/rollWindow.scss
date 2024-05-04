@@ -67,7 +67,7 @@
     &__results {
       background-color: var(--primary-05);
       border: 1px solid var(--primary);
-      border-radius: 0.2rem;
+      border-radius: var(--border-radius);
       box-shadow: 0 0 2rem var(--primary-10);
       box-sizing: border-box;
       display: flex;

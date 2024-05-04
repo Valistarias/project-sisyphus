@@ -75,7 +75,7 @@ const routes = [
 const verifyToken = (
   req: IVerifyTokenRequest,
   res: Response,
-  next: () => void,
+  next?: () => void,
   mute?: boolean
 ): void => {
   const { token } = req.session;
@@ -103,7 +103,9 @@ const verifyToken = (
         expiresIn: 86400, // 24 hours
       });
       req.userId = decoded.id as string;
-      next();
+      if (next !== undefined) {
+        next();
+      }
     }
   );
 };

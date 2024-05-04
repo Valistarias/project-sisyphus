@@ -10,8 +10,8 @@ import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
 import tvBackground from '../../../assets/imgs/tvbg.gif';
 import { Aerror, Aicon, Ap, Atitle } from '../../../atoms';
-import { Button, Input, SmartSelect } from '../../../molecules';
-import { Alert } from '../../../organisms';
+import { Button, Checkbox, Input, SmartSelect } from '../../../molecules';
+import { Alert, RichTextElement } from '../../../organisms';
 
 import { introSequence } from './introSequence';
 
@@ -24,11 +24,15 @@ interface FormValues {
   campaign: string;
 }
 
+interface ToolTipValues {
+  autoDisplay: boolean;
+}
+
 const NewCharacter: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { user, campaigns } = useGlobalVars();
+  const { user, setUser, campaigns, tipTexts } = useGlobalVars();
   const navigate = useNavigate();
 
   const [displayLoading, setDisplayLoading] = useState(true);
@@ -44,6 +48,19 @@ const NewCharacter: FC = () => {
     control,
     formState: { errors },
   } = useForm<FieldValues>();
+
+  const { handleSubmit: submitTips, control: toolTipControl } = useForm<FieldValues>();
+
+  const charCreationState = useMemo(() => {
+    // Nothing defined yet
+    return 1;
+  }, []);
+
+  // TODO: Internationalization
+  const relevantTipsData = useMemo(
+    () => tipTexts.find(({ tipText }) => tipText.tipId === `tutoChar${charCreationState}`),
+    [charCreationState, tipTexts]
+  );
 
   const campaignList = useMemo(() => {
     return campaigns.map(({ _id, name, owner }) => ({
@@ -98,6 +115,26 @@ const NewCharacter: FC = () => {
       }
     },
     [api, createAlert, getNewId, navigate, setError, t]
+  );
+
+  const onSubmitTooltip: SubmitHandler<ToolTipValues> = useCallback(
+    ({ autoDisplay }) => {
+      if (api !== undefined && user !== null) {
+        setTooltipOpen(false);
+        if (autoDisplay && user.charCreationTips) {
+          api.users
+            .update({
+              id: user._id,
+              charCreationTips: false,
+            })
+            .then((res) => {
+              setUser(res);
+            })
+            .catch(() => {});
+        }
+      }
+    },
+    [api, setUser, user]
   );
 
   useEffect(() => {
@@ -174,28 +211,41 @@ const NewCharacter: FC = () => {
           </div>
         </div>
       </div>
-      <div className="newcharacter__tooltip">
-        <div className="newcharacter__tooltip__core">
-          <Atitle className="newcharacter__tooltip__core__title">Title</Atitle>
-          <Ap className="newcharacter__tooltip__core__text">
-            Bacon ipsum dolor amet bresaola pork loin venison landjaeger jerky tri-tip. Ham filet
-            mignon drumstick, flank salami burgdoggen beef boudin buffalo fatback rump. Alcatra
-            porchetta tail, landjaeger salami burgdoggen prosciutto ball tip kevin. Pancetta jowl
-            fatback tongue boudin, flank corned beef. Tri-tip ribeye drumstick turducken biltong
-            bresaola cow cupim burgdoggen pork. Prosciutto alcatra turducken cow doner andouille
-            fatback drumstick ball tip pork loin pork chop short ribs ham hock chuck turkey. Ball
-            tip porchetta tongue tail picanha.
-          </Ap>
-          <Button
-            size="large"
-            onClick={() => {
-              setTooltipOpen(false);
-            }}
-          >
-            Close
-          </Button>
+      <form className="newcharacter__tooltip" onSubmit={submitTips(onSubmitTooltip)} noValidate>
+        <div className="newcharacter__tooltip__shell">
+          <div className="newcharacter__tooltip__core">
+            <Atitle className="newcharacter__tooltip__core__title">
+              {relevantTipsData?.tipText.title}
+            </Atitle>
+            <RichTextElement
+              className="newcharacter__tooltip__core__text"
+              rawStringContent={relevantTipsData?.tipText.summary}
+              readOnly
+            />
+            <div className="newcharacter__tooltip__buttons">
+              <Button type="submit" size="large">
+                {t('newCharacter.closeTip', { ns: 'pages' })}
+              </Button>
+            </div>
+          </div>
+          {user?.charCreationTips === true ? (
+            <Checkbox
+              inputName="autoDisplay"
+              label={t('newCharacter.checkCloseTip', { ns: 'pages' })}
+              control={toolTipControl}
+            />
+          ) : null}
         </div>
-      </div>
+      </form>
+      <Button
+        size="large"
+        icon={tooltipOpen ? 'cross' : 'question'}
+        theme="afterglow"
+        className="newcharacter__tooltip-btn"
+        onClick={() => {
+          setTooltipOpen((prev) => !prev);
+        }}
+      />
       <Atitle level={1}>{t('newCharacter.title', { ns: 'pages' })}</Atitle>
       <form className="newcharacter__form" onSubmit={handleSubmit(onSubmit)} noValidate>
         {errors.root?.serverError?.message !== undefined ? (

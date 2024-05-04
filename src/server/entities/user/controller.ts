@@ -77,16 +77,8 @@ const update = (req: Request, res: Response): void => {
               authorities.push(`ROLE_${user.roles[i].name.toUpperCase()}`);
             }
           }
-          const responsePayload = {
-            id: user._id,
-            mail: user.mail,
-            roles: authorities,
-            lang: user.lang,
-            theme: user.theme,
-            scale: user.scale,
-          };
 
-          res.send({ message: 'User was updated successfully!', responsePayload });
+          res.send(user);
         })
         .catch((err: Error) => {
           res.status(500).send(gemServerError(err));

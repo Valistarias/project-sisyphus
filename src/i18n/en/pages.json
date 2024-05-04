@@ -203,6 +203,8 @@
     "title": "New Character",
     "formCTA": "Create Character",
     "skipIntro": "Skip",
+    "checkCloseTip": "Never open the tips in the character creation again (don't worry, you can still access it in the top right corner)",
+    "closeTip": "Close",
     "successCreate": "Character successfully created !"
   },
   "editCharacter": {

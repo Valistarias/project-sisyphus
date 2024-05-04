@@ -7,7 +7,7 @@
     align-items: center;
     background-color: var(--primary-05);
     border: 1px solid var(--primary);
-    border-radius: 0.2rem;
+    border-radius: var(--border-radius);
     box-shadow: 0 0 1rem var(--primary-10);
     box-sizing: border-box;
     cursor: pointer;
@@ -33,7 +33,7 @@
     &__effect {
       background-color: var(--black);
       border: 1px solid var(--primary);
-      border-radius: 0.2rem;
+      border-radius: var(--border-radius);
       box-shadow: 0 0 1rem var(--primary-10);
       padding: 2rem;
     }

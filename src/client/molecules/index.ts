@@ -1,4 +1,5 @@
 import Button from './button';
+import Checkbox from './checkbox';
 import DiceCard from './diceCard';
 import DropDownMenu from './dropDownMenu';
 import EmbedNotion from './embedNotion';
@@ -11,6 +12,7 @@ import { SmartSelect, type IGroupedOption, type ISingleValueSelect } from './sel
 
 export {
   Button,
+  Checkbox,
   DiceCard,
   DropDownMenu,
   EmbedNotion,

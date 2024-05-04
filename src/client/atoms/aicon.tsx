@@ -3,6 +3,7 @@ import React, { useMemo, type FC } from 'react';
 import AddLogo from '../assets/icons/add.svg?react';
 import ArrowLogo from '../assets/icons/arrow.svg?react';
 import CheckLogo from '../assets/icons/check.svg?react';
+import CrossLogo from '../assets/icons/cross.svg?react';
 import D10Logo from '../assets/icons/d10.svg?react';
 import D12Logo from '../assets/icons/d12.svg?react';
 import D20Logo from '../assets/icons/d20.svg?react';
@@ -14,6 +15,7 @@ import DiscordLogo from '../assets/icons/discord.svg?react';
 import EditLogo from '../assets/icons/edit.svg?react';
 import EidolonLogo from '../assets/icons/eidolon.svg?react';
 import MainLogo from '../assets/icons/logo.svg?react';
+import QuestionLogo from '../assets/icons/question.svg?react';
 import { Quark, type IQuarkProps } from '../quark';
 
 import { classTrim } from '../utils';
@@ -25,6 +27,8 @@ type typeIcons =
   | 'edit'
   | 'arrow'
   | 'check'
+  | 'cross'
+  | 'question'
   | 'delete'
   | 'discord'
   | 'main'
@@ -72,6 +76,10 @@ const Aicon: FC<IAicon> = ({ type, size = 'medium', className, onClick }) => {
         return <Quark quarkType={EidolonLogo} className={classes} />;
       case 'check':
         return <Quark quarkType={CheckLogo} className={classes} />;
+      case 'cross':
+        return <Quark quarkType={CrossLogo} className={classes} />;
+      case 'question':
+        return <Quark quarkType={QuestionLogo} className={classes} />;
       case 'd20':
         return <Quark quarkType={D20Logo} className={classes} />;
       case 'd12':

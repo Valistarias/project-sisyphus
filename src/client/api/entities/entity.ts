@@ -1,12 +1,14 @@
 import axios from 'axios';
 
+import { type IUser } from '../../types';
+
 type IBasicRequests = (payload: any) => Promise<Record<string, any>>;
 
 export default class Entity {
   url: string;
   getAll: () => Promise<Record<string, any>>;
   create: IBasicRequests;
-  update: IBasicRequests;
+  update: (payload: any) => Promise<IUser>;
   delete: IBasicRequests;
   basicPost: (target: string, payload: any) => Promise<Record<string, any>>;
 
@@ -42,7 +44,7 @@ export default class Entity {
         axios
           .post(`${this.url}/update/`, payload)
           .then((res) => {
-            resolve(res.data as Record<string, any>);
+            resolve(res.data as IUser);
           })
           .catch((err) => {
             reject(err);
