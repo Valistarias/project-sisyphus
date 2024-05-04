@@ -42,6 +42,7 @@ import {
   SkillModel,
   StatBonusModel,
   StatModel,
+  TipTextModel,
   UserModel,
   WeaponModel,
   WeaponScopeModel,
@@ -88,6 +89,7 @@ import {
   type ISkillBranch,
   type IStat,
   type IStatBonus,
+  type ITipText,
   type IUser,
   type IWeapon,
   type IWeaponScope,
@@ -136,6 +138,8 @@ interface DBType {
   Effect: mongoose.Model<IEffect>;
   /** The Stat Model */
   Stat: mongoose.Model<IStat>;
+  /** The Tip Text Model */
+  TipText: mongoose.Model<ITipText>;
   /** The Stat bonus Model */
   StatBonus: mongoose.Model<IStatBonus>;
   /** The Skill Model */
@@ -228,6 +232,7 @@ const db: DBType = {
   SkillBranch: SkillBranchModel(),
   Stat: StatModel(),
   StatBonus: StatBonusModel(),
+  TipText: TipTextModel(),
   // Items models
   Ammo: AmmoModel(),
   Bag: BagModel(),

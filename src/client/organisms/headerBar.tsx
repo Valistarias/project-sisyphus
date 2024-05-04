@@ -134,11 +134,15 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
               }}
               content={[
                 {
-                  title: t('headerBar.cat.rulebooks', { ns: 'components' }),
+                  title: t('headerBar.cat.texts', { ns: 'components' }),
                   list: [
                     {
                       href: '/admin/rulebooks',
                       text: t('adminRuleBooks.title', { ns: 'pages' }),
+                    },
+                    {
+                      href: '/admin/tiptexts',
+                      text: t('adminTipTexts.title', { ns: 'pages' }),
                     },
                   ],
                 },

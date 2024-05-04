@@ -40,6 +40,7 @@ import SkillBranches from './skillBranches';
 import Skills from './skills';
 import StatBonuses from './statBonuses';
 import Stats from './stats';
+import TipTexts from './tipTexts';
 import Users from './users';
 import Weapons from './weapons';
 import WeaponScopes from './weaponScopes';
@@ -88,6 +89,7 @@ export {
   Skills,
   StatBonuses,
   Stats,
+  TipTexts,
   Users,
   Weapons,
   WeaponScopes,

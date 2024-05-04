@@ -40,6 +40,7 @@ import {
   Skills,
   StatBonuses,
   Stats,
+  TipTexts,
   Users,
   WeaponScopes,
   WeaponStyles,
@@ -88,6 +89,7 @@ export default class Api {
   skills: Skills;
   statBonuses: StatBonuses;
   stats: Stats;
+  tipTexts: TipTexts;
   users: Users;
   weapons: Weapons;
   weaponScopes: WeaponScopes;
@@ -136,6 +138,7 @@ export default class Api {
     this.skills = new Skills();
     this.statBonuses = new StatBonuses();
     this.stats = new Stats();
+    this.tipTexts = new TipTexts();
     this.users = new Users();
     this.weapons = new Weapons();
     this.weaponScopes = new WeaponScopes();

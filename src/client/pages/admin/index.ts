@@ -32,6 +32,7 @@ import AdminEditRuleBookPage from './adminEditRuleBook';
 import AdminEditSkillPage from './adminEditSkill';
 import AdminEditSkillBranchPage from './adminEditSkillBranch';
 import AdminEditStatPage from './adminEditStat';
+import AdminEditTipTextPage from './adminEditTipText';
 import AdminEditWeaponPage from './adminEditWeapon';
 import AdminEditWeaponScopePage from './adminEditWeaponScope';
 import AdminEditWeaponStylePage from './adminEditWeaponStyle';
@@ -65,6 +66,7 @@ import AdminNewRuleBookPage from './adminNewRuleBook';
 import AdminNewSkillPage from './adminNewSkill';
 import AdminNewSkillBranchPage from './adminNewSkillBranch';
 import AdminNewStatPage from './adminNewStat';
+import AdminNewTipTextPage from './adminNewTipText';
 import AdminNewWeaponPage from './adminNewWeapon';
 import AdminNewWeaponScopePage from './adminNewWeaponScope';
 import AdminNewWeaponStylePage from './adminNewWeaponStyle';
@@ -77,6 +79,7 @@ import AdminRuleBooksPage from './adminRuleBooks';
 import AdminSkillsPage from './adminSkills';
 import AdminStatsPage from './adminStats';
 import AdminTestDiceCompPage from './adminTestDiceComp';
+import AdminTipTextsPage from './adminTipTexts';
 import AdminWeaponsPage from './adminWeapons';
 import AdminWeaponScopesPage from './adminWeaponScopes';
 import AdminWeaponStylesPage from './adminWeaponStyles';
@@ -116,6 +119,7 @@ export {
   AdminEditSkillBranchPage,
   AdminEditSkillPage,
   AdminEditStatPage,
+  AdminEditTipTextPage,
   AdminEditWeaponPage,
   AdminEditWeaponScopePage,
   AdminEditWeaponStylePage,
@@ -149,6 +153,7 @@ export {
   AdminNewSkillBranchPage,
   AdminNewSkillPage,
   AdminNewStatPage,
+  AdminNewTipTextPage,
   AdminNewWeaponPage,
   AdminNewWeaponScopePage,
   AdminNewWeaponStylePage,
@@ -162,6 +167,7 @@ export {
   AdminSkillsPage,
   AdminStatsPage,
   AdminTestDiceCompPage,
+  AdminTipTextsPage,
   AdminWeaponScopesPage,
   AdminWeaponsPage,
   AdminWeaponStylesPage,

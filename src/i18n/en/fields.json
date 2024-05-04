@@ -610,5 +610,16 @@
   "itemRarity": {
     "required": "You need to define a Rarity to this item",
     "label": "Item Rarity"
+  },
+  "nameTipText": {
+    "required": "An Tip Text Title is required",
+    "label": "Tip Text Title"
+  },
+  "tipTextSummary": {
+    "title": "Tip Text Details"
+  },
+  "tipTextFormula": {
+    "required": "An Identifier is required",
+    "label": "TipText ID (For formula purposes, never displayed as is) to identify and place it in the right place"
   }
 }

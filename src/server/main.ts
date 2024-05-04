@@ -57,6 +57,7 @@ import SkillBonusRoutes from './entities/skillBonus/routes';
 import SkillBranchRoutes from './entities/skillBranch/routes';
 import StatRoutes from './entities/stat/routes';
 import StatBonusRoutes from './entities/statBonus/routes';
+import TiptextRoutes from './entities/tipText/routes';
 import UserRoutes from './entities/user/routes';
 import WeaponRoutes from './entities/weapon/routes';
 import WeaponScopeRoutes from './entities/weaponScope/routes';
@@ -151,6 +152,7 @@ SkillBranchRoutes(apiRouter);
 SkillRoutes(apiRouter);
 StatBonusRoutes(apiRouter);
 StatRoutes(apiRouter);
+TiptextRoutes(apiRouter);
 
 // Items routes
 AmmoRoutes(apiRouter);

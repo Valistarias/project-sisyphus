@@ -362,3 +362,25 @@ export interface ICuratedNode {
   i18n: InternationalizationType;
   node: INode;
 }
+
+// TipTexts ------------------------------------
+
+export interface ITipText {
+  /** The ID of the effect */
+  _id: string;
+  /** The title of the item modifier */
+  title: string;
+  /** A summary of the item modifier */
+  summary: string;
+  /** A string used for identifying and displaying the right tip */
+  tipId: string;
+  /** When the effect was created */
+  createdAt: Date;
+  /** The internationalization */
+  i18n: InternationalizationType;
+}
+
+export interface ICuratedTipText {
+  i18n: InternationalizationType;
+  tipText: ITipText;
+}

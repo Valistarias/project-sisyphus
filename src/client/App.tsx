@@ -39,6 +39,7 @@ import {
   AdminEditSkillBranchPage,
   AdminEditSkillPage,
   AdminEditStatPage,
+  AdminEditTipTextPage,
   AdminEditWeaponPage,
   AdminEditWeaponScopePage,
   AdminEditWeaponStylePage,
@@ -73,6 +74,7 @@ import {
   AdminNewSkillBranchPage,
   AdminNewSkillPage,
   AdminNewStatPage,
+  AdminNewTipTextPage,
   AdminNewWeaponPage,
   AdminNewWeaponScopePage,
   AdminNewWeaponStylePage,
@@ -85,6 +87,7 @@ import {
   AdminSkillsPage,
   AdminStatsPage,
   AdminTestDiceCompPage,
+  AdminTipTextsPage,
   AdminWeaponScopesPage,
   AdminWeaponStylesPage,
   AdminWeaponTypesPage,
@@ -564,6 +567,18 @@ const App: FC = () => {
             {
               path: '/admin/item/:id',
               element: <AdminEditItemPage />,
+            },
+            {
+              path: '/admin/tiptexts',
+              element: <AdminTipTextsPage />,
+            },
+            {
+              path: '/admin/tiptext/new',
+              element: <AdminNewTipTextPage />,
+            },
+            {
+              path: '/admin/tiptext/:id',
+              element: <AdminEditTipTextPage />,
             },
             // {
             //   path: '/admin/skillbranch/:id',

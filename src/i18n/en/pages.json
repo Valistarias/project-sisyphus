@@ -1035,5 +1035,31 @@
       "text": "Are you sure you want to delete {{elt}} ?",
       "confirmCta": "Delete Item"
     }
+  },
+  "adminTipTexts": {
+    "title": "Tip Texts",
+    "list": "List",
+    "editTipText": "Edit"
+  },
+  "adminNewTipText": {
+    "title": "New Tip Text",
+    "i18n": "Internationalization",
+    "button": "Create Tip Text",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successCreate": "Tip Text successfully created !"
+  },
+  "adminEditTipText": {
+    "edit": "Edit Tip Text",
+    "delete": "Delete Tip Text",
+    "i18n": "Internationalization",
+    "button": "Update Tip Text Data",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successUpdate": "Tip Text successfully updated !",
+    "successDelete": "Tip Text successfully deleted !",
+    "confirmDeletion": {
+      "title": "Tip Text Deletion",
+      "text": "Are you sure you want to delete {{elt}} ? All the related branches will be lost !",
+      "confirmCta": "Delete Tip Text"
+    }
   }
 }

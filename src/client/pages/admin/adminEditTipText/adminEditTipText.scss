@@ -1,6 +1,6 @@
 @use '../../../assets/scss/mixins';
 
-.adminEditItemModifier {
+.adminEditTipText {
   @include mixins.basic-page;
 
   &__content {
@@ -62,11 +62,11 @@
   }
 
   &--int-visible {
-    .adminEditItemModifier__intl {
+    .adminEditTipText__intl {
       display: block;
     }
 
-    .adminEditItemModifier__intl-title__btn {
+    .adminEditTipText__intl-title__btn {
       transform: rotate(180deg);
     }
   }

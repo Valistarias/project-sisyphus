@@ -68,6 +68,7 @@ export {
 } from './skillBranch/model';
 export { StatModel, type HydratedIStat, type IStat } from './stat/model';
 export { StatBonusModel, type HydratedIStatBonus, type IStatBonus } from './statBonus/model';
+export { TipTextModel, type HydratedITipText, type ITipText } from './tipText/model';
 export { UserModel, type HydratedIUser, type IUser } from './user/model';
 export { WeaponModel, type HydratedIWeapon, type IWeapon } from './weapon/model';
 export {
