@@ -1,17 +1,15 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
-import i18next from 'i18next';
 import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import { TypeAnimation } from 'react-type-animation';
 
 import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
 import tvBackground from '../../../assets/imgs/tvbg.gif';
-import { Aerror, Aicon, Ap, Atitle } from '../../../atoms';
-import { Button, Checkbox, Input, SmartSelect } from '../../../molecules';
-import { Alert, RichTextElement } from '../../../organisms';
+import { Aicon, Ap, Atitle } from '../../../atoms';
+import { Button, Checkbox } from '../../../molecules';
+import { CharCreationStep1, RichTextElement } from '../../../organisms';
 
 import { introSequence } from './introSequence';
 
@@ -32,22 +30,21 @@ const NewCharacter: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { user, setUser, campaigns, tipTexts } = useGlobalVars();
-  const navigate = useNavigate();
+  const { user, setUser, tipTexts } = useGlobalVars();
 
   const [displayLoading, setDisplayLoading] = useState(true);
   const [loading, setLoading] = useState(true);
-  const [tooltipOpen, setTooltipOpen] = useState(true);
+  const [tooltipOpen, setTooltipOpen] = useState(false);
   // 0 -> not began, 1-> is animating, 2-> finished, 3-> hidden
   const [introState, setIntroState] = useState(0);
   const calledApi = useRef(false);
 
-  const {
-    handleSubmit,
-    setError,
-    control,
-    formState: { errors },
-  } = useForm<FieldValues>();
+  // const {
+  //   handleSubmit,
+  //   setError,
+  //   control,
+  //   formState: { errors },
+  // } = useForm<FieldValues>();
 
   const { handleSubmit: submitTips, control: toolTipControl } = useForm<FieldValues>();
 
@@ -62,18 +59,18 @@ const NewCharacter: FC = () => {
     [charCreationState, tipTexts]
   );
 
-  const campaignList = useMemo(() => {
-    return campaigns.map(({ _id, name, owner }) => ({
-      value: _id,
-      label: name,
-      details: i18next.format(
-        t('terms.general.createdByShort', {
-          owner: owner._id === user?._id ? t('terms.general.you') : owner.username,
-        }),
-        'capitalize'
-      ),
-    }));
-  }, [campaigns, t, user]);
+  // const campaignList = useMemo(() => {
+  //   return campaigns.map(({ _id, name, owner }) => ({
+  //     value: _id,
+  //     label: name,
+  //     details: i18next.format(
+  //       t('terms.general.createdByShort', {
+  //         owner: owner._id === user?._id ? t('terms.general.you') : owner.username,
+  //       }),
+  //       'capitalize'
+  //     ),
+  //   }));
+  // }, [campaigns, t, user]);
 
   const getData = useCallback(() => {
     setIntroState(1);
@@ -81,9 +78,14 @@ const NewCharacter: FC = () => {
       // When data finished loading
       setLoading(false);
     }
-  }, [api]);
+    if (user !== null) {
+      if (user.charCreationTips) {
+        setTooltipOpen(true);
+      }
+    }
+  }, [api, user]);
 
-  const onSubmit: SubmitHandler<FormValues> = useCallback(
+  const onSubmit = useCallback(
     ({ name, campaign }) => {
       if (api !== undefined) {
         api.characters
@@ -92,29 +94,15 @@ const NewCharacter: FC = () => {
             campaignId: campaign,
           })
           .then(({ characterId }) => {
-            const newId = getNewId();
-            createAlert({
-              key: newId,
-              dom: (
-                <Alert key={newId} id={newId} timer={5}>
-                  <Ap>{t('newCharacter.successCreate', { ns: 'pages' })}</Ap>
-                </Alert>
-              ),
-            });
-            navigate(`/character/${characterId}`);
+            console.log('character step 1 done');
           })
           .catch(({ response }) => {
             const { data } = response;
-            setError('root.serverError', {
-              type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
-              }),
-            });
+            console.error('ERROR: ', data);
           });
       }
     },
-    [api, createAlert, getNewId, navigate, setError, t]
+    [api]
   );
 
   const onSubmitTooltip: SubmitHandler<ToolTipValues> = useCallback(
@@ -137,13 +125,17 @@ const NewCharacter: FC = () => {
     [api, setUser, user]
   );
 
+  const actualFormContent = useMemo(() => {
+    return <CharCreationStep1 onCreaftionStepFinished={onSubmit} />;
+  }, [onSubmit]);
+
   useEffect(() => {
-    if (api !== undefined && !calledApi.current) {
+    if (api !== undefined && user !== null && !calledApi.current) {
       setLoading(true);
       calledApi.current = true;
       getData();
     }
-  }, [api, createAlert, getNewId, getData, t]);
+  }, [api, user, createAlert, getNewId, getData, t]);
 
   useEffect(() => {
     if (!loading && introState === 2) {
@@ -246,8 +238,7 @@ const NewCharacter: FC = () => {
           setTooltipOpen((prev) => !prev);
         }}
       />
-      <Atitle level={1}>{t('newCharacter.title', { ns: 'pages' })}</Atitle>
-      <form className="newcharacter__form" onSubmit={handleSubmit(onSubmit)} noValidate>
+      {/* <form className="newcharacter__form" onSubmit={handleSubmit(onSubmit)} noValidate>
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
@@ -266,7 +257,8 @@ const NewCharacter: FC = () => {
           className="newcharacter__campaign"
         />
         <Button type="submit">{t('newCharacter.formCTA', { ns: 'pages' })}</Button>
-      </form>
+      </form> */}
+      {actualFormContent}
     </div>
   );
 };
