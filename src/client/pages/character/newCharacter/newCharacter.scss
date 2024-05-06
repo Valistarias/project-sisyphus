@@ -4,7 +4,7 @@
   @include mixins.basic-page;
 
   &__loading {
-    background: var(--primary-dark-10);
+    background: var(--primary-20);
     background-blend-mode: lighten;
     height: 100%;
     left: 0;
@@ -21,11 +21,11 @@
 
     &__accent {
       animation: rotating 10s ease infinite;
-      background: var(--secondary-dark-10);
+      background: var(--secondary-20);
       background-blend-mode: lighten;
       height: calc(100vh + 100vw);
       left: 50%;
-      opacity: 0.8;
+      opacity: 1;
       position: absolute;
       top: 50%;
       width: calc(100vh + 100vw);
