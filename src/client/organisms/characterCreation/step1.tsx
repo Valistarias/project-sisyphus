@@ -1,10 +1,10 @@
-import React, { type FC } from 'react';
+import React, { useMemo, type FC, type ReactNode } from 'react';
 
 import { type FieldValues, type SubmitHandler } from 'react-hook-form';
 
 import { useGlobalVars } from '../../providers';
 
-import { Ap } from '../../atoms';
+import { Atitle } from '../../atoms';
 
 interface ICharacterCreationStep1 {
   /** When the user click send and the data is send perfectly */
@@ -18,13 +18,21 @@ interface FormValues {
 const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onCreaftionStepFinished }) => {
   const { cyberFrames } = useGlobalVars();
 
-  console.log('cyberFrames', cyberFrames);
+  const cyberFrameList = useMemo(() => {
+    const cFrameElts: ReactNode[] = [];
+    cyberFrames.forEach((cyberFrameElt) => {
+      const { cyberFrame } = cyberFrameElt;
 
-  return (
-    <div className="characterCreation-step1">
-      <Ap>Henlo</Ap>
-    </div>
-  );
+      cFrameElts.push(
+        <div key={cyberFrame._id} className="characterCreation-step1__cFrame">
+          <Atitle>{cyberFrame.title}</Atitle>
+        </div>
+      );
+    });
+    return cFrameElts;
+  }, [cyberFrames]);
+
+  return <div className="characterCreation-step1">{cyberFrameList}</div>;
 };
 
 export default CharacterCreationStep1;
