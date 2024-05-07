@@ -42,8 +42,6 @@ const AdminEditSkill: FC = () => {
 
   const [displayInt, setDisplayInt] = useState(false);
 
-  const [nodes, setNodes] = useState<ICuratedNode[] | null>(null);
-
   const [skillData, setSkillData] = useState<ICuratedSkill | null>(null);
 
   const [skillText, setSkillText] = useState('');
@@ -66,19 +64,14 @@ const AdminEditSkill: FC = () => {
         nodes: ICuratedNode[];
       }
     > = {};
-    branches?.forEach((branch) => {
-      tempTree[branch._id] = {
-        branch,
-        nodes: [],
+    branches?.forEach(({ skillBranch }) => {
+      tempTree[skillBranch._id] = {
+        branch: skillBranch,
+        nodes: skillBranch.nodes,
       };
     });
-    nodes?.forEach((node) => {
-      if (node.node.skillBranch !== undefined) {
-        tempTree[node.node.skillBranch as string].nodes.push(node);
-      }
-    });
     return Object.values(tempTree);
-  }, [nodes, skillData]);
+  }, [skillData]);
 
   const statSelect = useMemo<ISingleValueSelect[]>(
     () =>
@@ -291,22 +284,6 @@ const AdminEditSkill: FC = () => {
           if (i18n.fr !== undefined) {
             setSkillTextFr(i18n.fr.summary ?? '');
           }
-        })
-        .catch(() => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
-        });
-      api.nodes
-        .getAllBySkill({ skillId: id })
-        .then((curatedNodes: ICuratedNode[]) => {
-          setNodes(curatedNodes);
         })
         .catch(() => {
           const newId = getNewId();

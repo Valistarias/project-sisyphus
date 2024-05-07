@@ -18,6 +18,8 @@ import { curateStatBonusIds } from '../statBonus/controller';
 
 import { type HydratedIArmor } from './model';
 
+import { curateI18n } from '../../utils';
+
 const { Armor } = db;
 
 const findArmors = async (): Promise<HydratedIArmor[]> =>
@@ -579,13 +581,6 @@ interface CuratedIArmor {
   armor: any;
 }
 
-const curateArmor = (armor: HydratedIArmor): Record<string, any> => {
-  if (armor.i18n === null || armor.i18n === '' || armor.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(armor.i18n);
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { armorId } = req.query;
   if (armorId === undefined || typeof armorId !== 'string') {
@@ -619,7 +614,7 @@ const findSingle = (req: Request, res: Response): void => {
       armor.effects = curatedEffects;
       const sentObj = {
         armor,
-        i18n: curateArmor(armorSent),
+        i18n: curateI18n(armorSent.i18n),
       };
       res.send(sentObj);
     })
@@ -658,7 +653,7 @@ const findAll = (req: Request, res: Response): void => {
         armor.effects = curatedEffects;
         curatedArmors.push({
           armor,
-          i18n: curateArmor(armorSent),
+          i18n: curateI18n(armorSent.i18n),
         });
       });
 

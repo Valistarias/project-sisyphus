@@ -14,6 +14,7 @@ const perRequest = 10;
 const findRollsByCampaignId = async (id: string, offset: number = 0): Promise<HydratedRoll[]> =>
   await new Promise((resolve, reject) => {
     Roll.find({ campaign: id })
+      .lean()
       .sort({
         createdAt: 'desc',
       })

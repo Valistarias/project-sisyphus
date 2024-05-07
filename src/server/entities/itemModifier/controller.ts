@@ -10,6 +10,8 @@ import {
 
 import { type HydratedIItemModifier } from './model';
 
+import { curateI18n } from '../../utils';
+
 const { ItemModifier } = db;
 
 const findItemModifiers = async (): Promise<HydratedIItemModifier[]> =>
@@ -206,13 +208,6 @@ interface CuratedIItemModifier {
   itemModifier: HydratedIItemModifier;
 }
 
-const curateItemModifier = (itemModifier: HydratedIItemModifier): Record<string, any> => {
-  if (itemModifier.i18n === null || itemModifier.i18n === '' || itemModifier.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(itemModifier.i18n);
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { itemModifierId } = req.query;
   if (itemModifierId === undefined || typeof itemModifierId !== 'string') {
@@ -223,7 +218,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((itemModifier) => {
       const sentObj = {
         itemModifier,
-        i18n: curateItemModifier(itemModifier),
+        i18n: curateI18n(itemModifier.i18n),
       };
       res.send(sentObj);
     })
@@ -240,7 +235,7 @@ const findAll = (req: Request, res: Response): void => {
       itemModifiers.forEach((itemModifier) => {
         curatedItemModifiers.push({
           itemModifier,
-          i18n: curateItemModifier(itemModifier),
+          i18n: curateI18n(itemModifier.i18n),
         });
       });
 

@@ -1,6 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type ICyberFrame } from '../index';
+import { type ICyberFrame, type INode } from '../index';
 
 interface ICyberFrameBranch {
   /** The title of the cyberframe branch */
@@ -18,20 +18,35 @@ interface ICyberFrameBranch {
 interface HydratedICyberFrameBranch
   extends Omit<HydratedDocument<ICyberFrameBranch>, 'cyberFrame'> {
   cyberFrame: ICyberFrame;
+  nodes?: INode[];
 }
 
-const cyberFrameBranchSchema = new Schema<ICyberFrameBranch>({
-  title: String,
-  summary: String,
-  i18n: String,
-  cyberFrame: {
-    type: Schema.Types.ObjectId,
-    ref: 'CyberFrame',
+const cyberFrameBranchSchema = new Schema<ICyberFrameBranch>(
+  {
+    title: String,
+    summary: String,
+    i18n: String,
+    cyberFrame: {
+      type: Schema.Types.ObjectId,
+      ref: 'CyberFrame',
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+);
+
+// Virtuals -------------------------
+
+cyberFrameBranchSchema.virtual('nodes', {
+  ref: 'Node',
+  localField: '_id',
+  foreignField: 'cyberFrameBranch',
 });
 
 const CyberFrameBranchModel = (): Model<ICyberFrameBranch> =>

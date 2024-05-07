@@ -8,8 +8,11 @@ import {
   gemServerError,
 } from '../../utils/globalErrorMessage';
 import { type ICyberFrame } from '../index';
+import { type CuratedINode } from '../node/controller';
 
 import { type HydratedICyberFrameBranch } from './model';
+
+import { curateI18n } from '../../utils';
 
 const { CyberFrameBranch } = db;
 
@@ -222,23 +225,14 @@ const deleteCyberFrameBranchesByCyberFrameId = async (cyberFrameId: string): Pro
       });
   });
 
-interface CuratedICyberFrameBranch {
-  i18n: Record<string, any> | Record<string, unknown>;
-  cyberFrameBranch: HydratedICyberFrameBranch;
+interface CuratedICyberFrameBranch extends Omit<HydratedICyberFrameBranch, 'nodes'> {
+  nodes?: CuratedINode[];
 }
 
-const curateCyberFrameBranch = (
-  cyberFrameBranch: HydratedICyberFrameBranch
-): Record<string, any> => {
-  if (
-    cyberFrameBranch.i18n === null ||
-    cyberFrameBranch.i18n === '' ||
-    cyberFrameBranch.i18n === undefined
-  ) {
-    return {};
-  }
-  return JSON.parse(cyberFrameBranch.i18n);
-};
+interface CuratedIntICyberFrameBranch {
+  i18n: Record<string, any> | Record<string, unknown>;
+  cyberFrameBranch: CuratedICyberFrameBranch;
+}
 
 const findSingle = (req: Request, res: Response): void => {
   const { cyberFrameBranchId } = req.query;
@@ -250,7 +244,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((cyberFrameBranch) => {
       const sentObj = {
         cyberFrameBranch,
-        i18n: curateCyberFrameBranch(cyberFrameBranch),
+        i18n: curateI18n(cyberFrameBranch.i18n),
       };
       res.send(sentObj);
     })
@@ -261,13 +255,23 @@ const findSingle = (req: Request, res: Response): void => {
 
 const findAll = (req: Request, res: Response): void => {
   findCyberFrameBranches()
-    .then((cyberFrameBranchs) => {
-      const curatedCyberFrameBranches: CuratedICyberFrameBranch[] = [];
+    .then((cyberFrameBranches) => {
+      const curatedCyberFrameBranches: CuratedIntICyberFrameBranch[] = [];
 
-      cyberFrameBranchs.forEach((cyberFrameBranch) => {
+      cyberFrameBranches.forEach((cyberFrameBranch) => {
+        const cleanCyberFrameBranch = {
+          ...cyberFrameBranch,
+          nodes:
+            cyberFrameBranch.nodes !== undefined
+              ? cyberFrameBranch.nodes.map((node) => ({
+                  node,
+                  i18n: curateI18n(node.i18n),
+                }))
+              : [],
+        };
         curatedCyberFrameBranches.push({
-          cyberFrameBranch,
-          i18n: curateCyberFrameBranch(cyberFrameBranch),
+          cyberFrameBranch: cleanCyberFrameBranch,
+          i18n: curateI18n(cleanCyberFrameBranch.i18n),
         });
       });
 
@@ -283,13 +287,23 @@ const findAllByFrame = (req: Request, res: Response): void => {
     return;
   }
   findCyberFrameBranchesByFrame(cyberFrameId)
-    .then((cyberFrameBranchs) => {
-      const curatedCyberFrameBranches: CuratedICyberFrameBranch[] = [];
+    .then((cyberFrameBranches) => {
+      const curatedCyberFrameBranches: CuratedIntICyberFrameBranch[] = [];
 
-      cyberFrameBranchs.forEach((cyberFrameBranch) => {
+      cyberFrameBranches.forEach((cyberFrameBranch) => {
+        const cleanCyberFrameBranch = {
+          ...cyberFrameBranch,
+          nodes:
+            cyberFrameBranch.nodes !== undefined
+              ? cyberFrameBranch.nodes.map((node) => ({
+                  node,
+                  i18n: curateI18n(node.i18n),
+                }))
+              : [],
+        };
         curatedCyberFrameBranches.push({
-          cyberFrameBranch,
-          i18n: curateCyberFrameBranch(cyberFrameBranch),
+          cyberFrameBranch: cleanCyberFrameBranch,
+          i18n: curateI18n(cleanCyberFrameBranch.i18n),
         });
       });
 
@@ -309,4 +323,5 @@ export {
   findCyberFrameBranchesByFrame,
   findSingle,
   update,
+  type CuratedIntICyberFrameBranch,
 };

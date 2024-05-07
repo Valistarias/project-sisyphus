@@ -1,24 +1,42 @@
 import { type Request, type Response } from 'express';
+import { type FlattenMaps, type ObjectId } from 'mongoose';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import {
   createGeneralForCyberFrameId,
   deleteCyberFrameBranchesByCyberFrameId,
+  type CuratedIntICyberFrameBranch,
 } from '../cyberFrameBranch/controller';
 import { type HydratedICyberFrameBranch, type IRuleBook } from '../index';
 
 import { type HydratedICyberFrame } from './model';
+
+import { curateI18n } from '../../utils';
 
 const { CyberFrame } = db;
 
 const findCyberFrames = async (): Promise<HydratedICyberFrame[]> =>
   await new Promise((resolve, reject) => {
     CyberFrame.find()
+      .lean()
       .populate<{ ruleBook: IRuleBook }>('ruleBook')
       .populate<{ branches: HydratedICyberFrameBranch[] }>({
         path: 'branches',
         select: '_id title cyberFrame summary i18n',
+        populate: {
+          path: 'nodes',
+          select:
+            '_id title summary icon i18n rank quote cyberFrameBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses',
+          populate: [
+            'effects',
+            'actions',
+            'skillBonuses',
+            'skillBonuses',
+            'statBonuses',
+            'charParamBonuses',
+          ],
+        },
       })
       .then(async (res) => {
         if (res === undefined || res === null) {
@@ -39,6 +57,19 @@ const findCyberFrameById = async (id: string): Promise<HydratedICyberFrame> =>
       .populate<{ branches: HydratedICyberFrameBranch[] }>({
         path: 'branches',
         select: '_id title cyberFrame summary i18n',
+        populate: {
+          path: 'nodes',
+          select:
+            '_id title summary icon i18n rank quote cyberFrameBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses',
+          populate: [
+            'effects',
+            'actions',
+            'skillBonuses',
+            'skillBonuses',
+            'statBonuses',
+            'charParamBonuses',
+          ],
+        },
       })
       .then(async (res) => {
         if (res === undefined || res === null) {
@@ -163,17 +194,14 @@ const deleteCyberFrame = (req: Request, res: Response): void => {
     });
 };
 
-interface CuratedICyberFrame {
-  i18n: Record<string, any> | Record<string, unknown>;
-  cyberFrame: HydratedICyberFrame;
+interface CuratedICyberFrame extends Omit<HydratedICyberFrame, 'branches'> {
+  branches: CuratedIntICyberFrameBranch[];
 }
 
-const curateCyberFrame = (cyberFrame: HydratedICyberFrame): Record<string, any> => {
-  if (cyberFrame.i18n === null || cyberFrame.i18n === '' || cyberFrame.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(cyberFrame.i18n);
-};
+interface CuratedIntICyberFrame {
+  i18n: Record<string, any> | Record<string, unknown>;
+  cyberFrame: CuratedICyberFrame;
+}
 
 const findSingle = (req: Request, res: Response): void => {
   const { cyberFrameId } = req.query;
@@ -182,10 +210,32 @@ const findSingle = (req: Request, res: Response): void => {
     return;
   }
   findCyberFrameById(cyberFrameId)
-    .then((cyberFrame) => {
+    .then((cyberFrameSent) => {
+      const cyberFrame: FlattenMaps<HydratedICyberFrame & { _id: ObjectId }> =
+        cyberFrameSent.toJSON();
+      const cleanCyberFrame = {
+        ...cyberFrame,
+        branches: cyberFrame.branches.map((cyberFrameBranch) => {
+          const cleanCyberFrameBranch = {
+            ...cyberFrameBranch,
+            nodes:
+              cyberFrameBranch.nodes !== undefined
+                ? cyberFrameBranch.nodes.map((node) => ({
+                    node,
+                    i18n: curateI18n(node.i18n),
+                  }))
+                : [],
+          };
+          return {
+            cyberFrameBranch: cleanCyberFrameBranch,
+            i18n: curateI18n(cleanCyberFrameBranch.i18n),
+          };
+        }),
+      };
+
       const sentObj = {
-        cyberFrame,
-        i18n: curateCyberFrame(cyberFrame),
+        cyberFrame: cleanCyberFrame,
+        i18n: curateI18n(cyberFrame.i18n),
       };
       res.send(sentObj);
     })
@@ -197,12 +247,32 @@ const findSingle = (req: Request, res: Response): void => {
 const findAll = (req: Request, res: Response): void => {
   findCyberFrames()
     .then((cyberFrames) => {
-      const curatedCyberFrames: CuratedICyberFrame[] = [];
+      const curatedCyberFrames: CuratedIntICyberFrame[] = [];
 
       cyberFrames.forEach((cyberFrame) => {
+        const cleanCyberFrame = {
+          ...cyberFrame,
+          branches: cyberFrame.branches.map((cyberFrameBranch) => {
+            const cleanCyberFrameBranch = {
+              ...cyberFrameBranch,
+              nodes:
+                cyberFrameBranch.nodes !== undefined
+                  ? cyberFrameBranch.nodes.map((node) => ({
+                      node,
+                      i18n: curateI18n(node.i18n),
+                    }))
+                  : [],
+            };
+            return {
+              cyberFrameBranch: cleanCyberFrameBranch,
+              i18n: curateI18n(cleanCyberFrameBranch.i18n),
+            };
+          }),
+        };
+
         curatedCyberFrames.push({
-          cyberFrame,
-          i18n: curateCyberFrame(cyberFrame),
+          cyberFrame: cleanCyberFrame,
+          i18n: curateI18n(cyberFrame.i18n),
         });
       });
 

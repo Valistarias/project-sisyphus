@@ -1,4 +1,5 @@
 import { type Request, type Response } from 'express';
+import { type FlattenMaps, type ObjectId } from 'mongoose';
 
 import db from '../../models';
 import {
@@ -9,20 +10,40 @@ import {
 } from '../../utils/globalErrorMessage';
 import { checkDuplicateCharParamFormulaId } from '../charParam/controller';
 import { type HydratedISkillBranch, type IStat } from '../index';
-import { createGeneralForSkillId, deleteSkillBranchesBySkillId } from '../skillBranch/controller';
+import {
+  createGeneralForSkillId,
+  deleteSkillBranchesBySkillId,
+  type CuratedIntISkillBranch,
+} from '../skillBranch/controller';
 import { checkDuplicateStatFormulaId } from '../stat/controller';
 
 import { type HydratedISkill } from './model';
+
+import { curateI18n } from '../../utils';
 
 const { Skill } = db;
 
 const findSkills = async (): Promise<HydratedISkill[]> =>
   await new Promise((resolve, reject) => {
     Skill.find()
+      .lean()
       .populate<{ stat: IStat }>('stat')
       .populate<{ branches: HydratedISkillBranch[] }>({
         path: 'branches',
         select: '_id title skill summary i18n',
+        populate: {
+          path: 'nodes',
+          select:
+            '_id title summary icon i18n rank quote skillBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses',
+          populate: [
+            'effects',
+            'actions',
+            'skillBonuses',
+            'skillBonuses',
+            'statBonuses',
+            'charParamBonuses',
+          ],
+        },
       })
       .then(async (res) => {
         if (res === undefined || res === null) {
@@ -43,6 +64,19 @@ const findSkillById = async (id: string): Promise<HydratedISkill> =>
       .populate<{ branches: HydratedISkillBranch[] }>({
         path: 'branches',
         select: '_id title skill summary i18n',
+        populate: {
+          path: 'nodes',
+          select:
+            '_id title summary icon i18n rank quote skillBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses',
+          populate: [
+            'effects',
+            'actions',
+            'skillBonuses',
+            'skillBonuses',
+            'statBonuses',
+            'charParamBonuses',
+          ],
+        },
       })
       .then(async (res) => {
         if (res === undefined || res === null) {
@@ -253,17 +287,14 @@ const deleteSkill = (req: Request, res: Response): void => {
     });
 };
 
-interface CuratedISkill {
-  i18n: Record<string, any> | Record<string, unknown>;
-  skill: HydratedISkill;
+interface CuratedISkill extends Omit<HydratedISkill, 'branches'> {
+  branches: CuratedIntISkillBranch[];
 }
 
-const curateSkill = (skill: HydratedISkill): Record<string, any> => {
-  if (skill.i18n === null || skill.i18n === '' || skill.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(skill.i18n);
-};
+interface CuratedIntISkill {
+  i18n: Record<string, any> | Record<string, unknown>;
+  skill: CuratedISkill;
+}
 
 const findSingle = (req: Request, res: Response): void => {
   const { skillId } = req.query;
@@ -272,10 +303,31 @@ const findSingle = (req: Request, res: Response): void => {
     return;
   }
   findSkillById(skillId)
-    .then((skill) => {
+    .then((skillSent) => {
+      const skill: FlattenMaps<HydratedISkill & { _id: ObjectId }> = skillSent.toJSON();
+      const cleanSkill = {
+        ...skill,
+        branches: skill.branches.map((skillBranch) => {
+          const cleanSkillBranch = {
+            ...skillBranch,
+            nodes:
+              skillBranch.nodes !== undefined
+                ? skillBranch.nodes.map((node) => ({
+                    node,
+                    i18n: curateI18n(node.i18n),
+                  }))
+                : [],
+          };
+          return {
+            skillBranch: cleanSkillBranch,
+            i18n: curateI18n(cleanSkillBranch.i18n),
+          };
+        }),
+      };
+
       const sentObj = {
-        skill,
-        i18n: curateSkill(skill),
+        skill: cleanSkill,
+        i18n: curateI18n(skill.i18n),
       };
       res.send(sentObj);
     })
@@ -287,12 +339,32 @@ const findSingle = (req: Request, res: Response): void => {
 const findAll = (req: Request, res: Response): void => {
   findSkills()
     .then((skills) => {
-      const curatedSkills: CuratedISkill[] = [];
+      const curatedSkills: CuratedIntISkill[] = [];
 
       skills.forEach((skill) => {
+        const cleanSkill = {
+          ...skill,
+          branches: skill.branches.map((skillBranch) => {
+            const cleanSkillBranch = {
+              ...skillBranch,
+              nodes:
+                skillBranch.nodes !== undefined
+                  ? skillBranch.nodes.map((node) => ({
+                      node,
+                      i18n: curateI18n(node.i18n),
+                    }))
+                  : [],
+            };
+            return {
+              skillBranch: cleanSkillBranch,
+              i18n: curateI18n(cleanSkillBranch.i18n),
+            };
+          }),
+        };
+
         curatedSkills.push({
-          skill,
-          i18n: curateSkill(skill),
+          skill: cleanSkill,
+          i18n: curateI18n(skill.i18n),
         });
       });
 

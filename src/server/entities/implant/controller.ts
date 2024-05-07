@@ -18,6 +18,8 @@ import { curateStatBonusIds } from '../statBonus/controller';
 
 import { type HydratedIImplant } from './model';
 
+import { curateI18n } from '../../utils';
+
 const { Implant } = db;
 
 const findImplants = async (): Promise<HydratedIImplant[]> =>
@@ -579,13 +581,6 @@ interface CuratedIImplant {
   implant: any;
 }
 
-const curateImplant = (implant: HydratedIImplant): Record<string, any> => {
-  if (implant.i18n === null || implant.i18n === '' || implant.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(implant.i18n);
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { implantId } = req.query;
   if (implantId === undefined || typeof implantId !== 'string') {
@@ -619,7 +614,7 @@ const findSingle = (req: Request, res: Response): void => {
       implant.effects = curatedEffects;
       const sentObj = {
         implant,
-        i18n: curateImplant(implantSent),
+        i18n: curateI18n(implantSent.i18n),
       };
       res.send(sentObj);
     })
@@ -658,7 +653,7 @@ const findAll = (req: Request, res: Response): void => {
         implant.effects = curatedEffects;
         curatedImplants.push({
           implant,
-          i18n: curateImplant(implantSent),
+          i18n: curateI18n(implantSent.i18n),
         });
       });
 

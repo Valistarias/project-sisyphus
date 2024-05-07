@@ -8,6 +8,8 @@ import { type IEnnemyAttack } from '../index';
 
 import { type BasicHydratedINPC, type HydratedINPC } from './model';
 
+import { curateI18n } from '../../utils';
+
 const { NPC } = db;
 
 const findNPCs = async (): Promise<HydratedINPC[]> =>
@@ -261,13 +263,6 @@ interface CuratedINPC {
   nPC: any;
 }
 
-const curateNPC = (nPC: HydratedINPC | BasicHydratedINPC): Record<string, any> => {
-  if (nPC.i18n === null || nPC.i18n === '' || nPC.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(nPC.i18n);
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { nPCId } = req.query;
   if (nPCId === undefined || typeof nPCId !== 'string') {
@@ -290,7 +285,7 @@ const findSingle = (req: Request, res: Response): void => {
       nPC.attacks = curatedActions;
       res.send({
         nPC,
-        i18n: curateNPC(nPCSent),
+        i18n: curateI18n(nPCSent.i18n),
       });
     })
     .catch((err: Error) => {
@@ -318,7 +313,7 @@ const findAll = (req: Request, res: Response): void => {
         nPC.attacks = curatedActions;
         curatedNPCs.push({
           nPC,
-          i18n: curateNPC(nPCSent),
+          i18n: curateI18n(nPCSent.i18n),
         });
       });
 
@@ -336,7 +331,7 @@ const findAllBasic = (req: Request, res: Response): void => {
         const nPC = nPCSent.toJSON();
         curatedNPCs.push({
           nPC,
-          i18n: curateNPC(nPCSent),
+          i18n: curateI18n(nPCSent.i18n),
         });
       });
 

@@ -10,6 +10,8 @@ import {
 
 import { type HydratedIBodyPart } from './model';
 
+import { curateI18n } from '../../utils';
+
 const { BodyPart } = db;
 
 const findBodyParts = async (): Promise<HydratedIBodyPart[]> =>
@@ -207,13 +209,6 @@ interface CuratedIBodyPart {
   bodyPart: HydratedIBodyPart;
 }
 
-const curateBodyPart = (bodyPart: HydratedIBodyPart): Record<string, any> => {
-  if (bodyPart.i18n === null || bodyPart.i18n === '' || bodyPart.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(bodyPart.i18n);
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { bodyPartId } = req.query;
   if (bodyPartId === undefined || typeof bodyPartId !== 'string') {
@@ -224,7 +219,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((bodyPart) => {
       const sentObj = {
         bodyPart,
-        i18n: curateBodyPart(bodyPart),
+        i18n: curateI18n(bodyPart.i18n),
       };
       res.send(sentObj);
     })
@@ -241,7 +236,7 @@ const findAll = (req: Request, res: Response): void => {
       bodyParts.forEach((bodyPart) => {
         curatedBodyParts.push({
           bodyPart,
-          i18n: curateBodyPart(bodyPart),
+          i18n: curateI18n(bodyPart.i18n),
         });
       });
 

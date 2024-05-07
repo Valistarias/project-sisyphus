@@ -5,6 +5,8 @@ import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/global
 
 import { type HydratedIArmorType } from './model';
 
+import { curateI18n } from '../../utils';
+
 const { ArmorType } = db;
 
 const findArmorTypes = async (): Promise<HydratedIArmorType[]> =>
@@ -137,13 +139,6 @@ interface CuratedIArmorType {
   armorType: HydratedIArmorType;
 }
 
-const curateArmorType = (armorType: HydratedIArmorType): Record<string, any> => {
-  if (armorType.i18n === null || armorType.i18n === '' || armorType.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(armorType.i18n);
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { armorTypeId } = req.query;
   if (armorTypeId === undefined || typeof armorTypeId !== 'string') {
@@ -154,7 +149,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((armorType) => {
       const sentObj = {
         armorType,
-        i18n: curateArmorType(armorType),
+        i18n: curateI18n(armorType.i18n),
       };
       res.send(sentObj);
     })
@@ -171,7 +166,7 @@ const findAll = (req: Request, res: Response): void => {
       armorTypes.forEach((armorType) => {
         curatedArmorTypes.push({
           armorType,
-          i18n: curateArmorType(armorType),
+          i18n: curateI18n(armorType.i18n),
         });
       });
 

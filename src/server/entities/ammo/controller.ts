@@ -5,6 +5,8 @@ import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/global
 
 import { type HydratedIAmmo } from './model';
 
+import { curateI18n } from '../../utils';
+
 const { Ammo } = db;
 
 const findAmmos = async (): Promise<HydratedIAmmo[]> =>
@@ -203,13 +205,6 @@ interface CuratedIAmmo {
   ammo: any;
 }
 
-const curateAmmo = (ammo: HydratedIAmmo): Record<string, any> => {
-  if (ammo.i18n === null || ammo.i18n === '' || ammo.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(ammo.i18n);
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { ammoId } = req.query;
   if (ammoId === undefined || typeof ammoId !== 'string') {
@@ -221,7 +216,7 @@ const findSingle = (req: Request, res: Response): void => {
       const ammo = ammoSent.toJSON();
       const sentObj = {
         ammo,
-        i18n: curateAmmo(ammoSent),
+        i18n: curateI18n(ammoSent.i18n),
       };
       res.send(sentObj);
     })
@@ -238,7 +233,7 @@ const findAll = (req: Request, res: Response): void => {
         const ammo = ammoSent.toJSON();
         curatedAmmos.push({
           ammo,
-          i18n: curateAmmo(ammoSent),
+          i18n: curateI18n(ammoSent.i18n),
         });
       });
 

@@ -41,8 +41,6 @@ const AdminEditCyberFrame: FC = () => {
 
   const [displayInt, setDisplayInt] = useState(false);
 
-  const [nodes, setNodes] = useState<ICuratedNode[] | null>(null);
-
   const [cyberFrameData, setCyberFrameData] = useState<ICuratedCyberFrame | null>(null);
 
   const [cyberFrameText, setCyberFrameText] = useState('');
@@ -65,21 +63,14 @@ const AdminEditCyberFrame: FC = () => {
         nodes: ICuratedNode[];
       }
     > = {};
-    branches?.forEach((branch) => {
-      tempTree[branch._id] = {
-        branch,
-        nodes: [],
+    branches?.forEach(({ cyberFrameBranch }) => {
+      tempTree[cyberFrameBranch._id] = {
+        branch: cyberFrameBranch,
+        nodes: cyberFrameBranch.nodes,
       };
     });
-    nodes?.forEach((node) => {
-      if (node.node.skillBranch !== undefined) {
-        tempTree[node.node.skillBranch as string].nodes.push(node);
-      } else if (node.node.cyberFrameBranch !== undefined) {
-        tempTree[node.node.cyberFrameBranch as string].nodes.push(node);
-      }
-    });
     return Object.values(tempTree);
-  }, [nodes, cyberFrameData]);
+  }, [cyberFrameData]);
 
   const ruleBookSelect = useMemo(() => {
     return ruleBooks.map(({ ruleBook }) => ({
@@ -292,22 +283,6 @@ const AdminEditCyberFrame: FC = () => {
           if (i18n.fr !== undefined) {
             setCyberFrameTextFr(i18n.fr.summary ?? '');
           }
-        })
-        .catch(() => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
-        });
-      api.nodes
-        .getAllByCyberFrame({ cyberFrameId: id })
-        .then((curatedNodes: ICuratedNode[]) => {
-          setNodes(curatedNodes);
         })
         .catch(() => {
           const newId = getNewId();

@@ -22,6 +22,8 @@ import { curateStatBonusIds } from '../statBonus/controller';
 
 import { type HydratedINode } from './model';
 
+import { curateI18n } from '../../utils';
+
 const { Node } = db;
 
 interface findAllPayload {
@@ -594,13 +596,6 @@ interface CuratedINode {
   node: any;
 }
 
-const curateNode = (node: HydratedINode): Record<string, any> => {
-  if (node.i18n === null || node.i18n === '' || node.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(node.i18n);
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { nodeId } = req.query;
   if (nodeId === undefined || typeof nodeId !== 'string') {
@@ -634,7 +629,7 @@ const findSingle = (req: Request, res: Response): void => {
       node.effects = curatedEffects;
       const sentObj = {
         node,
-        i18n: curateNode(nodeSent),
+        i18n: curateI18n(nodeSent.i18n),
       };
       res.send(sentObj);
     })
@@ -673,7 +668,7 @@ const findAll = (req: Request, res: Response): void => {
         node.effects = curatedEffects;
         curatedNodes.push({
           node,
-          i18n: curateNode(nodeSent),
+          i18n: curateI18n(nodeSent.i18n),
         });
       });
 
@@ -721,7 +716,7 @@ const findAllByBranch = (req: Request, res: Response): void => {
         node.effects = curatedEffects;
         curatedNodes.push({
           node,
-          i18n: curateNode(nodeSent),
+          i18n: curateI18n(nodeSent.i18n),
         });
       });
 
@@ -775,7 +770,7 @@ const findAndCurateNodesByParent = async ({
           node.effects = curatedEffects;
           curatedNodes.push({
             node,
-            i18n: curateNode(nodeSent),
+            i18n: curateI18n(nodeSent.i18n),
           });
         });
         resolve(curatedNodes);
@@ -833,4 +828,5 @@ export {
   findNodeById,
   findSingle,
   update,
+  type CuratedINode,
 };

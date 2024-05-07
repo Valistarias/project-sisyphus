@@ -5,6 +5,8 @@ import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/global
 
 import { type HydratedIBag } from './model';
 
+import { curateI18n } from '../../utils';
+
 const { Bag } = db;
 
 const findBags = async (): Promise<HydratedIBag[]> =>
@@ -198,13 +200,6 @@ interface CuratedIBag {
   bag: any;
 }
 
-const curateBag = (bag: HydratedIBag): Record<string, any> => {
-  if (bag.i18n === null || bag.i18n === '' || bag.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(bag.i18n);
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { bagId } = req.query;
   if (bagId === undefined || typeof bagId !== 'string') {
@@ -216,7 +211,7 @@ const findSingle = (req: Request, res: Response): void => {
       const bag = bagSent.toJSON();
       const sentObj = {
         bag,
-        i18n: curateBag(bagSent),
+        i18n: curateI18n(bagSent.i18n),
       };
       res.send(sentObj);
     })
@@ -233,7 +228,7 @@ const findAll = (req: Request, res: Response): void => {
         const bag = bagSent.toJSON();
         curatedBags.push({
           bag,
-          i18n: curateBag(bagSent),
+          i18n: curateI18n(bagSent.i18n),
         });
       });
 

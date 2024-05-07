@@ -6,6 +6,8 @@ import { type ISkill } from '../skill/model';
 
 import { type HydratedIWeaponStyle } from './model';
 
+import { curateI18n } from '../../utils';
+
 const { WeaponStyle } = db;
 
 const findWeaponStyles = async (): Promise<HydratedIWeaponStyle[]> =>
@@ -144,13 +146,6 @@ interface CuratedIWeaponStyle {
   weaponStyle: HydratedIWeaponStyle;
 }
 
-const curateWeaponStyle = (weaponStyle: HydratedIWeaponStyle): Record<string, any> => {
-  if (weaponStyle.i18n === null || weaponStyle.i18n === '' || weaponStyle.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(weaponStyle.i18n);
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { weaponStyleId } = req.query;
   if (weaponStyleId === undefined || typeof weaponStyleId !== 'string') {
@@ -161,7 +156,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((weaponStyle) => {
       const sentObj = {
         weaponStyle,
-        i18n: curateWeaponStyle(weaponStyle),
+        i18n: curateI18n(weaponStyle.i18n),
       };
       res.send(sentObj);
     })
@@ -178,7 +173,7 @@ const findAll = (req: Request, res: Response): void => {
       weaponStyles.forEach((weaponStyle) => {
         curatedWeaponStyles.push({
           weaponStyle,
-          i18n: curateWeaponStyle(weaponStyle),
+          i18n: curateI18n(weaponStyle.i18n),
         });
       });
 

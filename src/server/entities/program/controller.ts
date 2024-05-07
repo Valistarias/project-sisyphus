@@ -9,6 +9,8 @@ import { type INPC } from '../index';
 
 import { type HydratedIProgram, type IProgram } from './model';
 
+import { curateI18n } from '../../utils';
+
 const { Program } = db;
 
 const findPrograms = async (): Promise<HydratedIProgram[]> =>
@@ -305,13 +307,6 @@ interface CuratedIProgram {
   program: InternationalizedProgram;
 }
 
-const curateProgram = (program: HydratedIProgram): Record<string, any> => {
-  if (program.i18n === null || program.i18n === '' || program.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(program.i18n);
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { programId } = req.query;
   if (programId === undefined || typeof programId !== 'string') {
@@ -329,7 +324,7 @@ const findSingle = (req: Request, res: Response): void => {
       }
       const sentObj = {
         program,
-        i18n: curateProgram(programSent),
+        i18n: curateI18n(programSent.i18n),
       };
       res.send(sentObj);
     })
@@ -352,7 +347,7 @@ const findAll = (req: Request, res: Response): void => {
         }
         curatedPrograms.push({
           program,
-          i18n: curateProgram(programSent),
+          i18n: curateI18n(programSent.i18n),
         });
       });
 

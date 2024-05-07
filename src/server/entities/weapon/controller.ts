@@ -11,6 +11,8 @@ import { type IAction, type IEffect } from '../index';
 
 import { type HydratedIWeapon } from './model';
 
+import { curateI18n } from '../../utils';
+
 const { Weapon } = db;
 
 interface findAllPayload {
@@ -410,13 +412,6 @@ interface CuratedIWeapon {
   weapon: any;
 }
 
-const curateWeapon = (weapon: HydratedIWeapon): Record<string, any> => {
-  if (weapon.i18n === null || weapon.i18n === '' || weapon.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(weapon.i18n);
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { weaponId } = req.query;
   if (weaponId === undefined || typeof weaponId !== 'string') {
@@ -450,7 +445,7 @@ const findSingle = (req: Request, res: Response): void => {
       weapon.effects = curatedEffects;
       const sentObj = {
         weapon,
-        i18n: curateWeapon(weaponSent),
+        i18n: curateI18n(weaponSent.i18n),
       };
       res.send(sentObj);
     })
@@ -489,7 +484,7 @@ const findAll = (req: Request, res: Response): void => {
         weapon.effects = curatedEffects;
         curatedWeapons.push({
           weapon,
-          i18n: curateWeapon(weaponSent),
+          i18n: curateI18n(weaponSent.i18n),
         });
       });
 
@@ -537,7 +532,7 @@ const findAllByBranch = (req: Request, res: Response): void => {
         weapon.effects = curatedEffects;
         curatedWeapons.push({
           weapon,
-          i18n: curateWeapon(weaponSent),
+          i18n: curateI18n(weaponSent.i18n),
         });
       });
 

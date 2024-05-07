@@ -9,6 +9,8 @@ import { type HydratedIChapter } from './model';
 
 import type { IChapterType, IPage, IRuleBook } from '../index';
 
+import { curateI18n } from '../../utils';
+
 const { Chapter, Page } = db;
 
 const findChapters = async (): Promise<HydratedIChapter[]> =>
@@ -259,13 +261,6 @@ interface CuratedIChapter {
   chapter: HydratedIChapter;
 }
 
-const curateChapter = (chapter: HydratedIChapter): Record<string, any> => {
-  if (chapter.i18n === null || chapter.i18n === '' || chapter.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(chapter.i18n);
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { chapterId } = req.query;
   if (chapterId === undefined || typeof chapterId !== 'string') {
@@ -281,7 +276,7 @@ const findSingle = (req: Request, res: Response): void => {
           } else {
             const sentObj = {
               chapter,
-              i18n: curateChapter(chapter),
+              i18n: curateI18n(chapter.i18n),
             };
             res.send(sentObj);
           }
@@ -301,7 +296,7 @@ const findAll = (req: Request, res: Response): void => {
       chapters.forEach((chapter) => {
         curatedChapters.push({
           chapter,
-          i18n: curateChapter(chapter),
+          i18n: curateI18n(chapter.i18n),
         });
       });
 
@@ -323,7 +318,7 @@ const findAllByRuleBook = (req: Request, res: Response): void => {
       chapters.forEach((chapter) => {
         curatedChapters.push({
           chapter,
-          i18n: curateChapter(chapter),
+          i18n: curateI18n(chapter.i18n),
         });
       });
 

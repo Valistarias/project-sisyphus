@@ -10,6 +10,8 @@ import {
 
 import { type HydratedIWeaponScope } from './model';
 
+import { curateI18n } from '../../utils';
+
 const { WeaponScope } = db;
 
 const findWeaponScopes = async (): Promise<HydratedIWeaponScope[]> =>
@@ -205,13 +207,6 @@ interface CuratedIWeaponScope {
   weaponScope: HydratedIWeaponScope;
 }
 
-const curateWeaponScope = (weaponScope: HydratedIWeaponScope): Record<string, any> => {
-  if (weaponScope.i18n === null || weaponScope.i18n === '' || weaponScope.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(weaponScope.i18n);
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { weaponScopeId } = req.query;
   if (weaponScopeId === undefined || typeof weaponScopeId !== 'string') {
@@ -222,7 +217,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((weaponScope) => {
       const sentObj = {
         weaponScope,
-        i18n: curateWeaponScope(weaponScope),
+        i18n: curateI18n(weaponScope.i18n),
       };
       res.send(sentObj);
     })
@@ -239,7 +234,7 @@ const findAll = (req: Request, res: Response): void => {
       weaponScopes.forEach((weaponScope) => {
         curatedWeaponScopes.push({
           weaponScope,
-          i18n: curateWeaponScope(weaponScope),
+          i18n: curateI18n(weaponScope.i18n),
         });
       });
 

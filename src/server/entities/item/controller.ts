@@ -18,6 +18,8 @@ import { curateStatBonusIds } from '../statBonus/controller';
 
 import { type HydratedIItem } from './model';
 
+import { curateI18n } from '../../utils';
+
 const { Item } = db;
 
 const findItems = async (): Promise<HydratedIItem[]> =>
@@ -572,13 +574,6 @@ interface CuratedIItem {
   item: any;
 }
 
-const curateItem = (item: HydratedIItem): Record<string, any> => {
-  if (item.i18n === null || item.i18n === '' || item.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(item.i18n);
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { itemId } = req.query;
   if (itemId === undefined || typeof itemId !== 'string') {
@@ -612,7 +607,7 @@ const findSingle = (req: Request, res: Response): void => {
       item.effects = curatedEffects;
       const sentObj = {
         item,
-        i18n: curateItem(itemSent),
+        i18n: curateI18n(itemSent.i18n),
       };
       res.send(sentObj);
     })
@@ -651,7 +646,7 @@ const findAll = (req: Request, res: Response): void => {
         item.effects = curatedEffects;
         curatedItems.push({
           item,
-          i18n: curateItem(itemSent),
+          i18n: curateI18n(itemSent.i18n),
         });
       });
 

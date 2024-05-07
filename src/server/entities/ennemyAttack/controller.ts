@@ -7,6 +7,8 @@ import { type HydratedIEnnemyAttack } from './model';
 
 import type { IDamageType } from '../index';
 
+import { curateI18n } from '../../utils';
+
 const { EnnemyAttack } = db;
 
 const findEnnemyAttacks = async (): Promise<HydratedIEnnemyAttack[]> =>
@@ -312,13 +314,6 @@ interface CuratedIEnnemyAttack {
   ennemyAttack: HydratedIEnnemyAttack;
 }
 
-const curateEnnemyAttack = (ennemyAttack: HydratedIEnnemyAttack): Record<string, any> => {
-  if (ennemyAttack.i18n === null || ennemyAttack.i18n === '' || ennemyAttack.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(ennemyAttack.i18n);
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { ennemyAttackId } = req.query;
   if (ennemyAttackId === undefined || typeof ennemyAttackId !== 'string') {
@@ -329,7 +324,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((ennemyAttack) => {
       const sentObj = {
         ennemyAttack,
-        i18n: curateEnnemyAttack(ennemyAttack),
+        i18n: curateI18n(ennemyAttack.i18n),
       };
       res.send(sentObj);
     })
@@ -346,7 +341,7 @@ const findAll = (req: Request, res: Response): void => {
       ennemyAttacks.forEach((ennemyAttack) => {
         curatedEnnemyAttacks.push({
           ennemyAttack,
-          i18n: curateEnnemyAttack(ennemyAttack),
+          i18n: curateI18n(ennemyAttack.i18n),
         });
       });
 

@@ -12,6 +12,8 @@ import { checkDuplicateSkillFormulaId } from '../skill/controller';
 
 import { type HydratedIStat } from './model';
 
+import { curateI18n } from '../../utils';
+
 const { Stat } = db;
 
 const findStats = async (): Promise<HydratedIStat[]> =>
@@ -234,13 +236,6 @@ interface CuratedIStat {
   stat: HydratedIStat;
 }
 
-const curateStat = (stat: HydratedIStat): Record<string, any> => {
-  if (stat.i18n === null || stat.i18n === '' || stat.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(stat.i18n);
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { statId } = req.query;
   if (statId === undefined || typeof statId !== 'string') {
@@ -251,7 +246,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((stat) => {
       const sentObj = {
         stat,
-        i18n: curateStat(stat),
+        i18n: curateI18n(stat.i18n),
       };
       res.send(sentObj);
     })
@@ -268,7 +263,7 @@ const findAll = (req: Request, res: Response): void => {
       stats.forEach((stat) => {
         curatedStats.push({
           stat,
-          i18n: curateStat(stat),
+          i18n: curateI18n(stat.i18n),
         });
       });
 

@@ -5,6 +5,8 @@ import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/global
 
 import { type HydratedIRarity } from './model';
 
+import { curateI18n } from '../../utils';
+
 const { Rarity } = db;
 
 const findRarities = async (): Promise<HydratedIRarity[]> =>
@@ -175,13 +177,6 @@ interface CuratedIRarity {
   rarity: HydratedIRarity;
 }
 
-const curateRarity = (rarity: HydratedIRarity): Record<string, any> => {
-  if (rarity.i18n === null || rarity.i18n === '' || rarity.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(rarity.i18n);
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { rarityId } = req.query;
   if (rarityId === undefined || typeof rarityId !== 'string') {
@@ -192,7 +187,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((rarity) => {
       const sentObj = {
         rarity,
-        i18n: curateRarity(rarity),
+        i18n: curateI18n(rarity.i18n),
       };
       res.send(sentObj);
     })
@@ -209,7 +204,7 @@ const findAll = (req: Request, res: Response): void => {
       rarities.forEach((rarity) => {
         curatedRarities.push({
           rarity,
-          i18n: curateRarity(rarity),
+          i18n: curateI18n(rarity.i18n),
         });
       });
 

@@ -7,6 +7,8 @@ import { type HydratedIAction } from './model';
 
 import type { IActionDuration, IActionType, ISkill } from '../index';
 
+import { curateI18n } from '../../utils';
+
 const { Action } = db;
 
 const findActions = async (): Promise<HydratedIAction[]> =>
@@ -379,13 +381,6 @@ interface CuratedIAction {
   action: HydratedIAction;
 }
 
-const curateAction = (action: HydratedIAction): Record<string, any> => {
-  if (action.i18n === null || action.i18n === '' || action.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(action.i18n);
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { actionId } = req.query;
   if (actionId === undefined || typeof actionId !== 'string') {
@@ -396,7 +391,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((action) => {
       const sentObj = {
         action,
-        i18n: curateAction(action),
+        i18n: curateI18n(action.i18n),
       };
       res.send(sentObj);
     })
@@ -413,7 +408,7 @@ const findAll = (req: Request, res: Response): void => {
       actions.forEach((action) => {
         curatedActions.push({
           action,
-          i18n: curateAction(action),
+          i18n: curateI18n(action.i18n),
         });
       });
 

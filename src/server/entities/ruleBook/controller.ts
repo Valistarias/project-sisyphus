@@ -10,6 +10,8 @@ import { type HydratedIRuleBook } from './model';
 
 import type { HydratedIChapter, INotion, IRuleBookType } from '../index';
 
+import { curateI18n } from '../../utils';
+
 const { RuleBook, Chapter } = db;
 
 const ruleBookOrder = ['core', 'addon', 'adventure'];
@@ -232,13 +234,6 @@ interface CuratedIRuleBook {
   ruleBook: HydratedIRuleBook;
 }
 
-const curateRuleBook = (ruleBook: HydratedIRuleBook): Record<string, any> => {
-  if (ruleBook.i18n === null || ruleBook.i18n === '' || ruleBook.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(ruleBook.i18n);
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { ruleBookId } = req.query;
   if (ruleBookId === undefined || typeof ruleBookId !== 'string') {
@@ -254,7 +249,7 @@ const findSingle = (req: Request, res: Response): void => {
           } else {
             const sentObj = {
               ruleBook,
-              i18n: curateRuleBook(ruleBook),
+              i18n: curateI18n(ruleBook.i18n),
             };
             res.send(sentObj);
           }
@@ -317,7 +312,7 @@ const findAll = (req: Request, res: Response): void => {
             .forEach((ruleBook) => {
               curatedRuleBooks.push({
                 ruleBook,
-                i18n: curateRuleBook(ruleBook),
+                i18n: curateI18n(ruleBook.i18n),
               });
             });
 

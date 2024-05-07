@@ -12,6 +12,8 @@ import { checkDuplicateStatFormulaId } from '../stat/controller';
 
 import { type HydratedICharParam } from './model';
 
+import { curateI18n } from '../../utils';
+
 const { CharParam } = db;
 
 const findCharParams = async (): Promise<HydratedICharParam[]> =>
@@ -233,13 +235,6 @@ interface CuratedICharParam {
   charParam: HydratedICharParam;
 }
 
-const curateCharParam = (charParam: HydratedICharParam): Record<string, any> => {
-  if (charParam.i18n === null || charParam.i18n === '' || charParam.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(charParam.i18n);
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { charParamId } = req.query;
   if (charParamId === undefined || typeof charParamId !== 'string') {
@@ -250,7 +245,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((charParam) => {
       const sentObj = {
         charParam,
-        i18n: curateCharParam(charParam),
+        i18n: curateI18n(charParam.i18n),
       };
       res.send(sentObj);
     })
@@ -267,7 +262,7 @@ const findAll = (req: Request, res: Response): void => {
       charParams.forEach((charParam) => {
         curatedCharParams.push({
           charParam,
-          i18n: curateCharParam(charParam),
+          i18n: curateI18n(charParam.i18n),
         });
       });
 

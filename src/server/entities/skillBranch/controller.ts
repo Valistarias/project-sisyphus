@@ -8,8 +8,11 @@ import {
   gemServerError,
 } from '../../utils/globalErrorMessage';
 import { type ISkill } from '../index';
+import { type CuratedINode } from '../node/controller';
 
 import { type HydratedISkillBranch } from './model';
+
+import { curateI18n } from '../../utils';
 
 const { SkillBranch } = db;
 
@@ -218,17 +221,14 @@ const deleteSkillBranchesBySkillId = async (skillId: string): Promise<boolean> =
       });
   });
 
-interface CuratedISkillBranch {
-  i18n: Record<string, any> | Record<string, unknown>;
-  skillBranch: HydratedISkillBranch;
+interface CuratedISkillBranch extends Omit<HydratedISkillBranch, 'nodes'> {
+  nodes?: CuratedINode[];
 }
 
-const curateSkillBranch = (skillBranch: HydratedISkillBranch): Record<string, any> => {
-  if (skillBranch.i18n === null || skillBranch.i18n === '' || skillBranch.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(skillBranch.i18n);
-};
+interface CuratedIntISkillBranch {
+  i18n: Record<string, any> | Record<string, unknown>;
+  skillBranch: CuratedISkillBranch;
+}
 
 const findSingle = (req: Request, res: Response): void => {
   const { skillBranchId } = req.query;
@@ -240,7 +240,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((skillBranch) => {
       const sentObj = {
         skillBranch,
-        i18n: curateSkillBranch(skillBranch),
+        i18n: curateI18n(skillBranch.i18n),
       };
       res.send(sentObj);
     })
@@ -252,12 +252,22 @@ const findSingle = (req: Request, res: Response): void => {
 const findAll = (req: Request, res: Response): void => {
   findSkillBranches()
     .then((skillBranches) => {
-      const curatedSkillBranches: CuratedISkillBranch[] = [];
+      const curatedSkillBranches: CuratedIntISkillBranch[] = [];
 
       skillBranches.forEach((skillBranch) => {
+        const cleanSkillBranch = {
+          ...skillBranch,
+          nodes:
+            skillBranch.nodes !== undefined
+              ? skillBranch.nodes.map((node) => ({
+                  node,
+                  i18n: curateI18n(node.i18n),
+                }))
+              : [],
+        };
         curatedSkillBranches.push({
-          skillBranch,
-          i18n: curateSkillBranch(skillBranch),
+          skillBranch: cleanSkillBranch,
+          i18n: curateI18n(cleanSkillBranch.i18n),
         });
       });
 
@@ -274,12 +284,22 @@ const findAllBySkill = (req: Request, res: Response): void => {
   }
   findSkillBranchesBySkill(skillId)
     .then((skillBranches) => {
-      const curatedSkillBranches: CuratedISkillBranch[] = [];
+      const curatedSkillBranches: CuratedIntISkillBranch[] = [];
 
       skillBranches.forEach((skillBranch) => {
+        const cleanSkillBranch = {
+          ...skillBranch,
+          nodes:
+            skillBranch.nodes !== undefined
+              ? skillBranch.nodes.map((node) => ({
+                  node,
+                  i18n: curateI18n(node.i18n),
+                }))
+              : [],
+        };
         curatedSkillBranches.push({
-          skillBranch,
-          i18n: curateSkillBranch(skillBranch),
+          skillBranch: cleanSkillBranch,
+          i18n: curateI18n(cleanSkillBranch.i18n),
         });
       });
 
@@ -299,4 +319,5 @@ export {
   findSkillBranchById,
   findSkillBranchesBySkill,
   update,
+  type CuratedIntISkillBranch,
 };

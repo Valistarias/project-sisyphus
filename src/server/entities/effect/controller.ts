@@ -6,6 +6,8 @@ import { type IActionType } from '../index';
 
 import { type HydratedIEffect } from './model';
 
+import { curateI18n } from '../../utils';
+
 const { Effect } = db;
 
 const findEffects = async (): Promise<HydratedIEffect[]> =>
@@ -263,13 +265,6 @@ interface CuratedIEffect {
   effect: HydratedIEffect;
 }
 
-const curateEffect = (effect: HydratedIEffect): Record<string, any> => {
-  if (effect.i18n === null || effect.i18n === '' || effect.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(effect.i18n);
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { effectId } = req.query;
   if (effectId === undefined || typeof effectId !== 'string') {
@@ -280,7 +275,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((effect) => {
       const sentObj = {
         effect,
-        i18n: curateEffect(effect),
+        i18n: curateI18n(effect.i18n),
       };
       res.send(sentObj);
     })
@@ -297,7 +292,7 @@ const findAll = (req: Request, res: Response): void => {
       effects.forEach((effect) => {
         curatedEffects.push({
           effect,
-          i18n: curateEffect(effect),
+          i18n: curateI18n(effect.i18n),
         });
       });
 

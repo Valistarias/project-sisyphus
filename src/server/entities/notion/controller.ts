@@ -8,6 +8,8 @@ import { type HydratedIRuleBook } from '../ruleBook/model';
 
 import { type HydratedNotion, type INotion } from './model';
 
+import { curateI18n } from '../../utils';
+
 const { Notion } = db;
 
 const findNotions = async (): Promise<HydratedNotion[]> =>
@@ -141,16 +143,6 @@ const deleteNotionsByRuleBookId = async (ruleBookId: string): Promise<boolean> =
       });
   });
 
-const curateNotion = (notion: HydratedNotion | HydratedDocument<INotion>): Record<string, any> => {
-  if (notion.i18n === undefined) {
-    return notion;
-  }
-  return {
-    ...notion,
-    i18n: JSON.parse(notion.i18n),
-  };
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { notionId } = req.query;
   if (notionId === undefined || typeof notionId !== 'string') {
@@ -161,7 +153,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((notion) => {
       const sentObj = {
         notion,
-        i18n: curateNotion(notion),
+        i18n: curateI18n(notion.i18n),
       };
       res.send(sentObj);
     })

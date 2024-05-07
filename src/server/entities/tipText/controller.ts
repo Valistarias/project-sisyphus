@@ -10,6 +10,8 @@ import {
 
 import { type HydratedITipText } from './model';
 
+import { curateI18n } from '../../utils';
+
 const { TipText } = db;
 
 const findTipTexts = async (): Promise<HydratedITipText[]> =>
@@ -203,13 +205,6 @@ interface CuratedITipText {
   tipText: HydratedITipText;
 }
 
-const curateTipText = (tipText: HydratedITipText): Record<string, any> => {
-  if (tipText.i18n === null || tipText.i18n === '' || tipText.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(tipText.i18n);
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { tipTextId } = req.query;
   if (tipTextId === undefined || typeof tipTextId !== 'string') {
@@ -220,7 +215,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((tipText) => {
       const sentObj = {
         tipText,
-        i18n: curateTipText(tipText),
+        i18n: curateI18n(tipText.i18n),
       };
       res.send(sentObj);
     })
@@ -237,7 +232,7 @@ const findAll = (req: Request, res: Response): void => {
       tipTexts.forEach((tipText) => {
         curatedTipTexts.push({
           tipText,
-          i18n: curateTipText(tipText),
+          i18n: curateI18n(tipText.i18n),
         });
       });
 

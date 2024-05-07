@@ -5,6 +5,8 @@ import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/global
 
 import { type HydratedIDamageType } from './model';
 
+import { curateI18n } from '../../utils';
+
 const { DamageType } = db;
 
 const findDamageTypes = async (): Promise<HydratedIDamageType[]> =>
@@ -137,13 +139,6 @@ interface CuratedIDamageType {
   damageType: HydratedIDamageType;
 }
 
-const curateDamageType = (damageType: HydratedIDamageType): Record<string, any> => {
-  if (damageType.i18n === null || damageType.i18n === '' || damageType.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(damageType.i18n);
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { damageTypeId } = req.query;
   if (damageTypeId === undefined || typeof damageTypeId !== 'string') {
@@ -154,7 +149,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((damageType) => {
       const sentObj = {
         damageType,
-        i18n: curateDamageType(damageType),
+        i18n: curateI18n(damageType.i18n),
       };
       res.send(sentObj);
     })
@@ -171,7 +166,7 @@ const findAll = (req: Request, res: Response): void => {
       damageTypes.forEach((damageType) => {
         curatedDamageTypes.push({
           damageType,
-          i18n: curateDamageType(damageType),
+          i18n: curateI18n(damageType.i18n),
         });
       });
 

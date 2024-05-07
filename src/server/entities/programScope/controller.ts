@@ -10,6 +10,8 @@ import {
 
 import { type HydratedIProgramScope } from './model';
 
+import { curateI18n } from '../../utils';
+
 const { ProgramScope } = db;
 
 const findProgramScopes = async (): Promise<HydratedIProgramScope[]> =>
@@ -205,13 +207,6 @@ interface CuratedIProgramScope {
   programScope: HydratedIProgramScope;
 }
 
-const curateProgramScope = (programScope: HydratedIProgramScope): Record<string, any> => {
-  if (programScope.i18n === null || programScope.i18n === '' || programScope.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(programScope.i18n);
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { programScopeId } = req.query;
   if (programScopeId === undefined || typeof programScopeId !== 'string') {
@@ -222,7 +217,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((programScope) => {
       const sentObj = {
         programScope,
-        i18n: curateProgramScope(programScope),
+        i18n: curateI18n(programScope.i18n),
       };
       res.send(sentObj);
     })
@@ -239,7 +234,7 @@ const findAll = (req: Request, res: Response): void => {
       programScopes.forEach((programScope) => {
         curatedProgramScopes.push({
           programScope,
-          i18n: curateProgramScope(programScope),
+          i18n: curateI18n(programScope.i18n),
         });
       });
 

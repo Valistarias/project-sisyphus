@@ -7,6 +7,8 @@ import { type HydratedIPage } from './model';
 
 import type { HydratedIChapter } from '../index';
 
+import { curateI18n } from '../../utils';
+
 const { Page } = db;
 
 const findPages = async (): Promise<HydratedIPage[]> =>
@@ -176,13 +178,6 @@ interface CuratedIPage {
   page: HydratedIPage;
 }
 
-const curatePage = (page: HydratedIPage): Record<string, any> => {
-  if (page.i18n === null || page.i18n === '' || page.i18n === undefined) {
-    return {};
-  }
-  return JSON.parse(page.i18n);
-};
-
 const findSingle = (req: Request, res: Response): void => {
   const { pageId } = req.query;
   if (pageId === undefined || typeof pageId !== 'string') {
@@ -193,7 +188,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((page) => {
       const sentObj = {
         page,
-        i18n: curatePage(page),
+        i18n: curateI18n(page.i18n),
       };
       res.send(sentObj);
     })
@@ -210,7 +205,7 @@ const findAll = (req: Request, res: Response): void => {
       pages.forEach((page) => {
         curatedPages.push({
           page,
-          i18n: curatePage(page),
+          i18n: curateI18n(page.i18n),
         });
       });
 
@@ -232,7 +227,7 @@ const findAllByChapter = (req: Request, res: Response): void => {
       pages.forEach((page) => {
         curatedChapters.push({
           page,
-          i18n: curatePage(page),
+          i18n: curateI18n(page.i18n),
         });
       });
 
