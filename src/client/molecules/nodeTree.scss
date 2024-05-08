@@ -72,11 +72,17 @@
     display: flex;
     height: 7rem;
     justify-content: space-evenly;
+    min-width: 8rem;
     position: relative;
     transition: background-color 0.2s ease;
-    width: 20rem;
+
+    .ap {
+      padding: 0 1rem;
+    }
 
     &--node {
+      flex-grow: 1;
+
       &::before {
         background: var(--primary-40);
         bottom: -0.4rem;

@@ -69,8 +69,8 @@ const RollResult: FC<IRollResult> = ({ result, authorName, formula, createdAt, t
       <Ap className="roll-result__hour">{`${createdAt.toLocaleDateString()} - ${createdAt.getHours()}:${createdAt.getMinutes()}`}</Ap>
       <div
         className={classTrim(`
-        roll-result__result
-      `)}
+          roll-result__result
+        `)}
         style={{ backgroundImage: `url(${holoBackground})` }}
       >
         <div className="roll-result__result__type">{typeRolltext}</div>

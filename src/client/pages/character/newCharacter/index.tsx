@@ -85,21 +85,10 @@ const NewCharacter: FC = () => {
     }
   }, [api, user]);
 
-  const onSubmit = useCallback(
-    ({ name, campaign }) => {
+  const onSubmitCyberFrame = useCallback(
+    (id) => {
       if (api !== undefined) {
-        api.characters
-          .create({
-            name,
-            campaignId: campaign,
-          })
-          .then(({ characterId }) => {
-            console.log('character step 1 done');
-          })
-          .catch(({ response }) => {
-            const { data } = response;
-            console.error('ERROR: ', data);
-          });
+        console.log('id', id);
       }
     },
     [api]
@@ -126,8 +115,8 @@ const NewCharacter: FC = () => {
   );
 
   const actualFormContent = useMemo(() => {
-    return <CharCreationStep1 onCreaftionStepFinished={onSubmit} />;
-  }, [onSubmit]);
+    return <CharCreationStep1 onSubmitCyberFrame={onSubmitCyberFrame} />;
+  }, [onSubmitCyberFrame]);
 
   useEffect(() => {
     if (api !== undefined && user !== null && !calledApi.current) {

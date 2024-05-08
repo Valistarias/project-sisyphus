@@ -78,5 +78,15 @@
   "nodeTree": {
     "empty": "You need to create a branch to visualize the tree"
   },
-  "autosave": "Autosaved the {{date}} at {{hour}}"
+  "autosave": "Autosaved the {{date}} at {{hour}}",
+  "characterCreation": {
+    "step1": {
+      "text": "Choose a CyberFrame below",
+      "cFrameDetailsBtn": "See Details",
+      "cFramebranches": "Specialisations",
+      "cFrameTree": "See Node Tree",
+      "chooseCta": "Choose CyberFrame",
+      "return": "Back"
+    }
+  }
 }

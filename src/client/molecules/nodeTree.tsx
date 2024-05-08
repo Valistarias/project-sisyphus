@@ -3,7 +3,7 @@ import React, { useMemo, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Ap } from '../atoms';
-import { Quark } from '../quark';
+import { Quark, type IQuarkProps } from '../quark';
 import { type ICuratedNode, type ICyberFrameBranch, type ISkillBranch } from '../types';
 
 import { Button, Node } from './index';
@@ -15,7 +15,7 @@ import './nodeTree.scss';
 const ranks = 10;
 const specBeginRank = 3;
 
-interface INodeTree {
+interface INodeTree extends IQuarkProps {
   /** Is the Tree in admin mode ? */
   isAdmin?: boolean;
   /** The tree to be displayed */
@@ -27,7 +27,7 @@ interface INodeTree {
   onNodeClick?: (id: string) => void;
 }
 
-const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {}, isAdmin = false }) => {
+const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {}, isAdmin = false, className }) => {
   const { t } = useTranslation();
 
   const specializationBranches = useMemo(
@@ -54,10 +54,10 @@ const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {}, isAdmin = false
         <div
           key={roman as string}
           className={classTrim(`
-        node-tree__table__line
-        ${i === specBeginRank ? 'node-tree__table__line--first' : ''}
-        ${i === ranks ? 'node-tree__table__line--last' : ''}
-      `)}
+            node-tree__table__line
+            ${i === specBeginRank ? 'node-tree__table__line--first' : ''}
+            ${i === ranks ? 'node-tree__table__line--last' : ''}
+          `)}
         >
           <div className="node-tree__rank node-tree__cell">{roman}</div>
           {relatedNodes.map(({ branch, nodes }, indexNode) => (
@@ -137,6 +137,7 @@ const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {}, isAdmin = false
       className={classTrim(`
         node-tree
         ${isAdmin ? 'node-tree--is-admin' : ''}
+        ${className ?? ''}
       `)}
     >
       <div className="node-tree__table node-tree__table--specs">
