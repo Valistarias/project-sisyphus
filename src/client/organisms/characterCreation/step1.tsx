@@ -24,7 +24,6 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
 
   const [openedCFrame, setOpenedCFrame] = useState<ICuratedCyberFrame | null>(null);
   const [detailsOpened, setDetailsOpened] = useState<boolean>(false);
-  const [nodeTreeDisplayed, setNodeTreeDisplayed] = useState<boolean>(false);
 
   const onOpenDetails = useCallback(
     (id: string) => {
@@ -60,52 +59,33 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
     return (
       <div className="characterCreation-step1__detail-block">
         <div className="characterCreation-step1__detail-block__line">
+          <NodeTree
+            className="characterCreation-step1__detail-block__tree"
+            tree={Object.values(tempTree)}
+          />
           <div className="characterCreation-step1__detail-block__main">
             <Atitle level={2} className="characterCreation-step1__detail-block__title">
               {cyberFrame.title}
             </Atitle>
-            {nodeTreeDisplayed ? (
-              <NodeTree
-                className="characterCreation-step1__detail-block__tree"
-                tree={Object.values(tempTree)}
-              />
-            ) : (
-              <>
-                <RichTextElement
-                  className="characterCreation-step1__detail-block__text"
-                  rawStringContent={cyberFrame.summary}
-                  readOnly
-                />
-                <Atitle level={3}>
-                  {t('characterCreation.step1.cFramebranches', { ns: 'components' })}
-                </Atitle>
-                <Aul noPoints className="characterCreation-step1__detail-block__branches">
-                  {branches.map(({ cyberFrameBranch }) => (
-                    <Ali
-                      key={cyberFrameBranch._id}
-                      className="characterCreation-step1__detail-block__branches__branch"
-                    >
-                      <Atitle level={4}>{cyberFrameBranch.title}</Atitle>
-                      <RichTextElement rawStringContent={cyberFrameBranch.summary} readOnly />
-                    </Ali>
-                  ))}
-                </Aul>
-              </>
-            )}
-
-            <Button
-              className="characterCreation-step1__detail-block__btn"
-              onClick={() => {
-                setNodeTreeDisplayed((prev) => !prev);
-              }}
-            >
-              {t(
-                nodeTreeDisplayed
-                  ? 'characterCreation.step1.cFrameDetailsBtn'
-                  : 'characterCreation.step1.cFrameTree',
-                { ns: 'components' }
-              )}
-            </Button>
+            <RichTextElement
+              className="characterCreation-step1__detail-block__text"
+              rawStringContent={cyberFrame.summary}
+              readOnly
+            />
+            <Atitle level={3}>
+              {t('characterCreation.step1.cFramebranches', { ns: 'components' })}
+            </Atitle>
+            <Aul noPoints className="characterCreation-step1__detail-block__branches">
+              {branches.map(({ cyberFrameBranch }) => (
+                <Ali
+                  key={cyberFrameBranch._id}
+                  className="characterCreation-step1__detail-block__branches__branch"
+                >
+                  <Atitle level={4}>{cyberFrameBranch.title}</Atitle>
+                  <RichTextElement rawStringContent={cyberFrameBranch.summary} readOnly />
+                </Ali>
+              ))}
+            </Aul>
           </div>
         </div>
         <div className="characterCreation-step1__detail-block__btns">
@@ -131,7 +111,7 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
         </div>
       </div>
     );
-  }, [openedCFrame, t, nodeTreeDisplayed, onSubmitCyberFrame]);
+  }, [openedCFrame, t, onSubmitCyberFrame]);
 
   const cyberFrameList = useMemo(() => {
     const cFrameElts: ReactNode[] = [];
@@ -178,6 +158,9 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
       <div className="characterCreation-step1__details">{detailsBlock}</div>
       <Ap className="characterCreation-step1__text">
         {t('characterCreation.step1.text', { ns: 'components' })}
+      </Ap>
+      <Ap className="characterCreation-step1__sub">
+        {t('characterCreation.step1.sub', { ns: 'components' })}
       </Ap>
       <div className="characterCreation-step1__list">{cyberFrameList}</div>
     </div>

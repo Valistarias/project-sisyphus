@@ -7,8 +7,6 @@ import { classTrim } from '../utils';
 import './ath.scss';
 
 interface IAth extends IQuarkProps {
-  /** The class of the Table Head Cell element */
-  className?: string;
   /** The childrens of the Table Head Cell element */
   children: ReactNode;
 }

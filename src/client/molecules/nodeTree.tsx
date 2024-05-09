@@ -72,6 +72,7 @@ const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {}, isAdmin = false
                       ? 'left'
                       : 'right'
                   }
+                  menuAnchor={indexNode >= relatedNodes.length - 2 ? 'top' : 'center'}
                   onNodeClick={() => {
                     onNodeClick(node.node._id);
                   }}
@@ -111,6 +112,7 @@ const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {}, isAdmin = false
                     ? 'left'
                     : 'right'
                 }
+                menuAnchor="bottom"
                 onNodeClick={() => {
                   onNodeClick(node.node._id);
                 }}

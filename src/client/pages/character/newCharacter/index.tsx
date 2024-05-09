@@ -8,7 +8,7 @@ import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
 import tvBackground from '../../../assets/imgs/tvbg.gif';
 import { Aicon, Ap, Atitle } from '../../../atoms';
-import { Button, Checkbox } from '../../../molecules';
+import { Ariane, Button, Checkbox, type IArianeElt } from '../../../molecules';
 import { CharCreationStep1, RichTextElement } from '../../../organisms';
 
 import { introSequence } from './introSequence';
@@ -16,11 +16,6 @@ import { introSequence } from './introSequence';
 import { classTrim } from '../../../utils';
 
 import './newCharacter.scss';
-
-interface FormValues {
-  name: string;
-  campaign: string;
-}
 
 interface ToolTipValues {
   autoDisplay: boolean;
@@ -59,18 +54,16 @@ const NewCharacter: FC = () => {
     [charCreationState, tipTexts]
   );
 
-  // const campaignList = useMemo(() => {
-  //   return campaigns.map(({ _id, name, owner }) => ({
-  //     value: _id,
-  //     label: name,
-  //     details: i18next.format(
-  //       t('terms.general.createdByShort', {
-  //         owner: owner._id === user?._id ? t('terms.general.you') : owner.username,
-  //       }),
-  //       'capitalize'
-  //     ),
-  //   }));
-  // }, [campaigns, t, user]);
+  const arianeData = useMemo<IArianeElt[]>(
+    () =>
+      [...Array(6)].map((_, i) => ({
+        key: `${i + 1}`,
+        label: t(`characterCreation.step${i + 1}.cat`, { ns: 'components' }),
+        actual: i + 1 === charCreationState,
+        disabled: i + 1 > charCreationState,
+      })),
+    [t, charCreationState]
+  );
 
   const getData = useCallback(() => {
     setIntroState(1);
@@ -227,26 +220,7 @@ const NewCharacter: FC = () => {
           setTooltipOpen((prev) => !prev);
         }}
       />
-      {/* <form className="newcharacter__form" onSubmit={handleSubmit(onSubmit)} noValidate>
-        {errors.root?.serverError?.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
-        <Input
-          control={control}
-          inputName="name"
-          type="text"
-          rules={{ required: t('characterName.required', { ns: 'fields' }) }}
-          label={t('characterName.label', { ns: 'fields' })}
-        />
-        <SmartSelect
-          control={control}
-          inputName="campaign"
-          label={t('characterCampaign.label', { ns: 'fields' })}
-          options={campaignList}
-          className="newcharacter__campaign"
-        />
-        <Button type="submit">{t('newCharacter.formCTA', { ns: 'pages' })}</Button>
-      </form> */}
+      <Ariane isSteps data={arianeData} />
       {actualFormContent}
     </div>
   );

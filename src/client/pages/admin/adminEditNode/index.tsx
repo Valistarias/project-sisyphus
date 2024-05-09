@@ -13,9 +13,10 @@ import { Button, Input, NodeIconSelect, SmartSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 import {
   type ICuratedCyberFrame,
+  type ICuratedCyberFrameBranch,
   type ICuratedNode,
   type ICuratedSkill,
-  type ICyberFrameBranch,
+  type ICuratedSkillBranch,
   type ISkillBranch,
 } from '../../../types';
 
@@ -149,7 +150,7 @@ const AdminEditNode: FC = () => {
   );
   const [charParamBonusIds, setCharParamBonusIds] = useState<number[]>([]);
 
-  const [branches, setBranches] = useState<ISkillBranch[] | ICyberFrameBranch[]>([]);
+  const [branches, setBranches] = useState<ICuratedSkillBranch[] | ICuratedCyberFrameBranch[]>([]);
 
   const [rankSelect, setLevelSelect] = useState<
     Array<{
@@ -349,13 +350,17 @@ const AdminEditNode: FC = () => {
           value: string;
           label: string;
         }>,
-        elt: ISkillBranch | ICyberFrameBranch
+        elt: ICuratedSkillBranch | ICuratedCyberFrameBranch
       ) => {
         if (elt !== undefined) {
+          const relevantElt =
+            (elt as ICuratedCyberFrameBranch).cyberFrameBranch ??
+            (elt as ICuratedSkillBranch).skillBranch;
           result.push({
-            value: elt._id,
+            value: relevantElt._id,
             // TODO : Handle Internationalization
-            label: elt.title === '_general' ? t('terms.node.generalBranch') : elt.title,
+            label:
+              relevantElt.title === '_general' ? t('terms.node.generalBranch') : relevantElt.title,
           });
         }
         return result;
@@ -854,9 +859,12 @@ const AdminEditNode: FC = () => {
             options={branchSelect}
             onChange={(e) => {
               let titleBranch: string | null = null;
-              branches.forEach((elt: ISkillBranch | ICyberFrameBranch) => {
-                if (elt !== undefined && elt._id === e) {
-                  titleBranch = elt.title;
+              branches.forEach((elt: ICuratedSkillBranch | ICuratedCyberFrameBranch) => {
+                const relevantElt =
+                  (elt as ICuratedCyberFrameBranch).cyberFrameBranch ??
+                  (elt as ICuratedSkillBranch).skillBranch;
+                if (relevantElt !== undefined && relevantElt._id === e) {
+                  titleBranch = relevantElt.title;
                 }
               });
               if (titleBranch === '_general') {

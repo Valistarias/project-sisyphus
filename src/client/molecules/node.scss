@@ -141,12 +141,32 @@
     --size-node: 6.5rem;
   }
 
+  &--center {
+    .node__content {
+      --height-transforn-position: -50%;
+      top: -50%;
+    }
+  }
+
+  &--bottom {
+    .node__content {
+      --height-transforn-position: -100%;
+      top: 100%;
+    }
+  }
+
+  &--top {
+    .node__content {
+      --height-transforn-position: 0;
+      top: 0;
+    }
+  }
+
   &--left {
     .node__content {
       flex-direction: row-reverse;
       left: -2rem;
-      top: -50%;
-      transform: translate3d(-100%, -50%, 0);
+      transform: translate3d(-100%, var(--height-transforn-position), 0);
     }
   }
 
@@ -154,8 +174,7 @@
     .node__content {
       flex-direction: row;
       right: -2rem;
-      top: -50%;
-      transform: translate3d(100%, -50%, 0);
+      transform: translate3d(100%, var(--height-transforn-position), 0);
     }
   }
 

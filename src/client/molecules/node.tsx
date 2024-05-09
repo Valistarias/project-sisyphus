@@ -27,9 +27,17 @@ interface INode {
   size?: 'small' | 'medium' | 'large';
   /** The position of the menu */
   menuDirection?: 'left' | 'right';
+  /** The anchor of the menu */
+  menuAnchor?: 'top' | 'center' | 'bottom';
 }
 
-const Node: FC<INode> = ({ node, size = 'medium', onNodeClick, menuDirection = 'right' }) => {
+const Node: FC<INode> = ({
+  node,
+  size = 'medium',
+  onNodeClick,
+  menuDirection = 'right',
+  menuAnchor = 'center',
+}) => {
   const { t } = useTranslation();
   const { character } = useGlobalVars();
   const { node: nodeElt, i18n } = node;
@@ -95,6 +103,7 @@ const Node: FC<INode> = ({ node, size = 'medium', onNodeClick, menuDirection = '
         node
         node--${size}
         node--${menuDirection}
+        node--${menuAnchor}
       `)}
     >
       <Abutton

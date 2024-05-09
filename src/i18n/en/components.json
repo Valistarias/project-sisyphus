@@ -81,12 +81,29 @@
   "autosave": "Autosaved the {{date}} at {{hour}}",
   "characterCreation": {
     "step1": {
+      "cat": "CyberFrame",
       "text": "Choose a CyberFrame below",
+      "sub": "By doing so, you will unlock the first rank of this CyberFrame",
       "cFrameDetailsBtn": "See Details",
       "cFramebranches": "Specialisations",
       "cFrameTree": "See Node Tree",
       "chooseCta": "Choose CyberFrame",
       "return": "Back"
+    },
+    "step2": {
+      "cat": "Stats"
+    },
+    "step3": {
+      "cat": "Skills"
+    },
+    "step4": {
+      "cat": "Background"
+    },
+    "step5": {
+      "cat": "Inventory"
+    },
+    "step6": {
+      "cat": "Identification"
     }
   }
 }

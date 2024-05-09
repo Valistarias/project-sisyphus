@@ -1,3 +1,4 @@
+import { Ariane, type IArianeElt } from './ariane';
 import Button from './button';
 import Checkbox from './checkbox';
 import DiceCard from './diceCard';
@@ -11,6 +12,7 @@ import NodeTree from './nodeTree';
 import { SmartSelect, type IGroupedOption, type ISingleValueSelect } from './select';
 
 export {
+  Ariane,
   Button,
   Checkbox,
   DiceCard,
@@ -23,6 +25,7 @@ export {
   NodeTree,
   SmartSelect,
   defaultNodeIcon,
+  type IArianeElt,
   type IGroupedOption,
   type ISingleValueSelect,
 };
