@@ -107,6 +107,10 @@ const NewCharacter: FC = () => {
     [api, setUser, user]
   );
 
+  const onArianeClick = useCallback((elt) => {
+    console.log('elt', elt);
+  }, []);
+
   const actualFormContent = useMemo(() => {
     return <CharCreationStep1 onSubmitCyberFrame={onSubmitCyberFrame} />;
   }, [onSubmitCyberFrame]);
@@ -220,7 +224,7 @@ const NewCharacter: FC = () => {
           setTooltipOpen((prev) => !prev);
         }}
       />
-      <Ariane isSteps data={arianeData} />
+      <Ariane isSteps data={arianeData} onArianeClick={onArianeClick} />
       {actualFormContent}
     </div>
   );

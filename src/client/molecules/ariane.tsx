@@ -42,8 +42,8 @@ const Ariane: FC<IAriane> = ({ className, data, onArianeClick, isSteps = false }
           key={key}
           className={classTrim(`
               ariane__elt
-              ${actual ? 'ariane--actual' : ''}
-              ${disabled ? 'ariane--disabled' : ''}
+              ${actual ? 'ariane__elt--actual' : ''}
+              ${disabled ? 'ariane__elt--disabled' : ''}
             `)}
         >
           <Abutton
