@@ -2,7 +2,7 @@ import React, { useMemo, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import holoBackground from '../assets/imgs/tvbg.gif';
+import holoBackground from '../assets/imgs/tvbg2.gif';
 import { Ap } from '../atoms';
 import DiceCard from '../molecules/diceCard';
 import { type TypeDice, type TypeRoll } from '../types';

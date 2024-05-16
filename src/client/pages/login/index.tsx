@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useApi, useGlobalVars, useSystemAlerts } from '../../providers';
 
-import tvBackground from '../../assets/imgs/tvbg.gif';
+import tvBackground from '../../assets/imgs/tvbg2.gif';
 import { Aerror, Ap, Avideo } from '../../atoms';
 import { Button, Input } from '../../molecules';
 import { Alert } from '../../organisms';

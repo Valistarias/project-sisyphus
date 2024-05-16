@@ -40,8 +40,8 @@
     }
 
     &__table {
-      background: var(--primary-dark-40);
-      background-blend-mode: lighten;
+      background: var(--primary-dark);
+      background-blend-mode: hard-light;
       border: 1px solid var(--primary-05);
       bottom: 1rem;
       display: flex;

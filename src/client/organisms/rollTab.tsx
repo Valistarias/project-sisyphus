@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useApi, useRollWindow, useSocket, useSystemAlerts } from '../providers';
 
-import holoBackground from '../assets/imgs/tvbg.gif';
+import holoBackground from '../assets/imgs/tvbg2.gif';
 import { Aicon, Ap, Avideo, type typeIcons } from '../atoms';
 import { Button } from '../molecules';
 import { type ICharacter, type IRoll, type TypeRoll } from '../types';
@@ -168,7 +168,7 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, character }) => {
     return dataPrevRolls.map(({ _id, character, createdAt, formula, result, type }) => (
       <RollResult
         key={_id}
-        authorName={character.name}
+        authorName={character.name ?? 'John Doe'}
         result={result}
         formula={formula}
         type={type as TypeRoll}

@@ -12,8 +12,8 @@
   }
 
   &__result {
-    background-blend-mode: overlay;
-    background-color: var(--primary-20);
+    background-blend-mode: hard-light;
+    background-color: var(--primary-dark);
     border: 1px solid var(--primary);
     border-radius: var(--border-radius);
     box-shadow: 0 0 1rem var(--primary-10);

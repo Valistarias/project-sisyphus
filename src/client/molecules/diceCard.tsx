@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState, type FC } from 'react';
 
-import holoBackground from '../assets/imgs/tvbg.gif';
+import holoBackground from '../assets/imgs/tvbg2.gif';
 import { Aicon, Ap, type typeIcons } from '../atoms';
 import { type TypeDice } from '../types';
 

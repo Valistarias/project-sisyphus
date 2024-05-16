@@ -8,8 +8,14 @@ interface ICharacterPayload {
   characterId: string;
 }
 
+interface ICharacterAddNodePayload {
+  characterId?: string;
+  nodeId: string;
+}
+
 export default class Characters extends Entity {
   get: (payload: ICharacterPayload) => Promise<ICharacter>;
+  addNode: (payload: ICharacterAddNodePayload) => Promise<ICharacter>;
   quitCampaign: (payload: ICharacterPayload) => Promise<boolean>;
 
   constructor() {
@@ -19,6 +25,18 @@ export default class Characters extends Entity {
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })
+          .then((res) => {
+            resolve(res.data as ICharacter);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+
+    this.addNode = async (payload) =>
+      await new Promise((resolve, reject) => {
+        axios
+          .post(`${this.url}/addnode/`, payload)
           .then((res) => {
             resolve(res.data as ICharacter);
           })

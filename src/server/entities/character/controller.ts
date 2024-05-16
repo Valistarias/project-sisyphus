@@ -8,6 +8,8 @@ import { type ICampaign } from '../campaign/model';
 import { type HydratedINode } from '../node/model';
 import { type IUser } from '../user/model';
 
+import { createNodesByCharacter } from './node/controller';
+
 import { type HydratedICharacter } from './index';
 
 const { Character } = db;
@@ -20,7 +22,8 @@ const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[
           reject(gemNotFound('User'));
           return;
         }
-        Character.find({ player: user._id })
+        Character.find()
+          .or([{ player: user._id }, { createdBy: user._id }])
           .populate<{ player: IUser }>('player')
           .populate<{ createdBy: IUser }>('createdBy')
           .populate<{ campaign: ICampaign }>('campaign')
@@ -79,7 +82,7 @@ const findCompleteCharacterById = async (
             } else {
               resolve({
                 char: res as HydratedICharacter,
-                canEdit: String((res as HydratedICharacter).player._id) === String(user._id),
+                canEdit: String((res as HydratedICharacter).player?._id) === String(user._id),
               });
             }
           })
@@ -117,7 +120,7 @@ const findCharacterById = async (
             } else {
               resolve({
                 char: res as HydratedICharacter,
-                canEdit: String((res as HydratedICharacter).player._id) === String(user._id),
+                canEdit: String((res as HydratedICharacter).player?._id) === String(user._id),
               });
             }
           })
@@ -130,12 +133,70 @@ const findCharacterById = async (
       });
   });
 
-const create = (req: Request, res: Response): void => {
-  const { campaignId = null, player = null } = req.body;
-  if (name === undefined) {
+const addNode = (req: Request, res: Response): void => {
+  const { nodeId } = req.body;
+  if (nodeId === undefined) {
     res.status(400).send(gemInvalidField('Character'));
     return;
   }
+  createOrFindCharacter(req)
+    .then((characterIdSent) => {
+      createNodesByCharacter({
+        characterId: characterIdSent,
+        nodeIds: [nodeId],
+      })
+        .then(() => {
+          findCompleteCharacterById(characterIdSent, req)
+            .then(({ char }) => res.send(char))
+            .catch((err: Error) => res.status(404).send(err));
+        })
+        .catch((err: Error) => {
+          res.status(500).send(gemServerError(err));
+        });
+    })
+    .catch((err: Error) => {
+      res.status(500).send(gemServerError(err));
+    });
+};
+
+const createOrFindCharacter = async (req: Request): Promise<string> =>
+  await new Promise((resolve, reject) => {
+    const { characterId = null } = req.body;
+    if (characterId === null) {
+      getUserFromToken(req as IVerifyTokenRequest)
+        .then((user) => {
+          if (user === null) {
+            reject(gemNotFound('User'));
+          } else {
+            Character.create({ createdBy: user._id })
+              .then(({ _id }) => {
+                resolve(_id.toString());
+              })
+              .catch((err: Error) => {
+                reject(err);
+              });
+          }
+        })
+        .catch((err: Error) => {
+          reject(err);
+        });
+    } else {
+      findCharacterById(characterId as string, req)
+        .then(({ char, canEdit }) => {
+          if (char !== undefined && canEdit) {
+            resolve(characterId as string);
+          } else {
+            reject(gemNotFound('User'));
+          }
+        })
+        .catch((err: Error) => {
+          reject(err);
+        });
+    }
+  });
+
+const create = (req: Request, res: Response): void => {
+  const { campaignId = null, player = null } = req.body;
   getUserFromToken(req as IVerifyTokenRequest)
     .then((user) => {
       if (user === null) {
@@ -257,4 +318,4 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteCharacter, findAll, findSingle, quitCampaign, updateInfos };
+export { addNode, create, deleteCharacter, findAll, findSingle, quitCampaign, updateInfos };

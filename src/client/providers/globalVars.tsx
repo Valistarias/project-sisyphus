@@ -85,7 +85,9 @@ interface IGlobalVarsContext {
   /** All the loaded program scopes */
   tipTexts: ICuratedTipText[];
   /** Used to set the actual character */
-  setCharacter: (id: string) => void;
+  setCharacter: (character: ICharacter) => void;
+  /** Used to set the actual character fron his id */
+  setCharacterFromId: (id: string) => void;
   /** Used to reset the actual character */
   resetCharacter: () => void;
   /** Used to trigger the reload of the program scopes */
@@ -420,7 +422,8 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       reloadWeaponTypes: loadWeaponTypes,
       reloadArmorTypes: loadArmorTypes,
       reloadTipTexts: loadTipTexts,
-      setCharacter: setCharacterFromId,
+      setCharacter,
+      setCharacterFromId,
       resetCharacter,
       setUser,
     }),

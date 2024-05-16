@@ -3,7 +3,7 @@ import { type Router } from 'express';
 import { verifyToken } from '../../middlewares';
 
 import {
-  create,
+  addNode,
   deleteCharacter,
   findAll,
   findSingle,
@@ -23,7 +23,9 @@ export default (app: Router): void => {
 
   app.post('/characters/quitcampaign', [verifyToken], quitCampaign);
 
-  app.post('/characters/create', [verifyToken], create);
+  // app.post('/characters/create', [verifyToken], create);
+
+  app.post('/characters/addnode', [verifyToken], addNode);
 
   app.post('/characters/update', [verifyToken], updateInfos);
 

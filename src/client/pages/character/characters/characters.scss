@@ -28,8 +28,8 @@
       width: 25rem;
 
       &__img {
-        background: var(--primary-dark-40);
-        background-blend-mode: lighten;
+        background: var(--primary-dark);
+        background-blend-mode: hard-light;
         height: 15rem;
         margin-bottom: 3rem;
         position: relative;

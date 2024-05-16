@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState, type FC } from 'react';
 
 import { Controller } from 'react-hook-form';
 
-import holoBackground from '../assets/imgs/tvbg.gif';
+import holoBackground from '../assets/imgs/tvbg2.gif';
 import { Abutton, Aerror, Aicon, Alabel, AnodeIcon } from '../atoms';
 import { Quark, type IQuarkProps } from '../quark';
 import { type IReactHookFormInputs } from '../types';

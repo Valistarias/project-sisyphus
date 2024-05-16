@@ -6,10 +6,10 @@ import { TypeAnimation } from 'react-type-animation';
 
 import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import tvBackground from '../../../assets/imgs/tvbg.gif';
+import tvBackground from '../../../assets/imgs/tvbg2.gif';
 import { Aicon, Ap, Atitle } from '../../../atoms';
 import { Ariane, Button, Checkbox, type IArianeElt } from '../../../molecules';
-import { CharCreationStep1, RichTextElement } from '../../../organisms';
+import { Alert, CharCreationStep1, RichTextElement } from '../../../organisms';
 
 import { introSequence } from './introSequence';
 
@@ -25,7 +25,7 @@ const NewCharacter: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { user, setUser, tipTexts } = useGlobalVars();
+  const { user, setUser, tipTexts, cyberFrames, setCharacter, character } = useGlobalVars();
 
   const [displayLoading, setDisplayLoading] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -34,25 +34,25 @@ const NewCharacter: FC = () => {
   const [introState, setIntroState] = useState(0);
   const calledApi = useRef(false);
 
-  // const {
-  //   handleSubmit,
-  //   setError,
-  //   control,
-  //   formState: { errors },
-  // } = useForm<FieldValues>();
-
   const { handleSubmit: submitTips, control: toolTipControl } = useForm<FieldValues>();
 
   const charCreationState = useMemo(() => {
+    if (character !== null && character !== false) {
+      if (character.nodes !== undefined && character.nodes?.length > 0) {
+        return 2;
+      }
+    }
     // Nothing defined yet
     return 1;
-  }, []);
+  }, [character]);
 
   // TODO: Internationalization
-  const relevantTipsData = useMemo(
-    () => tipTexts.find(({ tipText }) => tipText.tipId === `tutoChar${charCreationState}`),
-    [charCreationState, tipTexts]
-  );
+  const relevantTipsData = useMemo(() => {
+    if (user !== null && user.charCreationTips) {
+      setTooltipOpen(true);
+    }
+    return tipTexts.find(({ tipText }) => tipText.tipId === `tutoChar${charCreationState}`);
+  }, [charCreationState, tipTexts, user]);
 
   const arianeData = useMemo<IArianeElt[]>(
     () =>
@@ -79,12 +79,37 @@ const NewCharacter: FC = () => {
   }, [api, user]);
 
   const onSubmitCyberFrame = useCallback(
-    (id) => {
-      if (api !== undefined) {
-        console.log('id', id);
+    (id: string) => {
+      if (api !== undefined && user !== null) {
+        const firstCyberFrameNode = cyberFrames
+          .find(({ cyberFrame }) => cyberFrame._id === id)
+          ?.cyberFrame.branches.find(
+            ({ cyberFrameBranch }) => cyberFrameBranch.title === '_general'
+          )?.cyberFrameBranch.nodes[0];
+        if (firstCyberFrameNode !== undefined) {
+          api.characters
+            .addNode({
+              nodeId: firstCyberFrameNode.node._id,
+            })
+            .then((character) => {
+              setCharacter(character);
+            })
+            .catch(({ response }) => {
+              const { data } = response;
+              const newId = getNewId();
+              createAlert({
+                key: newId,
+                dom: (
+                  <Alert key={newId} id={newId} timer={5}>
+                    <Ap>{data}</Ap>
+                  </Alert>
+                ),
+              });
+            });
+        }
       }
     },
-    [api]
+    [api, createAlert, cyberFrames, getNewId, setCharacter, user]
   );
 
   const onSubmitTooltip: SubmitHandler<ToolTipValues> = useCallback(

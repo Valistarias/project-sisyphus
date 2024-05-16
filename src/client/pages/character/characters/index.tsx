@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useApi, useSystemAlerts } from '../../../providers';
 
-import holoBackground from '../../../assets/imgs/tvbg.gif';
+import holoBackground from '../../../assets/imgs/tvbg2.gif';
 import { Ali, Ap, Atitle, Aul, Avideo } from '../../../atoms';
 import { Button } from '../../../molecules';
 import { Alert } from '../../../organisms';
@@ -80,7 +80,7 @@ const Characters: FC = () => {
               </Atitle>
               {character.campaign !== null ? (
                 <Ap className="characters__character-list__elt__title__campaign">
-                  {`${i18next.format(t(`terms.campaign.title`), 'capitalize')}: ${character.campaign.name}`}
+                  {`${i18next.format(t(`terms.campaign.title`), 'capitalize')}: ${character.campaign?.name}`}
                 </Ap>
               ) : null}
             </div>

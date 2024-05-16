@@ -20,10 +20,10 @@ interface ICharacter {
 
 interface HydratedICharacter
   extends Omit<HydratedDocument<ICharacter>, 'player' | 'campaign' | 'createdBy'> {
-  player: HydratedDocument<IUser>;
+  player?: HydratedDocument<IUser>;
   createdBy: HydratedDocument<IUser>;
   campaign?: HydratedDocument<ICampaign>;
-  nodes: HydratedINode[];
+  nodes?: HydratedINode[];
 }
 
 const characterSchema = new Schema<ICharacter>(
