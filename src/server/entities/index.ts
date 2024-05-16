@@ -20,7 +20,14 @@ export {
   type HydratedICharParamBonus,
   type ICharParamBonus,
 } from './charParamBonus/model';
-export { CharacterModel, type HydratedICharacter, type ICharacter } from './character/model';
+export {
+  CharacterModel,
+  CharacterNodeModel,
+  type HydratedICharacter,
+  type HydratedICharacterNode,
+  type ICharacter,
+  type ICharacterNode,
+} from './character';
 export { CyberFrameModel, type HydratedICyberFrame, type ICyberFrame } from './cyberFrame/model';
 export {
   CyberFrameBranchModel,

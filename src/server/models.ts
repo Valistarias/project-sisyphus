@@ -15,6 +15,7 @@ import {
   CharParamBonusModel,
   CharParamModel,
   CharacterModel,
+  CharacterNodeModel,
   CyberFrameBranchModel,
   CyberFrameModel,
   DamageModel,
@@ -62,6 +63,7 @@ import {
   type ICharParam,
   type ICharParamBonus,
   type ICharacter,
+  type ICharacterNode,
   type ICyberFrame,
   type ICyberFrameBranch,
   type IDamage,
@@ -122,6 +124,8 @@ interface DBType {
   Campaign: mongoose.Model<ICampaign>;
   /** The Character Model */
   Character: mongoose.Model<ICharacter>;
+  /** The CharacterNode Model */
+  CharacterNode: mongoose.Model<ICharacterNode>;
   /** The Body Part Model */
   BodyPart: mongoose.Model<IBodyPart>;
   /** The Roll Model */
@@ -216,6 +220,7 @@ const db: DBType = {
   Roll: RollModel(),
   // Character models
   Character: CharacterModel(),
+  CharacterNode: CharacterNodeModel(),
   BodyPart: BodyPartModel(),
   // Rules models
   Action: ActionModel(),

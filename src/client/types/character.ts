@@ -1,16 +1,21 @@
 import { type ICampaign } from './campaign';
 import { type InternationalizationType, type IUser } from './global';
+import { type INode } from './rules';
 
 // Character ------------------------------------
 export interface ICharacter {
   /** The ID of the character */
   _id: string;
   /** The name of the character */
-  name: string;
+  name?: string;
   /** The owner of the character */
-  player: IUser;
+  player?: IUser;
+  /** The creator of the character */
+  createdBy: IUser;
   /** The players of the character */
-  campaign: ICampaign;
+  campaign?: ICampaign;
+  /** The nodes of the character */
+  nodes?: INode[];
   /** When the character was created */
   createdAt: Date;
 }
