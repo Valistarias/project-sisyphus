@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } fro
 
 import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 import { TypeAnimation } from 'react-type-animation';
 
 import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
@@ -10,6 +11,7 @@ import tvBackground from '../../../assets/imgs/tvbg2.gif';
 import { Aicon, Ap, Atitle } from '../../../atoms';
 import { Ariane, Button, Checkbox, type IArianeElt } from '../../../molecules';
 import { Alert, CharCreationStep1, RichTextElement } from '../../../organisms';
+import { type ICharacter } from '../../../types';
 
 import { introSequence } from './introSequence';
 
@@ -25,7 +27,17 @@ const NewCharacter: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { user, setUser, tipTexts, cyberFrames, setCharacter, character } = useGlobalVars();
+  const {
+    user,
+    setUser,
+    tipTexts,
+    cyberFrames,
+    setCharacter,
+    character,
+    resetCharacter,
+    setCharacterFromId,
+  } = useGlobalVars();
+  const { id } = useParams();
 
   const [displayLoading, setDisplayLoading] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -67,16 +79,13 @@ const NewCharacter: FC = () => {
 
   const getData = useCallback(() => {
     setIntroState(1);
-    if (api !== undefined) {
-      // When data finished loading
-      setLoading(false);
-    }
+    setLoading(false);
     if (user !== null) {
       if (user.charCreationTips) {
         setTooltipOpen(true);
       }
     }
-  }, [api, user]);
+  }, [user]);
 
   const onSubmitCyberFrame = useCallback(
     (id: string) => {
@@ -91,7 +100,7 @@ const NewCharacter: FC = () => {
             .addNode({
               nodeId: firstCyberFrameNode.node._id,
             })
-            .then((character) => {
+            .then((character: ICharacter) => {
               setCharacter(character);
             })
             .catch(({ response }) => {
@@ -141,15 +150,29 @@ const NewCharacter: FC = () => {
   }, [onSubmitCyberFrame]);
 
   useEffect(() => {
-    if (api !== undefined && user !== null && !calledApi.current) {
+    if (
+      setCharacterFromId !== undefined &&
+      api !== undefined &&
+      user !== null &&
+      !calledApi.current &&
+      id !== undefined
+    ) {
       setLoading(true);
+      setCharacterFromId(id);
+      calledApi.current = true;
+      getData();
+    } else if (id === undefined && api !== undefined && user !== null && !calledApi.current) {
       calledApi.current = true;
       getData();
     }
-  }, [api, user, createAlert, getNewId, getData, t]);
+
+    return () => {
+      resetCharacter();
+    };
+  }, [api, user, createAlert, getNewId, getData, t, id, resetCharacter, setCharacterFromId]);
 
   useEffect(() => {
-    if (!loading && introState === 2) {
+    if (!loading && introState === 2 && id === undefined) {
       setTimeout(() => {
         setDisplayLoading(false);
         setTimeout(() => {
@@ -157,12 +180,16 @@ const NewCharacter: FC = () => {
         }, 1100);
       }, 2000);
     }
-  }, [loading, introState]);
+  }, [loading, introState, id]);
 
-  // TODO: Add loading state
-  // if (loading) {
-  //   return null;
-  // }
+  useEffect(() => {
+    if ((character === false || character === null) && id !== undefined) {
+      setLoading(true);
+    } else if (character !== false && character !== null && id !== undefined) {
+      setLoading(false);
+      setDisplayLoading(false);
+    }
+  }, [character, id]);
 
   return (
     <div
@@ -172,6 +199,7 @@ const NewCharacter: FC = () => {
         ${introState > 0 ? 'newcharacter--animating' : ''}
         ${introState === 3 ? 'newcharacter--animate-hide' : ''}
         ${tooltipOpen ? 'newcharacter--tooltip' : ''}
+        ${id !== undefined ? 'newcharacter--animate-fast' : ''}
       `)}
     >
       <div className="newcharacter__loading" style={{ backgroundImage: `url(${tvBackground})` }}>
@@ -180,7 +208,7 @@ const NewCharacter: FC = () => {
           style={{ backgroundImage: `url(${tvBackground})` }}
         />
         <div className="newcharacter__loading__main-block">
-          {!loading ? (
+          {!loading && id === undefined ? (
             <div className="newcharacter__loading__skip">
               <Button
                 size="large"
@@ -195,23 +223,25 @@ const NewCharacter: FC = () => {
           <div className="newcharacter__loading__logo">
             <Aicon className="newcharacter__loading__logo__elt" type="eidolon" size="unsized" />
           </div>
-          <div className="newcharacter__loading__code">
-            <Ap>
-              <TypeAnimation
-                className="newcharacter__loading__code__elt"
-                sequence={[
-                  ...introSequence(),
-                  () => {
-                    setIntroState(2);
-                  },
-                ]}
-                speed={94}
-                cursor={false}
-                omitDeletionAnimation={true}
-                style={{ whiteSpace: 'pre-line' }}
-              />
-            </Ap>
-          </div>
+          {id === undefined ? (
+            <div className="newcharacter__loading__code">
+              <Ap>
+                <TypeAnimation
+                  className="newcharacter__loading__code__elt"
+                  sequence={[
+                    ...introSequence(),
+                    () => {
+                      setIntroState(2);
+                    },
+                  ]}
+                  speed={94}
+                  cursor={false}
+                  omitDeletionAnimation={true}
+                  style={{ whiteSpace: 'pre-line' }}
+                />
+              </Ap>
+            </div>
+          ) : null}
         </div>
       </div>
       <form className="newcharacter__tooltip" onSubmit={submitTips(onSubmitTooltip)} noValidate>

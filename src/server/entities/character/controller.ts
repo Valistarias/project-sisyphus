@@ -27,6 +27,15 @@ const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[
           .populate<{ player: IUser }>('player')
           .populate<{ createdBy: IUser }>('createdBy')
           .populate<{ campaign: ICampaign }>('campaign')
+          .populate<{ nodes: HydratedINode[] }>({
+            path: 'nodes',
+            select: '_id character node used',
+            populate: {
+              path: 'node',
+              select:
+                '_id title summary icon i18n rank quote cyberFrameBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses',
+            },
+          })
           .then(async (res) => {
             if (res === undefined || res === null) {
               reject(gemNotFound('Characters'));

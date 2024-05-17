@@ -48,6 +48,11 @@
     "campaign": {
       "title": "campaign"
     },
+    "character": {
+      "unknown": "Unknown",
+      "draft": "Draft",
+      "alive": "Alive"
+    },
     "node": {
       "generalBranch": "Main Branch",
       "rank": "Rank",

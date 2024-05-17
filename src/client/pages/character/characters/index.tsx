@@ -1,9 +1,17 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FC,
+  type ReactNode,
+} from 'react';
 
 import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
 
-import { useApi, useSystemAlerts } from '../../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
 import holoBackground from '../../../assets/imgs/tvbg2.gif';
 import { Ali, Ap, Atitle, Aul, Avideo } from '../../../atoms';
@@ -11,7 +19,7 @@ import { Button } from '../../../molecules';
 import { Alert } from '../../../organisms';
 import { type ICharacter } from '../../../types';
 
-import { classTrim } from '../../../utils';
+import { classTrim, getCyberFrameLevelsByNodes } from '../../../utils';
 
 import './characters.scss';
 
@@ -19,6 +27,7 @@ const Characters: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
+  const { cyberFrames } = useGlobalVars();
 
   const [characters, setCharacters] = useState<ICharacter[]>([]);
   // const [loading, setLoading] = useState(true);
@@ -52,20 +61,32 @@ const Characters: FC = () => {
     if (characters.length === 0) {
       return null;
     }
-    return (
-      <Aul className="characters__character-list" noPoints>
-        {characters.map((character) => (
-          <Ali
-            className={classTrim(`
-              characters__character-list__elt
-            `)}
-            key={character._id}
+
+    const charactersElt: ReactNode[] = [];
+
+    characters.forEach((character) => {
+      const cyberFramesByNodes = getCyberFrameLevelsByNodes(character.nodes, cyberFrames);
+      // TODO: add all parameters to this
+      const isReady = false;
+      let status: string;
+      if (!isReady) {
+        status = t(`terms.character.draft`);
+      } else {
+        status = t(`terms.character.alive`);
+      }
+      charactersElt.push(
+        <Ali
+          className={classTrim(`
+          characters__character-list__elt
+        `)}
+          key={character._id}
+        >
+          <div
+            className="characters__character-list__elt__img"
+            style={{ backgroundImage: `url(${holoBackground})` }}
           >
-            <div
-              className="characters__character-list__elt__img"
-              style={{ backgroundImage: `url(${holoBackground})` }}
-            >
-              <Avideo className="characters__character-list__elt__img__animatedbg" video="logo" />
+            <Avideo className="characters__character-list__elt__img__animatedbg" video="logo" />
+            {isReady ? (
               <Button
                 theme="text-only"
                 className="characters__character-list__elt__img__edit"
@@ -73,31 +94,41 @@ const Characters: FC = () => {
               >
                 {t('characters.editCharacter', { ns: 'pages' })}
               </Button>
-            </div>
-            <div className="characters__character-list__elt__title">
-              <Atitle className="characters__character-list__elt__title__text" level={3}>
-                {character.name}
-              </Atitle>
-              {character.campaign !== null ? (
-                <Ap className="characters__character-list__elt__title__campaign">
-                  {`${i18next.format(t(`terms.campaign.title`), 'capitalize')}: ${character.campaign?.name}`}
-                </Ap>
-              ) : null}
-            </div>
-            <div className="characters__character-list__elt__buttons">
-              <Button
-                className="characters__character-list__elt__buttons__main"
-                theme="afterglow"
-                href={`/character/${character._id}`}
-              >
-                {t('characters.openCharacter', { ns: 'pages' })}
-              </Button>
-            </div>
-          </Ali>
-        ))}
+            ) : null}
+          </div>
+          <div className="characters__character-list__elt__title">
+            <Atitle className="characters__character-list__elt__title__text" level={3}>
+              {character.name ?? t(`terms.character.unknown`)}
+            </Atitle>
+            <Ap className="characters__character-list__elt__title__status">{status}</Ap>
+            {character.campaign !== null ? (
+              <Ap className="characters__character-list__elt__title__campaign">
+                {`${i18next.format(t(`terms.campaign.title`), 'capitalize')}: ${character.campaign?.name}`}
+              </Ap>
+            ) : null}
+          </div>
+          <div className="characters__character-list__elt__buttons">
+            <Button
+              className="characters__character-list__elt__buttons__main"
+              theme="afterglow"
+              href={
+                isReady ? `/character/${character._id}` : `/character/${character._id}/continue`
+              }
+            >
+              {t(isReady ? 'characters.openCharacter' : 'characters.continueCharacter', {
+                ns: 'pages',
+              })}
+            </Button>
+          </div>
+        </Ali>
+      );
+    });
+    return (
+      <Aul className="characters__character-list" noPoints>
+        {charactersElt}
       </Aul>
     );
-  }, [characters, t]);
+  }, [characters, cyberFrames, t]);
 
   useEffect(() => {
     if (api !== undefined && !calledApi.current) {

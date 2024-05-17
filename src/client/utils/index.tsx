@@ -1,4 +1,4 @@
-import { type ICharacter, type TypeDice } from './types';
+import { type ICharacter, type TypeDice } from '../types';
 
 export const degToRad = (degrees: number): number => degrees * (Math.PI / 180);
 
@@ -284,3 +284,5 @@ export const curateStringDamage = (
   }
   return applyFormula(text, `${damages}+${formula}`, char);
 };
+
+export { getCyberFrameLevelsByNodes } from './character';

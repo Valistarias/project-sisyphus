@@ -228,6 +228,10 @@ const App: FC = () => {
               element: <NewCharacterPage />,
             },
             {
+              path: '/character/:id/continue',
+              element: <NewCharacterPage />,
+            },
+            {
               path: '/character/:id',
               element: <CharacterPage />,
             },

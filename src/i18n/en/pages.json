@@ -189,6 +189,7 @@
     "title": "Characters",
     "empty": "There is no characters here. Create your own to see it displayed here.",
     "create": "Create Character",
+    "continueCharacter": "Continue",
     "openCharacter": "View",
     "editCharacter": "Edit",
     "deleteCharacter": "Delete",

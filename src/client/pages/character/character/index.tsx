@@ -13,7 +13,7 @@ import { ErrorPage } from '../../index';
 import './character.scss';
 
 const Character: FC = () => {
-  const { character, setCharacter, resetCharacter, loading } = useGlobalVars();
+  const { character, setCharacterFromId, resetCharacter, loading } = useGlobalVars();
   const { api } = useApi();
   const { id } = useParams();
   const { setToRoll } = useRollWindow();
@@ -21,15 +21,15 @@ const Character: FC = () => {
   const calledApi = useRef(false);
 
   useEffect(() => {
-    if (setCharacter !== undefined && !calledApi.current && id !== undefined) {
-      setCharacter(id);
+    if (setCharacterFromId !== undefined && !calledApi.current && id !== undefined) {
+      setCharacterFromId(id);
       calledApi.current = true;
     }
 
     return () => {
       resetCharacter();
     };
-  }, [api, id, setCharacter, resetCharacter]);
+  }, [api, id, setCharacterFromId, resetCharacter]);
 
   if (loading || character === null) {
     return null;
