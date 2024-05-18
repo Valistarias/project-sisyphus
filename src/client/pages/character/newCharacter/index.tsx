@@ -102,11 +102,18 @@ const NewCharacter: FC = () => {
         if (firstCyberFrameNode !== undefined) {
           api.characters
             .addFirstCyberFrameNode({
-              characterId: id,
+              characterId: character !== false && character !== null ? character._id : undefined,
               nodeId: firstCyberFrameNode.node._id,
             })
-            .then((character: ICharacter) => {
-              setCharacter(character);
+            .then((sentCharacter: ICharacter) => {
+              if (character === null || character === false) {
+                window.history.replaceState(
+                  {},
+                  'Sisyphus',
+                  `/character/${sentCharacter._id}/continue`
+                );
+              }
+              setCharacter(sentCharacter);
             })
             .catch(({ response }) => {
               const { data } = response;
@@ -123,7 +130,7 @@ const NewCharacter: FC = () => {
         }
       }
     },
-    [api, createAlert, cyberFrames, getNewId, id, setCharacter, user]
+    [api, user, cyberFrames, character, setCharacter, getNewId, createAlert]
   );
 
   const onSubmitStats = useCallback((stats) => {

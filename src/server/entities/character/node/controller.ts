@@ -14,7 +14,6 @@ const replaceCyberFrameNodeByCharacter = async (req: {
     })
       .populate<{ node: INode }>('node')
       .then(async (res) => {
-        console.log('res', res);
         const idToDel: string[] = [];
         res.forEach((charNode) => {
           if (charNode.node.cyberFrameBranch !== undefined) {
