@@ -11,6 +11,7 @@ import tvBackground from '../../../assets/imgs/tvbg2.gif';
 import { Aicon, Ap, Atitle } from '../../../atoms';
 import { Ariane, Button, Checkbox, type IArianeElt } from '../../../molecules';
 import { Alert, CharCreationStep1, RichTextElement } from '../../../organisms';
+import { CharCreationStep2 } from '../../../organisms/characterCreation';
 import { type ICharacter } from '../../../types';
 
 import { introSequence } from './introSequence';
@@ -42,6 +43,7 @@ const NewCharacter: FC = () => {
   const [displayLoading, setDisplayLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [tooltipOpen, setTooltipOpen] = useState(false);
+  const [forcedCharState, setForcedCharState] = useState<number | null>(null);
   // 0 -> not began, 1-> is animating, 2-> finished, 3-> hidden
   const [introState, setIntroState] = useState(0);
   const calledApi = useRef(false);
@@ -60,21 +62,23 @@ const NewCharacter: FC = () => {
 
   // TODO: Internationalization
   const relevantTipsData = useMemo(() => {
-    if (user !== null && user.charCreationTips) {
+    if (user !== null && user.charCreationTips && forcedCharState === null) {
       setTooltipOpen(true);
     }
-    return tipTexts.find(({ tipText }) => tipText.tipId === `tutoChar${charCreationState}`);
-  }, [charCreationState, tipTexts, user]);
+    return tipTexts.find(
+      ({ tipText }) => tipText.tipId === `tutoChar${forcedCharState ?? charCreationState}`
+    );
+  }, [charCreationState, forcedCharState, tipTexts, user]);
 
   const arianeData = useMemo<IArianeElt[]>(
     () =>
       [...Array(6)].map((_, i) => ({
         key: `${i + 1}`,
         label: t(`characterCreation.step${i + 1}.cat`, { ns: 'components' }),
-        actual: i + 1 === charCreationState,
+        actual: i + 1 === (forcedCharState ?? charCreationState),
         disabled: i + 1 > charCreationState,
       })),
-    [t, charCreationState]
+    [t, charCreationState, forcedCharState]
   );
 
   const getData = useCallback(() => {
@@ -88,16 +92,17 @@ const NewCharacter: FC = () => {
   }, [user]);
 
   const onSubmitCyberFrame = useCallback(
-    (id: string) => {
+    (cyberFrameId: string) => {
       if (api !== undefined && user !== null) {
         const firstCyberFrameNode = cyberFrames
-          .find(({ cyberFrame }) => cyberFrame._id === id)
+          .find(({ cyberFrame }) => cyberFrame._id === cyberFrameId)
           ?.cyberFrame.branches.find(
             ({ cyberFrameBranch }) => cyberFrameBranch.title === '_general'
           )?.cyberFrameBranch.nodes[0];
         if (firstCyberFrameNode !== undefined) {
           api.characters
-            .addNode({
+            .addFirstCyberFrameNode({
+              characterId: id,
               nodeId: firstCyberFrameNode.node._id,
             })
             .then((character: ICharacter) => {
@@ -110,7 +115,7 @@ const NewCharacter: FC = () => {
                 key: newId,
                 dom: (
                   <Alert key={newId} id={newId} timer={5}>
-                    <Ap>{data}</Ap>
+                    <Ap>{data.err.message}</Ap>
                   </Alert>
                 ),
               });
@@ -118,8 +123,12 @@ const NewCharacter: FC = () => {
         }
       }
     },
-    [api, createAlert, cyberFrames, getNewId, setCharacter, user]
+    [api, createAlert, cyberFrames, getNewId, id, setCharacter, user]
   );
+
+  const onSubmitStats = useCallback((stats) => {
+    console.log('stats', stats);
+  }, []);
 
   const onSubmitTooltip: SubmitHandler<ToolTipValues> = useCallback(
     ({ autoDisplay }) => {
@@ -141,13 +150,23 @@ const NewCharacter: FC = () => {
     [api, setUser, user]
   );
 
-  const onArianeClick = useCallback((elt) => {
-    console.log('elt', elt);
-  }, []);
+  const onArianeClick = useCallback(
+    (elt: number) => {
+      if (elt === charCreationState) {
+        setForcedCharState(null);
+      } else {
+        setForcedCharState(Number(elt));
+      }
+    },
+    [charCreationState]
+  );
 
   const actualFormContent = useMemo(() => {
+    if ((forcedCharState ?? charCreationState) === 2) {
+      return <CharCreationStep2 onSubmitCyberFrame={onSubmitStats} />;
+    }
     return <CharCreationStep1 onSubmitCyberFrame={onSubmitCyberFrame} />;
-  }, [onSubmitCyberFrame]);
+  }, [onSubmitCyberFrame, onSubmitStats, forcedCharState, charCreationState]);
 
   useEffect(() => {
     if (
@@ -202,10 +221,13 @@ const NewCharacter: FC = () => {
         ${id !== undefined ? 'newcharacter--animate-fast' : ''}
       `)}
     >
-      <div className="newcharacter__loading" style={{ backgroundImage: `url(${tvBackground})` }}>
+      <div
+        className="newcharacter__loading"
+        style={id === undefined ? { backgroundImage: `url(${tvBackground})` } : {}}
+      >
         <div
           className="newcharacter__loading__accent"
-          style={{ backgroundImage: `url(${tvBackground})` }}
+          style={id === undefined ? { backgroundImage: `url(${tvBackground})` } : {}}
         />
         <div className="newcharacter__loading__main-block">
           {!loading && id === undefined ? (

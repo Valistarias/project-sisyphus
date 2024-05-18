@@ -42,6 +42,8 @@
     }
 
     &--disabled {
+      pointer-events: none;
+
       .ariane__elt__step {
         border-color: 1px solid var(--tertiary-40);
         box-shadow: 0 0 2rem var(--tertiary-10);

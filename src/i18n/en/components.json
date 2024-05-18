@@ -88,10 +88,13 @@
       "cFramebranches": "Specialisations",
       "cFrameTree": "See Node Tree",
       "chooseCta": "Choose CyberFrame",
-      "return": "Back"
+      "return": "Back",
+      "chosen": "Chosen CyberFrame"
     },
     "step2": {
-      "cat": "Stats"
+      "cat": "Stats",
+      "text": "Character Stats",
+      "sub": "Choose the characteristics of your new body"
     },
     "step3": {
       "cat": "Skills"

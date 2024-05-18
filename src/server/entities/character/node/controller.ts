@@ -1,6 +1,51 @@
 import db from '../../../models';
+import { type INode } from '../../node/model';
 
 const { CharacterNode } = db;
+
+const replaceCyberFrameNodeByCharacter = async (req: {
+  characterId: string;
+  nodeIds: string[];
+}): Promise<boolean> =>
+  await new Promise((resolve, reject) => {
+    const { characterId, nodeIds } = req;
+    CharacterNode.find({
+      character: characterId,
+    })
+      .populate<{ node: INode }>('node')
+      .then(async (res) => {
+        console.log('res', res);
+        const idToDel: string[] = [];
+        res.forEach((charNode) => {
+          if (charNode.node.cyberFrameBranch !== undefined) {
+            idToDel.push(charNode._id.toString());
+          }
+        });
+
+        CharacterNode.deleteMany({ _id: { $in: idToDel } })
+          .then(() => {
+            CharacterNode.create(
+              nodeIds.map((nodeId) => ({
+                character: characterId,
+                node: nodeId,
+                used: 0,
+              }))
+            )
+              .then(() => {
+                resolve(true);
+              })
+              .catch((err) => {
+                reject(err);
+              });
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      })
+      .catch(async (err) => {
+        reject(err);
+      });
+  });
 
 const createNodesByCharacter = async (req: {
   characterId: string;
@@ -58,4 +103,9 @@ const deleteNodesByCharacter = async (characterId: string): Promise<boolean> =>
       });
   });
 
-export { createNodesByCharacter, deleteNodesByCharacter, updateNodeByCharacter };
+export {
+  createNodesByCharacter,
+  deleteNodesByCharacter,
+  replaceCyberFrameNodeByCharacter,
+  updateNodeByCharacter,
+};

@@ -105,7 +105,15 @@ const AdminEditNode: FC = () => {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
-  const { skills, stats, charParams, actionTypes, actionDurations } = useGlobalVars();
+  const {
+    skills,
+    stats,
+    charParams,
+    actionTypes,
+    actionDurations,
+    reloadSkills,
+    reloadCyberFrames,
+  } = useGlobalVars();
   const { createAlert, getNewId } = useSystemAlerts();
   const navigate = useNavigate();
 
@@ -584,6 +592,11 @@ const AdminEditNode: FC = () => {
               </Alert>
             ),
           });
+          if (skillId !== undefined) {
+            reloadSkills();
+          } else {
+            reloadCyberFrames();
+          }
         })
         .catch(({ response }) => {
           const { data } = response;
@@ -604,7 +617,19 @@ const AdminEditNode: FC = () => {
           }
         });
     },
-    [introEditor, introFrEditor, api, id, nodeData, setError, t, getNewId, createAlert]
+    [
+      introEditor,
+      introFrEditor,
+      api,
+      nodeData?.node.skillBranch,
+      id,
+      setError,
+      t,
+      getNewId,
+      createAlert,
+      reloadSkills,
+      reloadCyberFrames,
+    ]
   );
 
   const onAskDelete = useCallback(() => {

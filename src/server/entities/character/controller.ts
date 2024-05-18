@@ -3,12 +3,17 @@ import { type HydratedDocument } from 'mongoose';
 
 import { getUserFromToken, type IVerifyTokenRequest } from '../../middlewares/authJwt';
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemInvalidField,
+  gemNotFound,
+  gemServerError,
+  gemUnauthorizedGlobal,
+} from '../../utils/globalErrorMessage';
 import { type ICampaign } from '../campaign/model';
 import { type HydratedINode } from '../node/model';
 import { type IUser } from '../user/model';
 
-import { createNodesByCharacter } from './node/controller';
+import { createNodesByCharacter, replaceCyberFrameNodeByCharacter } from './node/controller';
 
 import { type HydratedICharacter } from './index';
 
@@ -129,7 +134,10 @@ const findCharacterById = async (
             } else {
               resolve({
                 char: res as HydratedICharacter,
-                canEdit: String((res as HydratedICharacter).player?._id) === String(user._id),
+                canEdit:
+                  String((res as HydratedICharacter).player?._id) === String(user._id) ||
+                  (res.player?._id === undefined &&
+                    String((res as HydratedICharacter).createdBy?._id) === String(user._id)),
               });
             }
           })
@@ -141,6 +149,32 @@ const findCharacterById = async (
         reject(err);
       });
   });
+
+const addFirstCyberFrameNode = (req: Request, res: Response): void => {
+  const { nodeId } = req.body;
+  if (nodeId === undefined) {
+    res.status(400).send(gemInvalidField('Character'));
+    return;
+  }
+  createOrFindCharacter(req)
+    .then((characterIdSent) => {
+      replaceCyberFrameNodeByCharacter({
+        characterId: characterIdSent,
+        nodeIds: [nodeId],
+      })
+        .then(() => {
+          findCompleteCharacterById(characterIdSent, req)
+            .then(({ char }) => res.send(char))
+            .catch((err: Error) => res.status(404).send(err));
+        })
+        .catch((err: Error) => {
+          res.status(500).send(gemServerError(err));
+        });
+    })
+    .catch((err: Error) => {
+      res.status(500).send(gemServerError(err));
+    });
+};
 
 const addNode = (req: Request, res: Response): void => {
   const { nodeId } = req.body;
@@ -195,7 +229,7 @@ const createOrFindCharacter = async (req: Request): Promise<string> =>
           if (char !== undefined && canEdit) {
             resolve(characterId as string);
           } else {
-            reject(gemNotFound('User'));
+            reject(gemUnauthorizedGlobal());
           }
         })
         .catch((err: Error) => {
@@ -327,4 +361,13 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { addNode, create, deleteCharacter, findAll, findSingle, quitCampaign, updateInfos };
+export {
+  addFirstCyberFrameNode,
+  addNode,
+  create,
+  deleteCharacter,
+  findAll,
+  findSingle,
+  quitCampaign,
+  updateInfos,
+};

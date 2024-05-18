@@ -49,6 +49,10 @@ const gemUnauthorized = (): IGemRes => ({
   message: 'You need to log in to do this request',
   code: 'CYPU-105',
 });
+const gemUnauthorizedGlobal = (): IGemRes => ({
+  message: 'You are not authorized to do this',
+  code: 'CYPU-106',
+});
 
 // ------ Request Errors
 // Error 456
@@ -87,5 +91,6 @@ export {
   gemServerError,
   gemTeaPot,
   gemUnauthorized,
+  gemUnauthorizedGlobal,
   gemUnverifiedUser,
 };

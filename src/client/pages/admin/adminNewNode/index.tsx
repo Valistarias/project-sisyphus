@@ -13,9 +13,9 @@ import { Button, Input, NodeIconSelect, SmartSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 import {
   type ICuratedCyberFrame,
+  type ICuratedCyberFrameBranch,
   type ICuratedSkill,
-  type ICyberFrameBranch,
-  type ISkillBranch,
+  type ICuratedSkillBranch,
 } from '../../../types';
 
 import { classTrim, isThereDuplicate } from '../../../utils';
@@ -99,7 +99,15 @@ const AdminNewNode: FC = () => {
   const { search } = useLocation();
   const navigate = useNavigate();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { skills, stats, charParams, actionTypes, actionDurations } = useGlobalVars();
+  const {
+    skills,
+    stats,
+    charParams,
+    actionTypes,
+    actionDurations,
+    reloadCyberFrames,
+    reloadSkills,
+  } = useGlobalVars();
 
   const params = useMemo(() => new URLSearchParams(search), [search]);
 
@@ -144,7 +152,7 @@ const AdminNewNode: FC = () => {
   );
   const [charParamBonusIds, setCharParamBonusIds] = useState<number[]>([]);
 
-  const [branches, setBranches] = useState<ISkillBranch[] | ICyberFrameBranch[]>([]);
+  const [branches, setBranches] = useState<ICuratedSkillBranch[] | ICuratedCyberFrameBranch[]>([]);
 
   const [rankSelect, setLevelSelect] = useState<
     Array<{
@@ -220,13 +228,17 @@ const AdminNewNode: FC = () => {
           value: string;
           label: string;
         }>,
-        elt: ISkillBranch | ICyberFrameBranch
+        elt: ICuratedSkillBranch | ICuratedCyberFrameBranch
       ) => {
         if (elt !== undefined) {
+          const relevantElt =
+            (elt as ICuratedCyberFrameBranch).cyberFrameBranch ??
+            (elt as ICuratedSkillBranch).skillBranch;
           result.push({
-            value: elt._id,
+            value: relevantElt._id,
             // TODO : Handle Internationalization
-            label: elt.title === '_general' ? t('terms.node.generalBranch') : elt.title,
+            label:
+              relevantElt.title === '_general' ? t('terms.node.generalBranch') : relevantElt.title,
           });
         }
         return result;
@@ -503,6 +515,11 @@ const AdminNewNode: FC = () => {
               </Alert>
             ),
           });
+          if (skillId !== null) {
+            reloadSkills();
+          } else {
+            reloadCyberFrames();
+          }
           navigate(`/admin/node/${quote._id}`);
         })
         .catch(({ response }) => {
@@ -524,7 +541,19 @@ const AdminNewNode: FC = () => {
           }
         });
     },
-    [introEditor, introFrEditor, api, params, setError, t, getNewId, createAlert, navigate]
+    [
+      introEditor,
+      introFrEditor,
+      api,
+      params,
+      setError,
+      t,
+      getNewId,
+      createAlert,
+      navigate,
+      reloadSkills,
+      reloadCyberFrames,
+    ]
   );
 
   useEffect(() => {
@@ -603,9 +632,12 @@ const AdminNewNode: FC = () => {
             options={branchSelect}
             onChange={(e) => {
               let titleBranch: string | null = null;
-              branches.forEach((elt: ISkillBranch | ICyberFrameBranch) => {
-                if (elt !== undefined && elt._id === e) {
-                  titleBranch = elt.title;
+              branches.forEach((elt: ICuratedSkillBranch | ICuratedCyberFrameBranch) => {
+                const relevantElt =
+                  (elt as ICuratedCyberFrameBranch).cyberFrameBranch ??
+                  (elt as ICuratedSkillBranch).skillBranch;
+                if (elt !== undefined && relevantElt._id === e) {
+                  titleBranch = relevantElt.title;
                 }
               });
               if (titleBranch === '_general') {

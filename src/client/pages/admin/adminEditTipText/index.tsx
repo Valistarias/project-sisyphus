@@ -321,10 +321,6 @@ const AdminEditTipText: FC = () => {
             type="text"
             rules={{
               required: t('tipTextFormula.required', { ns: 'fields' }),
-              pattern: {
-                value: /^([a-z]){2,3}$/,
-                message: t('tipTextFormula.format', { ns: 'fields' }),
-              },
             }}
             label={t('tipTextFormula.label', { ns: 'fields' })}
           />

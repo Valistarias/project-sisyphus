@@ -16,6 +16,7 @@ interface ICharacterAddNodePayload {
 export default class Characters extends Entity {
   get: (payload: ICharacterPayload) => Promise<ICharacter>;
   addNode: (payload: ICharacterAddNodePayload) => Promise<ICharacter>;
+  addFirstCyberFrameNode: (payload: ICharacterAddNodePayload) => Promise<ICharacter>;
   quitCampaign: (payload: ICharacterPayload) => Promise<boolean>;
 
   constructor() {
@@ -25,6 +26,18 @@ export default class Characters extends Entity {
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })
+          .then((res) => {
+            resolve(res.data as ICharacter);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+
+    this.addFirstCyberFrameNode = async (payload) =>
+      await new Promise((resolve, reject) => {
+        axios
+          .post(`${this.url}/addfirstcyberframenode/`, payload)
           .then((res) => {
             resolve(res.data as ICharacter);
           })

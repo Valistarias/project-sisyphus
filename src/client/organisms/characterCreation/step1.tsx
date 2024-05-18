@@ -9,7 +9,7 @@ import { Button, NodeTree } from '../../molecules';
 import { type ICuratedCyberFrame, type ICuratedNode, type ICyberFrameBranch } from '../../types';
 import { RichTextElement } from '../richTextElement';
 
-import { classTrim } from '../../utils';
+import { classTrim, getCyberFrameLevelsByNodes } from '../../utils';
 
 import './characterCreation.scss';
 
@@ -20,7 +20,7 @@ interface ICharacterCreationStep1 {
 
 const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFrame }) => {
   const { t } = useTranslation();
-  const { cyberFrames } = useGlobalVars();
+  const { cyberFrames, character } = useGlobalVars();
 
   const [openedCFrame, setOpenedCFrame] = useState<ICuratedCyberFrame | null>(null);
   const [detailsOpened, setDetailsOpened] = useState<boolean>(false);
@@ -34,6 +34,13 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
     },
     [cyberFrames]
   );
+
+  const chosenCyberFrame = useMemo<ICuratedCyberFrame | null>(() => {
+    if (character === null || character === false) {
+      return null;
+    }
+    return getCyberFrameLevelsByNodes(character.nodes, cyberFrames)[0].cyberFrame;
+  }, [character, cyberFrames]);
 
   const detailsBlock = useMemo(() => {
     if (openedCFrame === null) {
@@ -89,16 +96,18 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
           </div>
         </div>
         <div className="characterCreation-step1__detail-block__btns">
-          <Button
-            theme="afterglow"
-            size="large"
-            onClick={() => {
-              onSubmitCyberFrame(cyberFrame._id);
-              setDetailsOpened(false);
-            }}
-          >
-            {t('characterCreation.step1.chooseCta', { ns: 'components' })}
-          </Button>
+          {chosenCyberFrame?.cyberFrame._id === cyberFrame._id ? null : (
+            <Button
+              theme="afterglow"
+              size="large"
+              onClick={() => {
+                onSubmitCyberFrame(cyberFrame._id);
+                setDetailsOpened(false);
+              }}
+            >
+              {t('characterCreation.step1.chooseCta', { ns: 'components' })}
+            </Button>
+          )}
           <Button
             theme="text-only"
             size="large"
@@ -111,7 +120,7 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
         </div>
       </div>
     );
-  }, [openedCFrame, t, onSubmitCyberFrame]);
+  }, [openedCFrame, t, chosenCyberFrame?.cyberFrame._id, onSubmitCyberFrame]);
 
   const cyberFrameList = useMemo(() => {
     const cFrameElts: ReactNode[] = [];
@@ -126,7 +135,17 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
             ${openedCFrame?.cyberFrame._id === cyberFrame._id && detailsOpened ? 'characterCreation-step1__cFrame--opened' : ''}
           `)}
         >
-          <Atitle level={2}>{cyberFrame.title}</Atitle>
+          <div className="characterCreation-step1__cFrame__title">
+            <Atitle level={2} className="characterCreation-step1__cFrame__title__content">
+              {cyberFrame.title}
+            </Atitle>
+            {chosenCyberFrame?.cyberFrame._id === cyberFrame._id ? (
+              <Ap className="characterCreation-step1__cFrame__title__text">
+                {t('characterCreation.step1.chosen', { ns: 'components' })}
+              </Ap>
+            ) : null}
+          </div>
+
           <RichTextElement
             className="characterCreation-step1__cFrame__text"
             rawStringContent={cyberFrame.summary}
@@ -146,7 +165,14 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
       );
     });
     return cFrameElts;
-  }, [cyberFrames, openedCFrame, detailsOpened, onOpenDetails, t]);
+  }, [
+    cyberFrames,
+    openedCFrame?.cyberFrame._id,
+    detailsOpened,
+    chosenCyberFrame?.cyberFrame._id,
+    t,
+    onOpenDetails,
+  ]);
 
   return (
     <div

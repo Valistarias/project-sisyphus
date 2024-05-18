@@ -2,6 +2,9 @@
 
 .newcharacter {
   @include mixins.basic-page;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   padding-top: 7vh;
 
   .ariane {
@@ -201,6 +204,12 @@
 
   &--animate-fast {
     .newcharacter__loading {
+      background: var(--background-color);
+
+      &__accent {
+        background: var(--background-color);
+      }
+
       &__logo {
         &__elt {
           opacity: 1;

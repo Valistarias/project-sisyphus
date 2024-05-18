@@ -24,7 +24,7 @@ interface IAriane extends IQuarkProps {
   /** Is the ariane split into steps */
   isSteps?: boolean;
   /** When an element of the ariane is clicked */
-  onArianeClick?: (id: string) => void;
+  onArianeClick?: (id: string | number) => void;
 }
 
 const Ariane: FC<IAriane> = ({ className, data, onArianeClick, isSteps = false }) => {
@@ -49,7 +49,7 @@ const Ariane: FC<IAriane> = ({ className, data, onArianeClick, isSteps = false }
           <Abutton
             className="ariane__elt__btn"
             onClick={() => {
-              if (onArianeClick !== undefined) {
+              if (onArianeClick !== undefined && !disabled) {
                 onArianeClick(key);
               }
             }}
