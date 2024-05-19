@@ -1,5 +1,5 @@
 import Alert from './alert';
-import { CharCreationStep1 } from './characterCreation';
+import { CharCreationStep1, CharCreationStep2 } from './characterCreation';
 import { DragList, type IDragElt } from './dragList';
 import HeaderBar from './headerBar';
 import {
@@ -13,6 +13,7 @@ import RollTab from './rollTab';
 export {
   Alert,
   CharCreationStep1,
+  CharCreationStep2,
   DragList,
   HeaderBar,
   RichTextElement,

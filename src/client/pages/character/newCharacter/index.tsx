@@ -10,8 +10,7 @@ import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 import tvBackground from '../../../assets/imgs/tvbg2.gif';
 import { Aicon, Ap, Atitle } from '../../../atoms';
 import { Ariane, Button, Checkbox, type IArianeElt } from '../../../molecules';
-import { Alert, CharCreationStep1, RichTextElement } from '../../../organisms';
-import { CharCreationStep2 } from '../../../organisms/characterCreation';
+import { Alert, CharCreationStep1, CharCreationStep2, RichTextElement } from '../../../organisms';
 import { type ICharacter } from '../../../types';
 
 import { introSequence } from './introSequence';

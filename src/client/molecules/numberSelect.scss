@@ -1,0 +1,25 @@
+.number-select {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  min-width: 6.5rem;
+  width: fit-content;
+
+  &__btn-plus {
+    transform: rotate(180deg);
+  }
+
+  &__btn-plus,
+  &__btn-minus {
+    &--hide {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+  }
+
+  &__value {
+    font-family: var(--mono-font);
+    font-size: 5rem;
+    user-select: none;
+  }
+}
