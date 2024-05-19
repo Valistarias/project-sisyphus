@@ -62,7 +62,7 @@ const AdminNewStat: FC = () => {
           fr: {
             title: nameFr,
             short: shortFr ?? '',
-            summary: htmlFr,
+            text: htmlFr,
           },
         };
       }

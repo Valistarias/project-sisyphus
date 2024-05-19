@@ -244,7 +244,7 @@ const AdminEditStat: FC = () => {
           setStatData(curatedStat);
           setStatText(stat.summary);
           if (i18n.fr !== undefined) {
-            setStatTextFr(i18n.fr.summary ?? '');
+            setStatTextFr(i18n.fr.text ?? '');
           }
         })
         .catch(() => {

@@ -42,6 +42,7 @@ export {
   type HydratedIEnnemyAttack,
   type IEnnemyAttack,
 } from './ennemyAttack/model';
+export { GlobalValueModel, type IGlobalValue } from './globalValue/model';
 export { ImplantModel, type HydratedIImplant, type IImplant } from './implant/model';
 export { ItemModel, type HydratedIItem, type IItem } from './item/model';
 export {

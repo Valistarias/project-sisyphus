@@ -17,6 +17,7 @@ import AdminEditCharParamPage from './adminEditCharParam';
 import AdminEditCyberFramePage from './adminEditCyberFrame';
 import AdminEditCyberFrameBranchPage from './adminEditCyberFrameBranch';
 import AdminEditDamageTypePage from './adminEditDamageType';
+import AdminEditGlobalValuePage from './adminEditGlobalValue';
 import AdminEditImplantPage from './adminEditImplant';
 import AdminEditItemPage from './adminEditItem';
 import AdminEditItemModifierPage from './adminEditItemModifier';
@@ -37,6 +38,7 @@ import AdminEditWeaponPage from './adminEditWeapon';
 import AdminEditWeaponScopePage from './adminEditWeaponScope';
 import AdminEditWeaponStylePage from './adminEditWeaponStyle';
 import AdminEditWeaponTypePage from './adminEditWeaponType';
+import AdminGlobalValuesPage from './adminGlobalValues';
 import AdminImplantsPage from './adminImplants';
 import AdminItemModifiersPage from './adminItemModifiers';
 import AdminItemsPage from './adminItems';
@@ -51,6 +53,7 @@ import AdminNewCharParamPage from './adminNewCharParam';
 import AdminNewCyberFramePage from './adminNewCyberFrame';
 import AdminNewCyberFrameBranchPage from './adminNewCyberFrameBranch';
 import AdminNewDamageTypePage from './adminNewDamageType';
+import AdminNewGlobalValuePage from './adminNewGlobalValue';
 import AdminNewImplantPage from './adminNewImplant';
 import AdminNewItemPage from './adminNewItem';
 import AdminNewItemModifierPage from './adminNewItemModifier';
@@ -104,6 +107,7 @@ export {
   AdminEditCyberFrameBranchPage,
   AdminEditCyberFramePage,
   AdminEditDamageTypePage,
+  AdminEditGlobalValuePage,
   AdminEditImplantPage,
   AdminEditItemModifierPage,
   AdminEditItemPage,
@@ -124,6 +128,7 @@ export {
   AdminEditWeaponScopePage,
   AdminEditWeaponStylePage,
   AdminEditWeaponTypePage,
+  AdminGlobalValuesPage,
   AdminImplantsPage,
   AdminItemModifiersPage,
   AdminItemsPage,
@@ -138,6 +143,7 @@ export {
   AdminNewCyberFrameBranchPage,
   AdminNewCyberFramePage,
   AdminNewDamageTypePage,
+  AdminNewGlobalValuePage,
   AdminNewImplantPage,
   AdminNewItemModifierPage,
   AdminNewItemPage,

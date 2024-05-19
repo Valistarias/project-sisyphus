@@ -621,5 +621,13 @@
   "tipTextFormula": {
     "required": "An Identifier is required",
     "label": "TipText ID (For formula purposes, never displayed as is) to identify and place it in the right place"
+  },
+  "nameGlobalValue": {
+    "required": "An Name is required",
+    "label": "Name"
+  },
+  "nameGlobalValueValue": {
+    "required": "An Value is required",
+    "label": "Value"
   }
 }

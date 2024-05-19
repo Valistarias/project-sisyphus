@@ -173,6 +173,10 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
                       href: '/admin/cyberframes',
                       text: t('adminCyberFrames.title', { ns: 'pages' }),
                     },
+                    {
+                      href: '/admin/globalvalues',
+                      text: t('adminGlobalValues.title', { ns: 'pages' }),
+                    },
                   ],
                 },
                 {

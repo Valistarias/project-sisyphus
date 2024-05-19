@@ -24,6 +24,7 @@ import {
   AdminEditCyberFrameBranchPage,
   AdminEditCyberFramePage,
   AdminEditDamageTypePage,
+  AdminEditGlobalValuePage,
   AdminEditImplantPage,
   AdminEditItemModifierPage,
   AdminEditItemPage,
@@ -44,6 +45,7 @@ import {
   AdminEditWeaponScopePage,
   AdminEditWeaponStylePage,
   AdminEditWeaponTypePage,
+  AdminGlobalValuesPage,
   AdminImplantsPage,
   AdminItemModifiersPage,
   AdminItemTypesPage,
@@ -59,6 +61,7 @@ import {
   AdminNewCyberFrameBranchPage,
   AdminNewCyberFramePage,
   AdminNewDamageTypePage,
+  AdminNewGlobalValuePage,
   AdminNewImplantPage,
   AdminNewItemModifierPage,
   AdminNewItemPage,
@@ -583,6 +586,18 @@ const App: FC = () => {
             {
               path: '/admin/tiptext/:id',
               element: <AdminEditTipTextPage />,
+            },
+            {
+              path: '/admin/globalvalues',
+              element: <AdminGlobalValuesPage />,
+            },
+            {
+              path: '/admin/globalvalue/new',
+              element: <AdminNewGlobalValuePage />,
+            },
+            {
+              path: '/admin/globalvalue/:id',
+              element: <AdminEditGlobalValuePage />,
             },
             // {
             //   path: '/admin/skillbranch/:id',

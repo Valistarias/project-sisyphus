@@ -1,6 +1,6 @@
 @use '../../../assets/scss/mixins';
 
-.adminGlobalValues {
+.adminItemTypes {
   @include mixins.basic-page;
 
   &__content {
@@ -10,7 +10,7 @@
     margin-top: 2rem;
   }
 
-  &__global-values {
+  &__item-types {
     width: 100%;
 
     &__list {
@@ -18,7 +18,7 @@
     }
   }
 
-  .adminGlobalValues__global-value-list {
+  .adminItemTypes__item-type-list {
     display: flex;
     flex-direction: column;
     gap: 2rem;

@@ -22,6 +22,7 @@ import {
   DamageTypeModel,
   EffectModel,
   EnnemyAttackModel,
+  GlobalValueModel,
   ImplantModel,
   ItemModel,
   ItemModifierModel,
@@ -70,6 +71,7 @@ import {
   type IDamageType,
   type IEffect,
   type IEnnemyAttack,
+  type IGlobalValue,
   type IImplant,
   type IItem,
   type IItemModifier,
@@ -140,6 +142,8 @@ interface DBType {
   ActionDuration: mongoose.Model<IActionDuration>;
   /** The Effect Model */
   Effect: mongoose.Model<IEffect>;
+  /** The GlobalValue Model */
+  GlobalValue: mongoose.Model<IGlobalValue>;
   /** The Stat Model */
   Stat: mongoose.Model<IStat>;
   /** The Tip Text Model */
@@ -238,6 +242,7 @@ const db: DBType = {
   Stat: StatModel(),
   StatBonus: StatBonusModel(),
   TipText: TipTextModel(),
+  GlobalValue: GlobalValueModel(),
   // Items models
   Ammo: AmmoModel(),
   Bag: BagModel(),

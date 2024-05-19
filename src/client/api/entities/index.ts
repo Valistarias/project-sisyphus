@@ -21,6 +21,7 @@ import Damages from './damages';
 import DamageTypes from './damageTypes';
 import Effects from './effects';
 import EnnemyAttacks from './ennemyAttacks';
+import GlobalValues from './globalValues';
 import Implants from './implants';
 import ItemModifiers from './itemModifiers';
 import Items from './items';
@@ -69,6 +70,7 @@ export {
   DamageTypes,
   Effects,
   EnnemyAttacks,
+  GlobalValues,
   Implants,
   ItemModifiers,
   Items,

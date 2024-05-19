@@ -388,3 +388,13 @@ export interface ICuratedTipText {
   i18n: InternationalizationType;
   tipText: ITipText;
 }
+
+// Global Values ------------------------------------
+export interface IGlobalValue {
+  /** The ID of the global value */
+  _id: string;
+  /** A string as name of the global value (never displayed as is, used for data) */
+  name: string;
+  /** The value of the parameter */
+  value: string;
+}

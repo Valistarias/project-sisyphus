@@ -20,6 +20,7 @@ import {
   Damages,
   Effects,
   EnnemyAttacks,
+  GlobalValues,
   Implants,
   ItemModifiers,
   ItemTypes,
@@ -54,6 +55,7 @@ export default class Api {
   actionTypes: ActionTypes;
   ammos: Ammos;
   armors: Armors;
+  armorTypes: ArmorTypes;
   auth: Auth;
   bags: Bags;
   bodyParts: BodyParts;
@@ -69,6 +71,7 @@ export default class Api {
   damageTypes: DamageTypes;
   effects: Effects;
   ennemyAttacks: EnnemyAttacks;
+  globalValues: GlobalValues;
   implants: Implants;
   itemModifiers: ItemModifiers;
   items: Items;
@@ -95,7 +98,6 @@ export default class Api {
   weaponScopes: WeaponScopes;
   weaponStyles: WeaponStyles;
   weaponTypes: WeaponTypes;
-  armorTypes: ArmorTypes;
 
   constructor() {
     this.actionDurations = new ActionDurations();
@@ -103,6 +105,7 @@ export default class Api {
     this.actionTypes = new ActionTypes();
     this.ammos = new Ammos();
     this.armors = new Armors();
+    this.armorTypes = new ArmorTypes();
     this.auth = new Auth();
     this.bags = new Bags();
     this.bodyParts = new BodyParts();
@@ -118,6 +121,7 @@ export default class Api {
     this.damageTypes = new DamageTypes();
     this.effects = new Effects();
     this.ennemyAttacks = new EnnemyAttacks();
+    this.globalValues = new GlobalValues();
     this.implants = new Implants();
     this.itemModifiers = new ItemModifiers();
     this.items = new Items();
@@ -144,6 +148,5 @@ export default class Api {
     this.weaponScopes = new WeaponScopes();
     this.weaponStyles = new WeaponStyles();
     this.weaponTypes = new WeaponTypes();
-    this.armorTypes = new ArmorTypes();
   }
 }
