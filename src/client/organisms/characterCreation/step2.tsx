@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, type FC } from 'react';
+import React, { useCallback, useMemo, type FC, type ReactNode } from 'react';
 
 import { useForm, type FieldValues } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -44,10 +44,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitCyberFram
   }, []);
 
   const {
-    handleSubmit,
-    setError,
-    setValue,
-    unregister,
+    watch,
     control,
     formState: { errors },
   } = useForm<FieldValues>({
@@ -62,43 +59,61 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitCyberFram
     [globalValues]
   );
 
-  console.log('globalVars', globalVars);
-
-  console.log('stats', stats);
+  const statSelectList = (): ReactNode[] => {
+    const cStatElts: ReactNode[] = [];
+    stats.forEach(({ stat }) => {
+      const valMod = watch(`stats.${stat._id}`) - 5;
+      cStatElts.push(
+        <div key={stat._id} className="characterCreation-step2__stats__field">
+          <NumberSelect
+            inputName={`stats.${stat._id}`}
+            control={control}
+            minimum={globalVars.minPoints ?? 0}
+          />
+          <div className="characterCreation-step2__stats__content">
+            <div className="characterCreation-step2__stats__content__title-block">
+              <Atitle className="characterCreation-step2__stats__content__title" level={2}>
+                {stat.title}
+              </Atitle>
+              <Ap className="characterCreation-step2__stats__content__mod">
+                {`${t('terms.general.modifierShort')}: `}
+                <span
+                  className={classTrim(`
+                    characterCreation-step2__stats__content__mod__value
+                    ${valMod < 0 ? 'characterCreation-step2__stats__content__mod__value--negative' : ''}
+                    ${valMod > 0 ? 'characterCreation-step2__stats__content__mod__value--positive' : ''}
+                  `)}
+                >
+                  {valMod}
+                </span>
+              </Ap>
+            </div>
+            <RichTextElement
+              className="characterCreation-step2__stats__content__text"
+              rawStringContent={stat.summary}
+              readOnly
+            />
+          </div>
+        </div>
+      );
+    });
+    return cStatElts;
+  };
 
   return (
     <div
       className={classTrim(`
-      characterCreation-step2
+        characterCreation-step2
       `)}
     >
+      <div className="characterCreation-step2__points">Points Left</div>
       <Ap className="characterCreation-step2__text">
         {t('characterCreation.step2.text', { ns: 'components' })}
       </Ap>
       <Ap className="characterCreation-step2__sub">
         {t('characterCreation.step2.sub', { ns: 'components' })}
       </Ap>
-      <div className="characterCreation-step2__stats">
-        {stats.map(({ stat }) => (
-          <div key={stat._id} className="characterCreation-step2__stats__field">
-            <NumberSelect
-              inputName={`stats.${stat._id}`}
-              control={control}
-              minimum={globalVars.minPoints ?? 0}
-            />
-            <div className="characterCreation-step2__stats__content">
-              <Atitle className="characterCreation-step2__stats__content__title" level={2}>
-                {stat.title}
-              </Atitle>
-              <RichTextElement
-                className="characterCreation-step2__stats__content__text"
-                rawStringContent={stat.summary}
-                readOnly
-              />
-            </div>
-          </div>
-        ))}
-      </div>
+      <div className="characterCreation-step2__stats">{statSelectList()}</div>
     </div>
   );
 };

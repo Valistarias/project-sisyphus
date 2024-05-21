@@ -43,7 +43,9 @@
       "createdBy": "Created by {{owner}}",
       "createdByShort": "by {{owner}}",
       "yes": "Yes",
-      "no": "No"
+      "no": "No",
+      "modifier": "Modifier",
+      "modifierShort": "Mod"
     },
     "campaign": {
       "title": "campaign"
