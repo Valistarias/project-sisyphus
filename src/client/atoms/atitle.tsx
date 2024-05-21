@@ -1,4 +1,4 @@
-import React, { type FC } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 import { Quark, type IQuarkProps } from '../quark';
 
@@ -10,7 +10,7 @@ interface IAtitle extends IQuarkProps {
   /** The class of the title */
   level?: 1 | 2 | 3 | 4;
   /** The childrens of the P element */
-  children?: React.JSX.Element | string | string[];
+  children?: ReactNode;
 }
 
 const Atitle: FC<IAtitle> = ({ className, children, level = 1 }) => (

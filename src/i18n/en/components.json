@@ -94,7 +94,9 @@
     "step2": {
       "cat": "Stats",
       "text": "Character Stats",
-      "sub": "Choose the characteristics of your new body"
+      "sub": "Choose the characteristics of your new body",
+      "pointsLeft": "Points left to spend:",
+      "next": "Next"
     },
     "step3": {
       "cat": "Skills"

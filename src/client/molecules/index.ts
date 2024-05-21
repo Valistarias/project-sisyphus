@@ -4,6 +4,7 @@ import Checkbox from './checkbox';
 import DiceCard from './diceCard';
 import DropDownMenu from './dropDownMenu';
 import EmbedNotion from './embedNotion';
+import Helper from './helper';
 import Highlight from './highlight';
 import Input from './input';
 import Node from './node';
@@ -19,6 +20,7 @@ export {
   DiceCard,
   DropDownMenu,
   EmbedNotion,
+  Helper,
   Highlight,
   Input,
   Node,

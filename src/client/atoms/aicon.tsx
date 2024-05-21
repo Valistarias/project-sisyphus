@@ -49,7 +49,14 @@ interface IAicon extends IQuarkProps {
   onClick?: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
-const Aicon: FC<IAicon> = ({ type, size = 'medium', className, onClick }) => {
+const Aicon: FC<IAicon> = ({
+  type,
+  size = 'medium',
+  className,
+  onClick,
+  onMouseEnter,
+  onMouseLeave,
+}) => {
   const classes = useMemo<string>(
     () =>
       classTrim(`
@@ -60,42 +67,51 @@ const Aicon: FC<IAicon> = ({ type, size = 'medium', className, onClick }) => {
     [className, size]
   );
 
+  const params = useMemo(
+    () => ({
+      onClick,
+      onMouseEnter,
+      onMouseLeave,
+    }),
+    [onClick, onMouseEnter, onMouseLeave]
+  );
+
   const icoDom = useMemo(() => {
     switch (type) {
       case 'add':
-        return <Quark quarkType={AddLogo} className={classes} />;
+        return <Quark quarkType={AddLogo} className={classes} {...params} />;
       case 'arrow':
-        return <Quark quarkType={ArrowLogo} className={classes} />;
+        return <Quark quarkType={ArrowLogo} className={classes} {...params} />;
       case 'edit':
-        return <Quark quarkType={EditLogo} className={classes} />;
+        return <Quark quarkType={EditLogo} className={classes} {...params} />;
       case 'discord':
-        return <Quark quarkType={DiscordLogo} className={classes} />;
+        return <Quark quarkType={DiscordLogo} className={classes} {...params} />;
       case 'main':
-        return <Quark quarkType={MainLogo} className={classes} />;
+        return <Quark quarkType={MainLogo} className={classes} {...params} />;
       case 'eidolon':
-        return <Quark quarkType={EidolonLogo} className={classes} />;
+        return <Quark quarkType={EidolonLogo} className={classes} {...params} />;
       case 'check':
-        return <Quark quarkType={CheckLogo} className={classes} />;
+        return <Quark quarkType={CheckLogo} className={classes} {...params} />;
       case 'cross':
-        return <Quark quarkType={CrossLogo} className={classes} />;
+        return <Quark quarkType={CrossLogo} className={classes} {...params} />;
       case 'question':
-        return <Quark quarkType={QuestionLogo} className={classes} />;
+        return <Quark quarkType={QuestionLogo} className={classes} {...params} />;
       case 'd20':
-        return <Quark quarkType={D20Logo} className={classes} />;
+        return <Quark quarkType={D20Logo} className={classes} {...params} />;
       case 'd12':
-        return <Quark quarkType={D12Logo} className={classes} />;
+        return <Quark quarkType={D12Logo} className={classes} {...params} />;
       case 'd10':
-        return <Quark quarkType={D10Logo} className={classes} />;
+        return <Quark quarkType={D10Logo} className={classes} {...params} />;
       case 'd8':
-        return <Quark quarkType={D8Logo} className={classes} />;
+        return <Quark quarkType={D8Logo} className={classes} {...params} />;
       case 'd6':
-        return <Quark quarkType={D6Logo} className={classes} />;
+        return <Quark quarkType={D6Logo} className={classes} {...params} />;
       case 'd4':
-        return <Quark quarkType={D4Logo} className={classes} />;
+        return <Quark quarkType={D4Logo} className={classes} {...params} />;
       default:
-        return <Quark quarkType={DeleteLogo} className={classes} />;
+        return <Quark quarkType={DeleteLogo} className={classes} {...params} />;
     }
-  }, [type, classes]);
+  }, [type, classes, params]);
 
   return icoDom;
 };

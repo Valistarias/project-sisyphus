@@ -1,4 +1,4 @@
-import React, { type FC } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 import { Quark, type IQuarkProps } from '../quark';
 
@@ -8,7 +8,7 @@ import './ap.scss';
 
 interface IAp extends IQuarkProps {
   /** The childrens of the P element */
-  children?: React.JSX.Element | string | string[] | Array<string | React.JSX.Element>;
+  children?: ReactNode;
   /** When the text is left clicked */
   onClick?: (e: React.MouseEvent<HTMLElement>) => void;
 }

@@ -1,8 +1,12 @@
-import React, { type FC } from 'react';
+import React, { type FC, type MouseEventHandler } from 'react';
 
 interface IQuarkProps {
   /** The class of the element */
   className?: string;
+  /** When the component is hovered in */
+  onMouseEnter?: MouseEventHandler;
+  /** When the component is hovered out */
+  onMouseLeave?: MouseEventHandler;
   /** The style defined for the element */
   style?: React.CSSProperties;
   /** The react props that need to be set to the smallest defined element */
@@ -18,9 +22,26 @@ interface IQuark extends IQuarkProps {
   [prop: string]: unknown;
 }
 
-const Quark: FC<IQuark> = ({ className, style, quarkType, reactProps, ...rest }) => {
+const Quark: FC<IQuark> = ({
+  className,
+  onMouseEnter,
+  onMouseLeave,
+  style,
+  quarkType,
+  reactProps,
+  ...rest
+}) => {
   const QuarkComponent = quarkType;
-  return <QuarkComponent className={className} style={style} {...reactProps} {...rest} />;
+  return (
+    <QuarkComponent
+      className={className}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      style={style}
+      {...reactProps}
+      {...rest}
+    />
+  );
 };
 
 export { Quark, type IQuarkProps };
