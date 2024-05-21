@@ -17,6 +17,8 @@ interface INumberSelect extends IQuarkProps, IReactHookFormInputs {
   minimum?: number;
   /** The maximum value the stat can go */
   maximum?: number;
+  /** Can you add more value (got the priority over maximum prop) */
+  maxed?: boolean;
 }
 
 const NumberSelect: FC<INumberSelect> = ({
@@ -26,6 +28,7 @@ const NumberSelect: FC<INumberSelect> = ({
   control,
   minimum = 0,
   maximum,
+  maxed = false,
 }) => {
   return (
     <Quark
@@ -44,7 +47,7 @@ const NumberSelect: FC<INumberSelect> = ({
             <Button
               className={classTrim(`
                 number-select__btn-plus
-                ${maximum !== undefined && value >= minimum ? 'number-select__btn-plus--hide' : ''}
+                ${(maximum !== undefined && value >= minimum) || maxed ? 'number-select__btn-plus--hide' : ''}
               `)}
               icon="arrow"
               theme="text-only"

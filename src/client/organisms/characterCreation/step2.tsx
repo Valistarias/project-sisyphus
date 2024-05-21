@@ -10,7 +10,7 @@ import { Button, Helper, NumberSelect } from '../../molecules';
 import { type ICuratedStat } from '../../types';
 import { RichTextElement } from '../richTextElement';
 
-import { classTrim } from '../../utils';
+import { arrSum, classTrim, getCyberFrameLevelsByNodes } from '../../utils';
 
 import './characterCreation.scss';
 
@@ -25,7 +25,7 @@ interface ICharacterCreationStep2 {
 
 const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitCyberFrame }) => {
   const { t } = useTranslation();
-  const { stats, globalValues } = useGlobalVars();
+  const { stats, globalValues, cyberFrames, character } = useGlobalVars();
 
   const createDefaultData = useCallback((stats: ICuratedStat[]) => {
     if (stats.length === 0) {
@@ -43,11 +43,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitCyberFram
     return defaultData;
   }, []);
 
-  const {
-    watch,
-    control,
-    formState: { errors },
-  } = useForm<FieldValues>({
+  const { watch, control } = useForm<FieldValues>({
     defaultValues: useMemo(() => createDefaultData(stats), [createDefaultData, stats]),
   });
 
@@ -59,7 +55,57 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitCyberFram
     [globalValues]
   );
 
+  // Only send CyberFrame bonuses for thwe moment
+  // TODO : When level uyp / death, reuse this function more globally
+  const bonusesByStat = useMemo(() => {
+    if (character === null || character === false) {
+      return [];
+    }
+
+    const nodesByCyberFrames = getCyberFrameLevelsByNodes(character.nodes, cyberFrames);
+
+    const statBonuses: Record<
+      string,
+      {
+        bonus: number;
+        source: string;
+        sourceId: string;
+        broad: boolean;
+      }
+    > = {};
+
+    // If only one source for the list, we'll be precise
+    // If multiple sources for bonuses, we are borad in the phrasing
+    nodesByCyberFrames.forEach(({ cyberFrame, chosenNodes }) => {
+      chosenNodes.forEach((node) => {
+        if (node.statBonuses !== undefined && node.statBonuses.length > 0) {
+          node.statBonuses.forEach((statBonus) => {
+            if (statBonuses[statBonus.stat] === undefined) {
+              statBonuses[statBonus.stat] = {
+                bonus: statBonus.value,
+                source: cyberFrame.cyberFrame.title,
+                sourceId: cyberFrame.cyberFrame._id,
+                broad: false,
+              };
+            } else {
+              statBonuses[statBonus.stat].bonus += statBonus.value;
+              if (statBonuses[statBonus.stat].sourceId !== cyberFrame.cyberFrame._id) {
+                statBonuses[statBonus.stat].broad = true;
+              }
+            }
+          });
+        }
+      });
+    });
+
+    return statBonuses;
+  }, [character, cyberFrames]);
+
+  const pointSpent = arrSum(Object.values(watch('stats') as Record<string, number>) ?? []);
+  const pointsLeft = globalVars.basePoints - pointSpent;
+
   const statSelectList = (): ReactNode[] => {
+    console.log('bonusesByStat', bonusesByStat);
     const cStatElts: ReactNode[] = [];
     let statBlock: ReactNode[] = [];
     stats.forEach(({ stat }, index) => {
@@ -70,29 +116,42 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitCyberFram
             inputName={`stats.${stat._id}`}
             control={control}
             minimum={globalVars.minPoints ?? 0}
+            maxed={pointsLeft === 0}
           />
           <div className="characterCreation-step2__stats__content">
-            <div className="characterCreation-step2__stats__content__title-block">
-              <Atitle className="characterCreation-step2__stats__content__title" level={3}>
-                {stat.title}
-                <Helper>
-                  <RichTextElement rawStringContent={stat.summary} readOnly />
-                </Helper>
-              </Atitle>
-              <Ap className="characterCreation-step2__stats__content__mod">
-                {`${t('terms.general.modifierShort')}: `}
-                <span
-                  className={classTrim(`
+            <Atitle className="characterCreation-step2__stats__content__title" level={3}>
+              {stat.title}
+              <Helper>
+                <RichTextElement rawStringContent={stat.summary} readOnly />
+              </Helper>
+            </Atitle>
+            {bonusesByStat[stat._id] !== undefined ? (
+              <Ap className="characterCreation-step2__stats__content__bonus">
+                {bonusesByStat[stat._id].broad
+                  ? t('characterCreation.step2.generalBonus', {
+                      ns: 'components',
+                      points: bonusesByStat[stat._id].bonus,
+                    })
+                  : t('characterCreation.step2.cFrameBonus', {
+                      ns: 'components',
+                      points: bonusesByStat[stat._id].bonus,
+                      cFrameName: bonusesByStat[stat._id].source,
+                    })}
+              </Ap>
+            ) : null}
+            <Ap className="characterCreation-step2__stats__content__text">Henlo</Ap>
+            <Ap className="characterCreation-step2__stats__content__mod">
+              {`${t('terms.general.modifierShort')}: `}
+              <span
+                className={classTrim(`
                     characterCreation-step2__stats__content__mod__value
                     ${valMod < 0 ? 'characterCreation-step2__stats__content__mod__value--negative' : ''}
                     ${valMod > 0 ? 'characterCreation-step2__stats__content__mod__value--positive' : ''}
                   `)}
-                >
-                  {valMod}
-                </span>
-              </Ap>
-            </div>
-            <Ap className="characterCreation-step2__stats__content__text">Henlo</Ap>
+              >
+                {valMod}
+              </span>
+            </Ap>
           </div>
         </div>
       );
@@ -109,10 +168,13 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitCyberFram
               <Ap className="characterCreation-step2__points__text">
                 {t('characterCreation.step2.pointsLeft', { ns: 'components' })}
               </Ap>
-              <Ap className="characterCreation-step2__points__value">{10}</Ap>
+              <Ap className="characterCreation-step2__points__value">
+                {globalVars.basePoints - pointSpent}
+              </Ap>
               <Button
                 theme="afterglow"
                 className="characterCreation-step2__points__btn"
+                disabled={pointsLeft !== 0}
                 onClick={() => {
                   console.log('clicked');
                 }}
