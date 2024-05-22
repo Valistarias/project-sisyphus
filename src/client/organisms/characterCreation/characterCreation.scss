@@ -269,7 +269,8 @@
       flex-direction: row;
       gap: 1rem;
       min-width: 35rem;
-      padding: 0.5rem 2rem;
+      padding: 1rem 0.5rem;
+      padding-right: 2rem;
       width: 100%;
     }
 
@@ -290,13 +291,22 @@
       }
 
       &__text {
+        display: inline-flex;
+        flex-direction: column;
         font-size: 1.2rem;
+        gap: 1rem;
+
+        &__title {
+          font-size: 1.4rem;
+          text-transform: uppercase;
+        }
       }
 
       &__bonus {
         color: var(--primary);
         font-family: var(--mono-font);
         font-size: 1.2rem;
+        margin-bottom: 0.3rem;
         max-width: 80%;
         text-align: left;
         text-transform: uppercase;

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
+import { AnimatePresence } from 'framer-motion';
 import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
@@ -132,9 +133,17 @@ const NewCharacter: FC = () => {
     [api, user, cyberFrames, character, setCharacter, getNewId, createAlert]
   );
 
-  const onSubmitStats = useCallback((stats) => {
-    console.log('stats', stats);
-  }, []);
+  const onSubmitStats = useCallback(
+    (
+      stats: Array<{
+        id: string;
+        value: number;
+      }>
+    ) => {
+      console.log('stats', stats);
+    },
+    []
+  );
 
   const onSubmitTooltip: SubmitHandler<ToolTipValues> = useCallback(
     ({ autoDisplay }) => {
@@ -169,9 +178,9 @@ const NewCharacter: FC = () => {
 
   const actualFormContent = useMemo(() => {
     if ((forcedCharState ?? charCreationState) === 2) {
-      return <CharCreationStep2 onSubmitCyberFrame={onSubmitStats} />;
+      return <CharCreationStep2 key="step2" onSubmitCyberFrame={onSubmitStats} />;
     }
-    return <CharCreationStep1 onSubmitCyberFrame={onSubmitCyberFrame} />;
+    return <CharCreationStep1 key="step1" onSubmitCyberFrame={onSubmitCyberFrame} />;
   }, [onSubmitCyberFrame, onSubmitStats, forcedCharState, charCreationState]);
 
   useEffect(() => {
@@ -308,7 +317,7 @@ const NewCharacter: FC = () => {
         }}
       />
       <Ariane isSteps data={arianeData} onArianeClick={onArianeClick} />
-      {actualFormContent}
+      <AnimatePresence mode="wait">{actualFormContent}</AnimatePresence>
     </div>
   );
 };

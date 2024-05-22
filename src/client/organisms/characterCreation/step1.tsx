@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState, type FC, type ReactNode } from 'react';
 
+import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../providers';
@@ -175,11 +176,21 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
   ]);
 
   return (
-    <div
+    <motion.div
       className={classTrim(`
-      characterCreation-step1
+        characterCreation-step1
         ${detailsOpened ? 'characterCreation-step1--details' : ''}
       `)}
+      initial={{
+        transform: 'skew(90deg, 0deg) scale3d(.2, .2, .2)',
+      }}
+      animate={{
+        transform: 'skew(0, 0) scale3d(1, 1, 1)',
+      }}
+      exit={{
+        transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)',
+      }}
+      transition={{ ease: 'easeInOut', duration: 0.3 }}
     >
       <div className="characterCreation-step1__details">{detailsBlock}</div>
       <Ap className="characterCreation-step1__text">
@@ -189,7 +200,7 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
         {t('characterCreation.step1.sub', { ns: 'components' })}
       </Ap>
       <div className="characterCreation-step1__list">{cyberFrameList}</div>
-    </div>
+    </motion.div>
   );
 };
 

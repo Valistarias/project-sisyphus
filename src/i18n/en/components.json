@@ -95,7 +95,7 @@
       "cat": "Stats",
       "text": "Character Stats",
       "sub": "Choose the characteristics of your new body",
-      "cFrameBonus": "+ {{points}} from {{cFrameName}} CyberFrame",
+      "cFrameBonus": "+ {{points}} from CyberFrame",
       "generalBonus": "+ {{points}} from your past and experiences",
       "pointsLeft": "Points left to spend:",
       "next": "Next"

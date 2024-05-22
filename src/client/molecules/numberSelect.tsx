@@ -19,6 +19,8 @@ interface INumberSelect extends IQuarkProps, IReactHookFormInputs {
   maximum?: number;
   /** Can you add more value (got the priority over maximum prop) */
   maxed?: boolean;
+  /** The offset of the indicated value */
+  offset?: number;
 }
 
 const NumberSelect: FC<INumberSelect> = ({
@@ -28,6 +30,7 @@ const NumberSelect: FC<INumberSelect> = ({
   control,
   minimum = 0,
   maximum,
+  offset,
   maxed = false,
 }) => {
   return (
@@ -47,7 +50,7 @@ const NumberSelect: FC<INumberSelect> = ({
             <Button
               className={classTrim(`
                 number-select__btn-plus
-                ${(maximum !== undefined && value >= minimum) || maxed ? 'number-select__btn-plus--hide' : ''}
+                ${(maximum !== undefined && value >= maximum) || maxed ? 'number-select__btn-plus--hide' : ''}
               `)}
               icon="arrow"
               theme="text-only"
@@ -55,7 +58,7 @@ const NumberSelect: FC<INumberSelect> = ({
                 onChange(value + 1);
               }}
             />
-            <Ap className="number-select__value">{value}</Ap>
+            <Ap className="number-select__value">{value + (offset ?? 0)}</Ap>
             <Button
               className={classTrim(`
                 number-select__btn-minus

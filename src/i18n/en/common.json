@@ -33,6 +33,231 @@
     "skill": {
       "name": "skill"
     },
+    "stat": {
+      "name": "stat",
+      "descriptions": {
+        "power-0": {
+          "title": "Incapacitated",
+          "text": "Unable to lift or move anything"
+        },
+        "power-1": {
+          "title": "Feeble",
+          "text": "Barely able to lift very light objects."
+        },
+        "power-2": {
+          "title": "Weak",
+          "text": "Struggles with light objects, easily exhausted."
+        },
+        "power-3": {
+          "title": "Below Average",
+          "text": "Handles light tasks, struggles with moderate weights."
+        },
+        "power-4": {
+          "title": "Slightly Below Average",
+          "text": "Manages everyday tasks, struggles with heavier loads."
+        },
+        "power-5": {
+          "title": "Average",
+          "text": "Lifts moderate weights, performs common physical tasks."
+        },
+        "power-6": {
+          "title": "Above Average",
+          "text": "Easily handles heavier tasks and moderate weights."
+        },
+        "power-7": {
+          "title": "Strong",
+          "text": "Lifts heavy objects, performs strenuous activities."
+        },
+        "power-8": {
+          "title": "Very Strong",
+          "text": "Handles very heavy objects, excels in physical tasks."
+        },
+        "power-9": {
+          "title": "Extremely Strong",
+          "text": " Lifts extremely heavy objects with ease."
+        },
+        "power-10": {
+          "title": "Superhuman",
+          "text": "Performs phenomenal feats, far beyond natural human limits."
+        },
+        "dexterity-0": {
+          "title": "Clumsy",
+          "text": "Constantly drops and fumbles everything."
+        },
+        "dexterity-1": {
+          "title": "Very Awkward",
+          "text": "Struggles with basic coordination."
+        },
+        "dexterity-2": {
+          "title": "Awkward",
+          "text": "Frequently clumsy, slow movements."
+        },
+        "dexterity-3": {
+          "title": "Below Average",
+          "text": "Struggles with fine motor skills, uncoordinated."
+        },
+        "dexterity-4": {
+          "title": "Slightly Below Average",
+          "text": "Some difficulty with precise tasks."
+        },
+        "dexterity-5": {
+          "title": "Average",
+          "text": "Performs common tasks with normal coordination."
+        },
+        "dexterity-6": {
+          "title": "Above Average",
+          "text": "Handles precise tasks well, smooth movements."
+        },
+        "dexterity-7": {
+          "title": "Nimble",
+          "text": "Quick reflexes, handles complex tasks easily."
+        },
+        "dexterity-8": {
+          "title": "Very Nimble",
+          "text": "Highly precise and agile in movements."
+        },
+        "dexterity-9": {
+          "title": "Extremely Nimble",
+          "text": "Performs intricate tasks with exceptional ease."
+        },
+        "dexterity-10": {
+          "title": "Superhuman",
+          "text": "Perfect coordination, performs impossible feats."
+        },
+        "computation-0": {
+          "title": "Incomprehensible",
+          "text": "Unable to follow or understand logical processes."
+        },
+        "computation-1": {
+          "title": "Very Poor",
+          "text": "Struggles with basic reasoning, frequent errors."
+        },
+        "computation-2": {
+          "title": "Poor",
+          "text": "Limited logical thinking, often confused."
+        },
+        "computation-3": {
+          "title": "Below Average",
+          "text": "Struggles with complex reasoning, makes simple mistakes."
+        },
+        "computation-4": {
+          "title": "Slightly Below Average",
+          "text": "Understands simple logic, errors with complexity."
+        },
+        "computation-5": {
+          "title": "Average",
+          "text": "Reasonably follows and applies logical thinking."
+        },
+        "computation-6": {
+          "title": "Above Average",
+          "text": "Good at solving moderately complex logical problems."
+        },
+        "computation-7": {
+          "title": "Proficient",
+          "text": "Strong logical reasoning, solves complex problems."
+        },
+        "computation-8": {
+          "title": "Highly Proficient",
+          "text": "Highly logical, excels at intricate reasoning."
+        },
+        "computation-9": {
+          "title": "Exceptional",
+          "text": "Exceptional logical thinking, solves advanced problems."
+        },
+        "computation-10": {
+          "title": "Genius",
+          "text": "Flawless logic, solves extremely complex problems effortlessly."
+        },
+        "feel-0": {
+          "title": "Non-Responsive",
+          "text": "Completely unaware of sensory stimuli."
+        },
+        "feel-1": {
+          "title": "Impaired",
+          "text": "Barely perceives stimuli, frequent misunderstandings."
+        },
+        "feel-2": {
+          "title": "Very Limited",
+          "text": "Detects only intense stimuli, often misses details"
+        },
+        "feel-3": {
+          "title": "Limited",
+          "text": "Struggles to notice subtle changes, misses many cues."
+        },
+        "feel-4": {
+          "title": "Below Average",
+          "text": "Notices common stimuli, but struggles with subtleties."
+        },
+        "feel-5": {
+          "title": "Average",
+          "text": "Detects and interprets typical sensory information."
+        },
+        "feel-6": {
+          "title": "Above Average",
+          "text": "Notices details others miss, quicker reactions."
+        },
+        "feel-7": {
+          "title": "Keen",
+          "text": "Highly attuned, detects subtle changes easily."
+        },
+        "feel-8": {
+          "title": "Very Keen",
+          "text": "Exceptional sensitivity, perceives faint stimuli."
+        },
+        "feel-9": {
+          "title": "Exceptional",
+          "text": "Almost superhuman sensory perception and awareness."
+        },
+        "feel-10": {
+          "title": "Superhuman",
+          "text": "Unparalleled sensory acuity, detects the imperceptible."
+        },
+        "presence-0": {
+          "title": "Invisible",
+          "text": "Easily overlooked, leaves no impression."
+        },
+        "presence-1": {
+          "title": "Insignificant",
+          "text": "Barely registers, lacks influence."
+        },
+        "presence-2": {
+          "title": "Minimal",
+          "text": "Struggles to be noticed, easily forgotten."
+        },
+        "presence-3": {
+          "title": "Weak",
+          "text": "Lacks impact, easily ignored."
+        },
+        "presence-4": {
+          "title": "Below Average",
+          "text": "Makes minimal impression, struggles to stand out."
+        },
+        "presence-5": {
+          "title": "Average",
+          "text": "Holds own in interactions, moderate impact."
+        },
+        "presence-6": {
+          "title": "Above Average",
+          "text": "Notable presence, commands some attention."
+        },
+        "presence-7": {
+          "title": "Strong",
+          "text": "Commands attention, exudes confidence."
+        },
+        "presence-8": {
+          "title": "Very Strong",
+          "text": "Powerful presence, influences interactions significantly."
+        },
+        "presence-9": {
+          "title": "Exceptional",
+          "text": "Captivating presence, leaves a lasting impression."
+        },
+        "presence-10": {
+          "title": "Legendary",
+          "text": "Commands utmost respect, unforgettable influence."
+        }
+      }
+    },
     "general": {
       "you": "You",
       "gm": "Game Master",

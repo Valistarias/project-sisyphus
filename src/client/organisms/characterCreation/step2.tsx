@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, type FC, type ReactNode } from 'react';
 
-import { useForm, type FieldValues } from 'react-hook-form';
+import { motion } from 'framer-motion';
+import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../providers';
@@ -20,7 +21,12 @@ interface FormValues {
 
 interface ICharacterCreationStep2 {
   /** When the user click send and the data is send perfectly */
-  onSubmitCyberFrame: (id: string) => void;
+  onSubmitCyberFrame: (
+    stats: Array<{
+      id: string;
+      value: number;
+    }>
+  ) => void;
 }
 
 const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitCyberFrame }) => {
@@ -43,7 +49,21 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitCyberFram
     return defaultData;
   }, []);
 
-  const { watch, control } = useForm<FieldValues>({
+  const onSaveStats: SubmitHandler<FormValues> = useCallback(
+    ({ stats }) => {
+      if (onSubmitCyberFrame !== undefined) {
+        onSubmitCyberFrame(
+          Object.keys(stats).map((statKey) => ({
+            id: statKey,
+            value: stats[statKey],
+          }))
+        );
+      }
+    },
+    [onSubmitCyberFrame]
+  );
+
+  const { handleSubmit, watch, control } = useForm<FieldValues>({
     defaultValues: useMemo(() => createDefaultData(stats), [createDefaultData, stats]),
   });
 
@@ -105,18 +125,20 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitCyberFram
   const pointsLeft = globalVars.basePoints - pointSpent;
 
   const statSelectList = (): ReactNode[] => {
-    console.log('bonusesByStat', bonusesByStat);
     const cStatElts: ReactNode[] = [];
     let statBlock: ReactNode[] = [];
     stats.forEach(({ stat }, index) => {
-      const valMod = watch(`stats.${stat._id}`) - 5;
+      const valStat = watch(`stats.${stat._id}`);
+      const valMod = valStat + (bonusesByStat[stat._id]?.bonus ?? 0) - 5;
       statBlock.push(
         <div key={stat._id} className="characterCreation-step2__stats__field">
           <NumberSelect
             inputName={`stats.${stat._id}`}
             control={control}
             minimum={globalVars.minPoints ?? 0}
+            maximum={8}
             maxed={pointsLeft === 0}
+            offset={bonusesByStat[stat._id]?.bonus}
           />
           <div className="characterCreation-step2__stats__content">
             <Atitle className="characterCreation-step2__stats__content__title" level={3}>
@@ -127,7 +149,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitCyberFram
             </Atitle>
             {bonusesByStat[stat._id] !== undefined ? (
               <Ap className="characterCreation-step2__stats__content__bonus">
-                {bonusesByStat[stat._id].broad
+                {bonusesByStat[stat._id].broad === true
                   ? t('characterCreation.step2.generalBonus', {
                       ns: 'components',
                       points: bonusesByStat[stat._id].bonus,
@@ -139,7 +161,16 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitCyberFram
                     })}
               </Ap>
             ) : null}
-            <Ap className="characterCreation-step2__stats__content__text">Henlo</Ap>
+            <Ap className="characterCreation-step2__stats__content__text">
+              <span className="characterCreation-step2__stats__content__text__title">
+                {t(
+                  `terms.stat.descriptions.${stat.title.toLowerCase()}-${valStat + (bonusesByStat[stat._id]?.bonus ?? 0)}.title`
+                )}
+              </span>
+              {t(
+                `terms.stat.descriptions.${stat.title.toLowerCase()}-${valStat + (bonusesByStat[stat._id]?.bonus ?? 0)}.text`
+              )}
+            </Ap>
             <Ap className="characterCreation-step2__stats__content__mod">
               {`${t('terms.general.modifierShort')}: `}
               <span
@@ -173,11 +204,9 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitCyberFram
               </Ap>
               <Button
                 theme="afterglow"
+                type="submit"
                 className="characterCreation-step2__points__btn"
                 disabled={pointsLeft !== 0}
-                onClick={() => {
-                  console.log('clicked');
-                }}
               >
                 {t('characterCreation.step2.next', { ns: 'components' })}
               </Button>
@@ -191,10 +220,20 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitCyberFram
   };
 
   return (
-    <div
+    <motion.div
       className={classTrim(`
         characterCreation-step2
       `)}
+      initial={{
+        transform: 'skew(90deg, 0deg) scale3d(.2, .2, .2)',
+      }}
+      animate={{
+        transform: 'skew(0, 0) scale3d(1, 1, 1)',
+      }}
+      exit={{
+        transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)',
+      }}
+      transition={{ ease: 'easeOut', duration: 0.3 }}
     >
       <Ap className="characterCreation-step2__text">
         {t('characterCreation.step2.text', { ns: 'components' })}
@@ -202,8 +241,14 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitCyberFram
       <Ap className="characterCreation-step2__sub">
         {t('characterCreation.step2.sub', { ns: 'components' })}
       </Ap>
-      <div className="characterCreation-step2__stats">{statSelectList()}</div>
-    </div>
+      <form
+        className="characterCreation-step2__stats"
+        onSubmit={handleSubmit(onSaveStats)}
+        noValidate
+      >
+        {statSelectList()}
+      </form>
+    </motion.div>
   );
 };
 
