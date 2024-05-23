@@ -8,7 +8,9 @@ import {
   ArmorModel,
   ArmorTypeModel,
   BagModel,
+  BodyModel,
   BodyPartModel,
+  BodyStatModel,
   CampaignModel,
   ChapterModel,
   ChapterTypeModel,
@@ -57,7 +59,9 @@ import {
   type IArmor,
   type IArmorType,
   type IBag,
+  type IBody,
   type IBodyPart,
+  type IBodyStat,
   type ICampaign,
   type IChapter,
   type IChapterType,
@@ -128,6 +132,10 @@ interface DBType {
   Character: mongoose.Model<ICharacter>;
   /** The CharacterNode Model */
   CharacterNode: mongoose.Model<ICharacterNode>;
+  /** The Body Model */
+  Body: mongoose.Model<IBody>;
+  /** The BodyStat Model */
+  BodyStat: mongoose.Model<IBodyStat>;
   /** The Body Part Model */
   BodyPart: mongoose.Model<IBodyPart>;
   /** The Roll Model */
@@ -225,6 +233,8 @@ const db: DBType = {
   // Character models
   Character: CharacterModel(),
   CharacterNode: CharacterNodeModel(),
+  Body: BodyModel(),
+  BodyStat: BodyStatModel(),
   BodyPart: BodyPartModel(),
   // Rules models
   Action: ActionModel(),

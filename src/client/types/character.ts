@@ -2,6 +2,36 @@ import { type ICampaign } from './campaign';
 import { type InternationalizationType, type IUser } from './global';
 import { type INode } from './rules';
 
+// Body Stats ------------------------------------
+export interface IBodyStat {
+  /** The ID of the body stat */
+  _id: string;
+  /** The body targeted */
+  body: string;
+  /** The linked Stat */
+  stat: string;
+  /** What is the actual value of this stat */
+  value: number;
+  /** When the body was created */
+  createdAt: Date;
+}
+
+// Body ------------------------------------
+export interface IBody {
+  /** The ID of the body */
+  _id: string;
+  /** Is this body alive */
+  alive: boolean;
+  /** The body HP */
+  hp: number;
+  /** The character associated to this body */
+  character: string;
+  /** The associated stats to this body */
+  stats: IBodyStat[];
+  /** When the body was created */
+  createdAt: Date;
+}
+
 // Character Nodes ------------------------------------
 export interface ICharacterNode {
   /** The ID of the character node */

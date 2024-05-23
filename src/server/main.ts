@@ -23,6 +23,7 @@ import ArmorTypeRoutes from './entities/armorType/routes';
 import { verifyTokenSingIn } from './entities/auth/controller';
 import AuthRoutes from './entities/auth/routes';
 import BagRoutes from './entities/bag/routes';
+import BodyRoutes from './entities/body/routes';
 import BodyPartRoutes from './entities/bodyPart/routes';
 import CampaignRoutes from './entities/campaign/routes';
 import ChapterRoutes from './entities/chapter/routes';
@@ -136,6 +137,7 @@ RollRoutes(apiRouter);
 
 // Character routes
 CharacterRoutes(apiRouter);
+BodyRoutes(apiRouter);
 BodyPartRoutes(apiRouter);
 
 // Rules routes

@@ -40,7 +40,7 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
     if (character === null || character === false) {
       return null;
     }
-    return getCyberFrameLevelsByNodes(character.nodes, cyberFrames)[0].cyberFrame;
+    return getCyberFrameLevelsByNodes(character.nodes, cyberFrames)[0]?.cyberFrame;
   }, [character, cyberFrames]);
 
   const detailsBlock = useMemo(() => {
@@ -190,7 +190,7 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
       exit={{
         transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)',
       }}
-      transition={{ ease: 'easeInOut', duration: 0.3 }}
+      transition={{ ease: 'easeInOut', duration: 0.2 }}
     >
       <div className="characterCreation-step1__details">{detailsBlock}</div>
       <Ap className="characterCreation-step1__text">

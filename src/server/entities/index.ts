@@ -5,6 +5,14 @@ export { AmmoModel, type HydratedIAmmo, type IAmmo } from './ammo/model';
 export { ArmorModel, type HydratedIArmor, type IArmor } from './armor/model';
 export { ArmorTypeModel, type HydratedIArmorType, type IArmorType } from './armorType/model';
 export { BagModel, type HydratedIBag, type IBag } from './bag/model';
+export {
+  BodyModel,
+  BodyStatModel,
+  type HydratedIBody,
+  type HydratedIBodyStat,
+  type IBody,
+  type IBodyStat,
+} from './body';
 export { BodyPartModel, type HydratedIBodyPart, type IBodyPart } from './bodyPart/model';
 export {
   CampaignModel,

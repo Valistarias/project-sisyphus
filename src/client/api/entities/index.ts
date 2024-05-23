@@ -8,6 +8,7 @@ import Armors from './armors';
 import ArmorTypes from './armorTypes';
 import Auth from './auth';
 import Bags from './bags';
+import Bodies from './bodies';
 import BodyParts from './bodyParts';
 import Campaigns from './campaigns';
 import Chapters from './chapters';
@@ -57,6 +58,7 @@ export {
   ArmorTypes,
   Auth,
   Bags,
+  Bodies,
   BodyParts,
   Campaigns,
   Chapters,

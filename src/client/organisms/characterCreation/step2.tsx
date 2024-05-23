@@ -76,7 +76,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitCyberFram
   );
 
   // Only send CyberFrame bonuses for thwe moment
-  // TODO : When level uyp / death, reuse this function more globally
+  // TODO : When level up / death, reuse this function more globally
   const bonusesByStat = useMemo(() => {
     if (character === null || character === false) {
       return [];
@@ -233,7 +233,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitCyberFram
       exit={{
         transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)',
       }}
-      transition={{ ease: 'easeOut', duration: 0.3 }}
+      transition={{ ease: 'easeInOut', duration: 0.2 }}
     >
       <Ap className="characterCreation-step2__text">
         {t('characterCreation.step2.text', { ns: 'components' })}

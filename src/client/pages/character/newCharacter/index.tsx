@@ -37,6 +37,8 @@ const NewCharacter: FC = () => {
     character,
     resetCharacter,
     setCharacterFromId,
+    charParams,
+    globalValues,
   } = useGlobalVars();
   const { id } = useParams();
 
@@ -140,9 +142,41 @@ const NewCharacter: FC = () => {
         value: number;
       }>
     ) => {
-      console.log('stats', stats);
+      if (api !== undefined && user !== null && character !== null && character !== false) {
+        let hpVal = Number(globalValues.find(({ name }) => name === 'startHp')?.value ?? 0);
+        const idHpCharParam = charParams.find(({ charParam }) => charParam.formulaId === 'hp')
+          ?.charParam._id;
+        character.nodes?.forEach(({ node }) => {
+          node.charParamBonuses?.forEach((charParamBonus) => {
+            if (charParamBonus.charParam === idHpCharParam) {
+              hpVal += charParamBonus.value;
+            }
+          });
+        });
+        api.bodies
+          .create({
+            characterId: character._id,
+            hp: hpVal,
+            stats,
+          })
+          .then(() => {
+            setCharacterFromId(character._id);
+          })
+          .catch(({ response }) => {
+            const { data } = response;
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{data.err.message}</Ap>
+                </Alert>
+              ),
+            });
+          });
+      }
     },
-    []
+    [api, user, character, globalValues, charParams, setCharacter, getNewId, createAlert]
   );
 
   const onSubmitTooltip: SubmitHandler<ToolTipValues> = useCallback(

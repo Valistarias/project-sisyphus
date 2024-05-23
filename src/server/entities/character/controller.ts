@@ -367,6 +367,7 @@ export {
   create,
   deleteCharacter,
   findAll,
+  findCharacterById,
   findSingle,
   quitCampaign,
   updateInfos,

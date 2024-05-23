@@ -1,5 +1,5 @@
 import type { ICampaign } from './campaign';
-import type { ICharacter, ICharacterNode, ICuratedBodyPart } from './character';
+import type { IBody, IBodyStat, ICharacter, ICharacterNode, ICuratedBodyPart } from './character';
 import type { IReactHookFormInputs } from './form';
 import type { IRoll, IUser, TypeDice, TypeRoll } from './global';
 import type {
@@ -71,6 +71,8 @@ export type {
   IAction,
   IActionDuration,
   IActionType,
+  IBody,
+  IBodyStat,
   ICampaign,
   IChapter,
   IChapterType,
