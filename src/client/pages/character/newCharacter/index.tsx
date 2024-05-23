@@ -119,6 +119,16 @@ const NewCharacter: FC = () => {
                   'Sisyphus',
                   `/character/${sentCharacter._id}/continue`
                 );
+              } else {
+                const newId = getNewId();
+                createAlert({
+                  key: newId,
+                  dom: (
+                    <Alert key={newId} id={newId} timer={5}>
+                      <Ap>{t('newCharacter.successUpdateCyberFrame', { ns: 'pages' })}</Ap>
+                    </Alert>
+                  ),
+                });
               }
               setCharacter(sentCharacter);
             })
@@ -137,7 +147,7 @@ const NewCharacter: FC = () => {
         }
       }
     },
-    [api, user, cyberFrames, character, setCharacter, getNewId, createAlert]
+    [api, user, cyberFrames, character, setCharacter, getNewId, createAlert, t]
   );
 
   const onSubmitSkills = useCallback((skills: string[]) => {
@@ -220,7 +230,7 @@ const NewCharacter: FC = () => {
         }
       }
     },
-    [api, user, character, globalValues, charParams, setCharacterFromId, getNewId, createAlert]
+    [api, user, character, setCharacterFromId, getNewId, createAlert, t, globalValues, charParams]
   );
 
   const onSubmitTooltip: SubmitHandler<ToolTipValues> = useCallback(
