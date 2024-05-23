@@ -12,6 +12,7 @@ import tvBackground from '../../../assets/imgs/tvbg2.gif';
 import { Aicon, Ap, Atitle } from '../../../atoms';
 import { Ariane, Button, Checkbox, type IArianeElt } from '../../../molecules';
 import { Alert, CharCreationStep1, CharCreationStep2, RichTextElement } from '../../../organisms';
+import { CharCreationStep3 } from '../../../organisms/characterCreation';
 import { type ICharacter } from '../../../types';
 
 import { introSequence } from './introSequence';
@@ -54,6 +55,10 @@ const NewCharacter: FC = () => {
 
   const charCreationState = useMemo(() => {
     if (character !== null && character !== false) {
+      if (character.bodies !== undefined && character.bodies?.length > 0) {
+        return 3;
+      }
+
       if (character.nodes !== undefined && character.nodes?.length > 0) {
         return 2;
       }
@@ -135,6 +140,10 @@ const NewCharacter: FC = () => {
     [api, user, cyberFrames, character, setCharacter, getNewId, createAlert]
   );
 
+  const onSubmitSkills = useCallback((skills: string[]) => {
+    console.log('skills', skills);
+  }, []);
+
   const onSubmitStats = useCallback(
     (
       stats: Array<{
@@ -143,40 +152,75 @@ const NewCharacter: FC = () => {
       }>
     ) => {
       if (api !== undefined && user !== null && character !== null && character !== false) {
-        let hpVal = Number(globalValues.find(({ name }) => name === 'startHp')?.value ?? 0);
-        const idHpCharParam = charParams.find(({ charParam }) => charParam.formulaId === 'hp')
-          ?.charParam._id;
-        character.nodes?.forEach(({ node }) => {
-          node.charParamBonuses?.forEach((charParamBonus) => {
-            if (charParamBonus.charParam === idHpCharParam) {
-              hpVal += charParamBonus.value;
-            }
-          });
-        });
-        api.bodies
-          .create({
-            characterId: character._id,
-            hp: hpVal,
-            stats,
-          })
-          .then(() => {
-            setCharacterFromId(character._id);
-          })
-          .catch(({ response }) => {
-            const { data } = response;
-            const newId = getNewId();
-            createAlert({
-              key: newId,
-              dom: (
-                <Alert key={newId} id={newId} timer={5}>
-                  <Ap>{data.err.message}</Ap>
-                </Alert>
-              ),
+        if (character.bodies !== undefined) {
+          const relevantBody = character.bodies?.find((body) => body.alive);
+          if (relevantBody !== undefined) {
+            api.bodies
+              .updateStats({
+                id: relevantBody._id,
+                stats,
+              })
+              .then(() => {
+                setCharacterFromId(character._id);
+                const newId = getNewId();
+                createAlert({
+                  key: newId,
+                  dom: (
+                    <Alert key={newId} id={newId} timer={5}>
+                      <Ap>{t('newCharacter.successUpdateStats', { ns: 'pages' })}</Ap>
+                    </Alert>
+                  ),
+                });
+              })
+              .catch(({ response }) => {
+                const { data } = response;
+                const newId = getNewId();
+                createAlert({
+                  key: newId,
+                  dom: (
+                    <Alert key={newId} id={newId} timer={5}>
+                      <Ap>{data.err.message}</Ap>
+                    </Alert>
+                  ),
+                });
+              });
+          }
+        } else {
+          let hpVal = Number(globalValues.find(({ name }) => name === 'startHp')?.value ?? 0);
+          const idHpCharParam = charParams.find(({ charParam }) => charParam.formulaId === 'hp')
+            ?.charParam._id;
+          character.nodes?.forEach(({ node }) => {
+            node.charParamBonuses?.forEach((charParamBonus) => {
+              if (charParamBonus.charParam === idHpCharParam) {
+                hpVal += charParamBonus.value;
+              }
             });
           });
+          api.bodies
+            .create({
+              characterId: character._id,
+              hp: hpVal,
+              stats,
+            })
+            .then(() => {
+              setCharacterFromId(character._id);
+            })
+            .catch(({ response }) => {
+              const { data } = response;
+              const newId = getNewId();
+              createAlert({
+                key: newId,
+                dom: (
+                  <Alert key={newId} id={newId} timer={5}>
+                    <Ap>{data.err.message}</Ap>
+                  </Alert>
+                ),
+              });
+            });
+        }
       }
     },
-    [api, user, character, globalValues, charParams, setCharacter, getNewId, createAlert]
+    [api, user, character, globalValues, charParams, setCharacterFromId, getNewId, createAlert]
   );
 
   const onSubmitTooltip: SubmitHandler<ToolTipValues> = useCallback(
@@ -211,11 +255,16 @@ const NewCharacter: FC = () => {
   );
 
   const actualFormContent = useMemo(() => {
-    if ((forcedCharState ?? charCreationState) === 2) {
-      return <CharCreationStep2 key="step2" onSubmitCyberFrame={onSubmitStats} />;
+    const state = forcedCharState ?? charCreationState;
+    if (state === 3) {
+      return <CharCreationStep3 key="step3" onSubmitSkills={onSubmitSkills} />;
+    }
+
+    if (state === 2) {
+      return <CharCreationStep2 key="step2" onSubmitStats={onSubmitStats} />;
     }
     return <CharCreationStep1 key="step1" onSubmitCyberFrame={onSubmitCyberFrame} />;
-  }, [onSubmitCyberFrame, onSubmitStats, forcedCharState, charCreationState]);
+  }, [forcedCharState, charCreationState, onSubmitCyberFrame, onSubmitSkills, onSubmitStats]);
 
   useEffect(() => {
     if (

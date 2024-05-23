@@ -5,17 +5,5 @@
   position: absolute;
   top: 0;
   width: 100%;
-  z-index: 1;
-
-  .alert {
-    height: 6rem;
-    overflow: hidden;
-    position: relative;
-    top: var(--header-height);
-    transition: height 0.4s ease;
-
-    &--close {
-      height: 0;
-    }
-  }
+  z-index: 2;
 }

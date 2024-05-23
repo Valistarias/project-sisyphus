@@ -60,6 +60,8 @@ export interface ICharacter {
   campaign?: ICampaign;
   /** The nodes of the character */
   nodes?: ICharacterNode[];
+  /** All the boidies used by this character */
+  bodies?: IBody[];
   /** When the character was created */
   createdAt: Date;
 }

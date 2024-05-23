@@ -1,5 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
+import { type HydratedIBody } from '../../body';
 import { type HydratedINode } from '../../node/model';
 
 import type { ICampaign } from '../../campaign/model';
@@ -24,6 +25,7 @@ interface HydratedICharacter
   createdBy: HydratedDocument<IUser>;
   campaign?: HydratedDocument<ICampaign>;
   nodes?: HydratedINode[];
+  bodies?: HydratedIBody[];
 }
 
 const characterSchema = new Schema<ICharacter>(
@@ -57,6 +59,12 @@ const characterSchema = new Schema<ICharacter>(
 
 characterSchema.virtual('nodes', {
   ref: 'CharacterNode',
+  localField: '_id',
+  foreignField: 'character',
+});
+
+characterSchema.virtual('bodies', {
+  ref: 'Body',
   localField: '_id',
   foreignField: 'character',
 });

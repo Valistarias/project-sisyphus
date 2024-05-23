@@ -9,6 +9,7 @@ import {
   gemServerError,
   gemUnauthorizedGlobal,
 } from '../../utils/globalErrorMessage';
+import { type HydratedIBody } from '../body';
 import { type ICampaign } from '../campaign/model';
 import { type HydratedINode } from '../node/model';
 import { type IUser } from '../user/model';
@@ -39,6 +40,14 @@ const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[
               path: 'node',
               select:
                 '_id title summary icon i18n rank quote cyberFrameBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses',
+            },
+          })
+          .populate<{ bodies: HydratedIBody[] }>({
+            path: 'bodies',
+            select: '_id character alive hp stats createdAt',
+            populate: {
+              path: 'stats',
+              select: '_id body stat value',
             },
           })
           .then(async (res) => {
@@ -88,6 +97,14 @@ const findCompleteCharacterById = async (
                 'statBonuses',
                 'charParamBonuses',
               ],
+            },
+          })
+          .populate<{ bodies: HydratedIBody[] }>({
+            path: 'bodies',
+            select: '_id character alive hp stats createdAt',
+            populate: {
+              path: 'stats',
+              select: '_id body stat value',
             },
           })
           .then(async (res) => {

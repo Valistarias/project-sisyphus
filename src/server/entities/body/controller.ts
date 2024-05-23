@@ -12,7 +12,7 @@ import {
 import { type ICharacter } from '../character';
 import { findCharacterById } from '../character/controller';
 
-import { createStatsByBody } from './stat/controller';
+import { createStatsByBody, replaceStatByBody } from './stat/controller';
 
 import { type HydratedIBody, type HydratedIBodyStat } from './index';
 
@@ -158,6 +158,29 @@ const update = (req: Request, res: Response): void => {
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
+const updateStats = (req: Request, res: Response): void => {
+  const { id, stats } = req.body;
+  if (id === undefined || stats === undefined) {
+    res.status(400).send(gemInvalidField('Body ID'));
+    return;
+  }
+  findBodyById(id as string, req)
+    .then(({ body, canEdit }) => {
+      if (body !== undefined && canEdit) {
+        replaceStatByBody({ bodyId: id, stats })
+          .then(() => {
+            res.send({ message: 'Body was updated successfully!', body });
+          })
+          .catch((err: Error) => {
+            res.status(500).send(gemServerError(err));
+          });
+      } else {
+        res.status(404).send(gemNotFound('Body'));
+      }
+    })
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+};
+
 const deleteBody = (req: Request, res: Response): void => {
   const { id } = req.body;
   if (id === undefined) {
@@ -190,4 +213,4 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteBody, findAll, findSingle, update };
+export { create, deleteBody, findAll, findSingle, update, updateStats };

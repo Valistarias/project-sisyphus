@@ -2,7 +2,7 @@ import { type Router } from 'express';
 
 import { adminNeeded, verifyToken } from '../../middlewares';
 
-import { create, deleteBody, findAll, findSingle, update } from './controller';
+import { create, deleteBody, findAll, findSingle, update, updateStats } from './controller';
 
 export default (app: Router): void => {
   app.use((req, res, next) => {
@@ -17,6 +17,8 @@ export default (app: Router): void => {
   app.post('/bodies/create', [verifyToken, adminNeeded], create);
 
   app.post('/bodies/update', [verifyToken, adminNeeded], update);
+
+  app.post('/bodies/updatestats', [verifyToken, adminNeeded], updateStats);
 
   app.post('/bodies/delete', [verifyToken, adminNeeded], deleteBody);
 };

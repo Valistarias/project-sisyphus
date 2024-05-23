@@ -8,7 +8,7 @@ import { useGlobalVars } from '../../providers';
 
 import { Ap, Atitle } from '../../atoms';
 import { Button, Helper, NumberSelect } from '../../molecules';
-import { type ICuratedStat } from '../../types';
+import { type ICharacter, type ICuratedStat } from '../../types';
 import { RichTextElement } from '../richTextElement';
 
 import { arrSum, classTrim, getCyberFrameLevelsByNodes } from '../../utils';
@@ -21,7 +21,7 @@ interface FormValues {
 
 interface ICharacterCreationStep2 {
   /** When the user click send and the data is send perfectly */
-  onSubmitCyberFrame: (
+  onSubmitStats: (
     stats: Array<{
       id: string;
       value: number;
@@ -29,30 +29,46 @@ interface ICharacterCreationStep2 {
   ) => void;
 }
 
-const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitCyberFrame }) => {
+const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) => {
   const { t } = useTranslation();
   const { stats, globalValues, cyberFrames, character } = useGlobalVars();
 
-  const createDefaultData = useCallback((stats: ICuratedStat[]) => {
-    if (stats.length === 0) {
-      return {};
-    }
-    const defaultData: Partial<FormValues> = {};
-
-    stats.forEach(({ stat }) => {
-      if (defaultData.stats === undefined) {
-        defaultData.stats = {};
+  const createDefaultData = useCallback(
+    (stats: ICuratedStat[], character: ICharacter | null | false) => {
+      if (stats.length === 0) {
+        return {};
       }
-      defaultData.stats[stat._id] = 2;
-    });
+      const defaultData: Partial<FormValues> = {};
+      if (character !== null && character !== false) {
+        const relevantBody = character.bodies?.find((body) => body.alive);
+        if (relevantBody !== undefined) {
+          relevantBody.stats.forEach(({ stat, value }) => {
+            if (defaultData.stats === undefined) {
+              defaultData.stats = {};
+            }
+            defaultData.stats[stat] = value;
+          });
+        }
+      }
 
-    return defaultData;
-  }, []);
+      if (Object.keys(defaultData).length === 0) {
+        stats.forEach(({ stat }) => {
+          if (defaultData.stats === undefined) {
+            defaultData.stats = {};
+          }
+          defaultData.stats[stat._id] = 2;
+        });
+      }
+
+      return defaultData;
+    },
+    []
+  );
 
   const onSaveStats: SubmitHandler<FormValues> = useCallback(
     ({ stats }) => {
-      if (onSubmitCyberFrame !== undefined) {
-        onSubmitCyberFrame(
+      if (onSubmitStats !== undefined) {
+        onSubmitStats(
           Object.keys(stats).map((statKey) => ({
             id: statKey,
             value: stats[statKey],
@@ -60,11 +76,14 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitCyberFram
         );
       }
     },
-    [onSubmitCyberFrame]
+    [onSubmitStats]
   );
 
   const { handleSubmit, watch, control } = useForm<FieldValues>({
-    defaultValues: useMemo(() => createDefaultData(stats), [createDefaultData, stats]),
+    defaultValues: useMemo(
+      () => createDefaultData(stats, character),
+      [createDefaultData, stats, character]
+    ),
   });
 
   const globalVars = useMemo(

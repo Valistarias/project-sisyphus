@@ -92,7 +92,7 @@ const Alert: FC<IAlert> = ({ id, children, timer, closable }) => {
         `)}
     >
       <div className="alert__content">
-        {children}
+        <div className="alert__content__children">{children}</div>
         {closeDom}
       </div>
     </div>

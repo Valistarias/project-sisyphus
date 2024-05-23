@@ -101,7 +101,9 @@
       "next": "Next"
     },
     "step3": {
-      "cat": "Skills"
+      "cat": "Skills",
+      "text": "Character Skills",
+      "sub": "Select your begining skills"
     },
     "step4": {
       "cat": "Background"
