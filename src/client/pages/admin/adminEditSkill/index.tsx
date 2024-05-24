@@ -119,14 +119,7 @@ const AdminEditSkill: FC = () => {
 
   const onSaveSkill: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, stat, formulaId }) => {
-      if (
-        skillText === null ||
-        skillTextFr === null ||
-        textEditor === null ||
-        textFrEditor === null ||
-        formulaId === null ||
-        api === undefined
-      ) {
+      if (textEditor === null || textFrEditor === null || formulaId === null || api === undefined) {
         return;
       }
       let htmlText: string | null = textEditor.getHTML();
@@ -188,19 +181,7 @@ const AdminEditSkill: FC = () => {
           }
         });
     },
-    [
-      skillText,
-      skillTextFr,
-      textEditor,
-      textFrEditor,
-      api,
-      id,
-      getNewId,
-      createAlert,
-      t,
-      reloadSkills,
-      setError,
-    ]
+    [textEditor, textFrEditor, api, id, getNewId, createAlert, t, reloadSkills, setError]
   );
 
   const onAskDelete = useCallback(() => {
@@ -334,6 +315,9 @@ const AdminEditSkill: FC = () => {
             {t('adminEditSkill.delete', { ns: 'pages' })}
           </Button>
         </div>
+        <Button className="adminEditSkill__return-btn" href="/admin/skills" size="small">
+          {t('adminEditSkill.return', { ns: 'pages' })}
+        </Button>
         <Atitle level={2}>{t('adminEditSkill.edit', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror className="adminEditSkill__error">{errors.root.serverError.message}</Aerror>

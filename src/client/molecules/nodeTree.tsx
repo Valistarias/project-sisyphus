@@ -28,7 +28,7 @@ interface INodeTree extends IQuarkProps {
 }
 
 const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {}, isAdmin = false, className }) => {
-  const { t } = useTranslation();
+  const { t, i18n: translationI18nData } = useTranslation();
 
   const specializationBranches = useMemo(
     () => tree.filter(({ branch }) => branch.title !== '_general'),
@@ -148,7 +148,9 @@ const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {}, isAdmin = false
             <div className="node-tree__rank node-tree__cell">{t('terms.node.rank')}</div>
             {specializationBranches.map(({ branch }) => (
               <div className="node-tree__cell" key={branch._id}>
-                <Ap>{branch.title}</Ap>
+                <Ap lang={translationI18nData.language} className="node-tree__cell__title">
+                  {branch.title}
+                </Ap>
                 {isAdmin ? (
                   <Button
                     href={`/admin/${(branch as ISkillBranch).skill !== undefined ? 'skillbranch' : 'cyberframebranch'}/${branch._id}`}

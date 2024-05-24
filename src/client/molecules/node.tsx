@@ -96,6 +96,10 @@ const Node: FC<INode> = ({
     };
   }, [node, charParams, stats, skills]);
 
+  const noContent =
+    (content.summary === null || content.summary === '<p class="ap"></p>') &&
+    (content.quote === undefined || content.quote === '');
+
   return (
     <Quark
       quarkType="div"
@@ -104,6 +108,7 @@ const Node: FC<INode> = ({
         node--${size}
         node--${menuDirection}
         node--${menuAnchor}
+        ${noContent ? 'node--no-content' : ''}
       `)}
     >
       <Abutton
@@ -128,12 +133,14 @@ const Node: FC<INode> = ({
             <div className="node__content__main__infos">
               <Ap>{`${t('terms.node.rank')}: ${nodeElt.rank}`}</Ap>
             </div>
-            <RichTextElement
-              className="node__content__main__text"
-              rawStringContent={content.summary}
-              readOnly
-            />
-            {content.quote !== undefined ? (
+            {content.summary !== null && content.summary !== '<p class="ap"></p>' ? (
+              <RichTextElement
+                className="node__content__main__text"
+                rawStringContent={content.summary}
+                readOnly
+              />
+            ) : null}
+            {content.quote !== undefined && content.quote !== '' ? (
               <Ap className="node__content__main__quote">{`"${content.quote}"`}</Ap>
             ) : null}
           </div>

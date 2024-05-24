@@ -551,11 +551,8 @@ const AdminEditNode: FC = () => {
         })
       );
 
-      let html: string | null = introEditor.getHTML();
+      const html = introEditor.getHTML();
       const htmlFr = introFrEditor.getHTML();
-      if (html === '<p class="ap"></p>') {
-        html = null;
-      }
       let i18n: any | null = null;
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>' || quoteFr !== '') {
         i18n = {

@@ -49,6 +49,7 @@
 
       &__title {
         color: var(--primary);
+        text-align: left;
       }
 
       &__infos {
@@ -175,6 +176,20 @@
       flex-direction: row;
       right: -2rem;
       transform: translate3d(100%, var(--height-transforn-position), 0);
+    }
+  }
+
+  &--no-content {
+    .node__content {
+      flex-direction: column;
+
+      &__main__infos {
+        margin: 0;
+      }
+
+      &__bonuses {
+        width: 100%;
+      }
     }
   }
 

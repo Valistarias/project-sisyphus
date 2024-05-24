@@ -78,22 +78,11 @@ const AdminEditSkillBranch: FC = () => {
 
   const onSaveSkillBranch: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr }) => {
-      if (
-        skillBranchText === null ||
-        skillBranchTextFr === null ||
-        textEditor === null ||
-        textFrEditor === null ||
-        api === undefined
-      ) {
+      if (textEditor === null || textFrEditor === null || api === undefined) {
         return;
       }
-      let htmlText: string | null = textEditor.getHTML();
-
+      const htmlText = textEditor.getHTML();
       const htmlTextFr = textFrEditor.getHTML();
-
-      if (htmlText === '<p class="ap"></p>') {
-        htmlText = null;
-      }
 
       let i18n: any | null = null;
 
@@ -143,18 +132,7 @@ const AdminEditSkillBranch: FC = () => {
           }
         });
     },
-    [
-      skillBranchText,
-      skillBranchTextFr,
-      textEditor,
-      textFrEditor,
-      api,
-      id,
-      getNewId,
-      createAlert,
-      t,
-      setError,
-    ]
+    [textEditor, textFrEditor, api, id, getNewId, createAlert, t, setError]
   );
 
   const onAskDelete = useCallback(() => {

@@ -300,6 +300,7 @@
     "nodes": "Node Tree",
     "edit": "Edit Skill",
     "delete": "Delete Skill",
+    "return": "Return to Skills",
     "i18n": "Internationalization",
     "button": "Update Skill Data",
     "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",

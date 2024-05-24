@@ -20,8 +20,10 @@
 
   .adminSkills__skill-list {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
     gap: 2rem;
+    justify-content: space-around;
     margin-bottom: 2rem;
 
     &__elt {
@@ -30,6 +32,8 @@
       box-shadow: 0 0 2rem var(--primary-10);
       box-sizing: border-box;
       padding: 2rem;
+      text-align: left;
+      width: 27rem;
 
       &__type {
         margin-top: 2rem;

@@ -75,13 +75,16 @@
     min-width: 8rem;
     position: relative;
     transition: background-color 0.2s ease;
+    width: 14rem;
 
-    .ap {
+    &__title {
+      font-size: 1.2rem;
       padding: 0 1rem;
+      text-align: center;
     }
 
     &--node {
-      flex-grow: 1;
+      width: 100%;
 
       &::before {
         background: var(--primary-40);

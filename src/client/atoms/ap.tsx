@@ -9,13 +9,16 @@ import './ap.scss';
 interface IAp extends IQuarkProps {
   /** The childrens of the P element */
   children?: ReactNode;
+  /** The lang param, if defined */
+  lang?: string;
   /** When the text is left clicked */
   onClick?: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
-const AP: FC<IAp> = ({ className, children, onClick }) => (
+const AP: FC<IAp> = ({ className, children, lang, onClick }) => (
   <Quark
     quarkType="p"
+    reactProps={lang !== undefined ? { lang } : {}}
     onClick={onClick}
     className={classTrim(`
         ap
