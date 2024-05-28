@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../providers';
 
-import { Ali, Ap, Atitle, Aul } from '../../atoms';
+import { Ali, Ap, Atitle, Aul, type typeIcons } from '../../atoms';
 import { Button, Helper, NodeTree } from '../../molecules';
 import { type ICuratedNode, type ICuratedSkill, type ISkillBranch } from '../../types';
 import {
@@ -129,6 +129,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
       return [];
     }
     const statElts: ReactNode[] = [];
+    const nbSkillSelected = nbBeginningSkills - selectedSkills.length;
     aggregatedSkills.forEach(({ stat, skills }) => {
       if (relevantBody.body !== undefined) {
         const relevantCharacterData = relevantBody.body.stats.find(
@@ -168,6 +169,16 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
                   });
                 }
                 const skillVal = valMod + (selected ? bonus : 0);
+                let icon: typeIcons = 'add';
+                if (selected) {
+                  if (nbSkillSelected === 0) {
+                    icon = 'check';
+                  } else {
+                    icon = 'minus';
+                  }
+                } else if (nbSkillSelected === 0) {
+                  icon = 'cross';
+                }
                 return (
                   <Ali
                     key={skill.skill._id}
@@ -178,9 +189,10 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
                   >
                     <span className="characterCreation-step3__stat-block__content__name">
                       <Button
-                        icon={selected ? 'minus' : 'add'}
-                        theme={selected ? 'text-only' : 'solid'}
+                        icon={icon}
+                        theme={selected || nbSkillSelected === 0 ? 'text-only' : 'solid'}
                         size="small"
+                        disabled={nbSkillSelected === 0 && !selected}
                         onClick={() => {
                           setSelectedSkills((prev) => {
                             const next = [...prev];
@@ -222,7 +234,6 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
           </div>
         );
         if (statElts.length === 1) {
-          const nbSkillSelected = nbBeginningSkills - selectedSkills.length;
           statElts.push(
             <div key="block-stat-points" className="characterCreation-step3__points">
               <Ap className="characterCreation-step3__points__text">
