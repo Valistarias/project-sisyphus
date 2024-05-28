@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, type FC, type ReactNode } from 'react';
+import React, { useRef, useState, type FC, type ReactNode } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -25,7 +25,7 @@ const Helper: FC<IHelper> = ({ children, size = 'medium', theme = 'solid', onCli
 
   const [delayHandler, setDelayHandler] = useState<NodeJS.Timeout | null>(null);
   const [isHelperOpen, setHelperOpen] = useState<boolean>(false);
-  const [placement, setPlacement] = useState<string>('bottom-left');
+  const [placement, setPlacement] = useState<string>('top-left');
 
   const domHelperContent = useRef<HTMLDivElement>(null);
 
@@ -42,7 +42,12 @@ const Helper: FC<IHelper> = ({ children, size = 'medium', theme = 'solid', onCli
       } else if (leftRight === 'right' && dimensions.left < 0) {
         leftRight = 'left';
       }
-      if (dimensions.bottom > windowHeight) {
+      if (topBottom === 'top' && dimensions.bottom + dimensions.height + 30 < windowHeight) {
+        topBottom = 'bottom';
+      } else if (
+        topBottom === 'bottom' &&
+        dimensions.bottom + dimensions.height + 30 > windowHeight
+      ) {
         topBottom = 'top';
       }
       setPlacement(`${topBottom}-${leftRight}`);
@@ -60,28 +65,6 @@ const Helper: FC<IHelper> = ({ children, size = 'medium', theme = 'solid', onCli
       setHelperOpen(false);
     }
   };
-
-  useEffect(() => {
-    setPlacement((prev) => {
-      if (domHelperContent.current !== null) {
-        const dimensions = domHelperContent.current.getBoundingClientRect();
-        const windowWidth = window.innerWidth;
-        const windowHeight = window.innerHeight;
-        let topBottom = prev.split('-')[0];
-        let leftRight = prev.split('-')[1];
-        if (dimensions.right > windowWidth) {
-          leftRight = 'right';
-        }
-        // 200 -> max height, to prevent flicker
-        if (dimensions.top + 200 > windowHeight) {
-          topBottom = 'top';
-        }
-
-        return `${topBottom}-${leftRight}`;
-      }
-      return prev;
-    });
-  }, []);
 
   return (
     <Quark

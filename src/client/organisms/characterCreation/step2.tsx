@@ -224,10 +224,10 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
                 {globalVars.basePoints - pointSpent}
               </Ap>
               <Button
-                theme="afterglow"
                 type="submit"
                 className="characterCreation-step2__points__btn"
                 disabled={pointsLeft !== 0}
+                theme={pointsLeft !== 0 ? 'text-only' : 'afterglow'}
               >
                 {t('characterCreation.step2.next', { ns: 'components' })}
               </Button>

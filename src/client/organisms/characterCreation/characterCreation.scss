@@ -370,7 +370,8 @@
       gap: 2rem;
       justify-content: space-between;
       margin-bottom: 0;
-      padding: 0.5rem;
+      padding: 0.2rem;
+      padding-right: 1rem;
       user-select: none;
     }
 
@@ -410,9 +411,11 @@
       &__elt {
         align-items: center;
         background: var(--primary-00);
+        border-radius: var(--border-radius);
         display: inline-flex;
         justify-content: space-between;
-        padding: 0.5rem;
+        padding: 0.2rem;
+        padding-right: 1rem;
         transition: background 0.3s ease;
 
         &--selected {

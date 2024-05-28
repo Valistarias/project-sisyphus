@@ -179,6 +179,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
                     <span className="characterCreation-step3__stat-block__content__name">
                       <Button
                         icon={selected ? 'minus' : 'add'}
+                        theme={selected ? 'text-only' : 'solid'}
                         size="small"
                         onClick={() => {
                           setSelectedSkills((prev) => {
@@ -229,10 +230,10 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
               </Ap>
               <Ap className="characterCreation-step3__points__value">{nbSkillSelected}</Ap>
               <Button
-                theme="afterglow"
                 type="submit"
                 className="characterCreation-step3__points__btn"
                 disabled={nbSkillSelected !== 0}
+                theme={nbSkillSelected !== 0 ? 'text-only' : 'afterglow'}
                 onClick={handleSubmitSkills}
               >
                 {t('characterCreation.step3.next', { ns: 'components' })}
