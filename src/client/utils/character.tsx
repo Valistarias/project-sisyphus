@@ -3,9 +3,11 @@ import {
   type ICharacter,
   type ICharacterNode,
   type ICuratedCyberFrame,
+  type ICuratedNode,
   type ICuratedSkill,
   type ICuratedStat,
   type INode,
+  type ISkill,
 } from '../types';
 
 interface ICyberFrameLevels {
@@ -87,6 +89,18 @@ const getActualBody = (
   };
 };
 
+const getBaseSkillNode = (skill: ISkill): ICuratedNode | undefined => {
+  const generalNodes = skill.branches.find((branch) => branch.skillBranch.title === '_general')
+    ?.skillBranch.nodes;
+  return generalNodes?.find(({ node }) => node.rank === 1);
+};
+
 const calculateStatMod = (val: number): number => val - 5;
 
-export { aggregateSkillsByStats, calculateStatMod, getActualBody, getCyberFrameLevelsByNodes };
+export {
+  aggregateSkillsByStats,
+  calculateStatMod,
+  getActualBody,
+  getBaseSkillNode,
+  getCyberFrameLevelsByNodes,
+};

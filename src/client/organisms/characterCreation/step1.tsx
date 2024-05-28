@@ -48,9 +48,6 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
       return <div className="characterCreation-step1__detail-block" />;
     }
     const { cyberFrame } = openedCFrame;
-    // const branches = cyberFrame.branches.filter(
-    //   ({ cyberFrameBranch }) => cyberFrameBranch.title !== '_general'
-    // );
     const tempTree: Record<
       string,
       {
@@ -80,20 +77,6 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
               rawStringContent={cyberFrame.summary}
               readOnly
             />
-            {/* <Atitle level={3}>
-                {t('characterCreation.step1.cFramebranches', { ns: 'components' })}
-              </Atitle>
-              <Aul noPoints className="characterCreation-step1__detail-block__branches">
-                {branches.map(({ cyberFrameBranch }) => (
-                  <Ali
-                    key={cyberFrameBranch._id}
-                    className="characterCreation-step1__detail-block__branches__branch"
-                  >
-                    <Atitle level={4}>{cyberFrameBranch.title}</Atitle>
-                    <RichTextElement rawStringContent={cyberFrameBranch.summary} readOnly />
-                  </Ali>
-                ))}
-              </Aul> */}
           </div>
           <div className="characterCreation-step1__detail-block__btns">
             {chosenCyberFrame?.cyberFrame._id === cyberFrame._id ? null : (

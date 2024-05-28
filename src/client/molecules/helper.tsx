@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState, type FC, type ReactNode } from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import { Aicon } from '../atoms';
 import { Quark, type IQuarkProps } from '../quark';
 
@@ -14,14 +16,18 @@ interface IHelper extends IQuarkProps {
   size?: 'medium' | 'small';
   /** The theme of the helper */
   theme?: 'solid' | 'text-only';
+  /** When the helper is clicked */
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
-const Helper: FC<IHelper> = ({ children, size = 'medium', theme = 'solid' }) => {
+const Helper: FC<IHelper> = ({ children, size = 'medium', theme = 'solid', onClick }) => {
+  const { t } = useTranslation();
+
   const [delayHandler, setDelayHandler] = useState<NodeJS.Timeout | null>(null);
   const [isHelperOpen, setHelperOpen] = useState<boolean>(false);
   const [placement, setPlacement] = useState<string>('bottom-left');
 
-  const domHelperContent = useRef<HTMLSpanElement>(null);
+  const domHelperContent = useRef<HTMLDivElement>(null);
 
   const handleMouseEnter = (): void => {
     if (domHelperContent.current !== null) {
@@ -83,6 +89,7 @@ const Helper: FC<IHelper> = ({ children, size = 'medium', theme = 'solid' }) => 
       className={classTrim(`
         helper
         ${isHelperOpen ? 'helper--open' : ''}
+        ${onClick !== undefined ? 'helper--clickable' : ''}
         helper--${placement}
         helper--${size}
         helper--${theme}
@@ -94,10 +101,17 @@ const Helper: FC<IHelper> = ({ children, size = 'medium', theme = 'solid' }) => 
         size="small"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        onClick={(e) => {
+          if (onClick !== undefined) {
+            onClick(e);
+            handleMouseLeave();
+          }
+        }}
       />
-      <span className="helper__content" ref={domHelperContent}>
+      <div className="helper__content" ref={domHelperContent}>
         {children}
-      </span>
+        <span className="helper__content__info">{t('helper.more', { ns: 'components' })}</span>
+      </div>
     </Quark>
   );
 };

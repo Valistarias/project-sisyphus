@@ -103,7 +103,10 @@
     "step3": {
       "cat": "Skills",
       "text": "Character Skills",
-      "sub": "Select your begining skills"
+      "sub": "Select your begining skills",
+      "pointsLeft": "Points left to spend:",
+      "return": "Back",
+      "next": "Next"
     },
     "step4": {
       "cat": "Background"
@@ -114,5 +117,8 @@
     "step6": {
       "cat": "Identification"
     }
+  },
+  "helper": {
+    "more": "Click the \"?\" to see more"
   }
 }

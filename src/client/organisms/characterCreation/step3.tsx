@@ -1,4 +1,4 @@
-import React, { useMemo, type FC, type ReactNode } from 'react';
+import React, { useCallback, useMemo, useState, type FC, type ReactNode } from 'react';
 
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -6,8 +6,14 @@ import { useTranslation } from 'react-i18next';
 import { useGlobalVars } from '../../providers';
 
 import { Ali, Ap, Atitle, Aul } from '../../atoms';
-import { Helper } from '../../molecules';
-import { aggregateSkillsByStats, calculateStatMod, getActualBody } from '../../utils/character';
+import { Button, Helper, NodeTree } from '../../molecules';
+import { type ICuratedNode, type ICuratedSkill, type ISkillBranch } from '../../types';
+import {
+  aggregateSkillsByStats,
+  calculateStatMod,
+  getActualBody,
+  getBaseSkillNode,
+} from '../../utils/character';
 import { RichTextElement } from '../richTextElement';
 
 import { classTrim } from '../../utils';
@@ -16,14 +22,103 @@ import './characterCreation.scss';
 
 interface ICharacterCreationStep2 {
   /** When the user click send and the data is send perfectly */
-  onSubmitSkills: (skills: string[]) => void;
+  onSubmitSkills: (nodes: string[]) => void;
 }
 
 const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills }) => {
   const { t } = useTranslation();
-  const { skills, stats, globalValues, cyberFrames, character } = useGlobalVars();
+  const { skills, stats, globalValues, character } = useGlobalVars();
+
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [openedSkill, setOpenedSkill] = useState<ICuratedSkill | null>(null);
+  const [detailsOpened, setDetailsOpened] = useState<boolean>(false);
+
+  const handleSubmitSkills = useCallback(() => {
+    const nodeIdToSend: string[] = [];
+    selectedSkills.forEach((skillId) => {
+      const linkedSkill = skills.find(({ skill }) => skill._id === skillId);
+      if (linkedSkill !== undefined) {
+        const baseSkillNode = getBaseSkillNode(linkedSkill.skill);
+        if (baseSkillNode !== undefined) {
+          nodeIdToSend.push(baseSkillNode.node._id);
+        }
+      }
+    });
+    if (nodeIdToSend.length !== selectedSkills.length) {
+      console.error('The nodes sent and the selected skills dont match at step 3');
+    } else {
+      onSubmitSkills(nodeIdToSend);
+    }
+  }, [skills, selectedSkills, onSubmitSkills]);
 
   const aggregatedSkills = useMemo(() => aggregateSkillsByStats(skills, stats), [skills, stats]);
+
+  const nbBeginningSkills = useMemo(
+    () => Number(globalValues.find(({ name }) => name === 'nbBeginningSkills')?.value ?? 0),
+    [globalValues]
+  );
+
+  const detailsBlock = useMemo(() => {
+    if (openedSkill === null) {
+      return <div className="characterCreation-step3__detail-block" />;
+    }
+    const { skill } = openedSkill;
+    const tempTree: Record<
+      string,
+      {
+        branch: ISkillBranch;
+        nodes: ICuratedNode[];
+      }
+    > = {};
+    skill.branches?.forEach(({ skillBranch }) => {
+      tempTree[skillBranch._id] = {
+        branch: skillBranch,
+        nodes: skillBranch.nodes,
+      };
+    });
+    return (
+      <div className="characterCreation-step3__detail-block">
+        <NodeTree
+          className="characterCreation-step3__detail-block__tree"
+          tree={Object.values(tempTree)}
+        />
+        <div className="characterCreation-step3__detail-block__vertical">
+          <div className="characterCreation-step3__detail-block__main">
+            <Atitle level={2} className="characterCreation-step3__detail-block__title">
+              {skill.title}
+            </Atitle>
+            <RichTextElement
+              className="characterCreation-step3__detail-block__text"
+              rawStringContent={skill.summary}
+              readOnly
+            />
+          </div>
+          <div className="characterCreation-step3__detail-block__btns">
+            {openedSkill?.skill._id === skill._id ? null : (
+              <Button
+                theme="afterglow"
+                size="large"
+                onClick={() => {
+                  setDetailsOpened(false);
+                }}
+              >
+                {t('characterCreation.step3.chooseCta', { ns: 'components' })}
+              </Button>
+            )}
+            <Button
+              theme="text-only"
+              size="large"
+              onClick={() => {
+                setDetailsOpened(false);
+              }}
+            >
+              {t('characterCreation.step3.return', { ns: 'components' })}
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }, [openedSkill, t]);
 
   const statBlocks = useMemo(() => {
     if (character === null || character === false) {
@@ -45,9 +140,6 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
             <div className="characterCreation-step3__stat-block__title">
               <Atitle className="characterCreation-step2__stats__content__title" level={3}>
                 {stat.stat.title}
-                {/* <Helper size="small">
-                  <RichTextElement rawStringContent={stat.stat.summary} readOnly />
-                </Helper> */}
               </Atitle>
               <Ap className="characterCreation-step3__stat-block__mod">
                 {`${t('terms.general.modifierShort')}: `}
@@ -63,17 +155,54 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
               </Ap>
             </div>
             <Aul noPoints className="characterCreation-step3__stat-block__content">
-              {skills.map(({ skill }) => {
-                const skillVal = valMod;
+              {skills.map((skill) => {
+                const selected =
+                  selectedSkills.find((skillId) => skillId === skill.skill._id) !== undefined;
+                const baseNode = getBaseSkillNode(skill.skill);
+                let bonus = 0;
+                if (baseNode !== undefined) {
+                  baseNode.node.skillBonuses?.forEach((skillBonus) => {
+                    if (skillBonus.skill === skill.skill._id) {
+                      bonus += skillBonus.value;
+                    }
+                  });
+                }
+                const skillVal = valMod + (selected ? bonus : 0);
                 return (
                   <Ali
-                    key={skill._id}
-                    className="characterCreation-step3__stat-block__content__elt"
+                    key={skill.skill._id}
+                    className={classTrim(`
+                      characterCreation-step3__stat-block__content__elt
+                      ${selected ? 'characterCreation-step3__stat-block__content__elt--selected' : ''}
+                    `)}
                   >
                     <span className="characterCreation-step3__stat-block__content__name">
-                      {skill.title}
-                      <Helper size="small" theme="text-only">
-                        <RichTextElement rawStringContent={skill.summary} readOnly />
+                      <Button
+                        icon={selected ? 'minus' : 'add'}
+                        size="small"
+                        onClick={() => {
+                          setSelectedSkills((prev) => {
+                            const next = [...prev];
+                            const valIndex = next.findIndex((val) => val === skill.skill._id);
+                            if (valIndex !== -1) {
+                              next.splice(valIndex, 1);
+                            } else {
+                              next.push(skill.skill._id);
+                            }
+                            return next;
+                          });
+                        }}
+                      />
+                      {skill.skill.title}
+                      <Helper
+                        size="small"
+                        theme="text-only"
+                        onClick={() => {
+                          setOpenedSkill(skill);
+                          setDetailsOpened(true);
+                        }}
+                      >
+                        <RichTextElement rawStringContent={skill.skill.summary} readOnly />
                       </Helper>
                     </span>
                     <span
@@ -91,17 +220,36 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
             </Aul>
           </div>
         );
+        if (statElts.length === 1) {
+          const nbSkillSelected = nbBeginningSkills - selectedSkills.length;
+          statElts.push(
+            <div key="block-stat-points" className="characterCreation-step3__points">
+              <Ap className="characterCreation-step3__points__text">
+                {t('characterCreation.step3.pointsLeft', { ns: 'components' })}
+              </Ap>
+              <Ap className="characterCreation-step3__points__value">{nbSkillSelected}</Ap>
+              <Button
+                theme="afterglow"
+                type="submit"
+                className="characterCreation-step3__points__btn"
+                disabled={nbSkillSelected !== 0}
+                onClick={handleSubmitSkills}
+              >
+                {t('characterCreation.step3.next', { ns: 'components' })}
+              </Button>
+            </div>
+          );
+        }
       }
     });
     return statElts;
-  }, [aggregatedSkills, character, t]);
-
-  console.log('aggregatedSkills', aggregatedSkills);
+  }, [character, aggregatedSkills, t, selectedSkills, nbBeginningSkills, handleSubmitSkills]);
 
   return (
     <motion.div
       className={classTrim(`
         characterCreation-step3
+        ${detailsOpened ? 'characterCreation-step3--details' : ''}
       `)}
       initial={{
         transform: 'skew(90deg, 0deg) scale3d(.2, .2, .2)',
@@ -117,6 +265,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
       }}
       transition={{ ease: 'easeInOut', duration: 0.2 }}
     >
+      <div className="characterCreation-step3__details">{detailsBlock}</div>
       <Ap className="characterCreation-step3__text">
         {t('characterCreation.step3.text', { ns: 'components' })}
       </Ap>
@@ -124,13 +273,6 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
         {t('characterCreation.step3.sub', { ns: 'components' })}
       </Ap>
       <div className="characterCreation-step3__list">{statBlocks}</div>
-      {/* <form
-        className="characterCreation-step3__stats"
-        onSubmit={handleSubmit(onSaveStats)}
-        noValidate
-      >
-        {statSelectList()}
-      </form> */}
     </motion.div>
   );
 };

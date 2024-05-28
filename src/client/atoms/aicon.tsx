@@ -15,6 +15,7 @@ import DiscordLogo from '../assets/icons/discord.svg?react';
 import EditLogo from '../assets/icons/edit.svg?react';
 import EidolonLogo from '../assets/icons/eidolon.svg?react';
 import MainLogo from '../assets/icons/logo.svg?react';
+import MinusLogo from '../assets/icons/minus.svg?react';
 import QuestionLogo from '../assets/icons/question.svg?react';
 import { Quark, type IQuarkProps } from '../quark';
 
@@ -24,6 +25,7 @@ import './aicon.scss';
 
 type typeIcons =
   | 'add'
+  | 'minus'
   | 'edit'
   | 'arrow'
   | 'check'
@@ -80,6 +82,8 @@ const Aicon: FC<IAicon> = ({
     switch (type) {
       case 'add':
         return <Quark quarkType={AddLogo} className={classes} {...params} />;
+      case 'minus':
+        return <Quark quarkType={MinusLogo} className={classes} {...params} />;
       case 'arrow':
         return <Quark quarkType={ArrowLogo} className={classes} {...params} />;
       case 'edit':

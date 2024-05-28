@@ -150,8 +150,8 @@ const NewCharacter: FC = () => {
     [api, user, cyberFrames, character, setCharacter, getNewId, createAlert, t]
   );
 
-  const onSubmitSkills = useCallback((skills: string[]) => {
-    console.log('skills', skills);
+  const onSubmitSkills = useCallback((nodeIds: string[]) => {
+    console.log('nodeIds', nodeIds);
   }, []);
 
   const onSubmitStats = useCallback(
