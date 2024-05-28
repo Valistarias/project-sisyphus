@@ -9,6 +9,7 @@ import { useGlobalVars } from '../../providers';
 import { Ap, Atitle } from '../../atoms';
 import { Button, Helper, NumberSelect } from '../../molecules';
 import { type ICharacter, type ICuratedStat } from '../../types';
+import { calculateStatMod, getActualBody } from '../../utils/character';
 import { RichTextElement } from '../richTextElement';
 
 import { arrSum, classTrim, getCyberFrameLevelsByNodes } from '../../utils';
@@ -40,9 +41,10 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
       }
       const defaultData: Partial<FormValues> = {};
       if (character !== null && character !== false) {
-        const relevantBody = character.bodies?.find((body) => body.alive);
-        if (relevantBody !== undefined) {
-          relevantBody.stats.forEach(({ stat, value }) => {
+        // const relevantBody = character.bodies?.find((body) => body.alive);
+        const relevantBody = getActualBody(character);
+        if (relevantBody.body !== undefined && !relevantBody.duplicate) {
+          relevantBody.body.stats.forEach(({ stat, value }) => {
             if (defaultData.stats === undefined) {
               defaultData.stats = {};
             }
@@ -148,7 +150,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
     let statBlock: ReactNode[] = [];
     stats.forEach(({ stat }, index) => {
       const valStat = watch(`stats.${stat._id}`);
-      const valMod = valStat + (bonusesByStat[stat._id]?.bonus ?? 0) - 5;
+      const valMod = calculateStatMod(Number(valStat + (bonusesByStat[stat._id]?.bonus ?? 0)));
       statBlock.push(
         <div key={stat._id} className="characterCreation-step2__stats__field">
           <NumberSelect
@@ -248,6 +250,9 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
       }}
       animate={{
         transform: 'skew(0, 0) scale3d(1, 1, 1)',
+        transitionEnd: {
+          transform: 'none',
+        },
       }}
       exit={{
         transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)',

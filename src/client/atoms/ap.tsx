@@ -11,17 +11,20 @@ interface IAp extends IQuarkProps {
   children?: ReactNode;
   /** The lang param, if defined */
   lang?: string;
+  /** Is the hyphens activated */
+  hyphens?: boolean;
   /** When the text is left clicked */
   onClick?: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
-const AP: FC<IAp> = ({ className, children, lang, onClick }) => (
+const AP: FC<IAp> = ({ className, children, lang, hyphens = false, onClick }) => (
   <Quark
     quarkType="p"
     reactProps={lang !== undefined ? { lang } : {}}
     onClick={onClick}
     className={classTrim(`
         ap
+        ${hyphens ? 'ap--hyphens' : ''}
         ${className ?? ''}
       `)}
   >

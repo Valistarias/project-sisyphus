@@ -2,13 +2,7 @@
   position: relative;
 
   &__icon {
-    background-color: var(--primary-20);
-    border: 1px solid var(--primary);
-    border-radius: 100%;
-    box-shadow: 0 0 2rem var(--primary-10);
     cursor: help;
-    fill: var(--tertiary);
-    padding: 0.5rem;
   }
 
   &__content {
@@ -64,6 +58,42 @@
   &--open {
     .helper__content {
       opacity: 1;
+    }
+  }
+
+  // Themes ---------------
+
+  &--solid {
+    .helper__icon {
+      background-color: var(--primary-20);
+      border: 1px solid var(--primary);
+      border-radius: 100%;
+      box-shadow: 0 0 2rem var(--primary-10);
+      fill: var(--tertiary);
+    }
+  }
+
+  &--text-only {
+    .helper__icon {
+      background-color: var(--primary-dark-20);
+      border-radius: 100%;
+      fill: var(--tertiary);
+    }
+  }
+
+  // Sizes ----------------
+
+  &--medium {
+    .helper__icon {
+      padding: 0.5rem;
+    }
+  }
+
+  &--small {
+    height: 2.1rem;
+
+    .helper__icon {
+      padding: 0.3rem;
     }
   }
 }

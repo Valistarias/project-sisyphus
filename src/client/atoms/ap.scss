@@ -1,4 +1,7 @@
 .ap {
-  hyphens: auto;
   margin: 0;
+
+  &--hyphens {
+    hyphens: auto;
+  }
 }

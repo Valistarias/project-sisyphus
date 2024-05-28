@@ -10,9 +10,13 @@ import './helper.scss';
 interface IHelper extends IQuarkProps {
   /** The content of the helper */
   children: ReactNode;
+  /** The size of the helper */
+  size?: 'medium' | 'small';
+  /** The theme of the helper */
+  theme?: 'solid' | 'text-only';
 }
 
-const Helper: FC<IHelper> = ({ children }) => {
+const Helper: FC<IHelper> = ({ children, size = 'medium', theme = 'solid' }) => {
   const [delayHandler, setDelayHandler] = useState<NodeJS.Timeout | null>(null);
   const [isHelperOpen, setHelperOpen] = useState<boolean>(false);
   const [placement, setPlacement] = useState<string>('bottom-left');
@@ -26,13 +30,15 @@ const Helper: FC<IHelper> = ({ children }) => {
       const windowHeight = window.innerHeight;
       let topBottom = placement.split('-')[0];
       let leftRight = placement.split('-')[1];
-      if (dimensions.right > windowWidth) {
+
+      if (leftRight === 'left' && dimensions.right > windowWidth && dimensions.left > 60) {
         leftRight = 'right';
+      } else if (leftRight === 'right' && dimensions.left < 0) {
+        leftRight = 'left';
       }
       if (dimensions.bottom > windowHeight) {
         topBottom = 'top';
       }
-
       setPlacement(`${topBottom}-${leftRight}`);
     }
     setDelayHandler(
@@ -78,6 +84,8 @@ const Helper: FC<IHelper> = ({ children }) => {
         helper
         ${isHelperOpen ? 'helper--open' : ''}
         helper--${placement}
+        helper--${size}
+        helper--${theme}
       `)}
     >
       <Aicon

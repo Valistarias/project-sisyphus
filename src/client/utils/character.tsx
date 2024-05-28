@@ -1,4 +1,12 @@
-import { type ICharacterNode, type ICuratedCyberFrame, type INode } from '../types';
+import {
+  type IBody,
+  type ICharacter,
+  type ICharacterNode,
+  type ICuratedCyberFrame,
+  type ICuratedSkill,
+  type ICuratedStat,
+  type INode,
+} from '../types';
 
 interface ICyberFrameLevels {
   cyberFrame: ICuratedCyberFrame;
@@ -39,4 +47,46 @@ const getCyberFrameLevelsByNodes = (
   return Object.values(tempFrames);
 };
 
-export { getCyberFrameLevelsByNodes };
+const aggregateSkillsByStats = (
+  skills: ICuratedSkill[],
+  stats: ICuratedStat[]
+): Array<{
+  stat: ICuratedStat;
+  skills: ICuratedSkill[];
+}> => {
+  if (skills.length === 0) {
+    return [];
+  }
+  const tempAggregatedStats = {};
+  skills.forEach(({ skill, i18n }) => {
+    const relatedStat = stats.find(({ stat }) => stat._id === skill.stat._id);
+    if (relatedStat !== undefined) {
+      if (tempAggregatedStats[skill.stat._id] === undefined) {
+        tempAggregatedStats[skill.stat._id] = {
+          stat: relatedStat,
+          skills: [],
+        };
+      }
+      tempAggregatedStats[skill.stat._id].skills.push({ skill, i18n });
+    }
+  });
+
+  return Object.values(tempAggregatedStats);
+};
+
+const getActualBody = (
+  character: ICharacter
+): {
+  body: IBody | undefined;
+  duplicate: boolean;
+} => {
+  const relevantBodies = character?.bodies?.filter((body) => body.alive);
+  return {
+    body: relevantBodies?.[0] ?? undefined,
+    duplicate: relevantBodies !== undefined && relevantBodies.length > 1,
+  };
+};
+
+const calculateStatMod = (val: number): number => val - 5;
+
+export { aggregateSkillsByStats, calculateStatMod, getActualBody, getCyberFrameLevelsByNodes };

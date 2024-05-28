@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../providers';
 
-import { Ali, Ap, Atitle, Aul } from '../../atoms';
+import { Ap, Atitle } from '../../atoms';
 import { Button, NodeTree } from '../../molecules';
 import { type ICuratedCyberFrame, type ICuratedNode, type ICyberFrameBranch } from '../../types';
 import { RichTextElement } from '../richTextElement';
@@ -48,9 +48,9 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
       return <div className="characterCreation-step1__detail-block" />;
     }
     const { cyberFrame } = openedCFrame;
-    const branches = cyberFrame.branches.filter(
-      ({ cyberFrameBranch }) => cyberFrameBranch.title !== '_general'
-    );
+    // const branches = cyberFrame.branches.filter(
+    //   ({ cyberFrameBranch }) => cyberFrameBranch.title !== '_general'
+    // );
     const tempTree: Record<
       string,
       {
@@ -66,11 +66,11 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
     });
     return (
       <div className="characterCreation-step1__detail-block">
-        <div className="characterCreation-step1__detail-block__line">
-          <NodeTree
-            className="characterCreation-step1__detail-block__tree"
-            tree={Object.values(tempTree)}
-          />
+        <NodeTree
+          className="characterCreation-step1__detail-block__tree"
+          tree={Object.values(tempTree)}
+        />
+        <div className="characterCreation-step1__detail-block__vertical">
           <div className="characterCreation-step1__detail-block__main">
             <Atitle level={2} className="characterCreation-step1__detail-block__title">
               {cyberFrame.title}
@@ -80,44 +80,44 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
               rawStringContent={cyberFrame.summary}
               readOnly
             />
-            <Atitle level={3}>
-              {t('characterCreation.step1.cFramebranches', { ns: 'components' })}
-            </Atitle>
-            <Aul noPoints className="characterCreation-step1__detail-block__branches">
-              {branches.map(({ cyberFrameBranch }) => (
-                <Ali
-                  key={cyberFrameBranch._id}
-                  className="characterCreation-step1__detail-block__branches__branch"
-                >
-                  <Atitle level={4}>{cyberFrameBranch.title}</Atitle>
-                  <RichTextElement rawStringContent={cyberFrameBranch.summary} readOnly />
-                </Ali>
-              ))}
-            </Aul>
+            {/* <Atitle level={3}>
+                {t('characterCreation.step1.cFramebranches', { ns: 'components' })}
+              </Atitle>
+              <Aul noPoints className="characterCreation-step1__detail-block__branches">
+                {branches.map(({ cyberFrameBranch }) => (
+                  <Ali
+                    key={cyberFrameBranch._id}
+                    className="characterCreation-step1__detail-block__branches__branch"
+                  >
+                    <Atitle level={4}>{cyberFrameBranch.title}</Atitle>
+                    <RichTextElement rawStringContent={cyberFrameBranch.summary} readOnly />
+                  </Ali>
+                ))}
+              </Aul> */}
           </div>
-        </div>
-        <div className="characterCreation-step1__detail-block__btns">
-          {chosenCyberFrame?.cyberFrame._id === cyberFrame._id ? null : (
+          <div className="characterCreation-step1__detail-block__btns">
+            {chosenCyberFrame?.cyberFrame._id === cyberFrame._id ? null : (
+              <Button
+                theme="afterglow"
+                size="large"
+                onClick={() => {
+                  onSubmitCyberFrame(cyberFrame._id);
+                  setDetailsOpened(false);
+                }}
+              >
+                {t('characterCreation.step1.chooseCta', { ns: 'components' })}
+              </Button>
+            )}
             <Button
-              theme="afterglow"
+              theme="text-only"
               size="large"
               onClick={() => {
-                onSubmitCyberFrame(cyberFrame._id);
                 setDetailsOpened(false);
               }}
             >
-              {t('characterCreation.step1.chooseCta', { ns: 'components' })}
+              {t('characterCreation.step1.return', { ns: 'components' })}
             </Button>
-          )}
-          <Button
-            theme="text-only"
-            size="large"
-            onClick={() => {
-              setDetailsOpened(false);
-            }}
-          >
-            {t('characterCreation.step1.return', { ns: 'components' })}
-          </Button>
+          </div>
         </div>
       </div>
     );
@@ -186,6 +186,9 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
       }}
       animate={{
         transform: 'skew(0, 0) scale3d(1, 1, 1)',
+        transitionEnd: {
+          transform: 'none',
+        },
       }}
       exit={{
         transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)',
