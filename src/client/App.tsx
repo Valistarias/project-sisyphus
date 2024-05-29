@@ -9,6 +9,7 @@ import {
   AdminAmmosPage,
   AdminArmorTypesPage,
   AdminArmorsPage,
+  AdminBackgroundsPage,
   AdminBagsPage,
   AdminBodyPartsPage,
   AdminCharParamsPage,
@@ -17,6 +18,7 @@ import {
   AdminEditAmmoPage,
   AdminEditArmorPage,
   AdminEditArmorTypePage,
+  AdminEditBackgroundPage,
   AdminEditBagPage,
   AdminEditBodyPartPage,
   AdminEditChapterPage,
@@ -54,6 +56,7 @@ import {
   AdminNewAmmoPage,
   AdminNewArmorPage,
   AdminNewArmorTypePage,
+  AdminNewBackgroundPage,
   AdminNewBagPage,
   AdminNewBodyPartPage,
   AdminNewChapterPage,
@@ -598,6 +601,18 @@ const App: FC = () => {
             {
               path: '/admin/globalvalue/:id',
               element: <AdminEditGlobalValuePage />,
+            },
+            {
+              path: '/admin/backgrounds',
+              element: <AdminBackgroundsPage />,
+            },
+            {
+              path: '/admin/background/new',
+              element: <AdminNewBackgroundPage />,
+            },
+            {
+              path: '/admin/background/:id',
+              element: <AdminEditBackgroundPage />,
             },
             // {
             //   path: '/admin/skillbranch/:id',

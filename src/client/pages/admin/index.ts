@@ -2,6 +2,7 @@ import AdminPage from './admin';
 import AdminAmmosPage from './adminAmmos';
 import AdminArmorsPage from './adminArmors';
 import AdminArmorTypesPage from './adminArmorTypes';
+import AdminBackgroundsPage from './adminBackgrounds';
 import AdminBagsPage from './adminBags';
 import AdminBodyPartsPage from './adminBodyParts';
 import AdminCharParamsPage from './adminCharParams';
@@ -10,6 +11,7 @@ import AdminDamageTypesPage from './adminDamageTypes';
 import AdminEditAmmoPage from './adminEditAmmo';
 import AdminEditArmorPage from './adminEditArmor';
 import AdminEditArmorTypePage from './adminEditArmorType';
+import AdminEditBackgroundPage from './adminEditBackground';
 import AdminEditBagPage from './adminEditBag';
 import AdminEditBodyPartPage from './adminEditBodyPart';
 import AdminEditChapterPage from './adminEditChapter';
@@ -46,6 +48,7 @@ import AdminItemTypesPage from './adminItemTypes';
 import AdminNewAmmoPage from './adminNewAmmo';
 import AdminNewArmorPage from './adminNewArmor';
 import AdminNewArmorTypePage from './adminNewArmorType';
+import AdminNewBackgroundPage from './adminNewBackground';
 import AdminNewBagPage from './adminNewBag';
 import AdminNewBodyPartPage from './adminNewBodyPart';
 import AdminNewChapterPage from './adminNewChapter';
@@ -92,6 +95,7 @@ export {
   AdminAmmosPage,
   AdminArmorsPage,
   AdminArmorTypesPage,
+  AdminBackgroundsPage,
   AdminBagsPage,
   AdminBodyPartsPage,
   AdminCharParamsPage,
@@ -100,6 +104,7 @@ export {
   AdminEditAmmoPage,
   AdminEditArmorPage,
   AdminEditArmorTypePage,
+  AdminEditBackgroundPage,
   AdminEditBagPage,
   AdminEditBodyPartPage,
   AdminEditChapterPage,
@@ -136,6 +141,7 @@ export {
   AdminNewAmmoPage,
   AdminNewArmorPage,
   AdminNewArmorTypePage,
+  AdminNewBackgroundPage,
   AdminNewBagPage,
   AdminNewBodyPartPage,
   AdminNewChapterPage,

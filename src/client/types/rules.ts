@@ -398,3 +398,26 @@ export interface IGlobalValue {
   /** The value of the parameter */
   value: string;
 }
+
+// Backgrounds ------------------------------------
+export interface IBackground {
+  /** The ID of the background */
+  _id: string;
+  /** The title of the background */
+  title: string;
+  /** The summary of the background */
+  summary: string;
+  /** The skill bonuses related to the background */
+  skillBonuses?: ISkillBonus[];
+  /** The stat bonuses related to the background */
+  statBonuses?: IStatBonus[];
+  /** The charParam bonuses related to the background */
+  charParamBonuses?: ICharParamBonus[];
+  /** When the background was created */
+  createdAt: Date;
+}
+
+export interface ICuratedBackground {
+  i18n: InternationalizationType;
+  background: IBackground;
+}

@@ -7,6 +7,7 @@ import {
   AmmoModel,
   ArmorModel,
   ArmorTypeModel,
+  BackgroundModel,
   BagModel,
   BodyModel,
   BodyPartModel,
@@ -58,6 +59,7 @@ import {
   type IAmmo,
   type IArmor,
   type IArmorType,
+  type IBackground,
   type IBag,
   type IBody,
   type IBodyPart,
@@ -130,6 +132,8 @@ interface DBType {
   Campaign: mongoose.Model<ICampaign>;
   /** The Character Model */
   Character: mongoose.Model<ICharacter>;
+  /** The Background Model */
+  Background: mongoose.Model<IBackground>;
   /** The CharacterNode Model */
   CharacterNode: mongoose.Model<ICharacterNode>;
   /** The Body Model */
@@ -253,6 +257,7 @@ const db: DBType = {
   StatBonus: StatBonusModel(),
   TipText: TipTextModel(),
   GlobalValue: GlobalValueModel(),
+  Background: BackgroundModel(),
   // Items models
   Ammo: AmmoModel(),
   Bag: BagModel(),

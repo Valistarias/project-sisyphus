@@ -629,5 +629,12 @@
   "nameGlobalValueValue": {
     "required": "An Value is required",
     "label": "Value"
+  },
+  "nameBackground": {
+    "required": "A name is required for this background",
+    "label": "Background Name"
+  },
+  "backgroundSummary": {
+    "title": "Background Details"
   }
 }

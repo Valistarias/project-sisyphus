@@ -22,6 +22,7 @@ import ArmorRoutes from './entities/armor/routes';
 import ArmorTypeRoutes from './entities/armorType/routes';
 import { verifyTokenSingIn } from './entities/auth/controller';
 import AuthRoutes from './entities/auth/routes';
+import BackgroundRoutes from './entities/background/routes';
 import BagRoutes from './entities/bag/routes';
 import BodyRoutes from './entities/body/routes';
 import BodyPartRoutes from './entities/bodyPart/routes';
@@ -157,6 +158,7 @@ SkillRoutes(apiRouter);
 StatBonusRoutes(apiRouter);
 StatRoutes(apiRouter);
 TiptextRoutes(apiRouter);
+BackgroundRoutes(apiRouter);
 
 // Items routes
 AmmoRoutes(apiRouter);

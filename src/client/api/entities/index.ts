@@ -7,6 +7,7 @@ import Ammos from './ammos';
 import Armors from './armors';
 import ArmorTypes from './armorTypes';
 import Auth from './auth';
+import Backgrounds from './backgrounds';
 import Bags from './bags';
 import Bodies from './bodies';
 import BodyParts from './bodyParts';
@@ -57,6 +58,7 @@ export {
   Armors,
   ArmorTypes,
   Auth,
+  Backgrounds,
   Bags,
   Bodies,
   BodyParts,

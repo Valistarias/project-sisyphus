@@ -6,6 +6,7 @@ import {
   ArmorTypes,
   Armors,
   Auth,
+  Backgrounds,
   Bags,
   Bodies,
   BodyParts,
@@ -58,6 +59,7 @@ export default class Api {
   armors: Armors;
   armorTypes: ArmorTypes;
   auth: Auth;
+  backgrounds: Backgrounds;
   bags: Bags;
   bodies: Bodies;
   bodyParts: BodyParts;
@@ -109,6 +111,7 @@ export default class Api {
     this.armors = new Armors();
     this.armorTypes = new ArmorTypes();
     this.auth = new Auth();
+    this.backgrounds = new Backgrounds();
     this.bags = new Bags();
     this.bodies = new Bodies();
     this.bodyParts = new BodyParts();

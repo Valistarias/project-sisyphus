@@ -4,6 +4,7 @@ export { ActionTypeModel, type IActionType } from './actionType/model';
 export { AmmoModel, type HydratedIAmmo, type IAmmo } from './ammo/model';
 export { ArmorModel, type HydratedIArmor, type IArmor } from './armor/model';
 export { ArmorTypeModel, type HydratedIArmorType, type IArmorType } from './armorType/model';
+export { BackgroundModel, type HydratedIBackground, type IBackground } from './background/model';
 export { BagModel, type HydratedIBag, type IBag } from './bag/model';
 export {
   BodyModel,
