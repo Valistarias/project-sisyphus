@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState, type FC, type ReactNode } from 'react';
+import React, { useCallback, useEffect, useMemo, useState, type FC, type ReactNode } from 'react';
 
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -256,6 +256,30 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
     });
     return statElts;
   }, [character, aggregatedSkills, t, selectedSkills, nbBeginningSkills, handleSubmitSkills]);
+
+  useEffect(() => {
+    if (
+      character !== null &&
+      character !== false &&
+      character.nodes !== undefined &&
+      character.nodes.length > 1
+    ) {
+      const nodeBranchIds = character.nodes
+        .filter(({ node }) => node.skillBranch !== undefined)
+        .map(({ node }) => node.skillBranch);
+      const skillIds: string[] = [];
+      nodeBranchIds.forEach((nodeBranchId) => {
+        const foundSkill = skills.find(
+          ({ skill }) =>
+            skill.branches.find(({ skillBranch }) => skillBranch._id === nodeBranchId) !== undefined
+        );
+        if (foundSkill !== undefined) {
+          skillIds.push(foundSkill.skill._id);
+        }
+      });
+      setSelectedSkills(skillIds ?? []);
+    }
+  }, [character, skills]);
 
   return (
     <motion.div

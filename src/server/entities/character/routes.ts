@@ -10,6 +10,7 @@ import {
   findSingle,
   quitCampaign,
   updateInfos,
+  updateNodes,
 } from './controller';
 
 export default (app: Router): void => {
@@ -24,9 +25,9 @@ export default (app: Router): void => {
 
   app.post('/characters/quitcampaign', [verifyToken], quitCampaign);
 
-  // app.post('/characters/create', [verifyToken], create);
-
   app.post('/characters/addnode', [verifyToken], addNode);
+
+  app.post('/characters/updatenodes', [verifyToken], updateNodes);
 
   app.post('/characters/addfirstcyberframenode', [verifyToken], addFirstCyberFrameNode);
 

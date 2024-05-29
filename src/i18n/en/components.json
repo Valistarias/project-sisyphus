@@ -109,7 +109,9 @@
       "next": "Next"
     },
     "step4": {
-      "cat": "Background"
+      "cat": "Background",
+      "text": "Background",
+      "sub": "Your Past Life"
     },
     "step5": {
       "cat": "Inventory"

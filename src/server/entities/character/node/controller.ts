@@ -89,6 +89,24 @@ const updateNodeByCharacter = async (req: {
       });
   });
 
+const deleteSpecificNodesByCharacter = async (req: {
+  characterId: string;
+  nodeIds: string[];
+}): Promise<boolean> =>
+  await new Promise((resolve, reject) => {
+    const { characterId, nodeIds } = req;
+    CharacterNode.deleteMany({
+      character: characterId,
+      node: { $in: nodeIds },
+    })
+      .then(() => {
+        resolve(true);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+
 const deleteNodesByCharacter = async (characterId: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     CharacterNode.deleteMany({
@@ -105,6 +123,7 @@ const deleteNodesByCharacter = async (characterId: string): Promise<boolean> =>
 export {
   createNodesByCharacter,
   deleteNodesByCharacter,
+  deleteSpecificNodesByCharacter,
   replaceCyberFrameNodeByCharacter,
   updateNodeByCharacter,
 };

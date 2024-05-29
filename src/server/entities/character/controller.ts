@@ -14,7 +14,11 @@ import { type ICampaign } from '../campaign/model';
 import { type HydratedINode } from '../node/model';
 import { type IUser } from '../user/model';
 
-import { createNodesByCharacter, replaceCyberFrameNodeByCharacter } from './node/controller';
+import {
+  createNodesByCharacter,
+  deleteSpecificNodesByCharacter,
+  replaceCyberFrameNodeByCharacter,
+} from './node/controller';
 
 import { type HydratedICharacter } from './index';
 
@@ -39,7 +43,7 @@ const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[
             populate: {
               path: 'node',
               select:
-                '_id title summary icon i18n rank quote cyberFrameBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses',
+                '_id title summary icon i18n rank quote cyberFrameBranch skillBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses',
             },
           })
           .populate<{ bodies: HydratedIBody[] }>({
@@ -88,7 +92,7 @@ const findCompleteCharacterById = async (
             populate: {
               path: 'node',
               select:
-                '_id title summary icon i18n rank quote cyberFrameBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses',
+                '_id title summary icon i18n rank quote cyberFrameBranch skillBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses',
               populate: [
                 'effects',
                 'actions',
@@ -209,6 +213,41 @@ const addNode = (req: Request, res: Response): void => {
           findCompleteCharacterById(characterIdSent, req)
             .then(({ char }) => res.send(char))
             .catch((err: Error) => res.status(404).send(err));
+        })
+        .catch((err: Error) => {
+          res.status(500).send(gemServerError(err));
+        });
+    })
+    .catch((err: Error) => {
+      res.status(500).send(gemServerError(err));
+    });
+};
+
+const updateNodes = (req: Request, res: Response): void => {
+  const { characterId, toAdd, toRemove } = req.body;
+  if (characterId === undefined) {
+    res.status(400).send(gemInvalidField('Character'));
+    return;
+  }
+  createOrFindCharacter(req)
+    .then((characterIdSent) => {
+      deleteSpecificNodesByCharacter({
+        characterId: characterIdSent,
+        nodeIds: toRemove,
+      })
+        .then(() => {
+          createNodesByCharacter({
+            characterId: characterIdSent,
+            nodeIds: toAdd,
+          })
+            .then(() => {
+              findCompleteCharacterById(characterIdSent, req)
+                .then(({ char }) => res.send(char))
+                .catch((err: Error) => res.status(404).send(err));
+            })
+            .catch((err: Error) => {
+              res.status(500).send(gemServerError(err));
+            });
         })
         .catch((err: Error) => {
           res.status(500).send(gemServerError(err));
@@ -388,4 +427,5 @@ export {
   findSingle,
   quitCampaign,
   updateInfos,
+  updateNodes,
 };

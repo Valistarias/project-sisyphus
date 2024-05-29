@@ -208,7 +208,8 @@
     "closeTip": "Close",
     "successCreate": "Character successfully created !",
     "successUpdateCyberFrame": "Character CyberFrame updated",
-    "successUpdateStats": "Character Stats updated"
+    "successUpdateStats": "Character Stats updated",
+    "successUpdateSkills": "Character Skills updated"
   },
   "editCharacter": {
     "title": "Edit Character",

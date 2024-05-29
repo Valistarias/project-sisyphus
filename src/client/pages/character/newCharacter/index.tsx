@@ -12,7 +12,7 @@ import tvBackground from '../../../assets/imgs/tvbg2.gif';
 import { Aicon, Ap, Atitle } from '../../../atoms';
 import { Ariane, Button, Checkbox, type IArianeElt } from '../../../molecules';
 import { Alert, CharCreationStep1, CharCreationStep2, RichTextElement } from '../../../organisms';
-import { CharCreationStep3 } from '../../../organisms/characterCreation';
+import { CharCreationStep3, CharCreationStep4 } from '../../../organisms/characterCreation';
 import { type ICharacter } from '../../../types';
 
 import { introSequence } from './introSequence';
@@ -55,11 +55,15 @@ const NewCharacter: FC = () => {
 
   const charCreationState = useMemo(() => {
     if (character !== null && character !== false) {
+      if (character.nodes !== undefined && character.nodes?.length > 1) {
+        return 4;
+      }
+
       if (character.bodies !== undefined && character.bodies?.length > 0) {
         return 3;
       }
 
-      if (character.nodes !== undefined && character.nodes?.length > 0) {
+      if (character.nodes !== undefined && character.nodes?.length === 1) {
         return 2;
       }
     }
@@ -150,9 +154,75 @@ const NewCharacter: FC = () => {
     [api, user, cyberFrames, character, setCharacter, getNewId, createAlert, t]
   );
 
-  const onSubmitSkills = useCallback((nodeIds: string[]) => {
-    console.log('nodeIds', nodeIds);
-  }, []);
+  const onSubmitBackground = useCallback(
+    (backgroundId: string) => {
+      if (api !== undefined && user !== null && character !== null && character !== false) {
+        console.log('backgroundId', backgroundId);
+      }
+    },
+    [api, character, user]
+  );
+
+  console.log('character', character);
+
+  const onSubmitSkills = useCallback(
+    (nodeIds: string[]) => {
+      if (api !== undefined && user !== null && character !== null && character !== false) {
+        let nodeToAdd: string[] = [];
+        const nodeToRemove: string[] = [];
+        if (character.nodes !== undefined && character.nodes.length > 1) {
+          const selectedNodeSkillIds = character.nodes
+            .filter(({ node }) => node.skillBranch !== undefined)
+            .map(({ node }) => node._id);
+
+          selectedNodeSkillIds.forEach((selectedNodeSkillId) => {
+            if (!nodeIds.includes(selectedNodeSkillId)) {
+              nodeToRemove.push(selectedNodeSkillId);
+            }
+          });
+
+          nodeIds.forEach((nodeId) => {
+            if (!selectedNodeSkillIds.includes(nodeId)) {
+              nodeToAdd.push(nodeId);
+            }
+          });
+        } else {
+          nodeToAdd = nodeIds;
+        }
+        api.characters
+          .updateNodes({
+            characterId: character._id,
+            toAdd: nodeToAdd,
+            toRemove: nodeToRemove,
+          })
+          .then((sentCharacter: ICharacter) => {
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{t('newCharacter.successUpdateSkills', { ns: 'pages' })}</Ap>
+                </Alert>
+              ),
+            });
+            setCharacter(sentCharacter);
+          })
+          .catch(({ response }) => {
+            const { data } = response;
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{data.err.message}</Ap>
+                </Alert>
+              ),
+            });
+          });
+      }
+    },
+    [api, character, createAlert, getNewId, setCharacter, t, user]
+  );
 
   const onSubmitStats = useCallback(
     (
@@ -266,6 +336,10 @@ const NewCharacter: FC = () => {
 
   const actualFormContent = useMemo(() => {
     const state = forcedCharState ?? charCreationState;
+    if (state === 4) {
+      return <CharCreationStep4 key="step4" onSubmitBackground={onSubmitBackground} />;
+    }
+
     if (state === 3) {
       return <CharCreationStep3 key="step3" onSubmitSkills={onSubmitSkills} />;
     }
@@ -274,7 +348,14 @@ const NewCharacter: FC = () => {
       return <CharCreationStep2 key="step2" onSubmitStats={onSubmitStats} />;
     }
     return <CharCreationStep1 key="step1" onSubmitCyberFrame={onSubmitCyberFrame} />;
-  }, [forcedCharState, charCreationState, onSubmitCyberFrame, onSubmitSkills, onSubmitStats]);
+  }, [
+    forcedCharState,
+    charCreationState,
+    onSubmitCyberFrame,
+    onSubmitBackground,
+    onSubmitSkills,
+    onSubmitStats,
+  ]);
 
   useEffect(() => {
     if (

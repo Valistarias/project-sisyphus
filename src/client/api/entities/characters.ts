@@ -13,10 +13,17 @@ interface ICharacterAddNodePayload {
   nodeId: string;
 }
 
+interface ICharacterUpdateNodesPayload {
+  characterId?: string;
+  toAdd: string[];
+  toRemove: string[];
+}
+
 export default class Characters extends Entity {
   get: (payload: ICharacterPayload) => Promise<ICharacter>;
   addNode: (payload: ICharacterAddNodePayload) => Promise<ICharacter>;
   addFirstCyberFrameNode: (payload: ICharacterAddNodePayload) => Promise<ICharacter>;
+  updateNodes: (payload: ICharacterUpdateNodesPayload) => Promise<ICharacter>;
   quitCampaign: (payload: ICharacterPayload) => Promise<boolean>;
 
   constructor() {
@@ -50,6 +57,18 @@ export default class Characters extends Entity {
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/addnode/`, payload)
+          .then((res) => {
+            resolve(res.data as ICharacter);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+
+    this.updateNodes = async (payload) =>
+      await new Promise((resolve, reject) => {
+        axios
+          .post(`${this.url}/updatenodes/`, payload)
           .then((res) => {
             resolve(res.data as ICharacter);
           })
