@@ -139,7 +139,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
         statElts.push(
           <div key={stat.stat._id} className="characterCreation-step3__stat-block">
             <div className="characterCreation-step3__stat-block__title">
-              <Atitle className="characterCreation-step2__stats__content__title" level={3}>
+              <Atitle className="characterCreation-step3__stats__content__title" level={3}>
                 {stat.stat.title}
               </Atitle>
               <Ap className="characterCreation-step3__stat-block__mod">
