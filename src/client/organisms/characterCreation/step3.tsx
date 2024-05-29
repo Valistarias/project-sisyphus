@@ -288,7 +288,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
         ${detailsOpened ? 'characterCreation-step3--details' : ''}
       `)}
       initial={{
-        transform: 'skew(90deg, 0deg) scale3d(.2, .2, .2)',
+        transform: 'skew(80deg, 0deg) scale3d(.2, .2, .2)',
       }}
       animate={{
         transform: 'skew(0, 0) scale3d(1, 1, 1)',
@@ -297,7 +297,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
         },
       }}
       exit={{
-        transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)',
+        transform: 'skew(-80deg, 0deg) scale3d(.2, .2, .2)',
       }}
       transition={{ ease: 'easeInOut', duration: 0.2 }}
     >

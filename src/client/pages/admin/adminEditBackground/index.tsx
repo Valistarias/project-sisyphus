@@ -448,6 +448,9 @@ const AdminEditBackground: FC = () => {
             {t('adminEditBackground.delete', { ns: 'pages' })}
           </Button>
         </div>
+        <Button className="adminEditBackground__return-btn" href="/admin/backgrounds" size="small">
+          {t('adminEditBackground.return', { ns: 'pages' })}
+        </Button>
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}

@@ -111,7 +111,8 @@
     "step4": {
       "cat": "Background",
       "text": "Background",
-      "sub": "Your Past Life"
+      "sub": "Your Past Life",
+      "select": "Select Background"
     },
     "step5": {
       "cat": "Inventory"

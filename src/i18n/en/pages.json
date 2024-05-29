@@ -209,7 +209,8 @@
     "successCreate": "Character successfully created !",
     "successUpdateCyberFrame": "Character CyberFrame updated",
     "successUpdateStats": "Character Stats updated",
-    "successUpdateSkills": "Character Skills updated"
+    "successUpdateSkills": "Character Skills updated",
+    "successUpdatebackground": "Character Background updated"
   },
   "editCharacter": {
     "title": "Edit Character",
@@ -1121,6 +1122,7 @@
     "title": "Edit Background",
     "delete": "Delete Background",
     "i18n": "Internationalization",
+    "return": "Return to Backgrounds",
     "button": "Update Background Data",
     "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
     "values": "Values",

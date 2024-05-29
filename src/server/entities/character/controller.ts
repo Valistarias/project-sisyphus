@@ -9,6 +9,7 @@ import {
   gemServerError,
   gemUnauthorizedGlobal,
 } from '../../utils/globalErrorMessage';
+import { type HydratedIBackground } from '../background/model';
 import { type HydratedIBody } from '../body';
 import { type ICampaign } from '../campaign/model';
 import { type HydratedINode } from '../node/model';
@@ -54,6 +55,7 @@ const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[
               select: '_id body stat value',
             },
           })
+          .populate<{ background: HydratedIBackground }>('background')
           .then(async (res) => {
             if (res === undefined || res === null) {
               reject(gemNotFound('Characters'));
@@ -93,14 +95,7 @@ const findCompleteCharacterById = async (
               path: 'node',
               select:
                 '_id title summary icon i18n rank quote cyberFrameBranch skillBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses',
-              populate: [
-                'effects',
-                'actions',
-                'skillBonuses',
-                'skillBonuses',
-                'statBonuses',
-                'charParamBonuses',
-              ],
+              populate: ['effects', 'actions', 'skillBonuses', 'statBonuses', 'charParamBonuses'],
             },
           })
           .populate<{ bodies: HydratedIBody[] }>({
@@ -110,6 +105,11 @@ const findCompleteCharacterById = async (
               path: 'stats',
               select: '_id body stat value',
             },
+          })
+          .populate<{ background: HydratedIBackground }>({
+            path: 'background',
+            select: '_id title summary i18n skillBonuses statBonuses charParamBonuses createdAt',
+            populate: ['skillBonuses', 'statBonuses', 'charParamBonuses'],
           })
           .then(async (res) => {
             if (res === undefined || res === null) {
@@ -149,6 +149,7 @@ const findCharacterById = async (
             path: 'nodes',
             select: '_id character node used',
           })
+          .populate<{ background: HydratedIBackground }>('background')
           .then(async (res) => {
             if (res === undefined || res === null) {
               reject(gemNotFound('Character'));
@@ -327,7 +328,7 @@ const create = (req: Request, res: Response): void => {
 };
 
 const updateInfos = (req: Request, res: Response): void => {
-  const { id, name = null, campaignId = null } = req.body;
+  const { id, name = null, campaignId = null, backgroundId = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Character ID'));
     return;
@@ -337,6 +338,9 @@ const updateInfos = (req: Request, res: Response): void => {
       if (char !== undefined && canEdit) {
         if (name !== null && name !== char.name) {
           char.name = name;
+        }
+        if (backgroundId !== null && backgroundId !== char.background) {
+          char.background = backgroundId;
         }
         if (
           campaignId !== null &&

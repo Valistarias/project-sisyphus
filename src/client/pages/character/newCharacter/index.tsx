@@ -13,7 +13,7 @@ import { Aicon, Ap, Atitle } from '../../../atoms';
 import { Ariane, Button, Checkbox, type IArianeElt } from '../../../molecules';
 import { Alert, CharCreationStep1, CharCreationStep2, RichTextElement } from '../../../organisms';
 import { CharCreationStep3, CharCreationStep4 } from '../../../organisms/characterCreation';
-import { type ICharacter } from '../../../types';
+import { type ICharacter, type ICuratedBackground } from '../../../types';
 
 import { introSequence } from './introSequence';
 
@@ -47,6 +47,7 @@ const NewCharacter: FC = () => {
   const [loading, setLoading] = useState(true);
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const [forcedCharState, setForcedCharState] = useState<number | null>(null);
+  const [backgrounds, setBackgrounds] = useState<ICuratedBackground[]>([]);
   // 0 -> not began, 1-> is animating, 2-> finished, 3-> hidden
   const [introState, setIntroState] = useState(0);
   const calledApi = useRef(false);
@@ -100,7 +101,25 @@ const NewCharacter: FC = () => {
         setTooltipOpen(true);
       }
     }
-  }, [user]);
+    if (api !== undefined) {
+      api.backgrounds
+        .getAll()
+        .then((curatedBackgrounds: ICuratedBackground[]) => {
+          setBackgrounds(curatedBackgrounds);
+        })
+        .catch(() => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert key={newId} id={newId} timer={5}>
+                <Ap>{t('serverErrors.CYPU-301')}</Ap>
+              </Alert>
+            ),
+          });
+        });
+    }
+  }, [user, api, getNewId, createAlert, t]);
 
   const onSubmitCyberFrame = useCallback(
     (cyberFrameId: string) => {
@@ -157,13 +176,39 @@ const NewCharacter: FC = () => {
   const onSubmitBackground = useCallback(
     (backgroundId: string) => {
       if (api !== undefined && user !== null && character !== null && character !== false) {
-        console.log('backgroundId', backgroundId);
+        api.characters
+          .update({
+            id: character._id,
+            backgroundId,
+          })
+          .then(() => {
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{t('newCharacter.successUpdatebackground', { ns: 'pages' })}</Ap>
+                </Alert>
+              ),
+            });
+            setCharacterFromId(character._id);
+          })
+          .catch(({ response }) => {
+            const { data } = response;
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{data.err.message}</Ap>
+                </Alert>
+              ),
+            });
+          });
       }
     },
-    [api, character, user]
+    [api, character, createAlert, getNewId, setCharacterFromId, t, user]
   );
-
-  console.log('character', character);
 
   const onSubmitSkills = useCallback(
     (nodeIds: string[]) => {
@@ -337,7 +382,13 @@ const NewCharacter: FC = () => {
   const actualFormContent = useMemo(() => {
     const state = forcedCharState ?? charCreationState;
     if (state === 4) {
-      return <CharCreationStep4 key="step4" onSubmitBackground={onSubmitBackground} />;
+      return (
+        <CharCreationStep4
+          key="step4"
+          onSubmitBackground={onSubmitBackground}
+          backgrounds={backgrounds}
+        />
+      );
     }
 
     if (state === 3) {
@@ -353,6 +404,7 @@ const NewCharacter: FC = () => {
     charCreationState,
     onSubmitCyberFrame,
     onSubmitBackground,
+    backgrounds,
     onSubmitSkills,
     onSubmitStats,
   ]);

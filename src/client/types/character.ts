@@ -1,6 +1,6 @@
 import { type ICampaign } from './campaign';
 import { type InternationalizationType, type IUser } from './global';
-import { type INode } from './rules';
+import { type IBackground, type INode } from './rules';
 
 // Body Stats ------------------------------------
 export interface IBodyStat {
@@ -60,8 +60,10 @@ export interface ICharacter {
   campaign?: ICampaign;
   /** The nodes of the character */
   nodes?: ICharacterNode[];
-  /** All the boidies used by this character */
+  /** All the bodies used by this character */
   bodies?: IBody[];
+  /** The background of the character */
+  background?: IBackground;
   /** When the character was created */
   createdAt: Date;
 }

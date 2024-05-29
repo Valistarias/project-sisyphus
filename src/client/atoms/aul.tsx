@@ -10,7 +10,7 @@ import './aul.scss';
 
 interface IAul extends IQuarkProps {
   /** The childrens of the UL element */
-  children: Array<React.JSX.Element | ReactNode> | null;
+  children: ReactNode | null;
   /** Is the decoration to be removed ? */
   noPoints?: boolean;
   /** The innerRef, if there is any */
