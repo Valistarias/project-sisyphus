@@ -301,6 +301,13 @@ const AdminEditItemModifier: FC = () => {
             {t('adminEditItemModifier.delete', { ns: 'pages' })}
           </Button>
         </div>
+        <Button
+          className="adminEditItemModifier__return-btn"
+          href="/admin/itemmodifiers"
+          size="small"
+        >
+          {t('adminEditItemModifier.return', { ns: 'pages' })}
+        </Button>
         <Atitle level={2}>{t('adminEditItemModifier.edit', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror className="adminEditItemModifier__error">

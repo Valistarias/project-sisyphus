@@ -9,6 +9,9 @@ import {
   type IStatBonus,
 } from './rules';
 
+export const possibleStarterKitValues = ['always', 'never', 'option'];
+export type TypeStarterKitValues = (typeof possibleStarterKitValues)[number];
+
 // DamageTypes ------------------------------------
 export interface IDamageType {
   /** The ID of the damage type */
@@ -246,6 +249,9 @@ export interface IWeapon {
   cost: number;
   /** The size of the magasine */
   magasine?: number;
+  /** Is this weapon in the starter kit ?
+   * (always -> element included, never -> not included, option -> can be chosen with similar weapons) */
+  starterKit?: TypeStarterKitValues;
   /** How many ammos are usef for each shot */
   ammoPerShot?: number;
   /** The effects related to the weapon */

@@ -302,6 +302,11 @@
       "free": "Free",
       "action": "Action",
       "long": "Long"
+    },
+    "starterKit": {
+      "always": "Always",
+      "never": "No",
+      "option": "Choice"
     }
   },
   "itemTypeNames": {

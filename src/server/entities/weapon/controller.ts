@@ -66,6 +66,7 @@ const create = (req: Request, res: Response): void => {
     rarity,
     weaponScope,
     itemModifiers,
+    starterKit,
     cost,
     magasine,
     ammoPerShot,
@@ -96,6 +97,7 @@ const create = (req: Request, res: Response): void => {
     magasine,
     ammoPerShot,
     itemModifiers,
+    starterKit,
   });
 
   if (i18n !== null) {
@@ -166,6 +168,7 @@ const update = (req: Request, res: Response): void => {
     cost = null,
     magasine = null,
     ammoPerShot = null,
+    starterKit = null,
     effects = null,
     actions = null,
     damages = null,
@@ -194,6 +197,9 @@ const update = (req: Request, res: Response): void => {
       }
       if (weaponScope !== null) {
         weapon.weaponScope = weaponScope;
+      }
+      if (starterKit !== null) {
+        weapon.starterKit = starterKit;
       }
       if (itemModifiers !== null) {
         weapon.itemModifiers = itemModifiers;

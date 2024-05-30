@@ -12,6 +12,7 @@ import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, SmartSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 import { type ICuratedWeapon } from '../../../types';
+import { possibleStarterKitValues } from '../../../types/items';
 
 import { classTrim, isThereDuplicate } from '../../../utils';
 
@@ -24,6 +25,7 @@ interface FormValues {
   quoteFr: string;
   weaponType: string;
   weaponScope: string;
+  starterKit: string;
   magasine?: number;
   ammoPerShot?: number;
   cost: number;
@@ -128,6 +130,7 @@ const AdminEditWeapon: FC = () => {
     defaultData.cost = weapon.cost;
     defaultData.rarity = weapon.rarity;
     defaultData.itemModifiers = weapon.itemModifiers;
+    defaultData.starterKit = weapon.starterKit ?? 'never';
     if (i18n.fr !== undefined) {
       defaultData.nameFr = i18n.fr.title ?? '';
       defaultData.quoteFr = i18n.fr.quote ?? '';
@@ -258,6 +261,15 @@ const AdminEditWeapon: FC = () => {
     [actionTypes, t]
   );
 
+  const starterKitList = useMemo(
+    () =>
+      possibleStarterKitValues.map((possibleStarterKitValue) => ({
+        value: possibleStarterKitValue,
+        label: t(`terms.starterKit.${possibleStarterKitValue}`),
+      })),
+    [t]
+  );
+
   const actionDurationSelect = useMemo(
     () =>
       actionDurations.map(({ name, _id }) => ({
@@ -329,6 +341,7 @@ const AdminEditWeapon: FC = () => {
       quoteFr,
       weaponScope,
       itemModifiers,
+      starterKit,
       magasine,
       ammoPerShot,
       damages,
@@ -455,6 +468,7 @@ const AdminEditWeapon: FC = () => {
           rarity,
           cost: Number(cost),
           itemModifiers,
+          starterKit,
           summary: html,
           magasine: magasine !== undefined ? Number(magasine) : undefined,
           ammoPerShot: ammoPerShot !== undefined ? Number(ammoPerShot) : undefined,
@@ -603,6 +617,9 @@ const AdminEditWeapon: FC = () => {
             {t('adminEditWeapon.delete', { ns: 'pages' })}
           </Button>
         </div>
+        <Button className="adminEditWeapon__return-btn" href="/admin/weapons" size="small">
+          {t('adminEditWeapon.return', { ns: 'pages' })}
+        </Button>
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
@@ -690,6 +707,13 @@ const AdminEditWeapon: FC = () => {
               inputName="ammoPerShot"
               type="number"
               label={t('ammoPerShotWeapon.label', { ns: 'fields' })}
+            />
+            <SmartSelect
+              control={control}
+              inputName="starterKit"
+              label={t('weaponStarterKit.label', { ns: 'fields' })}
+              options={starterKitList}
+              className="adminEditWeapon__details__fields__elt"
             />
           </div>
         </div>

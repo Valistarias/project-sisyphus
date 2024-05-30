@@ -380,6 +380,9 @@
   "ammoPerShotWeapon": {
     "label": "Ammo Per Shot, if any"
   },
+  "weaponStarterKit": {
+    "label": "Is in the Starter Kit ?"
+  },
   "nameBag": {
     "required": "A Bag Name is required",
     "label": "Name"

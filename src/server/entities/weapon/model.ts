@@ -26,6 +26,9 @@ interface IWeapon {
   magasine?: number;
   /** How many ammos are usef for each shot */
   ammoPerShot?: number;
+  /** Is this weapon in the starter kit ?
+   * (always -> element included, never -> not included, option -> can be chosen with similar weapons) */
+  starterKit?: 'always' | 'never' | 'option';
   /** The effects related to the weapon */
   effects?: string[] | ObjectId[];
   /** The actions related to the weapon */
@@ -69,6 +72,10 @@ const weaponSchema = new Schema<IWeapon>({
   cost: Number,
   magasine: Number,
   ammoPerShot: Number,
+  starterKit: {
+    type: String,
+    default: 'never',
+  },
   effects: [
     {
       type: Schema.Types.ObjectId,

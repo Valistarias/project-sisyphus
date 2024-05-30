@@ -25,6 +25,7 @@ import type {
   IWeaponScope,
   IWeaponStyle,
   IWeaponType,
+  TypeStarterKitValues,
 } from './items';
 import type { ICuratedBasicNPC, ICuratedEnnemyAttack, ICuratedNPC } from './npc';
 import type {
@@ -141,4 +142,5 @@ export type {
   IWeaponType,
   TypeDice,
   TypeRoll,
+  TypeStarterKitValues,
 };
