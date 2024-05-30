@@ -301,6 +301,13 @@ const AdminEditWeaponScope: FC = () => {
             {t('adminEditWeaponScope.delete', { ns: 'pages' })}
           </Button>
         </div>
+        <Button
+          className="adminEditWeaponScope__return-btn"
+          href="/admin/weaponscopes"
+          size="small"
+        >
+          {t('adminEditWeaponScope.return', { ns: 'pages' })}
+        </Button>
         <Atitle level={2}>{t('adminEditWeaponScope.edit', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror className="adminEditWeaponScope__error">{errors.root.serverError.message}</Aerror>

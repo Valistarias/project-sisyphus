@@ -290,6 +290,9 @@ const AdminEditRarity: FC = () => {
             {t('adminEditRarity.delete', { ns: 'pages' })}
           </Button>
         </div>
+        <Button className="adminEditRarity__return-btn" href="/admin/rarities" size="small">
+          {t('adminEditRarity.return', { ns: 'pages' })}
+        </Button>
         <Atitle level={2}>{t('adminEditRarity.edit', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror className="adminEditRarity__error">{errors.root.serverError.message}</Aerror>

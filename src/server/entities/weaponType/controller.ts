@@ -47,9 +47,10 @@ const findWeaponTypeById = async (id: string): Promise<HydratedIWeaponType> =>
 
 const create = (req: Request, res: Response): void => {
   const { title, summary, i18n = null, weaponStyle, icon, needTraining, itemType } = req.body;
+  console.log('itemType', itemType);
+  console.log('weaponStyle', weaponStyle);
   if (
     title === undefined ||
-    summary === undefined ||
     weaponStyle === undefined ||
     itemType === undefined ||
     icon === undefined

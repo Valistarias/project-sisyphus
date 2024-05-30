@@ -503,6 +503,7 @@
     "edit": "Edit Rarity",
     "delete": "Delete Rarity",
     "i18n": "Internationalization",
+    "return": "Return to Rarities",
     "button": "Update Rarity Data",
     "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
     "successUpdate": "Rarity successfully updated !",
@@ -528,6 +529,7 @@
   "adminEditWeaponScope": {
     "edit": "Edit Weapon Range",
     "delete": "Delete Weapon Range",
+    "return": "Return to Weapon Ranges",
     "i18n": "Internationalization",
     "button": "Update Weapon Range Data",
     "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
@@ -554,6 +556,7 @@
   "adminEditWeaponStyle": {
     "edit": "Edit Weapon Style",
     "delete": "Delete Weapon Style",
+    "return": "Return to Weapon Styles",
     "i18n": "Internationalization",
     "button": "Update Weapon Style Data",
     "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
@@ -580,6 +583,7 @@
   "adminEditWeaponType": {
     "edit": "Edit Weapon Type",
     "delete": "Delete Weapon Type",
+    "return": "Return to Weapon Types",
     "i18n": "Internationalization",
     "button": "Update Weapon Type Data",
     "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
@@ -607,6 +611,7 @@
     "edit": "Edit Damage Type",
     "delete": "Delete Damage Type",
     "i18n": "Internationalization",
+    "return": "Return to Damage Types",
     "button": "Update Damage Type Data",
     "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
     "successUpdate": "Damage Type successfully updated !",

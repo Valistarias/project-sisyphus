@@ -215,6 +215,14 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
                       href: '/admin/weaponstyles',
                       text: t('adminWeaponStyles.title', { ns: 'pages' }),
                     },
+                    {
+                      href: '/admin/weapontypes',
+                      text: t('adminWeaponTypes.title', { ns: 'pages' }),
+                    },
+                    {
+                      href: '/admin/ammos',
+                      text: t('adminAmmos.title', { ns: 'pages' }),
+                    },
                   ],
                 },
                 {
@@ -233,10 +241,6 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
                 {
                   title: t('headerBar.cat.inventory', { ns: 'components' }),
                   list: [
-                    {
-                      href: '/admin/ammos',
-                      text: t('adminAmmos.title', { ns: 'pages' }),
-                    },
                     {
                       href: '/admin/bags',
                       text: t('adminBags.title', { ns: 'pages' }),

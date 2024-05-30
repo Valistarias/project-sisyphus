@@ -86,7 +86,7 @@ const AdminNewWeaponType: FC = () => {
   }, [itemTypes, t]);
 
   const onSaveWeaponType: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, weaponStyle, icon, needTraining }) => {
+    ({ name, nameFr, weaponStyle, icon, needTraining, itemType }) => {
       if (
         introEditor === null ||
         introFrEditor === null ||
@@ -116,6 +116,7 @@ const AdminNewWeaponType: FC = () => {
         .create({
           title: name,
           weaponStyle,
+          itemType,
           icon,
           needTraining: needTraining === '1',
           summary: html,
