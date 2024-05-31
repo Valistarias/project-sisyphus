@@ -416,6 +416,9 @@ const AdminEditProgram: FC = () => {
             {t('adminEditProgram.delete', { ns: 'pages' })}
           </Button>
         </div>
+        <Button className="adminEditProgram__return-btn" href="/admin/programs" size="small">
+          {t('adminEditProgram.return', { ns: 'pages' })}
+        </Button>
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}

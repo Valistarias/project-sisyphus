@@ -2,7 +2,7 @@ import { type Router } from 'express';
 
 import { adminNeeded, verifyToken } from '../../middlewares';
 
-import { create, deleteWeapon, findAll, findAllByBranch, findSingle, update } from './controller';
+import { create, deleteWeapon, findAll, findAllStarter, findSingle, update } from './controller';
 
 export default (app: Router): void => {
   app.use((req, res, next) => {
@@ -12,7 +12,7 @@ export default (app: Router): void => {
 
   app.get('/weapons/', [verifyToken], findAll);
 
-  app.get('/weapons/bybranch', [verifyToken], findAllByBranch);
+  app.get('/weapons/starter', [verifyToken], findAllStarter);
 
   app.get('/weapons/single', [verifyToken], findSingle);
 

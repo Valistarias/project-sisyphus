@@ -10,6 +10,7 @@ interface IImplantPayload {
 
 export default class Implants extends Entity {
   get: (payload: IImplantPayload) => Promise<ICuratedImplant>;
+  getStarters: () => Promise<ICuratedImplant[]>;
 
   constructor() {
     super('implants');
@@ -20,6 +21,18 @@ export default class Implants extends Entity {
           .get(`${this.url}/single/`, { params: payload })
           .then((res) => {
             resolve(res.data as ICuratedImplant);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+
+    this.getStarters = async () =>
+      await new Promise((resolve, reject) => {
+        axios
+          .get(`${this.url}/starter/`)
+          .then((res) => {
+            resolve(res.data as ICuratedImplant[]);
           })
           .catch((err) => {
             reject(err);

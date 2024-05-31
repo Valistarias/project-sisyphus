@@ -298,6 +298,9 @@ const AdminEditCharParam: FC = () => {
             {t('adminEditCharParam.delete', { ns: 'pages' })}
           </Button>
         </div>
+        <Button className="adminEditCharParam__return-btn" href="/admin/charparams" size="small">
+          {t('adminEditCharParam.return', { ns: 'pages' })}
+        </Button>
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror className="adminEditCharParam__error">{errors.root.serverError.message}</Aerror>
         ) : null}

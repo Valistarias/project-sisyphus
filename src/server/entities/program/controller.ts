@@ -13,9 +13,13 @@ import { curateI18n } from '../../utils';
 
 const { Program } = db;
 
-const findPrograms = async (): Promise<HydratedIProgram[]> =>
+interface findAllPayload {
+  starterKit?: string | Record<string, string[]>;
+}
+
+const findPrograms = async (options?: findAllPayload): Promise<HydratedIProgram[]> =>
   await new Promise((resolve, reject) => {
-    Program.find()
+    Program.find(options ?? {})
       .populate<{ damages: IDamage[] }>('damages')
       .populate<{ ai: INPC }>('ai')
       .then(async (res) => {
@@ -362,4 +366,27 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteProgram, findAll, findProgramById, findSingle, update };
+const findAllStarter = (req: Request, res: Response): void => {
+  findPrograms({ starterKit: { $in: ['always', 'option'] } })
+    .then((programs) => {
+      const curatedPrograms: CuratedIProgram[] = [];
+      programs.forEach((programSent) => {
+        const program: InternationalizedProgram = programSent.toJSON();
+        if (programSent.ai !== undefined) {
+          program.ai = {
+            nPC: program.ai,
+            i18n: programSent.ai.i18n !== undefined ? JSON.parse(programSent.ai.i18n) : {},
+          };
+        }
+        curatedPrograms.push({
+          program,
+          i18n: curateI18n(programSent.i18n),
+        });
+      });
+
+      res.send(curatedPrograms);
+    })
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+};
+
+export { create, deleteProgram, findAll, findAllStarter, findProgramById, findSingle, update };

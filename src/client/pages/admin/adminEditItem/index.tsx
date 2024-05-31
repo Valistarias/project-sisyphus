@@ -682,6 +682,9 @@ const AdminEditItem: FC = () => {
             {t('adminEditItem.delete', { ns: 'pages' })}
           </Button>
         </div>
+        <Button className="adminEditItem__return-btn" href="/admin/items" size="small">
+          {t('adminEditItem.return', { ns: 'pages' })}
+        </Button>
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}

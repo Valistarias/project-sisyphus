@@ -10,6 +10,7 @@ interface IArmorPayload {
 
 export default class Armors extends Entity {
   get: (payload: IArmorPayload) => Promise<ICuratedArmor>;
+  getStarters: () => Promise<ICuratedArmor[]>;
 
   constructor() {
     super('armors');
@@ -20,6 +21,18 @@ export default class Armors extends Entity {
           .get(`${this.url}/single/`, { params: payload })
           .then((res) => {
             resolve(res.data as ICuratedArmor);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+
+    this.getStarters = async () =>
+      await new Promise((resolve, reject) => {
+        axios
+          .get(`${this.url}/starter/`)
+          .then((res) => {
+            resolve(res.data as ICuratedArmor[]);
           })
           .catch((err) => {
             reject(err);

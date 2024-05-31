@@ -16,8 +16,7 @@ import { curateI18n } from '../../utils';
 const { Weapon } = db;
 
 interface findAllPayload {
-  cyberFrameBranch?: string | Record<string, string[]>;
-  skillBranch?: string | Record<string, string[]>;
+  starterKit?: string | Record<string, string[]>;
 }
 
 const findWeapons = async (options?: findAllPayload): Promise<HydratedIWeapon[]> =>
@@ -499,19 +498,10 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-const findAllByBranch = (req: Request, res: Response): void => {
-  const { cyberFrameBranchId, skillBranchId } = req.query as {
-    cyberFrameBranchId?: string;
-    skillBranchId?: string;
-  };
-  if (cyberFrameBranchId === undefined && skillBranchId === undefined) {
-    res.status(400).send(gemInvalidField('ID'));
-    return;
-  }
-  findWeapons({ cyberFrameBranch: cyberFrameBranchId, skillBranch: skillBranchId })
+const findAllStarter = (req: Request, res: Response): void => {
+  findWeapons({ starterKit: { $in: ['always', 'option'] } })
     .then((weapons) => {
       const curatedWeapons: CuratedIWeapon[] = [];
-
       weapons.forEach((weaponSent) => {
         const curatedActions =
           weaponSent.actions.length > 0
@@ -547,4 +537,4 @@ const findAllByBranch = (req: Request, res: Response): void => {
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteWeapon, findAll, findAllByBranch, findSingle, findWeaponById, update };
+export { create, deleteWeapon, findAll, findAllStarter, findSingle, findWeaponById, update };

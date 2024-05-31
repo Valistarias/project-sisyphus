@@ -9,9 +9,13 @@ import { curateI18n } from '../../utils';
 
 const { Bag } = db;
 
-const findBags = async (): Promise<HydratedIBag[]> =>
+interface findAllPayload {
+  starterKit?: string | Record<string, string[]>;
+}
+
+const findBags = async (options?: findAllPayload): Promise<HydratedIBag[]> =>
   await new Promise((resolve, reject) => {
-    Bag.find()
+    Bag.find(options ?? {})
       .then(async (res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Bags'));
@@ -243,4 +247,21 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteBag, findAll, findBagById, findSingle, update };
+const findAllStarter = (req: Request, res: Response): void => {
+  findBags({ starterKit: { $in: ['always', 'option'] } })
+    .then((bags) => {
+      const curatedBags: CuratedIBag[] = [];
+      bags.forEach((bagSent) => {
+        const bag = bagSent.toJSON();
+        curatedBags.push({
+          bag,
+          i18n: curateI18n(bagSent.i18n),
+        });
+      });
+
+      res.send(curatedBags);
+    })
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+};
+
+export { create, deleteBag, findAll, findAllStarter, findBagById, findSingle, update };

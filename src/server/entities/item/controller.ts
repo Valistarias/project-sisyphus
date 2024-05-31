@@ -22,9 +22,13 @@ import { curateI18n } from '../../utils';
 
 const { Item } = db;
 
-const findItems = async (): Promise<HydratedIItem[]> =>
+interface findAllPayload {
+  starterKit?: string | Record<string, string[]>;
+}
+
+const findItems = async (options?: findAllPayload): Promise<HydratedIItem[]> =>
   await new Promise((resolve, reject) => {
-    Item.find()
+    Item.find(options ?? {})
       .populate<{ effects: IEffect[] }>('effects')
       .populate<{ actions: IAction[] }>('actions')
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
@@ -661,4 +665,43 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteItem, findAll, findItemById, findSingle, update };
+const findAllStarter = (req: Request, res: Response): void => {
+  findItems({ starterKit: { $in: ['always', 'option'] } })
+    .then((items) => {
+      const curatedItems: CuratedIItem[] = [];
+      items.forEach((itemSent) => {
+        const curatedActions =
+          itemSent.actions.length > 0
+            ? itemSent.actions.map((action) => {
+                const data = action.toJSON();
+                return {
+                  ...data,
+                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                };
+              })
+            : [];
+        const curatedEffects =
+          itemSent.effects.length > 0
+            ? itemSent.effects.map((effect) => {
+                const data = effect.toJSON();
+                return {
+                  ...data,
+                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                };
+              })
+            : [];
+        const item = itemSent.toJSON();
+        item.actions = curatedActions;
+        item.effects = curatedEffects;
+        curatedItems.push({
+          item,
+          i18n: curateI18n(itemSent.i18n),
+        });
+      });
+
+      res.send(curatedItems);
+    })
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+};
+
+export { create, deleteItem, findAll, findAllStarter, findItemById, findSingle, update };

@@ -10,6 +10,7 @@ interface IProgramPayload {
 
 export default class Programs extends Entity {
   get: (payload: IProgramPayload) => Promise<ICuratedProgram>;
+  getStarters: () => Promise<ICuratedProgram[]>;
 
   constructor() {
     super('programs');
@@ -20,6 +21,18 @@ export default class Programs extends Entity {
           .get(`${this.url}/single/`, { params: payload })
           .then((res) => {
             resolve(res.data as ICuratedProgram);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+
+    this.getStarters = async () =>
+      await new Promise((resolve, reject) => {
+        axios
+          .get(`${this.url}/starter/`)
+          .then((res) => {
+            resolve(res.data as ICuratedProgram[]);
           })
           .catch((err) => {
             reject(err);

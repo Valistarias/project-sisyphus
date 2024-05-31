@@ -22,9 +22,13 @@ import { curateI18n } from '../../utils';
 
 const { Implant } = db;
 
-const findImplants = async (): Promise<HydratedIImplant[]> =>
+interface findAllPayload {
+  starterKit?: string | Record<string, string[]>;
+}
+
+const findImplants = async (options?: findAllPayload): Promise<HydratedIImplant[]> =>
   await new Promise((resolve, reject) => {
-    Implant.find()
+    Implant.find(options ?? {})
       .populate<{ effects: IEffect[] }>('effects')
       .populate<{ actions: IAction[] }>('actions')
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
@@ -668,4 +672,43 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteImplant, findAll, findImplantById, findSingle, update };
+const findAllStarter = (req: Request, res: Response): void => {
+  findImplants({ starterKit: { $in: ['always', 'option'] } })
+    .then((implants) => {
+      const curatedImplants: CuratedIImplant[] = [];
+      implants.forEach((implantSent) => {
+        const curatedActions =
+          implantSent.actions.length > 0
+            ? implantSent.actions.map((action) => {
+                const data = action.toJSON();
+                return {
+                  ...data,
+                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                };
+              })
+            : [];
+        const curatedEffects =
+          implantSent.effects.length > 0
+            ? implantSent.effects.map((effect) => {
+                const data = effect.toJSON();
+                return {
+                  ...data,
+                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                };
+              })
+            : [];
+        const implant = implantSent.toJSON();
+        implant.actions = curatedActions;
+        implant.effects = curatedEffects;
+        curatedImplants.push({
+          implant,
+          i18n: curateI18n(implantSent.i18n),
+        });
+      });
+
+      res.send(curatedImplants);
+    })
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+};
+
+export { create, deleteImplant, findAll, findAllStarter, findImplantById, findSingle, update };

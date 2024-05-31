@@ -13,7 +13,16 @@ import { Aicon, Ap, Atitle } from '../../../atoms';
 import { Ariane, Button, Checkbox, type IArianeElt } from '../../../molecules';
 import { Alert, CharCreationStep1, CharCreationStep2, RichTextElement } from '../../../organisms';
 import { CharCreationStep3, CharCreationStep4 } from '../../../organisms/characterCreation';
-import { type ICharacter, type ICuratedBackground } from '../../../types';
+import {
+  type ICharacter,
+  type ICuratedArmor,
+  type ICuratedBackground,
+  type ICuratedBag,
+  type ICuratedImplant,
+  type ICuratedItem,
+  type ICuratedProgram,
+  type ICuratedWeapon,
+} from '../../../types';
 
 import { introSequence } from './introSequence';
 
@@ -47,7 +56,15 @@ const NewCharacter: FC = () => {
   const [loading, setLoading] = useState(true);
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const [forcedCharState, setForcedCharState] = useState<number | null>(null);
+
   const [backgrounds, setBackgrounds] = useState<ICuratedBackground[]>([]);
+  const [weapons, setWeapons] = useState<ICuratedWeapon[]>([]);
+  const [programs, setPrograms] = useState<ICuratedProgram[]>([]);
+  const [items, setItems] = useState<ICuratedItem[]>([]);
+  const [implants, setImplants] = useState<ICuratedImplant[]>([]);
+  const [bags, setBags] = useState<ICuratedBag[]>([]);
+  const [armors, setArmors] = useState<ICuratedArmor[]>([]);
+
   // 0 -> not began, 1-> is animating, 2-> finished, 3-> hidden
   const [introState, setIntroState] = useState(0);
   const calledApi = useRef(false);
@@ -95,7 +112,6 @@ const NewCharacter: FC = () => {
 
   const getData = useCallback(() => {
     setIntroState(1);
-    setLoading(false);
     if (user !== null) {
       if (user.charCreationTips) {
         setTooltipOpen(true);
@@ -106,6 +122,102 @@ const NewCharacter: FC = () => {
         .getAll()
         .then((curatedBackgrounds: ICuratedBackground[]) => {
           setBackgrounds(curatedBackgrounds);
+        })
+        .catch(() => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert key={newId} id={newId} timer={5}>
+                <Ap>{t('serverErrors.CYPU-301')}</Ap>
+              </Alert>
+            ),
+          });
+        });
+      api.weapons
+        .getStarters()
+        .then((curatedWeapons: ICuratedWeapon[]) => {
+          setWeapons(curatedWeapons);
+        })
+        .catch(() => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert key={newId} id={newId} timer={5}>
+                <Ap>{t('serverErrors.CYPU-301')}</Ap>
+              </Alert>
+            ),
+          });
+        });
+      api.programs
+        .getStarters()
+        .then((curatedPrograms: ICuratedProgram[]) => {
+          setPrograms(curatedPrograms);
+        })
+        .catch(() => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert key={newId} id={newId} timer={5}>
+                <Ap>{t('serverErrors.CYPU-301')}</Ap>
+              </Alert>
+            ),
+          });
+        });
+      api.items
+        .getStarters()
+        .then((curatedItems: ICuratedItem[]) => {
+          setItems(curatedItems);
+        })
+        .catch(() => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert key={newId} id={newId} timer={5}>
+                <Ap>{t('serverErrors.CYPU-301')}</Ap>
+              </Alert>
+            ),
+          });
+        });
+      api.implants
+        .getStarters()
+        .then((curatedImplants: ICuratedImplant[]) => {
+          setImplants(curatedImplants);
+        })
+        .catch(() => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert key={newId} id={newId} timer={5}>
+                <Ap>{t('serverErrors.CYPU-301')}</Ap>
+              </Alert>
+            ),
+          });
+        });
+      api.bags
+        .getStarters()
+        .then((curatedBags: ICuratedBag[]) => {
+          setBags(curatedBags);
+        })
+        .catch(() => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert key={newId} id={newId} timer={5}>
+                <Ap>{t('serverErrors.CYPU-301')}</Ap>
+              </Alert>
+            ),
+          });
+        });
+      api.armors
+        .getStarters()
+        .then((curatedArmors: ICuratedArmor[]) => {
+          setArmors(curatedArmors);
         })
         .catch(() => {
           const newId = getNewId();
@@ -445,11 +557,32 @@ const NewCharacter: FC = () => {
   useEffect(() => {
     if ((character === false || character === null) && id !== undefined) {
       setLoading(true);
-    } else if (character !== false && character !== null && id !== undefined) {
+    } else if (
+      character !== false &&
+      character !== null &&
+      id !== undefined &&
+      backgrounds.length > 0 &&
+      weapons.length > 0 &&
+      programs.length > 0 &&
+      implants.length > 0 &&
+      items.length > 0 &&
+      bags.length > 0 &&
+      armors.length > 0
+    ) {
       setLoading(false);
       setDisplayLoading(false);
     }
-  }, [character, id]);
+  }, [
+    backgrounds.length,
+    character,
+    weapons,
+    id,
+    programs.length,
+    implants.length,
+    items.length,
+    bags.length,
+    armors.length,
+  ]);
 
   return (
     <div

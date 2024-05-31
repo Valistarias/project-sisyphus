@@ -713,6 +713,9 @@ const AdminEditArmor: FC = () => {
             {t('adminEditArmor.delete', { ns: 'pages' })}
           </Button>
         </div>
+        <Button className="adminEditArmor__return-btn" href="/admin/armors" size="small">
+          {t('adminEditArmor.return', { ns: 'pages' })}
+        </Button>
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}

@@ -713,6 +713,9 @@ const AdminEditImplant: FC = () => {
             {t('adminEditImplant.delete', { ns: 'pages' })}
           </Button>
         </div>
+        <Button className="adminEditImplant__return-btn" href="/admin/implants" size="small">
+          {t('adminEditImplant.return', { ns: 'pages' })}
+        </Button>
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}

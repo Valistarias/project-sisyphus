@@ -305,6 +305,9 @@ const AdminEditBodyPart: FC = () => {
             {t('adminEditBodyPart.delete', { ns: 'pages' })}
           </Button>
         </div>
+        <Button className="adminEditBodyPart__return-btn" href="/admin/bodyparts" size="small">
+          {t('adminEditBodyPart.return', { ns: 'pages' })}
+        </Button>
         <Atitle level={2}>{t('adminEditBodyPart.edit', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror className="adminEditBodyPart__error">{errors.root.serverError.message}</Aerror>

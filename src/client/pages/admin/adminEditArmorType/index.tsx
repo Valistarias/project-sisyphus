@@ -297,6 +297,9 @@ const AdminEditArmorType: FC = () => {
             {t('adminEditArmorType.delete', { ns: 'pages' })}
           </Button>
         </div>
+        <Button className="adminEditArmorType__return-btn" href="/admin/armortypes" size="small">
+          {t('adminEditArmorType.return', { ns: 'pages' })}
+        </Button>
         <Atitle level={2}>{t('adminEditArmorType.edit', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror className="adminEditArmorType__error">{errors.root.serverError.message}</Aerror>

@@ -329,6 +329,7 @@
   "adminEditCharParam": {
     "title": "Edit Character Parameter",
     "delete": "Delete Character Parameter",
+    "return": "Return to Character Parameters",
     "i18n": "Internationalization",
     "button": "Update Character Parameter Data",
     "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
@@ -683,6 +684,7 @@
   "adminEditBag": {
     "edit": "Edit Bag",
     "delete": "Delete Bag",
+    "return": "Return to Bags",
     "i18n": "Internationalization",
     "button": "Update Bag Data",
     "actionInt": "Action Internationalization",
@@ -802,6 +804,7 @@
   "adminEditProgram": {
     "edit": "Edit Program",
     "delete": "Delete Program",
+    "return": "Return to Programs",
     "i18n": "Internationalization",
     "button": "Update Program Data",
     "damageTitle": "Damage",
@@ -837,6 +840,7 @@
   "adminEditBodyPart": {
     "edit": "Edit Body Part",
     "delete": "Delete Body Part",
+    "return": "Return to Body Parts",
     "i18n": "Internationalization",
     "button": "Update Body Part Data",
     "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
@@ -879,6 +883,7 @@
   "adminEditImplant": {
     "title": "Edit Implant",
     "delete": "Delete Implant",
+    "return": "Return to Implants",
     "i18n": "Internationalization",
     "button": "Update Implant Data",
     "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
@@ -922,6 +927,7 @@
   "adminEditArmorType": {
     "edit": "Edit Armor Type",
     "delete": "Delete Armor Type",
+    "return": "Return to Armor Types",
     "i18n": "Internationalization",
     "button": "Update Armor Type Data",
     "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
@@ -964,6 +970,7 @@
   "adminEditArmor": {
     "title": "Edit Armor",
     "delete": "Delete Armor",
+    "return": "Return to Armors",
     "i18n": "Internationalization",
     "button": "Update Armor Data",
     "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
@@ -1023,6 +1030,7 @@
   "adminEditItem": {
     "title": "Edit Item",
     "delete": "Delete Item",
+    "return": "Return to Items",
     "i18n": "Internationalization",
     "button": "Update Item Data",
     "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",

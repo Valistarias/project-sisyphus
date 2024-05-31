@@ -303,6 +303,9 @@ const AdminEditBag: FC = () => {
             {t('adminEditBag.delete', { ns: 'pages' })}
           </Button>
         </div>
+        <Button className="adminEditBag__return-btn" href="/admin/bags" size="small">
+          {t('adminEditBag.return', { ns: 'pages' })}
+        </Button>
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}

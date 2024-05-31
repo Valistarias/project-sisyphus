@@ -22,9 +22,13 @@ import { curateI18n } from '../../utils';
 
 const { Armor } = db;
 
-const findArmors = async (): Promise<HydratedIArmor[]> =>
+interface findAllPayload {
+  starterKit?: string | Record<string, string[]>;
+}
+
+const findArmors = async (options?: findAllPayload): Promise<HydratedIArmor[]> =>
   await new Promise((resolve, reject) => {
-    Armor.find()
+    Armor.find(options ?? {})
       .populate<{ effects: IEffect[] }>('effects')
       .populate<{ actions: IAction[] }>('actions')
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
@@ -668,4 +672,43 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteArmor, findAll, findArmorById, findSingle, update };
+const findAllStarter = (req: Request, res: Response): void => {
+  findArmors({ starterKit: { $in: ['always', 'option'] } })
+    .then((armors) => {
+      const curatedArmors: CuratedIArmor[] = [];
+      armors.forEach((armorSent) => {
+        const curatedActions =
+          armorSent.actions.length > 0
+            ? armorSent.actions.map((action) => {
+                const data = action.toJSON();
+                return {
+                  ...data,
+                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                };
+              })
+            : [];
+        const curatedEffects =
+          armorSent.effects.length > 0
+            ? armorSent.effects.map((effect) => {
+                const data = effect.toJSON();
+                return {
+                  ...data,
+                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                };
+              })
+            : [];
+        const armor = armorSent.toJSON();
+        armor.actions = curatedActions;
+        armor.effects = curatedEffects;
+        curatedArmors.push({
+          armor,
+          i18n: curateI18n(armorSent.i18n),
+        });
+      });
+
+      res.send(curatedArmors);
+    })
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+};
+
+export { create, deleteArmor, findAll, findAllStarter, findArmorById, findSingle, update };
