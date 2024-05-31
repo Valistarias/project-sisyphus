@@ -12,6 +12,7 @@ import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, SmartSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 import { type ICuratedBasicNPC, type ICuratedProgram } from '../../../types';
+import { possibleStarterKitValues } from '../../../types/items';
 
 import { classTrim, isThereDuplicate } from '../../../utils';
 
@@ -26,6 +27,7 @@ interface FormValues {
   ram: number;
   cost: number;
   rarity: string;
+  starterKit: string;
   ai: string;
   aiSummoned?: number;
   damages?: Record<
@@ -85,6 +87,7 @@ const AdminEditProgram: FC = () => {
     defaultData.rarity = program.rarity;
     defaultData.ai = program.ai?.nPC._id;
     defaultData.aiSummoned = program.aiSummoned;
+    defaultData.starterKit = program.starterKit ?? 'never';
     if (i18n.fr !== undefined) {
       defaultData.nameFr = i18n.fr.title ?? '';
     }
@@ -150,6 +153,15 @@ const AdminEditProgram: FC = () => {
       }));
   }, [nPCs]);
 
+  const starterKitList = useMemo(
+    () =>
+      possibleStarterKitValues.map((possibleStarterKitValue) => ({
+        value: possibleStarterKitValue,
+        label: t(`terms.starterKit.${possibleStarterKitValue}`),
+      })),
+    [t]
+  );
+
   const onAddDamage = useCallback(() => {
     setDamagesIds((prev) => {
       const next = [...prev];
@@ -160,7 +172,20 @@ const AdminEditProgram: FC = () => {
   }, []);
 
   const onSaveProgram: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, programScope, uses, radius, ram, cost, rarity, ai, aiSummoned, damages }) => {
+    ({
+      name,
+      nameFr,
+      programScope,
+      uses,
+      radius,
+      ram,
+      cost,
+      rarity,
+      ai,
+      aiSummoned,
+      damages,
+      starterKit,
+    }) => {
       if (
         introEditor === null ||
         introFrEditor === null ||
@@ -215,6 +240,7 @@ const AdminEditProgram: FC = () => {
           programScope,
           ai,
           rarity,
+          starterKit,
           cost: Number(cost),
           ram: Number(ram),
           summary: html,
@@ -474,6 +500,13 @@ const AdminEditProgram: FC = () => {
               inputName="aiSummoned"
               type="number"
               label={t('aiSummonedProgram.label', { ns: 'fields' })}
+            />
+            <SmartSelect
+              control={control}
+              inputName="starterKit"
+              label={t('programStarterKit.label', { ns: 'fields' })}
+              options={starterKitList}
+              className="adminEditProgram__details__fields__elt"
             />
           </div>
         </div>

@@ -54,6 +54,7 @@ const create = (req: Request, res: Response): void => {
     i18n = null,
     ram,
     rarity,
+    starterKit,
     programScope,
     itemType,
     cost,
@@ -86,6 +87,7 @@ const create = (req: Request, res: Response): void => {
     ai,
     aiSummoned,
     programScope,
+    starterKit,
     itemType,
     uses,
   });
@@ -128,6 +130,7 @@ const update = (req: Request, res: Response): void => {
     i18n,
     ram = null,
     rarity = null,
+    starterKit = null,
     programScope = null,
     cost = null,
     ai = null,
@@ -158,6 +161,9 @@ const update = (req: Request, res: Response): void => {
       }
       if (rarity !== null) {
         program.rarity = rarity;
+      }
+      if (starterKit !== null) {
+        program.starterKit = starterKit;
       }
       if (aiSummoned !== null) {
         program.aiSummoned = aiSummoned;

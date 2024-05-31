@@ -12,6 +12,7 @@ import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, SmartSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 import { type ICuratedBag } from '../../../types';
+import { possibleStarterKitValues } from '../../../types/items';
 
 import { classTrim } from '../../../utils';
 
@@ -24,6 +25,7 @@ interface FormValues {
   size: number;
   cost: number;
   rarity: string;
+  starterKit: string;
   itemModifiers: string[];
 }
 
@@ -68,6 +70,7 @@ const AdminEditBag: FC = () => {
     defaultData.size = bag.size;
     defaultData.itemModifiers = bag.itemModifiers;
     defaultData.storableItemTypes = bag.storableItemTypes;
+    defaultData.starterKit = bag.starterKit ?? 'never';
     if (i18n.fr !== undefined) {
       defaultData.nameFr = i18n.fr.title ?? '';
     }
@@ -109,8 +112,17 @@ const AdminEditBag: FC = () => {
     [itemTypes, t]
   );
 
+  const starterKitList = useMemo(
+    () =>
+      possibleStarterKitValues.map((possibleStarterKitValue) => ({
+        value: possibleStarterKitValue,
+        label: t(`terms.starterKit.${possibleStarterKitValue}`),
+      })),
+    [t]
+  );
+
   const onSaveBag: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, rarity, cost, storableItemTypes, size, itemModifiers }) => {
+    ({ name, nameFr, rarity, cost, storableItemTypes, size, itemModifiers, starterKit }) => {
       if (
         introEditor === null ||
         introFrEditor === null ||
@@ -144,6 +156,7 @@ const AdminEditBag: FC = () => {
           title: name,
           storableItemTypes,
           rarity,
+          starterKit,
           size,
           itemType: bagData?.bag.itemType,
           cost: Number(cost),
@@ -360,6 +373,13 @@ const AdminEditBag: FC = () => {
               label={t('bagRarity.label', { ns: 'fields' })}
               rules={{ required: t('bagRarity.required', { ns: 'fields' }) }}
               options={rarityList}
+              className="adminEditBag__details__fields__elt"
+            />
+            <SmartSelect
+              control={control}
+              inputName="starterKit"
+              label={t('programStarterKit.label', { ns: 'fields' })}
+              options={starterKitList}
               className="adminEditBag__details__fields__elt"
             />
           </div>

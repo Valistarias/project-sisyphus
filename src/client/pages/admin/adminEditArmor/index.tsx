@@ -12,6 +12,7 @@ import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, SmartSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 import { type ICuratedArmor } from '../../../types';
+import { possibleStarterKitValues } from '../../../types/items';
 
 import { classTrim, isThereDuplicate } from '../../../utils';
 
@@ -22,6 +23,7 @@ interface FormValues {
   nameFr: string;
   cost: number;
   rarity: string;
+  starterKit: string;
   armorType: string;
   itemModifiers: string[];
   skillBonuses?: Record<
@@ -178,6 +180,15 @@ const AdminEditArmor: FC = () => {
     }));
   }, [itemModifiers]);
 
+  const starterKitList = useMemo(
+    () =>
+      possibleStarterKitValues.map((possibleStarterKitValue) => ({
+        value: possibleStarterKitValue,
+        label: t(`terms.starterKit.${possibleStarterKitValue}`),
+      })),
+    [t]
+  );
+
   const [effectIds, setEffectIds] = useState<number[]>([]);
   const [actionIds, setActionIds] = useState<number[]>([]);
 
@@ -207,6 +218,7 @@ const AdminEditArmor: FC = () => {
     defaultData.rarity = armor.rarity;
     defaultData.armorType = armor.armorType;
     defaultData.itemModifiers = armor.itemModifiers;
+    defaultData.starterKit = armor.starterKit ?? 'never';
     if (i18n.fr !== undefined) {
       defaultData.nameFr = i18n.fr.title ?? '';
     }
@@ -383,7 +395,18 @@ const AdminEditArmor: FC = () => {
   }, []);
 
   const onSaveArmor: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, cost, rarity, itemModifiers, armorType, effects, actions, ...elts }) => {
+    ({
+      name,
+      nameFr,
+      cost,
+      rarity,
+      itemModifiers,
+      armorType,
+      effects,
+      actions,
+      starterKit,
+      ...elts
+    }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -530,6 +553,8 @@ const AdminEditArmor: FC = () => {
           title: name,
           cost: Number(cost),
           rarity,
+          starterKit,
+          armorType,
           itemType: armorData?.armor.itemType,
           itemModifiers,
           summary: html,
@@ -748,6 +773,13 @@ const AdminEditArmor: FC = () => {
               inputName="itemModifiers"
               label={t('itemModifiers.label', { ns: 'fields' })}
               options={itemModifierList}
+              className="adminEditArmor__details__fields__elt"
+            />
+            <SmartSelect
+              control={control}
+              inputName="starterKit"
+              label={t('armorStarterKit.label', { ns: 'fields' })}
+              options={starterKitList}
               className="adminEditArmor__details__fields__elt"
             />
           </div>

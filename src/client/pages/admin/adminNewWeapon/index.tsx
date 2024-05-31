@@ -11,6 +11,7 @@ import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, SmartSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import { possibleStarterKitValues } from '../../../types/items';
 
 import { isThereDuplicate } from '../../../utils';
 
@@ -21,6 +22,7 @@ interface FormValues {
   nameFr: string;
   quote: string;
   quoteFr: string;
+  starterKit: string;
   weaponType: string;
   weaponScope: string;
   magasine?: number;
@@ -152,6 +154,15 @@ const AdminNewWeapon: FC = () => {
     [actionTypes, t]
   );
 
+  const starterKitList = useMemo(
+    () =>
+      possibleStarterKitValues.map((possibleStarterKitValue) => ({
+        value: possibleStarterKitValue,
+        label: t(`terms.starterKit.${possibleStarterKitValue}`),
+      })),
+    [t]
+  );
+
   const actionDurationSelect = useMemo(
     () =>
       actionDurations.map(({ name, _id }) => ({
@@ -222,6 +233,7 @@ const AdminNewWeapon: FC = () => {
       quote,
       quoteFr,
       weaponScope,
+      starterKit,
       itemModifiers,
       magasine,
       ammoPerShot,
@@ -348,6 +360,7 @@ const AdminNewWeapon: FC = () => {
           rarity,
           cost: Number(cost),
           itemModifiers,
+          starterKit,
           summary: html,
           magasine: magasine !== undefined ? Number(magasine) : undefined,
           ammoPerShot: ammoPerShot !== undefined ? Number(ammoPerShot) : undefined,
@@ -480,6 +493,13 @@ const AdminNewWeapon: FC = () => {
               inputName="ammoPerShot"
               type="number"
               label={t('ammoPerShotWeapon.label', { ns: 'fields' })}
+            />
+            <SmartSelect
+              control={control}
+              inputName="starterKit"
+              label={t('weaponStarterKit.label', { ns: 'fields' })}
+              options={starterKitList}
+              className="adminNewWeapon__details__fields__elt"
             />
           </div>
         </div>

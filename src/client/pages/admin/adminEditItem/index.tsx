@@ -12,6 +12,7 @@ import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, SmartSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 import { type ICuratedItem } from '../../../types';
+import { possibleStarterKitValues } from '../../../types/items';
 
 import { classTrim, isThereDuplicate } from '../../../utils';
 
@@ -22,6 +23,7 @@ interface FormValues {
   nameFr: string;
   cost: number;
   rarity: string;
+  starterKit: string;
   itemModifiers: string[];
   skillBonuses?: Record<
     string,
@@ -160,6 +162,15 @@ const AdminEditItem: FC = () => {
     }));
   }, [itemModifiers]);
 
+  const starterKitList = useMemo(
+    () =>
+      possibleStarterKitValues.map((possibleStarterKitValue) => ({
+        value: possibleStarterKitValue,
+        label: t(`terms.starterKit.${possibleStarterKitValue}`),
+      })),
+    [t]
+  );
+
   const [effectIds, setEffectIds] = useState<number[]>([]);
   const [actionIds, setActionIds] = useState<number[]>([]);
 
@@ -188,6 +199,7 @@ const AdminEditItem: FC = () => {
     defaultData.cost = item.cost;
     defaultData.rarity = item.rarity;
     defaultData.itemModifiers = item.itemModifiers;
+    defaultData.starterKit = item.starterKit ?? 'never';
     if (i18n.fr !== undefined) {
       defaultData.nameFr = i18n.fr.title ?? '';
     }
@@ -364,7 +376,7 @@ const AdminEditItem: FC = () => {
   }, []);
 
   const onSaveItem: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, cost, rarity, itemModifiers, effects, actions, ...elts }) => {
+    ({ name, nameFr, cost, rarity, itemModifiers, effects, actions, starterKit, ...elts }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -511,6 +523,7 @@ const AdminEditItem: FC = () => {
           title: name,
           cost: Number(cost),
           rarity,
+          starterKit,
           itemType: itemData?.item.itemType,
           itemModifiers,
           summary: html,
@@ -718,6 +731,13 @@ const AdminEditItem: FC = () => {
               label={t('itemModifiers.label', { ns: 'fields' })}
               options={itemModifierList}
               className="adminEditItem__details__fields__elt"
+            />
+            <SmartSelect
+              control={control}
+              inputName="starterKit"
+              label={t('programStarterKit.label', { ns: 'fields' })}
+              options={starterKitList}
+              className="adminEditProgram__details__fields__elt"
             />
           </div>
         </div>

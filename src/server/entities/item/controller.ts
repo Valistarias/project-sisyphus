@@ -68,6 +68,7 @@ const create = (req: Request, res: Response): void => {
     summary,
     i18n = null,
     rarity,
+    starterKit,
     cost,
     itemType,
     itemModifiers,
@@ -92,6 +93,7 @@ const create = (req: Request, res: Response): void => {
     title,
     summary,
     rarity,
+    starterKit,
     cost,
     itemType,
     itemModifiers,
@@ -192,6 +194,7 @@ const update = (req: Request, res: Response): void => {
     summary = null,
     i18n,
     rarity,
+    starterKit = null,
     cost,
     itemType,
     itemModifiers = null,
@@ -213,6 +216,9 @@ const update = (req: Request, res: Response): void => {
       }
       if (rarity !== null) {
         item.rarity = rarity;
+      }
+      if (starterKit !== null) {
+        item.starterKit = starterKit;
       }
       if (summary !== null) {
         item.summary = summary;

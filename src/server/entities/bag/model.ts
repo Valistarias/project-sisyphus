@@ -9,6 +9,9 @@ interface IBag {
   i18n?: string;
   /** The rarity of the bag */
   rarity: ObjectId;
+  /** Is this weapon in the starter kit ?
+   * (always -> element included, never -> not included, option -> can be chosen with similar weapons) */
+  starterKit?: 'always' | 'never' | 'option';
   /** The type of item */
   itemType: ObjectId;
   /** The range of the item storable in the bag */
@@ -33,6 +36,10 @@ const bagSchema = new Schema<IBag>({
   rarity: {
     type: Schema.Types.ObjectId,
     ref: 'Rarity',
+  },
+  starterKit: {
+    type: String,
+    default: 'never',
   },
   itemType: {
     type: Schema.Types.ObjectId,

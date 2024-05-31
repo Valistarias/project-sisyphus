@@ -68,6 +68,7 @@ const create = (req: Request, res: Response): void => {
     summary,
     i18n = null,
     rarity,
+    starterKit,
     cost,
     itemType,
     itemModifiers,
@@ -94,6 +95,7 @@ const create = (req: Request, res: Response): void => {
     title,
     summary,
     rarity,
+    starterKit,
     cost,
     itemType,
     itemModifiers,
@@ -195,10 +197,11 @@ const update = (req: Request, res: Response): void => {
     summary = null,
     i18n,
     rarity,
+    starterKit = null,
     cost,
     itemType,
     itemModifiers = null,
-    bodyParts,
+    bodyParts = null,
     effects = null,
     actions = null,
     skillBonuses = null,
@@ -217,6 +220,9 @@ const update = (req: Request, res: Response): void => {
       }
       if (rarity !== null) {
         implant.rarity = rarity;
+      }
+      if (starterKit !== null) {
+        implant.starterKit = starterKit;
       }
       if (summary !== null) {
         implant.summary = summary;

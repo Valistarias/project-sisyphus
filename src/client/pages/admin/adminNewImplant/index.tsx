@@ -11,6 +11,7 @@ import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, SmartSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import { possibleStarterKitValues } from '../../../types/items';
 
 import { classTrim, isThereDuplicate } from '../../../utils';
 
@@ -21,6 +22,7 @@ interface FormValues {
   nameFr: string;
   cost: number;
   rarity: string;
+  starterKit: string;
   bodyParts: string[];
   itemModifiers: string[];
   skillBonuses?: Record<
@@ -171,6 +173,15 @@ const AdminNewImplant: FC = () => {
     }));
   }, [itemModifiers]);
 
+  const starterKitList = useMemo(
+    () =>
+      possibleStarterKitValues.map((possibleStarterKitValue) => ({
+        value: possibleStarterKitValue,
+        label: t(`terms.starterKit.${possibleStarterKitValue}`),
+      })),
+    [t]
+  );
+
   const [effectIds, setEffectIds] = useState<number[]>([]);
 
   const [actionIds, setActionIds] = useState<number[]>([]);
@@ -255,7 +266,18 @@ const AdminNewImplant: FC = () => {
   }, []);
 
   const onSaveImplant: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, cost, rarity, itemModifiers, bodyParts, effects, actions, ...elts }) => {
+    ({
+      name,
+      nameFr,
+      cost,
+      rarity,
+      itemModifiers,
+      bodyParts,
+      effects,
+      actions,
+      starterKit,
+      ...elts
+    }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -406,6 +428,7 @@ const AdminNewImplant: FC = () => {
           title: name,
           cost: Number(cost),
           rarity,
+          starterKit,
           summary: html,
           itemType: itemTypes.find((itemType) => itemType.name === 'imp')?._id ?? undefined,
           itemModifiers,
@@ -523,6 +546,13 @@ const AdminNewImplant: FC = () => {
               inputName="itemModifiers"
               label={t('itemModifiers.label', { ns: 'fields' })}
               options={itemModifierList}
+              className="adminNewImplant__details__fields__elt"
+            />
+            <SmartSelect
+              control={control}
+              inputName="starterKit"
+              label={t('implantStarterKit.label', { ns: 'fields' })}
+              options={starterKitList}
               className="adminNewImplant__details__fields__elt"
             />
           </div>

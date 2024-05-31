@@ -12,6 +12,7 @@ import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, SmartSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 import { type ICuratedImplant } from '../../../types';
+import { possibleStarterKitValues } from '../../../types/items';
 
 import { classTrim, isThereDuplicate } from '../../../utils';
 
@@ -22,6 +23,7 @@ interface FormValues {
   nameFr: string;
   cost: number;
   rarity: string;
+  starterKit: string;
   bodyParts: string[];
   itemModifiers: string[];
   skillBonuses?: Record<
@@ -178,6 +180,15 @@ const AdminEditImplant: FC = () => {
     }));
   }, [itemModifiers]);
 
+  const starterKitList = useMemo(
+    () =>
+      possibleStarterKitValues.map((possibleStarterKitValue) => ({
+        value: possibleStarterKitValue,
+        label: t(`terms.starterKit.${possibleStarterKitValue}`),
+      })),
+    [t]
+  );
+
   const [effectIds, setEffectIds] = useState<number[]>([]);
   const [actionIds, setActionIds] = useState<number[]>([]);
 
@@ -207,6 +218,7 @@ const AdminEditImplant: FC = () => {
     defaultData.rarity = implant.rarity;
     defaultData.bodyParts = implant.bodyParts;
     defaultData.itemModifiers = implant.itemModifiers;
+    defaultData.starterKit = implant.starterKit ?? 'never';
     if (i18n.fr !== undefined) {
       defaultData.nameFr = i18n.fr.title ?? '';
     }
@@ -383,7 +395,18 @@ const AdminEditImplant: FC = () => {
   }, []);
 
   const onSaveImplant: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, cost, rarity, itemModifiers, bodyParts, effects, actions, ...elts }) => {
+    ({
+      name,
+      nameFr,
+      cost,
+      rarity,
+      itemModifiers,
+      bodyParts,
+      effects,
+      actions,
+      starterKit,
+      ...elts
+    }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -530,9 +553,11 @@ const AdminEditImplant: FC = () => {
           title: name,
           cost: Number(cost),
           rarity,
+          starterKit,
           itemType: implantData?.implant.itemType,
           itemModifiers,
           summary: html,
+          bodyParts,
           i18n,
           skillBonuses: curatedSkillBonuses,
           statBonuses: curatedStatBonuses,
@@ -749,6 +774,13 @@ const AdminEditImplant: FC = () => {
               inputName="itemModifiers"
               label={t('itemModifiers.label', { ns: 'fields' })}
               options={itemModifierList}
+              className="adminEditImplant__details__fields__elt"
+            />
+            <SmartSelect
+              control={control}
+              inputName="starterKit"
+              label={t('implantStarterKit.label', { ns: 'fields' })}
+              options={starterKitList}
               className="adminEditImplant__details__fields__elt"
             />
           </div>

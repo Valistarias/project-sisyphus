@@ -17,6 +17,9 @@ interface IArmor {
   i18n?: string;
   /** The rarity of the Armor */
   rarity: ObjectId;
+  /** Is this weapon in the starter kit ?
+   * (always -> element included, never -> not included, option -> can be chosen with similar weapons) */
+  starterKit?: 'always' | 'never' | 'option';
   /** The cost of the Armor */
   cost: number;
   /** The type of item */
@@ -73,6 +76,10 @@ const ArmorSchema = new Schema<IArmor>({
   rarity: {
     type: Schema.Types.ObjectId,
     ref: 'Rarity',
+  },
+  starterKit: {
+    type: String,
+    default: 'never',
   },
   effects: [
     {

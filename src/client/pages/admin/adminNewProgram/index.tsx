@@ -12,6 +12,7 @@ import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, SmartSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 import { type ICuratedBasicNPC } from '../../../types';
+import { possibleStarterKitValues } from '../../../types/items';
 
 import { isThereDuplicate } from '../../../utils';
 
@@ -21,6 +22,7 @@ interface FormValues {
   name: string;
   nameFr: string;
   programScope: string;
+  starterKit: string;
   uses?: number;
   radius?: number;
   ram: number;
@@ -98,6 +100,15 @@ const AdminNewProgram: FC = () => {
       }));
   }, [nPCs]);
 
+  const starterKitList = useMemo(
+    () =>
+      possibleStarterKitValues.map((possibleStarterKitValue) => ({
+        value: possibleStarterKitValue,
+        label: t(`terms.starterKit.${possibleStarterKitValue}`),
+      })),
+    [t]
+  );
+
   const onAddDamage = useCallback(() => {
     setDamagesIds((prev) => {
       const next = [...prev];
@@ -129,7 +140,20 @@ const AdminNewProgram: FC = () => {
   }, [api, createAlert, getNewId, t]);
 
   const onSaveProgram: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, programScope, uses, radius, ram, cost, rarity, ai, aiSummoned, damages }) => {
+    ({
+      name,
+      nameFr,
+      programScope,
+      uses,
+      radius,
+      ram,
+      cost,
+      rarity,
+      ai,
+      aiSummoned,
+      damages,
+      starterKit,
+    }) => {
       if (
         introEditor === null ||
         introFrEditor === null ||
@@ -183,6 +207,7 @@ const AdminNewProgram: FC = () => {
           programScope,
           ai,
           rarity,
+          starterKit,
           cost: Number(cost),
           ram: Number(ram),
           summary: html,
@@ -314,6 +339,13 @@ const AdminNewProgram: FC = () => {
               inputName="aiSummoned"
               type="number"
               label={t('aiSummonedProgram.label', { ns: 'fields' })}
+            />
+            <SmartSelect
+              control={control}
+              inputName="starterKit"
+              label={t('programStarterKit.label', { ns: 'fields' })}
+              options={starterKitList}
+              className="adminNewProgram__details__fields__elt"
             />
           </div>
         </div>

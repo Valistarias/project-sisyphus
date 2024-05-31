@@ -17,6 +17,9 @@ interface IItem {
   i18n?: string;
   /** The rarity of the Item */
   rarity: ObjectId;
+  /** Is this weapon in the starter kit ?
+   * (always -> element included, never -> not included, option -> can be chosen with similar weapons) */
+  starterKit?: 'always' | 'never' | 'option';
   /** The cost of the Item */
   cost: number;
   /** The type of item */
@@ -67,6 +70,10 @@ const itemSchema = new Schema<IItem>({
   rarity: {
     type: Schema.Types.ObjectId,
     ref: 'Rarity',
+  },
+  starterKit: {
+    type: String,
+    default: 'never',
   },
   effects: [
     {

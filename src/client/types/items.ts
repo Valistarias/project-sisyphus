@@ -104,6 +104,9 @@ export interface IBag {
   i18n: InternationalizationType;
   /** The rarity of the bag */
   rarity: string;
+  /** Is this weapon in the starter kit ?
+   * (always -> element included, never -> not included, option -> can be chosen with similar weapons) */
+  starterKit?: TypeStarterKitValues;
   /** The range of the item storable in the bag */
   storableItemTypes: string[];
   /** The item modifiers of the bag */
@@ -302,6 +305,9 @@ export interface IProgram {
   i18n?: string;
   /** The rarity of the program */
   rarity: string;
+  /** Is this weapon in the starter kit ?
+   * (always -> element included, never -> not included, option -> can be chosen with similar weapons) */
+  starterKit?: TypeStarterKitValues;
   /** The type of item */
   itemType: string;
   /** The type of program, as his range or type */
@@ -340,6 +346,9 @@ export interface IImplant {
   i18n?: InternationalizationType;
   /** The rarity of the implant */
   rarity: string;
+  /** Is this weapon in the starter kit ?
+   * (always -> element included, never -> not included, option -> can be chosen with similar weapons) */
+  starterKit?: TypeStarterKitValues;
   /** The cost of the implant */
   cost: number;
   /** The type of item */
@@ -398,6 +407,9 @@ export interface IArmor {
   i18n?: InternationalizationType;
   /** The rarity of the armor */
   rarity: string;
+  /** Is this weapon in the starter kit ?
+   * (always -> element included, never -> not included, option -> can be chosen with similar weapons) */
+  starterKit?: TypeStarterKitValues;
   /** The cost of the armor */
   cost: number;
   /** The type of item */
@@ -437,6 +449,9 @@ export interface IItem {
   i18n?: InternationalizationType;
   /** The rarity of the item */
   rarity: string;
+  /** Is this weapon in the starter kit ?
+   * (always -> element included, never -> not included, option -> can be chosen with similar weapons) */
+  starterKit?: TypeStarterKitValues;
   /** The cost of the item */
   cost: number;
   /** The type of item */

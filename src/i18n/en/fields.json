@@ -401,6 +401,9 @@
     "required": "You need to define a Rarity to this bag",
     "label": "Bag Rarity"
   },
+  "bagStarterKit": {
+    "label": "Is in the Starter Kit ?"
+  },
   "bagSize": {
     "required": "You need to define a size to this bag",
     "label": "Bag Size"
@@ -518,6 +521,9 @@
     "required": "You need to define a Rarity to this program",
     "label": "Program Rarity"
   },
+  "programStarterKit": {
+    "label": "Is in the Starter Kit ?"
+  },
   "programScope": {
     "required": "You need to define a Range to this program",
     "label": "Class"
@@ -569,6 +575,9 @@
     "required": "You need to define a Rarity to this implant",
     "label": "Implant Rarity"
   },
+  "implantStarterKit": {
+    "label": "Is in the Starter Kit ?"
+  },
   "implantBodyPart": {
     "required": "You need to define one or multiple Body Part to this implant",
     "label": "Implant Body Part"
@@ -595,6 +604,9 @@
     "required": "You need to define a Rarity to this armor",
     "label": "Armor Rarity"
   },
+  "armorStarterKit": {
+    "label": "Is in the Starter Kit ?"
+  },
   "armorType": {
     "required": "You need to define an Armor Type to this armor",
     "label": "Armor Type"
@@ -613,6 +625,9 @@
   "itemRarity": {
     "required": "You need to define a Rarity to this item",
     "label": "Item Rarity"
+  },
+  "itemStarterKit": {
+    "label": "Is in the Starter Kit ?"
   },
   "nameTipText": {
     "required": "An Tip Text Title is required",

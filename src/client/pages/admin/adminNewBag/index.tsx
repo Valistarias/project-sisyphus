@@ -11,6 +11,7 @@ import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, SmartSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import { possibleStarterKitValues } from '../../../types/items';
 
 import './adminNewBag.scss';
 
@@ -21,6 +22,7 @@ interface FormValues {
   size: number;
   cost: number;
   rarity: string;
+  starterKit: string;
   itemModifiers: string[];
 }
 
@@ -73,8 +75,17 @@ const AdminNewBag: FC = () => {
     [itemTypes, t]
   );
 
+  const starterKitList = useMemo(
+    () =>
+      possibleStarterKitValues.map((possibleStarterKitValue) => ({
+        value: possibleStarterKitValue,
+        label: t(`terms.starterKit.${possibleStarterKitValue}`),
+      })),
+    [t]
+  );
+
   const onSaveBag: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, rarity, cost, storableItemTypes, itemModifiers, size }) => {
+    ({ name, nameFr, rarity, cost, storableItemTypes, itemModifiers, size, starterKit }) => {
       if (
         introEditor === null ||
         introFrEditor === null ||
@@ -107,6 +118,7 @@ const AdminNewBag: FC = () => {
           title: name,
           storableItemTypes,
           rarity,
+          starterKit,
           size,
           itemType: itemTypes.find((itemType) => itemType.name === 'bag')?._id ?? undefined,
           cost: Number(cost),
@@ -220,6 +232,13 @@ const AdminNewBag: FC = () => {
               label={t('bagRarity.label', { ns: 'fields' })}
               rules={{ required: t('bagRarity.required', { ns: 'fields' }) }}
               options={rarityList}
+              className="adminNewBag__details__fields__elt"
+            />
+            <SmartSelect
+              control={control}
+              inputName="starterKit"
+              label={t('bagStarterKit.label', { ns: 'fields' })}
+              options={starterKitList}
               className="adminNewBag__details__fields__elt"
             />
           </div>

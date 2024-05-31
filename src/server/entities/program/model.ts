@@ -11,6 +11,9 @@ interface IProgram {
   i18n?: string;
   /** The rarity of the program */
   rarity: ObjectId;
+  /** Is this weapon in the starter kit ?
+   * (always -> element included, never -> not included, option -> can be chosen with similar weapons) */
+  starterKit?: 'always' | 'never' | 'option';
   /** The type of item */
   itemType: ObjectId;
   /** The type of program, as his range or type */
@@ -48,6 +51,10 @@ const programSchema = new Schema<IProgram>({
   rarity: {
     type: Schema.Types.ObjectId,
     ref: 'Rarity',
+  },
+  starterKit: {
+    type: String,
+    default: 'never',
   },
   itemType: {
     type: Schema.Types.ObjectId,
