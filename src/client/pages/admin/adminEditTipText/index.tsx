@@ -294,6 +294,9 @@ const AdminEditTipText: FC = () => {
             {t('adminEditTipText.delete', { ns: 'pages' })}
           </Button>
         </div>
+        <Button className="adminEditTipText__return-btn" href="/admin/tiptexts" size="small">
+          {t('adminEditTipText.return', { ns: 'pages' })}
+        </Button>
         <Atitle level={2}>{t('adminEditTipText.edit', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror className="adminEditTipText__error">{errors.root.serverError.message}</Aerror>

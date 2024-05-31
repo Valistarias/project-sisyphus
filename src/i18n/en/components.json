@@ -115,7 +115,13 @@
       "select": "Select Background"
     },
     "step5": {
-      "cat": "Inventory"
+      "cat": "Inventory",
+      "text": "Inventory",
+      "sub": "Time to gear up",
+      "main": "Choose your Loadout",
+      "money": "Create your own loadout with {{money}} dollars",
+      "included": "Included",
+      "choose": "Choose {{qty}}:"
     },
     "step6": {
       "cat": "Identification"

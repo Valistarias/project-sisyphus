@@ -4,7 +4,8 @@
   &-step1,
   &-step2,
   &-step3,
-  &-step4 {
+  &-step4,
+  &-step5 {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -552,6 +553,13 @@
         font-size: 1.4rem;
       }
     }
+  }
+}
+
+.characterCreation-step5 {
+  &__view {
+    margin-bottom: 8vh;
+    margin-top: 5vh;
   }
 }
 

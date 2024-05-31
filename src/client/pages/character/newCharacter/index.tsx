@@ -12,7 +12,11 @@ import tvBackground from '../../../assets/imgs/tvbg2.gif';
 import { Aicon, Ap, Atitle } from '../../../atoms';
 import { Ariane, Button, Checkbox, type IArianeElt } from '../../../molecules';
 import { Alert, CharCreationStep1, CharCreationStep2, RichTextElement } from '../../../organisms';
-import { CharCreationStep3, CharCreationStep4 } from '../../../organisms/characterCreation';
+import {
+  CharCreationStep3,
+  CharCreationStep4,
+  CharCreationStep5,
+} from '../../../organisms/characterCreation';
 import {
   type ICharacter,
   type ICuratedArmor,
@@ -73,6 +77,10 @@ const NewCharacter: FC = () => {
 
   const charCreationState = useMemo(() => {
     if (character !== null && character !== false) {
+      if (character.background !== undefined) {
+        return 5;
+      }
+
       if (character.nodes !== undefined && character.nodes?.length > 1) {
         return 4;
       }
@@ -322,6 +330,10 @@ const NewCharacter: FC = () => {
     [api, character, createAlert, getNewId, setCharacterFromId, t, user]
   );
 
+  const onSubmitItems = useCallback(() => {
+    console.log('onSubmitItems');
+  }, []);
+
   const onSubmitSkills = useCallback(
     (nodeIds: string[]) => {
       if (api !== undefined && user !== null && character !== null && character !== false) {
@@ -493,6 +505,21 @@ const NewCharacter: FC = () => {
 
   const actualFormContent = useMemo(() => {
     const state = forcedCharState ?? charCreationState;
+    if (state === 5) {
+      return (
+        <CharCreationStep5
+          key="step5"
+          onSubmitItems={onSubmitItems}
+          weapons={weapons}
+          programs={programs}
+          items={items}
+          implants={implants}
+          bags={bags}
+          armors={armors}
+        />
+      );
+    }
+
     if (state === 4) {
       return (
         <CharCreationStep4
@@ -515,6 +542,13 @@ const NewCharacter: FC = () => {
     forcedCharState,
     charCreationState,
     onSubmitCyberFrame,
+    onSubmitItems,
+    weapons,
+    programs,
+    items,
+    implants,
+    bags,
+    armors,
     onSubmitBackground,
     backgrounds,
     onSubmitSkills,
