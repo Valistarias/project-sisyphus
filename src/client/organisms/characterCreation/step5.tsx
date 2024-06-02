@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 import { Ap, Atitle } from '../../atoms';
+import { WeaponDisplay } from '../../molecules';
 import {
   type ICuratedArmor,
   type ICuratedBag,
@@ -65,13 +66,14 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         <Atitle level={3}>{t('itemTypeNames.wep')}</Atitle>
         <Atitle level={4}>{t('characterCreation.step5.included', { ns: 'components' })}</Atitle>
         {included.map((includedWeapon) => (
-          <div key={includedWeapon.weapon._id}>{includedWeapon.weapon.title}</div>
+          <WeaponDisplay key={includedWeapon.weapon._id} weapon={includedWeapon} mode="hover" />
+          // <div key={includedWeapon.weapon._id}>{includedWeapon.weapon.title}</div>
         ))}
         <Atitle level={4}>
           {t('characterCreation.step5.choose', { ns: 'components', qty: 3 })}
         </Atitle>
         {optionnal.map((optionnalWeapon) => (
-          <div key={optionnalWeapon.weapon._id}>{optionnalWeapon.weapon.title}</div>
+          <WeaponDisplay key={optionnalWeapon.weapon._id} weapon={optionnalWeapon} mode="hover" />
         ))}
       </div>
     );

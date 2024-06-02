@@ -129,5 +129,12 @@
   },
   "helper": {
     "more": "Click the \"?\" to see more"
+  },
+  "display": {
+    "cat": {
+      "damages": "Damages",
+      "modifiers": "Modifiers",
+      "clip": "Clip / Shot"
+    }
   }
 }

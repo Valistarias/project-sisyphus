@@ -1,5 +1,6 @@
 import React, { useMemo, type FC } from 'react';
 
+import holoBackground from '../assets/imgs/tvbg2.gif';
 import { Quark, type IQuarkProps } from '../quark';
 import { type TypeNodeIcons } from '../types/rules';
 
@@ -12,12 +13,23 @@ interface IANodeIcon extends IQuarkProps {
   size?: 'small' | 'medium' | 'large';
   /** The type of node icon */
   type: TypeNodeIcons;
+  /** The level of rarity for the icon */
+  rarity?: number;
+  /** Is the background animated ? */
+  animated?: boolean;
 }
 
 // When adding a new icon, dont forget to add it in the scss file, as before content
 // AND in the TypeNodeIcons type
 
-const ANodeIcon: FC<IANodeIcon> = ({ type, size = 'medium', className, onClick }) => {
+const ANodeIcon: FC<IANodeIcon> = ({
+  type,
+  size = 'medium',
+  className,
+  rarity,
+  onClick,
+  animated = false,
+}) => {
   const classes = useMemo<string>(
     () =>
       classTrim(`
@@ -25,11 +37,19 @@ const ANodeIcon: FC<IANodeIcon> = ({ type, size = 'medium', className, onClick }
     anodeicon--${type}
     anodeicon--${size}
     ${className ?? ''}
+    ${animated ? 'anodeicon--animated' : ''}
+    ${rarity !== undefined ? `anodeicon--rarity anodeicon--rarity--${rarity}` : ''}
   `),
-    [className, size, type]
+    [animated, className, rarity, size, type]
   );
 
-  return <Quark quarkType="span" className={classes} />;
+  return (
+    <Quark
+      quarkType="span"
+      style={animated ? { backgroundImage: `url(${holoBackground})` } : {}}
+      className={classes}
+    />
+  );
 };
 
 export default ANodeIcon;

@@ -29,6 +29,7 @@ $purple-dark: #59121f;
   --bone: #{$bone};
   --green: #{$green};
   --red: #{$red};
+  --rarity-0: var(--bone);
   --success: #{$green};
   --error: #{$red};
   --error-80: #{$red}cc;
@@ -38,6 +39,7 @@ $purple-dark: #59121f;
   --error-10: #{$red}19;
   --error-05: #{$red}0d;
   --error-00: #{$red}00;
+  --rarity-1: #{$green};
 }
 
 .dark-theme {
@@ -45,6 +47,7 @@ $purple-dark: #59121f;
   --background-header: #{$dark};
   --background-header-transparent: #{$dark}9;
   --font-color: #{$white};
+  --font-color-50: #{$white}7;
   --primary: #{$blue};
   --primary-80: #{$blue}cc;
   --primary-60: #{$blue}99;
@@ -80,4 +83,5 @@ $purple-dark: #59121f;
   --tertiary-05: #{$white}1;
   --tertiary-00: #{$white}0;
   --tertiary-dark: #{$bone};
+  --rarity-0: var(--font-color);
 }

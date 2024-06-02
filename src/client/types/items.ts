@@ -7,6 +7,7 @@ import {
   type ISkill,
   type ISkillBonus,
   type IStatBonus,
+  type TypeNodeIcons,
 } from './rules';
 
 export const possibleStarterKitValues = ['always', 'never', 'option'];
@@ -214,7 +215,7 @@ export interface IWeaponType {
   /** The associated item type */
   itemType: IItemType;
   /** The icon of the weapon */
-  icon: string;
+  icon: TypeNodeIcons;
   /** Is this weapon type needs training to be used ? */
   needTraining: boolean;
   /** When the weapon scope was created */
@@ -239,7 +240,7 @@ export interface IWeapon {
   /** A quote or text, MTG style */
   quote?: string;
   /** The internationnal content, as a json, stringified */
-  i18n?: InternationalizationType;
+  i18n?: string;
   /** The associated weaponType */
   weaponType: string;
   /** The rarity of the weapon */

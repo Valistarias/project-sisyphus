@@ -12,6 +12,7 @@ import { NodeIconSelect, defaultNodeIcon } from './nodeIconSelect';
 import NodeTree from './nodeTree';
 import NumberSelect from './numberSelect';
 import { SmartSelect, type IGroupedOption, type ISingleValueSelect } from './select';
+import WeaponDisplay from './weaponDisplay';
 
 export {
   Ariane,
@@ -28,6 +29,7 @@ export {
   NodeTree,
   NumberSelect,
   SmartSelect,
+  WeaponDisplay,
   defaultNodeIcon,
   type IArianeElt,
   type IGroupedOption,

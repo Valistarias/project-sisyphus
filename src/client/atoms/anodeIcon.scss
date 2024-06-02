@@ -1,6 +1,5 @@
 .anodeicon {
   font-family: var(--node-icon-font);
-
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-style: normal;
@@ -10,9 +9,18 @@
   speak: never;
   text-transform: none;
 
+  // Animated
+  &--animated {
+    background: var(--primary-dark);
+    background-blend-mode: color-dodge;
+  }
+
+  // Sizes ----
+
   &--large {
     font-size: 6rem;
     height: 6rem;
+    padding: 0.5rem;
     width: 6rem;
   }
 
@@ -27,6 +35,38 @@
     height: 4rem;
     width: 4rem;
   }
+
+  // Rarities ----
+  &--rarity {
+    border: 1px solid var(--rarity-0);
+    border-radius: var(--border-radius);
+
+    &--0 {
+      border-color: var(--rarity-0);
+    }
+
+    &--1 {
+      border-color: var(--rarity-1);
+    }
+
+    &--2 {
+      border-color: var(--rarity-2);
+    }
+
+    &--3 {
+      border-color: var(--rarity-3);
+    }
+
+    &--4 {
+      border-color: var(--rarity-4);
+    }
+
+    &--5 {
+      border-color: var(--rarity-5);
+    }
+  }
+
+  // Icons ----
 
   &--artnet::before {
     content: '\e900';

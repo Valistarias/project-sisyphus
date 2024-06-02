@@ -11,7 +11,7 @@ import React, {
 import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
 
-import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
+import { useApi, useSystemAlerts } from '../../../providers';
 
 import holoBackground from '../../../assets/imgs/tvbg2.gif';
 import { Ali, Ap, Atitle, Aul, Avideo } from '../../../atoms';
@@ -19,7 +19,7 @@ import { Button } from '../../../molecules';
 import { Alert } from '../../../organisms';
 import { type ICharacter } from '../../../types';
 
-import { classTrim, getCyberFrameLevelsByNodes } from '../../../utils';
+import { classTrim } from '../../../utils';
 
 import './characters.scss';
 
@@ -27,7 +27,7 @@ const Characters: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { cyberFrames } = useGlobalVars();
+  // const { cyberFrames } = useGlobalVars();
 
   const [characters, setCharacters] = useState<ICharacter[]>([]);
   // const [loading, setLoading] = useState(true);
@@ -65,7 +65,7 @@ const Characters: FC = () => {
     const charactersElt: ReactNode[] = [];
 
     characters.forEach((character) => {
-      const cyberFramesByNodes = getCyberFrameLevelsByNodes(character.nodes, cyberFrames);
+      // const cyberFramesByNodes = getCyberFrameLevelsByNodes(character.nodes, cyberFrames);
       // TODO: add all parameters to this
       const isReady = false;
       let status: string;
@@ -128,7 +128,7 @@ const Characters: FC = () => {
         {charactersElt}
       </Aul>
     );
-  }, [characters, cyberFrames, t]);
+  }, [characters, t]);
 
   useEffect(() => {
     if (api !== undefined && !calledApi.current) {
