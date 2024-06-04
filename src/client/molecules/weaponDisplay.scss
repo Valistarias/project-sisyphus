@@ -53,18 +53,18 @@
         text-shadow: 0 0 1rem var(--primary-40);
 
         &__scope {
-          color: var(--font-color-50);
-          font-size: 1.2rem;
+          color: var(--primary-80);
+          font-size: 1.4rem;
           text-shadow: none;
           text-transform: none;
         }
       }
 
       &__cat {
-        color: var(--font-color-50);
+        color: var(--primary-80);
         flex-shrink: 0;
         font-family: var(--mono-font);
-        font-size: 1.2rem;
+        font-size: 1.4rem;
         font-weight: 400;
         text-transform: uppercase;
       }
@@ -80,7 +80,7 @@
           padding: 0.5rem 1rem;
 
           &__type {
-            font-size: 1.2rem;
+            font-size: 1.4rem;
           }
         }
       }
