@@ -23,6 +23,7 @@ import './characterCreation.scss';
 
 interface FormValues {
   weapons: Record<string, boolean>;
+  armors: Record<string, boolean>;
 }
 
 interface ICharacterCreationStep5 {
@@ -54,7 +55,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
   const { t } = useTranslation();
   const { globalValues } = useGlobalVars();
 
-  const createDefaultData = useCallback((weapons: ICuratedWeapon[]) => {
+  const createDefaultData = useCallback((weapons: ICuratedWeapon[], armors: ICuratedArmor[]) => {
     if (weapons.length === 0) {
       return {};
     }
@@ -66,16 +67,32 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
       defaultData.weapons[weapon._id] = weapon.starterKit === 'always';
     });
 
+    armors.forEach(({ armor }) => {
+      if (defaultData.armors === undefined) {
+        defaultData.armors = {};
+      }
+      defaultData.armors[armor._id] = armor.starterKit === 'always';
+    });
+
     return defaultData;
   }, []);
 
   const { handleSubmit, watch, control } = useForm<FieldValues>({
-    defaultValues: useMemo(() => createDefaultData(weapons), [createDefaultData, weapons]),
+    defaultValues: useMemo(
+      () => createDefaultData(weapons, armors),
+      [createDefaultData, weapons, armors]
+    ),
   });
 
-  const nbOptionnalWeaponCharCreate = useMemo(
-    () =>
-      Number(globalValues.find(({ name }) => name === 'nbOptionnalWeaponCharCreate')?.value ?? 0),
+  const { nbOptionnalWeaponCharCreate, nbOptionnalArmorCharCreate } = useMemo(
+    () => ({
+      nbOptionnalWeaponCharCreate: Number(
+        globalValues.find(({ name }) => name === 'nbOptionnalWeaponCharCreate')?.value ?? 0
+      ),
+      nbOptionnalArmorCharCreate: Number(
+        globalValues.find(({ name }) => name === 'nbOptionnalArmorCharCreate')?.value ?? 0
+      ),
+    }),
     [globalValues]
   );
 
@@ -124,6 +141,51 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
     );
   }, [t, weapons, nbOptionnalWeaponCharCreate, control]);
 
+  const armorChoices = useMemo(() => {
+    if (armors.length === 0) {
+      return null;
+    }
+    const included: ICuratedArmor[] = [];
+    const optionnal: ICuratedArmor[] = [];
+    armors.forEach((armor) => {
+      if (armor.armor.starterKit === 'always') {
+        included.push(armor);
+      } else {
+        optionnal.push(armor);
+      }
+    });
+    return (
+      <div className="characterCreation-step5__choices__main__armors">
+        <Atitle className="characterCreation-step5__choices__main__armors__title" level={3}>
+          {t('itemTypeNames.wep', { count: 2 })}
+        </Atitle>
+        <div className="characterCreation-step5__choices__main__armors__cat">
+          <Atitle level={4}>{t('characterCreation.step5.included', { ns: 'components' })}</Atitle>
+          {included.map((includedArmor) => (
+            <ArmorDisplay key={includedArmor.armor._id} armor={includedArmor} mode="hover" />
+          ))}
+        </div>
+        <div className="characterCreation-step5__choices__main__armors__cat">
+          <Atitle level={4}>
+            {t('characterCreation.step5.choose', {
+              ns: 'components',
+              qty: nbOptionnalArmorCharCreate,
+            })}
+          </Atitle>
+          {optionnal.map((optionnalArmor) => (
+            <Checkbox
+              inputName={`armors.${optionnalArmor.armor._id}`}
+              className="characterCreation-step5__choices__main__armor-input"
+              control={control}
+              key={optionnalArmor.armor._id}
+              label={<ArmorDisplay armor={optionnalArmor} mode="hover" />}
+            />
+          ))}
+        </div>
+      </div>
+    );
+  }, [armors, t, nbOptionnalArmorCharCreate, control]);
+
   return (
     <motion.div
       className={classTrim(`
@@ -155,6 +217,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
             {t('characterCreation.step5.main', { ns: 'components' })}
           </Atitle>
           <div className="characterCreation-step5__choices__main__blocks">{weaponChoices}</div>
+          <div className="characterCreation-step5__choices__main__blocks">{armorChoices}</div>
         </div>
       </div>
     </motion.div>

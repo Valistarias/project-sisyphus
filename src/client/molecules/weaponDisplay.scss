@@ -143,8 +143,11 @@
     }
 
     &__icon {
+      align-items: center;
       border: 1px solid var(--primary-20);
       border-radius: var(--border-radius);
+      display: flex;
+      height: auto;
       text-shadow: 0 0 2rem var(--primary-40);
     }
 
