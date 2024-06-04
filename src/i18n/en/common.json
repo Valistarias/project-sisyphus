@@ -311,13 +311,21 @@
   },
   "itemTypeNames": {
     "psm": "Pistol & SMG",
+    "psm_other": "Pistol & SMGs",
     "wep": "Weapon",
+    "wep_other": "Weapons",
     "bag": "Bag",
+    "bag_other": "Bags",
     "amo": "Ammo",
+    "amo_other": "Ammos",
     "pro": "Program",
+    "pro_other": "Programs",
     "imp": "Implant",
+    "imp_other": "Implants",
     "shi": "Armor",
-    "itm": "Item"
+    "shi_other": "Armors",
+    "itm": "Item",
+    "itm_other": "Items"
   },
   "chapterTypeNames": {
     "default_one": "Info",

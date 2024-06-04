@@ -11,11 +11,15 @@
     align-items: center;
     display: flex;
     justify-content: space-between;
-    margin-bottom: 4rem;
+    margin-bottom: 1rem;
 
     .atitle {
       margin: 0;
     }
+  }
+
+  &__return-btn {
+    margin-bottom: 4rem;
   }
 
   &__visual {

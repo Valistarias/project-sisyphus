@@ -561,6 +561,43 @@
     margin-bottom: 8vh;
     margin-top: 5vh;
   }
+
+  &__choices {
+    &__main {
+      &__title {
+        padding-top: 5vh;
+        text-align: center;
+      }
+
+      &__blocks {
+        display: flex;
+        flex-direction: row;
+        gap: 2rem;
+        justify-content: center;
+      }
+
+      &__weapons {
+        background-color: var(--primary-dark-60);
+        border: 1px solid var(--primary);
+        box-shadow: 0 0 2rem var(--primary-10);
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        max-width: 30rem;
+        padding: 2rem;
+        width: 100%;
+
+        &__title {
+          margin: 0;
+        }
+      }
+
+      .weapon-display__text-hover {
+        font-size: initial;
+        font-weight: 400;
+      }
+    }
+  }
 }
 
 .characterCreation {

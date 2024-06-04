@@ -213,6 +213,9 @@ const AdminEditGlobalValue: FC = () => {
             {t('adminEditGlobalValue.delete', { ns: 'pages' })}
           </Button>
         </div>
+        <Button className="adminEditGlobalValue__return-btn" href="/admin/charparams" size="small">
+          {t('adminEditGlobalValue.return', { ns: 'pages' })}
+        </Button>
         <Atitle level={2}>{t('adminEditGlobalValue.edit', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror className="adminEditGlobalValue__error">{errors.root.serverError.message}</Aerror>

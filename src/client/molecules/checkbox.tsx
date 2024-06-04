@@ -1,4 +1,4 @@
-import React, { type FC } from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 import { Controller } from 'react-hook-form';
 
@@ -15,7 +15,7 @@ interface ICheckbox extends IReactHookFormInputs {
   /** The class of the checkbox element */
   className?: string;
   /** The label, if any */
-  label: string;
+  label: ReactNode;
   /** Allow the user's password manager to automatically enter the password */
   autoComplete?: string;
 }
@@ -60,7 +60,7 @@ const Checkbox: FC<ICheckbox> = ({
               onChange={onChange}
               value={value ?? ''}
             />
-            <span className="checkbox__label">{label}</span>
+            <div className="checkbox__label">{label}</div>
           </Alabel>
           {error?.message !== undefined ? (
             <Aerror className="checkbox__error">{error.message}</Aerror>

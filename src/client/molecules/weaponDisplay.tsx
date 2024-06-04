@@ -175,7 +175,7 @@ const WeaponDisplay: FC<IWeaponDisplay> = ({ weapon, mode = 'basic' }) => {
   if (mode === 'hover') {
     return (
       <Quark
-        quarkType="span"
+        quarkType="div"
         className={classTrim(`
         weapon-display
         weapon-display--mode-${mode}

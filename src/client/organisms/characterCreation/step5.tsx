@@ -1,10 +1,13 @@
-import React, { useMemo, useState, type FC } from 'react';
+import React, { useCallback, useMemo, type FC } from 'react';
 
 import { motion } from 'framer-motion';
+import { useForm, type FieldValues } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
+import { useGlobalVars } from '../../providers';
+
 import { Ap, Atitle } from '../../atoms';
-import { WeaponDisplay } from '../../molecules';
+import { Checkbox, WeaponDisplay } from '../../molecules';
 import {
   type ICuratedArmor,
   type ICuratedBag,
@@ -17,6 +20,10 @@ import {
 import { classTrim } from '../../utils';
 
 import './characterCreation.scss';
+
+interface FormValues {
+  weapons: Record<string, boolean>;
+}
 
 interface ICharacterCreationStep5 {
   /** All the available weapons to be used in character creation */
@@ -45,8 +52,32 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
   onSubmitItems,
 }) => {
   const { t } = useTranslation();
+  const { globalValues } = useGlobalVars();
 
-  const [selectedWeapons, setSelectedWeapons] = useState([]);
+  const createDefaultData = useCallback((weapons: ICuratedWeapon[]) => {
+    if (weapons.length === 0) {
+      return {};
+    }
+    const defaultData: Partial<FormValues> = {};
+    weapons.forEach(({ weapon }) => {
+      if (defaultData.weapons === undefined) {
+        defaultData.weapons = {};
+      }
+      defaultData.weapons[weapon._id] = weapon.starterKit === 'always';
+    });
+
+    return defaultData;
+  }, []);
+
+  const { handleSubmit, watch, control } = useForm<FieldValues>({
+    defaultValues: useMemo(() => createDefaultData(weapons), [createDefaultData, weapons]),
+  });
+
+  const nbOptionnalWeaponCharCreate = useMemo(
+    () =>
+      Number(globalValues.find(({ name }) => name === 'nbOptionnalWeaponCharCreate')?.value ?? 0),
+    [globalValues]
+  );
 
   const weaponChoices = useMemo(() => {
     if (weapons.length === 0) {
@@ -62,22 +93,36 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
       }
     });
     return (
-      <div className="characterCreation-step4__choices__main__weapons">
-        <Atitle level={3}>{t('itemTypeNames.wep')}</Atitle>
-        <Atitle level={4}>{t('characterCreation.step5.included', { ns: 'components' })}</Atitle>
-        {included.map((includedWeapon) => (
-          <WeaponDisplay key={includedWeapon.weapon._id} weapon={includedWeapon} mode="hover" />
-          // <div key={includedWeapon.weapon._id}>{includedWeapon.weapon.title}</div>
-        ))}
-        <Atitle level={4}>
-          {t('characterCreation.step5.choose', { ns: 'components', qty: 3 })}
+      <div className="characterCreation-step5__choices__main__weapons">
+        <Atitle className="characterCreation-step5__choices__main__weapons__title" level={3}>
+          {t('itemTypeNames.wep', { count: 2 })}
         </Atitle>
-        {optionnal.map((optionnalWeapon) => (
-          <WeaponDisplay key={optionnalWeapon.weapon._id} weapon={optionnalWeapon} mode="hover" />
-        ))}
+        <div className="characterCreation-step5__choices__main__weapons__cat">
+          <Atitle level={4}>{t('characterCreation.step5.included', { ns: 'components' })}</Atitle>
+          {included.map((includedWeapon) => (
+            <WeaponDisplay key={includedWeapon.weapon._id} weapon={includedWeapon} mode="hover" />
+          ))}
+        </div>
+        <div className="characterCreation-step5__choices__main__weapons__cat">
+          <Atitle level={4}>
+            {t('characterCreation.step5.choose', {
+              ns: 'components',
+              qty: nbOptionnalWeaponCharCreate,
+            })}
+          </Atitle>
+          {optionnal.map((optionnalWeapon) => (
+            <Checkbox
+              inputName={`weapons.${optionnalWeapon.weapon._id}`}
+              className="characterCreation-step5__choices__main__weapon-input"
+              control={control}
+              key={optionnalWeapon.weapon._id}
+              label={<WeaponDisplay weapon={optionnalWeapon} mode="hover" />}
+            />
+          ))}
+        </div>
       </div>
     );
-  }, [t, weapons]);
+  }, [t, weapons, nbOptionnalWeaponCharCreate, control]);
 
   return (
     <motion.div
@@ -104,10 +149,12 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
       <Ap className="characterCreation-step5__sub">
         {t('characterCreation.step5.sub', { ns: 'components' })}
       </Ap>
-      <div className="characterCreation-step4__choices">
-        <div className="characterCreation-step4__choices__main">
-          <Atitle level={2}>{t('characterCreation.step5.main', { ns: 'components' })}</Atitle>
-          {weaponChoices}
+      <div className="characterCreation-step5__choices">
+        <div className="characterCreation-step5__choices__main">
+          <Atitle className="characterCreation-step5__choices__main__title" level={2}>
+            {t('characterCreation.step5.main', { ns: 'components' })}
+          </Atitle>
+          <div className="characterCreation-step5__choices__main__blocks">{weaponChoices}</div>
         </div>
       </div>
     </motion.div>
