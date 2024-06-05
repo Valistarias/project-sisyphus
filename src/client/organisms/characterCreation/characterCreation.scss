@@ -576,13 +576,15 @@
         justify-content: center;
       }
 
-      &__weapons {
+      &__weapons,
+      &__armors {
         background-color: var(--primary-dark-60);
         border: 1px solid var(--primary);
         box-shadow: 0 0 2rem var(--primary-10);
         display: flex;
         flex-direction: column;
         gap: 2rem;
+        justify-content: space-around;
         max-width: 30rem;
         padding: 2rem;
         width: 100%;
@@ -595,8 +597,8 @@
         }
       }
 
-      .weapon-display__text-hover {
-        font-size: initial;
+      .weapon-display__text-hover,
+      .armor-display__text-hover {
         font-weight: 400;
       }
     }

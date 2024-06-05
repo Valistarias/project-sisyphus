@@ -4,8 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../providers';
 
-import { Ali, AnodeIcon, Ap, Atitle, Aul } from '../atoms';
-import { RichTextElement } from '../organisms';
+import { Ali, Ap, Atitle, Aul } from '../atoms';
 import { Quark, type IQuarkProps } from '../quark';
 import {
   type ICuratedItemModifier,
@@ -15,6 +14,9 @@ import {
   type ICuratedWeaponType,
 } from '../types';
 import { type ICuratedDamageType, type IDamage, type IWeapon } from '../types/items';
+import { type TypeNodeIcons } from '../types/rules';
+
+import PropDisplay from './propDisplay';
 
 import { classTrim } from '../utils';
 
@@ -91,84 +93,49 @@ const WeaponDisplay: FC<IWeaponDisplay> = ({ weapon, mode = 'basic' }) => {
     // TODO: Internationalization
     const { weapon } = curatedWeapon;
     const { rarity } = weapon;
-    return (
-      <div
-        className={classTrim(`
-        weapon-display__block
-        weapon-display__block--rarity-${rarity?.rarity.position ?? 0}
-      `)}
-      >
-        {type !== undefined ? (
-          <AnodeIcon
-            className="weapon-display__block__icon"
-            animated
-            type={type.weaponType.icon}
-            size="large"
-          />
-        ) : null}
 
-        <div className="weapon-display__block__infos">
-          <div className="weapon-display__block__infos__top">
-            <Atitle className="weapon-display__block__infos__title" level={3}>
-              {weapon.title}
-              {scope !== undefined ? (
-                <span className="weapon-display__block__infos__title__scope">
-                  {scope.weaponScope.title}
-                </span>
-              ) : null}
+    return (
+      <PropDisplay
+        className="weapon-display__block"
+        rarity={rarity?.rarity.title ?? ''}
+        rarityLevel={rarity?.rarity.position ?? 0}
+        icon={type?.weaponType.icon as TypeNodeIcons}
+        title={weapon.title}
+        subTitle={scope?.weaponScope.title}
+        type={type?.weaponType.title ?? ''}
+        itemModifiers={weapon.itemModifiers}
+        mainNode={
+          <div className="weapon-display__block__main">
+            <Atitle className="weapon-display__block__main__title" level={4}>
+              {t('display.cat.damages', { ns: 'components' })}
             </Atitle>
-            <Ap className="weapon-display__block__infos__cat">{`${type?.weaponType.title} - ${rarity?.rarity.title}`}</Ap>
+            <Aul noPoints className="weapon-display__block__damages">
+              {weapon.damages.map((damage) => (
+                <Ali key={damage._id} className="weapon-display__block__damages__elt">
+                  {damage.dices}
+                  <span className="weapon-display__block__damages__elt__type">{`(${damage.damageType?.damageType.title})`}</span>
+                </Ali>
+              ))}
+            </Aul>
           </div>
-          <div className="weapon-display__block__infos__mid">
-            <div className="weapon-display__block__infos__mid-left">
-              <Atitle className="weapon-display__block__infos__mid-left__title" level={4}>
-                {t('display.cat.damages', { ns: 'components' })}
-              </Atitle>
-              <Aul noPoints className="weapon-display__block__infos__damages">
-                {weapon.damages.map((damage) => (
-                  <Ali key={damage._id} className="weapon-display__block__infos__damages__elt">
-                    {damage.dices}
-                    <span className="weapon-display__block__infos__damages__elt__type">{`(${damage.damageType?.damageType.title})`}</span>
-                  </Ali>
-                ))}
-              </Aul>
-            </div>
-            {weapon.magasine !== undefined ? (
-              <div className="weapon-display__block__infos__mid-right">
-                <div className="weapon-display__block__infos__number-block">
-                  <Atitle className="weapon-display__block__infos__number-block__title" level={4}>
-                    {t('display.cat.clip', { ns: 'components' })}
-                  </Atitle>
-                  <Ap className="weapon-display__block__infos__number-block__number">
-                    {weapon.magasine !== undefined
-                      ? `${weapon.magasine} / ${weapon.ammoPerShot ?? 0}`
-                      : '/'}
-                  </Ap>
-                </div>
+        }
+        subNode={
+          weapon.magasine !== undefined ? (
+            <div className="weapon-display__block__sub">
+              <div className="weapon-display__block__number-block">
+                <Atitle className="weapon-display__block__number-block__title" level={4}>
+                  {t('display.cat.clip', { ns: 'components' })}
+                </Atitle>
+                <Ap className="weapon-display__block__number-block__number">
+                  {weapon.magasine !== undefined
+                    ? `${weapon.magasine} / ${weapon.ammoPerShot ?? 0}`
+                    : '/'}
+                </Ap>
               </div>
-            ) : null}
-          </div>
-          {weapon.itemModifiers !== undefined && weapon.itemModifiers.length > 0 ? (
-            <div className="weapon-display__block__infos__bottom">
-              <Aul noPoints className="weapon-display__block__infos__modifiers">
-                {weapon.itemModifiers.map(({ itemModifier }) => (
-                  <Ali
-                    key={itemModifier._id}
-                    className="weapon-display__block__infos__modifiers__elt"
-                  >
-                    {itemModifier.title}
-                    <RichTextElement
-                      className="weapon-display__block__infos__modifiers__elt__text"
-                      rawStringContent={itemModifier.summary}
-                      readOnly
-                    />
-                  </Ali>
-                ))}
-              </Aul>
             </div>
-          ) : null}
-        </div>
-      </div>
+          ) : undefined
+        }
+      />
     );
   }, [curatedWeapon, t]);
 

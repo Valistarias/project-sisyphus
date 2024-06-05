@@ -1,4 +1,5 @@
 import { Ariane, type IArianeElt } from './ariane';
+import ArmorDisplay from './armorDisplay';
 import Button from './button';
 import Checkbox from './checkbox';
 import DiceCard from './diceCard';
@@ -16,6 +17,7 @@ import WeaponDisplay from './weaponDisplay';
 
 export {
   Ariane,
+  ArmorDisplay,
   Button,
   Checkbox,
   DiceCard,

@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useGlobalVars } from '../../providers';
 
 import { Ap, Atitle } from '../../atoms';
-import { Checkbox, WeaponDisplay } from '../../molecules';
+import { ArmorDisplay, Checkbox, WeaponDisplay } from '../../molecules';
 import {
   type ICuratedArmor,
   type ICuratedBag,
@@ -112,7 +112,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
     return (
       <div className="characterCreation-step5__choices__main__weapons">
         <Atitle className="characterCreation-step5__choices__main__weapons__title" level={3}>
-          {t('itemTypeNames.wep', { count: 2 })}
+          {t('itemTypeNames.wep', { count: included.length + nbOptionnalWeaponCharCreate })}
         </Atitle>
         <div className="characterCreation-step5__choices__main__weapons__cat">
           <Atitle level={4}>{t('characterCreation.step5.included', { ns: 'components' })}</Atitle>
@@ -157,31 +157,36 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
     return (
       <div className="characterCreation-step5__choices__main__armors">
         <Atitle className="characterCreation-step5__choices__main__armors__title" level={3}>
-          {t('itemTypeNames.wep', { count: 2 })}
+          {t('itemTypeNames.shi', { count: included.length + nbOptionnalArmorCharCreate })}
         </Atitle>
-        <div className="characterCreation-step5__choices__main__armors__cat">
-          <Atitle level={4}>{t('characterCreation.step5.included', { ns: 'components' })}</Atitle>
-          {included.map((includedArmor) => (
-            <ArmorDisplay key={includedArmor.armor._id} armor={includedArmor} mode="hover" />
-          ))}
-        </div>
-        <div className="characterCreation-step5__choices__main__armors__cat">
-          <Atitle level={4}>
-            {t('characterCreation.step5.choose', {
-              ns: 'components',
-              qty: nbOptionnalArmorCharCreate,
-            })}
-          </Atitle>
-          {optionnal.map((optionnalArmor) => (
-            <Checkbox
-              inputName={`armors.${optionnalArmor.armor._id}`}
-              className="characterCreation-step5__choices__main__armor-input"
-              control={control}
-              key={optionnalArmor.armor._id}
-              label={<ArmorDisplay armor={optionnalArmor} mode="hover" />}
-            />
-          ))}
-        </div>
+        {included.length > 0 ? (
+          <div className="characterCreation-step5__choices__main__armors__cat">
+            <Atitle level={4}>{t('characterCreation.step5.included', { ns: 'components' })}</Atitle>
+            {included.map((includedArmor) => (
+              <ArmorDisplay key={includedArmor.armor._id} armor={includedArmor} mode="hover" />
+            ))}
+          </div>
+        ) : null}
+
+        {optionnal.length > 0 ? (
+          <div className="characterCreation-step5__choices__main__armors__cat">
+            <Atitle level={4}>
+              {t('characterCreation.step5.choose', {
+                ns: 'components',
+                qty: nbOptionnalArmorCharCreate,
+              })}
+            </Atitle>
+            {optionnal.map((optionnalArmor) => (
+              <Checkbox
+                inputName={`armors.${optionnalArmor.armor._id}`}
+                className="characterCreation-step5__choices__main__armor-input"
+                control={control}
+                key={optionnalArmor.armor._id}
+                label={<ArmorDisplay armor={optionnalArmor} mode="hover" />}
+              />
+            ))}
+          </div>
+        ) : null}
       </div>
     );
   }, [armors, t, nbOptionnalArmorCharCreate, control]);
@@ -216,8 +221,10 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
           <Atitle className="characterCreation-step5__choices__main__title" level={2}>
             {t('characterCreation.step5.main', { ns: 'components' })}
           </Atitle>
-          <div className="characterCreation-step5__choices__main__blocks">{weaponChoices}</div>
-          <div className="characterCreation-step5__choices__main__blocks">{armorChoices}</div>
+          <div className="characterCreation-step5__choices__main__blocks">
+            {weaponChoices}
+            {armorChoices}
+          </div>
         </div>
       </div>
     </motion.div>
