@@ -10,12 +10,14 @@
     flex-shrink: 0;
     height: 2rem;
     justify-content: center;
+    transition: border 0.2s ease;
     width: 2rem;
 
     &__icon {
       fill: var(--primary);
       height: 2rem;
       position: relative;
+      transition: fill 0.2s ease;
       width: 2rem;
     }
   }
@@ -31,5 +33,20 @@
     flex-direction: row;
     gap: 1rem;
     user-select: none;
+  }
+
+  // Others ----------------------------------
+  &--disabled {
+    cursor: default;
+    user-select: none;
+
+    .checkbox__field {
+      border: 1px solid var(--font-color-50);
+      cursor: default;
+
+      &__icon {
+        fill: var(--font-color-50);
+      }
+    }
   }
 }

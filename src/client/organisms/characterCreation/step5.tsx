@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, type FC } from 'react';
+import React, { useCallback, useMemo, type FC, type ReactNode } from 'react';
 
 import { motion } from 'framer-motion';
 import { useForm, type FieldValues } from 'react-hook-form';
@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useGlobalVars } from '../../providers';
 
 import { Ap, Atitle } from '../../atoms';
-import { ArmorDisplay, Checkbox, WeaponDisplay } from '../../molecules';
+import { Checkbox } from '../../molecules';
 import {
   type ICuratedArmor,
   type ICuratedBag,
@@ -16,6 +16,7 @@ import {
   type ICuratedProgram,
   type ICuratedWeapon,
 } from '../../types';
+import { ArmorDisplay, WeaponDisplay } from '../index';
 
 import { classTrim } from '../../utils';
 
@@ -96,7 +97,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
     [globalValues]
   );
 
-  const weaponChoices = useMemo(() => {
+  const weaponChoices = (): ReactNode => {
     if (weapons.length === 0) {
       return null;
     }
@@ -107,6 +108,13 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         included.push(weapon);
       } else {
         optionnal.push(weapon);
+      }
+    });
+    const weaponSelected = watch('weapons');
+    let countSelected = 0;
+    Object.values(weaponSelected as Record<string, boolean>).forEach((isIncluded) => {
+      if (isIncluded) {
+        countSelected += 1;
       }
     });
     return (
@@ -134,19 +142,30 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
               control={control}
               key={optionnalWeapon.weapon._id}
               label={<WeaponDisplay weapon={optionnalWeapon} mode="hover" />}
+              disabled={
+                countSelected - included.length >= nbOptionnalWeaponCharCreate &&
+                weaponSelected[optionnalWeapon.weapon._id] === false
+              }
             />
           ))}
         </div>
       </div>
     );
-  }, [t, weapons, nbOptionnalWeaponCharCreate, control]);
+  };
 
-  const armorChoices = useMemo(() => {
+  const armorChoices = (): ReactNode => {
     if (armors.length === 0) {
       return null;
     }
     const included: ICuratedArmor[] = [];
     const optionnal: ICuratedArmor[] = [];
+    const armorSelected = watch('armors');
+    let countSelected = 0;
+    Object.values(armorSelected as Record<string, boolean>).forEach((isIncluded) => {
+      if (isIncluded) {
+        countSelected += 1;
+      }
+    });
     armors.forEach((armor) => {
       if (armor.armor.starterKit === 'always') {
         included.push(armor);
@@ -182,6 +201,10 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
                 className="characterCreation-step5__choices__main__armor-input"
                 control={control}
                 key={optionnalArmor.armor._id}
+                disabled={
+                  countSelected >= nbOptionnalArmorCharCreate &&
+                  armorSelected[optionnalArmor.armor._id] === false
+                }
                 label={<ArmorDisplay armor={optionnalArmor} mode="hover" />}
               />
             ))}
@@ -189,7 +212,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         ) : null}
       </div>
     );
-  }, [armors, t, nbOptionnalArmorCharCreate, control]);
+  };
 
   return (
     <motion.div
@@ -222,8 +245,8 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
             {t('characterCreation.step5.main', { ns: 'components' })}
           </Atitle>
           <div className="characterCreation-step5__choices__main__blocks">
-            {weaponChoices}
-            {armorChoices}
+            {weaponChoices()}
+            {armorChoices()}
           </div>
         </div>
       </div>

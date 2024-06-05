@@ -4,12 +4,14 @@ import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../providers';
 
-import { Ap } from '../atoms';
+import { Ali, Ap, Atitle, Aul } from '../atoms';
 import { PropDisplay } from '../molecules';
 import { Quark, type IQuarkProps } from '../quark';
 import {
+  type ICharParamBonus,
   type ICuratedArmor,
   type ICuratedArmorType,
+  type ICuratedCharParam,
   type ICuratedItemModifier,
   type ICuratedRarity,
 } from '../types';
@@ -26,11 +28,16 @@ interface IArmorDisplay extends IQuarkProps {
   mode?: 'basic' | 'hover';
 }
 
+interface ICompleteCharParamBonus extends Omit<ICharParamBonus, 'charParam'> {
+  charParam: ICuratedCharParam | undefined;
+}
+
 interface ICompleteArmor
-  extends Omit<IArmor, 'armorType' | 'armorScope' | 'itemModifiers' | 'rarity' | 'damages'> {
+  extends Omit<IArmor, 'armorType' | 'itemModifiers' | 'rarity' | 'charParamBonuses'> {
   armorType: ICuratedArmorType | undefined;
   itemModifiers: ICuratedItemModifier[] | undefined;
   rarity: ICuratedRarity | undefined;
+  charParamBonuses: ICompleteCharParamBonus[];
 }
 
 interface ICuratedCompleteArmor extends Omit<ICuratedArmor, 'armor'> {
@@ -39,7 +46,7 @@ interface ICuratedCompleteArmor extends Omit<ICuratedArmor, 'armor'> {
 
 const ArmorDisplay: FC<IArmorDisplay> = ({ armor, mode = 'basic' }) => {
   const { t } = useTranslation();
-  const { armorTypes, itemModifiers, rarities } = useGlobalVars();
+  const { armorTypes, itemModifiers, rarities, charParams } = useGlobalVars();
 
   const [placement, setPlacement] = useState<string>('left');
   const domBlockContent = useRef<HTMLDivElement>(null);
@@ -60,10 +67,17 @@ const ArmorDisplay: FC<IArmorDisplay> = ({ armor, mode = 'basic' }) => {
               (itemModifier) => itemModifier.itemModifier._id === itemModifierId
             ) ?? itemModifiers[0]
         ),
+        charParamBonuses:
+          armorObj.charParamBonuses?.map((charParamBonus) => ({
+            ...charParamBonus,
+            charParam: charParams.find(
+              ({ charParam }) => charParam._id === charParamBonus.charParam
+            ),
+          })) ?? [],
       },
       i18n,
     };
-  }, [armorTypes, armor, rarities, itemModifiers]);
+  }, [armorTypes, armor, rarities, itemModifiers, charParams]);
 
   const handleMouseEnter = (): void => {
     if (mode === 'hover') {
@@ -101,9 +115,23 @@ const ArmorDisplay: FC<IArmorDisplay> = ({ armor, mode = 'basic' }) => {
         title={armor.title}
         type={type?.armorType.title ?? ''}
         itemModifiers={armor.itemModifiers}
+        mainNode={
+          <div className="armor-display__block__main">
+            <Atitle className="weapon-display__block__main__title" level={4}>
+              {t('display.cat.bonuses', { ns: 'components' })}
+            </Atitle>
+            <Aul noPoints className="weapon-display__block__bonuses">
+              {armor.charParamBonuses.map((charParamBonus) => (
+                <Ali key={charParamBonus._id} className="weapon-display__block__bonuses__elt">
+                  {`+${charParamBonus.value} ${charParamBonus.charParam?.charParam.title}`}
+                </Ali>
+              ))}
+            </Aul>
+          </div>
+        }
       />
     );
-  }, [curateArmor]);
+  }, [curateArmor, t]);
 
   if (mode === 'hover') {
     return (

@@ -134,7 +134,8 @@
     "cat": {
       "damages": "Damages",
       "modifiers": "Modifiers",
-      "clip": "Clip / Shot"
+      "clip": "Clip / Shot",
+      "bonuses": "Bonuses"
     }
   }
 }

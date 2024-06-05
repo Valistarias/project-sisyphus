@@ -18,6 +18,8 @@ interface ICheckbox extends IReactHookFormInputs {
   label: ReactNode;
   /** Allow the user's password manager to automatically enter the password */
   autoComplete?: string;
+  /** Is the checkbox disabled ? */
+  disabled?: boolean;
 }
 
 const Checkbox: FC<ICheckbox> = ({
@@ -28,11 +30,13 @@ const Checkbox: FC<ICheckbox> = ({
   className,
   label,
   autoComplete,
+  disabled = false,
 }) => (
   <div
     className={classTrim(`
       checkbox
       checkbox--${size}
+      ${disabled ? 'checkbox--disabled' : ''}
       ${className ?? ''}
     `)}
   >
@@ -57,7 +61,7 @@ const Checkbox: FC<ICheckbox> = ({
               type="checkbox"
               className="checkbox__leg-field"
               autoComplete={autoComplete ?? undefined}
-              onChange={onChange}
+              onChange={disabled ? undefined : onChange}
               value={value ?? ''}
             />
             <div className="checkbox__label">{label}</div>
