@@ -163,9 +163,11 @@ const WeaponDisplay: FC<IWeaponDisplay> = ({ weapon, mode = 'basic' }) => {
     return (
       <Quark
         quarkType="div"
+        onMouseEnter={handleMouseEnter}
         className={classTrim(`
         weapon-display
         weapon-display--mode-${mode}
+        weapon-display--${placement}
       `)}
       >
         <Ap className="weapon-display__text-hover">{curatedWeapon?.weapon.title}</Ap>
@@ -177,11 +179,9 @@ const WeaponDisplay: FC<IWeaponDisplay> = ({ weapon, mode = 'basic' }) => {
   return (
     <Quark
       quarkType="span"
-      onMouseEnter={handleMouseEnter}
       className={classTrim(`
         weapon-display
         weapon-display--mode-${mode}
-        weapon-display--${placement}
       `)}
     >
       {weaponBlock}

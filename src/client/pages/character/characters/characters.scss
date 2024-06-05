@@ -61,6 +61,7 @@
 
         &__text {
           color: var(--primary);
+          text-align: center;
           text-shadow: 0 0 1rem var(--tertiary-80);
           width: 100%;
         }
@@ -91,8 +92,6 @@
         justify-content: center;
 
         &__main {
-          width: 10rem;
-
           .button__content {
             text-align: center;
           }

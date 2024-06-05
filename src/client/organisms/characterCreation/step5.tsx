@@ -16,7 +16,14 @@ import {
   type ICuratedProgram,
   type ICuratedWeapon,
 } from '../../types';
-import { ArmorDisplay, BagDisplay, WeaponDisplay } from '../index';
+import {
+  ArmorDisplay,
+  BagDisplay,
+  ImplantDisplay,
+  ItemDisplay,
+  ProgramDisplay,
+  WeaponDisplay,
+} from '../index';
 
 import { classTrim } from '../../utils';
 
@@ -26,6 +33,9 @@ interface FormValues {
   weapons: Record<string, boolean>;
   armors: Record<string, boolean>;
   bags: Record<string, boolean>;
+  items: Record<string, boolean>;
+  programs: Record<string, boolean>;
+  implants: Record<string, boolean>;
 }
 
 interface ICharacterCreationStep5 {
@@ -57,57 +67,99 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
   const { t } = useTranslation();
   const { globalValues } = useGlobalVars();
 
-  const createDefaultData = useCallback((weapons: ICuratedWeapon[], armors: ICuratedArmor[]) => {
-    if (weapons.length === 0) {
-      return {};
-    }
-    const defaultData: Partial<FormValues> = {};
-    weapons.forEach(({ weapon }) => {
-      if (defaultData.weapons === undefined) {
-        defaultData.weapons = {};
+  const createDefaultData = useCallback(
+    (
+      weapons: ICuratedWeapon[],
+      armors: ICuratedArmor[],
+      bags: ICuratedBag[],
+      items: ICuratedItem[],
+      programs: ICuratedProgram[],
+      implants: ICuratedImplant[]
+    ) => {
+      if (weapons.length === 0) {
+        return {};
       }
-      defaultData.weapons[weapon._id] = weapon.starterKit === 'always';
-    });
+      const defaultData: Partial<FormValues> = {};
+      weapons.forEach(({ weapon }) => {
+        if (defaultData.weapons === undefined) {
+          defaultData.weapons = {};
+        }
+        defaultData.weapons[weapon._id] = weapon.starterKit === 'always';
+      });
 
-    armors.forEach(({ armor }) => {
-      if (defaultData.armors === undefined) {
-        defaultData.armors = {};
-      }
-      defaultData.armors[armor._id] = armor.starterKit === 'always';
-    });
+      armors.forEach(({ armor }) => {
+        if (defaultData.armors === undefined) {
+          defaultData.armors = {};
+        }
+        defaultData.armors[armor._id] = armor.starterKit === 'always';
+      });
 
-    bags.forEach(({ bag }) => {
-      if (defaultData.bags === undefined) {
-        defaultData.bags = {};
-      }
-      defaultData.bags[bag._id] = bag.starterKit === 'always';
-    });
+      bags.forEach(({ bag }) => {
+        if (defaultData.bags === undefined) {
+          defaultData.bags = {};
+        }
+        defaultData.bags[bag._id] = bag.starterKit === 'always';
+      });
 
-    return defaultData;
-  }, []);
+      items.forEach(({ item }) => {
+        if (defaultData.items === undefined) {
+          defaultData.items = {};
+        }
+        defaultData.items[item._id] = item.starterKit === 'always';
+      });
+
+      programs.forEach(({ program }) => {
+        if (defaultData.programs === undefined) {
+          defaultData.programs = {};
+        }
+        defaultData.programs[program._id] = program.starterKit === 'always';
+      });
+
+      implants.forEach(({ implant }) => {
+        if (defaultData.implants === undefined) {
+          defaultData.implants = {};
+        }
+        defaultData.implants[implant._id] = implant.starterKit === 'always';
+      });
+
+      return defaultData;
+    },
+    []
+  );
 
   const { handleSubmit, watch, control } = useForm<FieldValues>({
     defaultValues: useMemo(
-      () => createDefaultData(weapons, armors),
-      [createDefaultData, weapons, armors]
+      () => createDefaultData(weapons, armors, bags, items, programs, implants),
+      [createDefaultData, weapons, armors, bags, items, programs, implants]
     ),
   });
 
-  const { nbOptionnalWeaponCharCreate, nbOptionnalArmorCharCreate, nbOptionnalBagCharCreate } =
-    useMemo(
-      () => ({
-        nbOptionnalWeaponCharCreate: Number(
-          globalValues.find(({ name }) => name === 'nbOptionnalWeaponCharCreate')?.value ?? 0
-        ),
-        nbOptionnalArmorCharCreate: Number(
-          globalValues.find(({ name }) => name === 'nbOptionnalArmorCharCreate')?.value ?? 0
-        ),
-        nbOptionnalBagCharCreate: Number(
-          globalValues.find(({ name }) => name === 'nbOptionnalBagCharCreate')?.value ?? 0
-        ),
-      }),
-      [globalValues]
-    );
+  const {
+    nbOptionnalWeaponCharCreate,
+    nbOptionnalArmorCharCreate,
+    nbOptionnalBagCharCreate,
+    nbOptionnalItemCharCreate,
+    nbOptionnalOtherCharCreate,
+  } = useMemo(
+    () => ({
+      nbOptionnalWeaponCharCreate: Number(
+        globalValues.find(({ name }) => name === 'nbOptionnalWeaponCharCreate')?.value ?? 0
+      ),
+      nbOptionnalArmorCharCreate: Number(
+        globalValues.find(({ name }) => name === 'nbOptionnalArmorCharCreate')?.value ?? 0
+      ),
+      nbOptionnalBagCharCreate: Number(
+        globalValues.find(({ name }) => name === 'nbOptionnalBagCharCreate')?.value ?? 0
+      ),
+      nbOptionnalItemCharCreate: Number(
+        globalValues.find(({ name }) => name === 'nbOptionnalItemCharCreate')?.value ?? 0
+      ),
+      nbOptionnalOtherCharCreate: Number(
+        globalValues.find(({ name }) => name === 'nbOptionnalOtherCharCreate')?.value ?? 0
+      ),
+    }),
+    [globalValues]
+  );
 
   const weaponChoices = (): ReactNode => {
     if (weapons.length === 0) {
@@ -287,6 +339,147 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
     );
   };
 
+  const itemChoices = (): ReactNode => {
+    if (items.length === 0) {
+      return null;
+    }
+    const included: ICuratedItem[] = [];
+    const optionnal: ICuratedItem[] = [];
+    const itemSelected = watch('items');
+    let countSelected = 0;
+    Object.values(itemSelected as Record<string, boolean>).forEach((isIncluded) => {
+      if (isIncluded) {
+        countSelected += 1;
+      }
+    });
+    items.forEach((item) => {
+      if (item.item.starterKit === 'always') {
+        included.push(item);
+      } else {
+        optionnal.push(item);
+      }
+    });
+    return (
+      <div className="characterCreation-step5__choices__main__items">
+        <Atitle className="characterCreation-step5__choices__main__items__title" level={3}>
+          {t('itemTypeNames.itm', { count: included.length + nbOptionnalItemCharCreate })}
+        </Atitle>
+        {included.length > 0 ? (
+          <div className="characterCreation-step5__choices__main__items__cat">
+            <Atitle level={4}>{t('characterCreation.step5.included', { ns: 'components' })}</Atitle>
+            {included.map((includedItem) => (
+              <ItemDisplay key={includedItem.item._id} item={includedItem} mode="hover" />
+            ))}
+          </div>
+        ) : null}
+
+        {optionnal.length > 0 ? (
+          <div className="characterCreation-step5__choices__main__items__cat">
+            <Atitle level={4}>
+              {t('characterCreation.step5.choose', {
+                ns: 'components',
+                qty: nbOptionnalItemCharCreate,
+              })}
+            </Atitle>
+            {optionnal.map((optionnalItem) => (
+              <Checkbox
+                inputName={`items.${optionnalItem.item._id}`}
+                className="characterCreation-step5__choices__main__item-input"
+                control={control}
+                key={optionnalItem.item._id}
+                disabled={
+                  countSelected - included.length >= nbOptionnalItemCharCreate &&
+                  itemSelected[optionnalItem.item._id] === false
+                }
+                label={<ItemDisplay item={optionnalItem} mode="hover" />}
+              />
+            ))}
+          </div>
+        ) : null}
+      </div>
+    );
+  };
+
+  const specializedChoices = (): ReactNode => {
+    if (items.length === 0) {
+      return null;
+    }
+    const optionnalPrograms: ICuratedProgram[] = [];
+    const optionnalImplants: ICuratedImplant[] = [];
+    const programSelected = watch('programs');
+    const implantSelected = watch('implants');
+    let countSelected = 0;
+    Object.values(programSelected as Record<string, boolean>).forEach((isIncluded) => {
+      if (isIncluded) {
+        countSelected += 1;
+      }
+    });
+    Object.values(implantSelected as Record<string, boolean>).forEach((isIncluded) => {
+      if (isIncluded) {
+        countSelected += 1;
+      }
+    });
+    programs.forEach((program) => {
+      if (program.program.starterKit !== 'always') {
+        optionnalPrograms.push(program);
+      }
+    });
+    implants.forEach((implant) => {
+      if (implant.implant.starterKit !== 'always') {
+        optionnalImplants.push(implant);
+      }
+    });
+    return (
+      <div className="characterCreation-step5__choices__main__specialized">
+        <Atitle className="characterCreation-step5__choices__main__specialized__title" level={3}>
+          {t('itemTypeNames.spe')}
+        </Atitle>
+        <Atitle level={4}>
+          {t('characterCreation.step5.choose', {
+            ns: 'components',
+            qty: nbOptionnalOtherCharCreate,
+          })}
+        </Atitle>
+        {optionnalPrograms.length > 0 ? (
+          <div className="characterCreation-step5__choices__main__specialized__cat">
+            <Atitle level={4}>{t('itemTypeNames.pro', { count: optionnalPrograms.length })}</Atitle>
+            {optionnalPrograms.map((optionnalProgram) => (
+              <Checkbox
+                inputName={`programs.${optionnalProgram.program._id}`}
+                className="characterCreation-step5__choices__main__specialized-input"
+                control={control}
+                key={optionnalProgram.program._id}
+                disabled={
+                  countSelected >= nbOptionnalOtherCharCreate &&
+                  programSelected[optionnalProgram.program._id] === false
+                }
+                label={<ProgramDisplay program={optionnalProgram} mode="hover" />}
+              />
+            ))}
+          </div>
+        ) : null}
+        {optionnalImplants.length > 0 ? (
+          <div className="characterCreation-step5__choices__main__specialized__cat">
+            <Atitle level={4}>{t('itemTypeNames.imp', { count: optionnalImplants.length })}</Atitle>
+            {optionnalImplants.map((optionnalImplant) => (
+              <Checkbox
+                inputName={`implants.${optionnalImplant.implant._id}`}
+                className="characterCreation-step5__choices__main__specialized-input"
+                control={control}
+                key={optionnalImplant.implant._id}
+                disabled={
+                  countSelected >= nbOptionnalOtherCharCreate &&
+                  implantSelected[optionnalImplant.implant._id] === false
+                }
+                label={<ImplantDisplay implant={optionnalImplant} mode="hover" />}
+              />
+            ))}
+          </div>
+        ) : null}
+      </div>
+    );
+  };
+
   return (
     <motion.div
       className={classTrim(`
@@ -321,6 +514,8 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
             {weaponChoices()}
             {armorChoices()}
             {bagChoices()}
+            {itemChoices()}
+            {specializedChoices()}
           </div>
         </div>
       </div>

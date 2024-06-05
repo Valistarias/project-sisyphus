@@ -325,7 +325,8 @@
     "shi": "Armor",
     "shi_other": "Armors",
     "itm": "Item",
-    "itm_other": "Items"
+    "itm_other": "Items",
+    "spe": "Programs and Implants"
   },
   "chapterTypeNames": {
     "default_one": "Info",

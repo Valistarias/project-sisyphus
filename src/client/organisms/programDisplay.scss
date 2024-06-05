@@ -1,4 +1,4 @@
-.program-display {
+.weapon-display {
   &__block {
     &__main {
       width: 100%;
@@ -48,7 +48,7 @@
   &--mode-hover {
     position: relative;
 
-    .program-display__block {
+    .weapon-display__block {
       opacity: 0;
       pointer-events: none;
       position: absolute;
@@ -57,16 +57,16 @@
       transition: opacity 0.2s ease;
     }
 
-    &.program-display--left .program-display__block {
+    &.weapon-display--left .weapon-display__block {
       left: 0;
     }
 
-    &.program-display--right .program-display__block {
+    &.weapon-display--right .weapon-display__block {
       right: 0;
     }
 
     &:hover {
-      .program-display__block {
+      .weapon-display__block {
         animation: delay-pointer-events 0.5s linear;
         opacity: 1;
         pointer-events: all;

@@ -10,6 +10,9 @@ import {
 } from './characterCreation';
 import { DragList, type IDragElt } from './dragList';
 import HeaderBar from './headerBar';
+import ImplantDisplay from './implantDisplay';
+import ItemDisplay from './itemDisplay';
+import ProgramDisplay from './programDisplay';
 import {
   RichTextElement,
   basicRichTextElementExtentions,
@@ -30,6 +33,9 @@ export {
   CharCreationStep5,
   DragList,
   HeaderBar,
+  ImplantDisplay,
+  ItemDisplay,
+  ProgramDisplay,
   RichTextElement,
   RollResult,
   RollTab,

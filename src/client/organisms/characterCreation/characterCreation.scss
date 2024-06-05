@@ -572,13 +572,16 @@
       &__blocks {
         display: flex;
         flex-direction: row;
+        flex-wrap: wrap;
         gap: 2rem;
         justify-content: center;
       }
 
       &__weapons,
       &__armors,
-      &__bags {
+      &__bags,
+      &__items,
+      &__specialized {
         background-color: var(--primary-dark-60);
         border: 1px solid var(--primary);
         box-shadow: 0 0 2rem var(--primary-10);
@@ -600,7 +603,9 @@
 
       .weapon-display__text-hover,
       .armor-display__text-hover,
-      .bag-display__text-hover {
+      .bag-display__text-hover,
+      .item-display__text-hover,
+      .specialized-display__text-hover {
         font-weight: 400;
       }
     }
