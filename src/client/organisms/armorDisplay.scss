@@ -22,6 +22,14 @@
       transition: opacity 0.2s ease;
     }
 
+    &.armor-display--left .armor-display__block {
+      left: 0;
+    }
+
+    &.armor-display--right .armor-display__block {
+      right: 0;
+    }
+
     &:hover {
       .armor-display__block {
         animation: delay-pointer-events 0.5s linear;

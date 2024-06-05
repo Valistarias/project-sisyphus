@@ -57,6 +57,14 @@
       transition: opacity 0.2s ease;
     }
 
+    &.weapon-display--left .weapon-display__block {
+      left: 0;
+    }
+
+    &.weapon-display--right .weapon-display__block {
+      right: 0;
+    }
+
     &:hover {
       .weapon-display__block {
         animation: delay-pointer-events 0.5s linear;

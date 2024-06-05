@@ -1,10 +1,11 @@
-import React, { useMemo, type FC } from 'react';
+import React, { useMemo, useRef, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../providers';
 
 import { Ap } from '../atoms';
+import { PropDisplay } from '../molecules';
 import { Quark, type IQuarkProps } from '../quark';
 import {
   type ICuratedArmor,
@@ -13,8 +14,6 @@ import {
   type ICuratedRarity,
 } from '../types';
 import { type IArmor } from '../types/items';
-
-import PropDisplay from './propDisplay';
 
 import { classTrim } from '../utils';
 
@@ -42,6 +41,9 @@ const ArmorDisplay: FC<IArmorDisplay> = ({ armor, mode = 'basic' }) => {
   const { t } = useTranslation();
   const { armorTypes, itemModifiers, rarities } = useGlobalVars();
 
+  const [placement, setPlacement] = useState<string>('left');
+  const domBlockContent = useRef<HTMLDivElement>(null);
+
   const curateArmor = useMemo<ICuratedCompleteArmor | null>(() => {
     if (armorTypes.length === 0 || armor === undefined) {
       return null;
@@ -63,6 +65,23 @@ const ArmorDisplay: FC<IArmorDisplay> = ({ armor, mode = 'basic' }) => {
     };
   }, [armorTypes, armor, rarities, itemModifiers]);
 
+  const handleMouseEnter = (): void => {
+    if (mode === 'hover') {
+      if (domBlockContent.current !== null) {
+        const dimensions = domBlockContent.current.getBoundingClientRect();
+        const windowWidth = window.innerWidth;
+        let leftRight = placement;
+
+        if (leftRight === 'left' && dimensions.right > windowWidth && dimensions.left > 60) {
+          leftRight = 'right';
+        } else if (leftRight === 'right' && dimensions.left < 0) {
+          leftRight = 'left';
+        }
+        setPlacement(leftRight);
+      }
+    }
+  };
+
   const armorBlock = useMemo(() => {
     if (curateArmor === null) {
       return null;
@@ -75,6 +94,7 @@ const ArmorDisplay: FC<IArmorDisplay> = ({ armor, mode = 'basic' }) => {
 
     return (
       <PropDisplay
+        ref={domBlockContent}
         className="armor-display__block"
         rarity={rarity?.rarity.title ?? ''}
         rarityLevel={rarity?.rarity.position ?? 0}
@@ -89,10 +109,12 @@ const ArmorDisplay: FC<IArmorDisplay> = ({ armor, mode = 'basic' }) => {
     return (
       <Quark
         quarkType="div"
+        onMouseEnter={handleMouseEnter}
         className={classTrim(`
-        armor-display
-        armor-display--mode-${mode}
-      `)}
+          armor-display
+          armor-display--mode-${mode}
+          armor-display--${placement}
+        `)}
       >
         <Ap className="armor-display__text-hover">{curateArmor?.armor.title}</Ap>
         {armorBlock}

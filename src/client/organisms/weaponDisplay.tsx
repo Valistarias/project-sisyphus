@@ -1,10 +1,11 @@
-import React, { useMemo, type FC } from 'react';
+import React, { useMemo, useRef, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../providers';
 
 import { Ali, Ap, Atitle, Aul } from '../atoms';
+import { PropDisplay } from '../molecules';
 import { Quark, type IQuarkProps } from '../quark';
 import {
   type ICuratedItemModifier,
@@ -15,8 +16,6 @@ import {
 } from '../types';
 import { type ICuratedDamageType, type IDamage, type IWeapon } from '../types/items';
 import { type TypeNodeIcons } from '../types/rules';
-
-import PropDisplay from './propDisplay';
 
 import { classTrim } from '../utils';
 
@@ -49,6 +48,9 @@ interface ICuratedCompleteWeapon extends Omit<ICuratedWeapon, 'weapon'> {
 const WeaponDisplay: FC<IWeaponDisplay> = ({ weapon, mode = 'basic' }) => {
   const { t } = useTranslation();
   const { weaponTypes, weaponScopes, itemModifiers, rarities, damageTypes } = useGlobalVars();
+
+  const [placement, setPlacement] = useState<string>('left');
+  const domBlockContent = useRef<HTMLDivElement>(null);
 
   const curatedWeapon = useMemo<ICuratedCompleteWeapon | null>(() => {
     if (weaponTypes.length === 0 || weaponScopes.length === 0 || weapon === undefined) {
@@ -83,6 +85,23 @@ const WeaponDisplay: FC<IWeaponDisplay> = ({ weapon, mode = 'basic' }) => {
     };
   }, [weaponTypes, weaponScopes, weapon, rarities, itemModifiers, damageTypes]);
 
+  const handleMouseEnter = (): void => {
+    if (mode === 'hover') {
+      if (domBlockContent.current !== null) {
+        const dimensions = domBlockContent.current.getBoundingClientRect();
+        const windowWidth = window.innerWidth;
+        let leftRight = placement;
+
+        if (leftRight === 'left' && dimensions.right > windowWidth && dimensions.left > 60) {
+          leftRight = 'right';
+        } else if (leftRight === 'right' && dimensions.left < 0) {
+          leftRight = 'left';
+        }
+        setPlacement(leftRight);
+      }
+    }
+  };
+
   const weaponBlock = useMemo(() => {
     if (curatedWeapon === null) {
       return null;
@@ -96,6 +115,7 @@ const WeaponDisplay: FC<IWeaponDisplay> = ({ weapon, mode = 'basic' }) => {
 
     return (
       <PropDisplay
+        ref={domBlockContent}
         className="weapon-display__block"
         rarity={rarity?.rarity.title ?? ''}
         rarityLevel={rarity?.rarity.position ?? 0}
@@ -157,9 +177,11 @@ const WeaponDisplay: FC<IWeaponDisplay> = ({ weapon, mode = 'basic' }) => {
   return (
     <Quark
       quarkType="span"
+      onMouseEnter={handleMouseEnter}
       className={classTrim(`
         weapon-display
         weapon-display--mode-${mode}
+        weapon-display--${placement}
       `)}
     >
       {weaponBlock}

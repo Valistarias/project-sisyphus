@@ -1,5 +1,4 @@
 import { Ariane, type IArianeElt } from './ariane';
-import ArmorDisplay from './armorDisplay';
 import Button from './button';
 import Checkbox from './checkbox';
 import DiceCard from './diceCard';
@@ -12,12 +11,11 @@ import Node from './node';
 import { NodeIconSelect, defaultNodeIcon } from './nodeIconSelect';
 import NodeTree from './nodeTree';
 import NumberSelect from './numberSelect';
+import PropDisplay from './propDisplay';
 import { SmartSelect, type IGroupedOption, type ISingleValueSelect } from './select';
-import WeaponDisplay from './weaponDisplay';
 
 export {
   Ariane,
-  ArmorDisplay,
   Button,
   Checkbox,
   DiceCard,
@@ -30,8 +28,8 @@ export {
   NodeIconSelect,
   NodeTree,
   NumberSelect,
+  PropDisplay,
   SmartSelect,
-  WeaponDisplay,
   defaultNodeIcon,
   type IArianeElt,
   type IGroupedOption,
