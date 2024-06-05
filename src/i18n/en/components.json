@@ -136,6 +136,11 @@
       "modifiers": "Modifiers",
       "clip": "Clip / Shot",
       "bonuses": "Bonuses"
+    },
+    "bag": {
+      "text": "Can store: {{list}}",
+      "all": "All",
+      "qty": "x{{qty}} slots"
     }
   }
 }

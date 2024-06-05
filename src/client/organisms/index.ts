@@ -1,5 +1,6 @@
 import Alert from './alert';
 import ArmorDisplay from './armorDisplay';
+import BagDisplay from './bagDisplay';
 import {
   CharCreationStep1,
   CharCreationStep2,
@@ -21,6 +22,7 @@ import WeaponDisplay from './weaponDisplay';
 export {
   Alert,
   ArmorDisplay,
+  BagDisplay,
   CharCreationStep1,
   CharCreationStep2,
   CharCreationStep3,

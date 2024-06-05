@@ -16,7 +16,7 @@ import {
   type ICuratedProgram,
   type ICuratedWeapon,
 } from '../../types';
-import { ArmorDisplay, WeaponDisplay } from '../index';
+import { ArmorDisplay, BagDisplay, WeaponDisplay } from '../index';
 
 import { classTrim } from '../../utils';
 
@@ -25,6 +25,7 @@ import './characterCreation.scss';
 interface FormValues {
   weapons: Record<string, boolean>;
   armors: Record<string, boolean>;
+  bags: Record<string, boolean>;
 }
 
 interface ICharacterCreationStep5 {
@@ -75,6 +76,13 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
       defaultData.armors[armor._id] = armor.starterKit === 'always';
     });
 
+    bags.forEach(({ bag }) => {
+      if (defaultData.bags === undefined) {
+        defaultData.bags = {};
+      }
+      defaultData.bags[bag._id] = bag.starterKit === 'always';
+    });
+
     return defaultData;
   }, []);
 
@@ -85,17 +93,21 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
     ),
   });
 
-  const { nbOptionnalWeaponCharCreate, nbOptionnalArmorCharCreate } = useMemo(
-    () => ({
-      nbOptionnalWeaponCharCreate: Number(
-        globalValues.find(({ name }) => name === 'nbOptionnalWeaponCharCreate')?.value ?? 0
-      ),
-      nbOptionnalArmorCharCreate: Number(
-        globalValues.find(({ name }) => name === 'nbOptionnalArmorCharCreate')?.value ?? 0
-      ),
-    }),
-    [globalValues]
-  );
+  const { nbOptionnalWeaponCharCreate, nbOptionnalArmorCharCreate, nbOptionnalBagCharCreate } =
+    useMemo(
+      () => ({
+        nbOptionnalWeaponCharCreate: Number(
+          globalValues.find(({ name }) => name === 'nbOptionnalWeaponCharCreate')?.value ?? 0
+        ),
+        nbOptionnalArmorCharCreate: Number(
+          globalValues.find(({ name }) => name === 'nbOptionnalArmorCharCreate')?.value ?? 0
+        ),
+        nbOptionnalBagCharCreate: Number(
+          globalValues.find(({ name }) => name === 'nbOptionnalBagCharCreate')?.value ?? 0
+        ),
+      }),
+      [globalValues]
+    );
 
   const weaponChoices = (): ReactNode => {
     if (weapons.length === 0) {
@@ -202,10 +214,71 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
                 control={control}
                 key={optionnalArmor.armor._id}
                 disabled={
-                  countSelected >= nbOptionnalArmorCharCreate &&
+                  countSelected - included.length >= nbOptionnalArmorCharCreate &&
                   armorSelected[optionnalArmor.armor._id] === false
                 }
                 label={<ArmorDisplay armor={optionnalArmor} mode="hover" />}
+              />
+            ))}
+          </div>
+        ) : null}
+      </div>
+    );
+  };
+
+  const bagChoices = (): ReactNode => {
+    if (bags.length === 0) {
+      return null;
+    }
+    const included: ICuratedBag[] = [];
+    const optionnal: ICuratedBag[] = [];
+    const bagSelected = watch('bags');
+    let countSelected = 0;
+    Object.values(bagSelected as Record<string, boolean>).forEach((isIncluded) => {
+      if (isIncluded) {
+        countSelected += 1;
+      }
+    });
+    bags.forEach((bag) => {
+      if (bag.bag.starterKit === 'always') {
+        included.push(bag);
+      } else {
+        optionnal.push(bag);
+      }
+    });
+    return (
+      <div className="characterCreation-step5__choices__main__bags">
+        <Atitle className="characterCreation-step5__choices__main__bags__title" level={3}>
+          {t('itemTypeNames.bag', { count: included.length + nbOptionnalBagCharCreate })}
+        </Atitle>
+        {included.length > 0 ? (
+          <div className="characterCreation-step5__choices__main__bags__cat">
+            <Atitle level={4}>{t('characterCreation.step5.included', { ns: 'components' })}</Atitle>
+            {included.map((includedBag) => (
+              <BagDisplay key={includedBag.bag._id} bag={includedBag} mode="hover" />
+            ))}
+          </div>
+        ) : null}
+
+        {optionnal.length > 0 ? (
+          <div className="characterCreation-step5__choices__main__bags__cat">
+            <Atitle level={4}>
+              {t('characterCreation.step5.choose', {
+                ns: 'components',
+                qty: nbOptionnalBagCharCreate,
+              })}
+            </Atitle>
+            {optionnal.map((optionnalBag) => (
+              <Checkbox
+                inputName={`bags.${optionnalBag.bag._id}`}
+                className="characterCreation-step5__choices__main__bag-input"
+                control={control}
+                key={optionnalBag.bag._id}
+                disabled={
+                  countSelected - included.length >= nbOptionnalBagCharCreate &&
+                  bagSelected[optionnalBag.bag._id] === false
+                }
+                label={<BagDisplay bag={optionnalBag} mode="hover" />}
               />
             ))}
           </div>
@@ -247,6 +320,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
           <div className="characterCreation-step5__choices__main__blocks">
             {weaponChoices()}
             {armorChoices()}
+            {bagChoices()}
           </div>
         </div>
       </div>
