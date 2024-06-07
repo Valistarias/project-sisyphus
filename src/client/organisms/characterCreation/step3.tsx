@@ -16,7 +16,7 @@ import {
 } from '../../utils/character';
 import { RichTextElement } from '../richTextElement';
 
-import { classTrim } from '../../utils';
+import { classTrim, getValuesFromGlobalValues } from '../../utils';
 
 import './characterCreation.scss';
 
@@ -53,8 +53,8 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
 
   const aggregatedSkills = useMemo(() => aggregateSkillsByStats(skills, stats), [skills, stats]);
 
-  const nbBeginningSkills = useMemo(
-    () => Number(globalValues.find(({ name }) => name === 'nbBeginningSkills')?.value ?? 0),
+  const { nbBeginningSkills } = useMemo(
+    () => getValuesFromGlobalValues(['nbBeginningSkills'], globalValues),
     [globalValues]
   );
 

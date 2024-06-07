@@ -260,7 +260,7 @@ const deleteEffect = (req: Request, res: Response): void => {
     });
 };
 
-interface CuratedIEffect {
+export interface CuratedIEffect {
   i18n: Record<string, any> | Record<string, unknown>;
   effect: HydratedIEffect;
 }

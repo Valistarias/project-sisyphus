@@ -161,7 +161,7 @@ export interface IEffect {
 
 export interface ICuratedEffect {
   i18n: InternationalizationType;
-  action: IEffect;
+  effect: IEffect;
 }
 
 // Character Params ------------------------------------

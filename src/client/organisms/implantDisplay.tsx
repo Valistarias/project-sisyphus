@@ -119,23 +119,22 @@ const ImplantDisplay: FC<IImplantDisplay> = ({ implant, mode = 'basic' }) => {
         type={t('itemTypeNames.imp')}
         itemModifiers={implant.itemModifiers}
         mainNode={
-          <div className="implant-display__block__main">
-            {implant.charParamBonuses.length > 0 ? (
-              <>
-                <Atitle className="weapon-display__block__main__title" level={4}>
-                  {t('display.cat.bonuses', { ns: 'components' })}
-                </Atitle>
-                <Aul noPoints className="weapon-display__block__bonuses">
-                  {implant.charParamBonuses.map((charParamBonus) => (
-                    <Ali key={charParamBonus._id} className="weapon-display__block__bonuses__elt">
-                      {`+${charParamBonus.value} ${charParamBonus.charParam?.charParam.title}`}
-                    </Ali>
-                  ))}
-                </Aul>
-              </>
-            ) : null}
-          </div>
+          implant.charParamBonuses.length > 0 ? (
+            <div className="implant-display__block__main">
+              <Atitle className="weapon-display__block__main__title" level={4}>
+                {t('display.cat.bonuses', { ns: 'components' })}
+              </Atitle>
+              <Aul noPoints className="weapon-display__block__bonuses">
+                {implant.charParamBonuses.map((charParamBonus) => (
+                  <Ali key={charParamBonus._id} className="weapon-display__block__bonuses__elt">
+                    {`+${charParamBonus.value} ${charParamBonus.charParam?.charParam.title}`}
+                  </Ali>
+                ))}
+              </Aul>
+            </div>
+          ) : undefined
         }
+        effects={implant.effects}
       />
     );
   }, [curateImplant, t]);

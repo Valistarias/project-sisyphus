@@ -1,13 +1,13 @@
 import React, { useCallback, useMemo, type FC, type ReactNode } from 'react';
 
 import { motion } from 'framer-motion';
-import { useForm, type FieldValues } from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../providers';
 
 import { Ap, Atitle } from '../../atoms';
-import { Checkbox } from '../../molecules';
+import { Button, Checkbox } from '../../molecules';
 import {
   type ICuratedArmor,
   type ICuratedBag,
@@ -25,7 +25,7 @@ import {
   WeaponDisplay,
 } from '../index';
 
-import { classTrim } from '../../utils';
+import { classTrim, countTrueInArray, getValuesFromGlobalValues } from '../../utils';
 
 import './characterCreation.scss';
 
@@ -127,7 +127,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
     []
   );
 
-  const { handleSubmit, watch, control } = useForm<FieldValues>({
+  const { handleSubmit, watch, control } = useForm<FormValues>({
     defaultValues: useMemo(
       () => createDefaultData(weapons, armors, bags, items, programs, implants),
       [createDefaultData, weapons, armors, bags, items, programs, implants]
@@ -140,25 +140,50 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
     nbOptionnalBagCharCreate,
     nbOptionnalItemCharCreate,
     nbOptionnalOtherCharCreate,
+    starterMoney,
+    starterMoneyNoItem,
   } = useMemo(
-    () => ({
-      nbOptionnalWeaponCharCreate: Number(
-        globalValues.find(({ name }) => name === 'nbOptionnalWeaponCharCreate')?.value ?? 0
+    () =>
+      getValuesFromGlobalValues(
+        [
+          'nbOptionnalWeaponCharCreate',
+          'nbOptionnalArmorCharCreate',
+          'nbOptionnalBagCharCreate',
+          'nbOptionnalItemCharCreate',
+          'nbOptionnalOtherCharCreate',
+          'starterMoney',
+          'starterMoneyNoItem',
+        ],
+        globalValues
       ),
-      nbOptionnalArmorCharCreate: Number(
-        globalValues.find(({ name }) => name === 'nbOptionnalArmorCharCreate')?.value ?? 0
-      ),
-      nbOptionnalBagCharCreate: Number(
-        globalValues.find(({ name }) => name === 'nbOptionnalBagCharCreate')?.value ?? 0
-      ),
-      nbOptionnalItemCharCreate: Number(
-        globalValues.find(({ name }) => name === 'nbOptionnalItemCharCreate')?.value ?? 0
-      ),
-      nbOptionnalOtherCharCreate: Number(
-        globalValues.find(({ name }) => name === 'nbOptionnalOtherCharCreate')?.value ?? 0
-      ),
-    }),
     [globalValues]
+  );
+
+  const handleSubmitOnlyMoney = useCallback(() => {
+    console.log('starterMoneyNoItem', starterMoneyNoItem);
+  }, [starterMoneyNoItem]);
+
+  const onSaveItems: SubmitHandler<FormValues> = useCallback(
+    ({ weapons, armors, bags, items, programs, implants }) => {
+      if (onSubmitItems !== undefined) {
+        console.log(
+          'weapons, armors, bags, items, programs, implants',
+          weapons,
+          armors,
+          bags,
+          items,
+          programs,
+          implants
+        );
+        // onSubmitItems(
+        //   // Object.keys(stats).map((statKey) => ({
+        //   //   id: statKey,
+        //   //   value: stats[statKey],
+        //   // }))
+        // );
+      }
+    },
+    [onSubmitItems]
   );
 
   const weaponChoices = (): ReactNode => {
@@ -175,16 +200,11 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
       }
     });
     const weaponSelected = watch('weapons');
-    let countSelected = 0;
-    Object.values(weaponSelected as Record<string, boolean>).forEach((isIncluded) => {
-      if (isIncluded) {
-        countSelected += 1;
-      }
-    });
+    const countSelected = countTrueInArray(Object.values(weaponSelected));
     return (
       <div className="characterCreation-step5__choices__main__weapons">
         <Atitle className="characterCreation-step5__choices__main__weapons__title" level={3}>
-          {t('itemTypeNames.wep', { count: included.length + nbOptionnalWeaponCharCreate })}
+          {t('itemTypeNames.wep', { count: nbOptionnalWeaponCharCreate })}
         </Atitle>
         <div className="characterCreation-step5__choices__main__weapons__cat">
           <Atitle level={4}>{t('characterCreation.step5.included', { ns: 'components' })}</Atitle>
@@ -196,7 +216,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
           <Atitle level={4}>
             {t('characterCreation.step5.choose', {
               ns: 'components',
-              qty: nbOptionnalWeaponCharCreate,
+              qty: nbOptionnalWeaponCharCreate - included.length,
             })}
           </Atitle>
           {optionnal.map((optionnalWeapon) => (
@@ -207,8 +227,8 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
               key={optionnalWeapon.weapon._id}
               label={<WeaponDisplay weapon={optionnalWeapon} mode="hover" />}
               disabled={
-                countSelected - included.length >= nbOptionnalWeaponCharCreate &&
-                weaponSelected[optionnalWeapon.weapon._id] === false
+                countSelected >= nbOptionnalWeaponCharCreate &&
+                !weaponSelected[optionnalWeapon.weapon._id]
               }
             />
           ))}
@@ -224,12 +244,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
     const included: ICuratedArmor[] = [];
     const optionnal: ICuratedArmor[] = [];
     const armorSelected = watch('armors');
-    let countSelected = 0;
-    Object.values(armorSelected as Record<string, boolean>).forEach((isIncluded) => {
-      if (isIncluded) {
-        countSelected += 1;
-      }
-    });
+    const countSelected = countTrueInArray(Object.values(armorSelected));
     armors.forEach((armor) => {
       if (armor.armor.starterKit === 'always') {
         included.push(armor);
@@ -240,7 +255,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
     return (
       <div className="characterCreation-step5__choices__main__armors">
         <Atitle className="characterCreation-step5__choices__main__armors__title" level={3}>
-          {t('itemTypeNames.shi', { count: included.length + nbOptionnalArmorCharCreate })}
+          {t('itemTypeNames.shi', { count: nbOptionnalArmorCharCreate })}
         </Atitle>
         {included.length > 0 ? (
           <div className="characterCreation-step5__choices__main__armors__cat">
@@ -256,7 +271,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
             <Atitle level={4}>
               {t('characterCreation.step5.choose', {
                 ns: 'components',
-                qty: nbOptionnalArmorCharCreate,
+                qty: nbOptionnalArmorCharCreate - included.length,
               })}
             </Atitle>
             {optionnal.map((optionnalArmor) => (
@@ -266,8 +281,8 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
                 control={control}
                 key={optionnalArmor.armor._id}
                 disabled={
-                  countSelected - included.length >= nbOptionnalArmorCharCreate &&
-                  armorSelected[optionnalArmor.armor._id] === false
+                  countSelected >= nbOptionnalArmorCharCreate &&
+                  !armorSelected[optionnalArmor.armor._id]
                 }
                 label={<ArmorDisplay armor={optionnalArmor} mode="hover" />}
               />
@@ -285,12 +300,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
     const included: ICuratedBag[] = [];
     const optionnal: ICuratedBag[] = [];
     const bagSelected = watch('bags');
-    let countSelected = 0;
-    Object.values(bagSelected as Record<string, boolean>).forEach((isIncluded) => {
-      if (isIncluded) {
-        countSelected += 1;
-      }
-    });
+    const countSelected = countTrueInArray(Object.values(bagSelected));
     bags.forEach((bag) => {
       if (bag.bag.starterKit === 'always') {
         included.push(bag);
@@ -301,7 +311,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
     return (
       <div className="characterCreation-step5__choices__main__bags">
         <Atitle className="characterCreation-step5__choices__main__bags__title" level={3}>
-          {t('itemTypeNames.bag', { count: included.length + nbOptionnalBagCharCreate })}
+          {t('itemTypeNames.bag', { count: nbOptionnalBagCharCreate })}
         </Atitle>
         {included.length > 0 ? (
           <div className="characterCreation-step5__choices__main__bags__cat">
@@ -317,7 +327,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
             <Atitle level={4}>
               {t('characterCreation.step5.choose', {
                 ns: 'components',
-                qty: nbOptionnalBagCharCreate,
+                qty: nbOptionnalBagCharCreate - included.length,
               })}
             </Atitle>
             {optionnal.map((optionnalBag) => (
@@ -327,8 +337,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
                 control={control}
                 key={optionnalBag.bag._id}
                 disabled={
-                  countSelected - included.length >= nbOptionnalBagCharCreate &&
-                  bagSelected[optionnalBag.bag._id] === false
+                  countSelected >= nbOptionnalBagCharCreate && !bagSelected[optionnalBag.bag._id]
                 }
                 label={<BagDisplay bag={optionnalBag} mode="hover" />}
               />
@@ -346,12 +355,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
     const included: ICuratedItem[] = [];
     const optionnal: ICuratedItem[] = [];
     const itemSelected = watch('items');
-    let countSelected = 0;
-    Object.values(itemSelected as Record<string, boolean>).forEach((isIncluded) => {
-      if (isIncluded) {
-        countSelected += 1;
-      }
-    });
+    const countSelected = countTrueInArray(Object.values(itemSelected));
     items.forEach((item) => {
       if (item.item.starterKit === 'always') {
         included.push(item);
@@ -362,7 +366,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
     return (
       <div className="characterCreation-step5__choices__main__items">
         <Atitle className="characterCreation-step5__choices__main__items__title" level={3}>
-          {t('itemTypeNames.itm', { count: included.length + nbOptionnalItemCharCreate })}
+          {t('itemTypeNames.itm', { count: nbOptionnalItemCharCreate })}
         </Atitle>
         {included.length > 0 ? (
           <div className="characterCreation-step5__choices__main__items__cat">
@@ -378,7 +382,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
             <Atitle level={4}>
               {t('characterCreation.step5.choose', {
                 ns: 'components',
-                qty: nbOptionnalItemCharCreate,
+                qty: nbOptionnalItemCharCreate - included.length,
               })}
             </Atitle>
             {optionnal.map((optionnalItem) => (
@@ -388,8 +392,8 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
                 control={control}
                 key={optionnalItem.item._id}
                 disabled={
-                  countSelected - included.length >= nbOptionnalItemCharCreate &&
-                  itemSelected[optionnalItem.item._id] === false
+                  countSelected >= nbOptionnalItemCharCreate &&
+                  !itemSelected[optionnalItem.item._id]
                 }
                 label={<ItemDisplay item={optionnalItem} mode="hover" />}
               />
@@ -408,17 +412,9 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
     const optionnalImplants: ICuratedImplant[] = [];
     const programSelected = watch('programs');
     const implantSelected = watch('implants');
-    let countSelected = 0;
-    Object.values(programSelected as Record<string, boolean>).forEach((isIncluded) => {
-      if (isIncluded) {
-        countSelected += 1;
-      }
-    });
-    Object.values(implantSelected as Record<string, boolean>).forEach((isIncluded) => {
-      if (isIncluded) {
-        countSelected += 1;
-      }
-    });
+    const countSelected =
+      countTrueInArray(Object.values(programSelected)) +
+      countTrueInArray(Object.values(implantSelected));
     programs.forEach((program) => {
       if (program.program.starterKit !== 'always') {
         optionnalPrograms.push(program);
@@ -451,7 +447,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
                 key={optionnalProgram.program._id}
                 disabled={
                   countSelected >= nbOptionnalOtherCharCreate &&
-                  programSelected[optionnalProgram.program._id] === false
+                  !programSelected[optionnalProgram.program._id]
                 }
                 label={<ProgramDisplay program={optionnalProgram} mode="hover" />}
               />
@@ -469,7 +465,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
                 key={optionnalImplant.implant._id}
                 disabled={
                   countSelected >= nbOptionnalOtherCharCreate &&
-                  implantSelected[optionnalImplant.implant._id] === false
+                  !implantSelected[optionnalImplant.implant._id]
                 }
                 label={<ImplantDisplay implant={optionnalImplant} mode="hover" />}
               />
@@ -479,6 +475,21 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
       </div>
     );
   };
+
+  const elts: FormValues = watch();
+  const nbChosenArmors = countTrueInArray(Object.values(elts.armors));
+  const nbChosenPrograms = countTrueInArray(Object.values(elts.programs));
+  const nbChosenItems = countTrueInArray(Object.values(elts.items));
+  const nbChosenImplants = countTrueInArray(Object.values(elts.implants));
+  const nbChosenBags = countTrueInArray(Object.values(elts.bags));
+  const nbChosenWeapons = countTrueInArray(Object.values(elts.weapons));
+
+  const canSubmitList =
+    nbChosenArmors === nbOptionnalArmorCharCreate &&
+    nbChosenPrograms + nbChosenImplants === nbOptionnalOtherCharCreate &&
+    nbChosenItems === nbOptionnalItemCharCreate &&
+    nbChosenBags === nbOptionnalBagCharCreate &&
+    nbChosenWeapons === nbOptionnalWeaponCharCreate;
 
   return (
     <motion.div
@@ -510,13 +521,46 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
           <Atitle className="characterCreation-step5__choices__main__title" level={2}>
             {t('characterCreation.step5.main', { ns: 'components' })}
           </Atitle>
-          <div className="characterCreation-step5__choices__main__blocks">
-            {weaponChoices()}
-            {armorChoices()}
-            {bagChoices()}
-            {itemChoices()}
-            {specializedChoices()}
-          </div>
+          <form
+            className="characterCreation-step5__choices__form"
+            onSubmit={handleSubmit(onSaveItems)}
+            noValidate
+          >
+            <div className="characterCreation-step5__choices__main__blocks">
+              {weaponChoices()}
+              {armorChoices()}
+              {bagChoices()}
+              {itemChoices()}
+              {specializedChoices()}
+            </div>
+            <div className="characterCreation-step5__choices__main__btns">
+              <Button
+                type="submit"
+                size="large"
+                className="characterCreation-step2__choices__btn"
+                disabled={!canSubmitList}
+                theme={!canSubmitList ? 'text-only' : 'afterglow'}
+              >
+                {t('characterCreation.step5.next', { ns: 'components', money: starterMoney })}
+              </Button>
+              <Ap className="characterCreation-step5__choices__main__btns__or">
+                {t('characterCreation.step5.or', {
+                  ns: 'components',
+                })}
+              </Ap>
+              <Button
+                size="large"
+                theme="afterglow"
+                className="characterCreation-step2__choices__btn"
+                onClick={handleSubmitOnlyMoney}
+              >
+                {t('characterCreation.step5.nextOnlyCash', {
+                  ns: 'components',
+                  money: starterMoneyNoItem,
+                })}
+              </Button>
+            </div>
+          </form>
         </div>
       </div>
     </motion.div>

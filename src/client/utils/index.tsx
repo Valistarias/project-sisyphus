@@ -1,4 +1,4 @@
-import { type ICharacter, type TypeDice } from '../types';
+import { type ICharacter, type IGlobalValue, type TypeDice } from '../types';
 
 export const degToRad = (degrees: number): number => degrees * (Math.PI / 180);
 
@@ -262,10 +262,10 @@ const applyFormula = (text: string, formula: string, char: ICharacter | null | f
 export const curateStringFormula = (
   text: string,
   formula: string,
-  char: ICharacter | null | false
+  char?: ICharacter | null | false
 ): string => {
   const splitted = text.split('{{formula}}');
-  if (splitted.length === 1) {
+  if (splitted.length === 1 || char === undefined) {
     return text;
   }
   if (char === false || char === null) {
@@ -288,6 +288,25 @@ export const curateStringDamage = (
     return [splitted[0], 'X', [splitted[1]]].join(' ');
   }
   return applyFormula(text, `${damages}+${formula}`, char);
+};
+
+export const countTrueInArray = (arr: boolean[]): number =>
+  arr.reduce((total: number, value: boolean) => {
+    if (value) {
+      return total + 1;
+    }
+    return total;
+  }, 0);
+
+export const getValuesFromGlobalValues = (
+  namesSent: string[],
+  globalValues: IGlobalValue[]
+): Record<string, number> => {
+  const elt: Record<string, number> = {};
+  namesSent.forEach((nameSent) => {
+    elt[nameSent] = Number(globalValues.find(({ name }) => name === nameSent)?.value ?? 0);
+  });
+  return elt;
 };
 
 export { getCyberFrameLevelsByNodes } from './character';

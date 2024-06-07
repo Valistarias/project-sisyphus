@@ -121,7 +121,10 @@
       "main": "Choose your Loadout",
       "money": "Create your own loadout with {{money}} dollars",
       "included": "Included",
-      "choose": "Choose {{qty}}:"
+      "choose": "Choose {{qty}}:",
+      "next": "Add items with {{money}}",
+      "or": "OR",
+      "nextOnlyCash": "Get no items and {{money}}"
     },
     "step6": {
       "cat": "Identification"

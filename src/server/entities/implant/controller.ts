@@ -604,8 +604,8 @@ const findSingle = (req: Request, res: Response): void => {
           ? implantSent.actions.map((action) => {
               const data = action.toJSON();
               return {
-                ...data,
-                ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                action: data,
+                i18n: JSON.parse(data.i18n as string),
               };
             })
           : [];
@@ -614,12 +614,12 @@ const findSingle = (req: Request, res: Response): void => {
           ? implantSent.effects.map((effect) => {
               const data = effect.toJSON();
               return {
-                ...data,
-                ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                effect: data,
+                i18n: JSON.parse(data.i18n as string),
               };
             })
           : [];
-      const implant = implantSent.toJSON();
+      const implant: any = implantSent.toJSON();
       implant.actions = curatedActions;
       implant.effects = curatedEffects;
       const sentObj = {
@@ -643,8 +643,8 @@ const findAll = (req: Request, res: Response): void => {
             ? implantSent.actions.map((action) => {
                 const data = action.toJSON();
                 return {
-                  ...data,
-                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                  action: data,
+                  i18n: JSON.parse(data.i18n as string),
                 };
               })
             : [];
@@ -653,12 +653,12 @@ const findAll = (req: Request, res: Response): void => {
             ? implantSent.effects.map((effect) => {
                 const data = effect.toJSON();
                 return {
-                  ...data,
-                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                  effect: data,
+                  i18n: JSON.parse(data.i18n as string),
                 };
               })
             : [];
-        const implant = implantSent.toJSON();
+        const implant: any = implantSent.toJSON();
         implant.actions = curatedActions;
         implant.effects = curatedEffects;
         curatedImplants.push({
@@ -682,8 +682,8 @@ const findAllStarter = (req: Request, res: Response): void => {
             ? implantSent.actions.map((action) => {
                 const data = action.toJSON();
                 return {
-                  ...data,
-                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                  action: data,
+                  i18n: JSON.parse(data.i18n as string),
                 };
               })
             : [];
@@ -692,12 +692,12 @@ const findAllStarter = (req: Request, res: Response): void => {
             ? implantSent.effects.map((effect) => {
                 const data = effect.toJSON();
                 return {
-                  ...data,
-                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                  effect: data,
+                  i18n: JSON.parse(data.i18n as string),
                 };
               })
             : [];
-        const implant = implantSent.toJSON();
+        const implant: any = implantSent.toJSON();
         implant.actions = curatedActions;
         implant.effects = curatedEffects;
         curatedImplants.push({

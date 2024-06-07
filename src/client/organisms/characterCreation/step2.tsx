@@ -12,7 +12,12 @@ import { type ICharacter, type ICuratedStat } from '../../types';
 import { calculateStatMod, getActualBody } from '../../utils/character';
 import { RichTextElement } from '../richTextElement';
 
-import { arrSum, classTrim, getCyberFrameLevelsByNodes } from '../../utils';
+import {
+  arrSum,
+  classTrim,
+  getCyberFrameLevelsByNodes,
+  getValuesFromGlobalValues,
+} from '../../utils';
 
 import './characterCreation.scss';
 
@@ -88,11 +93,8 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
     ),
   });
 
-  const globalVars = useMemo(
-    () => ({
-      basePoints: Number(globalValues.find(({ name }) => name === 'baseStatPoints')?.value ?? 0),
-      minPoints: Number(globalValues.find(({ name }) => name === 'minStatAtCreation')?.value ?? 0),
-    }),
+  const { baseStatPoints, minStatAtCreation } = useMemo(
+    () => getValuesFromGlobalValues(['baseStatPoints', 'minStatAtCreation'], globalValues),
     [globalValues]
   );
 
@@ -143,7 +145,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
   }, [character, cyberFrames]);
 
   const pointSpent = arrSum(Object.values(watch('stats') as Record<string, number>) ?? []);
-  const pointsLeft = globalVars.basePoints - pointSpent;
+  const pointsLeft = baseStatPoints - pointSpent;
 
   const statSelectList = (): ReactNode[] => {
     const cStatElts: ReactNode[] = [];
@@ -156,7 +158,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
           <NumberSelect
             inputName={`stats.${stat._id}`}
             control={control}
-            minimum={globalVars.minPoints ?? 0}
+            minimum={minStatAtCreation ?? 0}
             maximum={8}
             maxed={pointsLeft === 0}
             offset={bonusesByStat[stat._id]?.bonus}
@@ -221,7 +223,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
                 {t('characterCreation.step2.pointsLeft', { ns: 'components' })}
               </Ap>
               <Ap className="characterCreation-step2__points__value">
-                {globalVars.basePoints - pointSpent}
+                {baseStatPoints - pointSpent}
               </Ap>
               <Button
                 type="submit"

@@ -3,6 +3,8 @@ import { type ICuratedNPC } from './npc';
 import {
   type IAction,
   type ICharParamBonus,
+  type ICuratedAction,
+  type ICuratedEffect,
   type IEffect,
   type ISkill,
   type ISkillBonus,
@@ -359,9 +361,9 @@ export interface IImplant {
   /** All the body parts that can install this implant */
   bodyParts: string[];
   /** The effects related to the implant */
-  effects?: IEffect[];
+  effects?: ICuratedEffect[];
   /** The actions related to the implant */
-  actions?: IAction[];
+  actions?: ICuratedAction[];
   /** The skill bonuses related to the implant */
   skillBonuses?: ISkillBonus[];
   /** The stat bonuses related to the implant */

@@ -563,6 +563,13 @@
   }
 
   &__choices {
+    &__form {
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      gap: 4rem;
+    }
+
     &__main {
       &__title {
         padding-top: 5vh;
@@ -601,11 +608,24 @@
         }
       }
 
+      &__btns {
+        align-items: center;
+        display: flex;
+        flex-direction: row;
+        gap: 4rem;
+        padding-bottom: 4vh;
+
+        &__or {
+          font-weight: 800;
+        }
+      }
+
       .weapon-display__text-hover,
       .armor-display__text-hover,
       .bag-display__text-hover,
       .item-display__text-hover,
-      .specialized-display__text-hover {
+      .program-display__text-hover,
+      .implant-display__text-hover {
         font-weight: 400;
       }
     }
