@@ -9,9 +9,15 @@ import {
   ArmorTypeModel,
   BackgroundModel,
   BagModel,
+  BodyAmmoModel,
+  BodyArmorModel,
+  BodyBagModel,
+  BodyImplantModel,
   BodyModel,
   BodyPartModel,
+  BodyProgramModel,
   BodyStatModel,
+  BodyWeaponModel,
   CampaignModel,
   ChapterModel,
   ChapterTypeModel,
@@ -62,8 +68,14 @@ import {
   type IBackground,
   type IBag,
   type IBody,
+  type IBodyAmmo,
+  type IBodyArmor,
+  type IBodyBag,
+  type IBodyImplant,
   type IBodyPart,
+  type IBodyProgram,
   type IBodyStat,
+  type IBodyWeapon,
   type ICampaign,
   type IChapter,
   type IChapterType,
@@ -106,6 +118,7 @@ import {
   type IWeaponStyle,
   type IWeaponType,
 } from './entities';
+import { BodyItemModel, type IBodyItem } from './entities/body';
 
 mongoose.Promise = global.Promise;
 
@@ -140,6 +153,20 @@ interface DBType {
   Body: mongoose.Model<IBody>;
   /** The BodyStat Model */
   BodyStat: mongoose.Model<IBodyStat>;
+  /** The BodyAmmo Model */
+  BodyAmmo: mongoose.Model<IBodyAmmo>;
+  /** The BodyItem Model */
+  BodyItem: mongoose.Model<IBodyItem>;
+  /** The BodyArmor Model */
+  BodyArmor: mongoose.Model<IBodyArmor>;
+  /** The BodyBag Model */
+  BodyBag: mongoose.Model<IBodyBag>;
+  /** The BodyImplant Model */
+  BodyImplant: mongoose.Model<IBodyImplant>;
+  /** The BodyProgram Model */
+  BodyProgram: mongoose.Model<IBodyProgram>;
+  /** The BodyWeapon Model */
+  BodyWeapon: mongoose.Model<IBodyWeapon>;
   /** The Body Part Model */
   BodyPart: mongoose.Model<IBodyPart>;
   /** The Roll Model */
@@ -239,6 +266,13 @@ const db: DBType = {
   CharacterNode: CharacterNodeModel(),
   Body: BodyModel(),
   BodyStat: BodyStatModel(),
+  BodyAmmo: BodyAmmoModel(),
+  BodyArmor: BodyArmorModel(),
+  BodyBag: BodyBagModel(),
+  BodyImplant: BodyImplantModel(),
+  BodyItem: BodyItemModel(),
+  BodyProgram: BodyProgramModel(),
+  BodyWeapon: BodyWeaponModel(),
   BodyPart: BodyPartModel(),
   // Rules models
   Action: ActionModel(),

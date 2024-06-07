@@ -7,12 +7,31 @@ export { ArmorTypeModel, type HydratedIArmorType, type IArmorType } from './armo
 export { BackgroundModel, type HydratedIBackground, type IBackground } from './background/model';
 export { BagModel, type HydratedIBag, type IBag } from './bag/model';
 export {
+  BodyAmmoModel,
+  BodyArmorModel,
+  BodyBagModel,
+  BodyImplantModel,
+  BodyItemModel,
   BodyModel,
+  BodyProgramModel,
   BodyStatModel,
+  BodyWeaponModel,
   type HydratedIBody,
+  type HydratedIBodyAmmo,
+  type HydratedIBodyArmor,
+  type HydratedIBodyBag,
+  type HydratedIBodyImplant,
+  type HydratedIBodyProgram,
   type HydratedIBodyStat,
+  type HydratedIBodyWeapon,
   type IBody,
+  type IBodyAmmo,
+  type IBodyArmor,
+  type IBodyBag,
+  type IBodyImplant,
+  type IBodyProgram,
   type IBodyStat,
+  type IBodyWeapon,
 } from './body';
 export { BodyPartModel, type HydratedIBodyPart, type IBodyPart } from './bodyPart/model';
 export {

@@ -314,26 +314,26 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
         .then((data: IUser) => {
           if (data.mail !== undefined) {
             setUser(data);
-            loadActionTypes();
             loadActionDurations();
-            loadRuleBooks();
-            loadCampaigns();
-            loadDamageTypes();
-            loadStats();
+            loadActionTypes();
+            loadArmorTypes();
             loadBodyParts();
+            loadCampaigns();
             loadCharParams();
-            loadSkills();
             loadCyberFrames();
-            loadItemTypes();
+            loadDamageTypes();
+            loadGlobalValues();
             loadItemModifiers();
+            loadItemTypes();
+            loadProgramScopes();
             loadRarities();
+            loadRuleBooks();
+            loadSkills();
+            loadStats();
+            loadTipTexts();
             loadWeaponScopes();
             loadWeaponStyles();
             loadWeaponTypes();
-            loadProgramScopes();
-            loadArmorTypes();
-            loadTipTexts();
-            loadGlobalValues();
           }
           setLoading(false);
         })
@@ -399,25 +399,26 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       tipTexts,
       globalValues,
       reloadAll: () => {
+        loadActionDurations();
+        loadActionTypes();
+        loadArmorTypes();
+        loadBodyParts();
         loadCampaigns();
-        loadRuleBooks();
-        loadStats();
-        loadSkills();
         loadCharParams();
         loadCyberFrames();
         loadDamageTypes();
-        loadActionTypes();
-        loadActionDurations();
+        loadGlobalValues();
         loadItemModifiers();
+        loadItemTypes();
+        loadProgramScopes();
         loadRarities();
+        loadRuleBooks();
+        loadSkills();
+        loadStats();
+        loadTipTexts();
         loadWeaponScopes();
         loadWeaponStyles();
         loadWeaponTypes();
-        loadItemTypes();
-        loadProgramScopes();
-        loadArmorTypes();
-        loadTipTexts();
-        loadGlobalValues();
       },
       reloadBodyParts: loadBodyParts,
       reloadCampaigns: loadCampaigns,

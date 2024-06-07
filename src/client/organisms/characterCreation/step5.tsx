@@ -52,7 +52,15 @@ interface ICharacterCreationStep5 {
   /** All the available armors to be used in character creation */
   armors: ICuratedArmor[];
   /** When the user click send and the data is send perfectly */
-  onSubmitItems: () => void;
+  onSubmitItems: (items: {
+    weapons: string[];
+    armors: string[];
+    bags: string[];
+    items: string[];
+    programs: string[];
+    implants: string[];
+    money: number;
+  }) => void;
 }
 
 const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
@@ -160,30 +168,70 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
   );
 
   const handleSubmitOnlyMoney = useCallback(() => {
-    console.log('starterMoneyNoItem', starterMoneyNoItem);
-  }, [starterMoneyNoItem]);
+    if (onSubmitItems !== undefined) {
+      onSubmitItems({
+        weapons: [],
+        armors: [],
+        bags: [],
+        items: [],
+        programs: [],
+        implants: [],
+        money: starterMoneyNoItem,
+      });
+    }
+  }, [onSubmitItems, starterMoneyNoItem]);
 
   const onSaveItems: SubmitHandler<FormValues> = useCallback(
     ({ weapons, armors, bags, items, programs, implants }) => {
       if (onSubmitItems !== undefined) {
-        console.log(
-          'weapons, armors, bags, items, programs, implants',
-          weapons,
-          armors,
-          bags,
-          items,
-          programs,
-          implants
-        );
-        // onSubmitItems(
-        //   // Object.keys(stats).map((statKey) => ({
-        //   //   id: statKey,
-        //   //   value: stats[statKey],
-        //   // }))
-        // );
+        const weaponIds: string[] = [];
+        Object.keys(weapons).forEach((weaponId) => {
+          if (weapons[weaponId]) {
+            weaponIds.push(weaponId);
+          }
+        });
+        const armorIds: string[] = [];
+        Object.keys(armors).forEach((armorId) => {
+          if (armors[armorId]) {
+            armorIds.push(armorId);
+          }
+        });
+        const bagIds: string[] = [];
+        Object.keys(bags).forEach((bagId) => {
+          if (bags[bagId]) {
+            bagIds.push(bagId);
+          }
+        });
+        const itemIds: string[] = [];
+        Object.keys(items).forEach((itemId) => {
+          if (items[itemId]) {
+            itemIds.push(itemId);
+          }
+        });
+        const programIds: string[] = [];
+        Object.keys(programs).forEach((programId) => {
+          if (programs[programId]) {
+            programIds.push(programId);
+          }
+        });
+        const implantIds: string[] = [];
+        Object.keys(implants).forEach((implantId) => {
+          if (implants[implantId]) {
+            implantIds.push(implantId);
+          }
+        });
+        onSubmitItems({
+          weapons: weaponIds,
+          armors: armorIds,
+          bags: bagIds,
+          items: itemIds,
+          programs: programIds,
+          implants: implantIds,
+          money: starterMoney,
+        });
       }
     },
-    [onSubmitItems]
+    [onSubmitItems, starterMoney]
   );
 
   const weaponChoices = (): ReactNode => {
@@ -477,19 +525,22 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
   };
 
   const elts: FormValues = watch();
-  const nbChosenArmors = countTrueInArray(Object.values(elts.armors));
-  const nbChosenPrograms = countTrueInArray(Object.values(elts.programs));
-  const nbChosenItems = countTrueInArray(Object.values(elts.items));
-  const nbChosenImplants = countTrueInArray(Object.values(elts.implants));
-  const nbChosenBags = countTrueInArray(Object.values(elts.bags));
-  const nbChosenWeapons = countTrueInArray(Object.values(elts.weapons));
+  let canSubmitList = false;
+  if (elts !== undefined) {
+    const nbChosenArmors = countTrueInArray(Object.values(elts.armors ?? {}));
+    const nbChosenPrograms = countTrueInArray(Object.values(elts.programs ?? {}));
+    const nbChosenItems = countTrueInArray(Object.values(elts.items ?? {}));
+    const nbChosenImplants = countTrueInArray(Object.values(elts.implants ?? {}));
+    const nbChosenBags = countTrueInArray(Object.values(elts.bags ?? {}));
+    const nbChosenWeapons = countTrueInArray(Object.values(elts.weapons ?? {}));
 
-  const canSubmitList =
-    nbChosenArmors === nbOptionnalArmorCharCreate &&
-    nbChosenPrograms + nbChosenImplants === nbOptionnalOtherCharCreate &&
-    nbChosenItems === nbOptionnalItemCharCreate &&
-    nbChosenBags === nbOptionnalBagCharCreate &&
-    nbChosenWeapons === nbOptionnalWeaponCharCreate;
+    canSubmitList =
+      nbChosenArmors === nbOptionnalArmorCharCreate &&
+      nbChosenPrograms + nbChosenImplants === nbOptionnalOtherCharCreate &&
+      nbChosenItems === nbOptionnalItemCharCreate &&
+      nbChosenBags === nbOptionnalBagCharCreate &&
+      nbChosenWeapons === nbOptionnalWeaponCharCreate;
+  }
 
   return (
     <motion.div

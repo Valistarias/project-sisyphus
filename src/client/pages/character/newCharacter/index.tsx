@@ -330,9 +330,20 @@ const NewCharacter: FC = () => {
     [api, character, createAlert, getNewId, setCharacterFromId, t, user]
   );
 
-  const onSubmitItems = useCallback(() => {
-    console.log('onSubmitItems');
-  }, []);
+  const onSubmitItems = useCallback(
+    (items: {
+      weapons: string[];
+      armors: string[];
+      bags: string[];
+      items: string[];
+      programs: string[];
+      implants: string[];
+      money: number;
+    }) => {
+      console.log('onSubmitItems', items);
+    },
+    []
+  );
 
   const onSubmitSkills = useCallback(
     (nodeIds: string[]) => {
