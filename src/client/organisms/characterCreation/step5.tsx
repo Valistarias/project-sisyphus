@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, type FC, type ReactNode } from 'react';
+import React, { useCallback, useEffect, useMemo, type FC, type ReactNode } from 'react';
 
 import { motion } from 'framer-motion';
 import { useForm, type SubmitHandler } from 'react-hook-form';
@@ -10,6 +10,7 @@ import { Ap, Atitle } from '../../atoms';
 import { Button, Checkbox } from '../../molecules';
 import {
   type IBody,
+  type ICharacter,
   type ICuratedArmor,
   type ICuratedBag,
   type ICuratedImplant,
@@ -40,6 +41,8 @@ interface FormValues {
 }
 
 interface ICharacterCreationStep5 {
+  /** Is the form loading ? */
+  loading: boolean;
   /** All the available weapons to be used in character creation */
   weapons: ICuratedWeapon[];
   /** All the available programs to be used in character creation */
@@ -65,6 +68,7 @@ interface ICharacterCreationStep5 {
 }
 
 const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
+  loading,
   weapons,
   programs,
   items,
@@ -83,7 +87,8 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
       bags: ICuratedBag[],
       items: ICuratedItem[],
       programs: ICuratedProgram[],
-      implants: ICuratedImplant[]
+      implants: ICuratedImplant[],
+      character: false | ICharacter | null
     ) => {
       if (weapons.length === 0) {
         return {};
@@ -164,13 +169,13 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
 
       return defaultData;
     },
-    [character]
+    []
   );
 
-  const { handleSubmit, watch, control } = useForm<FormValues>({
+  const { handleSubmit, watch, control, reset } = useForm<FormValues>({
     defaultValues: useMemo(
-      () => createDefaultData(weapons, armors, bags, items, programs, implants),
-      [createDefaultData, weapons, armors, bags, items, programs, implants]
+      () => createDefaultData(weapons, armors, bags, items, programs, implants, character),
+      [createDefaultData, weapons, armors, bags, items, programs, implants, character]
     ),
   });
 
@@ -574,6 +579,10 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
       nbChosenWeapons === nbOptionnalWeaponCharCreate;
   }
 
+  useEffect(() => {
+    reset(createDefaultData(weapons, armors, bags, items, programs, implants, character));
+  }, [character, reset, createDefaultData, weapons, armors, bags, items, programs, implants]);
+
   return (
     <motion.div
       className={classTrim(`
@@ -621,8 +630,8 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
                 type="submit"
                 size="large"
                 className="characterCreation-step2__choices__btn"
-                disabled={!canSubmitList}
-                theme={!canSubmitList ? 'text-only' : 'afterglow'}
+                disabled={!canSubmitList || loading}
+                theme={!canSubmitList || loading ? 'text-only' : 'afterglow'}
               >
                 {t('characterCreation.step5.next', { ns: 'components', money: starterMoney })}
               </Button>
@@ -633,9 +642,10 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
               </Ap>
               <Button
                 size="large"
-                theme="afterglow"
+                theme={loading ? 'text-only' : 'afterglow'}
                 className="characterCreation-step2__choices__btn"
                 onClick={handleSubmitOnlyMoney}
+                disabled={loading}
               >
                 {t('characterCreation.step5.nextOnlyCash', {
                   ns: 'components',

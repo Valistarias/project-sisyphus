@@ -349,6 +349,7 @@ const NewCharacter: FC = () => {
       ) {
         const relevantBody = character.bodies?.find((body) => body.alive);
         if (relevantBody !== undefined) {
+          setLoading(true);
           api.bodies
             .resetItems({
               id: relevantBody._id,
@@ -583,6 +584,7 @@ const NewCharacter: FC = () => {
       return (
         <CharCreationStep5
           key="step5"
+          loading={loading}
           onSubmitItems={onSubmitItems}
           weapons={weapons}
           programs={programs}
@@ -616,6 +618,7 @@ const NewCharacter: FC = () => {
     forcedCharState,
     charCreationState,
     onSubmitCyberFrame,
+    loading,
     onSubmitItems,
     weapons,
     programs,
