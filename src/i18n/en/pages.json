@@ -211,7 +211,8 @@
     "successUpdateStats": "Character Stats updated",
     "successUpdateSkills": "Character Skills updated",
     "successUpdatebackground": "Character Background updated",
-    "successUpdateItems": "Character Items changed"
+    "successUpdateItems": "Character Items changed",
+    "successUpdateIdentification": "Character Identification ready"
   },
   "editCharacter": {
     "title": "Edit Character",

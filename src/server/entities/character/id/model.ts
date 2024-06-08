@@ -14,6 +14,12 @@ interface ICharacter {
   lastName?: string;
   /** The nickname of the character */
   nickName?: string;
+  /** The gender of the character */
+  gender?: string;
+  /** The pronouns of the character */
+  pronouns?: string;
+  /** The bio of the character */
+  bio?: string;
   /** The money of the character */
   money?: number;
   /** The karma of the character */
@@ -45,6 +51,9 @@ const characterSchema = new Schema<ICharacter>(
     firstName: String,
     lastName: String,
     nickName: String,
+    gender: String,
+    pronouns: String,
+    bio: String,
     money: Number,
     karma: Number,
     player: {

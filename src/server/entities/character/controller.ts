@@ -397,6 +397,9 @@ const updateInfos = (req: Request, res: Response): void => {
     karma = null,
     campaignId = null,
     backgroundId = null,
+    gender = null,
+    pronouns = null,
+    bio = null,
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Character ID'));
@@ -413,6 +416,15 @@ const updateInfos = (req: Request, res: Response): void => {
         }
         if (nickName !== null && nickName !== char.nickName) {
           char.nickName = nickName;
+        }
+        if (gender !== null && gender !== char.gender) {
+          char.gender = gender;
+        }
+        if (pronouns !== null && pronouns !== char.pronouns) {
+          char.pronouns = pronouns;
+        }
+        if (bio !== null && bio !== char.bio) {
+          char.bio = bio;
         }
         if (money !== null && money !== char.money) {
           char.money = money;

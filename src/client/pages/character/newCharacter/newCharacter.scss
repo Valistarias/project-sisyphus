@@ -8,6 +8,8 @@
 
   .ariane {
     margin-bottom: 3vh;
+    opacity: 1;
+    transition: opacity 0.3s ease;
   }
 
   &__loading {
@@ -65,7 +67,7 @@
     &__code {
       background: var(--dark);
       font-family: var(--mono-font);
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       height: 30rem;
       letter-spacing: 0.2rem;
       line-height: 1.8rem;
@@ -76,6 +78,7 @@
 
       &__elt {
         bottom: 2rem;
+        font-weight: 400;
         left: 2rem;
         min-height: calc(100% - 4rem);
         position: absolute;
@@ -116,8 +119,8 @@
       flex-direction: column;
       gap: 2rem;
       height: 100%;
-      max-height: 80rem;
-      max-width: 60rem;
+      max-height: 90rem;
+      max-width: 80rem;
       padding: 4rem;
       width: 100%;
     }
@@ -156,10 +159,12 @@
   }
 
   &__tooltip-btn {
+    opacity: 1;
     // Relative to app__content
     position: fixed;
     right: 2rem;
     top: 2rem;
+    transition: opacity 0.3s ease;
     z-index: 2;
   }
 
@@ -220,6 +225,18 @@
           transition: none;
         }
       }
+    }
+  }
+
+  &--ending {
+    .ariane {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .newcharacter__tooltip-btn {
+      opacity: 0;
+      pointer-events: none;
     }
   }
 

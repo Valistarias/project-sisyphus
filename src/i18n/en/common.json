@@ -272,6 +272,12 @@
       "modifier": "Modifier",
       "modifierShort": "Mod"
     },
+    "gender": {
+      "male": "Male",
+      "female": "Female",
+      "neutral": "Neutral",
+      "other": "Other"
+    },
     "campaign": {
       "title": "campaign"
     },

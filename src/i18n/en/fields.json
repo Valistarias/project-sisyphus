@@ -654,5 +654,26 @@
   },
   "backgroundSummary": {
     "title": "Background Details"
+  },
+  "firstName": {
+    "required": "A First Name is required",
+    "label": "First Name"
+  },
+  "lastName": {
+    "required": "A Last Name is required",
+    "label": "Last Name"
+  },
+  "nickName": {
+    "label": "Nickname"
+  },
+  "bio": {
+    "title": "Biography"
+  },
+  "gender": {
+    "required": "A Gender is required",
+    "label": "Gender"
+  },
+  "pronouns": {
+    "label": "Pronouns"
   }
 }

@@ -127,7 +127,19 @@
       "nextOnlyCash": "Get no items and {{money}}"
     },
     "step6": {
-      "cat": "Identification"
+      "cat": "Identification",
+      "text": "Identification",
+      "sub": "Who are you ?",
+      "next": "Create Character"
+    },
+    "step7": {
+      "text": {
+        "name": "Agent name: {{name}}",
+        "cyberFrame": "Preparing Cyberframe {{cyberFrame}}...",
+        "cyberFrameR": "Cyberframe Ready",
+        "psa": "Connexion Established",
+        "next": "Go to agent data file"
+      }
     }
   },
   "helper": {

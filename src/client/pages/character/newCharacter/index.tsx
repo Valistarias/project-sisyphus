@@ -16,6 +16,8 @@ import {
   CharCreationStep3,
   CharCreationStep4,
   CharCreationStep5,
+  CharCreationStep6,
+  CharCreationStep7,
 } from '../../../organisms/characterCreation';
 import {
   type ICharacter,
@@ -77,6 +79,14 @@ const NewCharacter: FC = () => {
 
   const charCreationState = useMemo(() => {
     if (character !== null && character !== false) {
+      if (character.firstName !== undefined) {
+        return 7;
+      }
+
+      if (character.money !== undefined && character.money > 0) {
+        return 6;
+      }
+
       if (character.background !== undefined) {
         return 5;
       }
@@ -93,13 +103,22 @@ const NewCharacter: FC = () => {
         return 2;
       }
     }
-    // Nothing defined yet
-    return 1;
-  }, [character]);
+    if (id === undefined) {
+      // Nothing defined yet
+      return 1;
+    }
+    return 0;
+  }, [character, id]);
 
   // TODO: Internationalization
   const relevantTipsData = useMemo(() => {
-    if (user !== null && user.charCreationTips && forcedCharState === null) {
+    if (
+      user !== null &&
+      user.charCreationTips &&
+      forcedCharState === null &&
+      charCreationState !== 0 &&
+      charCreationState !== 7
+    ) {
       setTooltipOpen(true);
     }
     return tipTexts.find(
@@ -120,11 +139,6 @@ const NewCharacter: FC = () => {
 
   const getData = useCallback(() => {
     setIntroState(1);
-    if (user !== null) {
-      if (user.charCreationTips) {
-        setTooltipOpen(true);
-      }
-    }
     if (api !== undefined) {
       api.backgrounds
         .getAll()
@@ -239,7 +253,7 @@ const NewCharacter: FC = () => {
           });
         });
     }
-  }, [user, api, getNewId, createAlert, t]);
+  }, [api, getNewId, createAlert, t]);
 
   const onSubmitCyberFrame = useCallback(
     (cyberFrameId: string) => {
@@ -547,6 +561,48 @@ const NewCharacter: FC = () => {
     [api, user, character, setCharacterFromId, getNewId, createAlert, t, globalValues, charParams]
   );
 
+  const onSubmitIdentification = useCallback(
+    ({ firstName, lastName, nickName, gender, pronouns, bio }) => {
+      if (api !== undefined && user !== null && character !== null && character !== false) {
+        api.characters
+          .update({
+            id: character._id,
+            firstName,
+            lastName,
+            nickName,
+            gender,
+            pronouns,
+            bio,
+          })
+          .then(() => {
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{t('newCharacter.successUpdateIdentification', { ns: 'pages' })}</Ap>
+                </Alert>
+              ),
+            });
+            setCharacterFromId(character._id);
+          })
+          .catch(({ response }) => {
+            const { data } = response;
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{data.err.message}</Ap>
+                </Alert>
+              ),
+            });
+          });
+      }
+    },
+    [api, user, character, getNewId, createAlert, t, setCharacterFromId]
+  );
+
   const onSubmitTooltip: SubmitHandler<ToolTipValues> = useCallback(
     ({ autoDisplay }) => {
       if (api !== undefined && user !== null) {
@@ -580,6 +636,14 @@ const NewCharacter: FC = () => {
 
   const actualFormContent = useMemo(() => {
     const state = forcedCharState ?? charCreationState;
+    if (charCreationState === 7) {
+      return <CharCreationStep7 key="step7" />;
+    }
+
+    if (state === 6) {
+      return <CharCreationStep6 key="step6" onSubmitIdentification={onSubmitIdentification} />;
+    }
+
     if (state === 5) {
       return (
         <CharCreationStep5
@@ -618,6 +682,7 @@ const NewCharacter: FC = () => {
     forcedCharState,
     charCreationState,
     onSubmitCyberFrame,
+    onSubmitIdentification,
     loading,
     onSubmitItems,
     weapons,
@@ -669,9 +734,7 @@ const NewCharacter: FC = () => {
     if ((character === false || character === null) && id !== undefined) {
       setLoading(true);
     } else if (
-      character !== false &&
-      character !== null &&
-      id !== undefined &&
+      (id === undefined || (id !== undefined && character !== false && character !== null)) &&
       backgrounds.length > 0 &&
       weapons.length > 0 &&
       programs.length > 0 &&
@@ -681,7 +744,9 @@ const NewCharacter: FC = () => {
       armors.length > 0
     ) {
       setLoading(false);
-      setDisplayLoading(false);
+      if (id !== undefined && character !== false && character !== null) {
+        setDisplayLoading(false);
+      }
     }
   }, [
     backgrounds.length,
@@ -704,6 +769,7 @@ const NewCharacter: FC = () => {
         ${introState === 3 ? 'newcharacter--animate-hide' : ''}
         ${tooltipOpen ? 'newcharacter--tooltip' : ''}
         ${id !== undefined ? 'newcharacter--animate-fast' : ''}
+        ${charCreationState === 7 || charCreationState === 0 ? 'newcharacter--ending' : ''}
       `)}
     >
       <div
