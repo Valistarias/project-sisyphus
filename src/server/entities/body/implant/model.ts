@@ -11,8 +11,8 @@ interface IBodyImplant {
   implant: ObjectId;
   /** The bag that store this implant */
   bag: ObjectId;
-  /** Is the implant equiped ? */
-  equiped: boolean;
+  /** at what part the implant is equiped ? */
+  equiped: ObjectId;
 }
 
 interface HydratedIBodyImplant extends Omit<HydratedDocument<IBodyImplant>, 'implant'> {
@@ -33,8 +33,8 @@ const BodyImplantSchema = new Schema<IBodyImplant>({
     ref: 'BodyBag',
   },
   equiped: {
-    type: Boolean,
-    default: false,
+    type: Schema.Types.ObjectId,
+    ref: 'BodyPart',
   },
   createdAt: {
     type: Date,

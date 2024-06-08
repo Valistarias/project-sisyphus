@@ -50,10 +50,40 @@ const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[
           .populate<{ bodies: HydratedIBody[] }>({
             path: 'bodies',
             select: '_id character alive hp stats createdAt',
-            populate: {
-              path: 'stats',
-              select: '_id body stat value',
-            },
+            populate: [
+              {
+                path: 'stats',
+                select: '_id body stat value',
+              },
+              {
+                path: 'ammos',
+                select: '_id body ammo bag qty',
+              },
+              {
+                path: 'armors',
+                select: '_id body armor bag equiped',
+              },
+              {
+                path: 'bags',
+                select: '_id body bag equiped',
+              },
+              {
+                path: 'implants',
+                select: '_id body implant bag equiped',
+              },
+              {
+                path: 'items',
+                select: '_id body item bag qty',
+              },
+              {
+                path: 'programs',
+                select: '_id body program bag uses',
+              },
+              {
+                path: 'weapons',
+                select: '_id body weapon bag ammo bullets',
+              },
+            ],
           })
           .populate<{ background: HydratedIBackground }>('background')
           .then(async (res) => {
@@ -101,10 +131,40 @@ const findCompleteCharacterById = async (
           .populate<{ bodies: HydratedIBody[] }>({
             path: 'bodies',
             select: '_id character alive hp stats createdAt',
-            populate: {
-              path: 'stats',
-              select: '_id body stat value',
-            },
+            populate: [
+              {
+                path: 'stats',
+                select: '_id body stat value',
+              },
+              {
+                path: 'ammos',
+                select: '_id body ammo bag qty',
+              },
+              {
+                path: 'armors',
+                select: '_id body armor bag equiped',
+              },
+              {
+                path: 'bags',
+                select: '_id body bag equiped',
+              },
+              {
+                path: 'implants',
+                select: '_id body implant bag equiped',
+              },
+              {
+                path: 'items',
+                select: '_id body item bag qty',
+              },
+              {
+                path: 'programs',
+                select: '_id body program bag uses',
+              },
+              {
+                path: 'weapons',
+                select: '_id body weapon bag ammo bullets',
+              },
+            ],
           })
           .populate<{ background: HydratedIBackground }>({
             path: 'background',
@@ -328,7 +388,16 @@ const create = (req: Request, res: Response): void => {
 };
 
 const updateInfos = (req: Request, res: Response): void => {
-  const { id, name = null, campaignId = null, backgroundId = null } = req.body;
+  const {
+    id,
+    firstName = null,
+    lastName = null,
+    nickName = null,
+    money = null,
+    karma = null,
+    campaignId = null,
+    backgroundId = null,
+  } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Character ID'));
     return;
@@ -336,8 +405,20 @@ const updateInfos = (req: Request, res: Response): void => {
   findCharacterById(id as string, req)
     .then(({ char, canEdit }) => {
       if (char !== undefined && canEdit) {
-        if (name !== null && name !== char.name) {
-          char.name = name;
+        if (firstName !== null && firstName !== char.firstName) {
+          char.firstName = firstName;
+        }
+        if (lastName !== null && lastName !== char.lastName) {
+          char.lastName = lastName;
+        }
+        if (nickName !== null && nickName !== char.nickName) {
+          char.nickName = nickName;
+        }
+        if (money !== null && money !== char.money) {
+          char.money = money;
+        }
+        if (karma !== null && karma !== char.karma) {
+          char.karma = karma;
         }
         if (backgroundId !== null && backgroundId !== char.background) {
           char.background = backgroundId;

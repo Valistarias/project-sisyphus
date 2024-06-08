@@ -50,8 +50,16 @@ export interface ICharacterNode {
 export interface ICharacter {
   /** The ID of the character */
   _id: string;
-  /** The name of the character */
-  name?: string;
+  /** The first name of the character */
+  firstName?: string;
+  /** The last name of the character */
+  lastName?: string;
+  /** The nickname of the character */
+  nickName?: string;
+  /** The money of the character */
+  money?: number;
+  /** The karma of the character */
+  karma?: number;
   /** The owner of the character */
   player?: IUser;
   /** The creator of the character */

@@ -8,8 +8,16 @@ import type { ICampaign } from '../../campaign/model';
 import type { IUser } from '../../user/model';
 
 interface ICharacter {
-  /** The name of the character */
-  name?: string;
+  /** The first name of the character */
+  firstName?: string;
+  /** The last name of the character */
+  lastName?: string;
+  /** The nickname of the character */
+  nickName?: string;
+  /** The money of the character */
+  money?: number;
+  /** The karma of the character */
+  karma?: number;
   /** When the character was created */
   createdAt: Date;
   /** The player of the character */
@@ -34,7 +42,11 @@ interface HydratedICharacter
 
 const characterSchema = new Schema<ICharacter>(
   {
-    name: String,
+    firstName: String,
+    lastName: String,
+    nickName: String,
+    money: Number,
+    karma: Number,
     player: {
       type: Schema.Types.ObjectId,
       ref: 'User',

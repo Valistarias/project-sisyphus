@@ -46,23 +46,23 @@ const createImplantsByBody = async (req: {
 const updateImplantByBody = async (req: {
   bodyId: string;
   implantId: string;
-  equiped?: boolean;
+  equiped?: string;
   bag?: string;
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { bodyId, implantId, equiped = null, bag = null } = req;
     const updateObj: {
       bag?: string;
-      equiped?: boolean;
+      equiped?: string;
     } = {};
-    if (equiped !== null) {
-      updateObj.equiped = equiped;
-      if (equiped) {
-        updateObj.bag = undefined;
-      }
-    }
     if (bag !== null) {
       updateObj.bag = bag;
+    }
+    if (equiped !== null) {
+      updateObj.equiped = equiped;
+      if (equiped !== null && equiped !== undefined) {
+        updateObj.bag = undefined;
+      }
     }
     BodyImplant.findOneAndUpdate(
       {

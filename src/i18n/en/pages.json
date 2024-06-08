@@ -210,7 +210,8 @@
     "successUpdateCyberFrame": "Character CyberFrame updated",
     "successUpdateStats": "Character Stats updated",
     "successUpdateSkills": "Character Skills updated",
-    "successUpdatebackground": "Character Background updated"
+    "successUpdatebackground": "Character Background updated",
+    "successUpdateItems": "Character Items changed"
   },
   "editCharacter": {
     "title": "Edit Character",

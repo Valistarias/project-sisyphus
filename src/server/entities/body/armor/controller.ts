@@ -49,14 +49,14 @@ const updateArmorByBody = async (req: {
       bag?: string;
       equiped?: boolean;
     } = {};
+    if (bag !== null) {
+      updateObj.bag = bag;
+    }
     if (equiped !== null) {
       updateObj.equiped = equiped;
       if (equiped) {
         updateObj.bag = undefined;
       }
-    }
-    if (bag !== null) {
-      updateObj.bag = bag;
     }
     BodyArmor.findOneAndUpdate(
       {

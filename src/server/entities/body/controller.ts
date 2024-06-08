@@ -12,9 +12,26 @@ import {
 import { type ICharacter } from '../character';
 import { findCharacterById } from '../character/controller';
 
+import { deleteAmmosByBody } from './ammo/controller';
+import { replaceArmorByBody } from './armor/controller';
+import { replaceBagByBody } from './bag/controller';
+import { replaceImplantByBody } from './implant/controller';
+import { replaceItemByBody } from './item/controller';
+import { replaceProgramByBody } from './program/controller';
 import { createStatsByBody, replaceStatByBody } from './stat/controller';
+import { replaceWeaponByBody } from './weapon/controller';
 
-import { type HydratedIBody, type HydratedIBodyStat } from './index';
+import {
+  type HydratedIBody,
+  type HydratedIBodyAmmo,
+  type HydratedIBodyArmor,
+  type HydratedIBodyBag,
+  type HydratedIBodyImplant,
+  type HydratedIBodyItem,
+  type HydratedIBodyProgram,
+  type HydratedIBodyStat,
+  type HydratedIBodyWeapon,
+} from './index';
 
 const { Body } = db;
 
@@ -31,6 +48,34 @@ const findBodiesByCharacter = async (req: Request): Promise<HydratedIBody[]> =>
           .populate<{ stats: HydratedIBodyStat[] }>({
             path: 'stats',
             select: '_id body stat value',
+          })
+          .populate<{ ammos: HydratedIBodyAmmo[] }>({
+            path: 'ammos',
+            select: '_id body ammo bag qty',
+          })
+          .populate<{ armors: HydratedIBodyArmor[] }>({
+            path: 'armors',
+            select: '_id body armor bag equiped',
+          })
+          .populate<{ bags: HydratedIBodyBag[] }>({
+            path: 'bags',
+            select: '_id body bag equiped',
+          })
+          .populate<{ implants: HydratedIBodyImplant[] }>({
+            path: 'implants',
+            select: '_id body implant bag equiped',
+          })
+          .populate<{ items: HydratedIBodyItem[] }>({
+            path: 'items',
+            select: '_id body item bag qty',
+          })
+          .populate<{ programs: HydratedIBodyProgram[] }>({
+            path: 'programs',
+            select: '_id body program bag uses',
+          })
+          .populate<{ weapons: HydratedIBodyWeapon[] }>({
+            path: 'weapons',
+            select: '_id body weapon bag ammo bullets',
           })
           .then(async (res) => {
             if (res === undefined || res === null) {
@@ -64,6 +109,34 @@ const findBodyById = async (
           .populate<{ stats: HydratedIBodyStat[] }>({
             path: 'stats',
             select: '_id body stat value',
+          })
+          .populate<{ ammos: HydratedIBodyAmmo[] }>({
+            path: 'ammos',
+            select: '_id body ammo bag qty',
+          })
+          .populate<{ armors: HydratedIBodyArmor[] }>({
+            path: 'armors',
+            select: '_id body armor bag equiped',
+          })
+          .populate<{ bags: HydratedIBodyBag[] }>({
+            path: 'bags',
+            select: '_id body bag equiped',
+          })
+          .populate<{ implants: HydratedIBodyImplant[] }>({
+            path: 'implants',
+            select: '_id body implant bag equiped',
+          })
+          .populate<{ items: HydratedIBodyItem[] }>({
+            path: 'items',
+            select: '_id body item bag qty',
+          })
+          .populate<{ programs: HydratedIBodyProgram[] }>({
+            path: 'programs',
+            select: '_id body program bag uses',
+          })
+          .populate<{ weapons: HydratedIBodyWeapon[] }>({
+            path: 'weapons',
+            select: '_id body weapon bag ammo bullets',
           })
           .then(async (res) => {
             if (res === undefined || res === null) {
@@ -181,6 +254,76 @@ const updateStats = (req: Request, res: Response): void => {
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
+const resetItems = (req: Request, res: Response): void => {
+  const {
+    id,
+    weapons = [],
+    armors = [],
+    bags = [],
+    items = [],
+    programs = [],
+    implants = [],
+  } = req.body;
+  if (id === undefined) {
+    res.status(400).send(gemInvalidField('Body ID'));
+    return;
+  }
+  findBodyById(id as string, req)
+    .then(({ body, canEdit }) => {
+      if (body !== undefined && canEdit) {
+        deleteAmmosByBody(id as string)
+          .then(() => {
+            replaceArmorByBody({ bodyId: id, armorIds: armors })
+              .then(() => {
+                replaceBagByBody({ bodyId: id, bagIds: bags })
+                  .then(() => {
+                    replaceImplantByBody({ bodyId: id, implantIds: implants })
+                      .then(() => {
+                        replaceItemByBody({
+                          bodyId: id,
+                          items: items.map((itemId: string) => ({ id: itemId, qty: 1 })),
+                        })
+                          .then(() => {
+                            replaceProgramByBody({ bodyId: id, programIds: programs })
+                              .then(() => {
+                                replaceWeaponByBody({ bodyId: id, weaponIds: weapons })
+                                  .then(() => {
+                                    res.send({ message: 'Body was updated successfully!', body });
+                                  })
+                                  .catch((err: Error) => {
+                                    res.status(500).send(gemServerError(err));
+                                  });
+                              })
+                              .catch((err: Error) => {
+                                res.status(500).send(gemServerError(err));
+                              });
+                          })
+                          .catch((err: Error) => {
+                            res.status(500).send(gemServerError(err));
+                          });
+                      })
+                      .catch((err: Error) => {
+                        res.status(500).send(gemServerError(err));
+                      });
+                  })
+                  .catch((err: Error) => {
+                    res.status(500).send(gemServerError(err));
+                  });
+              })
+              .catch((err: Error) => {
+                res.status(500).send(gemServerError(err));
+              });
+          })
+          .catch((err: Error) => {
+            res.status(500).send(gemServerError(err));
+          });
+      } else {
+        res.status(404).send(gemNotFound('Body'));
+      }
+    })
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+};
+
 const deleteBody = (req: Request, res: Response): void => {
   const { id } = req.body;
   if (id === undefined) {
@@ -213,4 +356,4 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteBody, findAll, findSingle, update, updateStats };
+export { create, deleteBody, findAll, findSingle, resetItems, update, updateStats };

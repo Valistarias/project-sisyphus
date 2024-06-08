@@ -56,6 +56,8 @@ const NewCharacter: FC = () => {
   } = useGlobalVars();
   const { id } = useParams();
 
+  console.log('character', character);
+
   const [displayLoading, setDisplayLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [tooltipOpen, setTooltipOpen] = useState(false);
@@ -340,9 +342,72 @@ const NewCharacter: FC = () => {
       implants: string[];
       money: number;
     }) => {
-      console.log('onSubmitItems', items);
+      if (
+        api !== undefined &&
+        user !== null &&
+        character !== null &&
+        character !== false &&
+        character.bodies !== undefined
+      ) {
+        const relevantBody = character.bodies?.find((body) => body.alive);
+        if (relevantBody !== undefined) {
+          api.bodies
+            .resetItems({
+              id: relevantBody._id,
+              weapons: items.weapons,
+              armors: items.armors,
+              bags: items.bags,
+              items: items.items,
+              programs: items.programs,
+              implants: items.implants,
+            })
+            .then(() => {
+              api.characters
+                .update({
+                  id: character._id,
+                  money: items.money,
+                })
+                .then(() => {
+                  const newId = getNewId();
+                  createAlert({
+                    key: newId,
+                    dom: (
+                      <Alert key={newId} id={newId} timer={5}>
+                        <Ap>{t('newCharacter.successUpdateItems', { ns: 'pages' })}</Ap>
+                      </Alert>
+                    ),
+                  });
+                  setCharacterFromId(character._id);
+                })
+                .catch(({ response }) => {
+                  const { data } = response;
+                  const newId = getNewId();
+                  createAlert({
+                    key: newId,
+                    dom: (
+                      <Alert key={newId} id={newId} timer={5}>
+                        <Ap>{data.err.message}</Ap>
+                      </Alert>
+                    ),
+                  });
+                });
+            })
+            .catch(({ response }) => {
+              const { data } = response;
+              const newId = getNewId();
+              createAlert({
+                key: newId,
+                dom: (
+                  <Alert key={newId} id={newId} timer={5}>
+                    <Ap>{data.err.message}</Ap>
+                  </Alert>
+                ),
+              });
+            });
+        }
+      }
     },
-    []
+    [api, character, createAlert, getNewId, setCharacterFromId, t, user]
   );
 
   const onSubmitSkills = useCallback(

@@ -8,6 +8,15 @@ interface IUpdateStatsPayload {
   id: string;
   stats: Array<{ id: string; value: number }>;
 }
+interface IResetItemsPayload {
+  id: string;
+  weapons: string[];
+  armors: string[];
+  bags: string[];
+  items: string[];
+  programs: string[];
+  implants: string[];
+}
 interface IBodyPayload {
   characterId: string;
 }
@@ -15,6 +24,7 @@ interface IBodyPayload {
 export default class Bodys extends Entity {
   get: (payload: IBodyPayload) => Promise<IBody>;
   updateStats: (payload: IUpdateStatsPayload) => Promise<IBody>;
+  resetItems: (payload: IResetItemsPayload) => Promise<IBody>;
 
   constructor() {
     super('bodies');
@@ -35,6 +45,18 @@ export default class Bodys extends Entity {
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/updatestats/`, payload)
+          .then((res) => {
+            resolve(res.data as IBody);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+
+    this.resetItems = async (payload) =>
+      await new Promise((resolve, reject) => {
+        axios
+          .post(`${this.url}/resetitems/`, payload)
           .then((res) => {
             resolve(res.data as IBody);
           })
