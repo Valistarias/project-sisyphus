@@ -2,7 +2,7 @@ import { type ICampaign } from './campaign';
 import { type InternationalizationType, type IUser } from './global';
 import { type IBackground, type INode } from './rules';
 
-// Body Stats ------------------------------------
+// Body Stat ------------------------------------
 export interface IBodyStat {
   /** The ID of the body stat */
   _id: string;
@@ -12,6 +12,118 @@ export interface IBodyStat {
   stat: string;
   /** What is the actual value of this stat */
   value: number;
+  /** When the body was created */
+  createdAt: Date;
+}
+
+// Body Ammo ------------------------------------
+export interface IBodyAmmo {
+  /** The ID of the body stat */
+  _id: string;
+  /** The body targeted */
+  body: string;
+  /** The linked Ammo */
+  ammo: string;
+  /** The bag that store this ammo */
+  bag: string;
+  /** How many ammos the player have */
+  qty: number;
+  /** When the body was created */
+  createdAt: Date;
+}
+
+// Body Armor ------------------------------------
+export interface IBodyArmor {
+  /** The ID of the body stat */
+  _id: string;
+  /** The body targeted */
+  body: string;
+  /** The linked Armor */
+  armor: string;
+  /** The bag that store this armor */
+  bag: string;
+  /** Is the armor equiped ? */
+  equiped: boolean;
+  /** When the body was created */
+  createdAt: Date;
+}
+
+// Body Bag ------------------------------------
+export interface IBodyBag {
+  /** The ID of the body stat */
+  _id: string;
+  /** The body targeted */
+  body: string;
+  /** The linked Bag */
+  bag: string;
+  /** Is the bag equiped ? */
+  equiped: boolean;
+  /** When the body was created */
+  createdAt: Date;
+}
+
+// Body Implant ------------------------------------
+export interface IBodyImplant {
+  /** The ID of the body stat */
+  _id: string;
+  /** The body targeted */
+  body: string;
+  /** The linked Implant */
+  implant: string;
+  /** The bag that store this implant */
+  bag: string;
+  /** at what part the implant is equiped ? */
+  equiped: string;
+  /** When the body was created */
+  createdAt: Date;
+}
+
+// Body Item ------------------------------------
+export interface IBodyItem {
+  /** The ID of the body stat */
+  _id: string;
+  /** The body targeted */
+  body: string;
+  /** The linked Item */
+  item: string;
+  /** The bag that store this item */
+  bag: string;
+  /** How many items the player have */
+  qty: number;
+  /** When the body was created */
+  createdAt: Date;
+}
+
+// Body Program ------------------------------------
+export interface IBodyProgram {
+  /** The ID of the body stat */
+  _id: string;
+  /** The body targeted */
+  body: string;
+  /** The linked Program */
+  program: string;
+  /** The bag that store this program */
+  bag: string;
+  /** How many times the progam was used in the day */
+  uses: number;
+  /** When the body was created */
+  createdAt: Date;
+}
+
+// Body Weapon ------------------------------------
+export interface IBodyWeapon {
+  /** The ID of the body stat */
+  _id: string;
+  /** The body targeted */
+  body: string;
+  /** The linked Weapon */
+  weapon: string;
+  /** The type of ammo */
+  ammo: string;
+  /** The bag that store this weapon */
+  bag: string;
+  /** The bullets in the chamber */
+  bullets: number;
   /** When the body was created */
   createdAt: Date;
 }
@@ -28,6 +140,20 @@ export interface IBody {
   character: string;
   /** The associated stats to this body */
   stats: IBodyStat[];
+  /** The associated ammos to this body */
+  ammos?: IBodyAmmo[];
+  /** The associated armors to this body */
+  armors?: IBodyArmor[];
+  /** The associated bags to this body */
+  bags?: IBodyBag[];
+  /** The associated implants to this body */
+  implants?: IBodyImplant[];
+  /** The associated items to this body */
+  items?: IBodyItem[];
+  /** The associated programs to this body */
+  programs?: IBodyProgram[];
+  /** The associated weapons to this body */
+  weapons?: IBodyWeapon[];
   /** When the body was created */
   createdAt: Date;
 }

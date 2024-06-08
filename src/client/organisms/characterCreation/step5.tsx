@@ -9,6 +9,7 @@ import { useGlobalVars } from '../../providers';
 import { Ap, Atitle } from '../../atoms';
 import { Button, Checkbox } from '../../molecules';
 import {
+  type IBody,
   type ICuratedArmor,
   type ICuratedBag,
   type ICuratedImplant,
@@ -73,7 +74,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
   onSubmitItems,
 }) => {
   const { t } = useTranslation();
-  const { globalValues } = useGlobalVars();
+  const { globalValues, character } = useGlobalVars();
 
   const createDefaultData = useCallback(
     (
@@ -87,12 +88,21 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
       if (weapons.length === 0) {
         return {};
       }
+      let relevantBody: IBody | undefined;
+      if (character !== null && character !== false && character.bodies !== undefined) {
+        relevantBody = character.bodies?.find((body) => body.alive);
+      }
       const defaultData: Partial<FormValues> = {};
       weapons.forEach(({ weapon }) => {
         if (defaultData.weapons === undefined) {
           defaultData.weapons = {};
         }
         defaultData.weapons[weapon._id] = weapon.starterKit === 'always';
+        if (relevantBody?.weapons?.length !== 0) {
+          defaultData.weapons[weapon._id] =
+            relevantBody?.weapons?.find((bodyWeapon) => bodyWeapon.weapon === weapon._id) !==
+            undefined;
+        }
       });
 
       armors.forEach(({ armor }) => {
@@ -100,6 +110,10 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
           defaultData.armors = {};
         }
         defaultData.armors[armor._id] = armor.starterKit === 'always';
+        if (relevantBody?.armors?.length !== 0) {
+          defaultData.armors[armor._id] =
+            relevantBody?.armors?.find((bodyArmor) => bodyArmor.armor === armor._id) !== undefined;
+        }
       });
 
       bags.forEach(({ bag }) => {
@@ -107,6 +121,10 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
           defaultData.bags = {};
         }
         defaultData.bags[bag._id] = bag.starterKit === 'always';
+        if (relevantBody?.bags?.length !== 0) {
+          defaultData.bags[bag._id] =
+            relevantBody?.bags?.find((bodyBag) => bodyBag.bag === bag._id) !== undefined;
+        }
       });
 
       items.forEach(({ item }) => {
@@ -114,6 +132,10 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
           defaultData.items = {};
         }
         defaultData.items[item._id] = item.starterKit === 'always';
+        if (relevantBody?.items?.length !== 0) {
+          defaultData.items[item._id] =
+            relevantBody?.items?.find((bodyItem) => bodyItem.item === item._id) !== undefined;
+        }
       });
 
       programs.forEach(({ program }) => {
@@ -121,6 +143,11 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
           defaultData.programs = {};
         }
         defaultData.programs[program._id] = program.starterKit === 'always';
+        if (relevantBody?.programs?.length !== 0) {
+          defaultData.programs[program._id] =
+            relevantBody?.programs?.find((bodyProgram) => bodyProgram.program === program._id) !==
+            undefined;
+        }
       });
 
       implants.forEach(({ implant }) => {
@@ -128,11 +155,16 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
           defaultData.implants = {};
         }
         defaultData.implants[implant._id] = implant.starterKit === 'always';
+        if (relevantBody?.implants?.length !== 0) {
+          defaultData.implants[implant._id] =
+            relevantBody?.implants?.find((bodyImplant) => bodyImplant.implant === implant._id) !==
+            undefined;
+        }
       });
 
       return defaultData;
     },
-    []
+    [character]
   );
 
   const { handleSubmit, watch, control } = useForm<FormValues>({

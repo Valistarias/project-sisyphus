@@ -1,5 +1,18 @@
 import type { ICampaign } from './campaign';
-import type { IBody, IBodyStat, ICharacter, ICharacterNode, ICuratedBodyPart } from './character';
+import type {
+  IBody,
+  IBodyAmmo,
+  IBodyArmor,
+  IBodyBag,
+  IBodyImplant,
+  IBodyItem,
+  IBodyProgram,
+  IBodyStat,
+  IBodyWeapon,
+  ICharacter,
+  ICharacterNode,
+  ICuratedBodyPart,
+} from './character';
 import type { IReactHookFormInputs } from './form';
 import type { IRoll, IUser, TypeDice, TypeRoll } from './global';
 import type {
@@ -74,7 +87,14 @@ export type {
   IActionDuration,
   IActionType,
   IBody,
+  IBodyAmmo,
+  IBodyArmor,
+  IBodyBag,
+  IBodyImplant,
+  IBodyItem,
+  IBodyProgram,
   IBodyStat,
+  IBodyWeapon,
   ICampaign,
   IChapter,
   IChapterType,
