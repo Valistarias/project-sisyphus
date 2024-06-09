@@ -265,6 +265,7 @@
       "player_other": "Players",
       "edit": "Edit",
       "abort": "Abort",
+      "delete": "Delete",
       "createdBy": "Created by {{owner}}",
       "createdByShort": "by {{owner}}",
       "yes": "Yes",

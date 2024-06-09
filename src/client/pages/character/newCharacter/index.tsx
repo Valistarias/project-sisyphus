@@ -573,6 +573,7 @@ const NewCharacter: FC = () => {
             gender,
             pronouns,
             bio,
+            isReady: true,
           })
           .then(() => {
             const newId = getNewId();

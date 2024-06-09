@@ -8,10 +8,11 @@ import React, {
   type ReactNode,
 } from 'react';
 
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { Ap, Atitle } from '../atoms';
-import { Button } from '../molecules';
+import { Button, Input } from '../molecules';
 
 import { classTrim } from '../utils';
 
@@ -26,9 +27,8 @@ interface IConfirmContent {
   confirmCta?: string;
   /** The theme of tyhe confirm content */
   theme?: 'error' | 'info';
-  /** Did the confirm need some strong verification
-   * (as in "write DELETE to confirm") */
-  strong?: boolean;
+  /** Is there a word to write to confirm actton ? */
+  confirmWord?: string;
 }
 
 interface IConfirmMessageContext {
@@ -45,6 +45,10 @@ interface IConfirmMessageContext {
 interface ConfirmMessageProviderProps {
   /** The childrens of the Providers element */
   children: ReactNode;
+}
+
+interface FormValues {
+  confirm: string;
 }
 
 const ConfirmMessageContext = React.createContext<IConfirmMessageContext | null>(null);
@@ -74,18 +78,26 @@ export const ConfirmMessageProvider: FC<ConfirmMessageProviderProps> = ({ childr
   const [confirmData, setConfirmData] = useState<IConfirmContent | null>(null);
   const [isWindowOpened, setWindowOpened] = useState<boolean>(false);
 
-  const onConfirmAction = useCallback(() => {
-    if (idEvt !== '') {
-      ConfMessageEvent.dispatchEvent(
-        new CustomEvent(idEvt, {
-          detail: {
-            proceed: true,
-          },
-        })
-      );
-      setWindowOpened(false);
-    }
-  }, [ConfMessageEvent, idEvt]);
+  let confirmWord: string | undefined;
+  if (confirmData?.confirmWord !== undefined) {
+    confirmWord = confirmData.confirmWord.toUpperCase();
+  }
+
+  const onConfirmAction: SubmitHandler<FormValues> = useCallback(
+    ({ confirm }) => {
+      if (idEvt !== '') {
+        ConfMessageEvent.dispatchEvent(
+          new CustomEvent(idEvt, {
+            detail: {
+              proceed: true,
+            },
+          })
+        );
+        setWindowOpened(false);
+      }
+    },
+    [ConfMessageEvent, idEvt]
+  );
 
   const onAbort = useCallback(() => {
     if (idEvt !== '') {
@@ -106,6 +118,8 @@ export const ConfirmMessageProvider: FC<ConfirmMessageProviderProps> = ({ childr
     cb(String(eventId));
     setIdEvt(String(eventId));
   }, []);
+
+  const { handleSubmit, control } = useForm<FormValues>();
 
   const providerValues = useMemo(
     () => ({
@@ -130,21 +144,36 @@ export const ConfirmMessageProvider: FC<ConfirmMessageProviderProps> = ({ childr
           `)}
       >
         <div className="confirm-message__shadow" onClick={onAbort} />
-        <div className="confirm-message__window">
+        <form
+          className="confirm-message__window"
+          onSubmit={handleSubmit(onConfirmAction)}
+          noValidate
+        >
           <Atitle>{confirmData?.title ?? ''}</Atitle>
           <Ap>{confirmData?.text ?? ''}</Ap>
+          {confirmWord !== undefined ? (
+            <Input
+              control={control}
+              inputName="confirm"
+              type="text"
+              rules={{
+                required: t('confirm.required', { ns: 'fields', word: confirmWord }),
+                validate: (value: string) =>
+                  value === confirmWord || t('confirm.word', { ns: 'fields', word: confirmWord }),
+              }}
+              label={t('confirm.label', { ns: 'fields', word: confirmWord })}
+              className="confirm-message__window__elt"
+            />
+          ) : null}
           <div className="confirm-message__window__buttons">
-            <Button
-              color={confirmData?.theme === 'error' ? 'error' : 'primary'}
-              onClick={onConfirmAction}
-            >
+            <Button type="submit" color={confirmData?.theme === 'error' ? 'error' : 'primary'}>
               {confirmData?.confirmCta ?? 'Confirm'}
             </Button>
             <Button theme="text-only" onClick={onAbort}>
               {t('terms.general.abort')}
             </Button>
           </div>
-        </div>
+        </form>
       </div>
       {children}
     </ConfirmMessageContext.Provider>

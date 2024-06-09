@@ -134,11 +134,17 @@ const EditCharacter: FC = () => {
     if (api === undefined || character === null) {
       return;
     }
+    let displayedName: string | undefined;
+    if (character.nickName !== undefined || character.firstName !== undefined) {
+      displayedName = character.nickName ?? `${character.firstName} ${character.lastName}`;
+    }
     setConfirmContent(
       {
         title: t('characters.confirmDelete.title', { ns: 'pages' }),
-        text: t('characters.confirmDelete.text', { ns: 'pages', elt: character.name }),
+        text: t('characters.confirmDelete.text', { ns: 'pages', elt: displayedName }),
         confirmCta: t('characters.confirmDelete.confirmCta', { ns: 'pages' }),
+        confirmWord: t('terms.general.delete'),
+        theme: 'error',
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
@@ -174,7 +180,7 @@ const EditCharacter: FC = () => {
         ConfMessageEvent.addEventListener(evtId, confirmDelete);
       }
     );
-  }, [api, setConfirmContent, t, character, ConfMessageEvent, id, getNewId, createAlert, navigate]);
+  }, [api, character, setConfirmContent, t, ConfMessageEvent, id, getNewId, createAlert, navigate]);
 
   useEffect(() => {
     if (api !== undefined && !calledApi.current && id !== undefined) {

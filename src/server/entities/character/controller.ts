@@ -11,12 +11,14 @@ import {
 } from '../../utils/globalErrorMessage';
 import { type HydratedIBackground } from '../background/model';
 import { type HydratedIBody } from '../body';
+import { deleteBodiesRecursive } from '../body/controller';
 import { type ICampaign } from '../campaign/model';
 import { type HydratedINode } from '../node/model';
 import { type IUser } from '../user/model';
 
 import {
   createNodesByCharacter,
+  deleteNodesByCharacter,
   deleteSpecificNodesByCharacter,
   replaceCyberFrameNodeByCharacter,
 } from './node/controller';
@@ -209,6 +211,44 @@ const findCharacterById = async (
             path: 'nodes',
             select: '_id character node used',
           })
+          .populate<{ bodies: HydratedIBody[] }>({
+            path: 'bodies',
+            select: '_id character alive hp stats createdAt',
+            populate: [
+              {
+                path: 'stats',
+                select: '_id body stat value',
+              },
+              {
+                path: 'ammos',
+                select: '_id body ammo bag qty',
+              },
+              {
+                path: 'armors',
+                select: '_id body armor bag equiped',
+              },
+              {
+                path: 'bags',
+                select: '_id body bag equiped',
+              },
+              {
+                path: 'implants',
+                select: '_id body implant bag equiped',
+              },
+              {
+                path: 'items',
+                select: '_id body item bag qty',
+              },
+              {
+                path: 'programs',
+                select: '_id body program bag uses',
+              },
+              {
+                path: 'weapons',
+                select: '_id body weapon bag ammo bullets',
+              },
+            ],
+          })
           .populate<{ background: HydratedIBackground }>('background')
           .then(async (res) => {
             if (res === undefined || res === null) {
@@ -400,6 +440,7 @@ const updateInfos = (req: Request, res: Response): void => {
     gender = null,
     pronouns = null,
     bio = null,
+    isReady = null,
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Character ID'));
@@ -434,6 +475,9 @@ const updateInfos = (req: Request, res: Response): void => {
         }
         if (backgroundId !== null && backgroundId !== char.background) {
           char.background = backgroundId;
+        }
+        if (isReady !== null && isReady !== char.isReady) {
+          char.isReady = isReady;
         }
         if (
           campaignId !== null &&
@@ -488,13 +532,37 @@ const deleteCharacter = (req: Request, res: Response): void => {
     res.status(400).send(gemInvalidField('Character ID'));
     return;
   }
-  Character.findByIdAndDelete(id)
-    .then(() => {
-      res.send({ message: 'Character was deleted successfully!' });
+  findCharacterById(id as string, req)
+    .then(({ char, canEdit }) => {
+      if (char !== undefined && canEdit) {
+        const bodyIds: string[] = [];
+        char.bodies?.forEach((body) => {
+          bodyIds.push(body._id.toString());
+        });
+        deleteBodiesRecursive(bodyIds)
+          .then(() => {
+            deleteNodesByCharacter(id as string)
+              .then(() => {
+                Character.findByIdAndDelete(id)
+                  .then(() => {
+                    res.send({ message: 'Character was deleted successfully!' });
+                  })
+                  .catch((err: Error) => {
+                    res.status(500).send(gemServerError(err));
+                  });
+              })
+              .catch((err: Error) => {
+                res.status(500).send(gemServerError(err));
+              });
+          })
+          .catch((err: Error) => {
+            res.status(500).send(gemServerError(err));
+          });
+      } else {
+        res.status(404).send(gemNotFound('Character'));
+      }
     })
-    .catch((err: Error) => {
-      res.status(500).send(gemServerError(err));
-    });
+    .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
 const findSingle = (req: Request, res: Response): void => {

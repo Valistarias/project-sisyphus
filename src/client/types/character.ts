@@ -192,6 +192,8 @@ export interface ICharacter {
   money?: number;
   /** The karma of the character */
   karma?: number;
+  /** Is the character fully finished in the character editor ? */
+  isReady: boolean;
   /** The owner of the character */
   player?: IUser;
   /** The creator of the character */

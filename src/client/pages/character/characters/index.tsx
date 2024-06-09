@@ -67,7 +67,11 @@ const Characters: FC = () => {
     characters.forEach((character) => {
       // const cyberFramesByNodes = getCyberFrameLevelsByNodes(character.nodes, cyberFrames);
       // TODO: add all parameters to this
-      const isReady = false;
+      const isReady = character.isReady;
+      let displayedName: string | undefined;
+      if (character.nickName !== undefined || character.firstName !== undefined) {
+        displayedName = character.nickName ?? `${character.firstName} ${character.lastName}`;
+      }
       let status: string;
       if (!isReady) {
         status = t(`terms.character.draft`);
@@ -98,7 +102,7 @@ const Characters: FC = () => {
           </div>
           <div className="characters__character-list__elt__title">
             <Atitle className="characters__character-list__elt__title__text" level={3}>
-              {character.name ?? t(`terms.character.unknown`)}
+              {displayedName ?? t(`terms.character.unknown`)}
             </Atitle>
             <Ap className="characters__character-list__elt__title__status">{status}</Ap>
             {character.campaign !== null ? (

@@ -13,13 +13,13 @@ import { type ICharacter } from '../character';
 import { findCharacterById } from '../character/controller';
 
 import { deleteAmmosByBody } from './ammo/controller';
-import { replaceArmorByBody } from './armor/controller';
-import { replaceBagByBody } from './bag/controller';
-import { replaceImplantByBody } from './implant/controller';
-import { replaceItemByBody } from './item/controller';
-import { replaceProgramByBody } from './program/controller';
-import { createStatsByBody, replaceStatByBody } from './stat/controller';
-import { replaceWeaponByBody } from './weapon/controller';
+import { deleteArmorsByBody, replaceArmorByBody } from './armor/controller';
+import { deleteBagsByBody, replaceBagByBody } from './bag/controller';
+import { deleteImplantsByBody, replaceImplantByBody } from './implant/controller';
+import { deleteItemsByBody, replaceItemByBody } from './item/controller';
+import { deleteProgramsByBody, replaceProgramByBody } from './program/controller';
+import { createStatsByBody, deleteStatsByBody, replaceStatByBody } from './stat/controller';
+import { deleteWeaponsByBody, replaceWeaponByBody } from './weapon/controller';
 
 import {
   type HydratedIBody,
@@ -324,13 +324,76 @@ const resetItems = (req: Request, res: Response): void => {
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
+const deleteBodyById = async (id: string): Promise<boolean> =>
+  await new Promise((resolve, reject) => {
+    if (id === undefined) {
+      reject(gemInvalidField('Body ID'));
+      return;
+    }
+    deleteAmmosByBody(id)
+      .then(() => {
+        deleteArmorsByBody(id)
+          .then(() => {
+            deleteBagsByBody(id)
+              .then(() => {
+                deleteImplantsByBody(id)
+                  .then(() => {
+                    deleteItemsByBody(id)
+                      .then(() => {
+                        deleteProgramsByBody(id)
+                          .then(() => {
+                            deleteWeaponsByBody(id)
+                              .then(() => {
+                                deleteStatsByBody(id)
+                                  .then(() => {
+                                    Body.findByIdAndDelete(id)
+                                      .then(() => {
+                                        resolve(true);
+                                      })
+                                      .catch((err: Error) => {
+                                        reject(gemServerError(err));
+                                      });
+                                  })
+                                  .catch((err: Error) => {
+                                    reject(gemServerError(err));
+                                  });
+                              })
+                              .catch((err: Error) => {
+                                reject(gemServerError(err));
+                              });
+                          })
+                          .catch((err: Error) => {
+                            reject(gemServerError(err));
+                          });
+                      })
+                      .catch((err: Error) => {
+                        reject(gemServerError(err));
+                      });
+                  })
+                  .catch((err: Error) => {
+                    reject(gemServerError(err));
+                  });
+              })
+              .catch((err: Error) => {
+                reject(gemServerError(err));
+              });
+          })
+          .catch((err: Error) => {
+            reject(gemServerError(err));
+          });
+      })
+      .catch((err: Error) => {
+        reject(gemServerError(err));
+      });
+  });
+
 const deleteBody = (req: Request, res: Response): void => {
   const { id } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Body ID'));
     return;
   }
-  Body.findByIdAndDelete(id)
+  deleteBodyById(id as string)
     .then(() => {
       res.send({ message: 'Body was deleted successfully!' });
     })
@@ -338,6 +401,36 @@ const deleteBody = (req: Request, res: Response): void => {
       res.status(500).send(gemServerError(err));
     });
 };
+
+const deleteBodiesAndItemsByBodyId = (bodies: string[], cb: (res: Error | null) => void): void => {
+  deleteBodyById(bodies[0])
+    .then(() => {
+      if (bodies.length > 1) {
+        bodies.shift();
+        deleteBodiesAndItemsByBodyId([...bodies], cb);
+      } else {
+        cb(null);
+      }
+    })
+    .catch(() => {
+      cb(new Error('Rulebook not found'));
+    });
+};
+
+const deleteBodiesRecursive = async (bodies: string[]): Promise<boolean> =>
+  await new Promise((resolve, reject) => {
+    if (bodies.length === 0) {
+      resolve(true);
+      return;
+    }
+    deleteBodiesAndItemsByBodyId(bodies, (err) => {
+      if (err !== null) {
+        reject(err);
+      } else {
+        resolve(true);
+      }
+    });
+  });
 
 const findSingle = (req: Request, res: Response): void => {
   const { bodyId } = req.query;
@@ -356,4 +449,13 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteBody, findAll, findSingle, resetItems, update, updateStats };
+export {
+  create,
+  deleteBodiesRecursive,
+  deleteBody,
+  findAll,
+  findSingle,
+  resetItems,
+  update,
+  updateStats,
+};
