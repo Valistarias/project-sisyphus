@@ -98,7 +98,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
     [globalValues]
   );
 
-  // Only send CyberFrame bonuses for thwe moment
+  // Only send CyberFrame bonuses for the moment
   // TODO : When level up / death, reuse this function more globally
   const bonusesByStat = useMemo(() => {
     if (character === null || character === false) {

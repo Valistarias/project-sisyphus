@@ -490,7 +490,7 @@ const NewCharacter: FC = () => {
       }>
     ) => {
       if (api !== undefined && user !== null && character !== null && character !== false) {
-        if (character.bodies !== undefined) {
+        if (character.bodies !== undefined && character.bodies.length !== 0) {
           const relevantBody = character.bodies?.find((body) => body.alive);
           if (relevantBody !== undefined) {
             api.bodies

@@ -13,6 +13,7 @@ import {
   calculateStatMod,
   getActualBody,
   getBaseSkillNode,
+  getCyberFrameLevelsByNodes,
 } from '../../utils/character';
 import { RichTextElement } from '../richTextElement';
 
@@ -27,7 +28,7 @@ interface ICharacterCreationStep2 {
 
 const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills }) => {
   const { t } = useTranslation();
-  const { skills, stats, globalValues, character } = useGlobalVars();
+  const { skills, stats, globalValues, character, cyberFrames } = useGlobalVars();
 
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [openedSkill, setOpenedSkill] = useState<ICuratedSkill | null>(null);
@@ -57,6 +58,52 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
     () => getValuesFromGlobalValues(['nbBeginningSkills'], globalValues),
     [globalValues]
   );
+
+  // Only send CyberFrame bonuses for the moment
+  // TODO : When level up / death, reuse this function more globally
+  const bonusesByStat = useMemo(() => {
+    if (character === null || character === false) {
+      return [];
+    }
+
+    const nodesByCyberFrames = getCyberFrameLevelsByNodes(character.nodes, cyberFrames);
+
+    const statBonuses: Record<
+      string,
+      {
+        bonus: number;
+        source: string;
+        sourceId: string;
+        broad: boolean;
+      }
+    > = {};
+
+    // If only one source for the list, we'll be precise
+    // If multiple sources for bonuses, we are borad in the phrasing
+    nodesByCyberFrames.forEach(({ cyberFrame, chosenNodes }) => {
+      chosenNodes.forEach((node) => {
+        if (node.statBonuses !== undefined && node.statBonuses.length > 0) {
+          node.statBonuses.forEach((statBonus) => {
+            if (statBonuses[statBonus.stat] === undefined) {
+              statBonuses[statBonus.stat] = {
+                bonus: statBonus.value,
+                source: cyberFrame.cyberFrame.title,
+                sourceId: cyberFrame.cyberFrame._id,
+                broad: false,
+              };
+            } else {
+              statBonuses[statBonus.stat].bonus += statBonus.value;
+              if (statBonuses[statBonus.stat].sourceId !== cyberFrame.cyberFrame._id) {
+                statBonuses[statBonus.stat].broad = true;
+              }
+            }
+          });
+        }
+      });
+    });
+
+    return statBonuses;
+  }, [character, cyberFrames]);
 
   const detailsBlock = useMemo(() => {
     if (openedSkill === null) {
@@ -135,7 +182,10 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
         const relevantCharacterData = relevantBody.body.stats.find(
           ({ stat: bodyStat }) => bodyStat === stat.stat._id
         );
-        const valMod = calculateStatMod(Number(relevantCharacterData?.value));
+
+        const valMod = calculateStatMod(
+          Number(relevantCharacterData?.value + (bonusesByStat[stat.stat._id]?.bonus ?? 0))
+        );
         statElts.push(
           <div key={stat.stat._id} className="characterCreation-step3__stat-block">
             <div className="characterCreation-step3__stat-block__title">
@@ -255,7 +305,15 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
       }
     });
     return statElts;
-  }, [character, aggregatedSkills, t, selectedSkills, nbBeginningSkills, handleSubmitSkills]);
+  }, [
+    character,
+    nbBeginningSkills,
+    selectedSkills,
+    aggregatedSkills,
+    bonusesByStat,
+    t,
+    handleSubmitSkills,
+  ]);
 
   useEffect(() => {
     if (
