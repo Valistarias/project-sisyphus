@@ -576,15 +576,6 @@ const NewCharacter: FC = () => {
             isReady: true,
           })
           .then(() => {
-            const newId = getNewId();
-            createAlert({
-              key: newId,
-              dom: (
-                <Alert key={newId} id={newId} timer={5}>
-                  <Ap>{t('newCharacter.successUpdateIdentification', { ns: 'pages' })}</Ap>
-                </Alert>
-              ),
-            });
             setCharacterFromId(character._id);
           })
           .catch(({ response }) => {
@@ -601,7 +592,7 @@ const NewCharacter: FC = () => {
           });
       }
     },
-    [api, user, character, getNewId, createAlert, t, setCharacterFromId]
+    [api, user, character, getNewId, createAlert, setCharacterFromId]
   );
 
   const onSubmitTooltip: SubmitHandler<ToolTipValues> = useCallback(
