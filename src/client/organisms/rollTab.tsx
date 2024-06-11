@@ -25,7 +25,7 @@ import './rollTab.scss';
 
 interface IRollTab {
   /** The campaign that the rolls are displayed */
-  campaignId: string;
+  campaignId?: string;
   /** The character used for rolling */
   character: ICharacter;
   /** The ID used on the alert provider */
@@ -138,7 +138,10 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, character }) => {
             <Button
               key={typeDiceNumber}
               theme="solid"
-              className="roll-tab__dice__button"
+              className={classTrim(`
+                  roll-tab__dice__button
+                  ${diceElt.qty > 0 ? 'roll-tab__dice__button--active' : ''}
+                `)}
               size="large"
               onContextMenu={(e) => {
                 e.preventDefault();
@@ -178,7 +181,7 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, character }) => {
   }, [dataPrevRolls]);
 
   const reloadRolls = useCallback(() => {
-    if (api !== undefined) {
+    if (api !== undefined && campaignId !== undefined) {
       api.rolls
         .getAllByCampaign({
           campaignId,
@@ -211,7 +214,7 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, character }) => {
       }
 
       if (scrollRef.current.scrollTop === 0) {
-        if (api !== undefined) {
+        if (api !== undefined && campaignId !== undefined) {
           api.rolls
             .getAllByCampaign({
               campaignId,
@@ -335,9 +338,8 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, character }) => {
           <Ap className="roll-tab__dice__title">{t('rollTab.freeRoll', { ns: 'components' })}</Ap>
           {diceElts}
           <Button
-            theme="text-only"
+            theme="afterglow"
             size="large"
-            active
             className="roll-tab__dice__roll"
             disabled={!canRoll}
             onClick={() => {
