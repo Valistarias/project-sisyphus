@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
+import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -9,14 +10,18 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, SmartSelect } from '../../../molecules';
-import { Alert } from '../../../organisms';
+import { Alert, RichTextElement, basicRichTextElementExtentions } from '../../../organisms';
 import { type ICampaign, type ICharacter } from '../../../types';
 import { ErrorPage } from '../../index';
 
 import './editCharacter.scss';
 
 interface FormValues {
-  name: string;
+  firstName: string;
+  lastName: string;
+  nickName: string;
+  gender: string;
+  pronouns: string;
   campaign: string;
 }
 
@@ -38,6 +43,12 @@ const EditCharacter: FC = () => {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
+  const [bioText, setBioText] = useState('');
+
+  const bioEditor = useEditor({
+    extensions: basicRichTextElementExtentions,
+  });
+
   const calledApi = useRef(false);
 
   const createDefaultData = useCallback((character: ICharacter | null) => {
@@ -45,10 +56,36 @@ const EditCharacter: FC = () => {
       return {};
     }
     const defaultData: Partial<FormValues> = {};
-    defaultData.name = character.name;
+    defaultData.firstName = character.firstName;
+    defaultData.lastName = character.lastName;
+    defaultData.nickName = character.nickName;
+    defaultData.gender = character.gender;
+    defaultData.pronouns = character.pronouns;
     defaultData.campaign = character.campaign?._id ?? '';
     return defaultData;
   }, []);
+
+  const genderRange = useMemo(
+    () => [
+      {
+        value: 'M',
+        label: t('terms.gender.male'),
+      },
+      {
+        value: 'F',
+        label: t('terms.gender.female'),
+      },
+      {
+        value: 'N',
+        label: t('terms.gender.neutral'),
+      },
+      {
+        value: 'O',
+        label: t('terms.gender.other'),
+      },
+    ],
+    [t]
+  );
 
   const {
     reset,
@@ -97,15 +134,23 @@ const EditCharacter: FC = () => {
   }, [api, createAlert, getNewId, t]);
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
-    ({ name, campaign }) => {
+    ({ firstName, lastName, nickName, gender, pronouns, campaign }) => {
+      console.log(
+        'campaign  !== "" ? campaign : undefined',
+        campaign !== '' ? campaign : undefined
+      );
       if (api !== undefined) {
         api.characters
           .update({
             id,
-            name,
-            campaignId: campaign,
+            firstName,
+            lastName,
+            nickName,
+            gender,
+            pronouns,
+            campaignId: campaign !== '' ? campaign : undefined,
           })
-          .then(({ characterId }) => {
+          .then(() => {
             const newId = getNewId();
             createAlert({
               key: newId,
@@ -196,6 +241,7 @@ const EditCharacter: FC = () => {
             setNotFound(true);
           } else {
             setCharacter(sentCharacter);
+            setBioText(sentCharacter.bio ?? '');
           }
           setLoading(false);
         })
@@ -248,17 +294,79 @@ const EditCharacter: FC = () => {
           {t('characters.deleteCharacter', { ns: 'pages' })}
         </Button>
       </div>
+      <Button
+        className="editcharacter__return-btn"
+        href={`/character/${character?._id}`}
+        size="small"
+      >
+        {t('editCharacter.return', { ns: 'pages' })}
+      </Button>
       <form className="editcharacter__form" onSubmit={handleSubmit(onSubmit)} noValidate>
         {errors.root?.serverError?.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
-        <Input
-          control={control}
-          inputName="name"
-          type="text"
-          rules={{ required: t('characterName.required', { ns: 'fields' }) }}
-          label={t('characterName.label', { ns: 'fields' })}
-        />
+        <div className="editcharacter__form__basics">
+          <Input
+            control={control}
+            inputName="firstName"
+            type="text"
+            autoComplete="username"
+            rules={{
+              required: t('firstName.required', { ns: 'fields' }),
+            }}
+            label={t('firstName.label', { ns: 'fields' })}
+            className="editcharacter__form__basics__elt"
+          />
+          <Input
+            control={control}
+            inputName="lastName"
+            type="text"
+            autoComplete="username"
+            rules={{
+              required: t('lastName.required', { ns: 'fields' }),
+            }}
+            label={t('lastName.label', { ns: 'fields' })}
+            className="editcharacter__form__basics__elt"
+          />
+          <Input
+            control={control}
+            inputName="nickName"
+            type="text"
+            autoComplete="username"
+            label={t('nickName.label', { ns: 'fields' })}
+            className="editcharacter__form__basics__elt"
+          />
+        </div>
+        <div className="editcharacter__form__core">
+          <SmartSelect
+            control={control}
+            inputName="gender"
+            label={t('gender.label', { ns: 'fields' })}
+            rules={{
+              required: t('gender.required', { ns: 'fields' }),
+            }}
+            options={genderRange}
+            className="editcharacter__form__core__elt"
+          />
+          <Input
+            control={control}
+            inputName="pronouns"
+            type="text"
+            label={t('pronouns.label', { ns: 'fields' })}
+            className="editcharacter__form__basics__elt"
+          />
+        </div>
+        <div className="adminNewBag__details">
+          <RichTextElement
+            label={t('bio.title', { ns: 'fields' })}
+            editor={bioEditor}
+            rawStringContent={bioText}
+            small
+          />
+        </div>
+        <Atitle className="editcharacter__form__title" level={2}>
+          {t('editCharacter.campaign', { ns: 'pages' })}
+        </Atitle>
         <SmartSelect
           control={control}
           inputName="campaign"

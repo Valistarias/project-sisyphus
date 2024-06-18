@@ -171,7 +171,7 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, character }) => {
     return dataPrevRolls.map(({ _id, character, createdAt, formula, result, type }) => (
       <RollResult
         key={_id}
-        authorName={character.name ?? 'John Doe'}
+        authorName={`${character.firstName !== undefined ? `${character.firstName} ` : ''}${character.nickName !== undefined ? `"${character.nickName}" ` : ''}${character.lastName ?? ''}`.trim()}
         result={result}
         formula={formula}
         type={type as TypeRoll}
