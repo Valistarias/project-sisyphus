@@ -135,10 +135,6 @@ const EditCharacter: FC = () => {
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
     ({ firstName, lastName, nickName, gender, pronouns, campaign }) => {
-      console.log(
-        'campaign  !== "" ? campaign : undefined',
-        campaign !== '' ? campaign : undefined
-      );
       if (api !== undefined) {
         api.characters
           .update({

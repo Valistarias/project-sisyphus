@@ -488,7 +488,6 @@ const updateInfos = (req: Request, res: Response): void => {
             res.send({ message: 'Character was updated successfully!', char });
           })
           .catch((err: Error) => {
-            console.log('err', err);
             res.status(500).send(gemServerError(err));
           });
       } else {

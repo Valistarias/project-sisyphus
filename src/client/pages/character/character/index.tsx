@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom';
 
 import { useApi, useGlobalVars, useRollWindow } from '../../../providers';
 
-import { Atitle } from '../../../atoms';
 import { RollTab } from '../../../organisms';
 import { ErrorPage } from '../../index';
 
@@ -41,7 +40,7 @@ const Character: FC = () => {
 
   return (
     <div className="character">
-      <Atitle level={1}>{character.name}</Atitle>
+      {/* <Atitle level={1}>{character.name}</Atitle> */}
       <RollTab
         campaignId={character.campaign?._id}
         character={character}
