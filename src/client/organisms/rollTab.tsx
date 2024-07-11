@@ -168,16 +168,22 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, character }) => {
   );
 
   const logRolls = useMemo(() => {
-    return dataPrevRolls.map(({ _id, character, createdAt, formula, result, type }) => (
-      <RollResult
-        key={_id}
-        authorName={character.name ?? 'John Doe'}
-        result={result}
-        formula={formula}
-        type={type as TypeRoll}
-        createdAt={new Date(createdAt)}
-      />
-    ));
+    return dataPrevRolls.map(({ _id, character, createdAt, formula, result, type }) => {
+      let authorName = '';
+      if (character !== null) {
+        authorName = `${character.firstName !== undefined ? `${character.firstName} ` : ''}${character.nickName !== undefined ? `"${character.nickName}" ` : ''}${character.lastName ?? ''}`;
+      }
+      return (
+        <RollResult
+          key={_id}
+          authorName={authorName.trim()}
+          result={result}
+          formula={formula}
+          type={type as TypeRoll}
+          createdAt={new Date(createdAt)}
+        />
+      );
+    });
   }, [dataPrevRolls]);
 
   const reloadRolls = useCallback(() => {

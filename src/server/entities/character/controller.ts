@@ -479,10 +479,7 @@ const updateInfos = (req: Request, res: Response): void => {
         if (isReady !== null && isReady !== char.isReady) {
           char.isReady = isReady;
         }
-        if (
-          campaignId !== null &&
-          (char.campaign == null || campaignId !== String(char.campaign._id))
-        ) {
+        if (campaignId !== null || (char.campaign !== undefined && campaignId === null)) {
           char.campaign = campaignId;
         }
         char
@@ -497,7 +494,9 @@ const updateInfos = (req: Request, res: Response): void => {
         res.status(404).send(gemNotFound('Character'));
       }
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: Error) => {
+      res.status(500).send(gemServerError(err));
+    });
 };
 
 const quitCampaign = (req: Request, res: Response): void => {

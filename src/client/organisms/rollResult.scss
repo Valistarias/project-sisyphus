@@ -20,6 +20,7 @@
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
+    font-weight: 400;
     gap: 0.5rem;
     padding: 0.5rem;
     width: 100%;
@@ -37,6 +38,7 @@
       &__text {
         font-family: var(--mono-font);
         font-size: 1.2rem;
+        font-weight: inherit;
         height: min-content;
         letter-spacing: 0.5rem;
         margin-bottom: 0;
@@ -80,6 +82,7 @@
         font-family: var(--mono-font);
         font-size: 5rem;
         font-size: 4rem;
+        font-weight: inherit;
         margin: 0;
         padding: 0.5rem;
         user-select: none;

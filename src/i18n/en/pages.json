@@ -216,6 +216,8 @@
   },
   "editCharacter": {
     "title": "Edit Character",
+    "campaign": "Campaign",
+    "return": "Back to Character Sheet",
     "formCTA": "Edit Character",
     "successEdit": "Character successfully updated !"
   },
