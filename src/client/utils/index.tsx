@@ -309,4 +309,4 @@ export const getValuesFromGlobalValues = (
   return elt;
 };
 
-export { getCyberFrameLevelsByNodes } from './character';
+export { getCyberFrameLevelsByNodes, type ICyberFrameLevels } from './character';

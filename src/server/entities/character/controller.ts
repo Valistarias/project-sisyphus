@@ -478,6 +478,9 @@ const updateInfos = (req: Request, res: Response): void => {
         }
         if (isReady !== null && isReady !== char.isReady) {
           char.isReady = isReady;
+          if (isReady === true && char.level === undefined) {
+            char.level = 1;
+          }
         }
         if (campaignId !== null || (char.campaign !== undefined && campaignId === null)) {
           char.campaign = campaignId;

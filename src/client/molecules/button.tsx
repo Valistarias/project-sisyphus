@@ -8,7 +8,7 @@ import { classTrim } from '../utils';
 
 import './button.scss';
 
-interface IButton extends IAButton {
+export interface IButton extends IAButton {
   /** The theme of the button */
   theme?: 'solid' | 'afterglow' | 'text-only' | 'bland';
   /** The main color of the button */
@@ -36,6 +36,8 @@ const Button: FC<IButton> = ({
   icon,
   onClick,
   onContextMenu,
+  onMouseEnter,
+  onMouseLeave,
 }) => {
   let navigate: NavigateFunction | null = null;
   if (href !== null) {
@@ -68,6 +70,8 @@ const Button: FC<IButton> = ({
       type={type}
       disabled={disabled}
       onContextMenu={onContextMenu}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       {children !== undefined ? <span className="button__content">{children}</span> : null}
       {icon !== undefined ? <Aicon className="button__icon" type={icon} /> : null}

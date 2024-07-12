@@ -24,6 +24,8 @@ interface ICharacter {
   money?: number;
   /** The karma of the character */
   karma?: number;
+  /** The level of the character */
+  level?: number;
   /** Is the character fully finished in the character editor ? */
   isReady: boolean;
   /** When the character was created */
@@ -58,6 +60,7 @@ const characterSchema = new Schema<ICharacter>(
     bio: String,
     money: Number,
     karma: Number,
+    level: Number,
     isReady: {
       type: Boolean,
       default: false,

@@ -1,0 +1,16 @@
+.char-header {
+  &__left {
+    &__title {
+      font-size: 2rem;
+      font-style: italic;
+      font-weight: 500;
+      letter-spacing: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    &__sub {
+      font-family: var(--mono-font);
+      font-weight: 400;
+    }
+  }
+}

@@ -2,6 +2,7 @@
 
 .character {
   @include mixins.basic-page;
+  padding-top: 4vh;
 
   &__test {
     fill: var(--primary);

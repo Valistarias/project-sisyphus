@@ -10,7 +10,7 @@ import {
   type ISkill,
 } from '../types';
 
-interface ICyberFrameLevels {
+export interface ICyberFrameLevels {
   cyberFrame: ICuratedCyberFrame;
   level: number;
   chosenNodes: INode[];
@@ -47,6 +47,27 @@ const getCyberFrameLevelsByNodes = (
   });
 
   return Object.values(tempFrames);
+};
+
+interface IHpValues {
+  hp: number;
+  total: number;
+}
+
+const getCharacterHpValues = (character: ICharacter | null | false): IHpValues => {
+  if (character === null || character === false) {
+    return {
+      hp: 0,
+      total: 100,
+    };
+  }
+
+  console.log('character', character);
+
+  return {
+    hp: 0,
+    total: 100,
+  };
 };
 
 const aggregateSkillsByStats = (
@@ -102,5 +123,6 @@ export {
   calculateStatMod,
   getActualBody,
   getBaseSkillNode,
+  getCharacterHpValues,
   getCyberFrameLevelsByNodes,
 };

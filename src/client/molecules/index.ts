@@ -6,6 +6,7 @@ import DropDownMenu from './dropDownMenu';
 import EmbedNotion from './embedNotion';
 import Helper from './helper';
 import Highlight from './highlight';
+import HintButton from './hintButton';
 import Input from './input';
 import Node from './node';
 import { NodeIconSelect, defaultNodeIcon } from './nodeIconSelect';
@@ -23,6 +24,7 @@ export {
   EmbedNotion,
   Helper,
   Highlight,
+  HintButton,
   Input,
   Node,
   NodeIconSelect,

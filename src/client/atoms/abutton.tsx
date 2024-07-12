@@ -19,10 +19,21 @@ interface IAButton extends IQuarkProps {
   onContextMenu?: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
-const Abutton: FC<IAButton> = ({ className, children, onClick, type, disabled, onContextMenu }) => (
+const Abutton: FC<IAButton> = ({
+  className,
+  children,
+  onClick,
+  type,
+  disabled,
+  onContextMenu,
+  onMouseEnter,
+  onMouseLeave,
+}) => (
   <Quark
     quarkType="button"
     onClick={onClick}
+    onMouseEnter={onMouseEnter}
+    onMouseLeave={onMouseLeave}
     className={classTrim(`
         abutton
         ${className ?? ''}

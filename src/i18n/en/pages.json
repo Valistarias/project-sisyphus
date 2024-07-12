@@ -221,7 +221,12 @@
     "formCTA": "Edit Character",
     "successEdit": "Character successfully updated !"
   },
-  "character": {},
+  "character": {
+    "cyberframeLevel": "{{cyberFrame}} {{cyberFrameLevel}}, level {{level}}",
+    "buttons": {
+      "editChar": "Edit Character Sheet"
+    }
+  },
   "profile": {
     "title": "Profile"
   },

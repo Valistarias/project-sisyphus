@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 
 import { useApi, useGlobalVars, useRollWindow } from '../../../providers';
 
-import { RollTab } from '../../../organisms';
+import { CharacterHeader, RollTab } from '../../../organisms';
 import { ErrorPage } from '../../index';
 
 // import { calculateDices, diceResultToStr, type DiceResult } from '../../utils';
@@ -40,7 +40,6 @@ const Character: FC = () => {
 
   return (
     <div className="character">
-      {/* <Atitle level={1}>{character.name}</Atitle> */}
       <RollTab
         campaignId={character.campaign?._id}
         character={character}
@@ -48,6 +47,7 @@ const Character: FC = () => {
           setToRoll(dices, 'free');
         }}
       />
+      <CharacterHeader />
     </div>
   );
 };

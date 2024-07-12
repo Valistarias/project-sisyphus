@@ -1,6 +1,7 @@
 import Alert from './alert';
 import ArmorDisplay from './armorDisplay';
 import BagDisplay from './bagDisplay';
+import { CharacterHeader } from './character';
 import {
   CharCreationStep1,
   CharCreationStep2,
@@ -31,6 +32,7 @@ export {
   CharCreationStep3,
   CharCreationStep4,
   CharCreationStep5,
+  CharacterHeader,
   DragList,
   HeaderBar,
   ImplantDisplay,

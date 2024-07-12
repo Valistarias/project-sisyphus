@@ -91,12 +91,12 @@ const Helper: FC<IHelper> = ({ children, size = 'medium', theme = 'solid', onCli
           }
         }}
       />
-      <div className="helper__content" ref={domHelperContent}>
+      <span className="helper__content" ref={domHelperContent}>
         {children}
         {onClick !== undefined ? (
           <span className="helper__content__info">{t('helper.more', { ns: 'components' })}</span>
         ) : null}
-      </div>
+      </span>
     </Quark>
   );
 };
