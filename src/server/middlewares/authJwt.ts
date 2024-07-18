@@ -31,7 +31,7 @@ const routes = [
     role: 'unlogged',
   },
   {
-    url: '/reset/:param*',
+    url: '/reset{/:param}*',
     role: 'unlogged',
   },
   {
@@ -43,7 +43,7 @@ const routes = [
     role: 'logged',
   },
   {
-    url: '/rulebook/:param*',
+    url: '/rulebook{/:param}*',
     role: 'logged',
   },
   {
@@ -51,7 +51,7 @@ const routes = [
     role: 'logged',
   },
   {
-    url: '/campaign/:param*',
+    url: '/campaign{/:param}*',
     role: 'logged',
   },
   {
@@ -59,15 +59,15 @@ const routes = [
     role: 'logged',
   },
   {
-    url: '/character/:param*',
+    url: '/character{/:param}*',
     role: 'logged',
   },
   {
-    url: '/subscribe/:param*',
+    url: '/subscribe{/:param}*',
     role: 'logged',
   },
   {
-    url: '/admin/:param*',
+    url: '/admin{/:param}*',
     role: 'admin',
   },
 ];
