@@ -86,7 +86,7 @@ const CharacterHeader: FC<ICharacterHeader> = () => {
           })}
           icon="edit"
           size="small"
-          theme="solid"
+          theme="line"
           href={`/character/${character !== false ? character?._id ?? '' : ''}/edit`}
         />
       </div>

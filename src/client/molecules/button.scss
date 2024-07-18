@@ -108,6 +108,7 @@
 
   // Themes ----------------------------------
   &--solid,
+  &--line,
   &--afterglow {
     background: var(--button-color-05);
     border-radius: var(--border-radius);
@@ -122,7 +123,7 @@
     &::before {
       border: 0.1rem solid var(--button-color-00);
       content: '';
-      height: 100%;
+      height: calc(100% - 0.1rem);
       left: 0;
       pointer-events: none;
       position: absolute;
@@ -133,7 +134,7 @@
         width 0.2s ease,
         left 0.2s ease,
         top 0.2s ease;
-      width: 100%;
+      width: calc(100% - 0.1rem);
     }
 
     &:hover {
@@ -161,6 +162,22 @@
 
   &--notext {
     justify-content: center;
+  }
+
+  &--line {
+    &::before {
+      border: 0.1rem solid var(--button-color-20);
+    }
+
+    &:hover {
+      &::before {
+        border: 0.1rem solid var(--button-color-80);
+        height: calc(100% - 0.1rem);
+        left: 0;
+        top: 0;
+        width: calc(100% - 0.1rem);
+      }
+    }
   }
 
   &--text-only {

@@ -10,7 +10,7 @@ import './button.scss';
 
 export interface IButton extends IAButton {
   /** The theme of the button */
-  theme?: 'solid' | 'afterglow' | 'text-only' | 'bland';
+  theme?: 'solid' | 'line' | 'afterglow' | 'text-only' | 'bland';
   /** The main color of the button */
   color?: 'primary' | 'secondary' | 'tertiary' | 'error';
   /** The size of the button */
