@@ -308,7 +308,7 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, character }) => {
     >
       <div className="roll-tab__buttons">
         <Button
-          theme="solid"
+          theme="line"
           className="roll-tab__buttons__toggle"
           onClick={() => {
             if (isOpen) {
@@ -344,7 +344,7 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, character }) => {
           <Ap className="roll-tab__dice__title">{t('rollTab.freeRoll', { ns: 'components' })}</Ap>
           {diceElts}
           <Button
-            theme="afterglow"
+            theme="line"
             size="large"
             className="roll-tab__dice__roll"
             disabled={!canRoll}

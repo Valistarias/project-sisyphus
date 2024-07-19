@@ -1,5 +1,7 @@
 .hint-button {
+  height: max-content;
   position: relative;
+  width: max-content;
 
   &__hint {
     background-color: var(--primary-dark);
@@ -17,6 +19,7 @@
     position: absolute;
     text-transform: none;
     transition: opacity 0.3s ease;
+    width: 18rem;
     z-index: 1;
 
     &__info {

@@ -52,21 +52,45 @@ const getCyberFrameLevelsByNodes = (
 interface IHpValues {
   hp: number;
   total: number;
+  isLoading: boolean;
 }
 
-const getCharacterHpValues = (character: ICharacter | null | false): IHpValues => {
-  if (character === null || character === false) {
+const getCharacterHpValues = (
+  character: ICharacter | null | false,
+  baseHp: number,
+  hpParamId: string | undefined
+): IHpValues => {
+  if (character === null || character === false || hpParamId === undefined) {
     return {
       hp: 0,
-      total: 100,
+      total: 0,
+      isLoading: true,
     };
   }
 
-  console.log('character', character);
+  const { body } = getActualBody(character);
+
+  let hpValue = 0;
+  let isLoading = true;
+  let totalHpValue = baseHp;
+
+  if (body !== undefined) {
+    hpValue = body.hp;
+    isLoading = false;
+  }
+
+  character.nodes?.forEach(({ node }) => {
+    node.charParamBonuses?.forEach((charParamBonus) => {
+      if (charParamBonus.charParam === hpParamId) {
+        totalHpValue += charParamBonus.value;
+      }
+    });
+  });
 
   return {
-    hp: 0,
-    total: 100,
+    hp: hpValue,
+    total: totalHpValue,
+    isLoading,
   };
 };
 

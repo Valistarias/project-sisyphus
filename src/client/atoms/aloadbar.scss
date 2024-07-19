@@ -1,0 +1,29 @@
+.loadbar {
+  background: var(--tertiary-20);
+  height: 0.8rem;
+  width: 100%;
+
+  &__progress {
+    background: var(--loadbar-color);
+    box-shadow: 0 0 2rem var(--loadbar-color);
+    height: 100%;
+    transition: width 0.4s ease;
+  }
+
+  // Colors ----------------------------------
+  &--primary {
+    --loadbar-color: var(--primary);
+  }
+
+  &--secondary {
+    --loadbar-color: : var(--secondary);
+  }
+
+  &--tertiary {
+    --loadbar-color: : var(--tertiary);
+  }
+
+  &--error {
+    --loadbar-color: : var(--error);
+  }
+}
