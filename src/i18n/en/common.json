@@ -285,7 +285,11 @@
     "character": {
       "unknown": "Unknown",
       "draft": "Draft",
-      "alive": "Alive"
+      "alive": "Alive",
+      "hp": {
+        "short": "HP",
+        "long": "Health Points"
+      }
     },
     "node": {
       "generalBranch": "Main Branch",

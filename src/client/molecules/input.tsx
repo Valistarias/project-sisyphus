@@ -14,6 +14,8 @@ interface IInput extends IReactHookFormInputs {
   type?: 'text' | 'password' | 'email' | 'number' | 'textarea';
   /** The size of the input */
   size?: 'medium' | 'small';
+  /** Is the input inline ? */
+  inline?: boolean;
   /** The class of the Textarea element */
   className?: string;
   /** The placeholder of the Textarea element */
@@ -26,11 +28,14 @@ interface IInput extends IReactHookFormInputs {
   hidden?: boolean;
   /** Allow the user's password manager to automatically enter the password */
   autoComplete?: string;
+  /** When the user select elsewhere of the input */
+  onBlur?: () => void;
 }
 
 const Input: FC<IInput> = ({
   control,
   inputName,
+  inline = false,
   rules,
   type = 'text',
   size = 'medium',
@@ -40,6 +45,7 @@ const Input: FC<IInput> = ({
   readOnly,
   hidden,
   autoComplete,
+  onBlur,
 }) => {
   const [isFocus, setFocus] = useState(false);
   return (
@@ -49,6 +55,7 @@ const Input: FC<IInput> = ({
       input--${size}
       input--${type}
       ${readOnly === true ? 'input--readonly' : ''}
+      ${inline ? 'input--inline' : ''}
       ${isFocus ? 'input--focus' : ''}
       ${className ?? ''}
     `)}
@@ -57,7 +64,10 @@ const Input: FC<IInput> = ({
         control={control}
         name={inputName}
         rules={rules}
-        render={({ field: { onChange, onBlur, value, name, ref }, fieldState: { error } }) => (
+        render={({
+          field: { onChange, onBlur: onControllerBlur, value, name, ref },
+          fieldState: { error },
+        }) => (
           <>
             {label !== undefined ? (
               <Alabel className="input__label" htmlFor={name}>
@@ -79,7 +89,10 @@ const Input: FC<IInput> = ({
                   }}
                   onBlur={(e) => {
                     setFocus(false);
-                    onBlur();
+                    onControllerBlur();
+                    if (onBlur !== undefined) {
+                      onBlur();
+                    }
                   }}
                 />
               ) : (
@@ -97,7 +110,10 @@ const Input: FC<IInput> = ({
                   }}
                   onBlur={(e) => {
                     setFocus(false);
-                    onBlur();
+                    onControllerBlur();
+                    if (onBlur !== undefined) {
+                      onBlur();
+                    }
                   }}
                 />
               )}

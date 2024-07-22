@@ -78,6 +78,12 @@
     padding: 0.6rem 1.5rem;
   }
 
+  // Format
+
+  &--inline .input__field {
+    padding-inline-end: 0;
+  }
+
   // Others ----------------------------------
   &--readonly .input__field {
     border: 0;

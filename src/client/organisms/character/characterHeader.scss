@@ -3,7 +3,7 @@
   background: var(--primary-20);
   display: flex;
   height: var(--header-character-height);
-  padding: 0 10rem;
+  padding: 0 2rem;
   width: 100%;
 
   &__content {
@@ -32,5 +32,31 @@
 
   &__right {
     width: 30rem;
+  }
+
+  &__health {
+    &__field {
+      align-items: center;
+      display: flex;
+      flex-direction: row;
+      gap: 2rem;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+
+      &__value {
+        align-items: center;
+        display: flex;
+        flex-shrink: 0;
+        gap: 1rem;
+      }
+
+      &__input.input {
+        width: 6rem;
+      }
+
+      &__total {
+        flex-shrink: 0;
+      }
+    }
   }
 }

@@ -680,5 +680,8 @@
     "required": "You need to enter {{word}} to continue",
     "word": "Wrong word. You need to enter {{word}} to continue",
     "label": "Enter {{word}} to continue"
+  },
+  "hp": {
+    "required": "HP value is required"
   }
 }

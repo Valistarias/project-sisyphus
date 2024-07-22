@@ -1,11 +1,12 @@
-import React, { useMemo, type FC } from 'react';
+import React, { useCallback, useMemo, type FC } from 'react';
 
+import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../providers';
 
 import { Aloadbar, Ap, Atitle } from '../../atoms';
-import { HintButton } from '../../molecules';
+import { HintButton, Input } from '../../molecules';
 import { getCharacterHpValues } from '../../utils/character';
 
 import {
@@ -16,6 +17,10 @@ import {
 } from '../../utils';
 
 import './characterHeader.scss';
+
+interface FormHpValues {
+  hp: string;
+}
 
 interface ICharacterHeader {}
 
@@ -66,6 +71,16 @@ const CharacterHeader: FC<ICharacterHeader> = () => {
     return false;
   }, [character]);
 
+  const { handleSubmit: handleSubmitHp, control: controlHp } = useForm<FieldValues>({
+    defaultValues: useMemo(() => ({ hp: hpValues.isLoading ? 0 : hpValues.hp }), [hpValues]),
+  });
+
+  const onSaveHp: SubmitHandler<FormHpValues> = useCallback(({ hp }) => {
+    if (hp !== undefined) {
+      console.log('hp', hp);
+    }
+  }, []);
+
   return (
     <div
       className={classTrim(`
@@ -101,7 +116,32 @@ const CharacterHeader: FC<ICharacterHeader> = () => {
         </div>
         <div className="char-header__right">
           <div className="char-header__health">
-            <Aloadbar progress={0.5} />
+            <form
+              className="char-header__health__field"
+              onSubmit={handleSubmitHp(onSaveHp)}
+              noValidate
+            >
+              <Ap className="char-header__health__field__term">{t('terms.character.hp.short')}</Ap>
+              <div className="char-header__health__field__value">
+                <Input
+                  control={controlHp}
+                  inputName="hp"
+                  type="number"
+                  size="small"
+                  inline
+                  rules={{
+                    required: t('hp.required', { ns: 'fields' }),
+                  }}
+                  className="char-header__health__field__input"
+                  onBlur={handleSubmitHp(onSaveHp)}
+                />
+                <Ap className="char-header__health__field__total">{`/ ${hpValues.total}`}</Ap>
+              </div>
+            </form>
+
+            <Aloadbar
+              progress={hpValues.isLoading || hpValues.hp === 0 ? 0 : hpValues.total / hpValues.hp}
+            />
           </div>
         </div>
       </div>
