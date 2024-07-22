@@ -18,11 +18,11 @@ const findPages = async (): Promise<HydratedIPage[]> =>
         path: 'chapter',
         populate: 'ruleBook',
       })
-      .then(async (res) => {
+      .then(async (res?: HydratedIPage[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Pages'));
         } else {
-          resolve(res as HydratedIPage[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -37,11 +37,11 @@ const findPagesByChapter = async (chapterId: string): Promise<HydratedIPage[]> =
         path: 'chapter',
         populate: 'ruleBook',
       })
-      .then(async (res) => {
+      .then(async (res?: HydratedIPage[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Pages'));
         } else {
-          resolve(res as HydratedIPage[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -56,11 +56,11 @@ const findPageById = async (id: string): Promise<HydratedIPage> =>
         path: 'chapter',
         populate: 'ruleBook',
       })
-      .then(async (res) => {
+      .then(async (res?: HydratedIPage | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Page'));
         } else {
-          resolve(res as HydratedIPage);
+          resolve(res);
         }
       })
       .catch(async (err) => {

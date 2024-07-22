@@ -17,11 +17,11 @@ const { ItemModifier } = db;
 const findItemModifiers = async (): Promise<HydratedIItemModifier[]> =>
   await new Promise((resolve, reject) => {
     ItemModifier.find()
-      .then(async (res) => {
+      .then(async (res?: HydratedIItemModifier[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('ItemModifiers'));
         } else {
-          resolve(res as HydratedIItemModifier[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -32,11 +32,11 @@ const findItemModifiers = async (): Promise<HydratedIItemModifier[]> =>
 const findItemModifierById = async (id: string): Promise<HydratedIItemModifier> =>
   await new Promise((resolve, reject) => {
     ItemModifier.findById(id)
-      .then(async (res) => {
+      .then(async (res?: HydratedIItemModifier | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('ItemModifier'));
         } else {
-          resolve(res as HydratedIItemModifier);
+          resolve(res);
         }
       })
       .catch(async (err) => {

@@ -13,7 +13,7 @@ interface IRarity {
   createdAt: Date;
 }
 
-interface HydratedIRarity extends HydratedDocument<IRarity> {}
+type HydratedIRarity = HydratedDocument<IRarity>;
 
 const userSchema = new Schema<IRarity>({
   title: String,

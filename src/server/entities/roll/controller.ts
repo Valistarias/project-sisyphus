@@ -4,14 +4,14 @@ import { type HydratedDocument } from 'mongoose';
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { type ICampaign } from '../campaign/model';
-import { type ICharacter } from '../character/model';
+import { type ICharacter } from '../character';
 
-import { type HydratedRoll, type IRoll } from './model';
+import { type IRoll, type LeanIRoll } from './model';
 
 const { Roll } = db;
 const perRequest = 10;
 
-const findRollsByCampaignId = async (id: string, offset: number = 0): Promise<HydratedRoll[]> =>
+const findRollsByCampaignId = async (id: string, offset: number = 0): Promise<LeanIRoll[]> =>
   await new Promise((resolve, reject) => {
     Roll.find({ campaign: id })
       .lean()
@@ -20,9 +20,9 @@ const findRollsByCampaignId = async (id: string, offset: number = 0): Promise<Hy
       })
       .limit(perRequest)
       .skip(offset)
-      .populate<{ character: ICharacter }>('character')
-      .populate<{ campaign: ICampaign }>('campaign')
-      .then(async (res: HydratedRoll[]) => {
+      .populate<{ character: HydratedDocument<ICharacter> }>('character')
+      .populate<{ campaign: HydratedDocument<ICampaign> }>('campaign')
+      .then(async (res?: LeanIRoll[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Rolls'));
         } else {

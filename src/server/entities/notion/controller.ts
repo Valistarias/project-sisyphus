@@ -20,11 +20,11 @@ const findNotions = async (): Promise<HydratedNotion[]> =>
         select: '_id title type',
         populate: 'type',
       })
-      .then(async (res) => {
+      .then(async (res?: HydratedNotion[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Notions'));
         } else {
-          resolve(res as HydratedNotion[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -35,7 +35,7 @@ const findNotions = async (): Promise<HydratedNotion[]> =>
 const findNotionById = async (id: string): Promise<HydratedDocument<INotion>> =>
   await new Promise((resolve, reject) => {
     Notion.findById(id)
-      .then(async (res) => {
+      .then(async (res?: HydratedDocument<INotion> | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Notion'));
         } else {

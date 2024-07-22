@@ -17,10 +17,12 @@ interface ISkill {
   createdAt: Date;
 }
 
-interface HydratedISkill extends Omit<HydratedDocument<ISkill>, 'stat'> {
+type LeanISkill = Omit<ISkill, 'stat'> & {
   stat: IStat;
   branches: HydratedISkillBranch[];
-}
+};
+
+type HydratedISkill = HydratedDocument<LeanISkill>;
 
 const skillSchema = new Schema<ISkill>(
   {
@@ -53,4 +55,4 @@ skillSchema.virtual('branches', {
 
 const SkillModel = (): Model<ISkill> => model('Skill', skillSchema);
 
-export { SkillModel, type HydratedISkill, type ISkill };
+export { SkillModel, type HydratedISkill, type ISkill, type LeanISkill };

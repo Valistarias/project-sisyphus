@@ -43,9 +43,9 @@ interface INode {
   createdAt: Date;
 }
 
-interface HydratedINode
-  extends Omit<
-    HydratedDocument<INode>,
+type HydratedINode = HydratedDocument<
+  Omit<
+    INode,
     | 'effects'
     | 'actions'
     | 'skillBonuses'
@@ -53,15 +53,16 @@ interface HydratedINode
     | 'charParamBonuses'
     | 'skillBranch'
     | 'cyberFrameBranch'
-  > {
-  effects: IEffect[] | string[];
-  actions: IAction[] | string[];
-  skillBonuses: ISkillBonus[] | string[];
-  statBonuses: IStatBonus[] | string[];
-  charParamBonuses: ICharParamBonus[] | string[];
-  skillBranch?: ISkillBranch | ObjectId;
-  cyberFrameBranch?: ICyberFrameBranch | ObjectId;
-}
+  > & {
+    effects: IEffect[] | string[];
+    actions: IAction[] | string[];
+    skillBonuses: ISkillBonus[] | string[];
+    statBonuses: IStatBonus[] | string[];
+    charParamBonuses: ICharParamBonus[] | string[];
+    skillBranch?: ISkillBranch | ObjectId;
+    cyberFrameBranch?: ICyberFrameBranch | ObjectId;
+  }
+>;
 
 const nodeSchema = new Schema<INode>({
   title: String,

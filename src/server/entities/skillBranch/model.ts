@@ -15,10 +15,12 @@ interface ISkillBranch {
   createdAt: Date;
 }
 
-interface HydratedISkillBranch extends Omit<HydratedDocument<ISkillBranch>, 'skill'> {
-  skill: ISkill;
-  nodes?: INode[];
-}
+type HydratedISkillBranch = HydratedDocument<
+  Omit<ISkillBranch, 'skill'> & {
+    skill: ISkill;
+    nodes?: INode[];
+  }
+>;
 
 const skillBranchSchema = new Schema<ISkillBranch>(
   {

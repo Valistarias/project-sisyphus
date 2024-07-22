@@ -1,4 +1,4 @@
-import { model, type Model, Schema, type ObjectId, type HydratedDocument } from 'mongoose';
+import { model, Schema, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
 import { type HydratedIChapter } from '../chapter/model';
 
@@ -17,9 +17,11 @@ interface IPage {
   createdAt: Date;
 }
 
-interface HydratedIPage extends Omit<HydratedDocument<IPage>, 'chapter'> {
-  chapter: HydratedIChapter;
-}
+type HydratedIPage = HydratedDocument<
+  Omit<IPage, 'chapter'> & {
+    chapter: HydratedIChapter;
+  }
+>;
 
 const pageSchema = new Schema<IPage>({
   title: String,
@@ -38,4 +40,4 @@ const pageSchema = new Schema<IPage>({
 
 const PageModel = (): Model<IPage> => model('Page', pageSchema);
 
-export { type IPage, type HydratedIPage, PageModel };
+export { PageModel, type HydratedIPage, type IPage };

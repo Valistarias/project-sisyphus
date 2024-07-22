@@ -36,10 +36,12 @@ interface IProgram {
   createdAt: Date;
 }
 
-interface HydratedIProgram extends Omit<HydratedDocument<IProgram>, 'damages' | 'ai'> {
-  damages: IDamage[] | string[];
-  ai: INPC;
-}
+type HydratedIProgram = HydratedDocument<
+  Omit<IProgram, 'damages' | 'ai'> & {
+    damages: IDamage[] | string[];
+    ai: INPC;
+  }
+>;
 
 const programSchema = new Schema<IProgram>({
   title: String,

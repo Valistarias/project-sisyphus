@@ -13,7 +13,7 @@ interface IItemModifier {
   createdAt: Date;
 }
 
-interface HydratedIItemModifier extends HydratedDocument<IItemModifier> {}
+type HydratedIItemModifier = HydratedDocument<IItemModifier>;
 
 const userSchema = new Schema<IItemModifier>({
   title: String,

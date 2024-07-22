@@ -17,13 +17,13 @@ import {
 } from '../skillBranch/controller';
 import { checkDuplicateStatFormulaId } from '../stat/controller';
 
-import { type HydratedISkill } from './model';
+import { type HydratedISkill, type LeanISkill } from './model';
 
 import { curateI18n } from '../../utils';
 
 const { Skill } = db;
 
-const findSkills = async (): Promise<HydratedISkill[]> =>
+const findSkills = async (): Promise<LeanISkill[]> =>
   await new Promise((resolve, reject) => {
     Skill.find()
       .lean()
@@ -45,11 +45,11 @@ const findSkills = async (): Promise<HydratedISkill[]> =>
           ],
         },
       })
-      .then(async (res) => {
+      .then(async (res?: LeanISkill[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Skills'));
         } else {
-          resolve(res as HydratedISkill[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -78,11 +78,11 @@ const findSkillById = async (id: string): Promise<HydratedISkill> =>
           ],
         },
       })
-      .then(async (res) => {
+      .then(async (res?: HydratedISkill | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Skill'));
         } else {
-          resolve(res as HydratedISkill);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -287,7 +287,7 @@ const deleteSkill = (req: Request, res: Response): void => {
     });
 };
 
-interface CuratedISkill extends Omit<HydratedISkill, 'branches'> {
+interface CuratedISkill extends Omit<LeanISkill, 'branches'> {
   branches: CuratedIntISkillBranch[];
 }
 

@@ -22,11 +22,11 @@ const findPrograms = async (options?: findAllPayload): Promise<HydratedIProgram[
     Program.find(options ?? {})
       .populate<{ damages: IDamage[] }>('damages')
       .populate<{ ai: INPC }>('ai')
-      .then(async (res) => {
+      .then(async (res?: HydratedIProgram[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Programs'));
         } else {
-          resolve(res as HydratedIProgram[]);
+          resolve(res);
         }
       })
       .catch(async (err: Error) => {
@@ -39,11 +39,11 @@ const findProgramById = async (id: string): Promise<HydratedIProgram> =>
     Program.findById(id)
       .populate<{ damages: IDamage[] }>('damages')
       .populate<{ ai: INPC }>('ai')
-      .then(async (res) => {
+      .then(async (res?: HydratedIProgram | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Program'));
         } else {
-          resolve(res as HydratedIProgram);
+          resolve(res);
         }
       })
       .catch(async (err: Error) => {

@@ -23,17 +23,17 @@ const findCampaigns = async (req: Request): Promise<HydratedICompleteCampaign[]>
         }
         Campaign.find()
           .or([{ owner: user._id }, { players: user._id }])
-          .populate<{ owner: IUser }>('owner')
-          .populate<{ players: IUser[] }>('players')
+          .populate<{ owner: HydratedDocument<IUser> }>('owner')
+          .populate<{ players: Array<HydratedDocument<IUser>> }>('players')
           .populate<{ characters: ICharacter[] }>({
             path: 'characters',
             select: '_id name campaign',
           })
-          .then(async (res) => {
+          .then(async (res?: HydratedICompleteCampaign[] | null) => {
             if (res === undefined || res === null) {
               reject(gemNotFound('Campaigns'));
             } else {
-              resolve(res as HydratedICompleteCampaign[]);
+              resolve(res);
             }
           })
           .catch(async (err) => {

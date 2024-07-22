@@ -16,11 +16,11 @@ const findNPCs = async (): Promise<HydratedINPC[]> =>
   await new Promise((resolve, reject) => {
     NPC.find()
       .populate<{ attacks: IEnnemyAttack[] }>('attacks')
-      .then(async (res) => {
+      .then(async (res?: HydratedINPC[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('NPCs'));
         } else {
-          resolve(res as HydratedINPC[]);
+          resolve(res);
         }
       })
       .catch(async (err: Error) => {
@@ -31,11 +31,11 @@ const findNPCs = async (): Promise<HydratedINPC[]> =>
 const basicListNPCs = async (): Promise<BasicHydratedINPC[]> =>
   await new Promise((resolve, reject) => {
     NPC.find()
-      .then(async (res) => {
+      .then(async (res?: BasicHydratedINPC[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('NPCs'));
         } else {
-          resolve(res as BasicHydratedINPC[]);
+          resolve(res);
         }
       })
       .catch(async (err: Error) => {

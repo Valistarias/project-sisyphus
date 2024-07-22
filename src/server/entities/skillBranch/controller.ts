@@ -10,7 +10,7 @@ import {
 import { type ISkill } from '../index';
 import { type CuratedINode } from '../node/controller';
 
-import { type HydratedISkillBranch } from './model';
+import { type HydratedISkillBranch, type ISkillBranch } from './model';
 
 import { curateI18n } from '../../utils';
 
@@ -20,11 +20,11 @@ const findSkillBranches = async (): Promise<HydratedISkillBranch[]> =>
   await new Promise((resolve, reject) => {
     SkillBranch.find()
       .populate<{ skill: ISkill }>('skill')
-      .then(async (res) => {
+      .then(async (res?: HydratedISkillBranch[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('SkillBranches'));
         } else {
-          resolve(res as HydratedISkillBranch[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -36,11 +36,11 @@ const findSkillBranchesBySkill = async (skillId: string): Promise<HydratedISkill
   await new Promise((resolve, reject) => {
     SkillBranch.find({ skill: skillId })
       .populate<{ skill: ISkill }>('skill')
-      .then(async (res) => {
+      .then(async (res?: HydratedISkillBranch[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('SkillBranches'));
         } else {
-          resolve(res as HydratedISkillBranch[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -52,11 +52,11 @@ const findSkillBranchById = async (id: string): Promise<HydratedISkillBranch> =>
   await new Promise((resolve, reject) => {
     SkillBranch.findById(id)
       .populate<{ skill: ISkill }>('skill')
-      .then(async (res) => {
+      .then(async (res?: HydratedISkillBranch | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('SkillBranch'));
         } else {
-          resolve(res as HydratedISkillBranch);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -221,9 +221,10 @@ const deleteSkillBranchesBySkillId = async (skillId: string): Promise<boolean> =
       });
   });
 
-interface CuratedISkillBranch extends Omit<HydratedISkillBranch, 'nodes'> {
+type CuratedISkillBranch = Omit<ISkillBranch, 'skill'> & {
+  skill: ISkill;
   nodes?: CuratedINode[];
-}
+};
 
 interface CuratedIntISkillBranch {
   i18n: Record<string, any> | Record<string, unknown>;

@@ -40,17 +40,15 @@ interface IItem {
   createdAt: Date;
 }
 
-interface HydratedIItem
-  extends Omit<
-    HydratedDocument<IItem>,
-    'effects' | 'actions' | 'skillBonuses' | 'statBonuses' | 'charParamBonuses'
-  > {
-  effects: IEffect[] | string[];
-  actions: IAction[] | string[];
-  skillBonuses: ISkillBonus[] | string[];
-  statBonuses: IStatBonus[] | string[];
-  charParamBonuses: ICharParamBonus[] | string[];
-}
+type HydratedIItem = HydratedDocument<
+  Omit<IItem, 'effects' | 'actions' | 'skillBonuses' | 'statBonuses' | 'charParamBonuses'> & {
+    effects: IEffect[] | string[];
+    actions: IAction[] | string[];
+    skillBonuses: ISkillBonus[] | string[];
+    statBonuses: IStatBonus[] | string[];
+    charParamBonuses: ICharParamBonus[] | string[];
+  }
+>;
 
 const itemSchema = new Schema<IItem>({
   title: String,

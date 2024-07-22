@@ -11,9 +11,11 @@ interface ISkillBonus {
   createdAt: Date;
 }
 
-interface HydratedISkillBonus extends Omit<HydratedDocument<ISkillBonus>, 'skill'> {
-  skill: ISkill;
-}
+type HydratedISkillBonus = HydratedDocument<
+  Omit<ISkillBonus, 'skill'> & {
+    skill: ISkill;
+  }
+>;
 
 const skillBonusSchema = new Schema<ISkillBonus>({
   skill: {

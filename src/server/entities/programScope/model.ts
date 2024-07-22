@@ -13,7 +13,7 @@ interface IProgramScope {
   createdAt: Date;
 }
 
-interface HydratedIProgramScope extends HydratedDocument<IProgramScope> {}
+type HydratedIProgramScope = HydratedDocument<IProgramScope>;
 
 const programScope = new Schema<IProgramScope>({
   title: String,

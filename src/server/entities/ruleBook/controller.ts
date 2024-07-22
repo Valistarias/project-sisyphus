@@ -6,7 +6,7 @@ import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/global
 import { deleteChaptersRecursive } from '../chapter/controller';
 import { deleteNotionsByRuleBookId } from '../notion/controller';
 
-import { type HydratedIRuleBook } from './model';
+import { type BasicHydratedIRuleBook, type HydratedIRuleBook } from './model';
 
 import type { HydratedIChapter, INotion, IRuleBookType } from '../index';
 
@@ -16,15 +16,15 @@ const { RuleBook, Chapter } = db;
 
 const ruleBookOrder = ['core', 'addon', 'adventure'];
 
-const findRuleBooks = async (): Promise<HydratedIRuleBook[]> =>
+const findRuleBooks = async (): Promise<BasicHydratedIRuleBook[]> =>
   await new Promise((resolve, reject) => {
     RuleBook.find()
       .populate<{ type: IRuleBookType }>('type')
-      .then(async (res) => {
+      .then(async (res?: BasicHydratedIRuleBook[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('RuleBooks'));
         } else {
-          resolve(res as HydratedIRuleBook[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -57,11 +57,11 @@ const findRuleBookById = async (id: string): Promise<HydratedIRuleBook> =>
           sort: { position: 'asc' },
         },
       })
-      .then(async (res) => {
+      .then(async (res?: HydratedIRuleBook | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('RuleBook'));
         } else {
-          resolve(res as HydratedIRuleBook);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -231,7 +231,7 @@ const deleteRuleBook = (req: Request, res: Response): void => {
 
 interface CuratedIRuleBook {
   i18n: Record<string, any> | Record<string, unknown>;
-  ruleBook: HydratedIRuleBook;
+  ruleBook: BasicHydratedIRuleBook;
 }
 
 const findSingle = (req: Request, res: Response): void => {

@@ -29,11 +29,13 @@ interface INPC {
   createdAt: Date;
 }
 
-interface BasicHydratedINPC extends HydratedDocument<INPC> {}
+type BasicHydratedINPC = HydratedDocument<INPC>;
 
-interface HydratedINPC extends Omit<BasicHydratedINPC, 'attacks'> {
-  attacks: IEnnemyAttack[] | string[];
-}
+type HydratedINPC = HydratedDocument<
+  Omit<INPC, 'attacks'> & {
+    attacks: IEnnemyAttack[] | string[];
+  }
+>;
 
 const nPCSchema = new Schema<INPC>({
   title: String,

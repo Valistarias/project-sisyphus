@@ -39,11 +39,11 @@ const findNodes = async (options?: findAllPayload): Promise<HydratedINode[]> =>
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
-      .then(async (res) => {
+      .then(async (res?: HydratedINode[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Nodes'));
         } else {
-          resolve(res as HydratedINode[]);
+          resolve(res);
         }
       })
       .catch(async (err: Error) => {
@@ -61,11 +61,11 @@ const findNodeById = async (id: string): Promise<HydratedINode> =>
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
       .populate<{ skillBranch: ISkillBranch }>('skillBranch')
       .populate<{ cyberFrameBranch: ICyberFrameBranch }>('cyberFrameBranch')
-      .then(async (res) => {
+      .then(async (res?: HydratedINode | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Node'));
         } else {
-          resolve(res as HydratedINode);
+          resolve(res);
         }
       })
       .catch(async (err: Error) => {

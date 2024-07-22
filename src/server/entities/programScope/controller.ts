@@ -17,11 +17,11 @@ const { ProgramScope } = db;
 const findProgramScopes = async (): Promise<HydratedIProgramScope[]> =>
   await new Promise((resolve, reject) => {
     ProgramScope.find()
-      .then(async (res) => {
+      .then(async (res?: HydratedIProgramScope[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('ProgramScopes'));
         } else {
-          resolve(res as HydratedIProgramScope[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -32,11 +32,11 @@ const findProgramScopes = async (): Promise<HydratedIProgramScope[]> =>
 const findProgramScopeById = async (id: string): Promise<HydratedIProgramScope> =>
   await new Promise((resolve, reject) => {
     ProgramScope.findById(id)
-      .then(async (res) => {
+      .then(async (res?: HydratedIProgramScope | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('ProgramScope'));
         } else {
-          resolve(res as HydratedIProgramScope);
+          resolve(res);
         }
       })
       .catch(async (err) => {

@@ -15,11 +15,11 @@ const findRarities = async (): Promise<HydratedIRarity[]> =>
       .sort({
         position: 'asc',
       })
-      .then(async (res) => {
+      .then(async (res?: HydratedIRarity[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Rarities'));
         } else {
-          resolve(res as HydratedIRarity[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -30,11 +30,11 @@ const findRarities = async (): Promise<HydratedIRarity[]> =>
 const findRarityById = async (id: string): Promise<HydratedIRarity> =>
   await new Promise((resolve, reject) => {
     Rarity.findById(id)
-      .then(async (res) => {
+      .then(async (res?: HydratedIRarity | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Rarity'));
         } else {
-          resolve(res as HydratedIRarity);
+          resolve(res);
         }
       })
       .catch(async (err) => {

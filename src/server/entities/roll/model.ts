@@ -1,7 +1,7 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
 import { type ICampaign } from '../campaign/model';
-import { type ICharacter } from '../character/model';
+import { type ICharacter } from '../character';
 
 interface IRoll {
   /*  The type of the roll */
@@ -18,10 +18,12 @@ interface IRoll {
   createdAt: Date;
 }
 
-interface HydratedRoll extends Omit<HydratedDocument<IRoll>, 'campaign' | 'character'> {
+type LeanIRoll = Omit<IRoll, 'campaign' | 'character'> & {
   campaign: HydratedDocument<ICampaign>;
   character: HydratedDocument<ICharacter>;
-}
+};
+
+type HydratedIRoll = HydratedDocument<LeanIRoll>;
 
 const notionSchema = new Schema<IRoll>({
   result: Number,
@@ -43,4 +45,4 @@ const notionSchema = new Schema<IRoll>({
 
 const RollModel = (): Model<IRoll> => model('Roll', notionSchema);
 
-export { RollModel, type HydratedRoll, type IRoll };
+export { RollModel, type HydratedIRoll, type IRoll, type LeanIRoll };
