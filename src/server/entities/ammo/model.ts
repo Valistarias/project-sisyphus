@@ -25,7 +25,7 @@ interface IAmmo {
   createdAt: Date;
 }
 
-interface HydratedIAmmo extends HydratedDocument<IAmmo> {}
+type HydratedIAmmo = HydratedDocument<IAmmo>;
 
 const ammoSchema = new Schema<IAmmo>({
   title: String,

@@ -17,9 +17,11 @@ interface IEffect {
   createdAt: Date;
 }
 
-interface HydratedIEffect extends Omit<HydratedDocument<IEffect>, 'type'> {
-  type: IActionType | string;
-}
+type HydratedIEffect = HydratedDocument<
+  Omit<IEffect, 'type'> & {
+    type: IActionType | string;
+  }
+>;
 
 const effectSchema = new Schema<IEffect>({
   title: String,

@@ -15,7 +15,7 @@ interface IBodyPart {
   createdAt: Date;
 }
 
-interface HydratedIBodyPart extends HydratedDocument<IBodyPart> {}
+type HydratedIBodyPart = HydratedDocument<IBodyPart>;
 
 const bodyPart = new Schema<IBodyPart>({
   title: String,

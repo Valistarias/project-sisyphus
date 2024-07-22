@@ -19,11 +19,11 @@ const { CharParam } = db;
 const findCharParams = async (): Promise<HydratedICharParam[]> =>
   await new Promise((resolve, reject) => {
     CharParam.find()
-      .then(async (res) => {
+      .then(async (res?: HydratedICharParam[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('CharParams'));
         } else {
-          resolve(res as HydratedICharParam[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -34,11 +34,11 @@ const findCharParams = async (): Promise<HydratedICharParam[]> =>
 const findCharParamById = async (id: string): Promise<HydratedICharParam> =>
   await new Promise((resolve, reject) => {
     CharParam.findById(id)
-      .then(async (res) => {
+      .then(async (res?: HydratedICharParam | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('CharParam'));
         } else {
-          resolve(res as HydratedICharParam);
+          resolve(res);
         }
       })
       .catch(async (err) => {

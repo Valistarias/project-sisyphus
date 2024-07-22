@@ -13,9 +13,11 @@ interface ICharacterNode {
   used?: number;
 }
 
-interface HydratedICharacterNode extends Omit<HydratedDocument<ICharacterNode>, 'node'> {
-  node: HydratedDocument<INode>;
-}
+type HydratedICharacterNode = HydratedDocument<
+  Omit<ICharacterNode, 'node'> & {
+    node: HydratedDocument<INode>;
+  }
+>;
 
 const CharacterNodeSchema = new Schema<ICharacterNode>({
   character: {

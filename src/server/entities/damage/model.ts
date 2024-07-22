@@ -11,9 +11,11 @@ interface IDamage {
   createdAt: Date;
 }
 
-interface HydratedIDamage extends Omit<HydratedDocument<IDamage>, 'damageType'> {
-  damageType: IDamageType;
-}
+type HydratedIDamage = HydratedDocument<
+  Omit<IDamage, 'damageType'> & {
+    damageType: IDamageType;
+  }
+>;
 
 const damageSchema = new Schema<IDamage>({
   damageType: {

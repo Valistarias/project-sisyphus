@@ -12,11 +12,11 @@ const { Ammo } = db;
 const findAmmos = async (): Promise<HydratedIAmmo[]> =>
   await new Promise((resolve, reject) => {
     Ammo.find()
-      .then(async (res) => {
+      .then(async (res?: HydratedIAmmo[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Ammos'));
         } else {
-          resolve(res as HydratedIAmmo[]);
+          resolve(res);
         }
       })
       .catch(async (err: Error) => {
@@ -27,11 +27,11 @@ const findAmmos = async (): Promise<HydratedIAmmo[]> =>
 const findAmmoById = async (id: string): Promise<HydratedIAmmo> =>
   await new Promise((resolve, reject) => {
     Ammo.findById(id)
-      .then(async (res) => {
+      .then(async (res?: HydratedIAmmo | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Ammo'));
         } else {
-          resolve(res as HydratedIAmmo);
+          resolve(res);
         }
       })
       .catch(async (err: Error) => {

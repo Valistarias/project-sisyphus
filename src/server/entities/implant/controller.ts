@@ -34,11 +34,11 @@ const findImplants = async (options?: findAllPayload): Promise<HydratedIImplant[
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
-      .then(async (res) => {
+      .then(async (res?: HydratedIImplant[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Implants'));
         } else {
-          resolve(res as HydratedIImplant[]);
+          resolve(res);
         }
       })
       .catch(async (err: Error) => {
@@ -54,11 +54,11 @@ const findImplantById = async (id: string): Promise<HydratedIImplant> =>
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
-      .then(async (res) => {
+      .then(async (res?: HydratedIImplant | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Implant'));
         } else {
-          resolve(res as HydratedIImplant);
+          resolve(res);
         }
       })
       .catch(async (err: Error) => {

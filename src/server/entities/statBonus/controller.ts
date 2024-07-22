@@ -13,11 +13,11 @@ const findStatBonuses = async (): Promise<HydratedIStatBonus[]> =>
   await new Promise((resolve, reject) => {
     StatBonus.find()
       .populate<{ stat: IStat }>('stat')
-      .then(async (res) => {
+      .then(async (res?: HydratedIStatBonus[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('StatBonuses'));
         } else {
-          resolve(res as HydratedIStatBonus[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -29,11 +29,11 @@ const findStatBonusById = async (id: string): Promise<HydratedIStatBonus> =>
   await new Promise((resolve, reject) => {
     StatBonus.findById(id)
       .populate<{ stat: IStat }>('stat')
-      .then(async (res) => {
+      .then(async (res?: HydratedIStatBonus | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('StatBonus'));
         } else {
-          resolve(res as HydratedIStatBonus);
+          resolve(res);
         }
       })
       .catch(async (err) => {

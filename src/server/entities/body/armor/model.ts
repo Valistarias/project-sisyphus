@@ -15,9 +15,11 @@ interface IBodyArmor {
   equiped: boolean;
 }
 
-interface HydratedIBodyArmor extends Omit<HydratedDocument<IBodyArmor>, 'armor'> {
-  armor: HydratedDocument<IArmor>;
-}
+type HydratedIBodyArmor = HydratedDocument<
+  Omit<IBodyArmor, 'armor'> & {
+    armor: HydratedDocument<IArmor>;
+  }
+>;
 
 const BodyArmorSchema = new Schema<IBodyArmor>({
   body: {

@@ -15,9 +15,11 @@ interface IBodyImplant {
   equiped: ObjectId;
 }
 
-interface HydratedIBodyImplant extends Omit<HydratedDocument<IBodyImplant>, 'implant'> {
-  implant: HydratedDocument<IImplant>;
-}
+type HydratedIBodyImplant = HydratedDocument<
+  Omit<IBodyImplant, 'implant'> & {
+    implant: HydratedDocument<IImplant>;
+  }
+>;
 
 const BodyImplantSchema = new Schema<IBodyImplant>({
   body: {

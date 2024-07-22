@@ -15,9 +15,11 @@ interface IBodyItem {
   qty: number;
 }
 
-interface HydratedIBodyItem extends Omit<HydratedDocument<IBodyItem>, 'item'> {
-  item: HydratedDocument<IItem>;
-}
+type HydratedIBodyItem = HydratedDocument<
+  Omit<IBodyItem, 'item'> & {
+    item: HydratedDocument<IItem>;
+  }
+>;
 
 const BodyItemSchema = new Schema<IBodyItem>({
   body: {

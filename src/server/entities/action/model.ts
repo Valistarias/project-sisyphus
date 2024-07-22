@@ -31,11 +31,13 @@ interface IAction {
   createdAt: Date;
 }
 
-interface HydratedIAction extends Omit<HydratedDocument<IAction>, 'type' | 'skill' | 'duration'> {
-  type: IActionType | string;
-  duration: IActionDuration | string;
-  skill: ISkill | string;
-}
+type HydratedIAction = HydratedDocument<
+  Omit<IAction, 'type' | 'skill' | 'duration'> & {
+    type: IActionType | string;
+    duration: IActionDuration | string;
+    skill: ISkill | string;
+  }
+>;
 
 const actionSchema = new Schema<IAction>({
   title: String,

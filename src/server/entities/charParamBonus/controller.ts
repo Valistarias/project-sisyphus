@@ -13,11 +13,11 @@ const findCharParamBonuses = async (): Promise<HydratedICharParamBonus[]> =>
   await new Promise((resolve, reject) => {
     CharParamBonus.find()
       .populate<{ charParam: ICharParam }>('charParam')
-      .then(async (res) => {
+      .then(async (res?: HydratedICharParamBonus[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('CharParamBonuses'));
         } else {
-          resolve(res as HydratedICharParamBonus[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -29,11 +29,11 @@ const findCharParamBonusById = async (id: string): Promise<HydratedICharParamBon
   await new Promise((resolve, reject) => {
     CharParamBonus.findById(id)
       .populate<{ charParam: ICharParam }>('charParam')
-      .then(async (res) => {
+      .then(async (res?: HydratedICharParamBonus | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('CharParamBonus'));
         } else {
-          resolve(res as HydratedICharParamBonus);
+          resolve(res);
         }
       })
       .catch(async (err) => {

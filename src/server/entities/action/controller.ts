@@ -17,11 +17,11 @@ const findActions = async (): Promise<HydratedIAction[]> =>
       .populate<{ type: IActionType }>('type')
       .populate<{ duration: IActionDuration }>('duration')
       .populate<{ skill: ISkill }>('skill')
-      .then(async (res) => {
+      .then(async (res?: HydratedIAction[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Actions'));
         } else {
-          resolve(res as HydratedIAction[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -35,11 +35,11 @@ const findActionById = async (id: string): Promise<HydratedIAction> =>
       .populate<{ type: IActionType }>('type')
       .populate<{ duration: IActionDuration }>('duration')
       .populate<{ skill: ISkill }>('skill')
-      .then(async (res) => {
+      .then(async (res?: HydratedIAction | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Action'));
         } else {
-          resolve(res as HydratedIAction);
+          resolve(res);
         }
       })
       .catch(async (err) => {

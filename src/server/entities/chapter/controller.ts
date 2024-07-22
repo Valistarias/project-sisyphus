@@ -25,11 +25,11 @@ const findChapters = async (): Promise<HydratedIChapter[]> =>
           sort: { position: 'asc' },
         },
       })
-      .then(async (res) => {
+      .then(async (res?: HydratedIChapter[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Chapters'));
         } else {
-          resolve(res as HydratedIChapter[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -49,11 +49,11 @@ const findChaptersByRuleBook = async (ruleBookId: string): Promise<HydratedIChap
           sort: { position: 'asc' },
         },
       })
-      .then(async (res) => {
+      .then(async (res?: HydratedIChapter[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Chapters'));
         } else {
-          resolve(res as HydratedIChapter[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -73,11 +73,11 @@ const findChapterById = async (id: string): Promise<HydratedIChapter> =>
           sort: { position: 'asc' },
         },
       })
-      .then(async (res) => {
+      .then(async (res?: HydratedIChapter | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Chapter'));
         } else {
-          resolve(res as HydratedIChapter);
+          resolve(res);
         }
       })
       .catch(async (err) => {

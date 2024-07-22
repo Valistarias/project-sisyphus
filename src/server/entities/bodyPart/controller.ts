@@ -17,11 +17,11 @@ const { BodyPart } = db;
 const findBodyParts = async (): Promise<HydratedIBodyPart[]> =>
   await new Promise((resolve, reject) => {
     BodyPart.find()
-      .then(async (res) => {
+      .then(async (res?: HydratedIBodyPart[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('BodyParts'));
         } else {
-          resolve(res as HydratedIBodyPart[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -32,11 +32,11 @@ const findBodyParts = async (): Promise<HydratedIBodyPart[]> =>
 const findBodyPartById = async (id: string): Promise<HydratedIBodyPart> =>
   await new Promise((resolve, reject) => {
     BodyPart.findById(id)
-      .then(async (res) => {
+      .then(async (res?: HydratedIBodyPart | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('BodyPart'));
         } else {
-          resolve(res as HydratedIBodyPart);
+          resolve(res);
         }
       })
       .catch(async (err) => {

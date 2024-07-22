@@ -42,17 +42,15 @@ interface IImplant {
   createdAt: Date;
 }
 
-interface HydratedIImplant
-  extends Omit<
-    HydratedDocument<IImplant>,
-    'effects' | 'actions' | 'skillBonuses' | 'statBonuses' | 'charParamBonuses'
-  > {
-  effects: IEffect[] | string[];
-  actions: IAction[] | string[];
-  skillBonuses: ISkillBonus[] | string[];
-  statBonuses: IStatBonus[] | string[];
-  charParamBonuses: ICharParamBonus[] | string[];
-}
+type HydratedIImplant = HydratedDocument<
+  Omit<IImplant, 'effects' | 'actions' | 'skillBonuses' | 'statBonuses' | 'charParamBonuses'> & {
+    effects: IEffect[] | string[];
+    actions: IAction[] | string[];
+    skillBonuses: ISkillBonus[] | string[];
+    statBonuses: IStatBonus[] | string[];
+    charParamBonuses: ICharParamBonus[] | string[];
+  }
+>;
 
 const implantSchema = new Schema<IImplant>({
   title: String,

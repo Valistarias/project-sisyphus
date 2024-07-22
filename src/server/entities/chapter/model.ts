@@ -19,11 +19,13 @@ interface IChapter {
   createdAt: Date;
 }
 
-interface HydratedIChapter extends Omit<HydratedDocument<IChapter>, 'type' | 'ruleBook'> {
-  type: IChapterType;
-  ruleBook: IRuleBook;
-  pages: IPage[];
-}
+type HydratedIChapter = HydratedDocument<
+  Omit<IChapter, 'type' | 'ruleBook'> & {
+    type: IChapterType;
+    ruleBook: IRuleBook;
+    pages: IPage[];
+  }
+>;
 
 const chapterSchema = new Schema<IChapter>(
   {

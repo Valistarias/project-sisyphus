@@ -16,6 +16,7 @@ import { type ICampaign } from '../campaign/model';
 import { type HydratedINode } from '../node/model';
 import { type IUser } from '../user/model';
 
+import { type LeanICharacter } from './id/model';
 import {
   createNodesByCharacter,
   deleteNodesByCharacter,
@@ -37,9 +38,9 @@ const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[
         }
         Character.find()
           .or([{ player: user._id }, { createdBy: user._id }])
-          .populate<{ player: IUser }>('player')
-          .populate<{ createdBy: IUser }>('createdBy')
-          .populate<{ campaign: ICampaign }>('campaign')
+          .populate<{ player: HydratedDocument<IUser> }>('player')
+          .populate<{ createdBy: HydratedDocument<IUser> }>('createdBy')
+          .populate<{ campaign: HydratedDocument<ICampaign> }>('campaign')
           .populate<{ nodes: HydratedINode[] }>({
             path: 'nodes',
             select: '_id character node used',
@@ -88,11 +89,11 @@ const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[
             ],
           })
           .populate<{ background: HydratedIBackground }>('background')
-          .then(async (res) => {
+          .then(async (res?: HydratedICharacter[] | null) => {
             if (res === undefined || res === null) {
               reject(gemNotFound('Characters'));
             } else {
-              resolve(res as HydratedICharacter[]);
+              resolve(res);
             }
           })
           .catch(async (err) => {
@@ -107,7 +108,7 @@ const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[
 const findCompleteCharacterById = async (
   id: string,
   req: Request
-): Promise<{ char: HydratedICharacter; canEdit: boolean }> =>
+): Promise<{ char: LeanICharacter; canEdit: boolean }> =>
   await new Promise((resolve, reject) => {
     getUserFromToken(req as IVerifyTokenRequest)
       .then((user) => {
@@ -118,8 +119,8 @@ const findCompleteCharacterById = async (
         Character.findById(id)
           .lean()
           .populate<{ player: HydratedDocument<IUser> }>('player')
-          .populate<{ createdBy: IUser }>('createdBy')
-          .populate<{ campaign: ICampaign }>('campaign')
+          .populate<{ createdBy: HydratedDocument<IUser> }>('createdBy')
+          .populate<{ campaign: HydratedDocument<ICampaign> }>('campaign')
           .populate<{ nodes: HydratedINode[] }>({
             path: 'nodes',
             select: '_id character node used',
@@ -173,13 +174,13 @@ const findCompleteCharacterById = async (
             select: '_id title summary i18n skillBonuses statBonuses charParamBonuses createdAt',
             populate: ['skillBonuses', 'statBonuses', 'charParamBonuses'],
           })
-          .then(async (res) => {
+          .then(async (res?: LeanICharacter | null) => {
             if (res === undefined || res === null) {
               reject(gemNotFound('Character'));
             } else {
               resolve({
-                char: res as HydratedICharacter,
-                canEdit: String((res as HydratedICharacter).player?._id) === String(user._id),
+                char: res,
+                canEdit: String(res.player?._id) === String(user._id),
               });
             }
           })
@@ -205,8 +206,8 @@ const findCharacterById = async (
         }
         Character.findById(id)
           .populate<{ player: HydratedDocument<IUser> }>('player')
-          .populate<{ createdBy: IUser }>('createdBy')
-          .populate<{ campaign: ICampaign }>('campaign')
+          .populate<{ createdBy: HydratedDocument<IUser> }>('createdBy')
+          .populate<{ campaign: HydratedDocument<ICampaign> }>('campaign')
           .populate<{ nodes: HydratedINode[] }>({
             path: 'nodes',
             select: '_id character node used',

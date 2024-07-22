@@ -11,9 +11,11 @@ interface ICharParamBonus {
   createdAt: Date;
 }
 
-interface HydratedICharParamBonus extends Omit<HydratedDocument<ICharParamBonus>, 'charParam'> {
-  charParam: ICharParam;
-}
+type HydratedICharParamBonus = HydratedDocument<
+  Omit<ICharParamBonus, 'charParam'> & {
+    charParam: ICharParam;
+  }
+>;
 
 const charParamBonusSchema = new Schema<ICharParamBonus>({
   charParam: {

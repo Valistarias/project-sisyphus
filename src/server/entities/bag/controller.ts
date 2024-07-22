@@ -16,11 +16,11 @@ interface findAllPayload {
 const findBags = async (options?: findAllPayload): Promise<HydratedIBag[]> =>
   await new Promise((resolve, reject) => {
     Bag.find(options ?? {})
-      .then(async (res) => {
+      .then(async (res?: HydratedIBag[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Bags'));
         } else {
-          resolve(res as HydratedIBag[]);
+          resolve(res);
         }
       })
       .catch(async (err: Error) => {
@@ -31,11 +31,11 @@ const findBags = async (options?: findAllPayload): Promise<HydratedIBag[]> =>
 const findBagById = async (id: string): Promise<HydratedIBag> =>
   await new Promise((resolve, reject) => {
     Bag.findById(id)
-      .then(async (res) => {
+      .then(async (res?: HydratedIBag | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Bag'));
         } else {
-          resolve(res as HydratedIBag);
+          resolve(res);
         }
       })
       .catch(async (err: Error) => {

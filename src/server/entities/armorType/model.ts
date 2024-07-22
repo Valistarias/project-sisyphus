@@ -11,7 +11,7 @@ interface IArmorType {
   createdAt: Date;
 }
 
-interface HydratedIArmorType extends HydratedDocument<IArmorType> {}
+type HydratedIArmorType = HydratedDocument<IArmorType>;
 
 const armorTypeSchema = new Schema<IArmorType>({
   title: String,

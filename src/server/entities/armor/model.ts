@@ -42,17 +42,15 @@ interface IArmor {
   createdAt: Date;
 }
 
-interface HydratedIArmor
-  extends Omit<
-    HydratedDocument<IArmor>,
-    'effects' | 'actions' | 'skillBonuses' | 'statBonuses' | 'charParamBonuses'
-  > {
-  effects: IEffect[] | string[];
-  actions: IAction[] | string[];
-  skillBonuses: ISkillBonus[] | string[];
-  statBonuses: IStatBonus[] | string[];
-  charParamBonuses: ICharParamBonus[] | string[];
-}
+type HydratedIArmor = HydratedDocument<
+  Omit<IArmor, 'effects' | 'actions' | 'skillBonuses' | 'statBonuses' | 'charParamBonuses'> & {
+    effects: IEffect[] | string[];
+    actions: IAction[] | string[];
+    skillBonuses: ISkillBonus[] | string[];
+    statBonuses: IStatBonus[] | string[];
+    charParamBonuses: ICharParamBonus[] | string[];
+  }
+>;
 
 const ArmorSchema = new Schema<IArmor>({
   title: String,

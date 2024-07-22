@@ -15,9 +15,11 @@ interface IBodyAmmo {
   qty: number;
 }
 
-interface HydratedIBodyAmmo extends Omit<HydratedDocument<IBodyAmmo>, 'ammo'> {
-  ammo: HydratedDocument<IAmmo>;
-}
+type HydratedIBodyAmmo = HydratedDocument<
+  Omit<IBodyAmmo, 'ammo'> & {
+    ammo: HydratedDocument<IAmmo>;
+  }
+>;
 
 const BodyAmmoSchema = new Schema<IBodyAmmo>({
   body: {

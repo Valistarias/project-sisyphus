@@ -21,17 +21,19 @@ interface IBody {
   createdAt: Date;
 }
 
-interface HydratedIBody extends Omit<HydratedDocument<IBody>, 'character'> {
-  character: HydratedDocument<ICharacter>;
-  stats: HydratedIBodyStat[];
-  ammos: HydratedIBodyAmmo[];
-  armors: HydratedIBodyArmor[];
-  bags: HydratedIBodyBag[];
-  implants: HydratedIBodyImplant[];
-  items: HydratedIBodyItem[];
-  programs: HydratedIBodyProgram[];
-  weapons: HydratedIBodyWeapon[];
-}
+type HydratedIBody = HydratedDocument<
+  Omit<IBody, 'character'> & {
+    character: HydratedDocument<ICharacter>;
+    stats: HydratedIBodyStat[];
+    ammos: HydratedIBodyAmmo[];
+    armors: HydratedIBodyArmor[];
+    bags: HydratedIBodyBag[];
+    implants: HydratedIBodyImplant[];
+    items: HydratedIBodyItem[];
+    programs: HydratedIBodyProgram[];
+    weapons: HydratedIBodyWeapon[];
+  }
+>;
 
 const bodySchema = new Schema<IBody>({
   alive: {

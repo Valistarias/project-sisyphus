@@ -12,11 +12,11 @@ const { DamageType } = db;
 const findDamageTypes = async (): Promise<HydratedIDamageType[]> =>
   await new Promise((resolve, reject) => {
     DamageType.find()
-      .then(async (res) => {
+      .then(async (res?: HydratedIDamageType[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('DamageTypes'));
         } else {
-          resolve(res as HydratedIDamageType[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -27,11 +27,11 @@ const findDamageTypes = async (): Promise<HydratedIDamageType[]> =>
 const findDamageTypeById = async (id: string): Promise<HydratedIDamageType> =>
   await new Promise((resolve, reject) => {
     DamageType.findById(id)
-      .then(async (res) => {
+      .then(async (res?: HydratedIDamageType | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('DamageType'));
         } else {
-          resolve(res as HydratedIDamageType);
+          resolve(res);
         }
       })
       .catch(async (err) => {

@@ -15,11 +15,11 @@ const findEnnemyAttacks = async (): Promise<HydratedIEnnemyAttack[]> =>
   await new Promise((resolve, reject) => {
     EnnemyAttack.find()
       .populate<{ damageType: IDamageType }>('damageType')
-      .then(async (res) => {
+      .then(async (res?: HydratedIEnnemyAttack[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('EnnemyAttacks'));
         } else {
-          resolve(res as HydratedIEnnemyAttack[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -31,11 +31,11 @@ const findEnnemyAttackById = async (id: string): Promise<HydratedIEnnemyAttack> 
   await new Promise((resolve, reject) => {
     EnnemyAttack.findById(id)
       .populate<{ damageType: IDamageType }>('damageType')
-      .then(async (res) => {
+      .then(async (res?: HydratedIEnnemyAttack | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('EnnemyAttack'));
         } else {
-          resolve(res as HydratedIEnnemyAttack);
+          resolve(res);
         }
       })
       .catch(async (err) => {

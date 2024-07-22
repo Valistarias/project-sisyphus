@@ -12,11 +12,11 @@ const { ArmorType } = db;
 const findArmorTypes = async (): Promise<HydratedIArmorType[]> =>
   await new Promise((resolve, reject) => {
     ArmorType.find()
-      .then(async (res) => {
+      .then(async (res?: HydratedIArmorType[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('ArmorTypes'));
         } else {
-          resolve(res as HydratedIArmorType[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -27,11 +27,11 @@ const findArmorTypes = async (): Promise<HydratedIArmorType[]> =>
 const findArmorTypeById = async (id: string): Promise<HydratedIArmorType> =>
   await new Promise((resolve, reject) => {
     ArmorType.findById(id)
-      .then(async (res) => {
+      .then(async (res?: HydratedIArmorType | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('ArmorType'));
         } else {
-          resolve(res as HydratedIArmorType);
+          resolve(res);
         }
       })
       .catch(async (err) => {

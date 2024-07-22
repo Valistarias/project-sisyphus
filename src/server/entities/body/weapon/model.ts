@@ -18,10 +18,12 @@ interface IBodyWeapon {
   bullets: number;
 }
 
-interface HydratedIBodyWeapon extends Omit<HydratedDocument<IBodyWeapon>, 'weapon' | 'ammo'> {
-  weapon: HydratedDocument<IWeapon>;
-  ammo: HydratedDocument<IAmmo>;
-}
+type HydratedIBodyWeapon = HydratedDocument<
+  Omit<IBodyWeapon, 'weapon' | 'ammo'> & {
+    weapon: HydratedDocument<IWeapon>;
+    ammo: HydratedDocument<IAmmo>;
+  }
+>;
 
 const BodyWeaponSchema = new Schema<IBodyWeapon>({
   body: {

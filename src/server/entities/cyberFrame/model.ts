@@ -15,10 +15,12 @@ interface ICyberFrame {
   createdAt: Date;
 }
 
-interface HydratedICyberFrame extends Omit<HydratedDocument<ICyberFrame>, 'ruleBook'> {
+type LeanICyberFrame = Omit<ICyberFrame, 'ruleBook'> & {
   ruleBook: IRuleBook;
   branches: HydratedICyberFrameBranch[];
-}
+};
+
+type HydratedICyberFrame = HydratedDocument<LeanICyberFrame>;
 
 const cyberFrameSchema = new Schema<ICyberFrame>(
   {
@@ -50,4 +52,4 @@ cyberFrameSchema.virtual('branches', {
 
 const CyberFrameModel = (): Model<ICyberFrame> => model('CyberFrame', cyberFrameSchema);
 
-export { CyberFrameModel, type HydratedICyberFrame, type ICyberFrame };
+export { CyberFrameModel, type HydratedICyberFrame, type ICyberFrame, type LeanICyberFrame };

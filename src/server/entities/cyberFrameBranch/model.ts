@@ -15,11 +15,12 @@ interface ICyberFrameBranch {
   createdAt: Date;
 }
 
-interface HydratedICyberFrameBranch
-  extends Omit<HydratedDocument<ICyberFrameBranch>, 'cyberFrame'> {
-  cyberFrame: ICyberFrame;
-  nodes?: INode[];
-}
+type HydratedICyberFrameBranch = HydratedDocument<
+  Omit<ICyberFrameBranch, 'cyberFrame'> & {
+    cyberFrame: ICyberFrame;
+    nodes?: INode[];
+  }
+>;
 
 const cyberFrameBranchSchema = new Schema<ICyberFrameBranch>(
   {

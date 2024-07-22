@@ -13,9 +13,11 @@ interface IBodyBag {
   equiped: boolean;
 }
 
-interface HydratedIBodyBag extends Omit<HydratedDocument<IBodyBag>, 'bag'> {
-  bag: HydratedDocument<IBag>;
-}
+type HydratedIBodyBag = HydratedDocument<
+  Omit<IBodyBag, 'bag'> & {
+    bag: HydratedDocument<IBag>;
+  }
+>;
 
 const BodyBagSchema = new Schema<IBodyBag>({
   body: {

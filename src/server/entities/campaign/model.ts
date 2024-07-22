@@ -1,6 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type ICharacter } from '../character/model';
+import { type ICharacter } from '../character';
 import { type IUser } from '../user/model';
 
 interface ICampaign {
@@ -16,18 +16,19 @@ interface ICampaign {
   players: ObjectId[];
 }
 
-interface HydratedICompleteCampaign
-  extends Omit<HydratedDocument<ICampaign>, 'owner' | 'players' | 'characters'> {
-  owner: HydratedDocument<IUser>;
-  players: Array<HydratedDocument<IUser>>;
-  characters: ICharacter[];
-}
+type HydratedICompleteCampaign = HydratedDocument<
+  Omit<ICampaign, 'owner' | 'players' | 'characters'> & {
+    owner: HydratedDocument<IUser>;
+    players: Array<HydratedDocument<IUser>>;
+    characters: ICharacter[];
+  }
+>;
 
-interface HydratedISimpleCampaign
-  extends Omit<HydratedDocument<ICampaign>, 'owner' | 'characters'> {
-  owner: HydratedDocument<IUser>;
-  characters: ICharacter[];
-}
+type HydratedISimpleCampaign = HydratedDocument<
+  Omit<ICampaign, 'owner' | 'characters'> & {
+    owner: HydratedDocument<IUser>;
+  }
+>;
 
 const campaignSchema = new Schema<ICampaign>(
   {

@@ -11,9 +11,11 @@ interface IStatBonus {
   createdAt: Date;
 }
 
-interface HydratedIStatBonus extends Omit<HydratedDocument<IStatBonus>, 'stat'> {
-  stat: IStat;
-}
+type HydratedIStatBonus = HydratedDocument<
+  Omit<IStatBonus, 'stat'> & {
+    stat: IStat;
+  }
+>;
 
 const statBonusSchema = new Schema<IStatBonus>({
   stat: {

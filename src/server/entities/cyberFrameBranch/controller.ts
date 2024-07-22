@@ -10,7 +10,7 @@ import {
 import { type ICyberFrame } from '../index';
 import { type CuratedINode } from '../node/controller';
 
-import { type HydratedICyberFrameBranch } from './model';
+import { type HydratedICyberFrameBranch, type ICyberFrameBranch } from './model';
 
 import { curateI18n } from '../../utils';
 
@@ -20,11 +20,11 @@ const findCyberFrameBranches = async (): Promise<HydratedICyberFrameBranch[]> =>
   await new Promise((resolve, reject) => {
     CyberFrameBranch.find()
       .populate<{ cyberFrame: ICyberFrame }>('cyberFrame')
-      .then(async (res) => {
+      .then(async (res?: HydratedICyberFrameBranch[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('CyberFrameBranches'));
         } else {
-          resolve(res as HydratedICyberFrameBranch[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -38,11 +38,11 @@ const findCyberFrameBranchesByFrame = async (
   await new Promise((resolve, reject) => {
     CyberFrameBranch.find({ cyberFrame: cyberFrameId })
       .populate<{ cyberFrame: ICyberFrame }>('cyberFrame')
-      .then(async (res) => {
+      .then(async (res?: HydratedICyberFrameBranch[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('CyberFrameBranches'));
         } else {
-          resolve(res as HydratedICyberFrameBranch[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -225,9 +225,10 @@ const deleteCyberFrameBranchesByCyberFrameId = async (cyberFrameId: string): Pro
       });
   });
 
-interface CuratedICyberFrameBranch extends Omit<HydratedICyberFrameBranch, 'nodes'> {
+type CuratedICyberFrameBranch = Omit<ICyberFrameBranch, 'cyberFrame'> & {
+  cyberFrame: ICyberFrame;
   nodes?: CuratedINode[];
-}
+};
 
 interface CuratedIntICyberFrameBranch {
   i18n: Record<string, any> | Record<string, unknown>;

@@ -40,15 +40,16 @@ interface ICharacter {
   background?: ObjectId;
 }
 
-interface HydratedICharacter
-  extends Omit<HydratedDocument<ICharacter>, 'player' | 'campaign' | 'createdBy' | 'background'> {
+type LeanICharacter = Omit<ICharacter, 'player' | 'campaign' | 'createdBy' | 'background'> & {
   player?: HydratedDocument<IUser>;
   createdBy: HydratedDocument<IUser>;
   campaign?: HydratedDocument<ICampaign>;
   nodes?: HydratedINode[];
   bodies?: HydratedIBody[];
   background?: HydratedIBackground;
-}
+};
+
+type HydratedICharacter = HydratedDocument<LeanICharacter>;
 
 const characterSchema = new Schema<ICharacter>(
   {
@@ -109,4 +110,4 @@ characterSchema.virtual('bodies', {
 
 const CharacterModel = (): Model<ICharacter> => model('Character', characterSchema);
 
-export { CharacterModel, type HydratedICharacter, type ICharacter };
+export { CharacterModel, type HydratedICharacter, type ICharacter, type LeanICharacter };

@@ -15,7 +15,7 @@ interface ICharParam {
   createdAt: Date;
 }
 
-interface HydratedICharParam extends HydratedDocument<ICharParam> {}
+type HydratedICharParam = HydratedDocument<ICharParam>;
 
 const charParamSchema = new Schema<ICharParam>({
   title: String,

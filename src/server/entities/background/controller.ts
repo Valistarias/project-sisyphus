@@ -20,11 +20,11 @@ const findBackgrounds = async (): Promise<HydratedIBackground[]> =>
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
-      .then(async (res) => {
+      .then(async (res?: HydratedIBackground[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Backgrounds'));
         } else {
-          resolve(res as HydratedIBackground[]);
+          resolve(res);
         }
       })
       .catch(async (err: Error) => {
@@ -38,11 +38,11 @@ const findBackgroundById = async (id: string): Promise<HydratedIBackground> =>
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
-      .then(async (res) => {
+      .then(async (res?: HydratedIBackground | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Background'));
         } else {
-          resolve(res as HydratedIBackground);
+          resolve(res);
         }
       })
       .catch(async (err: Error) => {

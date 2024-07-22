@@ -13,9 +13,11 @@ interface IBodyStat {
   value: number;
 }
 
-interface HydratedIBodyStat extends Omit<HydratedDocument<IBodyStat>, 'stat'> {
-  stat: HydratedDocument<IStat>;
-}
+type HydratedIBodyStat = HydratedDocument<
+  Omit<IBodyStat, 'stat'> & {
+    stat: HydratedDocument<IStat>;
+  }
+>;
 
 const BodyStatSchema = new Schema<IBodyStat>({
   body: {

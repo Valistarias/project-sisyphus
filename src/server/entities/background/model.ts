@@ -19,12 +19,13 @@ interface IBackground {
   createdAt: Date;
 }
 
-interface HydratedIBackground
-  extends Omit<HydratedDocument<IBackground>, 'skillBonuses' | 'statBonuses' | 'charParamBonuses'> {
-  skillBonuses: ISkillBonus[] | string[];
-  statBonuses: IStatBonus[] | string[];
-  charParamBonuses: ICharParamBonus[] | string[];
-}
+type HydratedIBackground = HydratedDocument<
+  Omit<IBackground, 'skillBonuses' | 'statBonuses' | 'charParamBonuses'> & {
+    skillBonuses: ISkillBonus[] | string[];
+    statBonuses: IStatBonus[] | string[];
+    charParamBonuses: ICharParamBonus[] | string[];
+  }
+>;
 
 const backgroundSchema = new Schema<IBackground>({
   title: String,

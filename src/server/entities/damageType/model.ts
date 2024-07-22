@@ -11,7 +11,7 @@ interface IDamageType {
   createdAt: Date;
 }
 
-interface HydratedIDamageType extends HydratedDocument<IDamageType> {}
+type HydratedIDamageType = HydratedDocument<IDamageType>;
 
 const damageTypeSchema = new Schema<IDamageType>({
   title: String,

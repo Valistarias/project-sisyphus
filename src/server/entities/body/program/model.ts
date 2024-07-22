@@ -15,9 +15,11 @@ interface IBodyProgram {
   uses: number;
 }
 
-interface HydratedIBodyProgram extends Omit<HydratedDocument<IBodyProgram>, 'program'> {
-  program: HydratedDocument<IProgram>;
-}
+type HydratedIBodyProgram = HydratedDocument<
+  Omit<IBodyProgram, 'program'> & {
+    program: HydratedDocument<IProgram>;
+  }
+>;
 
 const BodyProgramSchema = new Schema<IBodyProgram>({
   body: {

@@ -1,5 +1,5 @@
 import { type Request, type Response } from 'express';
-import { type FlattenMaps, type ObjectId } from 'mongoose';
+import { type FlattenMaps, type HydratedDocument, type ObjectId } from 'mongoose';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
@@ -10,17 +10,17 @@ import {
 } from '../cyberFrameBranch/controller';
 import { type HydratedICyberFrameBranch, type IRuleBook } from '../index';
 
-import { type HydratedICyberFrame } from './model';
+import { type HydratedICyberFrame, type LeanICyberFrame } from './model';
 
 import { curateI18n } from '../../utils';
 
 const { CyberFrame } = db;
 
-const findCyberFrames = async (): Promise<HydratedICyberFrame[]> =>
+const findCyberFrames = async (): Promise<LeanICyberFrame[]> =>
   await new Promise((resolve, reject) => {
     CyberFrame.find()
       .lean()
-      .populate<{ ruleBook: IRuleBook }>('ruleBook')
+      .populate<{ ruleBook: HydratedDocument<IRuleBook> }>('ruleBook')
       .populate<{ branches: HydratedICyberFrameBranch[] }>({
         path: 'branches',
         select: '_id title cyberFrame summary i18n',
@@ -38,11 +38,11 @@ const findCyberFrames = async (): Promise<HydratedICyberFrame[]> =>
           ],
         },
       })
-      .then(async (res) => {
+      .then(async (res?: LeanICyberFrame[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('CyberFrames'));
         } else {
-          resolve(res as HydratedICyberFrame[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -71,11 +71,11 @@ const findCyberFrameById = async (id: string): Promise<HydratedICyberFrame> =>
           ],
         },
       })
-      .then(async (res) => {
+      .then(async (res?: HydratedICyberFrame | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('CyberFrame'));
         } else {
-          resolve(res as HydratedICyberFrame);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -194,7 +194,7 @@ const deleteCyberFrame = (req: Request, res: Response): void => {
     });
 };
 
-interface CuratedICyberFrame extends Omit<HydratedICyberFrame, 'branches'> {
+interface CuratedICyberFrame extends Omit<LeanICyberFrame, 'branches'> {
   branches: CuratedIntICyberFrameBranch[];
 }
 

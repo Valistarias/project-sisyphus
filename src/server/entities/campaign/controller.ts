@@ -1,12 +1,12 @@
 import { type Request, type Response } from 'express';
-import { type ObjectId } from 'mongoose';
+import { type HydratedDocument, type ObjectId } from 'mongoose';
 
 import { v4 as uuidv4 } from 'uuid';
 
 import { getUserFromToken, type IVerifyTokenRequest } from '../../middlewares/authJwt';
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
-import { type ICharacter } from '../character/model';
+import { type ICharacter } from '../character';
 import { type IUser } from '../user/model';
 
 import { type HydratedICompleteCampaign, type HydratedISimpleCampaign } from './model';
@@ -55,17 +55,17 @@ const findCampaignById = async (id: string, req: Request): Promise<HydratedIComp
         }
         Campaign.findById(id)
           .or([{ owner: user._id }, { players: user._id }])
-          .populate<{ owner: IUser }>('owner')
-          .populate<{ players: IUser[] }>('players')
+          .populate<{ owner: HydratedDocument<IUser> }>('owner')
+          .populate<{ players: Array<HydratedDocument<IUser>> }>('players')
           .populate<{ characters: ICharacter[] }>({
             path: 'characters',
             select: '_id name campaign',
           })
-          .then(async (res) => {
+          .then(async (res?: HydratedICompleteCampaign | null) => {
             if (res === undefined || res === null) {
               reject(gemNotFound('Campaign'));
             } else {
-              resolve(res as HydratedICompleteCampaign);
+              resolve(res);
             }
           })
           .catch(async (err) => {
@@ -86,12 +86,12 @@ const findCampaignByCode = async (id: string, req: Request): Promise<HydratedISi
           return;
         }
         Campaign.find({ code: id })
-          .populate<{ owner: IUser }>('owner')
-          .then(async (res) => {
+          .populate<{ owner: HydratedDocument<IUser> }>('owner')
+          .then(async (res?: HydratedISimpleCampaign[] | null) => {
             if (res === undefined || res === null) {
               reject(gemNotFound('Campaign'));
             } else {
-              resolve(res[0] as HydratedISimpleCampaign);
+              resolve(res[0]);
             }
           })
           .catch(async (err) => {

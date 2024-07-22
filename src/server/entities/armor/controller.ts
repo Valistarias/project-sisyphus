@@ -34,11 +34,11 @@ const findArmors = async (options?: findAllPayload): Promise<HydratedIArmor[]> =
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
-      .then(async (res) => {
+      .then(async (res?: HydratedIArmor[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Armors'));
         } else {
-          resolve(res as HydratedIArmor[]);
+          resolve(res);
         }
       })
       .catch(async (err: Error) => {
@@ -54,11 +54,11 @@ const findArmorById = async (id: string): Promise<HydratedIArmor> =>
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
-      .then(async (res) => {
+      .then(async (res?: HydratedIArmor | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Armor'));
         } else {
-          resolve(res as HydratedIArmor);
+          resolve(res);
         }
       })
       .catch(async (err: Error) => {

@@ -26,7 +26,7 @@ interface IBag {
   createdAt: Date;
 }
 
-interface HydratedIBag extends HydratedDocument<IBag> {}
+type HydratedIBag = HydratedDocument<IBag>;
 
 const bagSchema = new Schema<IBag>({
   title: String,
