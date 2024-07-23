@@ -27,7 +27,7 @@ interface IRollTab {
   /** The campaign that the rolls are displayed */
   campaignId?: string;
   /** The character used for rolling */
-  character: ICharacter;
+  character?: ICharacter;
   /** The ID used on the alert provider */
   onRollDices: (diceValues: DiceRequest[]) => void;
 }
@@ -90,6 +90,7 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, character }) => {
         api !== undefined &&
         detail.stats !== null &&
         campaignId !== undefined &&
+        character !== undefined &&
         socket !== null
       ) {
         const { stats, mode }: { stats: DiceResult[]; mode: TypeRoll } = detail;

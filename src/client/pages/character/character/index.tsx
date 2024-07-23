@@ -30,10 +30,6 @@ const Character: FC = () => {
     };
   }, [api, id, setCharacterFromId, resetCharacter]);
 
-  if (loading || character === null) {
-    return null;
-  }
-
   if (character === false) {
     return <ErrorPage />;
   }
@@ -41,8 +37,8 @@ const Character: FC = () => {
   return (
     <div className="character">
       <RollTab
-        campaignId={character.campaign?._id}
-        character={character}
+        campaignId={character?.campaign?._id}
+        character={character ?? undefined}
         onRollDices={(dices) => {
           setToRoll(dices, 'free');
         }}

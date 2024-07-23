@@ -1,13 +1,14 @@
-import React, { useCallback, useMemo, type FC } from 'react';
+import React, { useCallback, useEffect, useMemo, type FC } from 'react';
 
 import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { useGlobalVars } from '../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../providers';
 
 import { Aloadbar, Ap, Atitle } from '../../atoms';
 import { HintButton, Input } from '../../molecules';
-import { getCharacterHpValues } from '../../utils/character';
+import { getActualBody, getCharacterHpValues } from '../../utils/character';
+import Alert from '../alert';
 
 import {
   classTrim,
@@ -22,11 +23,11 @@ interface FormHpValues {
   hp: string;
 }
 
-interface ICharacterHeader {}
-
-const CharacterHeader: FC<ICharacterHeader> = () => {
+const CharacterHeader: FC = () => {
   const { t } = useTranslation();
-  const { character, cyberFrames, globalValues, charParams } = useGlobalVars();
+  const { createAlert, getNewId } = useSystemAlerts();
+  const { api } = useApi();
+  const { character, setCharacterFromId, cyberFrames, globalValues, charParams } = useGlobalVars();
 
   const mainCyberFrame = useMemo(() => {
     if (character === null || character === false) {
@@ -64,22 +65,50 @@ const CharacterHeader: FC<ICharacterHeader> = () => {
     [character, globalValues, charParams]
   );
 
-  const loading = useMemo(() => {
-    if (character === null || character === false) {
-      return true;
-    }
-    return false;
-  }, [character]);
-
-  const { handleSubmit: handleSubmitHp, control: controlHp } = useForm<FieldValues>({
+  const {
+    handleSubmit: handleSubmitHp,
+    control: controlHp,
+    reset: resetHp,
+  } = useForm<FieldValues>({
     defaultValues: useMemo(() => ({ hp: hpValues.isLoading ? 0 : hpValues.hp }), [hpValues]),
   });
 
-  const onSaveHp: SubmitHandler<FormHpValues> = useCallback(({ hp }) => {
-    if (hp !== undefined) {
-      console.log('hp', hp);
-    }
-  }, []);
+  const onSaveHp: SubmitHandler<FormHpValues> = useCallback(
+    ({ hp }) => {
+      if (api === undefined || character === null || character === false) {
+        return;
+      }
+      if (hp !== undefined && Number(hp) !== hpValues.hp) {
+        const hpSent = Number(hp) > hpValues.total ? hpValues.total : Number(hp);
+        const { body } = getActualBody(character);
+        api.bodies
+          .update({
+            id: body?._id,
+            hp: hpSent,
+          })
+          .then(() => {
+            setCharacterFromId(character._id);
+          })
+          .catch(({ response }) => {
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{response}</Ap>
+                </Alert>
+              ),
+            });
+          });
+      }
+    },
+    [api, character, createAlert, getNewId, hpValues, setCharacterFromId]
+  );
+
+  // To affect default data
+  useEffect(() => {
+    resetHp({ hp: hpValues.isLoading ? 0 : hpValues.hp });
+  }, [hpValues, resetHp]);
 
   return (
     <div
@@ -140,7 +169,10 @@ const CharacterHeader: FC<ICharacterHeader> = () => {
             </form>
 
             <Aloadbar
-              progress={hpValues.isLoading || hpValues.hp === 0 ? 0 : hpValues.total / hpValues.hp}
+              progress={
+                hpValues.isLoading || hpValues.total === 0 ? 0 : hpValues.hp / hpValues.total
+              }
+              withDangerZone
             />
           </div>
         </div>

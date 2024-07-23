@@ -11,15 +11,24 @@ interface IAloadbar extends IQuarkProps {
   color?: 'primary' | 'secondary' | 'tertiary' | 'error';
   /** Value from 0 to 1 that determine how much the bar had progressed */
   progress: number;
+  /** Is the Progress Bar changing color when a specific threshold is passed (fixed) */
+  withDangerZone: boolean;
 }
 
-const Aloadbar: FC<IAloadbar> = ({ className, progress, color = 'primary', htmlFor }) => (
+const Aloadbar: FC<IAloadbar> = ({
+  className,
+  withDangerZone = false,
+  progress,
+  color = 'primary',
+  htmlFor,
+}) => (
   <Quark
     quarkType="div"
     htmlFor={htmlFor}
     className={classTrim(`
         loadbar
         loadbar--${color}
+        ${withDangerZone && progress < 0.4 ? 'loadbar--danger' : ''}
         ${className ?? ''}
       `)}
   >
