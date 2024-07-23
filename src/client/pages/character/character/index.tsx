@@ -2,9 +2,9 @@ import React, { useEffect, useRef, type FC } from 'react';
 
 import { useParams } from 'react-router-dom';
 
-import { useApi, useGlobalVars, useRollWindow } from '../../../providers';
+import { useApi, useCampaignEventWindow, useGlobalVars } from '../../../providers';
 
-import { CharacterHeader, RollTab } from '../../../organisms';
+import { CampaignEventTab, CharacterHeader } from '../../../organisms';
 import { ErrorPage } from '../../index';
 
 // import { calculateDices, diceResultToStr, type DiceResult } from '../../utils';
@@ -12,10 +12,10 @@ import { ErrorPage } from '../../index';
 import './character.scss';
 
 const Character: FC = () => {
-  const { character, setCharacterFromId, resetCharacter, loading } = useGlobalVars();
+  const { character, setCharacterFromId, resetCharacter } = useGlobalVars();
   const { api } = useApi();
   const { id } = useParams();
-  const { setToRoll } = useRollWindow();
+  const { setToRoll } = useCampaignEventWindow();
 
   const calledApi = useRef(false);
 
@@ -36,7 +36,7 @@ const Character: FC = () => {
 
   return (
     <div className="character">
-      <RollTab
+      <CampaignEventTab
         campaignId={character?.campaign?._id}
         character={character ?? undefined}
         onRollDices={(dices) => {

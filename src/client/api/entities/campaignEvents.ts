@@ -1,26 +1,26 @@
 import axios from 'axios';
 
-import { type IRoll } from '../../types';
+import { type ICampaignEvent } from '../../types';
 
 import Entity from './entity';
 
-interface IRollsPayload {
+interface ICampaignEventsPayload {
   campaignId: string;
   offset: number;
 }
 
-export default class Rolls extends Entity {
-  getAllByCampaign: (payload: IRollsPayload) => Promise<IRoll[]>;
+export default class CampaignEvents extends Entity {
+  getAllByCampaign: (payload: ICampaignEventsPayload) => Promise<ICampaignEvent[]>;
 
   constructor() {
-    super('rolls');
+    super('campaignevents');
 
     this.getAllByCampaign = async (payload) =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/bycampaign/`, { params: payload })
           .then((res) => {
-            resolve(res.data as IRoll[]);
+            resolve(res.data as ICampaignEvent[]);
           })
           .catch((err) => {
             reject(err);

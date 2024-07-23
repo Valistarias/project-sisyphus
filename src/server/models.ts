@@ -18,6 +18,7 @@ import {
   BodyProgramModel,
   BodyStatModel,
   BodyWeaponModel,
+  CampaignEventModel,
   CampaignModel,
   ChapterModel,
   ChapterTypeModel,
@@ -45,7 +46,6 @@ import {
   ProgramScopeModel,
   RarityModel,
   RoleModel,
-  RollModel,
   RuleBookModel,
   RuleBookTypeModel,
   SkillBonusModel,
@@ -77,6 +77,7 @@ import {
   type IBodyStat,
   type IBodyWeapon,
   type ICampaign,
+  type ICampaignEvent,
   type IChapter,
   type IChapterType,
   type ICharParam,
@@ -103,7 +104,6 @@ import {
   type IProgramScope,
   type IRarity,
   type IRole,
-  type IRoll,
   type IRuleBook,
   type IRuleBookType,
   type ISkill,
@@ -169,8 +169,8 @@ interface DBType {
   BodyWeapon: mongoose.Model<IBodyWeapon>;
   /** The Body Part Model */
   BodyPart: mongoose.Model<IBodyPart>;
-  /** The Roll Model */
-  Roll: mongoose.Model<IRoll>;
+  /** The CampaignEvent Model */
+  CampaignEvent: mongoose.Model<ICampaignEvent>;
   /** The Mail Token Model (for forgotten password) */
   MailToken: mongoose.Model<IMailToken>;
   /** The Action Model */
@@ -260,7 +260,7 @@ const db: DBType = {
   RuleBookType: RuleBookTypeModel(),
   // Campaign models
   Campaign: CampaignModel(),
-  Roll: RollModel(),
+  CampaignEvent: CampaignEventModel(),
   // Character models
   Character: CharacterModel(),
   CharacterNode: CharacterNodeModel(),

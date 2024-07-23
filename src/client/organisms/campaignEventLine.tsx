@@ -5,13 +5,13 @@ import { useTranslation } from 'react-i18next';
 import holoBackground from '../assets/imgs/tvbg2.gif';
 import { Ap } from '../atoms';
 import DiceCard from '../molecules/diceCard';
-import { type TypeDice, type TypeRoll } from '../types';
+import { type TypeCampaignEvent, type TypeDice } from '../types';
 
 import { classTrim, strTodiceResult } from '../utils';
 
-import './rollResult.scss';
+import './campaignEventLine.scss';
 
-interface IRollResult {
+interface ICampaignEventResult {
   /** The total result of the dice roll */
   result: number;
   /** The name of the author of the dice roll */
@@ -21,10 +21,16 @@ interface IRollResult {
   /** When the die was rolled */
   createdAt: Date;
   /** The type of the roll */
-  type: TypeRoll;
+  type: TypeCampaignEvent;
 }
 
-const RollResult: FC<IRollResult> = ({ result, authorName, formula, createdAt, type }) => {
+const CampaignEventResult: FC<ICampaignEventResult> = ({
+  result,
+  authorName,
+  formula,
+  createdAt,
+  type,
+}) => {
   const { t } = useTranslation();
   const [isOpen, setOpen] = useState(false);
 
@@ -53,47 +59,47 @@ const RollResult: FC<IRollResult> = ({ result, authorName, formula, createdAt, t
     ));
   }, [formula]);
 
-  const typeRolltext = useMemo(() => {
+  const typeCampaignEventText = useMemo(() => {
     return (
-      <Ap className="roll-result__result__type__text">
-        <span className="roll-result__result__type__text__long">
-          {t('rollResults.freeRoll1', { ns: 'components' })}
+      <Ap className="campaign-event-line__result__type__text">
+        <span className="campaign-event-line__result__type__text__long">
+          {t('rollResults.freeCampaignEvent1', { ns: 'components' })}
         </span>{' '}
-        {t('rollResults.freeRoll2', { ns: 'components' })}
+        {t('rollResults.freeCampaignEvent2', { ns: 'components' })}
       </Ap>
     );
   }, [t]);
 
   return (
-    <div className="roll-result">
-      <Ap className="roll-result__hour">{`${createdAt.toLocaleDateString()} - ${createdAt.getHours()}:${createdAt.getMinutes()}`}</Ap>
+    <div className="campaign-event-line">
+      <Ap className="campaign-event-line__hour">{`${createdAt.toLocaleDateString()} - ${createdAt.getHours()}:${createdAt.getMinutes()}`}</Ap>
       <div
         className={classTrim(`
-          roll-result__result
+          campaign-event-line__result
         `)}
         style={{ backgroundImage: `url(${holoBackground})` }}
       >
-        <div className="roll-result__result__type">{typeRolltext}</div>
-        <div className="roll-result__result__content">
-          <Ap className="roll-result__result__content__character">{authorName}</Ap>
+        <div className="campaign-event-line__result__type">{typeCampaignEventText}</div>
+        <div className="campaign-event-line__result__content">
+          <Ap className="campaign-event-line__result__content__character">{authorName}</Ap>
           <Ap
             onClick={() => {
               setOpen((prev) => !prev);
             }}
-            className="roll-result__result__content__score"
+            className="campaign-event-line__result__content__score"
           >
             {result.toString()}
           </Ap>
         </div>
       </div>
       {isOpen ? (
-        <div className="roll-result__info">
-          <div className="roll-result__info__arrow" />
-          <div className="roll-result__info__content">{detailScores}</div>
+        <div className="campaign-event-line__info">
+          <div className="campaign-event-line__info__arrow" />
+          <div className="campaign-event-line__info__content">{detailScores}</div>
         </div>
       ) : null}
     </div>
   );
 };
 
-export default RollResult;
+export default CampaignEventResult;

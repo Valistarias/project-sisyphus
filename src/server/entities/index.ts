@@ -40,14 +40,9 @@ export {
   type HydratedISimpleCampaign,
   type ICampaign,
 } from './campaign/model';
+export { CampaignEventModel, type ICampaignEvent } from './campaignEvent/model';
 export { ChapterModel, type HydratedIChapter, type IChapter } from './chapter/model';
 export { ChapterTypeModel, type IChapterType } from './chapterType/model';
-export { CharParamModel, type HydratedICharParam, type ICharParam } from './charParam/model';
-export {
-  CharParamBonusModel,
-  type HydratedICharParamBonus,
-  type ICharParamBonus,
-} from './charParamBonus/model';
 export {
   CharacterModel,
   CharacterNodeModel,
@@ -56,6 +51,12 @@ export {
   type ICharacter,
   type ICharacterNode,
 } from './character';
+export { CharParamModel, type HydratedICharParam, type ICharParam } from './charParam/model';
+export {
+  CharParamBonusModel,
+  type HydratedICharParamBonus,
+  type ICharParamBonus,
+} from './charParamBonus/model';
 export { CyberFrameModel, type HydratedICyberFrame, type ICyberFrame } from './cyberFrame/model';
 export {
   CyberFrameBranchModel,
@@ -92,7 +93,6 @@ export {
 } from './programScope/model';
 export { RarityModel, type HydratedIRarity, type IRarity } from './rarity/model';
 export { RoleModel, type IRole } from './role/model';
-export { RollModel, type IRoll } from './roll/model';
 export { RuleBookModel, type HydratedIRuleBook, type IRuleBook } from './ruleBook/model';
 export { RuleBookTypeModel, type IRuleBookType } from './ruleBookType/model';
 export { SkillModel, type HydratedISkill, type ISkill } from './skill/model';

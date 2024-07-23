@@ -10,6 +10,7 @@ import {
   Bags,
   Bodies,
   BodyParts,
+  CampaignEvents,
   Campaigns,
   ChapterTypes,
   Chapters,
@@ -35,7 +36,6 @@ import {
   ProgramScopes,
   Programs,
   Rarities,
-  Rolls,
   RuleBookTypes,
   RuleBooks,
   SkillBonuses,
@@ -88,7 +88,7 @@ export default class Api {
   programs: Programs;
   programScopes: ProgramScopes;
   rarities: Rarities;
-  rolls: Rolls;
+  campaignEvents: CampaignEvents;
   ruleBooks: RuleBooks;
   ruleBookTypes: RuleBookTypes;
   skillBonuses: SkillBonuses;
@@ -140,7 +140,7 @@ export default class Api {
     this.programs = new Programs();
     this.programScopes = new ProgramScopes();
     this.rarities = new Rarities();
-    this.rolls = new Rolls();
+    this.campaignEvents = new CampaignEvents();
     this.ruleBooks = new RuleBooks();
     this.ruleBookTypes = new RuleBookTypes();
     this.skillBonuses = new SkillBonuses();

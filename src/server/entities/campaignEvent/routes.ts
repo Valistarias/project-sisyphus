@@ -10,9 +10,9 @@ export default (app: Router): void => {
     next();
   });
 
-  app.get('/rolls/bycampaign/', [verifyToken], findAllByCampaign);
+  app.get('/campaignevents/bycampaign/', [verifyToken], findAllByCampaign);
 
-  app.post('/rolls/create', [verifyToken], create);
+  app.post('/campaignevents/create', [verifyToken], create);
 
-  app.post('/rolls/update', [verifyToken], update);
+  app.post('/campaignevents/update', [verifyToken], update);
 };

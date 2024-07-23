@@ -1,4 +1,4 @@
-.roll-tab {
+.campaign-event-tab {
   align-items: flex-end;
   bottom: 0;
   display: flex;
@@ -171,11 +171,11 @@
   &--open {
     right: 0;
 
-    .roll-tab__content {
+    .campaign-event-tab__content {
       box-shadow: 0 0 2rem var(--primary-10);
     }
 
-    .roll-tab__dice {
+    .campaign-event-tab__dice {
       background-color: var(--primary-05);
       pointer-events: all;
 

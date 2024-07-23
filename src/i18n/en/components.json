@@ -53,11 +53,11 @@
       "abort": "Abort"
     }
   },
-  "rollTab": {
+  "campaignEventTab": {
     "title": "Dice Log",
     "roll": "Roll",
     "close": "Close",
-    "dices": "Dice",
+    "open": "Dices & Timeline",
     "freeRoll": "Free Roll",
     "noCampaign": "No Dice Log available. To have a Dice Log, your character need to be in a campaign."
   },

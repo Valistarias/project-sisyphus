@@ -5,7 +5,7 @@ import { io, type Socket } from 'socket.io-client';
 import { type DefaultEventsMap } from 'socket.io/dist/typed-events';
 
 interface ISocketContext {
-  /** The socket event when sonething happens  */
+  /** The socket event when something happens  */
   socket: Socket | null;
   /** Is the socket ready  */
   loading: boolean;

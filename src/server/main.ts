@@ -27,6 +27,7 @@ import BagRoutes from './entities/bag/routes';
 import BodyRoutes from './entities/body/routes';
 import BodyPartRoutes from './entities/bodyPart/routes';
 import CampaignRoutes from './entities/campaign/routes';
+import CampaignEventRoutes from './entities/campaignEvent/routes';
 import ChapterRoutes from './entities/chapter/routes';
 import ChapterTypeRoutes from './entities/chapterType/routes';
 import CharacterRoutes from './entities/character/routes';
@@ -52,7 +53,6 @@ import PageRoutes from './entities/page/routes';
 import ProgramRoutes from './entities/program/routes';
 import ProgramScopeRoutes from './entities/programScope/routes';
 import RarityRoutes from './entities/rarity/routes';
-import RollRoutes from './entities/roll/routes';
 import RuleBookRoutes from './entities/ruleBook/routes';
 import RuleBookTypeRoutes from './entities/ruleBookType/routes';
 import SkillRoutes from './entities/skill/routes';
@@ -134,7 +134,7 @@ RuleBookTypeRoutes(apiRouter);
 
 // Campaign routes
 CampaignRoutes(apiRouter);
-RollRoutes(apiRouter);
+CampaignEventRoutes(apiRouter);
 
 // Character routes
 CharacterRoutes(apiRouter);
@@ -236,8 +236,8 @@ io.on('connection', (socket) => {
     void socket.leave(data);
   });
 
-  socket.on('newRoll', ({ room, data }: { room: string; data: Record<string, any> }) => {
-    socket.to(room).emit('newRoll', data);
+  socket.on('newCampaignEvent', ({ room, data }: { room: string; data: Record<string, any> }) => {
+    socket.to(room).emit('newCampaignEvent', data);
   });
 });
 

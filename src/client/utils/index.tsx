@@ -108,7 +108,7 @@ interface TotalResult {
   worst?: number;
 }
 
-export const createBacisDiceRequest = (): DiceRequest[] => [
+export const createBasicDiceRequest = (): DiceRequest[] => [
   {
     type: 20,
     qty: 0,
@@ -197,7 +197,7 @@ export const diceResultToStr = (diceCats: DiceResult[] | null): string => {
 };
 
 export const strTodiceResult = (text: string): DiceResult[] => {
-  const basicMold = createBacisDiceRequest();
+  const basicMold = createBasicDiceRequest();
   const catRollObj = {};
   text.split(';').forEach((catText) => {
     const [type, dicesText] = catText.split(':');

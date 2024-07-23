@@ -13,21 +13,21 @@ import { useTranslation } from 'react-i18next';
 
 import { Ap } from '../atoms';
 import { Button, DiceCard } from '../molecules';
-import { type TypeDice, type TypeRoll } from '../types';
+import { type TypeCampaignEvent, type TypeDice } from '../types';
 
 import { calculateDices, classTrim, throwDices, type DiceRequest, type DiceResult } from '../utils';
 
 import './rollWindow.scss';
 
-interface IRollWindowContext {
+interface ICampaignEventWindowContext {
   /** The function to send all the data to the confirm message element */
-  setToRoll: (dices: DiceRequest[], mode: TypeRoll) => void;
+  setToRoll: (dices: DiceRequest[], mode: TypeCampaignEvent) => void;
   /** The event system linked to the confirm popup */
-  addRollEventListener: (id: string, cb: (data: any) => void) => void;
-  removeRollEventListener: (id: string, cb: (data: any) => void) => void;
+  addCampaignEventListener: (id: string, cb: (data: any) => void) => void;
+  removeCampaignEventListener: (id: string, cb: (data: any) => void) => void;
 }
 
-interface RollWindowProviderProps {
+interface CampaignEventWindowProviderProps {
   /** The childrens of the Providers element */
   children: ReactNode;
 }
@@ -53,22 +53,22 @@ function Emitter(): void {
   Emitter.methods.forEach(delegate, this);
 }
 
-function RollEventEmitter(): void {
+function CampaignEventEmitter(): void {
   Emitter.call(this);
 }
 
 Emitter.methods = ['addEventListener', 'dispatchEvent', 'removeEventListener'];
 
-const RollWindowContext = React.createContext<IRollWindowContext | string>('');
+const CampaignEventWindowContext = React.createContext<ICampaignEventWindowContext | string>('');
 
-export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) => {
+export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> = ({ children }) => {
   const { t } = useTranslation();
-  const RollEvent = useMemo(() => new RollEventEmitter(), []);
+  const CampaignEvent = useMemo(() => new CampaignEventEmitter(), []);
 
   const [dicesToRoll, setDicesToRoll] = useState<DiceRequest[] | null>(null);
 
   const [isWindowOpened, setWindowOpened] = useState<boolean>(false);
-  const [isRollFinished, setRollFinished] = useState<boolean>(false);
+  const [isCampaignEventFinished, setRollEventFinished] = useState<boolean>(false);
   const [diceValues, setDiceValues] = useState<DiceData[]>([]);
   const typeRoll = useRef<string>('free');
 
@@ -104,7 +104,7 @@ export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) =>
   }, [diceValues, cardMode]);
 
   const closeWindow = useCallback(() => {
-    if (isRollFinished) {
+    if (isCampaignEventFinished) {
       setWindowOpened(false);
       tick.current = 0;
       if (intervalEvt.current !== null) {
@@ -120,20 +120,20 @@ export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) =>
         typeRoll.current = 'free';
       }, 300);
     }
-  }, [isRollFinished]);
+  }, [isCampaignEventFinished]);
 
-  const setToRoll = useCallback((dices: DiceRequest[], mode: TypeRoll) => {
+  const setToRoll = useCallback((dices: DiceRequest[], mode: TypeCampaignEvent) => {
     setDicesToRoll(dices);
     typeRoll.current = mode;
   }, []);
 
-  const providerValues = useMemo<IRollWindowContext>(
+  const providerValues = useMemo<ICampaignEventWindowContext>(
     () => ({
       setToRoll,
-      addRollEventListener: RollEvent.addEventListener,
-      removeRollEventListener: RollEvent.removeEventListener,
+      addCampaignEventListener: CampaignEvent.addEventListener,
+      removeCampaignEventListener: CampaignEvent.removeEventListener,
     }),
-    [setToRoll, RollEvent]
+    [setToRoll, CampaignEvent]
   );
 
   const affectDiceValueAtIndex = useCallback((curatedDices: DiceData[], index: number) => {
@@ -152,8 +152,10 @@ export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) =>
       if (endRollEvt.current !== null) {
         clearTimeout(endRollEvt.current);
         endRollEvt.current = null;
-        setRollFinished(true);
-        RollEvent.dispatchEvent(
+        setRollEventFinished(true);
+        console.log('typeRoll', typeRoll);
+        console.log('rollResults', rollResults);
+        CampaignEvent.dispatchEvent(
           new CustomEvent('endroll', {
             detail: {
               stats: rollResults.current,
@@ -163,7 +165,7 @@ export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) =>
         );
       }
     }, 1000);
-  }, [RollEvent, rollResults]);
+  }, [CampaignEvent, rollResults]);
 
   const totalDom = useMemo(() => {
     if (diceCards == null || diceCards.length === 1 || rollResults.current === null) {
@@ -208,10 +210,10 @@ export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) =>
     if (dicesToRoll !== null) {
       // Init
       setWindowOpened(true);
-      setRollFinished(false);
+      setRollEventFinished(false);
       tick.current = 0;
       rollResults.current = null;
-      // Rolling dices
+      // CampaignEventing dices
       const totalResult = throwDices(dicesToRoll);
       rollResults.current = totalResult;
       // Curating Results and initialize diceValues
@@ -254,12 +256,12 @@ export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) =>
   }, [dicesToRoll, affectDiceValueAtIndex, endRollTriggerEvent]);
 
   return (
-    <RollWindowContext.Provider value={providerValues}>
+    <CampaignEventWindowContext.Provider value={providerValues}>
       <div
         className={classTrim(`
           roll-window
             ${isWindowOpened ? 'roll-window--open' : ''}
-            ${isRollFinished ? 'roll-window--end' : ''}
+            ${isCampaignEventFinished ? 'roll-window--end' : ''}
             roll-window--card-${cardMode}
             ${diceValues.length > 15 ? 'roll-window--safe-mode' : ''}
           `)}
@@ -275,17 +277,17 @@ export const RollWindowProvider: FC<RollWindowProviderProps> = ({ children }) =>
             size="large"
             theme="afterglow"
             onClick={closeWindow}
-            disabled={!isRollFinished}
+            disabled={!isCampaignEventFinished}
           >
             {t('rollWindow.close', { ns: 'components' })}
           </Button>
         </div>
       </div>
       {children}
-    </RollWindowContext.Provider>
+    </CampaignEventWindowContext.Provider>
   );
 };
 
-export const useRollWindow = (): IRollWindowContext => {
-  return useContext(RollWindowContext) as IRollWindowContext;
+export const useCampaignEventWindow = (): ICampaignEventWindowContext => {
+  return useContext(CampaignEventWindowContext) as ICampaignEventWindowContext;
 };

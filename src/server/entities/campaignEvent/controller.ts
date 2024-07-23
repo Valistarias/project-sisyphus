@@ -6,14 +6,17 @@ import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/global
 import { type ICampaign } from '../campaign/model';
 import { type ICharacter } from '../character';
 
-import { type IRoll, type LeanIRoll } from './model';
+import { type ICampaignEvent, type LeanICampaignEvent } from './model';
 
-const { Roll } = db;
+const { CampaignEvent } = db;
 const perRequest = 10;
 
-const findRollsByCampaignId = async (id: string, offset: number = 0): Promise<LeanIRoll[]> =>
+const findCampaignEventsByCampaignId = async (
+  id: string,
+  offset: number = 0
+): Promise<LeanICampaignEvent[]> =>
   await new Promise((resolve, reject) => {
-    Roll.find({ campaign: id })
+    CampaignEvent.find({ campaign: id })
       .lean()
       .sort({
         createdAt: 'desc',
@@ -22,9 +25,9 @@ const findRollsByCampaignId = async (id: string, offset: number = 0): Promise<Le
       .skip(offset)
       .populate<{ character: HydratedDocument<ICharacter> }>('character')
       .populate<{ campaign: HydratedDocument<ICampaign> }>('campaign')
-      .then(async (res?: LeanIRoll[] | null) => {
+      .then(async (res?: LeanICampaignEvent[] | null) => {
         if (res === undefined || res === null) {
-          reject(gemNotFound('Rolls'));
+          reject(gemNotFound('CampaignEvents'));
         } else {
           resolve(res);
         }
@@ -34,12 +37,12 @@ const findRollsByCampaignId = async (id: string, offset: number = 0): Promise<Le
       });
   });
 
-const findRollById = async (id: string): Promise<HydratedDocument<IRoll>> =>
+const findCampaignEventById = async (id: string): Promise<HydratedDocument<ICampaignEvent>> =>
   await new Promise((resolve, reject) => {
-    Roll.findById(id)
-      .then(async (res: HydratedDocument<IRoll>) => {
+    CampaignEvent.findById(id)
+      .then(async (res: HydratedDocument<ICampaignEvent>) => {
         if (res === undefined || res === null) {
-          reject(gemNotFound('Roll'));
+          reject(gemNotFound('CampaignEvent'));
         } else {
           resolve(res);
         }
@@ -53,15 +56,14 @@ const create = (req: Request, res: Response): void => {
   const { result, formula, character, campaign, type } = req.body;
   if (
     result === undefined ||
-    formula === undefined ||
     character === undefined ||
     type === undefined ||
     campaign === undefined
   ) {
-    res.status(400).send(gemInvalidField('Roll'));
+    res.status(400).send(gemInvalidField('CampaignEvent'));
     return;
   }
-  const roll = new Roll({
+  const campaignEvent = new CampaignEvent({
     result,
     type,
     formula,
@@ -69,10 +71,10 @@ const create = (req: Request, res: Response): void => {
     campaign,
   });
 
-  roll
+  campaignEvent
     .save()
     .then(() => {
-      res.send(roll);
+      res.send(campaignEvent);
     })
     .catch((err: Error) => {
       res.status(500).send(gemServerError(err));
@@ -89,47 +91,47 @@ const update = (req: Request, res: Response): void => {
     type = null,
   } = req.body;
   if (id === undefined) {
-    res.status(400).send(gemInvalidField('Roll ID'));
+    res.status(400).send(gemInvalidField('CampaignEvent ID'));
     return;
   }
-  findRollById(id as string)
-    .then((roll) => {
+  findCampaignEventById(id as string)
+    .then((campaignEvent) => {
       if (result !== null) {
-        roll.result = result;
+        campaignEvent.result = result;
       }
       if (formula !== null) {
-        roll.formula = formula;
+        campaignEvent.formula = formula;
       }
       if (character !== null) {
-        roll.character = character;
+        campaignEvent.character = character;
       }
       if (campaign !== null) {
-        roll.campaign = campaign;
+        campaignEvent.campaign = campaign;
       }
       if (type !== null) {
-        roll.type = type;
+        campaignEvent.type = type;
       }
-      roll
+      campaignEvent
         .save()
         .then(() => {
-          res.send({ message: 'Roll was updated successfully!', roll });
+          res.send({ message: 'CampaignEvent was updated successfully!', campaignEvent });
         })
         .catch((err: Error) => {
           res.status(500).send(gemServerError(err));
         });
     })
     .catch(() => {
-      res.status(404).send(gemNotFound('Roll'));
+      res.status(404).send(gemNotFound('CampaignEvent'));
     });
 };
 
-const deleteRollByCampaignId = async (campaignId: string): Promise<boolean> =>
+const deleteCampaignEventByCampaignId = async (campaignId: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (campaignId === undefined) {
       reject(gemInvalidField('Campaign ID'));
       return;
     }
-    Roll.deleteMany({ campaign: campaignId })
+    CampaignEvent.deleteMany({ campaign: campaignId })
       .then(() => {
         resolve(true);
       })
@@ -140,11 +142,11 @@ const deleteRollByCampaignId = async (campaignId: string): Promise<boolean> =>
 
 const findAllByCampaign = (req: Request, res: Response): void => {
   const { campaignId, offset } = req.query;
-  findRollsByCampaignId(campaignId as string, (offset ?? 0) as number)
-    .then((rolls) => {
-      res.send(rolls.reverse());
+  findCampaignEventsByCampaignId(campaignId as string, (offset ?? 0) as number)
+    .then((campaignEvents) => {
+      res.send(campaignEvents.reverse());
     })
     .catch((err: Error) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteRollByCampaignId, findAllByCampaign, update };
+export { create, deleteCampaignEventByCampaignId, findAllByCampaign, update };

@@ -14,7 +14,7 @@ import type {
   ICuratedBodyPart,
 } from './character';
 import type { IReactHookFormInputs } from './form';
-import type { IRoll, IUser, TypeDice, TypeRoll } from './global';
+import type { ICampaignEvent, IUser, TypeCampaignEvent, TypeDice } from './global';
 import type {
   ICuratedAmmo,
   ICuratedArmor,
@@ -96,12 +96,13 @@ export type {
   IBodyStat,
   IBodyWeapon,
   ICampaign,
+  ICampaignEvent,
   IChapter,
   IChapterType,
-  ICharParam,
-  ICharParamBonus,
   ICharacter,
   ICharacterNode,
+  ICharParam,
+  ICharParamBonus,
   ICuratedAction,
   ICuratedAmmo,
   ICuratedArmor,
@@ -120,9 +121,9 @@ export type {
   ICuratedImplant,
   ICuratedItem,
   ICuratedItemModifier,
-  ICuratedNPC,
   ICuratedNode,
   ICuratedNotion,
+  ICuratedNPC,
   ICuratedPage,
   ICuratedProgram,
   ICuratedProgramScope,
@@ -148,7 +149,6 @@ export type {
   IPage,
   IRarity,
   IReactHookFormInputs,
-  IRoll,
   IRuleBook,
   IRuleBookType,
   ISkill,
@@ -160,7 +160,7 @@ export type {
   IWeaponScope,
   IWeaponStyle,
   IWeaponType,
+  TypeCampaignEvent,
   TypeDice,
-  TypeRoll,
   TypeStarterKitValues,
 };

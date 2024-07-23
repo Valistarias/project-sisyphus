@@ -1,6 +1,8 @@
 import Alert from './alert';
 import ArmorDisplay from './armorDisplay';
 import BagDisplay from './bagDisplay';
+import CampaignEventResult from './campaignEventLine';
+import CampaignEventTab from './campaignEventTab';
 import { CharacterHeader } from './character';
 import {
   CharCreationStep1,
@@ -19,14 +21,14 @@ import {
   basicRichTextElementExtentions,
   completeRichTextElementExtentions,
 } from './richTextElement';
-import RollResult from './rollResult';
-import RollTab from './rollTab';
 import WeaponDisplay from './weaponDisplay';
 
 export {
   Alert,
   ArmorDisplay,
   BagDisplay,
+  CampaignEventResult,
+  CampaignEventTab,
   CharCreationStep1,
   CharCreationStep2,
   CharCreationStep3,
@@ -39,8 +41,6 @@ export {
   ItemDisplay,
   ProgramDisplay,
   RichTextElement,
-  RollResult,
-  RollTab,
   WeaponDisplay,
   basicRichTextElementExtentions,
   completeRichTextElementExtentions,

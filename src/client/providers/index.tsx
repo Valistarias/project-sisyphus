@@ -4,7 +4,7 @@ import { ApiProvider, useApi } from './api';
 import { ConfirmMessageProvider, useConfirmMessage } from './confirmMessage';
 import { GlobalVarsProvider, useGlobalVars } from './globalVars';
 import { LangProvider, useLang } from './lang';
-import { RollWindowProvider, useRollWindow } from './rollWindow';
+import { CampaignEventWindowProvider, useCampaignEventWindow } from './rollWindow';
 import { SocketProvider, useSocket } from './socket';
 import { SystemAlertsProvider, useSystemAlerts } from './systemAlerts';
 import { ThemeProvider, useTheme } from './theme';
@@ -22,7 +22,7 @@ const Providers: FC<ProviderProps> = ({ children }) => (
           <SocketProvider>
             <SystemAlertsProvider>
               <ConfirmMessageProvider>
-                <RollWindowProvider>{children}</RollWindowProvider>
+                <CampaignEventWindowProvider>{children}</CampaignEventWindowProvider>
               </ConfirmMessageProvider>
             </SystemAlertsProvider>
           </SocketProvider>
@@ -35,10 +35,10 @@ const Providers: FC<ProviderProps> = ({ children }) => (
 export {
   Providers,
   useApi,
+  useCampaignEventWindow,
   useConfirmMessage,
   useGlobalVars,
   useLang,
-  useRollWindow,
   useSocket,
   useSystemAlerts,
   useTheme,

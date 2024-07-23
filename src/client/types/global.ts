@@ -33,12 +33,12 @@ export interface IUser {
   }>;
 }
 
-// Dices and Rolls ------------------------------------
+// Dices and CampaignEvents ------------------------------------
 export type TypeDice = 4 | 6 | 8 | 10 | 12 | 20;
 
-export type TypeRoll = 'free';
+export type TypeCampaignEvent = 'free';
 
-export interface IRoll {
+export interface ICampaignEvent {
   /** The ID of the roll */
   _id: string;
   /** The type of the roll */

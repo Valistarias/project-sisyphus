@@ -11,6 +11,7 @@ import Backgrounds from './backgrounds';
 import Bags from './bags';
 import Bodies from './bodies';
 import BodyParts from './bodyParts';
+import CampaignEvents from './campaignEvents';
 import Campaigns from './campaigns';
 import Chapters from './chapters';
 import ChapterTypes from './chapterTypes';
@@ -35,7 +36,6 @@ import NPCs from './npcs';
 import Programs from './programs';
 import ProgramScopes from './programScopes';
 import Rarities from './rarities';
-import Rolls from './rolls';
 import RuleBooks from './ruleBooks';
 import RuleBookTypes from './ruleBookTypes';
 import SkillBonuses from './skillBonuses';
@@ -52,44 +52,44 @@ import WeaponTypes from './weaponTypes';
 
 export {
   ActionDurations,
-  Actions,
   ActionTypes,
+  Actions,
   Ammos,
-  Armors,
   ArmorTypes,
+  Armors,
   Auth,
   Backgrounds,
   Bags,
   Bodies,
   BodyParts,
+  CampaignEvents,
   Campaigns,
-  Chapters,
   ChapterTypes,
-  Characters,
+  Chapters,
   CharParamBonuses,
   CharParams,
+  Characters,
   CyberFrameBranches,
   CyberFrames,
-  Damages,
   DamageTypes,
+  Damages,
   Effects,
   EnnemyAttacks,
   GlobalValues,
   Implants,
   ItemModifiers,
-  Items,
   ItemTypes,
+  Items,
   MailToken,
+  NPCs,
   Nodes,
   Notions,
-  NPCs,
   Pages,
-  Programs,
   ProgramScopes,
+  Programs,
   Rarities,
-  Rolls,
-  RuleBooks,
   RuleBookTypes,
+  RuleBooks,
   SkillBonuses,
   SkillBranches,
   Skills,
@@ -97,8 +97,8 @@ export {
   Stats,
   TipTexts,
   Users,
-  Weapons,
   WeaponScopes,
   WeaponStyles,
   WeaponTypes,
+  Weapons,
 };

@@ -2,28 +2,28 @@ import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } fro
 
 import { useTranslation } from 'react-i18next';
 
-import { useApi, useRollWindow, useSocket, useSystemAlerts } from '../providers';
+import { useApi, useCampaignEventWindow, useSocket, useSystemAlerts } from '../providers';
 
 import holoBackground from '../assets/imgs/tvbg2.gif';
 import { Aicon, Ap, Avideo, type typeIcons } from '../atoms';
 import { Button } from '../molecules';
-import { type ICharacter, type IRoll, type TypeRoll } from '../types';
+import { type ICampaignEvent, type ICharacter, type TypeCampaignEvent } from '../types';
 
 import Alert from './alert';
-import RollResult from './rollResult';
+import CampaignEventLine from './campaignEventLine';
 
 import {
   calculateDices,
   classTrim,
-  createBacisDiceRequest,
+  createBasicDiceRequest,
   diceResultToStr,
   type DiceRequest,
   type DiceResult,
 } from '../utils';
 
-import './rollTab.scss';
+import './campaignEventTab.scss';
 
-interface IRollTab {
+interface ICampaignEventTab {
   /** The campaign that the rolls are displayed */
   campaignId?: string;
   /** The character used for rolling */
@@ -32,21 +32,21 @@ interface IRollTab {
   onRollDices: (diceValues: DiceRequest[]) => void;
 }
 
-const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, character }) => {
+const CampaignEventTab: FC<ICampaignEventTab> = ({ onRollDices, campaignId, character }) => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { socket } = useSocket();
-  const { addRollEventListener, removeRollEventListener } = useRollWindow();
+  const { addCampaignEventListener, removeCampaignEventListener } = useCampaignEventWindow();
 
   // const [loading, setLoading] = useState(true);
   const [isOpen, setOpen] = useState(false);
   // const [notFound, setNotFound] = useState(false);
 
-  const [diceValues, setDiceValues] = useState<DiceRequest[]>(createBacisDiceRequest());
-  const [dataPrevRolls, setDataPrevRolls] = useState<IRoll[]>([]);
+  const [diceValues, setDiceValues] = useState<DiceRequest[]>(createBasicDiceRequest());
+  const [dataPrevCampaignEvents, setDataPrevCampaignEvents] = useState<ICampaignEvent[]>([]);
 
-  const canRoll = useMemo(() => diceValues.some(({ qty }) => qty > 0), [diceValues]);
+  const canCampaignEvent = useMemo(() => diceValues.some(({ qty }) => qty > 0), [diceValues]);
 
   const calledApi = useRef(false);
   const initEvt = useRef(false);
@@ -76,8 +76,8 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, character }) => {
     });
   }, []);
 
-  const addRoll = useCallback((roll: IRoll) => {
-    setDataPrevRolls((prev) => {
+  const addCampaignEvent = useCallback((roll: ICampaignEvent) => {
+    setDataPrevCampaignEvents((prev) => {
       const next = [...prev];
       next.push(roll);
       return next;
@@ -85,7 +85,12 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, character }) => {
   }, []);
 
   const endRollEvent = useCallback(
-    ({ detail }) => {
+    ({
+      detail,
+    }: CustomEvent<{
+      stats: DiceResult[];
+      mode: TypeCampaignEvent;
+    }>) => {
       if (
         api !== undefined &&
         detail.stats !== null &&
@@ -93,9 +98,9 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, character }) => {
         character !== undefined &&
         socket !== null
       ) {
-        const { stats, mode }: { stats: DiceResult[]; mode: TypeRoll } = detail;
+        const { stats, mode } = detail;
         const result = calculateDices(stats).total;
-        api.rolls
+        api.campaignEvents
           .create({
             result,
             formula: diceResultToStr(stats),
@@ -103,16 +108,16 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, character }) => {
             campaign: campaignId,
             type: mode,
           })
-          .then((data: IRoll) => {
-            const dataRoll = {
+          .then((data: ICampaignEvent) => {
+            const dataCampaignEvent = {
               ...data,
               character,
             };
-            socket.emit('newRoll', {
+            socket.emit('newCampaignEvent', {
               room: campaignId,
-              data: dataRoll,
+              data: dataCampaignEvent,
             });
-            addRoll(dataRoll);
+            addCampaignEvent(dataCampaignEvent);
           })
           .catch((res) => {
             const newId = getNewId();
@@ -127,7 +132,7 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, character }) => {
           });
       }
     },
-    [addRoll, api, campaignId, character, createAlert, getNewId, socket, t]
+    [addCampaignEvent, api, campaignId, character, createAlert, getNewId, socket, t]
   );
 
   const diceElts = useMemo(
@@ -140,8 +145,8 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, character }) => {
               key={typeDiceNumber}
               theme="solid"
               className={classTrim(`
-                  roll-tab__dice__button
-                  ${diceElt.qty > 0 ? 'roll-tab__dice__button--active' : ''}
+                  campaign-event-tab__dice__button
+                  ${diceElt.qty > 0 ? 'campaign-event-tab__dice__button--active' : ''}
                 `)}
               size="large"
               onContextMenu={(e) => {
@@ -157,7 +162,7 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, character }) => {
               <Ap>{`${diceElt.qty > 0 ? diceElt.qty : ''}D${typeDiceNumber}`}</Ap>
               <Aicon
                 type={`d${typeDiceNumber}` as typeIcons}
-                className="roll-tab__dice__button__icon"
+                className="campaign-event-tab__dice__button__icon"
                 size="large"
               />
             </Button>
@@ -168,48 +173,51 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, character }) => {
     [changeDice, diceValues]
   );
 
-  const logRolls = useMemo(() => {
-    return dataPrevRolls.map(({ _id, character, createdAt, formula, result, type }) => {
+  const logCampaignEvents = useMemo(() => {
+    return dataPrevCampaignEvents.map(({ _id, character, createdAt, formula, result, type }) => {
       let authorName = '';
       if (character !== null) {
         authorName = `${character.firstName !== undefined ? `${character.firstName} ` : ''}${character.nickName !== undefined ? `"${character.nickName}" ` : ''}${character.lastName ?? ''}`;
       }
       return (
-        <RollResult
+        <CampaignEventLine
           key={_id}
           authorName={authorName.trim()}
           result={result}
           formula={formula}
-          type={type as TypeRoll}
+          type={type as TypeCampaignEvent}
           createdAt={new Date(createdAt)}
         />
       );
     });
-  }, [dataPrevRolls]);
+  }, [dataPrevCampaignEvents]);
 
-  const reloadRolls = useCallback(() => {
-    if (api !== undefined && campaignId !== undefined) {
-      api.rolls
-        .getAllByCampaign({
-          campaignId,
-          offset: 0,
-        })
-        .then((sentRolls: IRoll[]) => {
-          setDataPrevRolls(sentRolls);
-        })
-        .catch((res) => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
+  const reloadCampaignEvents = useCallback(
+    (campaignId: string) => {
+      if (api !== undefined) {
+        api.campaignEvents
+          .getAllByCampaign({
+            campaignId,
+            offset: 0,
+          })
+          .then((sentCampaignEvents: ICampaignEvent[]) => {
+            setDataPrevCampaignEvents(sentCampaignEvents);
+          })
+          .catch((res) => {
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{t('serverErrors.CYPU-301')}</Ap>
+                </Alert>
+              ),
+            });
           });
-        });
-    }
-  }, [api, campaignId, createAlert, getNewId, t]);
+      }
+    },
+    [api, createAlert, getNewId, t]
+  );
 
   const onLogScroll = useCallback(() => {
     if (scrollRef.current !== null) {
@@ -222,15 +230,15 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, character }) => {
 
       if (scrollRef.current.scrollTop === 0) {
         if (api !== undefined && campaignId !== undefined) {
-          api.rolls
+          api.campaignEvents
             .getAllByCampaign({
               campaignId,
-              offset: dataPrevRolls.length,
+              offset: dataPrevCampaignEvents.length,
             })
-            .then((sentRolls: IRoll[]) => {
+            .then((sentCampaignEvents: ICampaignEvent[]) => {
               const indexedTotHeight = scrollRef.current?.scrollHeight;
-              setDataPrevRolls((prev) => {
-                const next = [...sentRolls, ...prev];
+              setDataPrevCampaignEvents((prev) => {
+                const next = [...sentCampaignEvents, ...prev];
                 return next;
               });
               setTimeout(function () {
@@ -253,14 +261,19 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, character }) => {
         }
       }
     }
-  }, [api, campaignId, createAlert, dataPrevRolls, getNewId, t]);
+  }, [api, campaignId, createAlert, dataPrevCampaignEvents, getNewId, t]);
 
   useEffect(() => {
-    if (api !== undefined && !calledApi.current && scrollRef.current !== null) {
+    if (
+      api !== undefined &&
+      !calledApi.current &&
+      scrollRef.current !== null &&
+      campaignId !== undefined
+    ) {
       calledApi.current = true;
-      reloadRolls();
+      reloadCampaignEvents(campaignId);
     }
-  }, [api, createAlert, getNewId, t, reloadRolls]);
+  }, [api, createAlert, getNewId, t, reloadCampaignEvents, campaignId]);
 
   useEffect(() => {
     if (calledApi.current) {
@@ -270,29 +283,43 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, character }) => {
 
   useEffect(() => {
     if (campaignId !== undefined && socket !== null) {
-      const triggerNewData = (diceResult: IRoll): void => {
-        addRoll(diceResult);
+      const triggerNewData = (diceResult: ICampaignEvent): void => {
+        addCampaignEvent(diceResult);
       };
       socket.emit('goToRoom', campaignId);
-      socket.on('newRoll', triggerNewData);
+      socket.on('newCampaignEvent', triggerNewData);
 
       return () => {
-        socket.off('newRoll', triggerNewData);
+        socket.off('newCampaignEvent', triggerNewData);
         socket.emit('exitRoom', campaignId);
       };
     }
-  }, [addRoll, campaignId, socket]);
+  }, [addCampaignEvent, campaignId, socket]);
 
   useEffect(() => {
-    if (!initEvt.current && api !== undefined) {
+    if (
+      !initEvt.current &&
+      api !== undefined &&
+      socket !== null &&
+      campaignId !== undefined &&
+      character !== undefined
+    ) {
       initEvt.current = true;
-      addRollEventListener?.('endroll', endRollEvent);
+      addCampaignEventListener?.('endroll', endRollEvent);
     }
 
     return () => {
-      removeRollEventListener?.('endroll', endRollEvent);
+      removeCampaignEventListener?.('endroll', endRollEvent);
     };
-  }, [addRollEventListener, removeRollEventListener, api, endRollEvent]);
+  }, [
+    addCampaignEventListener,
+    removeCampaignEventListener,
+    api,
+    endRollEvent,
+    socket,
+    campaignId,
+    character,
+  ]);
 
   setTimeout(function () {
     if (lockedScroll.current && scrollRef.current !== null) {
@@ -303,58 +330,62 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, character }) => {
   return (
     <div
       className={classTrim(`
-          roll-tab
-          ${isOpen ? 'roll-tab--open' : ''}
+          campaign-event-tab
+          ${isOpen ? 'campaign-event-tab--open' : ''}
         `)}
     >
-      <div className="roll-tab__buttons">
+      <div className="campaign-event-tab__buttons">
         <Button
           theme="line"
-          className="roll-tab__buttons__toggle"
+          className="campaign-event-tab__buttons__toggle"
           onClick={() => {
             if (isOpen) {
-              setDiceValues(createBacisDiceRequest());
+              setDiceValues(createBasicDiceRequest());
             }
             setOpen(!isOpen);
           }}
         >
           {isOpen
-            ? t('rollTab.close', { ns: 'components' })
-            : t('rollTab.dices', { ns: 'components' })}
+            ? t('campaignEventTab.close', { ns: 'components' })
+            : t('campaignEventTab.open', { ns: 'components' })}
         </Button>
       </div>
-      <div className="roll-tab__content">
-        <div className="roll-tab__log">
-          <Ap className="roll-tab__log__title">{t('rollTab.title', { ns: 'components' })}</Ap>
+      <div className="campaign-event-tab__content">
+        <div className="campaign-event-tab__log">
+          <Ap className="campaign-event-tab__log__title">
+            {t('campaignEventTab.title', { ns: 'components' })}
+          </Ap>
           <div
-            className="roll-tab__log__table"
+            className="campaign-event-tab__log__table"
             style={{ backgroundImage: `url(${holoBackground})` }}
             ref={scrollRef}
             onScroll={onLogScroll}
           >
             {campaignId === undefined ? (
-              <p className="roll-tab__log__table__no-canmpaign">
-                {t('rollTab.noCampaign', { ns: 'components' })}
+              <p className="campaign-event-tab__log__table__no-canmpaign">
+                {t('campaignEventTab.noCampaign', { ns: 'components' })}
               </p>
             ) : null}
-            {logRolls}
+            {logCampaignEvents}
           </div>
-          <Avideo className="roll-tab__log__animatedbg" video="logo" />
+          <Avideo className="campaign-event-tab__log__animatedbg" video="logo" />
         </div>
-        <div className="roll-tab__dice">
-          <Ap className="roll-tab__dice__title">{t('rollTab.freeRoll', { ns: 'components' })}</Ap>
+        <div className="campaign-event-tab__dice">
+          <Ap className="campaign-event-tab__dice__title">
+            {t('campaignEventTab.freeRoll', { ns: 'components' })}
+          </Ap>
           {diceElts}
           <Button
             theme="line"
             size="large"
-            className="roll-tab__dice__roll"
-            disabled={!canRoll}
+            className="campaign-event-tab__dice__roll"
+            disabled={!canCampaignEvent}
             onClick={() => {
               onRollDices(diceValues);
-              setDiceValues(createBacisDiceRequest());
+              setDiceValues(createBasicDiceRequest());
             }}
           >
-            {t('rollTab.roll', { ns: 'components' })}
+            {t('campaignEventTab.roll', { ns: 'components' })}
           </Button>
         </div>
       </div>
@@ -362,4 +393,4 @@ const RollTab: FC<IRollTab> = ({ onRollDices, campaignId, character }) => {
   );
 };
 
-export default RollTab;
+export default CampaignEventTab;
