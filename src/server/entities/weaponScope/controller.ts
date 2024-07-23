@@ -17,11 +17,11 @@ const { WeaponScope } = db;
 const findWeaponScopes = async (): Promise<HydratedIWeaponScope[]> =>
   await new Promise((resolve, reject) => {
     WeaponScope.find()
-      .then(async (res) => {
+      .then(async (res?: HydratedIWeaponScope[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('WeaponScopes'));
         } else {
-          resolve(res as HydratedIWeaponScope[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -32,11 +32,11 @@ const findWeaponScopes = async (): Promise<HydratedIWeaponScope[]> =>
 const findWeaponScopeById = async (id: string): Promise<HydratedIWeaponScope> =>
   await new Promise((resolve, reject) => {
     WeaponScope.findById(id)
-      .then(async (res) => {
+      .then(async (res?: HydratedIWeaponScope | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('WeaponScope'));
         } else {
-          resolve(res as HydratedIWeaponScope);
+          resolve(res);
         }
       })
       .catch(async (err) => {

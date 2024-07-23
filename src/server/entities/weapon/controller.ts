@@ -25,11 +25,11 @@ const findWeapons = async (options?: findAllPayload): Promise<HydratedIWeapon[]>
       .populate<{ effects: IEffect[] }>('effects')
       .populate<{ actions: IAction[] }>('actions')
       .populate<{ damages: IDamage[] }>('damages')
-      .then(async (res) => {
+      .then(async (res?: HydratedIWeapon[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Weapons'));
         } else {
-          resolve(res as HydratedIWeapon[]);
+          resolve(res);
         }
       })
       .catch(async (err: Error) => {
@@ -43,11 +43,11 @@ const findWeaponById = async (id: string): Promise<HydratedIWeapon> =>
       .populate<{ effects: IEffect[] }>('effects')
       .populate<{ actions: IAction[] }>('actions')
       .populate<{ damages: IDamage[] }>('damages')
-      .then(async (res) => {
+      .then(async (res?: HydratedIWeapon | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Weapon'));
         } else {
-          resolve(res as HydratedIWeapon);
+          resolve(res);
         }
       })
       .catch(async (err: Error) => {

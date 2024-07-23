@@ -39,12 +39,13 @@ interface IWeapon {
   createdAt: Date;
 }
 
-interface HydratedIWeapon
-  extends Omit<HydratedDocument<IWeapon>, 'effects' | 'actions' | 'damages'> {
-  effects: IEffect[] | string[];
-  actions: IAction[] | string[];
-  damages: IDamage[] | string[];
-}
+type HydratedIWeapon = HydratedDocument<
+  Omit<IWeapon, 'effects' | 'actions' | 'damages'> & {
+    effects: IEffect[] | string[];
+    actions: IAction[] | string[];
+    damages: IDamage[] | string[];
+  }
+>;
 
 const weaponSchema = new Schema<IWeapon>({
   title: String,

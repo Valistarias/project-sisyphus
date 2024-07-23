@@ -15,7 +15,7 @@ interface IStat {
   createdAt: Date;
 }
 
-interface HydratedIStat extends HydratedDocument<IStat> {}
+type HydratedIStat = HydratedDocument<IStat>;
 
 const statSchema = new Schema<IStat>({
   title: String,

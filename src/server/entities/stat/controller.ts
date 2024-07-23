@@ -19,11 +19,11 @@ const { Stat } = db;
 const findStats = async (): Promise<HydratedIStat[]> =>
   await new Promise((resolve, reject) => {
     Stat.find()
-      .then(async (res) => {
+      .then(async (res?: HydratedIStat[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Stats'));
         } else {
-          resolve(res as HydratedIStat[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -34,11 +34,11 @@ const findStats = async (): Promise<HydratedIStat[]> =>
 const findStatById = async (id: string): Promise<HydratedIStat> =>
   await new Promise((resolve, reject) => {
     Stat.findById(id)
-      .then(async (res) => {
+      .then(async (res?: HydratedIStat | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Stat'));
         } else {
-          resolve(res as HydratedIStat);
+          resolve(res);
         }
       })
       .catch(async (err) => {

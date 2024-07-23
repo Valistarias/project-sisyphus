@@ -13,7 +13,7 @@ interface IWeaponScope {
   createdAt: Date;
 }
 
-interface HydratedIWeaponScope extends HydratedDocument<IWeaponScope> {}
+type HydratedIWeaponScope = HydratedDocument<IWeaponScope>;
 
 const weaponScope = new Schema<IWeaponScope>({
   title: String,

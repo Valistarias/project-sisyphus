@@ -16,11 +16,11 @@ const findWeaponTypes = async (): Promise<HydratedIWeaponType[]> =>
     WeaponType.find()
       .populate<{ weaponStyle: IWeaponStyle }>('weaponStyle')
       .populate<{ itemType: IItemType }>('itemType')
-      .then(async (res) => {
+      .then(async (res?: HydratedIWeaponType[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('WeaponTypes'));
         } else {
-          resolve(res as HydratedIWeaponType[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -33,11 +33,11 @@ const findWeaponTypeById = async (id: string): Promise<HydratedIWeaponType> =>
     WeaponType.findById(id)
       .populate<{ weaponStyle: IWeaponStyle }>('weaponStyle')
       .populate<{ itemType: IItemType }>('itemType')
-      .then(async (res) => {
+      .then(async (res?: HydratedIWeaponType | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('WeaponType'));
         } else {
-          resolve(res as HydratedIWeaponType);
+          resolve(res);
         }
       })
       .catch(async (err) => {

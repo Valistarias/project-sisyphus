@@ -17,11 +17,11 @@ const { TipText } = db;
 const findTipTexts = async (): Promise<HydratedITipText[]> =>
   await new Promise((resolve, reject) => {
     TipText.find()
-      .then(async (res) => {
+      .then(async (res?: HydratedITipText[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('TipTexts'));
         } else {
-          resolve(res as HydratedITipText[]);
+          resolve(res);
         }
       })
       .catch(async (err) => {
@@ -32,11 +32,11 @@ const findTipTexts = async (): Promise<HydratedITipText[]> =>
 const findTipTextById = async (id: string): Promise<HydratedITipText> =>
   await new Promise((resolve, reject) => {
     TipText.findById(id)
-      .then(async (res) => {
+      .then(async (res?: HydratedITipText | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('TipText'));
         } else {
-          resolve(res as HydratedITipText);
+          resolve(res);
         }
       })
       .catch(async (err) => {

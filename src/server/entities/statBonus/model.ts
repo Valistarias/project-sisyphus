@@ -5,7 +5,7 @@ import { type IStat } from '../index';
 interface IStatBonus {
   /** The associated stat */
   stat: ObjectId;
-  /** The value of the bonus */
+  /** The value of the stat bonus */
   value: number;
   /** When the stat branch was created */
   createdAt: Date;

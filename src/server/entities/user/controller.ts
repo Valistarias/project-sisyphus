@@ -14,11 +14,11 @@ const findUserById = async (id: string): Promise<HydratedIUser> =>
   await new Promise((resolve, reject) => {
     User.findById(id)
       .populate<{ roles: IRole[] }>('roles')
-      .then(async (res) => {
+      .then(async (res?: HydratedIUser | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('User'));
         } else {
-          resolve(res as HydratedIUser);
+          resolve(res);
         }
       })
       .catch(async (err) => {

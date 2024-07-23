@@ -27,9 +27,11 @@ interface IUser {
   createdAt: Date;
 }
 
-interface HydratedIUser extends Omit<HydratedDocument<IUser>, 'roles'> {
-  roles: IRole[];
-}
+type HydratedIUser = HydratedDocument<
+  Omit<IUser, 'roles'> & {
+    roles: IRole[];
+  }
+>;
 
 const userSchema = new Schema<IUser>({
   username: String,

@@ -22,11 +22,12 @@ interface IWeaponType {
   createdAt: Date;
 }
 
-interface HydratedIWeaponType
-  extends Omit<HydratedDocument<IWeaponType>, 'weaponStyle' | 'itemType'> {
-  weaponStyle: IWeaponStyle;
-  itemType: IItemType;
-}
+type HydratedIWeaponType = HydratedDocument<
+  Omit<IWeaponType, 'weaponStyle' | 'itemType'> & {
+    weaponStyle: IWeaponStyle;
+    itemType: IItemType;
+  }
+>;
 
 const userSchema = new Schema<IWeaponType>({
   title: String,

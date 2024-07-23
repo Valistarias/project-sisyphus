@@ -13,7 +13,7 @@ interface ITipText {
   createdAt: Date;
 }
 
-interface HydratedITipText extends HydratedDocument<ITipText> {}
+type HydratedITipText = HydratedDocument<ITipText>;
 
 const tipTextSchema = new Schema<ITipText>({
   title: String,

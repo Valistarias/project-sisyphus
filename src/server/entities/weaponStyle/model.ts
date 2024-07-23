@@ -15,9 +15,11 @@ interface IWeaponStyle {
   createdAt: Date;
 }
 
-interface HydratedIWeaponStyle extends Omit<HydratedDocument<IWeaponStyle>, 'skill'> {
-  skill: ISkill;
-}
+type HydratedIWeaponStyle = HydratedDocument<
+  Omit<IWeaponStyle, 'skill'> & {
+    skill: ISkill;
+  }
+>;
 
 const userSchema = new Schema<IWeaponStyle>({
   title: String,
