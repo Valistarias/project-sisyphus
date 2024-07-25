@@ -13,7 +13,7 @@
   }
 
   &__result {
-    background-blend-mode: hard-light;
+    background-blend-mode: color-burn;
     background-color: var(--primary-dark);
     border: 1px solid var(--primary);
     border-radius: var(--border-radius);

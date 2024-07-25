@@ -29,6 +29,10 @@ interface FormHpValues {
   hp: string;
 }
 
+interface FormKarmaValues {
+  karma: string;
+}
+
 const CharacterHeader: FC = () => {
   const { t } = useTranslation();
   const { createAlert, getNewId } = useSystemAlerts();
@@ -73,12 +77,27 @@ const CharacterHeader: FC = () => {
     [character, globalValues, charParams]
   );
 
+  const charKarma = useMemo(() => {
+    if (character === null || character === false) {
+      return 0;
+    }
+    return character.karma ?? 0;
+  }, [character]);
+
   const {
     handleSubmit: handleSubmitHp,
     control: controlHp,
     reset: resetHp,
   } = useForm<FieldValues>({
     defaultValues: useMemo(() => ({ hp: hpValues.isLoading ? 0 : hpValues.hp }), [hpValues]),
+  });
+
+  const {
+    handleSubmit: handleSubmitKarma,
+    control: controlKarma,
+    reset: resetKarma,
+  } = useForm<FieldValues>({
+    defaultValues: useMemo(() => ({ karma: charKarma }), [charKarma]),
   });
 
   const onSaveHp: SubmitHandler<FormHpValues> = useCallback(
@@ -129,10 +148,42 @@ const CharacterHeader: FC = () => {
     ]
   );
 
+  const onSaveKarma: SubmitHandler<FormKarmaValues> = useCallback(
+    ({ karma }) => {
+      if (api === undefined || character === null || character === false || socket === null) {
+        return;
+      }
+      api.characters
+        .update({
+          id: character?._id,
+          karma,
+        })
+        .then(() => {
+          setCharacterFromId(character._id);
+        })
+        .catch(({ response }) => {
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert key={newId} id={newId} timer={5}>
+                <Ap>{response}</Ap>
+              </Alert>
+            ),
+          });
+        });
+    },
+    [api, character, createAlert, getNewId, setCharacterFromId, socket]
+  );
+
   // To affect default data
   useEffect(() => {
     resetHp({ hp: hpValues.isLoading ? 0 : hpValues.hp });
   }, [hpValues, resetHp]);
+
+  useEffect(() => {
+    resetKarma({ karma: charKarma });
+  }, [charKarma, resetKarma]);
 
   return (
     <div
@@ -155,18 +206,37 @@ const CharacterHeader: FC = () => {
               })}
             </Ap>
           ) : null}
+          <div className="char-header__left__buttons">
+            <HintButton
+              hint={t('character.buttons.editChar', {
+                ns: 'pages',
+              })}
+              icon="edit"
+              size="small"
+              theme="line"
+              href={`/character/${character !== false ? character?._id ?? '' : ''}/edit`}
+            />
+            <HintButton
+              hint={t('character.buttons.editChar', {
+                ns: 'pages',
+              })}
+              icon="edit"
+              size="small"
+              theme="line"
+              href={`/character/${character !== false ? character?._id ?? '' : ''}/edit`}
+            />
+            <HintButton
+              hint={t('character.buttons.editChar', {
+                ns: 'pages',
+              })}
+              icon="edit"
+              size="small"
+              theme="line"
+              href={`/character/${character !== false ? character?._id ?? '' : ''}/edit`}
+            />
+          </div>
         </div>
-        <div className="char-header__mid">
-          <HintButton
-            hint={t('character.buttons.editChar', {
-              ns: 'pages',
-            })}
-            icon="edit"
-            size="small"
-            theme="line"
-            href={`/character/${character !== false ? character?._id ?? '' : ''}/edit`}
-          />
-        </div>
+        <div className="char-header__mid"></div>
         <div className="char-header__right">
           <div className="char-header__health">
             <form
@@ -198,6 +268,34 @@ const CharacterHeader: FC = () => {
               }
               withDangerZone
             />
+          </div>
+          <div className="char-header__karma">
+            <form
+              className="char-header__karma__field"
+              onSubmit={handleSubmitKarma(onSaveKarma)}
+              noValidate
+            >
+              <Ap className="char-header__karma__field__term">
+                {t('terms.character.karma.short')}
+              </Ap>
+              <div className="char-header__karma__field__value">
+                <Input
+                  control={controlKarma}
+                  inputName="karma"
+                  type="number"
+                  size="small"
+                  inline
+                  rules={{
+                    required: t('karma.required', { ns: 'fields' }),
+                  }}
+                  className="char-header__karma__field__input"
+                  onBlur={handleSubmitKarma(onSaveKarma)}
+                />
+                <Ap className="char-header__karma__field__total">{`/ ??`}</Ap>
+              </div>
+            </form>
+
+            <Aloadbar color="tertiary" progress={charKarma === 0 ? 0 : 0.5} />
           </div>
         </div>
       </div>

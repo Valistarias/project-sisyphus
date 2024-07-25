@@ -12,7 +12,7 @@ interface IAloadbar extends IQuarkProps {
   /** Value from 0 to 1 that determine how much the bar had progressed */
   progress: number;
   /** Is the Progress Bar changing color when a specific threshold is passed (fixed) */
-  withDangerZone: boolean;
+  withDangerZone?: boolean;
 }
 
 const Aloadbar: FC<IAloadbar> = ({

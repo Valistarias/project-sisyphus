@@ -20,12 +20,17 @@
   }
 
   &__left {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    justify-content: space-between;
+
     &__title {
       font-size: 2rem;
       font-style: italic;
       font-weight: 500;
       letter-spacing: 1rem;
-      margin-bottom: 1rem;
+      margin-bottom: 0;
     }
 
     &__sub {
@@ -33,9 +38,19 @@
       font-size: 1.4rem;
       font-weight: 300;
     }
+
+    &__buttons {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+    }
   }
 
   &__right {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
     width: 26rem;
   }
 
@@ -49,7 +64,8 @@
     padding: 1rem;
   }
 
-  &__health {
+  &__health,
+  &__karma {
     &__field {
       align-items: center;
       display: flex;
@@ -59,8 +75,9 @@
       margin-bottom: 1rem;
 
       &__term {
-        font-size: 2rem;
+        font-size: 1.4rem;
         font-weight: 400;
+        text-transform: uppercase;
       }
 
       &__value {
