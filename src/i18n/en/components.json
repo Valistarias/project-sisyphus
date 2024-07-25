@@ -61,9 +61,21 @@
     "freeRoll": "Free Roll",
     "noCampaign": "No Dice Log available. To have a Dice Log, your character need to be in a campaign."
   },
-  "rollResults": {
-    "freeRoll1": "Free",
-    "freeRoll2": "Roll"
+  "campaignEventResults": {
+    "type": {
+      "free": {
+        "line1": "Free",
+        "line2": "Roll"
+      },
+      "hpLoss": {
+        "line1": "HP",
+        "line2": "Loss"
+      },
+      "hpGain": {
+        "line1": "HP",
+        "line2": "Gain"
+      }
+    }
   },
   "rollWindow": {
     "total": "Total",

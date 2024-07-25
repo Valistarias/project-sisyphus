@@ -12,14 +12,7 @@ import { type ICampaignEvent, type ICharacter, type TypeCampaignEvent } from '..
 import Alert from './alert';
 import CampaignEventLine from './campaignEventLine';
 
-import {
-  calculateDices,
-  classTrim,
-  createBasicDiceRequest,
-  diceResultToStr,
-  type DiceRequest,
-  type DiceResult,
-} from '../utils';
+import { classTrim, createBasicDiceRequest, type DiceRequest } from '../utils';
 
 import './campaignEventTab.scss';
 
@@ -50,6 +43,10 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({ onRollDices, campaignId, char
 
   const calledApi = useRef(false);
   const initEvt = useRef(false);
+  const socketEvt = useRef(false);
+  const unMountEvt = useRef(false);
+  // For event reload
+  const charRef = useRef(character);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const lockedScroll = useRef(true);
@@ -76,64 +73,13 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({ onRollDices, campaignId, char
     });
   }, []);
 
-  const addCampaignEvent = useCallback((roll: ICampaignEvent) => {
+  const addCampaignEventToTab = useCallback((roll: ICampaignEvent) => {
     setDataPrevCampaignEvents((prev) => {
       const next = [...prev];
       next.push(roll);
       return next;
     });
   }, []);
-
-  const endRollEvent = useCallback(
-    ({
-      detail,
-    }: CustomEvent<{
-      stats: DiceResult[];
-      mode: TypeCampaignEvent;
-    }>) => {
-      if (
-        api !== undefined &&
-        detail.stats !== null &&
-        campaignId !== undefined &&
-        character !== undefined &&
-        socket !== null
-      ) {
-        const { stats, mode } = detail;
-        const result = calculateDices(stats).total;
-        api.campaignEvents
-          .create({
-            result,
-            formula: diceResultToStr(stats),
-            character: character._id,
-            campaign: campaignId,
-            type: mode,
-          })
-          .then((data: ICampaignEvent) => {
-            const dataCampaignEvent = {
-              ...data,
-              character,
-            };
-            socket.emit('newCampaignEvent', {
-              room: campaignId,
-              data: dataCampaignEvent,
-            });
-            addCampaignEvent(dataCampaignEvent);
-          })
-          .catch((res) => {
-            const newId = getNewId();
-            createAlert({
-              key: newId,
-              dom: (
-                <Alert key={newId} id={newId} timer={5}>
-                  <Ap>{t('serverErrors.CYPU-301')}</Ap>
-                </Alert>
-              ),
-            });
-          });
-      }
-    },
-    [addCampaignEvent, api, campaignId, character, createAlert, getNewId, socket, t]
-  );
 
   const diceElts = useMemo(
     () =>
@@ -282,43 +228,105 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({ onRollDices, campaignId, char
   }, [campaignId]);
 
   useEffect(() => {
-    if (campaignId !== undefined && socket !== null) {
-      const triggerNewData = (diceResult: ICampaignEvent): void => {
-        addCampaignEvent(diceResult);
-      };
-      socket.emit('goToRoom', campaignId);
-      socket.on('newCampaignEvent', triggerNewData);
-
-      return () => {
-        socket.off('newCampaignEvent', triggerNewData);
-        socket.emit('exitRoom', campaignId);
-      };
-    }
-  }, [addCampaignEvent, campaignId, socket]);
+    charRef.current = character;
+  }, [character]);
 
   useEffect(() => {
-    if (
-      !initEvt.current &&
-      api !== undefined &&
-      socket !== null &&
-      campaignId !== undefined &&
-      character !== undefined
-    ) {
+    unMountEvt.current = false;
+    return () => {
+      unMountEvt.current = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    const triggerNewData = (diceResult: ICampaignEvent): void => {
+      addCampaignEventToTab(diceResult);
+    };
+
+    if (campaignId !== undefined && socket !== null && !socketEvt.current) {
+      socketEvt.current = true;
+      socket.emit('goToRoom', campaignId);
+      socket.on('newCampaignEvent', triggerNewData);
+    }
+    return () => {
+      if (unMountEvt.current && socket !== null) {
+        socket.off('newCampaignEvent', triggerNewData);
+        socket.emit('exitRoom', campaignId);
+      }
+    };
+  }, [addCampaignEventToTab, campaignId, socket]);
+
+  useEffect(() => {
+    const addCampaignEvent = ({
+      detail,
+    }: CustomEvent<{
+      result: number;
+      formula?: string;
+      mode: TypeCampaignEvent;
+    }>): void => {
+      if (
+        api !== undefined &&
+        detail.result !== null &&
+        campaignId !== undefined &&
+        charRef.current !== undefined &&
+        socket !== null
+      ) {
+        const { result, formula, mode } = detail;
+        api.campaignEvents
+          .create({
+            result,
+            formula,
+            character: charRef.current._id,
+            campaign: campaignId,
+            type: mode,
+          })
+          .then((data: ICampaignEvent) => {
+            if (charRef.current !== null && charRef.current !== undefined) {
+              const dataCampaignEvent = {
+                ...data,
+                character: charRef.current,
+              };
+              socket.emit('newCampaignEvent', {
+                room: campaignId,
+                data: dataCampaignEvent,
+              });
+              addCampaignEventToTab(dataCampaignEvent);
+            }
+          })
+          .catch((res) => {
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{t('serverErrors.CYPU-301')}</Ap>
+                </Alert>
+              ),
+            });
+          });
+      }
+    };
+
+    if (!initEvt.current && api !== undefined && socket !== null && campaignId !== undefined) {
       initEvt.current = true;
-      addCampaignEventListener?.('endroll', endRollEvent);
+      addCampaignEventListener?.('addCampaignEvent', addCampaignEvent);
     }
 
     return () => {
-      removeCampaignEventListener?.('endroll', endRollEvent);
+      if (unMountEvt.current) {
+        removeCampaignEventListener?.('addCampaignEvent', addCampaignEvent);
+      }
     };
   }, [
     addCampaignEventListener,
-    removeCampaignEventListener,
+    addCampaignEventToTab,
     api,
-    endRollEvent,
-    socket,
     campaignId,
-    character,
+    createAlert,
+    getNewId,
+    removeCampaignEventListener,
+    socket,
+    t,
   ]);
 
   setTimeout(function () {

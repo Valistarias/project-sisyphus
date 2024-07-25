@@ -17,7 +17,7 @@ interface ICampaignEventResult {
   /** The name of the author of the dice roll */
   authorName: string;
   /** The formula of each die */
-  formula: string;
+  formula?: string;
   /** When the die was rolled */
   createdAt: Date;
   /** The type of the roll */
@@ -35,6 +35,9 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
   const [isOpen, setOpen] = useState(false);
 
   const detailScores = useMemo(() => {
+    if (formula === undefined) {
+      return null;
+    }
     const dicesToUse: Array<{
       id: number;
       type: number;
@@ -63,15 +66,32 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
     return (
       <Ap className="campaign-event-line__result__type__text">
         <span className="campaign-event-line__result__type__text__long">
-          {t('rollResults.freeCampaignEvent1', { ns: 'components' })}
-        </span>{' '}
-        {t('rollResults.freeCampaignEvent2', { ns: 'components' })}
+          {t(`campaignEventResults.type.${type}.line1`, { ns: 'components' })}
+        </span>
+        {t(`campaignEventResults.type.${type}.line2`, { ns: 'components' })}
       </Ap>
     );
-  }, [t]);
+  }, [t, type]);
+
+  const resultText = useMemo(() => {
+    if (type === 'free') {
+      return result.toString();
+    }
+    if (type === 'hpLoss') {
+      return `${result} ${t(`terms.character.hp.short`)}`;
+    }
+    if (type === 'hpGain') {
+      return `+${result} ${t(`terms.character.hp.short`)}`;
+    }
+  }, [result, t, type]);
 
   return (
-    <div className="campaign-event-line">
+    <div
+      className={classTrim(`
+      campaign-event-line
+      ${detailScores !== null ? 'campaign-event-line--clickable' : ''}
+    `)}
+    >
       <Ap className="campaign-event-line__hour">{`${createdAt.toLocaleDateString()} - ${createdAt.getHours()}:${createdAt.getMinutes()}`}</Ap>
       <div
         className={classTrim(`
@@ -88,11 +108,11 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
             }}
             className="campaign-event-line__result__content__score"
           >
-            {result.toString()}
+            {resultText}
           </Ap>
         </div>
       </div>
-      {isOpen ? (
+      {isOpen && detailScores !== null ? (
         <div className="campaign-event-line__info">
           <div className="campaign-event-line__info__arrow" />
           <div className="campaign-event-line__info__content">{detailScores}</div>

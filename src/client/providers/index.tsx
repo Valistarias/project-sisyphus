@@ -1,10 +1,10 @@
 import React, { type FC, type ReactNode } from 'react';
 
 import { ApiProvider, useApi } from './api';
+import { CampaignEventWindowProvider, useCampaignEventWindow } from './campaignEventWindow';
 import { ConfirmMessageProvider, useConfirmMessage } from './confirmMessage';
 import { GlobalVarsProvider, useGlobalVars } from './globalVars';
 import { LangProvider, useLang } from './lang';
-import { CampaignEventWindowProvider, useCampaignEventWindow } from './rollWindow';
 import { SocketProvider, useSocket } from './socket';
 import { SystemAlertsProvider, useSystemAlerts } from './systemAlerts';
 import { ThemeProvider, useTheme } from './theme';

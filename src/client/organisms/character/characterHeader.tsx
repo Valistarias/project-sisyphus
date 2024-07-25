@@ -3,7 +3,13 @@ import React, { useCallback, useEffect, useMemo, type FC } from 'react';
 import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { useApi, useGlobalVars, useSystemAlerts } from '../../providers';
+import {
+  useApi,
+  useCampaignEventWindow,
+  useGlobalVars,
+  useSocket,
+  useSystemAlerts,
+} from '../../providers';
 
 import { Aloadbar, Ap, Atitle } from '../../atoms';
 import { HintButton, Input } from '../../molecules';
@@ -27,6 +33,8 @@ const CharacterHeader: FC = () => {
   const { t } = useTranslation();
   const { createAlert, getNewId } = useSystemAlerts();
   const { api } = useApi();
+  const { socket } = useSocket();
+  const { dispatchCampaignEvent } = useCampaignEventWindow();
   const { character, setCharacterFromId, cyberFrames, globalValues, charParams } = useGlobalVars();
 
   const mainCyberFrame = useMemo(() => {
@@ -75,11 +83,13 @@ const CharacterHeader: FC = () => {
 
   const onSaveHp: SubmitHandler<FormHpValues> = useCallback(
     ({ hp }) => {
-      if (api === undefined || character === null || character === false) {
+      if (api === undefined || character === null || character === false || socket === null) {
         return;
       }
       if (hp !== undefined && Number(hp) !== hpValues.hp) {
+        const actualHp = hpValues.hp;
         const hpSent = Number(hp) > hpValues.total ? hpValues.total : Number(hp);
+        const gainedLife = hpSent > actualHp;
         const { body } = getActualBody(character);
         api.bodies
           .update({
@@ -88,6 +98,10 @@ const CharacterHeader: FC = () => {
           })
           .then(() => {
             setCharacterFromId(character._id);
+            dispatchCampaignEvent({
+              result: (actualHp - hpSent) * -1,
+              mode: gainedLife ? 'hpGain' : 'hpLoss',
+            });
           })
           .catch(({ response }) => {
             const newId = getNewId();
@@ -102,7 +116,17 @@ const CharacterHeader: FC = () => {
           });
       }
     },
-    [api, character, createAlert, getNewId, hpValues, setCharacterFromId]
+    [
+      api,
+      character,
+      createAlert,
+      dispatchCampaignEvent,
+      getNewId,
+      hpValues.hp,
+      hpValues.total,
+      setCharacterFromId,
+      socket,
+    ]
   );
 
   // To affect default data

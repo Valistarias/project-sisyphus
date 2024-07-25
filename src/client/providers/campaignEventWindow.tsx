@@ -15,16 +15,26 @@ import { Ap } from '../atoms';
 import { Button, DiceCard } from '../molecules';
 import { type TypeCampaignEvent, type TypeDice } from '../types';
 
-import { calculateDices, classTrim, throwDices, type DiceRequest, type DiceResult } from '../utils';
+import {
+  calculateDices,
+  classTrim,
+  diceResultToStr,
+  throwDices,
+  type DiceRequest,
+  type DiceResult,
+} from '../utils';
 
-import './rollWindow.scss';
+import './campaignEventWindow.scss';
 
 interface ICampaignEventWindowContext {
-  /** The function to send all the data to the confirm message element */
+  /** The function to launch a roll */
   setToRoll: (dices: DiceRequest[], mode: TypeCampaignEvent) => void;
-  /** The event system linked to the confirm popup */
+  /** The event listener for when a new campaign event is called from dispatch */
   addCampaignEventListener: (id: string, cb: (data: any) => void) => void;
+  /** The event listener remover for when a new campaign event is called from dispatch */
   removeCampaignEventListener: (id: string, cb: (data: any) => void) => void;
+  /** The event listener dispatch */
+  dispatchCampaignEvent: (data: { result: number; formula?: string; mode: string }) => void;
 }
 
 interface CampaignEventWindowProviderProps {
@@ -127,13 +137,21 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
     typeRoll.current = mode;
   }, []);
 
+  const dispatchEvent = useCallback(
+    (data: { result: number; formula?: string; mode: string }) => {
+      CampaignEvent.dispatchEvent(new CustomEvent('addCampaignEvent', { detail: data }));
+    },
+    [CampaignEvent]
+  );
+
   const providerValues = useMemo<ICampaignEventWindowContext>(
     () => ({
       setToRoll,
       addCampaignEventListener: CampaignEvent.addEventListener,
       removeCampaignEventListener: CampaignEvent.removeEventListener,
+      dispatchCampaignEvent: dispatchEvent,
     }),
-    [setToRoll, CampaignEvent]
+    [setToRoll, CampaignEvent.addEventListener, CampaignEvent.removeEventListener, dispatchEvent]
   );
 
   const affectDiceValueAtIndex = useCallback((curatedDices: DiceData[], index: number) => {
@@ -149,23 +167,22 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
 
   const endRollTriggerEvent = useCallback(() => {
     endRollEvt.current = setTimeout(() => {
-      if (endRollEvt.current !== null) {
+      if (
+        endRollEvt.current !== null &&
+        rollResults.current !== null &&
+        dispatchEvent !== undefined
+      ) {
         clearTimeout(endRollEvt.current);
         endRollEvt.current = null;
         setRollEventFinished(true);
-        console.log('typeRoll', typeRoll);
-        console.log('rollResults', rollResults);
-        CampaignEvent.dispatchEvent(
-          new CustomEvent('endroll', {
-            detail: {
-              stats: rollResults.current,
-              mode: typeRoll.current,
-            },
-          })
-        );
+        dispatchEvent({
+          result: calculateDices(rollResults.current).total,
+          formula: diceResultToStr(rollResults.current),
+          mode: typeRoll.current,
+        });
       }
     }, 1000);
-  }, [CampaignEvent, rollResults]);
+  }, [dispatchEvent]);
 
   const totalDom = useMemo(() => {
     if (diceCards == null || diceCards.length === 1 || rollResults.current === null) {
