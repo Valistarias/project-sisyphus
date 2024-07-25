@@ -134,6 +134,118 @@ const getActualBody = (
   };
 };
 
+interface ISourcePointsStatSkill {
+  value: number;
+  origin?: INode;
+  fromBody?: boolean;
+  fromStat?: boolean;
+}
+
+interface IScoreStatSkill {
+  total: number;
+  sources: ISourcePointsStatSkill[];
+}
+
+const curateCharacterSkills = (
+  character: false | ICharacter | null,
+  skills: ICuratedSkill[],
+  stats: ICuratedStat[]
+): Array<{
+  stat: ICuratedStat & {
+    score: IScoreStatSkill;
+  };
+  skills: Array<
+    ICuratedStat & {
+      score: IScoreStatSkill;
+    }
+  >;
+}> => {
+  if (character === false || character === null) {
+    return [];
+  }
+  const { body } = getActualBody(character);
+  if (body === undefined) {
+    return [];
+  }
+
+  const skillNodesById: Record<string, IScoreStatSkill> = {};
+  const statNodesById: Record<string, IScoreStatSkill> = {};
+
+  body.stats.forEach(({ stat, value }) => {
+    statNodesById[stat] = {
+      total: value,
+      sources: [
+        {
+          value,
+          fromBody: true,
+        },
+      ],
+    };
+  });
+
+  character.nodes?.forEach(({ node }) => {
+    node.skillBonuses?.forEach((skillBonus) => {
+      if (skillNodesById[skillBonus.skill] === undefined) {
+        skillNodesById[skillBonus.skill] = {
+          total: skillBonus.value,
+          sources: [
+            {
+              value: skillBonus.value,
+              origin: node,
+            },
+          ],
+        };
+      } else {
+        skillNodesById[skillBonus.skill].total += skillBonus.value;
+        skillNodesById[skillBonus.skill].sources.push({
+          value: skillBonus.value,
+          origin: node,
+        });
+      }
+    });
+    node.statBonuses?.forEach((statBonus) => {
+      statNodesById[statBonus.stat].total += statBonus.value;
+      statNodesById[statBonus.stat].sources.push({
+        value: statBonus.value,
+        origin: node,
+      });
+    });
+  });
+  const charStats = {};
+  skills.forEach(({ skill, i18n }) => {
+    const relatedStat = stats.find(({ stat }) => stat._id === skill.stat._id);
+    const relatedStatBonuses = statNodesById[skill.stat._id];
+    const relatedSkillBonuses = skillNodesById[skill._id];
+    if (relatedStat !== undefined) {
+      if (charStats[skill.stat._id] === undefined) {
+        charStats[skill.stat._id] = {
+          stat: {
+            ...relatedStat,
+            score: relatedStatBonuses,
+          },
+          skills: [],
+        };
+      }
+      const score = {
+        total: relatedStatBonuses.total + (relatedSkillBonuses?.total ?? 0),
+        sources: [
+          {
+            value: relatedStatBonuses.total,
+            fromStat: true,
+          },
+          ...(relatedSkillBonuses?.sources ?? []),
+        ],
+      };
+      charStats[skill.stat._id].skills.push({
+        skill,
+        i18n,
+        score,
+      });
+    }
+  });
+  return Object.values(charStats);
+};
+
 const getBaseSkillNode = (skill: ISkill): ICuratedNode | undefined => {
   const generalNodes = skill.branches.find((branch) => branch.skillBranch.title === '_general')
     ?.skillBranch.nodes;
@@ -145,6 +257,7 @@ const calculateStatMod = (val: number): number => val - 5;
 export {
   aggregateSkillsByStats,
   calculateStatMod,
+  curateCharacterSkills,
   getActualBody,
   getBaseSkillNode,
   getCharacterHpValues,

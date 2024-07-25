@@ -1,3 +1,4 @@
 import CharacterHeader from './characterHeader';
+import CharacterSkills from './characterSkills';
 
-export { CharacterHeader };
+export { CharacterHeader, CharacterSkills };

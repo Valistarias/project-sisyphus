@@ -21,7 +21,7 @@ interface ICampaignEventTab {
   campaignId?: string;
   /** The character used for rolling */
   character?: ICharacter;
-  /** The ID used on the alert provider */
+  /** The function sent to roll the dices */
   onRollDices: (diceValues: DiceRequest[]) => void;
 }
 

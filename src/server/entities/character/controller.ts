@@ -483,8 +483,11 @@ const updateInfos = (req: Request, res: Response): void => {
             char.level = 1;
           }
         }
-        if (campaignId !== null || (char.campaign !== undefined && campaignId === null)) {
+        if (campaignId !== null) {
           char.campaign = campaignId;
+        }
+        if (campaignId === false) {
+          char.campaign = undefined;
         }
         char
           .save()

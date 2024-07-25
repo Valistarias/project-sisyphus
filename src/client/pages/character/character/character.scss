@@ -1,4 +1,20 @@
 @use '../../../assets/scss/mixins';
 
 .character {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  &__body {
+    height: 100%;
+    padding: 0 2rem;
+    width: 100%;
+
+    &__content {
+      height: 100%;
+      margin: 0 auto;
+      max-width: var(--character-sheet-width);
+      width: 100%;
+    }
+  }
 }
