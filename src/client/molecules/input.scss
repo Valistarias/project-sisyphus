@@ -4,19 +4,6 @@
   gap: 0.5rem;
   width: 100%;
 
-  &__field {
-    background: var(--primary-20);
-    border: 0;
-    box-shadow: 0 0 2rem var(--primary-05);
-    box-sizing: border-box;
-    color: var(--font-color);
-    font-family: var(--mono-font);
-    margin: 0;
-    outline: 0;
-    resize: none;
-    width: 100%;
-  }
-
   &__label {
     color: var(--tertiary-80);
     text-shadow: 0 0 1rem var(--tertiary-00);
@@ -61,31 +48,5 @@
       color: var(--tertiary);
       text-shadow: 0 0 1rem var(--tertiary-20);
     }
-  }
-
-  // Sizes -----------------------------------
-  &--medium .input__field {
-    font-size: 1.4rem;
-    height: 4rem;
-    letter-spacing: 0.2rem;
-    padding: 0.8rem 2rem;
-  }
-
-  &--small .input__field {
-    font-size: 1.4rem;
-    height: 3rem;
-    letter-spacing: 0.2rem;
-    padding: 0.6rem 1.5rem;
-  }
-
-  // Format
-
-  &--inline .input__field {
-    padding-inline-end: 0;
-  }
-
-  // Others ----------------------------------
-  &--readonly .input__field {
-    border: 0;
   }
 }

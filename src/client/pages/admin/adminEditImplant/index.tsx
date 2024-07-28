@@ -273,7 +273,7 @@ const AdminEditImplant: FC = () => {
 
     // Init Actions
     const tempActionId: number[] = [];
-    implant.actions?.forEach((action) => {
+    implant.actions?.forEach(({ action }) => {
       if (defaultData.actions === undefined) {
         defaultData.actions = {};
       }
@@ -302,7 +302,7 @@ const AdminEditImplant: FC = () => {
 
     // Init Effects
     const tempEffectId: number[] = [];
-    implant.effects?.forEach((effect) => {
+    implant.effects?.forEach(({ effect }) => {
       if (defaultData.effects === undefined) {
         defaultData.effects = {};
       }
@@ -821,7 +821,7 @@ const AdminEditImplant: FC = () => {
                   />
                 </div>
                 <Button
-                  icon="delete"
+                  icon="Delete"
                   theme="afterglow"
                   onClick={() => {
                     setSkillBonusIds((prev) =>
@@ -866,7 +866,7 @@ const AdminEditImplant: FC = () => {
                   />
                 </div>
                 <Button
-                  icon="delete"
+                  icon="Delete"
                   theme="afterglow"
                   onClick={() => {
                     setStatBonusIds((prev) =>
@@ -911,7 +911,7 @@ const AdminEditImplant: FC = () => {
                   />
                 </div>
                 <Button
-                  icon="delete"
+                  icon="Delete"
                   theme="afterglow"
                   onClick={() => {
                     setCharParamBonusIds((prev) =>
@@ -987,7 +987,7 @@ const AdminEditImplant: FC = () => {
                   />
                 </div>
                 <Button
-                  icon="delete"
+                  icon="Delete"
                   theme="afterglow"
                   onClick={() => {
                     setEffectIds((prev) =>
@@ -1125,7 +1125,7 @@ const AdminEditImplant: FC = () => {
                   />
                 </div>
                 <Button
-                  icon="delete"
+                  icon="Delete"
                   theme="afterglow"
                   onClick={() => {
                     setActionIds((prev) =>
@@ -1171,7 +1171,7 @@ const AdminEditImplant: FC = () => {
             </Ap>
           </div>
           <Button
-            icon="arrow"
+            icon="Arrow"
             theme="afterglow"
             onClick={() => {
               setDisplayInt((prev) => !prev);

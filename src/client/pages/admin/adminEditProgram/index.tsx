@@ -546,7 +546,7 @@ const AdminEditProgram: FC = () => {
                   />
                 </div>
                 <Button
-                  icon="delete"
+                  icon="Delete"
                   theme="afterglow"
                   onClick={() => {
                     setDamagesIds((prev) =>
@@ -580,7 +580,7 @@ const AdminEditProgram: FC = () => {
             </Ap>
           </div>
           <Button
-            icon="arrow"
+            icon="Arrow"
             theme="afterglow"
             onClick={() => {
               setDisplayInt((prev) => !prev);

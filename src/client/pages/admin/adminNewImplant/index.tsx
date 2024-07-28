@@ -590,7 +590,7 @@ const AdminNewImplant: FC = () => {
                   />
                 </div>
                 <Button
-                  icon="delete"
+                  icon="Delete"
                   theme="afterglow"
                   onClick={() => {
                     setSkillBonusIds((prev) =>
@@ -635,7 +635,7 @@ const AdminNewImplant: FC = () => {
                   />
                 </div>
                 <Button
-                  icon="delete"
+                  icon="Delete"
                   theme="afterglow"
                   onClick={() => {
                     setStatBonusIds((prev) =>
@@ -680,7 +680,7 @@ const AdminNewImplant: FC = () => {
                   />
                 </div>
                 <Button
-                  icon="delete"
+                  icon="Delete"
                   theme="afterglow"
                   onClick={() => {
                     setCharParamBonusIds((prev) =>
@@ -756,7 +756,7 @@ const AdminNewImplant: FC = () => {
                   />
                 </div>
                 <Button
-                  icon="delete"
+                  icon="Delete"
                   theme="afterglow"
                   onClick={() => {
                     setEffectIds((prev) =>
@@ -894,7 +894,7 @@ const AdminNewImplant: FC = () => {
                   />
                 </div>
                 <Button
-                  icon="delete"
+                  icon="Delete"
                   theme="afterglow"
                   onClick={() => {
                     setActionIds((prev) =>
@@ -940,7 +940,7 @@ const AdminNewImplant: FC = () => {
             </Ap>
           </div>
           <Button
-            icon="arrow"
+            icon="Arrow"
             theme="afterglow"
             onClick={() => {
               setDisplayInt((prev) => !prev);

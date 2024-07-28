@@ -786,7 +786,7 @@ const NewCharacter: FC = () => {
             </div>
           ) : null}
           <div className="newcharacter__loading__logo">
-            <Aicon className="newcharacter__loading__logo__elt" type="eidolon" size="unsized" />
+            <Aicon className="newcharacter__loading__logo__elt" type="Eidolon" size="unsized" />
           </div>
           {id === undefined ? (
             <div className="newcharacter__loading__code">
@@ -837,7 +837,7 @@ const NewCharacter: FC = () => {
       </form>
       <Button
         size="large"
-        icon={tooltipOpen ? 'cross' : 'question'}
+        icon={tooltipOpen ? 'Cross' : 'Question'}
         theme="afterglow"
         className="newcharacter__tooltip-btn"
         onClick={() => {

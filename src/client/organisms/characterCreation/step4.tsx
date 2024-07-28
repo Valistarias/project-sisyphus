@@ -115,7 +115,7 @@ const CharacterCreationStep4: FC<ICharacterCreationStep4> = ({
               >
                 {background?.background.title}
                 <Aicon
-                  type="arrow"
+                  type="Arrow"
                   className="characterCreation-step4__view__list__elt__btn__arrow"
                 />
               </Abutton>

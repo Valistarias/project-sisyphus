@@ -68,7 +68,7 @@ const NodeIconSelect: FC<INodeIconSelect> = ({ className, inputName, rules, cont
               }}
             >
               <AnodeIcon className="nodeiconselect__display__visual" type={value} />
-              <Aicon className="nodeiconselect__display__arrow" type="arrow" />
+              <Aicon className="nodeiconselect__display__arrow" type="Arrow" />
             </Abutton>
             <div
               className="nodeiconselect__list"
@@ -102,4 +102,4 @@ const NodeIconSelect: FC<INodeIconSelect> = ({ className, inputName, rules, cont
   );
 };
 
-export { NodeIconSelect, defaultNodeIcon };
+export { defaultNodeIcon, NodeIconSelect };

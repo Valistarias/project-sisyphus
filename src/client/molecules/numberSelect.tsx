@@ -52,7 +52,7 @@ const NumberSelect: FC<INumberSelect> = ({
                 number-select__btn-plus
                 ${(maximum !== undefined && value >= maximum) || maxed ? 'number-select__btn-plus--hide' : ''}
               `)}
-              icon="arrow"
+              icon="Arrow"
               theme="text-only"
               onClick={() => {
                 onChange(value + 1);
@@ -64,7 +64,7 @@ const NumberSelect: FC<INumberSelect> = ({
                 number-select__btn-minus
                 ${value <= minimum ? 'number-select__btn-minus--hide' : ''}
               `)}
-              icon="arrow"
+              icon="Arrow"
               theme="text-only"
               onClick={() => {
                 onChange(value - 1);

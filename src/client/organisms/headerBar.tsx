@@ -338,7 +338,7 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
                 link.focus();
               }
             }}
-            icon="discord"
+            icon="Discord"
             theme="text-only"
           />
         </div>

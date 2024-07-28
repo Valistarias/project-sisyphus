@@ -331,7 +331,7 @@ const AdminNewBackground: FC = () => {
                   />
                 </div>
                 <Button
-                  icon="delete"
+                  icon="Delete"
                   theme="afterglow"
                   onClick={() => {
                     setSkillBonusIds((prev) =>
@@ -376,7 +376,7 @@ const AdminNewBackground: FC = () => {
                   />
                 </div>
                 <Button
-                  icon="delete"
+                  icon="Delete"
                   theme="afterglow"
                   onClick={() => {
                     setStatBonusIds((prev) =>
@@ -421,7 +421,7 @@ const AdminNewBackground: FC = () => {
                   />
                 </div>
                 <Button
-                  icon="delete"
+                  icon="Delete"
                   theme="afterglow"
                   onClick={() => {
                     setCharParamBonusIds((prev) =>
@@ -461,7 +461,7 @@ const AdminNewBackground: FC = () => {
             </Ap>
           </div>
           <Button
-            icon="arrow"
+            icon="Arrow"
             theme="afterglow"
             onClick={() => {
               setDisplayInt((prev) => !prev);

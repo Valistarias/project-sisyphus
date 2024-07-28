@@ -750,7 +750,7 @@ const AdminEditWeapon: FC = () => {
                   />
                 </div>
                 <Button
-                  icon="delete"
+                  icon="Delete"
                   theme="afterglow"
                   onClick={() => {
                     setDamagesIds((prev) =>
@@ -826,7 +826,7 @@ const AdminEditWeapon: FC = () => {
                   />
                 </div>
                 <Button
-                  icon="delete"
+                  icon="Delete"
                   theme="afterglow"
                   onClick={() => {
                     setEffectIds((prev) =>
@@ -964,7 +964,7 @@ const AdminEditWeapon: FC = () => {
                   />
                 </div>
                 <Button
-                  icon="delete"
+                  icon="Delete"
                   theme="afterglow"
                   onClick={() => {
                     setActionIds((prev) =>
@@ -1004,7 +1004,7 @@ const AdminEditWeapon: FC = () => {
             </Ap>
           </div>
           <Button
-            icon="arrow"
+            icon="Arrow"
             theme="afterglow"
             onClick={() => {
               setDisplayInt((prev) => !prev);

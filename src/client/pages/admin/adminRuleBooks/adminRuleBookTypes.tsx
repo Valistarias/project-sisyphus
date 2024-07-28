@@ -211,14 +211,14 @@ const AdminRuleBookTypes: FC = () => {
               onClick={() => {
                 onClickUpdate(_id, name);
               }}
-              icon="edit"
+              icon="Edit"
             />
             <Button
               size="small"
               onClick={() => {
                 onClickDeletion(_id);
               }}
-              icon="delete"
+              icon="Delete"
             />
           </div>
         </Ali>

@@ -382,7 +382,7 @@ const AdminNewProgram: FC = () => {
                   />
                 </div>
                 <Button
-                  icon="delete"
+                  icon="Delete"
                   theme="afterglow"
                   onClick={() => {
                     setDamagesIds((prev) =>

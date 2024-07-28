@@ -80,7 +80,7 @@ const Helper: FC<IHelper> = ({ children, size = 'medium', theme = 'solid', onCli
     >
       <Aicon
         className="helper__icon"
-        type="question"
+        type="Question"
         size="small"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}

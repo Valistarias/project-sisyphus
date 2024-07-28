@@ -60,7 +60,7 @@ const AdminEditNotions: FC = () => {
       defaultData.name = notion.title;
       const selectedfield = ruleBooks.find((notionType) => notionType.value === notion.ruleBook);
       if (selectedfield !== undefined) {
-        defaultData.type = selectedfield.value;
+        defaultData.type = String(selectedfield.value);
       }
       if (i18n.fr !== undefined) {
         defaultData.nameFr = i18n.fr.title ?? '';

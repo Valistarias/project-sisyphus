@@ -2,7 +2,7 @@ import React, { useState, type FC } from 'react';
 
 import { Controller } from 'react-hook-form';
 
-import { Aerror, Alabel } from '../atoms';
+import { Aerror, Ainput, Alabel, Atextarea } from '../atoms';
 import { type IReactHookFormInputs } from '../types/form';
 
 import { classTrim } from '../utils';
@@ -52,10 +52,6 @@ const Input: FC<IInput> = ({
     <div
       className={classTrim(`
       input
-      input--${size}
-      input--${type}
-      ${readOnly === true ? 'input--readonly' : ''}
-      ${inline ? 'input--inline' : ''}
       ${isFocus ? 'input--focus' : ''}
       ${className ?? ''}
     `)}
@@ -76,8 +72,9 @@ const Input: FC<IInput> = ({
             ) : null}
             <div className="input__decor">
               {type === 'textarea' ? (
-                <textarea
+                <Atextarea
                   readOnly={readOnly}
+                  size={size}
                   hidden={hidden}
                   placeholder={placeholder}
                   className="input__field"
@@ -96,8 +93,10 @@ const Input: FC<IInput> = ({
                   }}
                 />
               ) : (
-                <input
+                <Ainput
                   type={type}
+                  size={size}
+                  inline={inline}
                   readOnly={readOnly}
                   hidden={hidden}
                   placeholder={placeholder}

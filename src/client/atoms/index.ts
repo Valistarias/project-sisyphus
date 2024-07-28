@@ -3,6 +3,7 @@ import { Abutton, type IAButton } from './abutton';
 import Aerror from './aerror';
 import { Aicon, type typeIcons } from './aicon';
 import Aimg from './aimg';
+import Ainput from './ainput';
 import Alabel from './alabel';
 import Ali from './ali';
 import Aloadbar from './aloadbar';
@@ -25,6 +26,7 @@ export {
   Aerror,
   Aicon,
   Aimg,
+  Ainput,
   Alabel,
   Ali,
   Aloadbar,

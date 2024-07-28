@@ -4,49 +4,58 @@ import { Quark, type IQuarkProps } from '../quark';
 
 import { classTrim } from '../utils';
 
-import './atextarea.scss';
+import './ainput.scss';
 
-interface IAtextarea extends IQuarkProps {
+interface IAinput extends IQuarkProps {
   /** The type of input */
   type?: 'text' | 'password' | 'email' | 'number' | 'textarea';
   /** The size of the input */
   size?: 'medium' | 'small';
-  /** The placeholder of the Textarea element */
+  /** Is the input inline ? */
+  inline?: boolean;
+  /** The placeholder of the input element */
   placeholder?: string;
-  /** The value of the Textarea element */
+  /** The value of the input element */
   value: string;
+  /** Is the field hidden */
+  hidden?: boolean;
   /** Is the field editable */
   readOnly?: boolean;
   /** When the field changes */
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
-const Atextarea: FC<IAtextarea> = ({
+const Ainput: FC<IAinput> = ({
+  className,
+  hidden,
   id,
+  inline = false,
+  onChange,
+  placeholder,
+  readOnly,
   size = 'medium',
   type = 'text',
-  className,
   value,
-  placeholder,
-  onChange,
-  readOnly,
 }) => (
   <Quark
-    quarkType="textarea"
+    quarkType="input"
+    className={classTrim(`
+    ainput
+    ainput--${size}
+    ainput--${type}
+    ${readOnly === true ? 'ainput--readonly' : ''}
+    ${inline ? 'ainput--inline' : ''}
+    ${className ?? ''}
+  `)}
+    type={type}
+    hidden={hidden}
     id={id}
     name={id}
     readOnly={readOnly}
     onChange={onChange}
     placeholder={placeholder}
-    className={classTrim(`
-        atextarea
-        atextarea--${size}
-        atextarea--${type}
-        ${readOnly === true ? 'atextarea--readonly' : ''}
-        ${className ?? ''}
-      `)}
     value={value}
   />
 );
 
-export default Atextarea;
+export default Ainput;

@@ -55,7 +55,7 @@ const CharacterCreationStep7: FC = () => {
       transition={{ ease: 'easeInOut', duration: 0.2 }}
     >
       <div className="characterCreation-step7__logo">
-        <Aicon className="characterCreation-step7__logo__elt" type="eidolon" size="unsized" />
+        <Aicon className="characterCreation-step7__logo__elt" type="Eidolon" size="unsized" />
       </div>
       <TypeAnimation
         className="characterCreation-step7__text"

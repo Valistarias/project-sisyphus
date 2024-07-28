@@ -219,15 +219,15 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
                   });
                 }
                 const skillVal = valMod + (selected ? bonus : 0);
-                let icon: typeIcons = 'add';
+                let icon: typeIcons = 'Add';
                 if (selected) {
                   if (nbSkillSelected === 0) {
-                    icon = 'check';
+                    icon = 'Check';
                   } else {
-                    icon = 'minus';
+                    icon = 'Minus';
                   }
                 } else if (nbSkillSelected === 0) {
-                  icon = 'cross';
+                  icon = 'Cross';
                 }
                 return (
                   <Ali

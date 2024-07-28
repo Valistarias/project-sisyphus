@@ -211,7 +211,7 @@ const CharacterHeader: FC = () => {
               hint={t('character.buttons.editChar', {
                 ns: 'pages',
               })}
-              icon="edit"
+              icon="Edit"
               size="small"
               theme="line"
               href={`/character/${character !== false ? character?._id ?? '' : ''}/edit`}
@@ -220,7 +220,7 @@ const CharacterHeader: FC = () => {
               hint={t('character.buttons.editChar', {
                 ns: 'pages',
               })}
-              icon="edit"
+              icon="Edit"
               size="small"
               theme="line"
               href={`/character/${character !== false ? character?._id ?? '' : ''}/edit`}
@@ -229,7 +229,7 @@ const CharacterHeader: FC = () => {
               hint={t('character.buttons.editChar', {
                 ns: 'pages',
               })}
-              icon="edit"
+              icon="Edit"
               size="small"
               theme="line"
               href={`/character/${character !== false ? character?._id ?? '' : ''}/edit`}

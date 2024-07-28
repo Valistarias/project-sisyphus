@@ -120,7 +120,7 @@ const DiceCard: FC<IDiceCard> = ({ type, value, size = 'medium', skip = false })
     `)}
       style={{ backgroundImage: `url(${holoBackground})` }}
     >
-      <Aicon type={`d${type}` as typeIcons} className="dice-card__dice-bg" size="unsized" />
+      <Aicon type={`D${type}` as typeIcons} className="dice-card__dice-bg" size="unsized" />
       <Ap className="dice-card__value">{displayedNumberString}</Ap>
     </div>
   );

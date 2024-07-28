@@ -107,7 +107,7 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({ onRollDices, campaignId, char
             >
               <Ap>{`${diceElt.qty > 0 ? diceElt.qty : ''}D${typeDiceNumber}`}</Ap>
               <Aicon
-                type={`d${typeDiceNumber}` as typeIcons}
+                type={`D${typeDiceNumber}` as typeIcons}
                 className="campaign-event-tab__dice__button__icon"
                 size="large"
               />

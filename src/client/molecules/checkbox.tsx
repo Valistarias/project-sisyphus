@@ -54,7 +54,7 @@ const Checkbox: FC<ICheckbox> = ({
             `)}
             >
               {value === true ? (
-                <Aicon type="check" size="small" className="checkbox__field__icon" />
+                <Aicon type="Check" size="small" className="checkbox__field__icon" />
               ) : null}
             </div>
             <input
