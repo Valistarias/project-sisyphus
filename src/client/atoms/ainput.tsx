@@ -21,20 +21,24 @@ interface IAinput extends IQuarkProps {
   hidden?: boolean;
   /** Is the field editable */
   readOnly?: boolean;
+  /** Allow the user's password manager to automatically enter the password */
+  autoComplete?: string;
   /** When the field changes */
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const Ainput: FC<IAinput> = ({
   className,
   hidden,
-  id,
   inline = false,
   onChange,
   placeholder,
   readOnly,
+  autoComplete,
   size = 'medium',
   type = 'text',
+  onFocus,
+  onBlur,
   value,
 }) => (
   <Quark
@@ -47,13 +51,14 @@ const Ainput: FC<IAinput> = ({
     ${inline ? 'ainput--inline' : ''}
     ${className ?? ''}
   `)}
-    type={type}
+    autoComplete={autoComplete}
     hidden={hidden}
-    id={id}
-    name={id}
-    readOnly={readOnly}
     onChange={onChange}
     placeholder={placeholder}
+    readOnly={readOnly}
+    onFocus={onFocus}
+    onBlur={onBlur}
+    type={type}
     value={value}
   />
 );

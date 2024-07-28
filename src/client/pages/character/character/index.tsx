@@ -48,10 +48,12 @@ const Character: FC = () => {
       <div className="character__body">
         <div className="character__body__content">
           <CharacterSkills
+            className="character__body__content__left"
             onRollDices={(dices) => {
               console.log('onRollDices', dices);
             }}
           />
+          <div className="character__body__content__right" />
         </div>
       </div>
     </div>

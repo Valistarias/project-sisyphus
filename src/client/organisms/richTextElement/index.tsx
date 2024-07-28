@@ -172,4 +172,4 @@ const RichTextElement: FC<IRichTextElement> = ({
   );
 };
 
-export { RichTextElement, basicRichTextElementExtentions, completeRichTextElementExtentions };
+export { basicRichTextElementExtentions, completeRichTextElementExtentions, RichTextElement };

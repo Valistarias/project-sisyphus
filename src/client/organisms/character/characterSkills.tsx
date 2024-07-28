@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../providers';
 
-import { SearchBar } from '../../molecules';
+import { SearchBar, StatDisplay } from '../../molecules';
 import { curateCharacterSkills } from '../../utils/character';
 
 import { classTrim, type DiceRequest } from '../../utils';
@@ -14,9 +14,11 @@ import './characterSkills.scss';
 interface ICharacterSkills {
   /** The function sent to roll the dices */
   onRollDices: (diceValues: DiceRequest[]) => void;
+  /** The classname of the element */
+  className?: string;
 }
 
-const CharacterSkills: FC<ICharacterSkills> = () => {
+const CharacterSkills: FC<ICharacterSkills> = ({ className, onRollDices }) => {
   const { t } = useTranslation();
   const { character, skills, stats } = useGlobalVars();
 
@@ -32,10 +34,24 @@ const CharacterSkills: FC<ICharacterSkills> = () => {
   return (
     <div
       className={classTrim(`
-        char-skills
-      `)}
+      char-skills
+      ${className ?? ''}
+    `)}
     >
+      <div className="char-skills__stats">
+        {aggregatedSkills.map(({ stat }) => (
+          <StatDisplay
+            key={stat.stat._id}
+            stat={stat}
+            onStatClick={(e) => {
+              console.log('stat click', e);
+            }}
+          />
+        ))}
+      </div>
+
       <SearchBar
+        placeholder={t('searchBar.placeholder', { ns: 'components' })}
         search={searchWord}
         className="char-skills__search-bar"
         onChange={(e) => {

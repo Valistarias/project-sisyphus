@@ -141,7 +141,7 @@ interface ISourcePointsStatSkill {
   fromStat?: boolean;
 }
 
-interface IScoreStatSkill {
+export interface IScoreStatSkill {
   total: number;
   sources: ISourcePointsStatSkill[];
 }
@@ -253,10 +253,18 @@ const getBaseSkillNode = (skill: ISkill): ICuratedNode | undefined => {
 };
 
 const calculateStatMod = (val: number): number => val - 5;
+const calculateStatModToString = (val: number): string => {
+  const numVal = calculateStatMod(val);
+  if (numVal >= 0) {
+    return `+${numVal}`;
+  }
+  return String(numVal);
+};
 
 export {
   aggregateSkillsByStats,
   calculateStatMod,
+  calculateStatModToString,
   curateCharacterSkills,
   getActualBody,
   getBaseSkillNode,

@@ -262,9 +262,13 @@
   }
 
   // Others ----------------------------------
-  &--disabled {
-    opacity: 0.6;
+  &--disabled,
+  &--unclickable {
     pointer-events: none;
     user-select: none;
+  }
+
+  &--disabled {
+    opacity: 0.6;
   }
 }

@@ -1,6 +1,7 @@
 import { Ariane, type IArianeElt } from './ariane';
 import Button from './button';
 import Checkbox from './checkbox';
+import ClickableText from './clickableText';
 import DiceCard from './diceCard';
 import DropDownMenu from './dropDownMenu';
 import EmbedNotion from './embedNotion';
@@ -15,11 +16,13 @@ import NumberSelect from './numberSelect';
 import PropDisplay from './propDisplay';
 import SearchBar from './searchBar';
 import { SmartSelect, type IGroupedOption, type ISingleValueSelect } from './select';
+import StatDisplay from './statDisplay';
 
 export {
   Ariane,
   Button,
   Checkbox,
+  ClickableText,
   DiceCard,
   DropDownMenu,
   EmbedNotion,
@@ -34,6 +37,7 @@ export {
   PropDisplay,
   SearchBar,
   SmartSelect,
+  StatDisplay,
   defaultNodeIcon,
   type IArianeElt,
   type IGroupedOption,

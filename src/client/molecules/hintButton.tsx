@@ -8,10 +8,10 @@ import { classTrim } from '../utils';
 
 import './hintButton.scss';
 
-export interface IHintButton extends IButton {
+export type IHintButton = IButton & {
   /** The content of the hint */
   hint: ReactNode;
-}
+};
 
 const HintButton: FC<IHintButton> = ({ className, hint, ...rest }) => {
   const [delayHandler, setDelayHandler] = useState<NodeJS.Timeout | null>(null);

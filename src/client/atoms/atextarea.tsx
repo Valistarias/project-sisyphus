@@ -17,27 +17,36 @@ interface IAtextarea extends IQuarkProps {
   value: string;
   /** Is the field editable */
   readOnly?: boolean;
+  /** Is the field hidden */
+  hidden?: boolean;
+  /** Allow the user's password manager to automatically enter the password */
+  autoComplete?: string;
   /** When the field changes */
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
 const Atextarea: FC<IAtextarea> = ({
-  id,
+  hidden,
   size = 'medium',
   type = 'text',
   className,
   value,
   placeholder,
   onChange,
+  autoComplete,
+  onFocus,
+  onBlur,
   readOnly,
 }) => (
   <Quark
     quarkType="textarea"
-    id={id}
-    name={id}
     readOnly={readOnly}
     onChange={onChange}
+    hidden={hidden}
     placeholder={placeholder}
+    autoComplete={autoComplete}
+    onFocus={onFocus}
+    onBlur={onBlur}
     className={classTrim(`
         atextarea
         atextarea--${size}

@@ -105,6 +105,7 @@ const CharacterHeader: FC = () => {
       if (api === undefined || character === null || character === false || socket === null) {
         return;
       }
+
       if (hp !== undefined && Number(hp) !== hpValues.hp) {
         const actualHp = hpValues.hp;
         const hpSent = Number(hp) > hpValues.total ? hpValues.total : Number(hp);

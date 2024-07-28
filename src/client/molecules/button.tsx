@@ -8,20 +8,33 @@ import { classTrim } from '../utils';
 
 import './button.scss';
 
-export interface IButton extends IAButton {
+export type IButton = IAButton & {
   /** The theme of the button */
   theme?: 'solid' | 'line' | 'afterglow' | 'text-only' | 'bland';
   /** The main color of the button */
   color?: 'primary' | 'secondary' | 'tertiary' | 'error';
   /** The size of the button */
   size?: 'xlarge' | 'large' | 'medium' | 'small';
-  /** The icon (if any) of the button */
-  icon?: typeIcons;
   /** The redirect (if there is) on a button click */
   href?: string;
+  /** Similar to disabled, but without the opacity */
+  unclickable?: boolean;
   /** Is the button activated by any means ? */
   active?: boolean;
-}
+} & (
+    | {
+        /** The icon of the button */
+        icon: typeIcons;
+        /** The children (if any) of the button */
+        children?: IAButton['children'];
+      }
+    | {
+        /** The icon (if any) of the button */
+        icon?: typeIcons;
+        /** The children of the button */
+        children: IAButton['children'];
+      }
+  );
 
 const Button: FC<IButton> = ({
   type = 'button',
@@ -29,6 +42,7 @@ const Button: FC<IButton> = ({
   color = 'primary',
   size = 'medium',
   disabled = false,
+  unclickable = false,
   active = false,
   href = null,
   className,
@@ -46,7 +60,6 @@ const Button: FC<IButton> = ({
 
   return (
     <Abutton
-      quarkType="button"
       className={classTrim(`
         button
         button--${theme}
@@ -55,6 +68,7 @@ const Button: FC<IButton> = ({
         ${icon === undefined ? 'button--noicon' : ''}
         ${children === undefined ? 'button--notext' : ''}
         ${disabled ? 'button--disabled' : ''}
+        ${unclickable ? 'button--unclickable' : ''}
         ${active ? 'button--active' : ''}
         ${className ?? ''}
       `)}

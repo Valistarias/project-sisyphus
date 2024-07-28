@@ -169,5 +169,8 @@
       "all": "All",
       "qty": "x{{qty}} slots"
     }
+  },
+  "searchBar": {
+    "placeholder": "Search a skill..."
   }
 }
