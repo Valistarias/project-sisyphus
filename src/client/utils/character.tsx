@@ -134,9 +134,12 @@ const getActualBody = (
   };
 };
 
-interface ISourcePointsStatSkill {
+export interface ISourcePointsStatSkill {
   value: number;
-  origin?: INode;
+  origin?: INode & {
+    cyberFrame?: ICuratedCyberFrame;
+    skill?: ICuratedSkill;
+  };
   fromBody?: boolean;
   fromStat?: boolean;
 }
@@ -149,7 +152,8 @@ export interface IScoreStatSkill {
 const curateCharacterSkills = (
   character: false | ICharacter | null,
   skills: ICuratedSkill[],
-  stats: ICuratedStat[]
+  stats: ICuratedStat[],
+  cyberFrames: ICuratedCyberFrame[]
 ): Array<{
   stat: ICuratedStat & {
     score: IScoreStatSkill;
@@ -184,6 +188,23 @@ const curateCharacterSkills = (
   });
 
   character.nodes?.forEach(({ node }) => {
+    let foundCyberFrame: ICuratedCyberFrame | undefined;
+    let foundSkill: ICuratedSkill | undefined;
+    if (node.cyberFrameBranch !== undefined) {
+      foundCyberFrame = cyberFrames.find(
+        ({ cyberFrame }) =>
+          cyberFrame.branches.find(
+            ({ cyberFrameBranch }) => cyberFrameBranch._id === node.cyberFrameBranch
+          ) !== undefined
+      );
+    }
+    if (node.skillBranch !== undefined) {
+      foundSkill = skills.find(
+        ({ skill }) =>
+          skill.branches.find(({ skillBranch }) => skillBranch._id === node.skillBranch) !==
+          undefined
+      );
+    }
     node.skillBonuses?.forEach((skillBonus) => {
       if (skillNodesById[skillBonus.skill] === undefined) {
         skillNodesById[skillBonus.skill] = {
@@ -191,7 +212,11 @@ const curateCharacterSkills = (
           sources: [
             {
               value: skillBonus.value,
-              origin: node,
+              origin: {
+                ...node,
+                cyberFrame: foundCyberFrame,
+                skill: foundSkill,
+              },
             },
           ],
         };
@@ -199,7 +224,11 @@ const curateCharacterSkills = (
         skillNodesById[skillBonus.skill].total += skillBonus.value;
         skillNodesById[skillBonus.skill].sources.push({
           value: skillBonus.value,
-          origin: node,
+          origin: {
+            ...node,
+            cyberFrame: foundCyberFrame,
+            skill: foundSkill,
+          },
         });
       }
     });
@@ -207,7 +236,11 @@ const curateCharacterSkills = (
       statNodesById[statBonus.stat].total += statBonus.value;
       statNodesById[statBonus.stat].sources.push({
         value: statBonus.value,
-        origin: node,
+        origin: {
+          ...node,
+          cyberFrame: foundCyberFrame,
+          skill: foundSkill,
+        },
       });
     });
   });

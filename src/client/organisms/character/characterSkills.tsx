@@ -20,16 +20,14 @@ interface ICharacterSkills {
 
 const CharacterSkills: FC<ICharacterSkills> = ({ className, onRollDices }) => {
   const { t } = useTranslation();
-  const { character, skills, stats } = useGlobalVars();
+  const { character, skills, stats, cyberFrames } = useGlobalVars();
 
   const [searchWord, setSearchWord] = useState('');
 
   const aggregatedSkills = useMemo(
-    () => curateCharacterSkills(character, skills, stats),
-    [character, skills, stats]
+    () => curateCharacterSkills(character, skills, stats, cyberFrames),
+    [character, skills, stats, cyberFrames]
   );
-
-  console.log('aggregatedSkills', aggregatedSkills);
 
   return (
     <div

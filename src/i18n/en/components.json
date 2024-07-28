@@ -172,5 +172,9 @@
   },
   "searchBar": {
     "placeholder": "Search a skill..."
+  },
+  "detailBonuses": {
+    "title": "Bonuses",
+    "fromBody": "Body"
   }
 }

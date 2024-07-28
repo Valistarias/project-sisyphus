@@ -2,6 +2,7 @@ import { Ariane, type IArianeElt } from './ariane';
 import Button from './button';
 import Checkbox from './checkbox';
 import ClickableText from './clickableText';
+import DetailsBonuses from './detailsBonuses';
 import DiceCard from './diceCard';
 import DropDownMenu from './dropDownMenu';
 import EmbedNotion from './embedNotion';
@@ -23,6 +24,7 @@ export {
   Button,
   Checkbox,
   ClickableText,
+  DetailsBonuses,
   DiceCard,
   DropDownMenu,
   EmbedNotion,

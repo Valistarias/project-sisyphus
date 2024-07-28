@@ -1,13 +1,12 @@
 import React, { useMemo, type FC } from 'react';
 
-import { useTranslation } from 'react-i18next';
-
 import { Ap } from '../atoms';
 import { RichTextElement } from '../organisms';
 import { type ICuratedStat } from '../types';
 import { calculateStatModToString, type IScoreStatSkill } from '../utils/character';
 
 import ClickableText from './clickableText';
+import DetailsBonuses from './detailsBonuses';
 import Helper from './helper';
 
 import './statDisplay.scss';
@@ -26,14 +25,11 @@ interface IStatDisplay {
 }
 
 const StatDisplay: FC<IStatDisplay> = ({ stat, onStatClick }) => {
-  const { t } = useTranslation();
-
   // TODO: Deal with i18n
   const texts = useMemo(() => {
     // insert lang detection here
     return stat.stat;
   }, [stat]);
-  console.log('stat', stat);
   return (
     <div className="stat-display">
       <Ap className="stat-display__title">{texts.title}</Ap>
@@ -43,6 +39,7 @@ const StatDisplay: FC<IStatDisplay> = ({ stat, onStatClick }) => {
         onClick={() => {
           onStatClick(stat);
         }}
+        hint={<DetailsBonuses bonuses={stat.score.sources} stat={stat} />}
       />
       <Helper size="small">
         <RichTextElement rawStringContent={texts.summary} readOnly />
