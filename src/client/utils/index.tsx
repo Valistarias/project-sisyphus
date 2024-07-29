@@ -1,10 +1,18 @@
 import { type ICharacter, type IGlobalValue, type TypeDice } from '../types';
 
+import { diacriticsMap } from './diacriticsMap';
+
 export const degToRad = (degrees: number): number => degrees * (Math.PI / 180);
 
 export const fullTrim = (elt: string): string => elt.replace(/\s+/g, ' ').trim();
 
 export const classTrim = (elt: string): string => fullTrim(elt.replace(/\n {2,}/g, ' '));
+
+export const removeDiacritics = (str: string): string =>
+  // eslint-disable-next-line no-control-regex
+  str.replace(/[^\u0000-\u007E]/g, function (a) {
+    return diacriticsMap[a] !== undefined ? diacriticsMap[a] : a;
+  });
 
 export const arrSum = (elt: number[]): number =>
   elt.reduce(function (prev, cur) {

@@ -7,7 +7,7 @@ import { useGlobalVars } from '../../providers';
 import { SearchBar, SkillDisplay, StatDisplay } from '../../molecules';
 import { curateCharacterSkills } from '../../utils/character';
 
-import { classTrim, type DiceRequest } from '../../utils';
+import { classTrim, removeDiacritics, type DiceRequest } from '../../utils';
 
 import './characterSkills.scss';
 
@@ -33,9 +33,17 @@ const CharacterSkills: FC<ICharacterSkills> = ({ className, onRollDices }) => {
     if (aggregatedSkills.skills.length === 0) {
       return [];
     }
+
     // TODO: Handle i18n here
     const textField = 'skill';
-    return aggregatedSkills.skills.sort(function (a, b) {
+    const searchElt = removeDiacritics(searchWord).toLowerCase();
+
+    const filteredBySearch = aggregatedSkills.skills.filter((skill) => {
+      const curatedTitle = removeDiacritics(skill[textField].title).toLowerCase();
+      return !!curatedTitle.includes(searchElt);
+    });
+
+    return filteredBySearch.sort(function (a, b) {
       if (a[textField].title < b[textField].title) {
         return -1;
       }
@@ -44,7 +52,7 @@ const CharacterSkills: FC<ICharacterSkills> = ({ className, onRollDices }) => {
       }
       return 0;
     });
-  }, [aggregatedSkills.skills]);
+  }, [aggregatedSkills.skills, searchWord]);
 
   return (
     <div
