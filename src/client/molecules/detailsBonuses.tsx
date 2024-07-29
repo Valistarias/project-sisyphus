@@ -42,7 +42,7 @@ const DetailsBonuses: FC<IDetailsBonuses> = ({ bonuses, stat }) => {
       lines.stat = {
         id: 'stat',
         total: bonus.value,
-        text: texts.short,
+        text: texts.title,
       };
     } else if (bonus.origin?.skill !== undefined || bonus.origin?.cyberFrame !== undefined) {
       const relevantId =

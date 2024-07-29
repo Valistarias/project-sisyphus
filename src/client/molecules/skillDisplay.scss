@@ -1,0 +1,29 @@
+.skill-display {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  justify-content: space-between;
+  position: relative;
+
+  &__title {
+    align-items: center;
+    display: inline-flex;
+    flex-direction: row;
+    font-size: 1.2rem;
+    font-weight: 500;
+    gap: 1rem;
+    text-transform: uppercase;
+  }
+
+  &__line {
+    background: var(--primary-20);
+    flex-grow: 1;
+    height: 0.2rem;
+  }
+
+  &__mod-value {
+    font-size: 1.5rem;
+    width: 8rem;
+  }
+}

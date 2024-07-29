@@ -17,6 +17,7 @@ import NumberSelect from './numberSelect';
 import PropDisplay from './propDisplay';
 import SearchBar from './searchBar';
 import { SmartSelect, type IGroupedOption, type ISingleValueSelect } from './select';
+import SkillDisplay from './skillDisplay';
 import StatDisplay from './statDisplay';
 
 export {
@@ -38,6 +39,7 @@ export {
   NumberSelect,
   PropDisplay,
   SearchBar,
+  SkillDisplay,
   SmartSelect,
   StatDisplay,
   defaultNodeIcon,

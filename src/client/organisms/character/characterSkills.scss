@@ -10,4 +10,20 @@
       width: 12rem;
     }
   }
+
+  &__skills {
+    background: var(--primary-20);
+    border-radius: var(--border-radius);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+    padding: 2rem;
+
+    .skill-display {
+      flex-grow: 1;
+      width: 28rem;
+    }
+  }
 }

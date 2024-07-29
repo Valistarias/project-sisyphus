@@ -1,0 +1,51 @@
+import React, { useMemo, type FC } from 'react';
+
+import { Ap } from '../atoms';
+import { type ICuratedSkill, type ICuratedStat } from '../types';
+import { type IScoreStatSkill } from '../utils/character';
+
+import ClickableText from './clickableText';
+import DetailsBonuses from './detailsBonuses';
+
+import { addSymbol } from '../utils';
+
+import './skillDisplay.scss';
+
+interface ISkillDisplay {
+  /** The skill to display */
+  skill: ICuratedSkill & {
+    score: IScoreStatSkill;
+    stat: ICuratedStat;
+  };
+  /** When the clickable zone is clicked */
+  onSkillClick: (
+    skill: ICuratedSkill & {
+      score: IScoreStatSkill;
+      stat: ICuratedStat;
+    }
+  ) => void;
+}
+
+const SkillDisplay: FC<ISkillDisplay> = ({ skill, onSkillClick }) => {
+  // TODO: Deal with i18n
+  const texts = useMemo(() => {
+    // insert lang detection here
+    return skill.skill;
+  }, [skill]);
+  return (
+    <div className="skill-display">
+      <Ap className="skill-display__title">{texts.title}</Ap>
+      <div className="skill-display__line" />
+      <ClickableText
+        className="skill-display__mod-value"
+        text={addSymbol(skill.score.total)}
+        onClick={() => {
+          onSkillClick(skill);
+        }}
+        hint={<DetailsBonuses bonuses={[...skill.score.sources]} stat={skill.stat} />}
+      />
+    </div>
+  );
+};
+
+export default SkillDisplay;

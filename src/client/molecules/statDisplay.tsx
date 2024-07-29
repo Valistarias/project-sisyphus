@@ -35,7 +35,7 @@ const StatDisplay: FC<IStatDisplay> = ({ stat, onStatClick }) => {
       <Ap className="stat-display__title">{texts.title}</Ap>
       <ClickableText
         className="stat-display__mod-value"
-        text={String(calculateStatModToString(stat.score.total))}
+        text={calculateStatModToString(stat.score.total)}
         onClick={() => {
           onStatClick(stat);
         }}
