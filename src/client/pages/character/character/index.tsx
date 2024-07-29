@@ -6,9 +6,11 @@ import { useApi, useCampaignEventWindow, useGlobalVars } from '../../../provider
 
 import { CampaignEventTab, CharacterHeader } from '../../../organisms';
 import { CharacterSkills } from '../../../organisms/character';
+import { type TypeCampaignEvent } from '../../../types';
 import { ErrorPage } from '../../index';
 
 // import { calculateDices, diceResultToStr, type DiceResult } from '../../utils';
+import { type DiceRequest } from '../../../utils';
 
 import './character.scss';
 
@@ -49,8 +51,8 @@ const Character: FC = () => {
         <div className="character__body__content">
           <CharacterSkills
             className="character__body__content__left"
-            onRollDices={(dices) => {
-              console.log('onRollDices', dices);
+            onRollDices={(dices: DiceRequest[], id: TypeCampaignEvent) => {
+              setToRoll(dices, id);
             }}
           />
           <div className="character__body__content__right" />

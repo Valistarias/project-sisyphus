@@ -7,7 +7,7 @@ import { Ap } from '../atoms';
 import DiceCard from '../molecules/diceCard';
 import { type TypeCampaignEvent, type TypeDice } from '../types';
 
-import { classTrim, strTodiceResult } from '../utils';
+import { addSymbol, classTrim, strTodiceResult } from '../utils';
 
 import './campaignEventLine.scss';
 
@@ -44,6 +44,7 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
       value: number;
     }> = [];
     let idDie = 0;
+    let totalOffset = 0;
     strTodiceResult(formula).forEach((diceCat) => {
       if (diceCat.results.length > 0) {
         diceCat.results.forEach((result) => {
@@ -54,12 +55,20 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
           });
           idDie += 1;
         });
+        totalOffset += diceCat.offset;
       }
     });
 
-    return dicesToUse.map(({ id, type, value }, index) => (
-      <DiceCard key={id} type={type as TypeDice} value={value} size="xsmall" skip />
-    ));
+    return (
+      <>
+        {dicesToUse.map(({ id, type, value }, index) => (
+          <DiceCard key={id} type={type as TypeDice} value={value} size="xsmall" skip />
+        ))}
+        {totalOffset !== 0 ? (
+          <Ap className="campaign-event-line__info__content__offset">{addSymbol(totalOffset)}</Ap>
+        ) : null}
+      </>
+    );
   }, [formula]);
 
   const typeCampaignEventText = useMemo(() => {

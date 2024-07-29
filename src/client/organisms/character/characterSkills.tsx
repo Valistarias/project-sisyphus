@@ -5,7 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { useGlobalVars } from '../../providers';
 
 import { SearchBar, SkillDisplay, StatDisplay } from '../../molecules';
-import { curateCharacterSkills } from '../../utils/character';
+import { type TypeCampaignEvent } from '../../types';
+import { calculateStatMod, curateCharacterSkills } from '../../utils/character';
 
 import { classTrim, removeDiacritics, type DiceRequest } from '../../utils';
 
@@ -13,7 +14,7 @@ import './characterSkills.scss';
 
 interface ICharacterSkills {
   /** The function sent to roll the dices */
-  onRollDices: (diceValues: DiceRequest[]) => void;
+  onRollDices: (diceValues: DiceRequest[], id: TypeCampaignEvent) => void;
   /** The classname of the element */
   className?: string;
 }
@@ -67,7 +68,16 @@ const CharacterSkills: FC<ICharacterSkills> = ({ className, onRollDices }) => {
             key={stat.stat._id}
             stat={stat}
             onStatClick={(e) => {
-              console.log('stat click', e);
+              onRollDices(
+                [
+                  {
+                    qty: 2,
+                    type: 8,
+                    offset: calculateStatMod(stat.score.total),
+                  },
+                ],
+                `stat-${stat.stat._id}`
+              );
             }}
           />
         ))}
@@ -91,7 +101,16 @@ const CharacterSkills: FC<ICharacterSkills> = ({ className, onRollDices }) => {
             key={skill.skill._id}
             skill={skill}
             onSkillClick={(e) => {
-              console.log('skill click', e);
+              onRollDices(
+                [
+                  {
+                    qty: 2,
+                    type: 8,
+                    offset: skill.score.total,
+                  },
+                ],
+                `skill-${skill.skill._id}`
+              );
             }}
           />
         ))}

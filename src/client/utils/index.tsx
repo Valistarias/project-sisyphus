@@ -97,6 +97,8 @@ export interface DiceRequest {
   qty: number;
   /** The type of dice (as in the number of sides on the dice) */
   type: TypeDice;
+  /** The offset to be added to the roll */
+  offset: number;
 }
 
 export interface DiceResult {
@@ -112,6 +114,8 @@ export interface DiceResult {
   worst: number;
   /** The average value on the throws on this type */
   average: number;
+  /** The offset value on the result */
+  offset: number;
 }
 
 interface TotalResult {
@@ -127,33 +131,39 @@ export const createBasicDiceRequest = (): DiceRequest[] => [
   {
     type: 20,
     qty: 0,
+    offset: 0,
   },
   {
     type: 12,
     qty: 0,
+    offset: 0,
   },
   {
     type: 10,
     qty: 0,
+    offset: 0,
   },
   {
     type: 8,
     qty: 0,
+    offset: 0,
   },
   {
     type: 6,
     qty: 0,
+    offset: 0,
   },
   {
     type: 4,
     qty: 0,
+    offset: 0,
   },
 ];
 
 export const throwDices = (dices: DiceRequest[]): DiceResult[] => {
   const resultsThrows: DiceResult[] = [];
 
-  dices.forEach(({ qty, type }) => {
+  dices.forEach(({ qty, type, offset }) => {
     let total = 0;
     let best = 0;
     let worst = 0;
@@ -170,6 +180,9 @@ export const throwDices = (dices: DiceRequest[]): DiceResult[] => {
         worst = throwValue;
       }
     }
+    total += offset;
+    best += offset;
+    worst += offset;
 
     resultsThrows.push({
       type,
@@ -177,6 +190,7 @@ export const throwDices = (dices: DiceRequest[]): DiceResult[] => {
       total,
       best,
       worst,
+      offset,
       average: Math.floor((total / (qty ?? 1)) * 10) / 10,
     });
   });
@@ -202,7 +216,7 @@ export const diceResultToStr = (diceCats: DiceResult[] | null): string => {
           stringified += ',';
         }
       });
-
+      stringified += `+${diceCat.offset}`;
       if (catIndex < curatedCats.length - 1) {
         stringified += ';';
       }
@@ -216,7 +230,11 @@ export const strTodiceResult = (text: string): DiceResult[] => {
   const catRollObj = {};
   text.split(';').forEach((catText) => {
     const [type, dicesText] = catText.split(':');
-    catRollObj[Number(type)] = dicesText.split(',').map((diceText) => Number(diceText));
+    const [dices, offset] = dicesText.split('+');
+    catRollObj[Number(type)] = {
+      dices: dices.split(',').map((diceText) => Number(diceText)),
+      offset,
+    };
   });
   return basicMold.map(({ type }) => {
     const data = catRollObj[type];
@@ -224,7 +242,7 @@ export const strTodiceResult = (text: string): DiceResult[] => {
     let best = 0;
     let worst = 0;
     if (data !== undefined) {
-      data.forEach((val: number, i: number) => {
+      data.dices.forEach((val: number, i: number) => {
         total += val;
         if (best < val || i === 0) {
           best = val;
@@ -237,10 +255,11 @@ export const strTodiceResult = (text: string): DiceResult[] => {
 
     return {
       type,
-      results: data ?? [],
+      results: data?.dices ?? [],
       total,
       best,
       worst,
+      offset: data?.offset !== undefined ? Number(data.offset) : 0,
       average: Math.floor((total / (data !== undefined ? data.length : 1)) * 10) / 10,
     };
   });

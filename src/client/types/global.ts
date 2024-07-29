@@ -36,7 +36,7 @@ export interface IUser {
 // Dices and CampaignEvents ------------------------------------
 export type TypeDice = 4 | 6 | 8 | 10 | 12 | 20;
 
-export type TypeCampaignEvent = 'free' | 'hpGain' | 'hpLoss';
+export type TypeCampaignEvent = 'free' | 'hpGain' | 'hpLoss' | `skill-${string}` | `stat-${string}`;
 
 export interface ICampaignEvent {
   /** The ID of the roll */
