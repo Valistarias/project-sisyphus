@@ -15,6 +15,13 @@ export const regexMail = /([A-z0-9._%-])+@([A-z0-9.-])+\.([A-z0-9]{2,})/g;
 
 export const regexDiceFormula = /^(\d+)d(\d+)$/g;
 
+export const addSymbol = (val: number): string => {
+  if (val >= 0) {
+    return `+${val}`;
+  }
+  return String(val);
+};
+
 export const arraysEqual = (a: string[], b: string[]): boolean => {
   if (a === b) return true;
   if (a == null || b == null) return false;

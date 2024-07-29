@@ -3,7 +3,7 @@ import React, { useMemo, type FC } from 'react';
 import { Ap } from '../atoms';
 import { RichTextElement } from '../organisms';
 import { type ICuratedStat } from '../types';
-import { calculateStatModToString, type IScoreStatSkill } from '../utils/character';
+import { calculateStatModToString, malusStatMod, type IScoreStatSkill } from '../utils/character';
 
 import ClickableText from './clickableText';
 import DetailsBonuses from './detailsBonuses';
@@ -39,7 +39,18 @@ const StatDisplay: FC<IStatDisplay> = ({ stat, onStatClick }) => {
         onClick={() => {
           onStatClick(stat);
         }}
-        hint={<DetailsBonuses bonuses={stat.score.sources} stat={stat} />}
+        hint={
+          <DetailsBonuses
+            bonuses={[
+              ...stat.score.sources,
+              {
+                fromThrottleStat: true,
+                value: malusStatMod,
+              },
+            ]}
+            stat={stat}
+          />
+        }
       />
       <Helper size="small">
         <RichTextElement rawStringContent={texts.summary} readOnly />

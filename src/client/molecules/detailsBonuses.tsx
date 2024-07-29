@@ -6,7 +6,7 @@ import { Ap, type IAButton } from '../atoms';
 import { type ICuratedStat } from '../types';
 import { type ISourcePointsStatSkill } from '../utils/character';
 
-import { classTrim } from '../utils';
+import { addSymbol, classTrim } from '../utils';
 
 import './detailsBonuses.scss';
 
@@ -63,6 +63,12 @@ const DetailsBonuses: FC<IDetailsBonuses> = ({ bonuses, stat }) => {
       } else {
         lines[relevantId].total += bonus.value;
       }
+    } else if (bonus.fromThrottleStat === true) {
+      lines.fromThrottleStat = {
+        id: 'fromThrottleStat',
+        total: bonus.value,
+        text: t('detailBonuses.fromThrottleStat', { ns: 'components' }),
+      };
     }
   });
 
@@ -75,7 +81,17 @@ const DetailsBonuses: FC<IDetailsBonuses> = ({ bonuses, stat }) => {
       <Ap className="details-bonuses__title">{t('detailBonuses.title', { ns: 'components' })}</Ap>
       {lines !== undefined
         ? Object.values(lines).map(({ id, total, text }) => (
-            <Ap key={id} className="details-bonuses__line">{`${text}: ${total}`}</Ap>
+            <Ap key={id} className="details-bonuses__line">
+              {`${text}:`}
+              <span
+                className={classTrim(`
+                  details-bonuses__line__score
+                  ${total > 0 ? 'details-bonuses__line__score--positive' : 'details-bonuses__line__score--negative'}
+                `)}
+              >
+                {addSymbol(total)}
+              </span>
+            </Ap>
           ))
         : null}
     </div>

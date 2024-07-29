@@ -175,6 +175,7 @@
   },
   "detailBonuses": {
     "title": "Bonuses",
-    "fromBody": "Body"
+    "fromBody": "Body",
+    "fromThrottleStat": "To Stat"
   }
 }

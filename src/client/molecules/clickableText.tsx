@@ -64,7 +64,7 @@ const ClickableText: FC<IClickableText> = ({ text, onClick, className, hint }) =
       className={classTrim(`
       clickable-text
       ${isHintOpen ? 'clickable-text--open' : ''}
-      hint-button--${placement}
+      clickable-text--${placement}
       ${className ?? ''}
     `)}
     >

@@ -47,7 +47,7 @@
   &--top-right {
     .clickable-text__hint {
       right: 0;
-      top: -1rem;
+      top: -1.5rem;
       transform: translate3d(0, -100%, 0);
     }
   }
@@ -55,14 +55,14 @@
   &--bottom-right {
     .clickable-text__hint {
       right: 0;
-      top: calc(100% + 1rem);
+      top: calc(100% + 1.5rem);
     }
   }
 
   &--top-left {
     .clickable-text__hint {
       left: 0;
-      top: -1rem;
+      top: -1.5rem;
       transform: translate3d(0, -100%, 0);
     }
   }
@@ -70,7 +70,7 @@
   &--bottom-left {
     .clickable-text__hint {
       left: 0;
-      top: calc(100% + 1rem);
+      top: calc(100% + 1.5rem);
     }
   }
 

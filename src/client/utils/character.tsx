@@ -10,6 +10,8 @@ import {
   type ISkill,
 } from '../types';
 
+import { addSymbol } from '.';
+
 export interface ICyberFrameLevels {
   cyberFrame: ICuratedCyberFrame;
   level: number;
@@ -142,6 +144,7 @@ export interface ISourcePointsStatSkill {
   };
   fromBody?: boolean;
   fromStat?: boolean;
+  fromThrottleStat?: boolean;
 }
 
 export interface IScoreStatSkill {
@@ -285,14 +288,9 @@ const getBaseSkillNode = (skill: ISkill): ICuratedNode | undefined => {
   return generalNodes?.find(({ node }) => node.rank === 1);
 };
 
-const calculateStatMod = (val: number): number => val - 5;
-const calculateStatModToString = (val: number): string => {
-  const numVal = calculateStatMod(val);
-  if (numVal >= 0) {
-    return `+${numVal}`;
-  }
-  return String(numVal);
-};
+const malusStatMod = -5;
+const calculateStatMod = (val: number): number => val + malusStatMod;
+const calculateStatModToString = (val: number): string => addSymbol(calculateStatMod(val));
 
 export {
   aggregateSkillsByStats,
@@ -303,4 +301,5 @@ export {
   getBaseSkillNode,
   getCharacterHpValues,
   getCyberFrameLevelsByNodes,
+  malusStatMod,
 };

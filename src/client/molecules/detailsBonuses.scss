@@ -1,3 +1,34 @@
 .details-bonuses {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   width: 100%;
+
+  &__title {
+    font-family: var(--mono-font);
+    font-size: 1.2rem;
+    font-weight: 500;
+    letter-spacing: 0.1rem;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+
+  &__line {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+
+    &__score {
+      font-size: 1.8rem;
+      font-weight: 500;
+
+      &--positive {
+        color: var(--primary);
+      }
+
+      &--negative {
+        color: var(--error);
+      }
+    }
+  }
 }
