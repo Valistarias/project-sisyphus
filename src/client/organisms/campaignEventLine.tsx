@@ -2,6 +2,8 @@ import React, { useMemo, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
+import { useGlobalVars } from '../providers';
+
 import holoBackground from '../assets/imgs/tvbg2.gif';
 import { Ap } from '../atoms';
 import DiceCard from '../molecules/diceCard';
@@ -32,6 +34,8 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
   type,
 }) => {
   const { t } = useTranslation();
+  const { skills, stats } = useGlobalVars();
+
   const [isOpen, setOpen] = useState(false);
 
   const detailScores = useMemo(() => {
@@ -72,6 +76,42 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
   }, [formula]);
 
   const typeCampaignEventText = useMemo(() => {
+    if (type.includes('skill-')) {
+      const skillId = type.split('-')[1];
+      const skill = skills.find(({ skill }) => skill._id === skillId);
+
+      if (skill !== undefined) {
+        // TODO: Handle i18n here
+        const text = skill.skill;
+        return (
+          <Ap
+            className="campaign-event-line__result__type__text"
+            title={`${text.title} ${t('campaignEventResults.type.global.line2', { ns: 'components' })}`}
+          >
+            <span className="campaign-event-line__result__type__text__long">{text.title}</span>
+            {t(`campaignEventResults.type.global.line2`, { ns: 'components' })}
+          </Ap>
+        );
+      }
+    }
+    if (type.includes('stat-')) {
+      const statId = type.split('-')[1];
+      const stat = stats.find(({ stat }) => stat._id === statId);
+
+      if (stat !== undefined) {
+        // TODO: Handle i18n here
+        const text = stat.stat;
+        return (
+          <Ap
+            className="campaign-event-line__result__type__text"
+            title={`${text.title} ${t('campaignEventResults.type.global.line2', { ns: 'components' })}`}
+          >
+            <span className="campaign-event-line__result__type__text__long">{text.title}</span>
+            {t(`campaignEventResults.type.global.line2`, { ns: 'components' })}
+          </Ap>
+        );
+      }
+    }
     return (
       <Ap className="campaign-event-line__result__type__text">
         <span className="campaign-event-line__result__type__text__long">
@@ -80,10 +120,10 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
         {t(`campaignEventResults.type.${type}.line2`, { ns: 'components' })}
       </Ap>
     );
-  }, [t, type]);
+  }, [t, type, skills, stats]);
 
   const resultText = useMemo(() => {
-    if (type === 'free') {
+    if (type === 'free' || type.includes('skill-') || type.includes('stat-')) {
       return result.toString();
     }
     if (type === 'hpLoss') {

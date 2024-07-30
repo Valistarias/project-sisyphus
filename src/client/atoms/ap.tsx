@@ -7,6 +7,8 @@ import { classTrim } from '../utils';
 import './ap.scss';
 
 interface IAp extends IQuarkProps {
+  /** The title, when the mouse over */
+  title?: string;
   /** The childrens of the P element */
   children?: ReactNode;
   /** The lang param, if defined */
@@ -17,11 +19,14 @@ interface IAp extends IQuarkProps {
   onClick?: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
-const AP: FC<IAp> = ({ className, children, lang, hyphens = false, onClick }) => (
+const AP: FC<IAp> = ({ className, title, children, lang, hyphens = false, onClick }) => (
   <Quark
     quarkType="p"
-    reactProps={lang !== undefined ? { lang } : {}}
+    reactProps={{
+      ...(lang !== undefined ? { lang } : {}),
+    }}
     onClick={onClick}
+    title={title}
     className={classTrim(`
         ap
         ${hyphens ? 'ap--hyphens' : ''}

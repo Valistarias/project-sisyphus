@@ -74,6 +74,9 @@
       "hpGain": {
         "line1": "HP",
         "line2": "Gain"
+      },
+      "global": {
+        "line2": "Roll"
       }
     }
   },

@@ -50,6 +50,13 @@
         text-overflow: ellipsis;
         text-transform: uppercase;
         writing-mode: vertical-rl;
+
+        &__long {
+          max-height: 7rem;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          text-wrap: nowrap;
+        }
       }
     }
 
