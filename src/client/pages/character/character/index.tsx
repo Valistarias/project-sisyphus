@@ -1,11 +1,15 @@
-import React, { useEffect, useRef, type FC } from 'react';
+import React, { useEffect, useRef, useState, type FC } from 'react';
 
 import { useParams } from 'react-router-dom';
 
 import { useApi, useCampaignEventWindow, useGlobalVars } from '../../../providers';
 
-import { CampaignEventTab, CharacterHeader } from '../../../organisms';
-import { CharacterSkills } from '../../../organisms/character';
+import {
+  CampaignEventTab,
+  CharacterHeader,
+  CharacterSkills,
+  CharacterStatus,
+} from '../../../organisms';
 import { type TypeCampaignEvent } from '../../../types';
 import { ErrorPage } from '../../index';
 
@@ -19,6 +23,8 @@ const Character: FC = () => {
   const { api } = useApi();
   const { id } = useParams();
   const { setToRoll } = useCampaignEventWindow();
+
+  const [eventTabOpen, setEventTabOpen] = useState(false);
 
   const calledApi = useRef(false);
 
@@ -45,8 +51,14 @@ const Character: FC = () => {
         onRollDices={(dices) => {
           setToRoll(dices, 'free');
         }}
+        isTabOpen={eventTabOpen}
       />
-      <CharacterHeader />
+      <CharacterHeader
+        onClickEventTab={() => {
+          setEventTabOpen((prev) => !prev);
+        }}
+        isEventTabOpen={eventTabOpen}
+      />
       <div className="character__body">
         <div className="character__body__content">
           <CharacterSkills
@@ -55,7 +67,9 @@ const Character: FC = () => {
               setToRoll(dices, id);
             }}
           />
-          <div className="character__body__content__right" />
+          <div className="character__body__content__right">
+            <CharacterStatus />
+          </div>
         </div>
       </div>
     </div>

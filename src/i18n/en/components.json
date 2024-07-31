@@ -180,5 +180,9 @@
     "title": "Bonuses",
     "fromBody": "Body",
     "fromThrottleStat": "To Stat"
+  },
+  "characterHeader": {
+    "close": "Close",
+    "open": "Dices & Timeline"
   }
 }

@@ -11,8 +11,8 @@ import {
   useSystemAlerts,
 } from '../../providers';
 
-import { Aloadbar, Ap, Atitle } from '../../atoms';
-import { HintButton, Input } from '../../molecules';
+import { Aicon, Aloadbar, Ap, Atitle } from '../../atoms';
+import { Button, HintButton, Input } from '../../molecules';
 import { getActualBody, getCharacterHpValues } from '../../utils/character';
 import Alert from '../alert';
 
@@ -33,7 +33,14 @@ interface FormKarmaValues {
   karma: string;
 }
 
-const CharacterHeader: FC = () => {
+interface ICharacterHeader {
+  /** When the "Dices and Timeline" is clicked */
+  onClickEventTab: (e: React.MouseEvent<HTMLElement>) => void;
+  /** Is the event tab open ? */
+  isEventTabOpen: boolean;
+}
+
+const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen }) => {
   const { t } = useTranslation();
   const { createAlert, getNewId } = useSystemAlerts();
   const { api } = useApi();
@@ -207,37 +214,36 @@ const CharacterHeader: FC = () => {
               })}
             </Ap>
           ) : null}
-          <div className="char-header__left__buttons">
-            <HintButton
-              hint={t('character.buttons.editChar', {
-                ns: 'pages',
-              })}
-              icon="Edit"
-              size="small"
-              theme="line"
-              href={`/character/${character !== false ? character?._id ?? '' : ''}/edit`}
-            />
-            <HintButton
-              hint={t('character.buttons.editChar', {
-                ns: 'pages',
-              })}
-              icon="Edit"
-              size="small"
-              theme="line"
-              href={`/character/${character !== false ? character?._id ?? '' : ''}/edit`}
-            />
-            <HintButton
-              hint={t('character.buttons.editChar', {
-                ns: 'pages',
-              })}
-              icon="Edit"
-              size="small"
-              theme="line"
-              href={`/character/${character !== false ? character?._id ?? '' : ''}/edit`}
-            />
-          </div>
         </div>
-        <div className="char-header__mid"></div>
+        <div className="char-header__mid">
+          <HintButton
+            hint={t('character.buttons.editChar', {
+              ns: 'pages',
+            })}
+            icon="Edit"
+            size="small"
+            theme="line"
+            href={`/character/${character !== false ? character?._id ?? '' : ''}/edit`}
+          />
+          <HintButton
+            hint={t('character.buttons.editChar', {
+              ns: 'pages',
+            })}
+            icon="Edit"
+            size="small"
+            theme="line"
+            href={`/character/${character !== false ? character?._id ?? '' : ''}/edit`}
+          />
+          <HintButton
+            hint={t('character.buttons.editChar', {
+              ns: 'pages',
+            })}
+            icon="Edit"
+            size="small"
+            theme="line"
+            href={`/character/${character !== false ? character?._id ?? '' : ''}/edit`}
+          />
+        </div>
         <div className="char-header__right">
           <div className="char-header__health">
             <form
@@ -298,6 +304,9 @@ const CharacterHeader: FC = () => {
 
             <Aloadbar color="tertiary" progress={charKarma === 0 ? 0 : 0.5} />
           </div>
+          <Button size="small" className="char-header__event-tab" onClick={onClickEventTab}>
+            <Aicon size="large" type="D8" />
+          </Button>
         </div>
       </div>
     </div>

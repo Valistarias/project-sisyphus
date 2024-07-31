@@ -7,11 +7,12 @@
     justify-content: space-around;
 
     .stat-display {
-      width: 12rem;
+      width: 11rem;
     }
   }
 
   &__skills {
+    align-content: flex-start;
     background: var(--primary-20);
     border-radius: var(--border-radius);
     display: flex;

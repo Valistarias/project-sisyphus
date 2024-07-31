@@ -23,9 +23,16 @@ interface ICampaignEventTab {
   character?: ICharacter;
   /** The function sent to roll the dices */
   onRollDices: (diceValues: DiceRequest[]) => void;
+  /** Is the tab open ? */
+  isTabOpen: boolean;
 }
 
-const CampaignEventTab: FC<ICampaignEventTab> = ({ onRollDices, campaignId, character }) => {
+const CampaignEventTab: FC<ICampaignEventTab> = ({
+  isTabOpen,
+  onRollDices,
+  campaignId,
+  character,
+}) => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
@@ -33,7 +40,7 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({ onRollDices, campaignId, char
   const { addCampaignEventListener, removeCampaignEventListener } = useCampaignEventWindow();
 
   // const [loading, setLoading] = useState(true);
-  const [isOpen, setOpen] = useState(false);
+  // const [isOpen, setOpen] = useState(false);
   // const [notFound, setNotFound] = useState(false);
 
   const [diceValues, setDiceValues] = useState<DiceRequest[]>(createBasicDiceRequest());
@@ -329,6 +336,12 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({ onRollDices, campaignId, char
     t,
   ]);
 
+  useEffect(() => {
+    if (isTabOpen) {
+      setDiceValues(createBasicDiceRequest());
+    }
+  }, [isTabOpen]);
+
   setTimeout(function () {
     if (lockedScroll.current && scrollRef.current !== null) {
       scrollRef.current.scrollTo(0, scrollRef.current.scrollHeight);
@@ -339,10 +352,10 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({ onRollDices, campaignId, char
     <div
       className={classTrim(`
           campaign-event-tab
-          ${isOpen ? 'campaign-event-tab--open' : ''}
+          ${isTabOpen ? 'campaign-event-tab--open' : ''}
         `)}
     >
-      <div className="campaign-event-tab__buttons">
+      {/* <div className="campaign-event-tab__buttons">
         <Button
           theme="line"
           className="campaign-event-tab__buttons__toggle"
@@ -353,11 +366,11 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({ onRollDices, campaignId, char
             setOpen(!isOpen);
           }}
         >
-          {isOpen
+          {isTabOpen
             ? t('campaignEventTab.close', { ns: 'components' })
             : t('campaignEventTab.open', { ns: 'components' })}
         </Button>
-      </div>
+      </div> */}
       <div className="campaign-event-tab__content">
         <div className="campaign-event-tab__log">
           <Ap className="campaign-event-tab__log__title">

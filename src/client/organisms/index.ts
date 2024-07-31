@@ -3,7 +3,7 @@ import ArmorDisplay from './armorDisplay';
 import BagDisplay from './bagDisplay';
 import CampaignEventResult from './campaignEventLine';
 import CampaignEventTab from './campaignEventTab';
-import { CharacterHeader } from './character';
+import { CharacterHeader, CharacterSkills, CharacterStatus } from './character';
 import {
   CharCreationStep1,
   CharCreationStep2,
@@ -35,6 +35,8 @@ export {
   CharCreationStep4,
   CharCreationStep5,
   CharacterHeader,
+  CharacterSkills,
+  CharacterStatus,
   DragList,
   HeaderBar,
   ImplantDisplay,
