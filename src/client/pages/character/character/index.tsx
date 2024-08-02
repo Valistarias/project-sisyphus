@@ -51,6 +51,9 @@ const Character: FC = () => {
         onRollDices={(dices) => {
           setToRoll(dices, 'free');
         }}
+        onClose={() => {
+          setEventTabOpen(false);
+        }}
         isTabOpen={eventTabOpen}
       />
       <CharacterHeader

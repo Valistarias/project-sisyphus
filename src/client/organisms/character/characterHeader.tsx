@@ -304,7 +304,9 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
 
             <Aloadbar color="tertiary" progress={charKarma === 0 ? 0 : 0.5} />
           </div>
-          <Button size="small" className="char-header__event-tab" onClick={onClickEventTab}>
+        </div>
+        <div className="char-header__event-tab">
+          <Button size="small" className="char-header__event-tab__btn" onClick={onClickEventTab}>
             <Aicon size="large" type="D8" />
           </Button>
         </div>

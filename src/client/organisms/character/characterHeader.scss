@@ -23,7 +23,6 @@
   &__left {
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
     height: 100%;
     justify-content: space-between;
 
@@ -45,7 +44,6 @@
   &__right {
     display: flex;
     flex-direction: row;
-    flex-grow: 1;
     gap: 2rem;
     justify-content: flex-end;
   }
@@ -63,8 +61,7 @@
 
   &__health,
   &__karma {
-    flex-grow: 1;
-    max-width: 22rem;
+    width: 22rem;
 
     &__field {
       align-items: center;
@@ -99,10 +96,12 @@
   }
 
   &__event-tab {
-    .aicon {
-      fill: var(--primary);
-    }
+    &__btn {
+      height: auto;
 
-    height: auto;
+      .aicon {
+        fill: var(--primary);
+      }
+    }
   }
 }

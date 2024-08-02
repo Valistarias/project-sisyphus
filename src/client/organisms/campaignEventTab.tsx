@@ -25,6 +25,8 @@ interface ICampaignEventTab {
   onRollDices: (diceValues: DiceRequest[]) => void;
   /** Is the tab open ? */
   isTabOpen: boolean;
+  /** When the close button is clicked */
+  onClose: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
 const CampaignEventTab: FC<ICampaignEventTab> = ({
@@ -32,6 +34,7 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
   onRollDices,
   campaignId,
   character,
+  onClose,
 }) => {
   const { t } = useTranslation();
   const { api } = useApi();
@@ -372,6 +375,12 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
         </Button>
       </div> */}
       <div className="campaign-event-tab__content">
+        <Button
+          theme="text-only"
+          className="campaign-event-tab__content__close"
+          onClick={onClose}
+          icon="Cross"
+        />
         <div className="campaign-event-tab__log">
           <Ap className="campaign-event-tab__log__title">
             {t('campaignEventTab.title', { ns: 'components' })}
