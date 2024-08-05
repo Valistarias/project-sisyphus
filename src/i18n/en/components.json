@@ -179,7 +179,8 @@
   "detailBonuses": {
     "title": "Bonuses",
     "fromBody": "Body",
-    "fromThrottleStat": "To Stat"
+    "fromThrottleStat": "To Stat",
+    "fromStatGeneric": "Stat"
   },
   "characterHeader": {
     "close": "Close",

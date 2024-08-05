@@ -10,7 +10,7 @@ interface IClickableText extends IAButton {
   /** The clickable text */
   text: string;
   /** When the clickable text is clicked */
-  onClick: (e: React.MouseEvent<HTMLElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
   /** Helper/details attached to this text */
   hint?: ReactNode;
 }
@@ -23,6 +23,7 @@ const ClickableText: FC<IClickableText> = ({ text, onClick, className, hint }) =
   const hintContent = useRef<HTMLDivElement>(null);
 
   const handleMouseEnter = (): void => {
+    if (hint === undefined) return;
     if (hintContent.current !== null) {
       const dimensions = hintContent.current.getBoundingClientRect();
       const windowWidth = window.innerWidth;
@@ -53,6 +54,7 @@ const ClickableText: FC<IClickableText> = ({ text, onClick, className, hint }) =
   };
 
   const handleMouseLeave = (): void => {
+    if (hint === undefined) return;
     if (delayHandler !== null) {
       clearTimeout(delayHandler);
       setHintOpen(false);
@@ -64,6 +66,7 @@ const ClickableText: FC<IClickableText> = ({ text, onClick, className, hint }) =
       className={classTrim(`
       clickable-text
       ${isHintOpen ? 'clickable-text--open' : ''}
+      ${onClick === undefined ? 'clickable-text--unclickable' : ''}
       clickable-text--${placement}
       ${className ?? ''}
     `)}

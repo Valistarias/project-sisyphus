@@ -14,11 +14,11 @@ import Node from './node';
 import { NodeIconSelect, defaultNodeIcon } from './nodeIconSelect';
 import NodeTree from './nodeTree';
 import NumberSelect from './numberSelect';
+import NumDisplay from './numDisplay';
 import PropDisplay from './propDisplay';
 import SearchBar from './searchBar';
 import { SmartSelect, type IGroupedOption, type ISingleValueSelect } from './select';
 import SkillDisplay from './skillDisplay';
-import StatDisplay from './statDisplay';
 
 export {
   Ariane,
@@ -36,12 +36,12 @@ export {
   Node,
   NodeIconSelect,
   NodeTree,
+  NumDisplay,
   NumberSelect,
   PropDisplay,
   SearchBar,
   SkillDisplay,
   SmartSelect,
-  StatDisplay,
   defaultNodeIcon,
   type IArianeElt,
   type IGroupedOption,

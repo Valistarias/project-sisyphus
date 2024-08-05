@@ -14,14 +14,14 @@ interface IDetailsBonuses extends IAButton {
   /** The bonuses to display */
   bonuses: ISourcePointsStatSkill[];
   /** The associated stat */
-  stat: ICuratedStat;
+  stat?: ICuratedStat;
 }
 
 const DetailsBonuses: FC<IDetailsBonuses> = ({ bonuses, stat }) => {
   const { t } = useTranslation();
 
   // TODO: Deal with i18n
-  const texts = stat.stat;
+  const statTexts = stat?.stat;
 
   const lines: Record<
     string,
@@ -42,7 +42,7 @@ const DetailsBonuses: FC<IDetailsBonuses> = ({ bonuses, stat }) => {
       lines.stat = {
         id: 'stat',
         total: bonus.value,
-        text: texts.title,
+        text: statTexts?.title ?? t('detailBonuses.fromStatGeneric', { ns: 'components' }),
       };
     } else if (bonus.origin?.skill !== undefined || bonus.origin?.cyberFrame !== undefined) {
       const relevantId =

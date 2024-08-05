@@ -4,9 +4,14 @@ import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../providers';
 
-import { SearchBar, SkillDisplay, StatDisplay } from '../../molecules';
+import { NumDisplay, SearchBar, SkillDisplay } from '../../molecules';
 import { type TypeCampaignEvent } from '../../types';
-import { calculateStatMod, curateCharacterSkills } from '../../utils/character';
+import {
+  calculateStatMod,
+  calculateStatModToString,
+  curateCharacterSkills,
+  malusStatMod,
+} from '../../utils/character';
 
 import { classTrim, removeDiacritics, type DiceRequest } from '../../utils';
 
@@ -55,6 +60,47 @@ const CharacterSkills: FC<ICharacterSkills> = ({ className, onRollDices }) => {
     });
   }, [aggregatedSkills.skills, searchWord]);
 
+  const statList = useMemo(() => {
+    return (
+      <div className="char-skills__stats">
+        {aggregatedSkills.stats.map((stat) => {
+          // TODO: Deal with i18n
+          const { title, summary } = useMemo(() => {
+            // insert lang detection here
+            return stat.stat;
+          }, [stat]);
+          return (
+            <NumDisplay
+              key={stat.stat._id}
+              stat={stat}
+              text={{ title, summary }}
+              value={calculateStatModToString(stat.score.total)}
+              bonuses={[
+                ...stat.score.sources,
+                {
+                  fromThrottleStat: true,
+                  value: malusStatMod,
+                },
+              ]}
+              onClick={() => {
+                onRollDices(
+                  [
+                    {
+                      qty: 2,
+                      type: 8,
+                      offset: calculateStatMod(stat.score.total),
+                    },
+                  ],
+                  `stat-${stat.stat._id}`
+                );
+              }}
+            />
+          );
+        })}
+      </div>
+    );
+  }, [aggregatedSkills.stats, onRollDices]);
+
   return (
     <div
       className={classTrim(`
@@ -62,26 +108,7 @@ const CharacterSkills: FC<ICharacterSkills> = ({ className, onRollDices }) => {
       ${className ?? ''}
     `)}
     >
-      <div className="char-skills__stats">
-        {aggregatedSkills.stats.map((stat) => (
-          <StatDisplay
-            key={stat.stat._id}
-            stat={stat}
-            onStatClick={(e) => {
-              onRollDices(
-                [
-                  {
-                    qty: 2,
-                    type: 8,
-                    offset: calculateStatMod(stat.score.total),
-                  },
-                ],
-                `stat-${stat.stat._id}`
-              );
-            }}
-          />
-        ))}
-      </div>
+      {statList}
 
       <SearchBar
         placeholder={t('searchBar.placeholder', { ns: 'components' })}
