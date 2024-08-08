@@ -2,15 +2,17 @@ import {
   type IBody,
   type ICharacter,
   type ICharacterNode,
+  type ICuratedCharParam,
   type ICuratedCyberFrame,
   type ICuratedNode,
   type ICuratedSkill,
   type ICuratedStat,
+  type IGlobalValue,
   type INode,
   type ISkill,
 } from '../types';
 
-import { addSymbol } from '.';
+import { addSymbol, capitalizeFirstLetter } from '.';
 
 export interface ICyberFrameLevels {
   cyberFrame: ICuratedCyberFrame;
@@ -136,7 +138,7 @@ const getActualBody = (
   };
 };
 
-export interface ISourcePointsStatSkill {
+export interface ISourcePoints {
   value: number;
   origin?: INode & {
     cyberFrame?: ICuratedCyberFrame;
@@ -145,12 +147,27 @@ export interface ISourcePointsStatSkill {
   fromBody?: boolean;
   fromStat?: boolean;
   fromThrottleStat?: boolean;
+  fromBase?: boolean;
 }
 
-export interface IScoreStatSkill {
+export interface IScore {
   total: number;
-  sources: ISourcePointsStatSkill[];
+  sources: ISourcePoints[];
 }
+
+export type ICuratedStatWithScore = ICuratedStat & {
+  score: IScore;
+};
+
+export type ICuratedSkillWithScore = ICuratedSkill & {
+  score: IScore;
+  stat: ICuratedStat;
+};
+
+export type ICuratedCharParamWithScore = ICuratedCharParam & {
+  score: IScore;
+  stat?: ICuratedStat;
+};
 
 const curateCharacterSkills = (
   character: false | ICharacter | null,
@@ -158,17 +175,8 @@ const curateCharacterSkills = (
   stats: ICuratedStat[],
   cyberFrames: ICuratedCyberFrame[]
 ): {
-  stats: Array<
-    ICuratedStat & {
-      score: IScoreStatSkill;
-    }
-  >;
-  skills: Array<
-    ICuratedSkill & {
-      score: IScoreStatSkill;
-      stat: ICuratedStat;
-    }
-  >;
+  stats: ICuratedStatWithScore[];
+  skills: ICuratedSkillWithScore[];
 } => {
   if (character === false || character === null) {
     return { stats: [], skills: [] };
@@ -178,8 +186,8 @@ const curateCharacterSkills = (
     return { stats: [], skills: [] };
   }
 
-  const skillNodesById: Record<string, IScoreStatSkill> = {};
-  const statNodesById: Record<string, IScoreStatSkill> = {};
+  const skillNodesById: Record<string, IScore> = {};
+  const statNodesById: Record<string, IScore> = {};
 
   body.stats.forEach(({ stat, value }) => {
     statNodesById[stat] = {
@@ -250,18 +258,8 @@ const curateCharacterSkills = (
       });
     });
   });
-  const charStats: Record<
-    string,
-    ICuratedStat & {
-      score: IScoreStatSkill;
-    }
-  > = {};
-  const charSkills: Array<
-    ICuratedSkill & {
-      score: IScoreStatSkill;
-      stat: ICuratedStat;
-    }
-  > = [];
+  const charStats: Record<string, ICuratedStatWithScore> = {};
+  const charSkills: ICuratedSkillWithScore[] = [];
   skills.forEach(({ skill, i18n }) => {
     const relatedStat = stats.find(({ stat }) => stat._id === skill.stat._id);
     const relatedStatBonuses = statNodesById[skill.stat._id];
@@ -294,6 +292,112 @@ const curateCharacterSkills = (
   return { stats: Object.values(charStats), skills: charSkills };
 };
 
+const curateCharacterParams = (
+  character: false | ICharacter | null,
+  charParams: ICuratedCharParam[],
+  charParamList: string[],
+  skills: ICuratedSkillWithScore[],
+  stats: ICuratedStatWithScore[],
+  cyberFrames: ICuratedCyberFrame[],
+  globalValues: IGlobalValue[]
+): ICuratedCharParamWithScore[] => {
+  if (character === false || character === null) {
+    return [];
+  }
+  const { body } = getActualBody(character);
+  if (body === undefined) {
+    return [];
+  }
+
+  const charParamsById: Record<string, ICuratedCharParamWithScore> = {};
+
+  // The correlated stats to add to the charParams, as a bonus
+  const correlatingCharParamStat = {
+    pyr: 'dex',
+    arr: 'fee',
+  };
+
+  charParamList.forEach((charParamId) => {
+    const associatedCharParam = charParams.find(
+      ({ charParam }) => charParam.formulaId === charParamId
+    );
+    if (associatedCharParam !== undefined) {
+      const id = associatedCharParam.charParam._id;
+      const formulaId = associatedCharParam.charParam.formulaId;
+      if (charParamList.includes(formulaId)) {
+        let value = 0;
+        const globalValueBonus =
+          globalValues.find(
+            (globalValue) => globalValue.name === `base${capitalizeFirstLetter(formulaId)}`
+          )?.value ?? 0;
+        value += Number(globalValueBonus);
+        charParamsById[id] = {
+          ...associatedCharParam,
+          score: {
+            total: value,
+            sources: [],
+          },
+        };
+
+        if (value !== 0) {
+          charParamsById[id].score.sources.push({
+            value,
+            fromBase: true,
+          });
+        }
+
+        if (correlatingCharParamStat[formulaId] !== undefined) {
+          const relatedStat = stats.find(
+            ({ stat }) => stat.formulaId === correlatingCharParamStat[formulaId]
+          );
+          if (relatedStat !== undefined) {
+            charParamsById[id].score.total += calculateStatMod(relatedStat.score.total);
+            charParamsById[id].score.sources.push({
+              value: calculateStatMod(relatedStat.score.total),
+              fromStat: true,
+            });
+            charParamsById[id].stat = relatedStat;
+          }
+        }
+      }
+    }
+  });
+
+  character.nodes?.forEach(({ node }) => {
+    let foundCyberFrame: ICuratedCyberFrame | undefined;
+    let foundSkill: ICuratedSkill | undefined;
+    if (node.cyberFrameBranch !== undefined) {
+      foundCyberFrame = cyberFrames.find(
+        ({ cyberFrame }) =>
+          cyberFrame.branches.find(
+            ({ cyberFrameBranch }) => cyberFrameBranch._id === node.cyberFrameBranch
+          ) !== undefined
+      );
+    }
+    if (node.skillBranch !== undefined) {
+      foundSkill = skills.find(
+        ({ skill }) =>
+          skill.branches.find(({ skillBranch }) => skillBranch._id === node.skillBranch) !==
+          undefined
+      );
+    }
+    node.charParamBonuses?.forEach((charParamBonus) => {
+      if (charParamsById[charParamBonus.charParam] !== undefined) {
+        charParamsById[charParamBonus.charParam].score.total += charParamBonus.value;
+        charParamsById[charParamBonus.charParam].score.sources.push({
+          value: charParamBonus.value,
+          origin: {
+            ...node,
+            cyberFrame: foundCyberFrame,
+            skill: foundSkill,
+          },
+        });
+      }
+    });
+  });
+  return Object.values(charParamsById);
+};
+
 const getBaseSkillNode = (skill: ISkill): ICuratedNode | undefined => {
   const generalNodes = skill.branches.find((branch) => branch.skillBranch.title === '_general')
     ?.skillBranch.nodes;
@@ -308,6 +412,7 @@ export {
   aggregateSkillsByStats,
   calculateStatMod,
   calculateStatModToString,
+  curateCharacterParams,
   curateCharacterSkills,
   getActualBody,
   getBaseSkillNode,

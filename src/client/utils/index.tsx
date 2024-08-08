@@ -19,6 +19,10 @@ export const arrSum = (elt: number[]): number =>
     return prev + cur;
   });
 
+export const capitalizeFirstLetter = (string: string): string => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
 export const regexMail = /([A-z0-9._%-])+@([A-z0-9.-])+\.([A-z0-9]{2,})/g;
 
 export const regexDiceFormula = /^(\d+)d(\d+)$/g;

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Ap, type IAButton } from '../atoms';
 import { type ICuratedStat } from '../types';
-import { type ISourcePointsStatSkill } from '../utils/character';
+import { type ISourcePoints } from '../utils/character';
 
 import { addSymbol, classTrim } from '../utils';
 
@@ -12,7 +12,7 @@ import './detailsBonuses.scss';
 
 interface IDetailsBonuses extends IAButton {
   /** The bonuses to display */
-  bonuses: ISourcePointsStatSkill[];
+  bonuses: ISourcePoints[];
   /** The associated stat */
   stat?: ICuratedStat;
 }
@@ -37,6 +37,12 @@ const DetailsBonuses: FC<IDetailsBonuses> = ({ bonuses, stat }) => {
         id: 'body',
         total: bonus.value,
         text: t('detailBonuses.fromBody', { ns: 'components' }),
+      };
+    } else if (bonus.fromBase === true) {
+      lines.body = {
+        id: 'body',
+        total: bonus.value,
+        text: t('detailBonuses.fromBase', { ns: 'components' }),
       };
     } else if (bonus.fromStat === true) {
       lines.stat = {

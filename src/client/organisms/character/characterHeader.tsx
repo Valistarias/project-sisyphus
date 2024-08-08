@@ -78,7 +78,7 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
     () =>
       getCharacterHpValues(
         character,
-        Number(globalValues.find(({ name }) => name === 'startHp')?.value ?? 0),
+        Number(globalValues.find(({ name }) => name === 'baseHp')?.value ?? 0),
         charParams.find(({ charParam }) => charParam.short === 'HP')?.charParam._id ?? undefined
       ),
     [character, globalValues, charParams]

@@ -3,35 +3,34 @@ import React, { type FC } from 'react';
 import { Ap } from '../atoms';
 import { RichTextElement } from '../organisms';
 import { type ICuratedStat } from '../types';
-import { type IScoreStatSkill, type ISourcePointsStatSkill } from '../utils/character';
+import { type ISourcePoints } from '../utils/character';
 
 import ClickableText from './clickableText';
 import DetailsBonuses from './detailsBonuses';
 import Helper from './helper';
 
-import './statDisplay.scss';
+import './numDisplay.scss';
 
 interface INumDisplay {
   /** The text of the Display */
   text: {
     title: string;
+    short: string;
     summary?: string;
   };
   value: string;
   /** The stat element, if there is stat bonuses */
-  stat?: ICuratedStat & {
-    score: IScoreStatSkill;
-  };
+  stat?: ICuratedStat;
   /** When the clickable zone is clicked */
   onClick?: () => void;
   /** The bonuses displayed in the hint */
-  bonuses?: ISourcePointsStatSkill[];
+  bonuses?: ISourcePoints[];
 }
 
 const NumDisplay: FC<INumDisplay> = ({ text, stat, value, bonuses, onClick }) => {
   return (
     <div className="num-display">
-      <Ap className="num-display__title">{text.title}</Ap>
+      <Ap className="num-display__title">{text.title.length < 12 ? text.title : text.short}</Ap>
       <ClickableText
         className="num-display__mod-value"
         text={value}

@@ -11,6 +11,14 @@ import React, {
 
 import { useTranslation } from 'react-i18next';
 
+import {
+  curateCharacterParams,
+  curateCharacterSkills,
+  type ICuratedCharParamWithScore,
+  type ICuratedSkillWithScore,
+  type ICuratedStatWithScore,
+} from '../utils/character';
+
 import { useApi } from './api';
 
 import type {
@@ -47,6 +55,13 @@ interface IGlobalVarsContext {
   loading: boolean;
   /** The actual character */
   character: ICharacter | null | false;
+  /** The agregated stats and skills of the actual character */
+  characterStatSkills?: {
+    stats: ICuratedStatWithScore[];
+    skills: ICuratedSkillWithScore[];
+  };
+  /** The agregated character params of the actual character */
+  characterParams?: ICuratedCharParamWithScore[];
   /** All the loaded body parts */
   bodyParts: ICuratedBodyPart[];
   /** All the loaded rulebooks */
@@ -151,6 +166,16 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
 
   // Character
   const [character, setCharacter] = useState<ICharacter | null | false>(null);
+  const [characterStatSkills, setCharacterStatSkills] = useState<
+    | {
+        stats: ICuratedStatWithScore[];
+        skills: ICuratedSkillWithScore[];
+      }
+    | undefined
+  >(undefined);
+  const [characterParams, setCharacterParams] = useState<ICuratedCharParamWithScore[] | undefined>(
+    undefined
+  );
   const [campaigns, setCampaigns] = useState<ICampaign[]>([]);
   const [bodyParts, setBodyParts] = useState<ICuratedBodyPart[]>([]);
 
@@ -302,6 +327,28 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
     [api]
   );
 
+  // Calculating character stats, when everything needed is available
+  useEffect(() => {
+    if (character !== false && character !== null) {
+      // Aggregated Skills
+      const aggregatedSkills = curateCharacterSkills(character, skills, stats, cyberFrames);
+      setCharacterStatSkills(aggregatedSkills);
+
+      // Aggregated Character Parameters
+      const charParamList = ['ini', 'msp', 'pyr', 'arr'];
+      const aggregatedCharParams = curateCharacterParams(
+        character,
+        charParams,
+        charParamList,
+        aggregatedSkills.skills,
+        aggregatedSkills.stats,
+        cyberFrames,
+        globalValues
+      );
+      setCharacterParams(aggregatedCharParams);
+    }
+  }, [character, skills, stats, cyberFrames, charParams, globalValues]);
+
   const resetCharacter = useCallback(() => {
     setCharacter(null);
   }, []);
@@ -380,6 +427,8 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       bodyParts,
       campaigns,
       character,
+      characterStatSkills,
+      characterParams,
       charParams,
       cyberFrames,
       damageTypes,
@@ -449,6 +498,8 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       bodyParts,
       campaigns,
       character,
+      characterStatSkills,
+      characterParams,
       charParams,
       cyberFrames,
       damageTypes,

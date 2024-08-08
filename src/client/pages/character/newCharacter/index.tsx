@@ -524,7 +524,7 @@ const NewCharacter: FC = () => {
               });
           }
         } else {
-          let hpVal = Number(globalValues.find(({ name }) => name === 'startHp')?.value ?? 0);
+          let hpVal = Number(globalValues.find(({ name }) => name === 'baseHp')?.value ?? 0);
           const idHpCharParam = charParams.find(({ charParam }) => charParam.formulaId === 'hp')
             ?.charParam._id;
           character.nodes?.forEach(({ node }) => {

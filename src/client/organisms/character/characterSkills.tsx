@@ -6,12 +6,7 @@ import { useGlobalVars } from '../../providers';
 
 import { NumDisplay, SearchBar, SkillDisplay } from '../../molecules';
 import { type TypeCampaignEvent } from '../../types';
-import {
-  calculateStatMod,
-  calculateStatModToString,
-  curateCharacterSkills,
-  malusStatMod,
-} from '../../utils/character';
+import { calculateStatMod, calculateStatModToString, malusStatMod } from '../../utils/character';
 
 import { classTrim, removeDiacritics, type DiceRequest } from '../../utils';
 
@@ -26,17 +21,12 @@ interface ICharacterSkills {
 
 const CharacterSkills: FC<ICharacterSkills> = ({ className, onRollDices }) => {
   const { t } = useTranslation();
-  const { character, skills, stats, cyberFrames } = useGlobalVars();
+  const { characterStatSkills } = useGlobalVars();
 
   const [searchWord, setSearchWord] = useState('');
 
-  const aggregatedSkills = useMemo(
-    () => curateCharacterSkills(character, skills, stats, cyberFrames),
-    [character, skills, stats, cyberFrames]
-  );
-
   const sortedSkillList = useMemo(() => {
-    if (aggregatedSkills.skills.length === 0) {
+    if (characterStatSkills === undefined || characterStatSkills.skills.length === 0) {
       return [];
     }
 
@@ -44,7 +34,7 @@ const CharacterSkills: FC<ICharacterSkills> = ({ className, onRollDices }) => {
     const textField = 'skill';
     const searchElt = removeDiacritics(searchWord).toLowerCase();
 
-    const filteredBySearch = aggregatedSkills.skills.filter((skill) => {
+    const filteredBySearch = characterStatSkills.skills.filter((skill) => {
       const curatedTitle = removeDiacritics(skill[textField].title).toLowerCase();
       return !!curatedTitle.includes(searchElt);
     });
@@ -58,22 +48,19 @@ const CharacterSkills: FC<ICharacterSkills> = ({ className, onRollDices }) => {
       }
       return 0;
     });
-  }, [aggregatedSkills.skills, searchWord]);
+  }, [characterStatSkills, searchWord]);
 
   const statList = useMemo(() => {
     return (
       <div className="char-skills__stats">
-        {aggregatedSkills.stats.map((stat) => {
-          // TODO: Deal with i18n
-          const { title, summary } = useMemo(() => {
-            // insert lang detection here
-            return stat.stat;
-          }, [stat]);
+        {characterStatSkills?.stats.map((stat) => {
+          // TODO: Deal with i18n here
+          const { title, summary, short } = stat.stat;
           return (
             <NumDisplay
               key={stat.stat._id}
               stat={stat}
-              text={{ title, summary }}
+              text={{ title, summary, short }}
               value={calculateStatModToString(stat.score.total)}
               bonuses={[
                 ...stat.score.sources,
@@ -99,7 +86,7 @@ const CharacterSkills: FC<ICharacterSkills> = ({ className, onRollDices }) => {
         })}
       </div>
     );
-  }, [aggregatedSkills.stats, onRollDices]);
+  }, [characterStatSkills, onRollDices]);
 
   return (
     <div
