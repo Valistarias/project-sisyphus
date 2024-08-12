@@ -79,4 +79,12 @@
       opacity: 1;
     }
   }
+
+  // States
+
+  &--unclickable {
+    .clickable-text__button {
+      cursor: help;
+    }
+  }
 }

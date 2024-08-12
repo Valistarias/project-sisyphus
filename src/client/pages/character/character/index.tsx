@@ -71,7 +71,11 @@ const Character: FC = () => {
             }}
           />
           <div className="character__body__content__right">
-            <CharacterStatus />
+            <CharacterStatus
+              onRollDices={(dices: DiceRequest[], id: TypeCampaignEvent) => {
+                setToRoll(dices, id);
+              }}
+            />
           </div>
         </div>
       </div>

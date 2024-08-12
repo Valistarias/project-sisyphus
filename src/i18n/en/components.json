@@ -67,6 +67,10 @@
         "line1": "Free",
         "line2": "Roll"
       },
+      "init": {
+        "line1": "Init",
+        "line2": "Roll"
+      },
       "hpLoss": {
         "line1": "HP",
         "line2": "Loss"

@@ -123,15 +123,14 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
   }, [t, type, skills, stats]);
 
   const resultText = useMemo(() => {
-    if (type === 'free' || type.includes('skill-') || type.includes('stat-')) {
-      return result.toString();
-    }
     if (type === 'hpLoss') {
       return `${result} ${t(`terms.character.hp.short`)}`;
     }
     if (type === 'hpGain') {
       return `+${result} ${t(`terms.character.hp.short`)}`;
     }
+
+    return result.toString();
   }, [result, t, type]);
 
   return (

@@ -1,25 +1,39 @@
-import React, { useMemo, type FC } from 'react';
-
-import { useTranslation } from 'react-i18next';
+import React, { useCallback, useMemo, type FC } from 'react';
 
 import { useGlobalVars } from '../../providers';
 
 import { NumDisplay } from '../../molecules';
+import { type TypeCampaignEvent } from '../../types';
 
-import { addSymbol, classTrim } from '../../utils';
+import { addSymbol, classTrim, type DiceRequest } from '../../utils';
 
 import './characterStatus.scss';
 
 interface ICharacterStatus {
   /** The classname of the element */
   className?: string;
+  /** The function sent to roll the dices */
+  onRollDices: (diceValues: DiceRequest[], id: TypeCampaignEvent) => void;
 }
 
-const CharacterStatus: FC<ICharacterStatus> = ({ className }) => {
-  const { t } = useTranslation();
+const CharacterStatus: FC<ICharacterStatus> = ({ className, onRollDices }) => {
   const { characterParams } = useGlobalVars();
 
-  console.log('characterParams', characterParams);
+  const onClickInit = useCallback(
+    (offset: number) => {
+      onRollDices(
+        [
+          {
+            qty: 2,
+            type: 8,
+            offset,
+          },
+        ],
+        'init'
+      );
+    },
+    [onRollDices]
+  );
 
   const charParamList = useMemo(() => {
     return (
@@ -38,24 +52,19 @@ const CharacterStatus: FC<ICharacterStatus> = ({ className }) => {
                   : String(charParam.score.total)
               }
               bonuses={charParam.score.sources}
-              // onClick={() => {
-              //   onRollDices(
-              //     [
-              //       {
-              //         qty: 2,
-              //         type: 8,
-              //         offset: calculateStatMod(charParam.score.total),
-              //       },
-              //     ],
-              //     `charParam-${charParam.charParam._id}`
-              //   );
-              // }}
+              onClick={
+                charParam.charParam.formulaId === 'ini'
+                  ? () => {
+                      onClickInit(charParam.score.total);
+                    }
+                  : undefined
+              }
             />
           );
         })}
       </div>
     );
-  }, [characterParams]);
+  }, [characterParams, onClickInit]);
 
   return (
     <div
