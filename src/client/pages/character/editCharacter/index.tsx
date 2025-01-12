@@ -202,7 +202,7 @@ const EditCharacter: FC = () => {
                     </Alert>
                   ),
                 });
-                navigate('/characters');
+                void navigate('/characters');
               })
               .catch(({ response }) => {
                 const newId = getNewId();

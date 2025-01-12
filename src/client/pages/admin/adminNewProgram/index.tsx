@@ -228,7 +228,7 @@ const AdminNewProgram: FC = () => {
               </Alert>
             ),
           });
-          navigate(`/admin/program/${programType._id}`);
+          void navigate(`/admin/program/${programType._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;
@@ -349,7 +349,7 @@ const AdminNewProgram: FC = () => {
             />
           </div>
         </div>
-        <Atitle className="adminNewProgram__bonus-title" rank={2}>
+        <Atitle className="adminNewProgram__bonus-title" level={2}>
           {t('adminNewProgram.values', { ns: 'pages' })}
         </Atitle>
         <div className="adminNewProgram__bonuses">

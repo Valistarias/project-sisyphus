@@ -178,7 +178,7 @@ const AdminEditPages: FC = () => {
                     </Alert>
                   ),
                 });
-                navigate(`/admin/chapter/${chapter._id}`);
+                void navigate(`/admin/chapter/${chapter._id}`);
               })
               .catch(({ response }) => {
                 const { data } = response;

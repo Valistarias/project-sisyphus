@@ -83,7 +83,7 @@ const AdminNewArmorType: FC = () => {
             ),
           });
           reloadArmorTypes();
-          navigate(`/admin/armortype/${armorType._id}`);
+          void navigate(`/admin/armortype/${armorType._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;

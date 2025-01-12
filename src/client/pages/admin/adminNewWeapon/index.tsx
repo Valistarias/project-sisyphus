@@ -380,7 +380,7 @@ const AdminNewWeapon: FC = () => {
               </Alert>
             ),
           });
-          navigate(`/admin/weapon/${weaponType._id}`);
+          void navigate(`/admin/weapon/${weaponType._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;
@@ -503,7 +503,7 @@ const AdminNewWeapon: FC = () => {
             />
           </div>
         </div>
-        <Atitle className="adminNewWeapon__bonus-title" rank={2}>
+        <Atitle className="adminNewWeapon__bonus-title" level={2}>
           {t('adminNewWeapon.values', { ns: 'pages' })}
         </Atitle>
         <div className="adminNewWeapon__bonuses">

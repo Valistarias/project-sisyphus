@@ -335,7 +335,7 @@ const AdminEditRuleBook: FC = () => {
                   ),
                 });
                 reloadRuleBooks();
-                navigate('/admin/rulebooks');
+                void navigate('/admin/rulebooks');
               })
               .catch(({ response }) => {
                 const { data } = response;

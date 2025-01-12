@@ -626,7 +626,7 @@ const AdminEditArmor: FC = () => {
                     </Alert>
                   ),
                 });
-                navigate('/admin/armors');
+                void navigate('/admin/armors');
               })
               .catch(({ response }) => {
                 const { data } = response;
@@ -706,7 +706,7 @@ const AdminEditArmor: FC = () => {
     >
       <form className="adminEditArmor__content" onSubmit={handleSubmit(onSaveArmor)} noValidate>
         <div className="adminEditArmor__head">
-          <Atitle className="adminEditArmor__head" rank={1}>
+          <Atitle className="adminEditArmor__head" level={1}>
             {t('adminEditArmor.title', { ns: 'pages' })}
           </Atitle>
           <Button onClick={onAskDelete} color="error">

@@ -235,7 +235,7 @@ const AdminNewBackground: FC = () => {
               </Alert>
             ),
           });
-          navigate(`/admin/background/${quote._id}`);
+          void navigate(`/admin/background/${quote._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;
@@ -271,7 +271,7 @@ const AdminNewBackground: FC = () => {
         onSubmit={handleSubmit(onSaveBackground)}
         noValidate
       >
-        <Atitle className="adminNewBackground__head" rank={1}>
+        <Atitle className="adminNewBackground__head" level={1}>
           {t('adminNewBackground.title', { ns: 'pages' })}
         </Atitle>
         {errors.root?.serverError?.message !== undefined ? (
@@ -298,7 +298,7 @@ const AdminNewBackground: FC = () => {
             complete
           />
         </div>
-        <Atitle className="adminNewBackground__bonus-title" rank={2}>
+        <Atitle className="adminNewBackground__bonus-title" level={2}>
           {t('adminNewBackground.values', { ns: 'pages' })}
         </Atitle>
         <div className="adminNewBackground__bonuses">
@@ -453,7 +453,7 @@ const AdminNewBackground: FC = () => {
         </div>
         <div className="adminNewBackground__intl-title">
           <div className="adminNewBackground__intl-title__content">
-            <Atitle className="adminNewBackground__intl-title__title" rank={2}>
+            <Atitle className="adminNewBackground__intl-title__title" level={2}>
               {t('adminNewBackground.i18n', { ns: 'pages' })}
             </Atitle>
             <Ap className="adminNewBackground__intl-title__info">

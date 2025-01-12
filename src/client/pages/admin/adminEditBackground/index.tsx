@@ -357,7 +357,7 @@ const AdminEditBackground: FC = () => {
                     </Alert>
                   ),
                 });
-                navigate('/admin/backgrounds');
+                void navigate('/admin/backgrounds');
               })
               .catch(({ response }) => {
                 const { data } = response;
@@ -441,7 +441,7 @@ const AdminEditBackground: FC = () => {
         noValidate
       >
         <div className="adminEditBackground__head">
-          <Atitle className="adminEditBackground__head" rank={1}>
+          <Atitle className="adminEditBackground__head" level={1}>
             {t('adminEditBackground.title', { ns: 'pages' })}
           </Atitle>
           <Button onClick={onAskDelete} color="error">

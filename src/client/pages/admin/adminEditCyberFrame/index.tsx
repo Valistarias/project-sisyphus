@@ -231,7 +231,7 @@ const AdminEditCyberFrame: FC = () => {
                   ),
                 });
                 reloadCyberFrames();
-                navigate('/admin/cyberframes');
+                void navigate('/admin/cyberframes');
               })
               .catch(({ response }) => {
                 const { data } = response;
@@ -417,7 +417,7 @@ const AdminEditCyberFrame: FC = () => {
             <NodeTree
               tree={nodeTree}
               onNodeClick={(id) => {
-                navigate(`/admin/node/${id}`);
+                void navigate(`/admin/node/${id}`);
               }}
               isAdmin
             />

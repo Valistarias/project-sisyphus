@@ -83,7 +83,7 @@ const AdminNewRarity: FC = () => {
             ),
           });
           reloadRarities();
-          navigate(`/admin/rarity/${rarity._id}`);
+          void navigate(`/admin/rarity/${rarity._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;

@@ -90,7 +90,7 @@ const AdminNewWeaponScope: FC = () => {
             ),
           });
           reloadWeaponScopes();
-          navigate(`/admin/weaponscope/${weaponScope._id}`);
+          void navigate(`/admin/weaponscope/${weaponScope._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;

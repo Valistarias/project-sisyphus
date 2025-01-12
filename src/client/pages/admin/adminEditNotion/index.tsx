@@ -204,7 +204,7 @@ const AdminEditNotions: FC = () => {
                     </Alert>
                   ),
                 });
-                navigate('/admin/rulebooks');
+                void navigate('/admin/rulebooks');
               })
               .catch(({ response }) => {
                 const { data } = response;

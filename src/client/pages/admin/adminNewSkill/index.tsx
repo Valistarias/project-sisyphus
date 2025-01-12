@@ -94,7 +94,7 @@ const AdminNewSkill: FC = () => {
             ),
           });
           reloadSkills();
-          navigate(`/admin/skill/${skill._id}`);
+          void navigate(`/admin/skill/${skill._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;

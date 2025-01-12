@@ -167,7 +167,7 @@ const AdminEditSkillBranch: FC = () => {
                     </Alert>
                   ),
                 });
-                navigate(`/admin/skill/${skillId}`);
+                void navigate(`/admin/skill/${skillId}`);
               })
               .catch(({ response }) => {
                 const { data } = response;

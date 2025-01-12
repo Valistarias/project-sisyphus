@@ -117,7 +117,7 @@ const AdminNewNotions: FC = () => {
               </Alert>
             ),
           });
-          navigate(`/admin/notion/${notion._id}`);
+          void navigate(`/admin/notion/${notion._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;

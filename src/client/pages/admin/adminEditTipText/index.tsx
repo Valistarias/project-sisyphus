@@ -192,7 +192,7 @@ const AdminEditTipText: FC = () => {
                   ),
                 });
                 reloadTipTexts();
-                navigate('/admin/tiptexts');
+                void navigate('/admin/tiptexts');
               })
               .catch(({ response }) => {
                 const { data } = response;

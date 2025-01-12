@@ -186,7 +186,7 @@ const AdminNewNPC: FC = () => {
               </Alert>
             ),
           });
-          navigate(`/admin/npc/${quote._id}`);
+          void navigate(`/admin/npc/${quote._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;
@@ -218,7 +218,7 @@ const AdminNewNPC: FC = () => {
       `)}
     >
       <form className="adminNewNPC__content" onSubmit={handleSubmit(onSaveNPC)} noValidate>
-        <Atitle className="adminNewNPC__head" rank={1}>
+        <Atitle className="adminNewNPC__head" level={1}>
           {t('adminNewNPC.title', { ns: 'pages' })}
         </Atitle>
         {errors.root?.serverError?.message !== undefined ? (
@@ -416,7 +416,7 @@ const AdminNewNPC: FC = () => {
         </div>
         <div className="adminNewNPC__intl-title">
           <div className="adminNewNPC__intl-title__content">
-            <Atitle className="adminNewNPC__intl-title__title" rank={2}>
+            <Atitle className="adminNewNPC__intl-title__title" level={2}>
               {t('adminNewNPC.i18n', { ns: 'pages' })}
             </Atitle>
             <Ap className="adminNewNPC__intl-title__info">

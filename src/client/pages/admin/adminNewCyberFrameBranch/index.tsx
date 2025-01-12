@@ -118,7 +118,7 @@ const AdminNewCyberFrameBranch: FC = () => {
               </Alert>
             ),
           });
-          navigate(`/admin/cyberFrameBranch/${cyberFrameBranch._id}`);
+          void navigate(`/admin/cyberFrameBranch/${cyberFrameBranch._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;

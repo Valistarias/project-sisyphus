@@ -595,7 +595,7 @@ const AdminEditItem: FC = () => {
                     </Alert>
                   ),
                 });
-                navigate('/admin/items');
+                void navigate('/admin/items');
               })
               .catch(({ response }) => {
                 const { data } = response;
@@ -675,7 +675,7 @@ const AdminEditItem: FC = () => {
     >
       <form className="adminEditItem__content" onSubmit={handleSubmit(onSaveItem)} noValidate>
         <div className="adminEditItem__head">
-          <Atitle className="adminEditItem__head" rank={1}>
+          <Atitle className="adminEditItem__head" level={1}>
             {t('adminEditItem.title', { ns: 'pages' })}
           </Atitle>
           <Button onClick={onAskDelete} color="error">

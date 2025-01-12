@@ -86,7 +86,7 @@ const AdminNewStat: FC = () => {
             ),
           });
           reloadStats();
-          navigate(`/admin/stat/${stat._id}`);
+          void navigate(`/admin/stat/${stat._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;

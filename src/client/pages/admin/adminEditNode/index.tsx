@@ -668,7 +668,7 @@ const AdminEditNode: FC = () => {
                     </Alert>
                   ),
                 });
-                navigate(`/admin/${route}/${routeId}`);
+                void navigate(`/admin/${route}/${routeId}`);
               })
               .catch(({ response }) => {
                 const { data } = response;
@@ -823,7 +823,7 @@ const AdminEditNode: FC = () => {
     >
       <form className="adminEditNode__content" onSubmit={handleSubmit(onSaveNode)} noValidate>
         <div className="adminEditNode__head">
-          <Atitle className="adminEditNode__head" rank={1}>
+          <Atitle className="adminEditNode__head" level={1}>
             {t('adminEditNode.title', { ns: 'pages' })}
           </Atitle>
           <Button onClick={onAskDelete} color="error">

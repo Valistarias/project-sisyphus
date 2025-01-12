@@ -123,7 +123,7 @@ const AdminNewAmmo: FC = () => {
               </Alert>
             ),
           });
-          navigate(`/admin/ammo/${ammoType._id}`);
+          void navigate(`/admin/ammo/${ammoType._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;

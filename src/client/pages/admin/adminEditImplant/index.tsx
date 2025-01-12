@@ -626,7 +626,7 @@ const AdminEditImplant: FC = () => {
                     </Alert>
                   ),
                 });
-                navigate('/admin/implants');
+                void navigate('/admin/implants');
               })
               .catch(({ response }) => {
                 const { data } = response;
@@ -706,7 +706,7 @@ const AdminEditImplant: FC = () => {
     >
       <form className="adminEditImplant__content" onSubmit={handleSubmit(onSaveImplant)} noValidate>
         <div className="adminEditImplant__head">
-          <Atitle className="adminEditImplant__head" rank={1}>
+          <Atitle className="adminEditImplant__head" level={1}>
             {t('adminEditImplant.title', { ns: 'pages' })}
           </Atitle>
           <Button onClick={onAskDelete} color="error">

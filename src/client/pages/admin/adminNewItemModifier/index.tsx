@@ -85,7 +85,7 @@ const AdminNewItemModifier: FC = () => {
             ),
           });
           reloadItemModifiers();
-          navigate(`/admin/itemmodifier/${itemModifier._id}`);
+          void navigate(`/admin/itemmodifier/${itemModifier._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;

@@ -213,7 +213,7 @@ const AdminEditAmmo: FC = () => {
                     </Alert>
                   ),
                 });
-                navigate(`/admin/ammos`);
+                void navigate(`/admin/ammos`);
               })
               .catch(({ response }) => {
                 const { data } = response;
@@ -293,7 +293,7 @@ const AdminEditAmmo: FC = () => {
     >
       <form className="adminEditAmmo__content" onSubmit={handleSubmit(onSaveAmmo)} noValidate>
         <div className="adminEditAmmo__head">
-          <Atitle className="adminEditAmmo__head" rank={1}>
+          <Atitle className="adminEditAmmo__head" level={1}>
             {ammoData?.ammo.title ?? ''}
           </Atitle>
           <Button onClick={onAskDelete} color="error">

@@ -195,7 +195,7 @@ const AdminEditProgramScope: FC = () => {
                   ),
                 });
                 reloadProgramScopes();
-                navigate('/admin/programscopes');
+                void navigate('/admin/programscopes');
               })
               .catch(({ response }) => {
                 const { data } = response;

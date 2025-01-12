@@ -216,7 +216,7 @@ const AdminEditBag: FC = () => {
                     </Alert>
                   ),
                 });
-                navigate(`/admin/bags`);
+                void navigate(`/admin/bags`);
               })
               .catch(({ response }) => {
                 const { data } = response;
@@ -296,7 +296,7 @@ const AdminEditBag: FC = () => {
     >
       <form className="adminEditBag__content" onSubmit={handleSubmit(onSaveBag)} noValidate>
         <div className="adminEditBag__head">
-          <Atitle className="adminEditBag__head" rank={1}>
+          <Atitle className="adminEditBag__head" level={1}>
             {bagData?.bag.title ?? ''}
           </Atitle>
           <Button onClick={onAskDelete} color="error">

@@ -57,7 +57,7 @@ const AdminNewGlobalValue: FC = () => {
             ),
           });
           reloadGlobalValues();
-          navigate(`/admin/globalvalue/${globalValue._id}`);
+          void navigate(`/admin/globalvalue/${globalValue._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;

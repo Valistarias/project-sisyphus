@@ -530,7 +530,7 @@ const AdminEditWeapon: FC = () => {
                     </Alert>
                   ),
                 });
-                navigate(`/admin/weapons`);
+                void navigate(`/admin/weapons`);
               })
               .catch(({ response }) => {
                 const { data } = response;
@@ -610,7 +610,7 @@ const AdminEditWeapon: FC = () => {
     >
       <form className="adminEditWeapon__content" onSubmit={handleSubmit(onSaveWeapon)} noValidate>
         <div className="adminEditWeapon__head">
-          <Atitle className="adminEditWeapon__head" rank={1}>
+          <Atitle className="adminEditWeapon__head" level={1}>
             {weaponData?.weapon.title ?? ''}
           </Atitle>
           <Button onClick={onAskDelete} color="error">
@@ -717,7 +717,7 @@ const AdminEditWeapon: FC = () => {
             />
           </div>
         </div>
-        <Atitle className="adminEditWeapon__bonus-title" rank={2}>
+        <Atitle className="adminEditWeapon__bonus-title" level={2}>
           {t('adminEditWeapon.values', { ns: 'pages' })}
         </Atitle>
         <div className="adminEditWeapon__bonuses">

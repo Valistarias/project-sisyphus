@@ -50,7 +50,7 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
         .signout()
         .then((res) => {
           setUser(null);
-          navigate('/');
+          void navigate('/');
         })
         .catch(() => {
           const newId = getNewId();

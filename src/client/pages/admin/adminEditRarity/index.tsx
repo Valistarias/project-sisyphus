@@ -188,7 +188,7 @@ const AdminEditRarity: FC = () => {
                   ),
                 });
                 reloadRarities();
-                navigate('/admin/rarities');
+                void navigate('/admin/rarities');
               })
               .catch(({ response }) => {
                 const { data } = response;

@@ -194,7 +194,7 @@ const AdminEditStat: FC = () => {
                   ),
                 });
                 reloadStats();
-                navigate('/admin/stats');
+                void navigate('/admin/stats');
               })
               .catch(({ response }) => {
                 const { data } = response;

@@ -262,7 +262,7 @@ const AdminEditChapters: FC = () => {
                     </Alert>
                   ),
                 });
-                navigate(`/admin/rulebook/${ruleBook?._id}`);
+                void navigate(`/admin/rulebook/${ruleBook?._id}`);
               })
               .catch(({ response }) => {
                 const { data } = response;

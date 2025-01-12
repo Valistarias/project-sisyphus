@@ -85,7 +85,7 @@ const AdminNewTipText: FC = () => {
             ),
           });
           reloadTipTexts();
-          navigate(`/admin/tiptext/${tipText._id}`);
+          void navigate(`/admin/tiptext/${tipText._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;

@@ -49,7 +49,7 @@ const ForgotPassword: FC = () => {
                 </Alert>
               ),
             });
-            navigate('/login');
+            void navigate('/login');
           })
           .catch(({ response }) => {
             const { data } = response;

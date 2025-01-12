@@ -132,7 +132,7 @@ const AdminEditItemType: FC = () => {
                   ),
                 });
                 reloadItemTypes();
-                navigate('/admin/itemtypes');
+                void navigate('/admin/itemtypes');
               })
               .catch(({ response }) => {
                 const { data } = response;

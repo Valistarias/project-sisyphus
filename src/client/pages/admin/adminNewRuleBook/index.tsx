@@ -85,7 +85,7 @@ const AdminNewRuleBooks: FC = () => {
             ),
           });
           reloadRuleBooks();
-          navigate(`/admin/ruleBook/${ruleBook._id}`);
+          void navigate(`/admin/ruleBook/${ruleBook._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;

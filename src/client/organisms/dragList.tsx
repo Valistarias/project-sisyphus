@@ -61,7 +61,7 @@ const DragListCard: FC<IDragListCard> = ({ children, index }) => {
 
     return combine(
       draggable({
-        element: cardEl, // Attach the card element to draggable
+        element: cardEl,
         getInitialData: () => ({ type: 'card', cardId: index }),
         onDragStart: () => {
           setIsDragging(true);
@@ -73,24 +73,15 @@ const DragListCard: FC<IDragListCard> = ({ children, index }) => {
       dropTargetForElements({
         element: cardEl,
         getData: ({ input, element }) => {
-          // To attach card data to a drop target
           const data = { type: 'card', cardId: index };
 
-          // Attaches the closest edge (top or bottom) to the data object
-          // This data will be used to determine where to drop card relative
-          // to the target card.
           return attachClosestEdge(data, {
             input,
             element,
             allowedEdges: ['top', 'bottom'],
           });
         },
-        getIsSticky: () => true, // To make a drop target "sticky"
-        onDragEnter: (args) => {
-          if (args.source.data.cardId !== index) {
-            console.log('onDragEnter', args);
-          }
-        },
+        getIsSticky: () => true,
       })
     );
   }, [index]);
@@ -114,31 +105,52 @@ const DragList: FC<IDragList> = ({ data, className, id, onChange }) => {
   const [isDraggedOver, setIsDraggedOver] = useState(false);
   const [order, setOrder] = useState<string[]>([]);
 
-  // const onDragEnd = useCallback(
-  //   ({ destination, source, draggableId }: DropResult) => {
-  //     if (destination === null || destination === undefined) {
-  //       return;
-  //     }
-  //     // If destination hasnt changed
-  //     if (destination.droppableId === source.droppableId && destination.index === source.index) {
-  //       return;
-  //     }
+  const reorderCard = useCallback(
+    ({ movedIndex, destinationIndex }: { movedIndex: string; destinationIndex: string }) => {
+      setOrder((prev: string[]) => {
+        const movedPos = prev.findIndex((id) => id === movedIndex);
+        const destinationPos = prev.findIndex((id) => id === destinationIndex);
+        if (movedPos < 0 || destinationPos < 0) {
+          return prev;
+        }
+        const next = [...prev];
+        next.splice(movedPos, 1);
+        next.splice(destinationPos, 0, movedIndex);
+        onChange(next, false);
+        return next;
+      });
+    },
+    [onChange]
+  );
 
-  //     setOrder((prev: string[]) => {
-  //       const next = [...prev];
-  //       next.splice(source.index, 1);
-  //       next.splice(destination.index, 0, draggableId);
-  //       onChange(next, false);
-  //       return next;
-  //     });
-  //   },
-  //   [onChange]
-  // );
+  // Function to handle drop events
+  const handleDrop = useCallback(
+    ({ source, location }) => {
+      const destination = location.current.dropTargets.length;
+      if (destination === undefined) {
+        return;
+      }
+      if (source.data.type === 'card') {
+        const movedIndex = data[source.data.cardId].id;
+
+        const [destination] = location.current.dropTargets;
+        const destinationIndex = destination.data.cardId;
+
+        if (movedIndex !== destinationIndex) {
+          reorderCard({
+            movedIndex,
+            destinationIndex,
+          });
+        }
+      }
+    },
+    [data, reorderCard]
+  );
 
   const listContent = useMemo(() => {
     const eltList = order.map((orderElt) => data[orderElt]);
-    return eltList.map((singleData: IDragElt, index) => (
-      <DragListCard key={singleData.id} index={`${index}`}>
+    return eltList.map((singleData: IDragElt) => (
+      <DragListCard key={singleData.id} index={singleData.id}>
         <Atitle className="draglist__elt__title" level={singleData.titleLevel ?? 3}>
           {singleData.title}
         </Atitle>
@@ -151,16 +163,15 @@ const DragList: FC<IDragList> = ({ data, className, id, onChange }) => {
     ));
   }, [data, order]);
 
-  // useEffect(() => {
-  //   setOrder(Object.keys(data));
-  //   onChange(Object.keys(data), true);
-  // }, [data, onChange]);
+  useEffect(() => {
+    setOrder(Object.keys(data));
+    onChange(Object.keys(data), true);
+  }, [data, onChange]);
 
   useEffect(() => {
     const dragListEl = dragListRef.current;
-    invariant(dragListEl); // Ensure the column element exists
+    invariant(dragListEl);
 
-    // Set up the drop target for the column element
     return dropTargetForElements({
       element: dragListEl,
       onDragStart: () => {
@@ -172,12 +183,10 @@ const DragList: FC<IDragList> = ({ data, className, id, onChange }) => {
       onDragLeave: () => {
         setIsDraggedOver(false);
       },
-      onDrop: () => {
-        setIsDraggedOver(false);
-      },
+      onDrop: handleDrop,
       getIsSticky: () => true,
     });
-  }, []);
+  }, [handleDrop]);
 
   return (
     <Aul
@@ -187,11 +196,9 @@ const DragList: FC<IDragList> = ({ data, className, id, onChange }) => {
         ${className ?? ''}
       `)}
       innerRef={dragListRef}
-      // {...providedDroppable.droppableProps}
       noPoints
     >
       {listContent}
-      {/* {providedDroppable.placeholder} */}
     </Aul>
   );
 };

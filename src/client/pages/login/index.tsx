@@ -68,7 +68,7 @@ const Login: FC = () => {
             setUser(data);
             reloadAll();
             // triggerRuleBookReload();
-            navigate('/campaigns');
+            void navigate('/campaigns');
           })
           .catch(({ response }) => {
             const { data } = response;

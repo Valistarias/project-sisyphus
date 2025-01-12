@@ -55,7 +55,7 @@ const NewPassword: FC = () => {
                 </Alert>
               ),
             });
-            navigate('/login');
+            void navigate('/login');
           })
           .catch(({ response }) => {
             const { data } = response;
@@ -82,7 +82,7 @@ const NewPassword: FC = () => {
           setValue('mail', mail);
         })
         .catch(() => {
-          navigate('/');
+          void navigate('/');
         });
     }
   }, [userId, token, api, setValue, navigate]);

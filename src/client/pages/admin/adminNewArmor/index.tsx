@@ -450,7 +450,7 @@ const AdminNewArmor: FC = () => {
               </Alert>
             ),
           });
-          navigate(`/admin/armor/${quote._id}`);
+          void navigate(`/admin/armor/${quote._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;
@@ -482,7 +482,7 @@ const AdminNewArmor: FC = () => {
       `)}
     >
       <form className="adminNewArmor__content" onSubmit={handleSubmit(onSaveArmor)} noValidate>
-        <Atitle className="adminNewArmor__head" rank={1}>
+        <Atitle className="adminNewArmor__head" level={1}>
           {t('adminNewArmor.title', { ns: 'pages' })}
         </Atitle>
         {errors.root?.serverError?.message !== undefined ? (
@@ -557,7 +557,7 @@ const AdminNewArmor: FC = () => {
             />
           </div>
         </div>
-        <Atitle className="adminNewArmor__bonus-title" rank={2}>
+        <Atitle className="adminNewArmor__bonus-title" level={2}>
           {t('adminNewArmor.values', { ns: 'pages' })}
         </Atitle>
         <div className="adminNewArmor__bonuses">
@@ -932,7 +932,7 @@ const AdminNewArmor: FC = () => {
         </div>
         <div className="adminNewArmor__intl-title">
           <div className="adminNewArmor__intl-title__content">
-            <Atitle className="adminNewArmor__intl-title__title" rank={2}>
+            <Atitle className="adminNewArmor__intl-title__title" level={2}>
               {t('adminNewArmor.i18n', { ns: 'pages' })}
             </Atitle>
             <Ap className="adminNewArmor__intl-title__info">

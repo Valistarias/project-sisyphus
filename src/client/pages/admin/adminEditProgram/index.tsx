@@ -313,7 +313,7 @@ const AdminEditProgram: FC = () => {
                     </Alert>
                   ),
                 });
-                navigate(`/admin/programs`);
+                void navigate(`/admin/programs`);
               })
               .catch(({ response }) => {
                 const { data } = response;
@@ -409,7 +409,7 @@ const AdminEditProgram: FC = () => {
     >
       <form className="adminEditProgram__content" onSubmit={handleSubmit(onSaveProgram)} noValidate>
         <div className="adminEditProgram__head">
-          <Atitle className="adminEditProgram__head" rank={1}>
+          <Atitle className="adminEditProgram__head" level={1}>
             {programData?.program.title ?? ''}
           </Atitle>
           <Button onClick={onAskDelete} color="error">
@@ -513,7 +513,7 @@ const AdminEditProgram: FC = () => {
             />
           </div>
         </div>
-        <Atitle className="adminEditProgram__bonus-title" rank={2}>
+        <Atitle className="adminEditProgram__bonus-title" level={2}>
           {t('adminEditProgram.values', { ns: 'pages' })}
         </Atitle>
         <div className="adminEditProgram__bonuses">

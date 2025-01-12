@@ -47,7 +47,7 @@ const NewCampaign: FC = () => {
                 </Alert>
               ),
             });
-            navigate(`/campaign/${campaignId}`);
+            void navigate(`/campaign/${campaignId}`);
           })
           .catch(({ response }) => {
             const { data } = response;

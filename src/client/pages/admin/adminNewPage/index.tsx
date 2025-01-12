@@ -88,7 +88,7 @@ const AdminNewPage: FC = () => {
               </Alert>
             ),
           });
-          navigate(`/admin/page/${page._id}`);
+          void navigate(`/admin/page/${page._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;

@@ -90,7 +90,7 @@ const AdminNewProgramScope: FC = () => {
             ),
           });
           reloadProgramScopes();
-          navigate(`/admin/programscope/${programScope._id}`);
+          void navigate(`/admin/programscope/${programScope._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;

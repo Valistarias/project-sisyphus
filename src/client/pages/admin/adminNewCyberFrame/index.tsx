@@ -91,7 +91,7 @@ const AdminNewCyberFrame: FC = () => {
             ),
           });
           reloadCyberFrames();
-          navigate(`/admin/cyberframe/${cyberFrame._id}`);
+          void navigate(`/admin/cyberframe/${cyberFrame._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;

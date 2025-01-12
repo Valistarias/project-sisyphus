@@ -118,7 +118,7 @@ const AdminNewSkillBranch: FC = () => {
               </Alert>
             ),
           });
-          navigate(`/admin/skillbranch/${skillBranch._id}`);
+          void navigate(`/admin/skillbranch/${skillBranch._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;

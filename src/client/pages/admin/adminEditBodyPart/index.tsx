@@ -199,7 +199,7 @@ const AdminEditBodyPart: FC = () => {
                   ),
                 });
                 reloadBodyParts();
-                navigate('/admin/bodyparts');
+                void navigate('/admin/bodyparts');
               })
               .catch(({ response }) => {
                 const { data } = response;

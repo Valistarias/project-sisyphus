@@ -195,7 +195,7 @@ const AdminEditItemModifier: FC = () => {
                   ),
                 });
                 reloadItemModifiers();
-                navigate('/admin/itemmodifiers');
+                void navigate('/admin/itemmodifiers');
               })
               .catch(({ response }) => {
                 const { data } = response;

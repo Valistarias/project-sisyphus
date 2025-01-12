@@ -210,7 +210,7 @@ const AdminEditWeaponStyle: FC = () => {
                   ),
                 });
                 reloadWeaponStyles();
-                navigate('/admin/weaponstyles');
+                void navigate('/admin/weaponstyles');
               })
               .catch(({ response }) => {
                 const { data } = response;

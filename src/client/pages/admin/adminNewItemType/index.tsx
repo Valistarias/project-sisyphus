@@ -55,7 +55,7 @@ const AdminNewItemType: FC = () => {
             ),
           });
           reloadItemTypes();
-          navigate(`/admin/itemtype/${itemType._id}`);
+          void navigate(`/admin/itemtype/${itemType._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;

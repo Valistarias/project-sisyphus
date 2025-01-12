@@ -191,7 +191,7 @@ const AdminEditArmorType: FC = () => {
                   ),
                 });
                 reloadArmorTypes();
-                navigate('/admin/armortypes');
+                void navigate('/admin/armortypes');
               })
               .catch(({ response }) => {
                 const { data } = response;

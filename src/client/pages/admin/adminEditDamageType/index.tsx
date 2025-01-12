@@ -191,7 +191,7 @@ const AdminEditDamageType: FC = () => {
                   ),
                 });
                 reloadDamageTypes();
-                navigate('/admin/damagetypes');
+                void navigate('/admin/damagetypes');
               })
               .catch(({ response }) => {
                 const { data } = response;

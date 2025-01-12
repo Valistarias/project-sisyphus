@@ -305,7 +305,7 @@ const AdminEditNPC: FC = () => {
                     </Alert>
                   ),
                 });
-                navigate('/admin/npcs');
+                void navigate('/admin/npcs');
               })
               .catch(({ response }) => {
                 const { data } = response;
@@ -385,7 +385,7 @@ const AdminEditNPC: FC = () => {
     >
       <form className="adminEditNPC__content" onSubmit={handleSubmit(onSaveNPC)} noValidate>
         <div className="adminEditNPC__head">
-          <Atitle className="adminEditNPC__head" rank={1}>
+          <Atitle className="adminEditNPC__head" level={1}>
             {t('adminEditNPC.title', { ns: 'pages' })}
           </Atitle>
           <Button onClick={onAskDelete} color="error">
@@ -587,7 +587,7 @@ const AdminEditNPC: FC = () => {
         </div>
         <div className="adminEditNPC__intl-title">
           <div className="adminEditNPC__intl-title__content">
-            <Atitle className="adminEditNPC__intl-title__title" rank={2}>
+            <Atitle className="adminEditNPC__intl-title__title" level={2}>
               {t('adminEditNPC.i18n', { ns: 'pages' })}
             </Atitle>
             <Ap className="adminEditNPC__intl-title__info">

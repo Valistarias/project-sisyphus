@@ -45,7 +45,7 @@ const JoinCampaign: FC = () => {
               </Alert>
             ),
           });
-          navigate(`/campaign/${campaignId}`);
+          void navigate(`/campaign/${campaignId}`);
         })
         .catch((res) => {
           const newId = getNewId();

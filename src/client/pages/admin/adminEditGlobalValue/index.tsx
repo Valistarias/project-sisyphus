@@ -133,7 +133,7 @@ const AdminEditGlobalValue: FC = () => {
                   ),
                 });
                 reloadGlobalValues();
-                navigate('/admin/globalvalues');
+                void navigate('/admin/globalvalues');
               })
               .catch(({ response }) => {
                 const { data } = response;

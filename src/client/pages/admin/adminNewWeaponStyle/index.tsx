@@ -92,7 +92,7 @@ const AdminNewWeaponStyle: FC = () => {
             ),
           });
           reloadWeaponStyles();
-          navigate(`/admin/weaponstyle/${skill._id}`);
+          void navigate(`/admin/weaponstyle/${skill._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;

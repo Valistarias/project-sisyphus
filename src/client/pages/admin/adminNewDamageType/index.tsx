@@ -83,7 +83,7 @@ const AdminNewDamageType: FC = () => {
             ),
           });
           reloadDamageTypes();
-          navigate(`/admin/damagetype/${damageType._id}`);
+          void navigate(`/admin/damagetype/${damageType._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;

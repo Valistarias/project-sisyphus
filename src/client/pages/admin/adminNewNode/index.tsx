@@ -520,7 +520,7 @@ const AdminNewNode: FC = () => {
           } else {
             reloadCyberFrames();
           }
-          navigate(`/admin/node/${quote._id}`);
+          void navigate(`/admin/node/${quote._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;
@@ -578,7 +578,7 @@ const AdminNewNode: FC = () => {
       `)}
     >
       <form className="adminNewNode__content" onSubmit={handleSubmit(onSaveNode)} noValidate>
-        <Atitle className="adminNewNode__head" rank={1}>
+        <Atitle className="adminNewNode__head" level={1}>
           {t('adminNewNode.title', { ns: 'pages' })}
         </Atitle>
         <div className="adminNewNode__ariane">
@@ -677,7 +677,7 @@ const AdminNewNode: FC = () => {
             className="adminNewNode__details__quote"
           />
         </div>
-        <Atitle className="adminNewNode__bonus-title" rank={2}>
+        <Atitle className="adminNewNode__bonus-title" level={2}>
           {t('adminNewNode.values', { ns: 'pages' })}
         </Atitle>
         <div className="adminNewNode__bonuses">
@@ -1052,7 +1052,7 @@ const AdminNewNode: FC = () => {
         </div>
         <div className="adminNewNode__intl-title">
           <div className="adminNewNode__intl-title__content">
-            <Atitle className="adminNewNode__intl-title__title" rank={2}>
+            <Atitle className="adminNewNode__intl-title__title" level={2}>
               {t('adminNewNode.i18n', { ns: 'pages' })}
             </Atitle>
             <Ap className="adminNewNode__intl-title__info">

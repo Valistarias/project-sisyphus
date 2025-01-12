@@ -133,7 +133,7 @@ const AdminNewWeaponType: FC = () => {
             ),
           });
           reloadWeaponTypes();
-          navigate(`/admin/weapontype/${weaponStyle._id}`);
+          void navigate(`/admin/weapontype/${weaponStyle._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;

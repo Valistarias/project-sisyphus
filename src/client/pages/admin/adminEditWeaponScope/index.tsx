@@ -195,7 +195,7 @@ const AdminEditWeaponScope: FC = () => {
                   ),
                 });
                 reloadWeaponScopes();
-                navigate('/admin/weaponscopes');
+                void navigate('/admin/weaponscopes');
               })
               .catch(({ response }) => {
                 const { data } = response;

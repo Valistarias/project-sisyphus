@@ -136,7 +136,7 @@ const AdminNewBag: FC = () => {
               </Alert>
             ),
           });
-          navigate(`/admin/bag/${bagType._id}`);
+          void navigate(`/admin/bag/${bagType._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;

@@ -269,7 +269,7 @@ const AdminEditWeaponType: FC = () => {
                   ),
                 });
                 reloadWeaponTypes();
-                navigate('/admin/weapontypes');
+                void navigate('/admin/weapontypes');
               })
               .catch(({ response }) => {
                 const { data } = response;

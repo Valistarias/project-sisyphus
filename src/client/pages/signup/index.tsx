@@ -55,7 +55,7 @@ const Signup: FC = () => {
                 </Alert>
               ),
             });
-            navigate('/');
+            void navigate('/');
           })
           .catch(({ response }) => {
             const { data } = response;

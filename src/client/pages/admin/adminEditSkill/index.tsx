@@ -213,7 +213,7 @@ const AdminEditSkill: FC = () => {
                   ),
                 });
                 reloadSkills();
-                navigate('/admin/skills');
+                void navigate('/admin/skills');
               })
               .catch(({ response }) => {
                 const { data } = response;
@@ -404,7 +404,7 @@ const AdminEditSkill: FC = () => {
             <NodeTree
               tree={nodeTree}
               onNodeClick={(id) => {
-                navigate(`/admin/node/${id}`);
+                void navigate(`/admin/node/${id}`);
               }}
               isAdmin
             />

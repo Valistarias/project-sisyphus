@@ -197,7 +197,7 @@ const AdminEditCharParam: FC = () => {
                   ),
                 });
                 reloadCharParams();
-                navigate('/admin/charparams');
+                void navigate('/admin/charparams');
               })
               .catch(({ response }) => {
                 const { data } = response;

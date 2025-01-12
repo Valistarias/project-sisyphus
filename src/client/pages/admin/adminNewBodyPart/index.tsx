@@ -93,7 +93,7 @@ const AdminNewBodyPart: FC = () => {
             ),
           });
           reloadBodyParts();
-          navigate(`/admin/bodypart/${bodyPart._id}`);
+          void navigate(`/admin/bodypart/${bodyPart._id}`);
         })
         .catch(({ response }) => {
           const { data } = response;
