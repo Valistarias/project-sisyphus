@@ -9,5 +9,9 @@
     box-shadow: 0 0 2rem var(--primary-10);
     box-sizing: border-box;
     padding: 1.5rem 2rem;
+
+    &--dragging {
+      opacity: 0.4;
+    }
   }
 }

@@ -1,6 +1,20 @@
-import React, { useCallback, useEffect, useMemo, useState, type FC } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FC,
+  type ReactNode,
+} from 'react';
 
-import { DragDropContext, Draggable, Droppable, type DropResult } from 'react-beautiful-dnd';
+import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
+import {
+  draggable,
+  dropTargetForElements,
+} from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
+import { attachClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
+import invariant from 'tiny-invariant';
 
 import { Ali, Atitle, Aul } from '../atoms';
 import { Button } from '../molecules';
@@ -30,79 +44,155 @@ interface IDragList {
   onChange: (elts: string[], isInitial: boolean) => void;
 }
 
+interface IDragListCard {
+  /** The index of the DragList */
+  index: string;
+  /** The children inside the Drag List card */
+  children: ReactNode;
+}
+
+const DragListCard: FC<IDragListCard> = ({ children, index }) => {
+  const cardRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+
+  useEffect(() => {
+    const cardEl = cardRef.current;
+    invariant(cardEl);
+
+    return combine(
+      draggable({
+        element: cardEl, // Attach the card element to draggable
+        getInitialData: () => ({ type: 'card', cardId: index }),
+        onDragStart: () => {
+          setIsDragging(true);
+        },
+        onDrop: () => {
+          setIsDragging(false);
+        },
+      }),
+      dropTargetForElements({
+        element: cardEl,
+        getData: ({ input, element }) => {
+          // To attach card data to a drop target
+          const data = { type: 'card', cardId: index };
+
+          // Attaches the closest edge (top or bottom) to the data object
+          // This data will be used to determine where to drop card relative
+          // to the target card.
+          return attachClosestEdge(data, {
+            input,
+            element,
+            allowedEdges: ['top', 'bottom'],
+          });
+        },
+        getIsSticky: () => true, // To make a drop target "sticky"
+        onDragEnter: (args) => {
+          if (args.source.data.cardId !== index) {
+            console.log('onDragEnter', args);
+          }
+        },
+      })
+    );
+  }, [index]);
+
+  return (
+    // attach a cardRef to the card div
+    <Ali
+      className={classTrim(`
+      draglist__elt
+      ${isDragging ? 'draglist__elt--dragging' : ''}
+    `)}
+      innerRef={cardRef}
+    >
+      {children}
+    </Ali>
+  );
+};
+
 const DragList: FC<IDragList> = ({ data, className, id, onChange }) => {
+  const dragListRef = useRef(null);
+  const [isDraggedOver, setIsDraggedOver] = useState(false);
   const [order, setOrder] = useState<string[]>([]);
 
-  const onDragEnd = useCallback(
-    ({ destination, source, draggableId }: DropResult) => {
-      if (destination === null || destination === undefined) {
-        return;
-      }
-      // If destination hasnt changed
-      if (destination.droppableId === source.droppableId && destination.index === source.index) {
-        return;
-      }
+  // const onDragEnd = useCallback(
+  //   ({ destination, source, draggableId }: DropResult) => {
+  //     if (destination === null || destination === undefined) {
+  //       return;
+  //     }
+  //     // If destination hasnt changed
+  //     if (destination.droppableId === source.droppableId && destination.index === source.index) {
+  //       return;
+  //     }
 
-      setOrder((prev: string[]) => {
-        const next = [...prev];
-        next.splice(source.index, 1);
-        next.splice(destination.index, 0, draggableId);
-        onChange(next, false);
-        return next;
-      });
-    },
-    [onChange]
-  );
+  //     setOrder((prev: string[]) => {
+  //       const next = [...prev];
+  //       next.splice(source.index, 1);
+  //       next.splice(destination.index, 0, draggableId);
+  //       onChange(next, false);
+  //       return next;
+  //     });
+  //   },
+  //   [onChange]
+  // );
 
   const listContent = useMemo(() => {
     const eltList = order.map((orderElt) => data[orderElt]);
     return eltList.map((singleData: IDragElt, index) => (
-      <Draggable draggableId={singleData.id} index={index} key={singleData.id}>
-        {(providedDraggable) => (
-          <Ali
-            className="draglist__elt"
-            innerRef={providedDraggable.innerRef}
-            {...providedDraggable.draggableProps}
-            {...providedDraggable.dragHandleProps}
-          >
-            <Atitle className="draglist__elt__title" level={singleData.titleLevel ?? 3}>
-              {singleData.title}
-            </Atitle>
-            {singleData.button !== undefined ? (
-              <Button size="small" href={singleData.button.href}>
-                {singleData.button.content}
-              </Button>
-            ) : null}
-          </Ali>
-        )}
-      </Draggable>
+      <DragListCard key={singleData.id} index={`${index}`}>
+        <Atitle className="draglist__elt__title" level={singleData.titleLevel ?? 3}>
+          {singleData.title}
+        </Atitle>
+        {singleData.button !== undefined ? (
+          <Button size="small" href={singleData.button.href}>
+            {singleData.button.content}
+          </Button>
+        ) : null}
+      </DragListCard>
     ));
   }, [data, order]);
 
+  // useEffect(() => {
+  //   setOrder(Object.keys(data));
+  //   onChange(Object.keys(data), true);
+  // }, [data, onChange]);
+
   useEffect(() => {
-    setOrder(Object.keys(data));
-    onChange(Object.keys(data), true);
-  }, [data, onChange]);
+    const dragListEl = dragListRef.current;
+    invariant(dragListEl); // Ensure the column element exists
+
+    // Set up the drop target for the column element
+    return dropTargetForElements({
+      element: dragListEl,
+      onDragStart: () => {
+        setIsDraggedOver(true);
+      },
+      onDragEnter: () => {
+        setIsDraggedOver(true);
+      },
+      onDragLeave: () => {
+        setIsDraggedOver(false);
+      },
+      onDrop: () => {
+        setIsDraggedOver(false);
+      },
+      getIsSticky: () => true,
+    });
+  }, []);
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId={id}>
-        {(providedDroppable) => (
-          <Aul
-            className={classTrim(`
-              draglist
-                ${className ?? ''}
-              `)}
-            innerRef={providedDroppable.innerRef}
-            {...providedDroppable.droppableProps}
-            noPoints
-          >
-            {listContent}
-            {providedDroppable.placeholder}
-          </Aul>
-        )}
-      </Droppable>
-    </DragDropContext>
+    <Aul
+      className={classTrim(`
+      draglist
+        ${isDraggedOver ? 'draglist--dragged' : ''}
+        ${className ?? ''}
+      `)}
+      innerRef={dragListRef}
+      // {...providedDroppable.droppableProps}
+      noPoints
+    >
+      {listContent}
+      {/* {providedDroppable.placeholder} */}
+    </Aul>
   );
 };
 

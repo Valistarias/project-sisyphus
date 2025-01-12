@@ -1,8 +1,6 @@
-import React, { type FC, type ReactNode } from 'react';
+import React, { type RefObject, type FC, type ReactNode } from 'react';
 
 import { Quark, type IQuarkProps } from '../quark';
-
-import type { ContextId, DroppableId } from 'react-beautiful-dnd';
 
 import { classTrim } from '../utils';
 
@@ -14,18 +12,12 @@ interface IAul extends IQuarkProps {
   /** Is the decoration to be removed ? */
   noPoints?: boolean;
   /** The innerRef, if there is any */
-  innerRef?: (element: HTMLElement | null) => void;
-  /** Used for Drag */
-  'data-rbd-droppable-context-id'?: ContextId;
-  'data-rbd-droppable-id'?: DroppableId;
+  innerRef?: RefObject<null | ReactNode>;
 }
 
 const Aul: FC<IAul> = (props) => {
   const { className, children, noPoints = false, innerRef } = props;
-  const rest = {
-    'data-rbd-droppable-context-id': props['data-rbd-droppable-context-id'],
-    'data-rbd-droppable-id': props['data-rbd-droppable-id'],
-  };
+
   return (
     <Quark
       quarkType="ul"
@@ -36,7 +28,6 @@ const Aul: FC<IAul> = (props) => {
       `)}
       reactProps={{
         ref: innerRef,
-        ...rest,
       }}
     >
       {children}

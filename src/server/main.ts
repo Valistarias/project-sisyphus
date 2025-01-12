@@ -107,8 +107,12 @@ app.use(
 // ----------------------------------------------------------------------------------------
 
 // Database Connection ---------------------------------------------------------------------
+const clientOptions: mongoose.ConnectOptions = {
+  serverApi: { version: '1', strict: true, deprecationErrors: true },
+};
+
 mongoose
-  .connect(DBConfig.url(process.env))
+  .connect(DBConfig.url(process.env), clientOptions)
   .then(() => {
     console.log('Connected to the database!');
   })

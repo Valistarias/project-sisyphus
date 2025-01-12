@@ -31,7 +31,7 @@ const routes = [
     role: 'unlogged',
   },
   {
-    url: '/reset{/:param}*',
+    url: '/reset{/*param}',
     role: 'unlogged',
   },
   {
@@ -43,7 +43,7 @@ const routes = [
     role: 'logged',
   },
   {
-    url: '/rulebook{/:param}*',
+    url: '/rulebook{/*param}',
     role: 'logged',
   },
   {
@@ -51,7 +51,7 @@ const routes = [
     role: 'logged',
   },
   {
-    url: '/campaign{/:param}*',
+    url: '/campaign{/*param}',
     role: 'logged',
   },
   {
@@ -59,15 +59,15 @@ const routes = [
     role: 'logged',
   },
   {
-    url: '/character{/:param}*',
+    url: '/character{/*param}',
     role: 'logged',
   },
   {
-    url: '/subscribe{/:param}*',
+    url: '/subscribe{/*param}',
     role: 'logged',
   },
   {
-    url: '/admin{/:param}*',
+    url: '/admin{/*param}',
     role: 'admin',
   },
 ];
@@ -181,7 +181,7 @@ const adminNeeded = (req: Request, res: Response, next: () => void): void => {
 };
 
 const checkRouteRights = (req: Request, res: Response, next: () => void): void => {
-  const urlMatch = routes.find((route) => pathToRegexp(route.url).exec(req.path) !== null);
+  const urlMatch = routes.find((route) => pathToRegexp(route.url).regexp.exec(req.path) !== null);
   let rights = ['unlogged'];
   if (urlMatch === undefined || urlMatch.role === 'all') {
     next();
