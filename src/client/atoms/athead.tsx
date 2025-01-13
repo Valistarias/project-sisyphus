@@ -8,9 +8,9 @@ import './athead.scss';
 
 interface IAthead extends IQuarkProps {
   /** The class of the Table Head element */
-  className?: string;
+  className?: string
   /** The childrens of the Table Head element */
-  children: ReactNode;
+  children: ReactNode
 }
 
 const AThead: FC<IAthead> = ({ className, children }) => (

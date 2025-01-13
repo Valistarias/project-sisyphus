@@ -28,6 +28,7 @@ const AdminWeapons: FC = () => {
     if (weapons === null || weapons.length === 0) {
       return null;
     }
+
     return (
       <Aul className="adminWeapons__weapon-list" noPoints>
         {weapons.map(({ weapon }) => (
@@ -63,7 +64,7 @@ const AdminWeapons: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }

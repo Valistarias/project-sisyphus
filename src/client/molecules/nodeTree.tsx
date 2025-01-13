@@ -10,7 +10,6 @@ import { Button, Node } from './index';
 
 import type { ICuratedNode, ICyberFrameBranch, ISkillBranch } from '../types';
 
-
 import { classTrim, romanize } from '../utils';
 
 import './nodeTree.scss';
@@ -20,14 +19,14 @@ const specBeginRank = 3;
 
 interface INodeTree extends IQuarkProps {
   /** Is the Tree in admin mode ? */
-  isAdmin?: boolean;
+  isAdmin?: boolean
   /** The tree to be displayed */
   tree: Array<{
-    branch: ISkillBranch | ICyberFrameBranch;
-    nodes: ICuratedNode[];
-  }>;
+    branch: ISkillBranch | ICyberFrameBranch
+    nodes: ICuratedNode[]
+  }>
   /** When a node is clicked */
-  onNodeClick?: (id: string) => void;
+  onNodeClick?: (id: string) => void
 }
 
 const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {}, isAdmin = false, className }) => {
@@ -47,9 +46,9 @@ const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {}, isAdmin = false
     const lines: React.JSX.Element[] = [];
     for (let i = ranks; i >= specBeginRank; i--) {
       const relatedNodes = specializationBranches.map(({ branch, nodes }) => ({
-          branch,
-          nodes: nodes.filter(({ node }) => node.rank === i),
-        }));
+        branch,
+        nodes: nodes.filter(({ node }) => node.rank === i)
+      }));
       const roman = romanize(i);
       lines.push(
         <div
@@ -63,7 +62,7 @@ const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {}, isAdmin = false
           <div className="node-tree__rank node-tree__cell">{roman}</div>
           {relatedNodes.map(({ branch, nodes }, indexNode) => (
             <div className="node-tree__cell node-tree__cell--node" key={branch._id}>
-              {nodes.map((node) => (
+              {nodes.map(node => (
                 <Node
                   key={node.node._id}
                   node={node}
@@ -84,6 +83,7 @@ const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {}, isAdmin = false
         </div>
       );
     }
+
     return lines;
   }, [specializationBranches, onNodeClick]);
 
@@ -123,6 +123,7 @@ const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {}, isAdmin = false
         </div>
       );
     }
+
     return lines;
   }, [generalBranch, onNodeClick]);
 
@@ -152,14 +153,16 @@ const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {}, isAdmin = false
                 <Ap lang={translationI18nData.language} className="node-tree__cell__title">
                   {branch.title}
                 </Ap>
-                {isAdmin ? (
-                  <Button
-                    href={`/admin/${(branch as ISkillBranch).skill !== undefined ? 'skillbranch' : 'cyberframebranch'}/${branch._id}`}
-                    size="small"
-                  >
-                    {t('terms.general.edit')}
-                  </Button>
-                ) : null}
+                {isAdmin
+                  ? (
+                      <Button
+                        href={`/admin/${(branch as ISkillBranch).skill !== undefined ? 'skillbranch' : 'cyberframebranch'}/${branch._id}`}
+                        size="small"
+                      >
+                        {t('terms.general.edit')}
+                      </Button>
+                    )
+                  : null}
               </div>
             ))}
           </div>

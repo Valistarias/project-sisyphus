@@ -8,7 +8,7 @@ import {
   deleteRarity,
   findAll,
   findSingle,
-  update,
+  update
 } from './controller';
 
 export default (app: Router): void => {

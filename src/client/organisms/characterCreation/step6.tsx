@@ -20,21 +20,21 @@ import './characterCreation.scss';
 interface ICharacterCreationStep6 {
   /** When the user click send and the data is send perfectly */
   onSubmitIdentification: (elt: {
-    firstName: string;
-    lastName: string;
-    nickName?: string;
-    gender: string;
-    pronouns?: string;
-    bio?: string;
-  }) => void;
+    firstName: string
+    lastName: string
+    nickName?: string
+    gender: string
+    pronouns?: string
+    bio?: string
+  }) => void
 }
 
 interface FormValues {
-  firstName: string;
-  lastName: string;
-  nickName: string;
-  gender: string;
-  pronouns: string;
+  firstName: string
+  lastName: string
+  nickName: string
+  gender: string
+  pronouns: string
 }
 
 const CharacterCreationStep6: FC<ICharacterCreationStep6> = ({ onSubmitIdentification }) => {
@@ -42,7 +42,7 @@ const CharacterCreationStep6: FC<ICharacterCreationStep6> = ({ onSubmitIdentific
   const { character } = useGlobalVars();
 
   const bioEditor = useEditor({
-    extensions: basicRichTextElementExtentions,
+    extensions: basicRichTextElementExtentions
   });
 
   const createDefaultData = useCallback((character: false | ICharacter | null) => {
@@ -55,27 +55,27 @@ const CharacterCreationStep6: FC<ICharacterCreationStep6> = ({ onSubmitIdentific
   }, []);
 
   const { handleSubmit, control, reset } = useForm<FormValues>({
-    defaultValues: useMemo(() => createDefaultData(character), [createDefaultData, character]),
+    defaultValues: useMemo(() => createDefaultData(character), [createDefaultData, character])
   });
 
   const genderRange = useMemo(
     () => [
       {
         value: 'M',
-        label: t('terms.gender.male'),
+        label: t('terms.gender.male')
       },
       {
         value: 'F',
-        label: t('terms.gender.female'),
+        label: t('terms.gender.female')
       },
       {
         value: 'N',
-        label: t('terms.gender.neutral'),
+        label: t('terms.gender.neutral')
       },
       {
         value: 'O',
-        label: t('terms.gender.other'),
-      },
+        label: t('terms.gender.other')
+      }
     ],
     [t]
   );
@@ -96,7 +96,7 @@ const CharacterCreationStep6: FC<ICharacterCreationStep6> = ({ onSubmitIdentific
         nickName,
         gender,
         pronouns,
-        bio: html ?? undefined,
+        bio: html ?? undefined
       });
     },
     [bioEditor, onSubmitIdentification]
@@ -112,16 +112,16 @@ const CharacterCreationStep6: FC<ICharacterCreationStep6> = ({ onSubmitIdentific
         characterCreation-step6
       `)}
       initial={{
-        transform: 'skew(90deg, 0deg) scale3d(.2, .2, .2)',
+        transform: 'skew(90deg, 0deg) scale3d(.2, .2, .2)'
       }}
       animate={{
         transform: 'skew(0, 0) scale3d(1, 1, 1)',
         transitionEnd: {
-          transform: 'none',
-        },
+          transform: 'none'
+        }
       }}
       exit={{
-        transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)',
+        transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)'
       }}
       transition={{ ease: 'easeInOut', duration: 0.2 }}
     >
@@ -143,7 +143,7 @@ const CharacterCreationStep6: FC<ICharacterCreationStep6> = ({ onSubmitIdentific
             type="text"
             autoComplete="username"
             rules={{
-              required: t('firstName.required', { ns: 'fields' }),
+              required: t('firstName.required', { ns: 'fields' })
             }}
             label={t('firstName.label', { ns: 'fields' })}
             className="characterCreation-step6__form__basics__elt"
@@ -154,7 +154,7 @@ const CharacterCreationStep6: FC<ICharacterCreationStep6> = ({ onSubmitIdentific
             type="text"
             autoComplete="username"
             rules={{
-              required: t('lastName.required', { ns: 'fields' }),
+              required: t('lastName.required', { ns: 'fields' })
             }}
             label={t('lastName.label', { ns: 'fields' })}
             className="characterCreation-step6__form__basics__elt"
@@ -174,7 +174,7 @@ const CharacterCreationStep6: FC<ICharacterCreationStep6> = ({ onSubmitIdentific
             inputName="gender"
             label={t('gender.label', { ns: 'fields' })}
             rules={{
-              required: t('gender.required', { ns: 'fields' }),
+              required: t('gender.required', { ns: 'fields' })
             }}
             options={genderRange}
             className="characterCreation-step6__form__core__elt"
@@ -191,7 +191,7 @@ const CharacterCreationStep6: FC<ICharacterCreationStep6> = ({ onSubmitIdentific
           <RichTextElement
             label={t('bio.title', { ns: 'fields' })}
             editor={bioEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
           />
         </div>

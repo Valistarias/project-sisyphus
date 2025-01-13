@@ -45,5 +45,5 @@ export {
   defaultNodeIcon,
   type IArianeElt,
   type IGroupedOption,
-  type ISingleValueSelect,
+  type ISingleValueSelect
 };

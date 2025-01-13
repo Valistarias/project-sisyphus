@@ -43,12 +43,13 @@ const create = (req: Request, res: Response): void => {
   const { title, summary, i18n = null } = req.body;
   if (title === undefined || summary === undefined) {
     res.status(400).send(gemInvalidField('Armor Type'));
+
     return;
   }
 
   const armorType = new ArmorType({
     title,
-    summary,
+    summary
   });
 
   if (i18n !== null) {
@@ -60,7 +61,7 @@ const create = (req: Request, res: Response): void => {
     .then(() => {
       res.send(armorType);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -69,6 +70,7 @@ const update = (req: Request, res: Response): void => {
   const { id, title = null, summary = null, i18n } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Armor Type ID'));
+
     return;
   }
   findArmorTypeById(id as string)
@@ -84,7 +86,7 @@ const update = (req: Request, res: Response): void => {
         const newIntl = {
           ...(armorType.i18n !== null && armorType.i18n !== undefined && armorType.i18n !== ''
             ? JSON.parse(armorType.i18n)
-            : {}),
+            : {})
         };
 
         Object.keys(i18n as Record<string, any>).forEach((lang) => {
@@ -99,7 +101,7 @@ const update = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'Armor Type was updated successfully!', armorType });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -112,13 +114,14 @@ const deleteArmorTypeById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Armor Type ID'));
+
       return;
     }
     ArmorType.findByIdAndDelete(id)
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
@@ -129,31 +132,32 @@ const deleteArmorType = (req: Request, res: Response): void => {
     .then(() => {
       res.send({ message: 'Armor Type was deleted successfully!' });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
 
 interface CuratedIArmorType {
-  i18n: Record<string, any> | Record<string, unknown>;
-  armorType: HydratedIArmorType;
+  i18n: Record<string, unknown>
+  armorType: HydratedIArmorType
 }
 
 const findSingle = (req: Request, res: Response): void => {
   const { armorTypeId } = req.query;
   if (armorTypeId === undefined || typeof armorTypeId !== 'string') {
     res.status(400).send(gemInvalidField('ArmorType ID'));
+
     return;
   }
   findArmorTypeById(armorTypeId)
     .then((armorType) => {
       const sentObj = {
         armorType,
-        i18n: curateI18n(armorType.i18n),
+        i18n: curateI18n(armorType.i18n)
       };
       res.send(sentObj);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
@@ -166,13 +170,13 @@ const findAll = (req: Request, res: Response): void => {
       armorTypes.forEach((armorType) => {
         curatedArmorTypes.push({
           armorType,
-          i18n: curateI18n(armorType.i18n),
+          i18n: curateI18n(armorType.i18n)
         });
       });
 
       res.send(curatedArmorTypes);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export { create, deleteArmorType, findAll, findArmorTypeById, findSingle, update };

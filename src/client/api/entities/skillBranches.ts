@@ -4,13 +4,12 @@ import Entity from './entity';
 
 import type { ICuratedSkillBranch } from '../../types';
 
-
 interface ISkillBranchesPayload {
-  skillId: string;
+  skillId: string
 }
 
 interface ISkillBranchPayload {
-  skillBranchId: string;
+  skillBranchId: string
 }
 
 export default class SkillBranches extends Entity {
@@ -20,7 +19,7 @@ export default class SkillBranches extends Entity {
   constructor() {
     super('skillbranches');
 
-    this.getAllBySkill = async (payload) =>
+    this.getAllBySkill = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/byskill/`, { params: payload })
@@ -32,7 +31,7 @@ export default class SkillBranches extends Entity {
           });
       });
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })

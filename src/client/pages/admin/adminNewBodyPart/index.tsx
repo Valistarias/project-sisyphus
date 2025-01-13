@@ -15,10 +15,10 @@ import { Alert, RichTextElement, completeRichTextElementExtentions } from '../..
 import './adminNewBodyPart.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  partId: string;
-  limit: number;
+  name: string
+  nameFr: string
+  partId: string
+  limit: number
 }
 
 const AdminNewBodyPart: FC = () => {
@@ -32,28 +32,28 @@ const AdminNewBodyPart: FC = () => {
   const calledApi = useRef(false);
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   const onSaveBodyPart: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, partId, limit }) => {
       if (
-        introEditor === null ||
-        introFrEditor === null ||
-        limit === null ||
-        api === undefined ||
-        partId === undefined
+        introEditor === null
+        || introFrEditor === null
+        || limit === null
+        || api === undefined
+        || partId === undefined
       ) {
         return;
       }
@@ -69,8 +69,8 @@ const AdminNewBodyPart: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            summary: htmlFr,
-          },
+            summary: htmlFr
+          }
         };
       }
 
@@ -80,7 +80,7 @@ const AdminNewBodyPart: FC = () => {
           summary: html,
           partId,
           limit: Number(limit),
-          i18n,
+          i18n
         })
         .then((bodyPart) => {
           const newId = getNewId();
@@ -90,7 +90,7 @@ const AdminNewBodyPart: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewBodyPart.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadBodyParts();
           void navigate(`/admin/bodypart/${bodyPart._id}`);
@@ -101,15 +101,15 @@ const AdminNewBodyPart: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id',
-              })} by ${data.sent}`,
+                field: 'Formula Id'
+              })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -132,16 +132,18 @@ const AdminNewBodyPart: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewBodyPart.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminNewBodyPart__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameBodyPart.required', { ns: 'fields' }),
+              required: t('nameBodyPart.required', { ns: 'fields' })
             }}
             label={t('nameBodyPart.label', { ns: 'fields' })}
             className="adminNewBodyPart__basics__name"
@@ -153,7 +155,7 @@ const AdminNewBodyPart: FC = () => {
               type="number"
               label={t('bodyPartLimit.label', { ns: 'fields' })}
               rules={{
-                required: t('bodyPartLimit.required', { ns: 'fields' }),
+                required: t('bodyPartLimit.required', { ns: 'fields' })
               }}
             />
           </div>
@@ -162,7 +164,7 @@ const AdminNewBodyPart: FC = () => {
           <RichTextElement
             label={t('bodyPartSummary.title', { ns: 'fields' })}
             editor={introEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />
@@ -174,8 +176,8 @@ const AdminNewBodyPart: FC = () => {
               required: t('bodyPartFormula.required', { ns: 'fields' }),
               pattern: {
                 value: /^([a-z]){2,3}$/,
-                message: t('bodyPartFormula.format', { ns: 'fields' }),
-              },
+                message: t('bodyPartFormula.format', { ns: 'fields' })
+              }
             }}
             label={t('bodyPartFormula.label', { ns: 'fields' })}
           />
@@ -200,7 +202,7 @@ const AdminNewBodyPart: FC = () => {
           <RichTextElement
             label={`${t('bodyPartSummary.title', { ns: 'fields' })} (FR)`}
             editor={introFrEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />

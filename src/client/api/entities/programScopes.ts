@@ -4,9 +4,8 @@ import Entity from './entity';
 
 import type { ICuratedProgramScope } from '../../types';
 
-
 interface IProgramScopePayload {
-  programScopeId: string;
+  programScopeId: string
 }
 
 export default class ProgramScopes extends Entity {
@@ -15,7 +14,7 @@ export default class ProgramScopes extends Entity {
   constructor() {
     super('programscopes');
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })

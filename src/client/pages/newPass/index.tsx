@@ -14,9 +14,9 @@ import { Alert } from '../../organisms';
 import './newPass.scss';
 
 interface FormValues {
-  mail: string;
-  password: string;
-  confirmPassword: string;
+  mail: string
+  password: string
+  confirmPassword: string
 }
 
 const NewPassword: FC = () => {
@@ -32,7 +32,7 @@ const NewPassword: FC = () => {
     handleSubmit,
     setValue,
     setError,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
@@ -43,7 +43,7 @@ const NewPassword: FC = () => {
             userId,
             token,
             pass: password,
-            confirmPass: confirmPassword,
+            confirmPass: confirmPassword
           })
           .then(() => {
             const newId = getNewId();
@@ -53,7 +53,7 @@ const NewPassword: FC = () => {
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{t('newPass.success', { ns: 'pages' })}</Ap>
                 </Alert>
-              ),
+              )
             });
             void navigate('/login');
           })
@@ -62,8 +62,8 @@ const NewPassword: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize')
+              })
             });
           });
       }
@@ -76,7 +76,7 @@ const NewPassword: FC = () => {
       api.mailToken
         .getMail({
           userId,
-          token,
+          token
         })
         .then((mail) => {
           setValue('mail', mail);
@@ -91,9 +91,11 @@ const NewPassword: FC = () => {
     <div className="new-pass">
       <Atitle level={1}>{t('newPass.title', { ns: 'pages' })}</Atitle>
       <form className="new-pass__form" onSubmit={handleSubmit(onSubmit)} noValidate>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <Input
           type="email"
           control={control}
@@ -107,7 +109,7 @@ const NewPassword: FC = () => {
           inputName="password"
           type="password"
           rules={{
-            required: t('password.required', { ns: 'fields' }),
+            required: t('password.required', { ns: 'fields' })
           }}
           label={t('password.label', { ns: 'fields' })}
           autoComplete="new-password"
@@ -122,7 +124,7 @@ const NewPassword: FC = () => {
               if (watch('password') !== val) {
                 return t('confirmPassword.validate', { ns: 'fields' });
               }
-            },
+            }
           }}
           label={t('confirmPassword.label', { ns: 'fields' })}
           autoComplete="new-password"

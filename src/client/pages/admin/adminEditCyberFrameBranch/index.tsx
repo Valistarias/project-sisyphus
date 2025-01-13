@@ -17,8 +17,8 @@ import type { ICuratedCyberFrameBranch } from '../../../types';
 import './adminEditCyberFrameBranch.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
+  name: string
+  nameFr: string
 }
 
 const AdminEditCyberFrameBranch: FC = () => {
@@ -27,7 +27,7 @@ const AdminEditCyberFrameBranch: FC = () => {
   const { createAlert, getNewId } = useSystemAlerts();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
-    ConfMessageEvent: {},
+    ConfMessageEvent: {}
   };
   const { id } = useParams();
   const navigate = useNavigate();
@@ -40,18 +40,18 @@ const AdminEditCyberFrameBranch: FC = () => {
     null
   );
 
-  const limitedMode =
-    cyberFrameBranchData === null || cyberFrameBranchData.cyberFrameBranch.title === '_general';
+  const limitedMode
+    = cyberFrameBranchData === null || cyberFrameBranchData.cyberFrameBranch.title === '_general';
 
   const [cyberFrameBranchText, setCyberFrameBranchText] = useState('');
   const [cyberFrameBranchTextFr, setCyberFrameBranchTextFr] = useState('');
 
   const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const createDefaultData = useCallback((cyberFrameBranchData: ICuratedCyberFrameBranch | null) => {
@@ -64,6 +64,7 @@ const AdminEditCyberFrameBranch: FC = () => {
     if (i18n.fr !== undefined) {
       defaultData.nameFr = i18n.fr.title ?? '';
     }
+
     return defaultData;
   }, []);
 
@@ -72,22 +73,22 @@ const AdminEditCyberFrameBranch: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(cyberFrameBranchData),
       [createDefaultData, cyberFrameBranchData]
-    ),
+    )
   });
 
   const onSaveCyberFrameBranch: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr }) => {
       if (
-        cyberFrameBranchText === null ||
-        cyberFrameBranchTextFr === null ||
-        textEditor === null ||
-        textFrEditor === null ||
-        api === undefined
+        cyberFrameBranchText === null
+        || cyberFrameBranchTextFr === null
+        || textEditor === null
+        || textFrEditor === null
+        || api === undefined
       ) {
         return;
       }
@@ -105,8 +106,8 @@ const AdminEditCyberFrameBranch: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            text: htmlTextFr,
-          },
+            text: htmlTextFr
+          }
         };
       }
 
@@ -115,7 +116,7 @@ const AdminEditCyberFrameBranch: FC = () => {
           id,
           title: name,
           summary: htmlText,
-          i18n,
+          i18n
         })
         .then((cyberFrameBranch) => {
           const newId = getNewId();
@@ -125,7 +126,7 @@ const AdminEditCyberFrameBranch: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditCyberFrameBranch.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
         })
         .catch(({ response }) => {
@@ -134,15 +135,15 @@ const AdminEditCyberFrameBranch: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.cyberFrameBranchType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.cyberFrameBranchType.${data.sent}`), 'capitalize')
+              })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.cyberFrameBranchType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.cyberFrameBranchType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -157,7 +158,7 @@ const AdminEditCyberFrameBranch: FC = () => {
       getNewId,
       createAlert,
       t,
-      setError,
+      setError
     ]
   );
 
@@ -170,9 +171,9 @@ const AdminEditCyberFrameBranch: FC = () => {
         title: t('adminEditCyberFrameBranch.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditCyberFrameBranch.confirmDeletion.text', {
           ns: 'pages',
-          elt: cyberFrameBranchData?.cyberFrameBranch.title,
+          elt: cyberFrameBranchData?.cyberFrameBranch.title
         }),
-        confirmCta: t('adminEditCyberFrameBranch.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditCyberFrameBranch.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
@@ -187,7 +188,7 @@ const AdminEditCyberFrameBranch: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditCyberFrameBranch.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
                 if (typeof cyberFrameBranchData?.cyberFrameBranch.cyberFrame !== 'string') {
                   navigate(
@@ -201,15 +202,15 @@ const AdminEditCyberFrameBranch: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.cyberFrameBranch.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.cyberFrameBranch.name`), 'capitalize')
+                    })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.cyberFrameBranch.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.cyberFrameBranch.name`), 'capitalize')
+                    })
                   });
                 }
               });
@@ -229,7 +230,7 @@ const AdminEditCyberFrameBranch: FC = () => {
     getNewId,
     createAlert,
     navigate,
-    setError,
+    setError
   ]);
 
   useEffect(() => {
@@ -253,7 +254,7 @@ const AdminEditCyberFrameBranch: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -268,6 +269,7 @@ const AdminEditCyberFrameBranch: FC = () => {
         () => {}
       );
     }, 600000);
+
     return () => {
       if (saveTimer.current !== null) {
         clearInterval(saveTimer.current);
@@ -296,22 +298,26 @@ const AdminEditCyberFrameBranch: FC = () => {
         <div className="adminEditCyberFrameBranch__ariane">
           <Ap className="adminEditCyberFrameBranch__ariane__elt">
             {`${t(`terms.cyberFrame.name`)}: `}
-            {typeof cyberFrameBranchData?.cyberFrameBranch.cyberFrame !== 'string' ? (
-              <Aa
-                href={`/admin/cyberframe/${cyberFrameBranchData?.cyberFrameBranch.cyberFrame._id}`}
-              >
-                {cyberFrameBranchData?.cyberFrameBranch.cyberFrame.title!}
-              </Aa>
-            ) : (
-              ''
-            )}
+            {typeof cyberFrameBranchData?.cyberFrameBranch.cyberFrame !== 'string'
+              ? (
+                  <Aa
+                    href={`/admin/cyberframe/${cyberFrameBranchData?.cyberFrameBranch.cyberFrame._id}`}
+                  >
+                    {cyberFrameBranchData?.cyberFrameBranch.cyberFrame.title!}
+                  </Aa>
+                )
+              : (
+                  ''
+                )}
           </Ap>
         </div>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror className="adminEditCyberFrameBranch__error">
-            {errors.root.serverError.message}
-          </Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror className="adminEditCyberFrameBranch__error">
+                {errors.root.serverError.message}
+              </Aerror>
+            )
+          : null}
         <div className="adminEditCyberFrameBranch__basics">
           <Input
             control={control}

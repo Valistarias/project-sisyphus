@@ -3,9 +3,6 @@ import type { HydratedDocument, Error } from 'mongoose';
 
 import crypto from 'crypto';
 
-
-
-
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
@@ -18,6 +15,7 @@ const createToken = (req: Request, res: Response, mg: IMailgunClient): void => {
   const { mail = null } = req.body;
   if (mail === undefined) {
     res.status(400).send(gemInvalidField('mail'));
+
     return;
   }
   User.findOne({ mail })
@@ -27,7 +25,7 @@ const createToken = (req: Request, res: Response, mg: IMailgunClient): void => {
       } else {
         const mailToken = new MailToken({
           userId: user._id,
-          token: crypto.randomBytes(32).toString('hex'),
+          token: crypto.randomBytes(32).toString('hex')
         });
         mailToken
           .save()
@@ -41,16 +39,16 @@ const createToken = (req: Request, res: Response, mg: IMailgunClient): void => {
                 to: ['mallet.victor.france@gmail.com'],
                 subject: 'Project Sisyphus - Forgotten Password',
                 text: 'Click to change your password!',
-                html: `Click <a href = '${url}'>here</a> to change your password.`,
+                html: `Click <a href = '${url}'>here</a> to change your password.`
               })
               .then((msg) => {
                 res.send({ message: 'Mail sent' });
               })
-              .catch((err: Error) => {
+              .catch((err: unknown) => {
                 res.status(500).send(gemServerError(err));
               });
           })
-          .catch((err: Error) => {
+          .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
           });
       }
@@ -64,6 +62,7 @@ const verifyMailToken = async ({ userId, token }): Promise<HydratedDocument<IUse
   await new Promise((resolve, reject) => {
     if (userId === undefined || token === undefined) {
       resolve(null);
+
       return;
     }
     User.findById(userId)
@@ -73,7 +72,7 @@ const verifyMailToken = async ({ userId, token }): Promise<HydratedDocument<IUse
         } else {
           MailToken.findOne({
             userId,
-            token,
+            token
           })
             .then(() => {
               resolve(user);
@@ -98,7 +97,7 @@ const removeToken = async (req: Request): Promise<boolean> =>
             .then(() => {
               resolve(true);
             })
-            .catch((err: Error) => {
+            .catch((err: unknown) => {
               reject(err);
             });
         } else {
@@ -120,7 +119,7 @@ const getUserMailByRequest = (req: Request, res: Response): void => {
         res.status(404).send(gemNotFound('Token'));
       }
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };

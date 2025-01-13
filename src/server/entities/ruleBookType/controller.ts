@@ -6,7 +6,7 @@ import {
   gemDuplicate,
   gemInvalidField,
   gemNotFound,
-  gemServerError,
+  gemServerError
 } from '../../utils/globalErrorMessage';
 
 import type { IRuleBookType } from './model';
@@ -47,13 +47,14 @@ const create = (req: Request, res: Response): void => {
   const { name } = req.body;
   if (name === undefined) {
     res.status(400).send(gemInvalidField('RuleBookType'));
+
     return;
   }
   findRuleBookTypes()
     .then((ruleBooks) => {
-      if (ruleBooks.find((ruleBook) => ruleBook.name === name) === undefined) {
+      if (ruleBooks.find(ruleBook => ruleBook.name === name) === undefined) {
         const ruleBookType = new RuleBookType({
-          name,
+          name
         });
 
         ruleBookType
@@ -61,25 +62,26 @@ const create = (req: Request, res: Response): void => {
           .then(() => {
             res.send({ message: 'RuleBookType was registered successfully!' });
           })
-          .catch((err: Error) => {
+          .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
           });
       } else {
         res.status(400).send(gemDuplicate('Name'));
       }
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const update = (req: Request, res: Response): void => {
   const { id, name = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('RuleBookType ID'));
+
     return;
   }
   findRuleBookTypes()
     .then((ruleBooks) => {
-      const actualRuleBookType = ruleBooks.find((ruleBook) => String(ruleBook._id) === id);
+      const actualRuleBookType = ruleBooks.find(ruleBook => String(ruleBook._id) === id);
       if (actualRuleBookType !== undefined) {
         if (name !== null && name !== actualRuleBookType.name) {
           actualRuleBookType.name = name;
@@ -89,27 +91,28 @@ const update = (req: Request, res: Response): void => {
           .then(() => {
             res.send({ message: 'RuleBookType was updated successfully!', actualRuleBookType });
           })
-          .catch((err: Error) => {
+          .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
           });
       } else {
         res.status(404).send(gemNotFound('RuleBookType'));
       }
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const deleteRuleBookType = (req: Request, res: Response): void => {
   const { id } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('RuleBookType ID'));
+
     return;
   }
   RuleBookType.findByIdAndDelete(id)
     .then(() => {
       res.send({ message: 'RuleBookType was deleted successfully!' });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -118,17 +121,18 @@ const findSingle = (req: Request, res: Response): void => {
   const { ruleBookTypeId } = req.query;
   if (ruleBookTypeId === undefined || typeof ruleBookTypeId !== 'string') {
     res.status(400).send(gemInvalidField('RuleBookType ID'));
+
     return;
   }
   findRuleBookTypeById(ruleBookTypeId)
-    .then((ruleBook) => res.send(ruleBook))
-    .catch((err: Error) => res.status(404).send(err));
+    .then(ruleBook => res.send(ruleBook))
+    .catch((err: unknown) => res.status(404).send(err));
 };
 
 const findAll = (req: Request, res: Response): void => {
   findRuleBookTypes()
-    .then((ruleBooks) => res.send(ruleBooks))
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .then(ruleBooks => res.send(ruleBooks))
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export { create, deleteRuleBookType, findAll, findSingle, update };

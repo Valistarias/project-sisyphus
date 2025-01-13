@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
   type FC,
-  type ReactNode,
+  type ReactNode
 } from 'react';
 
 import { useTranslation } from 'react-i18next';
@@ -16,7 +16,7 @@ import {
   curateCharacterSkills,
   type ICuratedCharParamWithScore,
   type ICuratedSkillWithScore,
-  type ICuratedStatWithScore,
+  type ICuratedStatWithScore
 } from '../utils/character';
 
 import { useApi } from './api';
@@ -43,114 +43,114 @@ import type {
   ICuratedWeaponType,
   IGlobalValue,
   IItemType,
-  IUser,
+  IUser
 } from '../types';
 
 interface IGlobalVarsContext {
   /** The logged user */
-  user: IUser | null;
+  user: IUser | null
   /** Setting the user */
-  setUser: React.Dispatch<React.SetStateAction<IUser | null>>;
+  setUser: React.Dispatch<React.SetStateAction<IUser | null>>
   /** Is the provider loading */
-  loading: boolean;
+  loading: boolean
   /** The actual character */
-  character: ICharacter | null | false;
+  character: ICharacter | null | false
   /** The agregated stats and skills of the actual character */
   characterStatSkills?: {
-    stats: ICuratedStatWithScore[];
-    skills: ICuratedSkillWithScore[];
-  };
+    stats: ICuratedStatWithScore[]
+    skills: ICuratedSkillWithScore[]
+  }
   /** The agregated character params of the actual character */
-  characterParams?: ICuratedCharParamWithScore[];
+  characterParams?: ICuratedCharParamWithScore[]
   /** All the loaded body parts */
-  bodyParts: ICuratedBodyPart[];
+  bodyParts: ICuratedBodyPart[]
   /** All the loaded rulebooks */
-  ruleBooks: ICuratedRuleBook[];
+  ruleBooks: ICuratedRuleBook[]
   /** All the loaded campaigns */
-  campaigns: ICampaign[];
+  campaigns: ICampaign[]
   /** All the loaded damage types */
-  damageTypes: ICuratedDamageType[];
+  damageTypes: ICuratedDamageType[]
   /** All the loaded stats */
-  stats: ICuratedStat[];
+  stats: ICuratedStat[]
   /** All the loaded skills */
-  skills: ICuratedSkill[];
+  skills: ICuratedSkill[]
   /** All the loaded character parameters */
-  charParams: ICuratedCharParam[];
+  charParams: ICuratedCharParam[]
   /** All the loaded CyberFrames */
-  cyberFrames: ICuratedCyberFrame[];
+  cyberFrames: ICuratedCyberFrame[]
   /** All the loaded action types */
-  actionTypes: IActionType[];
+  actionTypes: IActionType[]
   /** All the loaded action durations */
-  actionDurations: IActionDuration[];
+  actionDurations: IActionDuration[]
   /** All the loaded item types */
-  itemTypes: IItemType[];
+  itemTypes: IItemType[]
   /** All the loaded item modifiers */
-  itemModifiers: ICuratedItemModifier[];
+  itemModifiers: ICuratedItemModifier[]
   /** All the loaded rarities */
-  rarities: ICuratedRarity[];
+  rarities: ICuratedRarity[]
   /** All the loaded weapon scopes */
-  weaponScopes: ICuratedWeaponScope[];
+  weaponScopes: ICuratedWeaponScope[]
   /** All the loaded weapon styles */
-  weaponStyles: ICuratedWeaponStyle[];
+  weaponStyles: ICuratedWeaponStyle[]
   /** All the loaded weapon types */
-  weaponTypes: ICuratedWeaponType[];
+  weaponTypes: ICuratedWeaponType[]
   /** All the loaded armor types */
-  armorTypes: ICuratedArmorType[];
+  armorTypes: ICuratedArmorType[]
   /** All the loaded program scopes */
-  programScopes: ICuratedProgramScope[];
+  programScopes: ICuratedProgramScope[]
   /** All the loaded program scopes */
-  tipTexts: ICuratedTipText[];
+  tipTexts: ICuratedTipText[]
   /** All the loaded global value rules */
-  globalValues: IGlobalValue[];
+  globalValues: IGlobalValue[]
   /** Used to set the actual character */
-  setCharacter: (character: ICharacter) => void;
+  setCharacter: (character: ICharacter) => void
   /** Used to set the actual character fron his id */
-  setCharacterFromId: (id: string) => void;
+  setCharacterFromId: (id: string) => void
   /** Used to reset the actual character */
-  resetCharacter: () => void;
+  resetCharacter: () => void
   /** Used to trigger the reload of the program scopes */
-  reloadBodyParts: () => void;
+  reloadBodyParts: () => void
   /** Used to trigger the reload of the rulebooks */
-  reloadCampaigns: () => void;
+  reloadCampaigns: () => void
   /** Used to trigger the reload of the campaigns */
-  reloadRuleBooks: () => void;
+  reloadRuleBooks: () => void
   /** Used to trigger the reload of the skills */
-  reloadSkills: () => void;
+  reloadSkills: () => void
   /** Used to trigger the reload of the stats */
-  reloadStats: () => void;
+  reloadStats: () => void
   /** Used to trigger the reload of the character parameters */
-  reloadCharParams: () => void;
+  reloadCharParams: () => void
   /** Used to trigger the reload of the cyber frames */
-  reloadCyberFrames: () => void;
+  reloadCyberFrames: () => void
   /** Used to trigger the reload of the damage types */
-  reloadDamageTypes: () => void;
+  reloadDamageTypes: () => void
   /** Used to trigger the reload of the item types */
-  reloadItemTypes: () => void;
+  reloadItemTypes: () => void
   /** Used to trigger the reload of the item modifiers */
-  reloadItemModifiers: () => void;
+  reloadItemModifiers: () => void
   /** Used to trigger the reload of the rarities */
-  reloadRarities: () => void;
+  reloadRarities: () => void
   /** Used to trigger the reload of the weapon scopes */
-  reloadWeaponScopes: () => void;
+  reloadWeaponScopes: () => void
   /** Used to trigger the reload of the weapon styles */
-  reloadWeaponStyles: () => void;
+  reloadWeaponStyles: () => void
   /** Used to trigger the reload of the weapon types */
-  reloadWeaponTypes: () => void;
+  reloadWeaponTypes: () => void
   /** Used to trigger the reload of the armor types */
-  reloadArmorTypes: () => void;
+  reloadArmorTypes: () => void
   /** Used to trigger the reload of the program scopes */
-  reloadProgramScopes: () => void;
+  reloadProgramScopes: () => void
   /** Used to trigger the reload of the tip texts */
-  reloadTipTexts: () => void;
+  reloadTipTexts: () => void
   /** Used to trigger the reload of the global values */
-  reloadGlobalValues: () => void;
+  reloadGlobalValues: () => void
   /** Used to trigger the reload of all dynamic elements */
-  reloadAll: () => void;
+  reloadAll: () => void
 }
 
 interface GlobalVarsProviderProps {
   /** The childrens of the Providers element */
-  children: ReactNode;
+  children: ReactNode
 }
 
 const GlobalVarsContext = React.createContext<IGlobalVarsContext | null>(null);
@@ -168,9 +168,9 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
   const [character, setCharacter] = useState<ICharacter | null | false>(null);
   const [characterStatSkills, setCharacterStatSkills] = useState<
     | {
-        stats: ICuratedStatWithScore[];
-        skills: ICuratedSkillWithScore[];
-      }
+      stats: ICuratedStatWithScore[]
+      skills: ICuratedSkillWithScore[]
+    }
     | undefined
   >(undefined);
   const [characterParams, setCharacterParams] = useState<ICuratedCharParamWithScore[] | undefined>(
@@ -308,7 +308,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       setLoading(true);
       api.characters
         .get({
-          characterId: id,
+          characterId: id
         })
         .then((character: ICharacter) => {
           setLoading(false);
@@ -409,7 +409,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
     loadWeaponStyles,
     loadWeaponTypes,
     loadTipTexts,
-    loadGlobalValues,
+    loadGlobalValues
   ]);
 
   useEffect(() => {
@@ -490,7 +490,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       setCharacter,
       setCharacterFromId,
       resetCharacter,
-      setUser,
+      setUser
     }),
     [
       actionDurations,
@@ -539,7 +539,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       setCharacterFromId,
       resetCharacter,
       loadActionTypes,
-      loadActionDurations,
+      loadActionDurations
     ]
   );
 

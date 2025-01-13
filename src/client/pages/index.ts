@@ -90,7 +90,7 @@ import {
   AdminWeaponScopesPage,
   AdminWeaponStylesPage,
   AdminWeaponTypesPage,
-  AdminWeaponsPage,
+  AdminWeaponsPage
 } from './admin';
 import { CampaignPage, CampaignsPage, JoinCampaignPage, NewCampaignPage } from './campaign';
 import { CharacterEditPage, CharacterPage, CharactersPage, NewCharacterPage } from './character';
@@ -211,5 +211,5 @@ export {
   NewPassPage,
   RuleBookPage,
   RuleBooksPage,
-  SignupPage,
+  SignupPage
 };

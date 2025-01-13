@@ -4,20 +4,19 @@ import Entity from './entity';
 
 import type { ICharacter } from '../../types';
 
-
 interface ICharacterPayload {
-  characterId: string;
+  characterId: string
 }
 
 interface ICharacterAddNodePayload {
-  characterId?: string;
-  nodeId: string;
+  characterId?: string
+  nodeId: string
 }
 
 interface ICharacterUpdateNodesPayload {
-  characterId?: string;
-  toAdd: string[];
-  toRemove: string[];
+  characterId?: string
+  toAdd: string[]
+  toRemove: string[]
 }
 
 export default class Characters extends Entity {
@@ -30,7 +29,7 @@ export default class Characters extends Entity {
   constructor() {
     super('characters');
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })
@@ -42,7 +41,7 @@ export default class Characters extends Entity {
           });
       });
 
-    this.addFirstCyberFrameNode = async (payload) =>
+    this.addFirstCyberFrameNode = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/addfirstcyberframenode/`, payload)
@@ -54,7 +53,7 @@ export default class Characters extends Entity {
           });
       });
 
-    this.addNode = async (payload) =>
+    this.addNode = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/addnode/`, payload)
@@ -66,7 +65,7 @@ export default class Characters extends Entity {
           });
       });
 
-    this.updateNodes = async (payload) =>
+    this.updateNodes = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/updatenodes/`, payload)
@@ -78,7 +77,7 @@ export default class Characters extends Entity {
           });
       });
 
-    this.quitCampaign = async (payload) =>
+    this.quitCampaign = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/quitcampaign/`, payload)

@@ -11,7 +11,7 @@ import type {
   IBodyWeapon,
   ICharacter,
   ICharacterNode,
-  ICuratedBodyPart,
+  ICuratedBodyPart
 } from './character';
 import type { IReactHookFormInputs } from './form';
 import type { ICampaignEvent, IUser, TypeCampaignEvent, TypeDice } from './global';
@@ -38,7 +38,7 @@ import type {
   IWeaponScope,
   IWeaponStyle,
   IWeaponType,
-  TypeStarterKitValues,
+  TypeStarterKitValues
 } from './items';
 import type { ICuratedBasicNPC, ICuratedEnnemyAttack, ICuratedNPC } from './npc';
 import type {
@@ -51,7 +51,7 @@ import type {
   INotion,
   IPage,
   IRuleBook,
-  IRuleBookType,
+  IRuleBookType
 } from './rulebook';
 import type {
   IAction,
@@ -79,7 +79,7 @@ import type {
   ISkillBonus,
   ISkillBranch,
   IStat,
-  IStatBonus,
+  IStatBonus
 } from './rules';
 
 export type {
@@ -162,5 +162,5 @@ export type {
   IWeaponType,
   TypeCampaignEvent,
   TypeDice,
-  TypeStarterKitValues,
+  TypeStarterKitValues
 };

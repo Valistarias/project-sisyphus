@@ -9,14 +9,14 @@ import './ali.scss';
 
 interface IAli extends IQuarkProps {
   /** The childrens of the LI element */
-  children: ReactNode;
+  children: ReactNode
   /** The innerRef, if there is any */
-  innerRef?: RefObject<null | ReactNode>;
-  role?: string;
-  tabIndex?: number;
-  draggable?: boolean;
-  onDragStart?: React.DragEventHandler<unknown>;
-  localStyle?: React.CSSProperties;
+  innerRef?: RefObject<null | ReactNode>
+  role?: string
+  tabIndex?: number
+  draggable?: boolean
+  onDragStart?: React.DragEventHandler<unknown>
+  localStyle?: React.CSSProperties
 }
 
 const Ali: FC<IAli> = (props) => {
@@ -30,7 +30,7 @@ const Ali: FC<IAli> = (props) => {
         ${className ?? ''}
       `)}
       reactProps={{
-        ref: innerRef,
+        ref: innerRef
       }}
     >
       {children}

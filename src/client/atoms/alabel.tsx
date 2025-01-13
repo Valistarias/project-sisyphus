@@ -8,9 +8,9 @@ import './alabel.scss';
 
 interface IALabel extends IQuarkProps {
   /** Is the label connected to any field */
-  htmlFor?: string;
+  htmlFor?: string
   /** The childrens of the P element */
-  children: ReactNode;
+  children: ReactNode
 }
 
 const ALabel: FC<IALabel> = ({ className, children, htmlFor }) => (

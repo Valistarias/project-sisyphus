@@ -4,44 +4,44 @@ import type { IAmmo } from '../../ammo/model';
 
 interface IBodyAmmo {
   /** When the body was created */
-  createdAt: Date;
+  createdAt: Date
   /** The body targeted */
-  body: ObjectId;
+  body: ObjectId
   /** The linked Ammo */
-  ammo: ObjectId;
+  ammo: ObjectId
   /** The bag that store this ammo */
-  bag: ObjectId;
+  bag: ObjectId
   /** How many ammos the player have */
-  qty: number;
+  qty: number
 }
 
 type HydratedIBodyAmmo = HydratedDocument<
   Omit<IBodyAmmo, 'ammo'> & {
-    ammo: HydratedDocument<IAmmo>;
+    ammo: HydratedDocument<IAmmo>
   }
 >;
 
 const BodyAmmoSchema = new Schema<IBodyAmmo>({
   body: {
     type: Schema.Types.ObjectId,
-    ref: 'Body',
+    ref: 'Body'
   },
   ammo: {
     type: Schema.Types.ObjectId,
-    ref: 'Ammo',
+    ref: 'Ammo'
   },
   bag: {
     type: Schema.Types.ObjectId,
-    ref: 'BodyBag',
+    ref: 'BodyBag'
   },
   qty: {
     type: Number,
-    default: 1,
+    default: 1
   },
   createdAt: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
 });
 
 const BodyAmmoModel = (): Model<IBodyAmmo> => model('BodyAmmo', BodyAmmoSchema);

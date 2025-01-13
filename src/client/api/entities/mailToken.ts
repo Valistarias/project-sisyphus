@@ -3,8 +3,8 @@ import axios from 'axios';
 import Entity from './entity';
 
 interface IGetMailUserPayload {
-  userId: string;
-  token: string;
+  userId: string
+  token: string
 }
 
 export default class MailToken extends Entity {
@@ -13,7 +13,7 @@ export default class MailToken extends Entity {
   constructor() {
     super('forgot');
 
-    this.getMail = async (payload) =>
+    this.getMail = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/getmail/`, { params: payload })

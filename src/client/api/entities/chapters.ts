@@ -4,21 +4,20 @@ import Entity from './entity';
 
 import type { ICuratedChapter } from '../../types';
 
-
 interface IChaptersPayload {
-  ruleBookId: string;
+  ruleBookId: string
 }
 
 interface IChapterPayload {
-  chapterId: string;
+  chapterId: string
 }
 
 interface IChapterPagesOrder {
-  id: string;
+  id: string
   order: Array<{
-    id: string;
-    position: number;
-  }>;
+    id: string
+    position: number
+  }>
 }
 
 export default class Chapters extends Entity {
@@ -29,7 +28,7 @@ export default class Chapters extends Entity {
   constructor() {
     super('chapters');
 
-    this.getAllByRuleBook = async (payload) =>
+    this.getAllByRuleBook = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/`, { params: payload })
@@ -41,7 +40,7 @@ export default class Chapters extends Entity {
           });
       });
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })
@@ -53,7 +52,7 @@ export default class Chapters extends Entity {
           });
       });
 
-    this.changePagesOrder = async (payload) =>
+    this.changePagesOrder = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/changepagesorder/`, payload)

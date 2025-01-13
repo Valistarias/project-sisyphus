@@ -20,6 +20,7 @@ const AdminArmorTypes: FC = () => {
     if (armorTypes === null || armorTypes.length === 0) {
       return null;
     }
+
     return (
       <Aul className="adminArmorTypes__armor-type-list" noPoints>
         {armorTypes.map(({ armorType }) => (

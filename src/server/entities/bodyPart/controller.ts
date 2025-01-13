@@ -5,7 +5,7 @@ import {
   gemDuplicate,
   gemInvalidField,
   gemNotFound,
-  gemServerError,
+  gemServerError
 } from '../../utils/globalErrorMessage';
 
 import type { HydratedIBodyPart } from './model';
@@ -75,7 +75,7 @@ const checkDuplicatePartId = async (
           resolve(responseBodyPart);
         }
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -84,6 +84,7 @@ const create = (req: Request, res: Response): void => {
   const { title, summary, i18n = null, partId, limit } = req.body;
   if (title === undefined || summary === undefined || partId === undefined || limit === undefined) {
     res.status(400).send(gemInvalidField('Body Part'));
+
     return;
   }
 
@@ -94,7 +95,7 @@ const create = (req: Request, res: Response): void => {
           title,
           summary,
           partId,
-          limit,
+          limit
         });
 
         if (i18n !== null) {
@@ -106,14 +107,14 @@ const create = (req: Request, res: Response): void => {
           .then(() => {
             res.send(bodyPart);
           })
-          .catch((err: Error) => {
+          .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
           });
       } else {
         res.status(400).send(gemDuplicate(response));
       }
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -122,6 +123,7 @@ const update = (req: Request, res: Response): void => {
   const { id, title = null, summary = null, i18n, partId = null, limit = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Body Part ID'));
+
     return;
   }
   findBodyPartById(id as string)
@@ -147,7 +149,7 @@ const update = (req: Request, res: Response): void => {
               const newIntl = {
                 ...(bodyPart.i18n !== null && bodyPart.i18n !== undefined && bodyPart.i18n !== ''
                   ? JSON.parse(bodyPart.i18n)
-                  : {}),
+                  : {})
               };
 
               Object.keys(i18n as Record<string, any>).forEach((lang) => {
@@ -162,14 +164,14 @@ const update = (req: Request, res: Response): void => {
               .then(() => {
                 res.send({ message: 'Body Part was updated successfully!', bodyPart });
               })
-              .catch((err: Error) => {
+              .catch((err: unknown) => {
                 res.status(500).send(gemServerError(err));
               });
           } else {
             res.status(400).send(gemInvalidField('BodyPart'));
           }
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -182,13 +184,14 @@ const deleteBodyPartById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Body Part ID'));
+
       return;
     }
     BodyPart.findByIdAndDelete(id)
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
@@ -199,31 +202,32 @@ const deleteBodyPart = (req: Request, res: Response): void => {
     .then(() => {
       res.send({ message: 'Body Part was deleted successfully!' });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
 
 interface CuratedIBodyPart {
-  i18n: Record<string, any> | Record<string, unknown>;
-  bodyPart: HydratedIBodyPart;
+  i18n: Record<string, unknown>
+  bodyPart: HydratedIBodyPart
 }
 
 const findSingle = (req: Request, res: Response): void => {
   const { bodyPartId } = req.query;
   if (bodyPartId === undefined || typeof bodyPartId !== 'string') {
     res.status(400).send(gemInvalidField('BodyPart ID'));
+
     return;
   }
   findBodyPartById(bodyPartId)
     .then((bodyPart) => {
       const sentObj = {
         bodyPart,
-        i18n: curateI18n(bodyPart.i18n),
+        i18n: curateI18n(bodyPart.i18n)
       };
       res.send(sentObj);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
@@ -236,13 +240,13 @@ const findAll = (req: Request, res: Response): void => {
       bodyParts.forEach((bodyPart) => {
         curatedBodyParts.push({
           bodyPart,
-          i18n: curateI18n(bodyPart.i18n),
+          i18n: curateI18n(bodyPart.i18n)
         });
       });
 
       res.send(curatedBodyParts);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export {
@@ -252,5 +256,5 @@ export {
   findAll,
   findBodyPartById,
   findSingle,
-  update,
+  update
 };

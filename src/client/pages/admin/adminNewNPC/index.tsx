@@ -17,28 +17,28 @@ import { classTrim } from '../../../utils';
 import './adminNewNPC.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  virtual: boolean;
-  speed: number;
-  flightSpeed?: number;
-  swimSpeed?: number;
-  hp: number;
-  pr?: number;
-  ar: number;
+  name: string
+  nameFr: string
+  virtual: boolean
+  speed: number
+  flightSpeed?: number
+  swimSpeed?: number
+  hp: number
+  pr?: number
+  ar: number
   attacks?: Record<
     string,
     {
-      title: string;
-      titleFr?: string;
-      summary: string;
-      summaryFr?: string;
-      damageType: string;
-      weaponScope: string;
-      dices: string;
-      bonusToHit?: number;
+      title: string
+      titleFr?: string
+      summary: string
+      summaryFr?: string
+      damageType: string
+      weaponScope: string
+      dices: string
+      bonusToHit?: number
     }
-  >;
+  >
 }
 
 const AdminNewNPC: FC = () => {
@@ -56,7 +56,7 @@ const AdminNewNPC: FC = () => {
       damageTypes.map(({ damageType }) => ({
         value: damageType._id,
         // TODO : Handle Internationalization
-        label: damageType.title,
+        label: damageType.title
       })),
     [damageTypes]
   );
@@ -68,17 +68,17 @@ const AdminNewNPC: FC = () => {
       weaponScopes.map(({ weaponScope }) => ({
         value: weaponScope._id,
         // TODO : Handle Internationalization
-        label: weaponScope.title,
+        label: weaponScope.title
       })),
     [weaponScopes]
   );
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const {
@@ -86,23 +86,23 @@ const AdminNewNPC: FC = () => {
     setError,
     unregister,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm({
     defaultValues: {
-      icon: 'default',
-    },
+      icon: 'default'
+    }
   });
 
   const boolRange = useMemo(
     () => [
       {
         value: '1',
-        label: t('terms.general.yes'),
+        label: t('terms.general.yes')
       },
       {
         value: '0',
-        label: t('terms.general.no'),
-      },
+        label: t('terms.general.no')
+      }
     ],
     [t]
   );
@@ -112,6 +112,7 @@ const AdminNewNPC: FC = () => {
       const next = [...prev];
       next.push(idIncrement.current);
       idIncrement.current += 1;
+
       return next;
     });
   }, []);
@@ -137,11 +138,11 @@ const AdminNewNPC: FC = () => {
               ? {
                   fr: {
                     title: titleFr,
-                    summary: summaryFr,
-                  },
+                    summary: summaryFr
+                  }
                 }
-              : {}),
-          },
+              : {})
+          }
         })
       );
 
@@ -157,8 +158,8 @@ const AdminNewNPC: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            summary: htmlFr,
-          },
+            summary: htmlFr
+          }
         };
       }
 
@@ -174,7 +175,7 @@ const AdminNewNPC: FC = () => {
           hp: Number(hp),
           pr: pr !== undefined ? Number(pr) : undefined,
           ar: Number(ar),
-          attacks: curatedAttacks,
+          attacks: curatedAttacks
         })
         .then((quote) => {
           const newId = getNewId();
@@ -184,7 +185,7 @@ const AdminNewNPC: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewNPC.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           void navigate(`/admin/npc/${quote._id}`);
         })
@@ -194,15 +195,15 @@ const AdminNewNPC: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize')
+              })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -221,16 +222,18 @@ const AdminNewNPC: FC = () => {
         <Atitle className="adminNewNPC__head" level={1}>
           {t('adminNewNPC.title', { ns: 'pages' })}
         </Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminNewNPC__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameNPC.required', { ns: 'fields' }),
+              required: t('nameNPC.required', { ns: 'fields' })
             }}
             label={t('nameNPC.label', { ns: 'fields' })}
             className="adminNewNPC__basics__name"
@@ -242,7 +245,7 @@ const AdminNewNPC: FC = () => {
               type="number"
               label={t('hpNPC.label', { ns: 'fields' })}
               rules={{
-                required: t('hpNPC.required', { ns: 'fields' }),
+                required: t('hpNPC.required', { ns: 'fields' })
               }}
               className="adminNewNPC__details__hp"
             />
@@ -252,7 +255,7 @@ const AdminNewNPC: FC = () => {
               type="number"
               label={t('arNPC.label', { ns: 'fields' })}
               rules={{
-                required: t('arNPC.required', { ns: 'fields' }),
+                required: t('arNPC.required', { ns: 'fields' })
               }}
               className="adminNewNPC__details__ar"
             />
@@ -269,7 +272,7 @@ const AdminNewNPC: FC = () => {
           <RichTextElement
             label={t('nPCSummary.title', { ns: 'fields' })}
             editor={introEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />
@@ -280,7 +283,7 @@ const AdminNewNPC: FC = () => {
               type="number"
               label={t('speedNPC.label', { ns: 'fields' })}
               rules={{
-                required: t('speedNPC.required', { ns: 'fields' }),
+                required: t('speedNPC.required', { ns: 'fields' })
               }}
               className="adminNewNPC__details__speed"
             />
@@ -303,7 +306,7 @@ const AdminNewNPC: FC = () => {
               inputName="virtual"
               label={t('isVirtualNPC.label', { ns: 'fields' })}
               rules={{
-                required: t('isVirtualNPC.required', { ns: 'fields' }),
+                required: t('isVirtualNPC.required', { ns: 'fields' })
               }}
               options={boolRange}
               className="adminNewNPC__details__isVirtual"
@@ -312,7 +315,7 @@ const AdminNewNPC: FC = () => {
         </div>
         <div className="adminNewNPC__bonuses">
           <div className="adminNewNPC__bonuses__elts">
-            {attackIds.map((attackId) => (
+            {attackIds.map(attackId => (
               <div className="adminNewNPC__bonus" key={`charParam-${attackId}`}>
                 <Atitle className="adminNewNPC__bonus__title" level={4}>
                   {t('adminNewNPC.attackTitle', { ns: 'pages' })}
@@ -322,7 +325,7 @@ const AdminNewNPC: FC = () => {
                     control={control}
                     inputName={`attacks.attack-${attackId}.title`}
                     rules={{
-                      required: t('attackTitle.required', { ns: 'fields' }),
+                      required: t('attackTitle.required', { ns: 'fields' })
                     }}
                     label={t('attackTitle.label', { ns: 'fields' })}
                     className="adminNewNPC__bonus__value adminNewNPC__bonus__value--l"
@@ -331,7 +334,7 @@ const AdminNewNPC: FC = () => {
                     control={control}
                     inputName={`attacks.attack-${attackId}.damageType`}
                     rules={{
-                      required: t('attackDamageType.required', { ns: 'fields' }),
+                      required: t('attackDamageType.required', { ns: 'fields' })
                     }}
                     label={t('attackDamageType.label', { ns: 'fields' })}
                     options={damageTypeSelect}
@@ -341,7 +344,7 @@ const AdminNewNPC: FC = () => {
                     control={control}
                     inputName={`attacks.attack-${attackId}.weaponScope`}
                     rules={{
-                      required: t('attackWeaponScope.required', { ns: 'fields' }),
+                      required: t('attackWeaponScope.required', { ns: 'fields' })
                     }}
                     label={t('attackWeaponScope.label', { ns: 'fields' })}
                     options={weaponScopeSelect}
@@ -352,7 +355,7 @@ const AdminNewNPC: FC = () => {
                     type="textarea"
                     inputName={`attacks.attack-${attackId}.summary`}
                     rules={{
-                      required: t('attackSummary.required', { ns: 'fields' }),
+                      required: t('attackSummary.required', { ns: 'fields' })
                     }}
                     label={t('attackSummary.label', { ns: 'fields' })}
                     className="adminNewNPC__bonus__value adminNewNPC__bonus__value--l"
@@ -362,7 +365,7 @@ const AdminNewNPC: FC = () => {
                     inputName={`attacks.attack-${attackId}.dices`}
                     label={t('attackDices.label', { ns: 'fields' })}
                     rules={{
-                      required: t('attackDices.required', { ns: 'fields' }),
+                      required: t('attackDices.required', { ns: 'fields' })
                     }}
                     className="adminNewNPC__bonus__value adminNewNPC__bonus__value--s"
                   />
@@ -393,11 +396,12 @@ const AdminNewNPC: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setAttackIds((prev) =>
+                    setAttackIds(prev =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== attackId) {
                           result.push(elt);
                         }
+
                         return result;
                       }, [])
                     );
@@ -427,7 +431,7 @@ const AdminNewNPC: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt((prev) => !prev);
+              setDisplayInt(prev => !prev);
             }}
             className="adminNewNPC__intl-title__btn"
           />
@@ -446,7 +450,7 @@ const AdminNewNPC: FC = () => {
             <RichTextElement
               label={`${t('nPCSummary.title', { ns: 'fields' })} (FR)`}
               editor={introFrEditor}
-              rawStringContent={''}
+              rawStringContent=""
               small
               complete
             />

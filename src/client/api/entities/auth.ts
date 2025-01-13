@@ -4,21 +4,20 @@ import Entity from './entity';
 
 import type { IUser } from '../../types';
 
-
 interface ISignInUserPayload {
-  mail: string;
-  password: string;
+  mail: string
+  password: string
 }
 
 interface ISignUpUserPayload extends ISignInUserPayload {
-  username: string;
+  username: string
 }
 
 interface INewPassPayload {
-  userId: string;
-  token: string;
-  pass: string;
-  confirmPass: string;
+  userId: string
+  token: string
+  pass: string
+  confirmPass: string
 }
 
 export default class Auth extends Entity {
@@ -31,13 +30,13 @@ export default class Auth extends Entity {
   constructor() {
     super('auth');
 
-    this.signup = async (payload) =>
+    this.signup = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/signup/`, {
             mail: payload.mail,
             password: payload.password,
-            roles: ['user'],
+            roles: ['user']
           })
           .then(() => {
             resolve(true);
@@ -47,12 +46,12 @@ export default class Auth extends Entity {
           });
       });
 
-    this.signin = async (payload) =>
+    this.signin = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/signin/`, {
             mail: payload.mail,
-            password: payload.password,
+            password: payload.password
           })
           .then((res) => {
             resolve(res.data as IUser);
@@ -86,7 +85,7 @@ export default class Auth extends Entity {
           });
       });
 
-    this.passUpdate = async (payload) =>
+    this.passUpdate = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/passupdate/`, payload)

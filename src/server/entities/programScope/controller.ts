@@ -5,7 +5,7 @@ import {
   gemDuplicate,
   gemInvalidField,
   gemNotFound,
-  gemServerError,
+  gemServerError
 } from '../../utils/globalErrorMessage';
 
 import type { HydratedIProgramScope } from './model';
@@ -75,7 +75,7 @@ const checkDuplicateScopeId = async (
           resolve(responseProgramScope);
         }
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -84,6 +84,7 @@ const create = (req: Request, res: Response): void => {
   const { title, summary, i18n = null, scopeId } = req.body;
   if (title === undefined || summary === undefined || scopeId === undefined) {
     res.status(400).send(gemInvalidField('Program Scope'));
+
     return;
   }
 
@@ -93,7 +94,7 @@ const create = (req: Request, res: Response): void => {
         const programScope = new ProgramScope({
           title,
           summary,
-          scopeId,
+          scopeId
         });
 
         if (i18n !== null) {
@@ -105,14 +106,14 @@ const create = (req: Request, res: Response): void => {
           .then(() => {
             res.send(programScope);
           })
-          .catch((err: Error) => {
+          .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
           });
       } else {
         res.status(400).send(gemDuplicate(response));
       }
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -121,6 +122,7 @@ const update = (req: Request, res: Response): void => {
   const { id, title = null, summary = null, i18n, scopeId = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Program Scope ID'));
+
     return;
   }
   findProgramScopeById(id as string)
@@ -141,11 +143,11 @@ const update = (req: Request, res: Response): void => {
 
             if (i18n !== null) {
               const newIntl = {
-                ...(programScope.i18n !== null &&
-                programScope.i18n !== undefined &&
-                programScope.i18n !== ''
+                ...(programScope.i18n !== null
+                  && programScope.i18n !== undefined
+                  && programScope.i18n !== ''
                   ? JSON.parse(programScope.i18n)
-                  : {}),
+                  : {})
               };
 
               Object.keys(i18n as Record<string, any>).forEach((lang) => {
@@ -160,14 +162,14 @@ const update = (req: Request, res: Response): void => {
               .then(() => {
                 res.send({ message: 'Program Scope was updated successfully!', programScope });
               })
-              .catch((err: Error) => {
+              .catch((err: unknown) => {
                 res.status(500).send(gemServerError(err));
               });
           } else {
             res.status(400).send(gemInvalidField('ProgramScope'));
           }
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -180,13 +182,14 @@ const deleteProgramScopeById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Program Scope ID'));
+
       return;
     }
     ProgramScope.findByIdAndDelete(id)
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
@@ -197,31 +200,32 @@ const deleteProgramScope = (req: Request, res: Response): void => {
     .then(() => {
       res.send({ message: 'Program Scope was deleted successfully!' });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
 
 interface CuratedIProgramScope {
-  i18n: Record<string, any> | Record<string, unknown>;
-  programScope: HydratedIProgramScope;
+  i18n: Record<string, unknown>
+  programScope: HydratedIProgramScope
 }
 
 const findSingle = (req: Request, res: Response): void => {
   const { programScopeId } = req.query;
   if (programScopeId === undefined || typeof programScopeId !== 'string') {
     res.status(400).send(gemInvalidField('ProgramScope ID'));
+
     return;
   }
   findProgramScopeById(programScopeId)
     .then((programScope) => {
       const sentObj = {
         programScope,
-        i18n: curateI18n(programScope.i18n),
+        i18n: curateI18n(programScope.i18n)
       };
       res.send(sentObj);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
@@ -234,13 +238,13 @@ const findAll = (req: Request, res: Response): void => {
       programScopes.forEach((programScope) => {
         curatedProgramScopes.push({
           programScope,
-          i18n: curateI18n(programScope.i18n),
+          i18n: curateI18n(programScope.i18n)
         });
       });
 
       res.send(curatedProgramScopes);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export {
@@ -250,5 +254,5 @@ export {
   findAll,
   findProgramScopeById,
   findSingle,
-  update,
+  update
 };

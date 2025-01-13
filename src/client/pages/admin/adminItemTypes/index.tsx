@@ -20,9 +20,10 @@ const AdminItemTypes: FC = () => {
     if (itemTypes === null || itemTypes.length === 0) {
       return null;
     }
+
     return (
       <Aul className="adminItemTypes__item-type-list" noPoints>
-        {itemTypes.map((itemType) => (
+        {itemTypes.map(itemType => (
           <Ali
             className={classTrim(`
               adminItemTypes__item-type-list__elt

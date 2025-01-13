@@ -20,14 +20,14 @@ import { classTrim } from '../../../utils';
 import './adminEditBag.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  storableItemTypes: string[];
-  size: number;
-  cost: number;
-  rarity: string;
-  starterKit: string;
-  itemModifiers: string[];
+  name: string
+  nameFr: string
+  storableItemTypes: string[]
+  size: number
+  cost: number
+  rarity: string
+  starterKit: string
+  itemModifiers: string[]
 }
 
 const AdminEditBag: FC = () => {
@@ -36,7 +36,7 @@ const AdminEditBag: FC = () => {
   const { id } = useParams();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
-    ConfMessageEvent: {},
+    ConfMessageEvent: {}
   };
   const { itemModifiers, itemTypes, rarities } = useGlobalVars();
   const { createAlert, getNewId } = useSystemAlerts();
@@ -52,11 +52,11 @@ const AdminEditBag: FC = () => {
   const [bagTextFr, setBagTextFr] = useState('');
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const createDefaultData = useCallback((bagData: ICuratedBag | null) => {
@@ -84,36 +84,36 @@ const AdminEditBag: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
-    defaultValues: useMemo(() => createDefaultData(bagData), [createDefaultData, bagData]),
+    defaultValues: useMemo(() => createDefaultData(bagData), [createDefaultData, bagData])
   });
 
   // TODO: Internationalization
   const itemModifierList = useMemo(() => itemModifiers.map(({ itemModifier }) => ({
-      value: itemModifier._id,
-      label: itemModifier.title,
-    })), [itemModifiers]);
+    value: itemModifier._id,
+    label: itemModifier.title
+  })), [itemModifiers]);
 
   const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
-      value: rarity._id,
-      label: rarity.title,
-    })), [rarities]);
+    value: rarity._id,
+    label: rarity.title
+  })), [rarities]);
 
   const itemTypeList = useMemo(
     () =>
-      itemTypes.map((itemType) => ({
+      itemTypes.map(itemType => ({
         value: itemType._id,
-        label: t(`itemTypeNames.${itemType.name}`),
+        label: t(`itemTypeNames.${itemType.name}`)
       })),
     [itemTypes, t]
   );
 
   const starterKitList = useMemo(
     () =>
-      possibleStarterKitValues.map((possibleStarterKitValue) => ({
+      possibleStarterKitValues.map(possibleStarterKitValue => ({
         value: possibleStarterKitValue,
-        label: t(`terms.starterKit.${possibleStarterKitValue}`),
+        label: t(`terms.starterKit.${possibleStarterKitValue}`)
       })),
     [t]
   );
@@ -121,11 +121,11 @@ const AdminEditBag: FC = () => {
   const onSaveBag: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, rarity, cost, storableItemTypes, size, itemModifiers, starterKit }) => {
       if (
-        introEditor === null ||
-        introFrEditor === null ||
-        api === undefined ||
-        storableItemTypes === undefined ||
-        size === undefined
+        introEditor === null
+        || introFrEditor === null
+        || api === undefined
+        || storableItemTypes === undefined
+        || size === undefined
       ) {
         return;
       }
@@ -142,8 +142,8 @@ const AdminEditBag: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            summary: htmlFr,
-          },
+            summary: htmlFr
+          }
         };
       }
 
@@ -159,7 +159,7 @@ const AdminEditBag: FC = () => {
           cost: Number(cost),
           itemModifiers,
           summary: html,
-          i18n,
+          i18n
         })
         .then(() => {
           const newId = getNewId();
@@ -169,7 +169,7 @@ const AdminEditBag: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditBag.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
         })
         .catch(({ response }) => {
@@ -177,8 +177,8 @@ const AdminEditBag: FC = () => {
           setError('root.serverError', {
             type: 'server',
             message: t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-            }),
+              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+            })
           });
         });
     },
@@ -194,9 +194,9 @@ const AdminEditBag: FC = () => {
         title: t('adminEditBag.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditBag.confirmDeletion.text', {
           ns: 'pages',
-          elt: bagData.bag.title,
+          elt: bagData.bag.title
         }),
-        confirmCta: t('adminEditBag.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditBag.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
@@ -211,7 +211,7 @@ const AdminEditBag: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditBag.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
                 void navigate(`/admin/bags`);
               })
@@ -221,15 +221,15 @@ const AdminEditBag: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize')
+                    })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize')
+                    })
                   });
                 }
               });
@@ -249,7 +249,7 @@ const AdminEditBag: FC = () => {
     getNewId,
     createAlert,
     navigate,
-    setError,
+    setError
   ]);
 
   useEffect(() => {
@@ -273,7 +273,7 @@ const AdminEditBag: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -303,16 +303,18 @@ const AdminEditBag: FC = () => {
         <Button className="adminEditBag__return-btn" href="/admin/bags" size="small">
           {t('adminEditBag.return', { ns: 'pages' })}
         </Button>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminEditBag__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameBag.required', { ns: 'fields' }),
+              required: t('nameBag.required', { ns: 'fields' })
             }}
             label={t('nameBag.label', { ns: 'fields' })}
             className="adminEditBag__basics__name"
@@ -323,7 +325,7 @@ const AdminEditBag: FC = () => {
               inputName="size"
               type="number"
               rules={{
-                required: t('bagSize.required', { ns: 'fields' }),
+                required: t('bagSize.required', { ns: 'fields' })
               }}
               label={t('bagSize.label', { ns: 'fields' })}
             />
@@ -333,7 +335,7 @@ const AdminEditBag: FC = () => {
               inputName="storableItemTypes"
               label={t('bagStorableItemTypes.label', { ns: 'fields' })}
               rules={{
-                required: t('bagStorableItemTypes.required', { ns: 'fields' }),
+                required: t('bagStorableItemTypes.required', { ns: 'fields' })
               }}
               options={itemTypeList}
               className="adminEditWeapon__details__fields__elt"
@@ -362,7 +364,7 @@ const AdminEditBag: FC = () => {
               inputName="cost"
               type="number"
               rules={{
-                required: t('bagCost.required', { ns: 'fields' }),
+                required: t('bagCost.required', { ns: 'fields' })
               }}
               label={t('bagCost.label', { ns: 'fields' })}
               className="adminEditBag__details__fields__elt"
@@ -397,7 +399,7 @@ const AdminEditBag: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt((prev) => !prev);
+              setDisplayInt(prev => !prev);
             }}
             className="adminEditBag__intl-title__btn"
           />

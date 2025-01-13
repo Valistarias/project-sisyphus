@@ -3,8 +3,8 @@ import db from '../../../models';
 const { BodyProgram } = db;
 
 const replaceProgramByBody = async (req: {
-  bodyId: string;
-  programIds: string[];
+  bodyId: string
+  programIds: string[]
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { bodyId } = req;
@@ -24,15 +24,15 @@ const replaceProgramByBody = async (req: {
   });
 
 const createProgramsByBody = async (req: {
-  bodyId: string;
-  programIds: string[];
+  bodyId: string
+  programIds: string[]
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { bodyId, programIds } = req;
     BodyProgram.create(
-      programIds.map((programId) => ({
+      programIds.map(programId => ({
         body: bodyId,
-        program: programId,
+        program: programId
       }))
     )
       .then(() => {
@@ -44,16 +44,16 @@ const createProgramsByBody = async (req: {
   });
 
 const updateProgramByBody = async (req: {
-  bodyId: string;
-  programId: string;
-  uses?: number;
-  bag?: string;
+  bodyId: string
+  programId: string
+  uses?: number
+  bag?: string
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { bodyId, programId, uses = null, bag = null } = req;
     const updateObj: {
-      uses?: number;
-      bag?: string;
+      uses?: number
+      bag?: string
     } = {};
     if (uses !== null) {
       updateObj.uses = uses;
@@ -64,7 +64,7 @@ const updateProgramByBody = async (req: {
     BodyProgram.findOneAndUpdate(
       {
         body: bodyId,
-        program: programId,
+        program: programId
       },
       updateObj
     )
@@ -79,7 +79,7 @@ const updateProgramByBody = async (req: {
 const deleteProgramsByBody = async (bodyId: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     BodyProgram.deleteMany({
-      body: bodyId,
+      body: bodyId
     })
       .then(() => {
         resolve(true);

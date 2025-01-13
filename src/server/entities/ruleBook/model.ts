@@ -4,32 +4,32 @@ import type { HydratedIChapter, INotion, IRuleBookType } from '../index';
 
 interface IRuleBook {
   /** The title of the ruleBook */
-  title: string;
+  title: string
   /** A summary of the ruleBook */
-  summary: string;
+  summary: string
   /** The internationnal content, as a json, stringified */
-  i18n?: string;
+  i18n?: string
   /** The rulebook type */
-  type: ObjectId | null;
+  type: ObjectId | null
   /** Is the rulebook a draft ? */
-  draft: boolean;
+  draft: boolean
   /** Is the rulebook archived ? */
-  archived: boolean;
+  archived: boolean
   /** When the ruleBook was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 type BasicHydratedIRuleBook = HydratedDocument<
   Omit<IRuleBook, 'type'> & {
-    type: IRuleBookType;
+    type: IRuleBookType
   }
 >;
 
 type HydratedIRuleBook = HydratedDocument<
   Omit<IRuleBook, 'type'> & {
-    type: IRuleBookType;
-    notions: INotion[];
-    chapters: HydratedIChapter[];
+    type: IRuleBookType
+    notions: INotion[]
+    chapters: HydratedIChapter[]
   }
 >;
 
@@ -40,26 +40,26 @@ const ruleBookSchema = new Schema<IRuleBook>(
     i18n: String,
     type: {
       type: Schema.Types.ObjectId,
-      ref: 'RuleBookType',
+      ref: 'RuleBookType'
     },
     draft: {
       type: Boolean,
-      default: true,
+      default: true
     },
     archived: {
       type: Boolean,
-      default: false,
+      default: false
     },
     createdAt: {
       type: Date,
-      default: Date.now,
-    },
+      default: Date.now
+    }
   },
   {
     // So `res.json()` and other `JSON.stringify()` functions include virtuals
     toJSON: { virtuals: true },
     // So `console.log()` and other functions that use `toObject()` include virtuals
-    toObject: { virtuals: true },
+    toObject: { virtuals: true }
   }
 );
 
@@ -68,13 +68,13 @@ const ruleBookSchema = new Schema<IRuleBook>(
 ruleBookSchema.virtual('notions', {
   ref: 'Notion',
   localField: '_id',
-  foreignField: 'ruleBook',
+  foreignField: 'ruleBook'
 });
 
 ruleBookSchema.virtual('chapters', {
   ref: 'Chapter',
   localField: '_id',
-  foreignField: 'ruleBook',
+  foreignField: 'ruleBook'
 });
 
 const RuleBookModel = (): Model<IRuleBook> => model('RuleBook', ruleBookSchema);

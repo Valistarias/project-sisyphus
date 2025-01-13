@@ -17,7 +17,7 @@ import './characterCreation.scss';
 
 interface ICharacterCreationStep1 {
   /** When the user click send and the data is send perfectly */
-  onSubmitCyberFrame: (id: string) => void;
+  onSubmitCyberFrame: (id: string) => void
 }
 
 const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFrame }) => {
@@ -41,6 +41,7 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
     if (character === null || character === false) {
       return null;
     }
+
     return getCyberFrameLevelsByNodes(character.nodes, cyberFrames)[0]?.cyberFrame;
   }, [character, cyberFrames]);
 
@@ -52,16 +53,17 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
     const tempTree: Record<
       string,
       {
-        branch: ICyberFrameBranch;
-        nodes: ICuratedNode[];
+        branch: ICyberFrameBranch
+        nodes: ICuratedNode[]
       }
     > = {};
     cyberFrame.branches.forEach(({ cyberFrameBranch }) => {
       tempTree[cyberFrameBranch._id] = {
         branch: cyberFrameBranch,
-        nodes: cyberFrameBranch.nodes,
+        nodes: cyberFrameBranch.nodes
       };
     });
+
     return (
       <div className="characterCreation-step1__detail-block">
         <NodeTree
@@ -80,18 +82,20 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
             />
           </div>
           <div className="characterCreation-step1__detail-block__btns">
-            {chosenCyberFrame?.cyberFrame._id === cyberFrame._id ? null : (
-              <Button
-                theme="afterglow"
-                size="large"
-                onClick={() => {
-                  onSubmitCyberFrame(cyberFrame._id);
-                  setDetailsOpened(false);
-                }}
-              >
-                {t('characterCreation.step1.chooseCta', { ns: 'components' })}
-              </Button>
-            )}
+            {chosenCyberFrame?.cyberFrame._id === cyberFrame._id
+              ? null
+              : (
+                  <Button
+                    theme="afterglow"
+                    size="large"
+                    onClick={() => {
+                      onSubmitCyberFrame(cyberFrame._id);
+                      setDetailsOpened(false);
+                    }}
+                  >
+                    {t('characterCreation.step1.chooseCta', { ns: 'components' })}
+                  </Button>
+                )}
             <Button
               theme="text-only"
               size="large"
@@ -124,11 +128,13 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
             <Atitle level={2} className="characterCreation-step1__cFrame__title__content">
               {cyberFrame.title}
             </Atitle>
-            {chosenCyberFrame?.cyberFrame._id === cyberFrame._id ? (
-              <Ap className="characterCreation-step1__cFrame__title__text">
-                {t('characterCreation.step1.chosen', { ns: 'components' })}
-              </Ap>
-            ) : null}
+            {chosenCyberFrame?.cyberFrame._id === cyberFrame._id
+              ? (
+                  <Ap className="characterCreation-step1__cFrame__title__text">
+                    {t('characterCreation.step1.chosen', { ns: 'components' })}
+                  </Ap>
+                )
+              : null}
           </div>
 
           <RichTextElement
@@ -149,6 +155,7 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
         </div>
       );
     });
+
     return cFrameElts;
   }, [
     cyberFrames,
@@ -156,7 +163,7 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
     detailsOpened,
     chosenCyberFrame?.cyberFrame._id,
     t,
-    onOpenDetails,
+    onOpenDetails
   ]);
 
   return (
@@ -166,16 +173,16 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
         ${detailsOpened ? 'characterCreation-step1--details' : ''}
       `)}
       initial={{
-        transform: 'skew(90deg, 0deg) scale3d(.2, .2, .2)',
+        transform: 'skew(90deg, 0deg) scale3d(.2, .2, .2)'
       }}
       animate={{
         transform: 'skew(0, 0) scale3d(1, 1, 1)',
         transitionEnd: {
-          transform: 'none',
-        },
+          transform: 'none'
+        }
       }}
       exit={{
-        transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)',
+        transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)'
       }}
       transition={{ ease: 'easeInOut', duration: 0.2 }}
     >

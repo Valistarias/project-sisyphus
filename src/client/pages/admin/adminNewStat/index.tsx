@@ -15,11 +15,11 @@ import { Alert, RichTextElement, completeRichTextElementExtentions } from '../..
 import './adminNewStat.scss';
 
 interface FormValues {
-  name: string;
-  short: string;
-  nameFr: string;
-  shortFr: string;
-  formulaId: string;
+  name: string
+  short: string
+  nameFr: string
+  shortFr: string
+  formulaId: string
 }
 
 const AdminNewStat: FC = () => {
@@ -30,18 +30,18 @@ const AdminNewStat: FC = () => {
   const { reloadStats } = useGlobalVars();
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   const onSaveStat: SubmitHandler<FormValues> = useCallback(
@@ -62,8 +62,8 @@ const AdminNewStat: FC = () => {
           fr: {
             title: nameFr,
             short: shortFr ?? '',
-            text: htmlFr,
-          },
+            text: htmlFr
+          }
         };
       }
 
@@ -73,7 +73,7 @@ const AdminNewStat: FC = () => {
           short,
           formulaId,
           summary: html,
-          i18n,
+          i18n
         })
         .then((stat) => {
           const newId = getNewId();
@@ -83,7 +83,7 @@ const AdminNewStat: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewStat.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadStats();
           void navigate(`/admin/stat/${stat._id}`);
@@ -94,15 +94,15 @@ const AdminNewStat: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id',
-              })} by ${data.sent}`,
+                field: 'Formula Id'
+              })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -114,16 +114,18 @@ const AdminNewStat: FC = () => {
     <div className="adminNewStat">
       <form className="adminNewStat__content" onSubmit={handleSubmit(onSaveStat)} noValidate>
         <Atitle level={1}>{t('adminNewStat.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminNewStat__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameStat.required', { ns: 'fields' }),
+              required: t('nameStat.required', { ns: 'fields' })
             }}
             label={t('nameStat.label', { ns: 'fields' })}
             className="adminNewStat__basics__name"
@@ -133,7 +135,7 @@ const AdminNewStat: FC = () => {
             inputName="short"
             type="text"
             rules={{
-              required: t('nameStatShort.required', { ns: 'fields' }),
+              required: t('nameStatShort.required', { ns: 'fields' })
             }}
             label={t('nameStatShort.label', { ns: 'fields' })}
             className="adminNewStat__basics__name"
@@ -143,7 +145,7 @@ const AdminNewStat: FC = () => {
           <RichTextElement
             label={t('statSummary.title', { ns: 'fields' })}
             editor={introEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />
@@ -155,8 +157,8 @@ const AdminNewStat: FC = () => {
               required: t('statFormula.required', { ns: 'fields' }),
               pattern: {
                 value: /^([a-z]){2,3}$/,
-                message: t('statFormula.format', { ns: 'fields' }),
-              },
+                message: t('statFormula.format', { ns: 'fields' })
+              }
             }}
             label={t('statFormula.label', { ns: 'fields' })}
           />
@@ -186,7 +188,7 @@ const AdminNewStat: FC = () => {
           <RichTextElement
             label={`${t('statSummary.title', { ns: 'fields' })} (FR)`}
             editor={introFrEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />

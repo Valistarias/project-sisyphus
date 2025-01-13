@@ -31,7 +31,7 @@ const Campaign: FC = () => {
       calledApi.current = true;
       api.campaigns
         .get({
-          campaignId: id,
+          campaignId: id
         })
         .then((sentCampaign: ICampaign) => {
           setLoading(false);
@@ -53,7 +53,7 @@ const Campaign: FC = () => {
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{t('serverErrors.CYPU-301')}</Ap>
                 </Alert>
-              ),
+              )
             });
           }
         });

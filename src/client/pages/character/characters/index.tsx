@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
   type FC,
-  type ReactNode,
+  type ReactNode
 } from 'react';
 
 import i18next from 'i18next';
@@ -52,7 +52,7 @@ const Characters: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -68,7 +68,7 @@ const Characters: FC = () => {
     characters.forEach((character) => {
       // const cyberFramesByNodes = getCyberFrameLevelsByNodes(character.nodes, cyberFrames);
       // TODO: add all parameters to this
-      const {isReady} = character;
+      const { isReady } = character;
       let displayedName: string | undefined;
       if (character.nickName !== undefined || character.firstName !== undefined) {
         displayedName = character.nickName ?? `${character.firstName} ${character.lastName}`;
@@ -91,26 +91,30 @@ const Characters: FC = () => {
             style={{ backgroundImage: `url(${holoBackground})` }}
           >
             <Avideo className="characters__character-list__elt__img__animatedbg" video="logo" />
-            {isReady ? (
-              <Button
-                theme="text-only"
-                className="characters__character-list__elt__img__edit"
-                href={`/character/${character._id}/edit`}
-              >
-                {t('characters.editCharacter', { ns: 'pages' })}
-              </Button>
-            ) : null}
+            {isReady
+              ? (
+                  <Button
+                    theme="text-only"
+                    className="characters__character-list__elt__img__edit"
+                    href={`/character/${character._id}/edit`}
+                  >
+                    {t('characters.editCharacter', { ns: 'pages' })}
+                  </Button>
+                )
+              : null}
           </div>
           <div className="characters__character-list__elt__title">
             <Atitle className="characters__character-list__elt__title__text" level={3}>
               {displayedName ?? t(`terms.character.unknown`)}
             </Atitle>
             <Ap className="characters__character-list__elt__title__status">{status}</Ap>
-            {character.campaign !== null ? (
-              <Ap className="characters__character-list__elt__title__campaign">
-                {`${i18next.format(t(`terms.campaign.title`), 'capitalize')}: ${character.campaign?.name}`}
-              </Ap>
-            ) : null}
+            {character.campaign !== null
+              ? (
+                  <Ap className="characters__character-list__elt__title__campaign">
+                    {`${i18next.format(t(`terms.campaign.title`), 'capitalize')}: ${character.campaign?.name}`}
+                  </Ap>
+                )
+              : null}
           </div>
           <div className="characters__character-list__elt__buttons">
             <Button
@@ -121,13 +125,14 @@ const Characters: FC = () => {
               }
             >
               {t(isReady ? 'characters.openCharacter' : 'characters.continueCharacter', {
-                ns: 'pages',
+                ns: 'pages'
               })}
             </Button>
           </div>
         </Ali>
       );
     });
+
     return (
       <Aul className="characters__character-list" noPoints>
         {charactersElt}

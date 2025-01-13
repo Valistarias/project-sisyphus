@@ -4,44 +4,44 @@ import type { IArmor } from '../../armor/model';
 
 interface IBodyArmor {
   /** When the body was created */
-  createdAt: Date;
+  createdAt: Date
   /** The body targeted */
-  body: ObjectId;
+  body: ObjectId
   /** The linked Armor */
-  armor: ObjectId;
+  armor: ObjectId
   /** The bag that store this armor */
-  bag: ObjectId;
+  bag: ObjectId
   /** Is the armor equiped ? */
-  equiped: boolean;
+  equiped: boolean
 }
 
 type HydratedIBodyArmor = HydratedDocument<
   Omit<IBodyArmor, 'armor'> & {
-    armor: HydratedDocument<IArmor>;
+    armor: HydratedDocument<IArmor>
   }
 >;
 
 const BodyArmorSchema = new Schema<IBodyArmor>({
   body: {
     type: Schema.Types.ObjectId,
-    ref: 'Body',
+    ref: 'Body'
   },
   armor: {
     type: Schema.Types.ObjectId,
-    ref: 'Armor',
+    ref: 'Armor'
   },
   bag: {
     type: Schema.Types.ObjectId,
-    ref: 'BodyBag',
+    ref: 'BodyBag'
   },
   equiped: {
     type: Boolean,
-    default: false,
+    default: false
   },
   createdAt: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
 });
 
 const BodyArmorModel = (): Model<IBodyArmor> => model('BodyArmor', BodyArmorSchema);

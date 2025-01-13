@@ -17,11 +17,11 @@ import type { ICuratedCharParam } from '../../../types';
 import './adminEditCharParam.scss';
 
 interface FormValues {
-  name: string;
-  short: string;
-  nameFr: string;
-  shortFr: string;
-  formulaId: string;
+  name: string
+  short: string
+  nameFr: string
+  shortFr: string
+  formulaId: string
 }
 
 const AdminEditCharParam: FC = () => {
@@ -31,7 +31,7 @@ const AdminEditCharParam: FC = () => {
   const { reloadCharParams } = useGlobalVars();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
-    ConfMessageEvent: {},
+    ConfMessageEvent: {}
   };
   const { id } = useParams();
   const navigate = useNavigate();
@@ -46,11 +46,11 @@ const AdminEditCharParam: FC = () => {
   const [charParamTextFr, setCharParamTextFr] = useState('');
 
   const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const createDefaultData = useCallback((charParamData: ICuratedCharParam | null) => {
@@ -66,6 +66,7 @@ const AdminEditCharParam: FC = () => {
       defaultData.nameFr = i18n.fr.title ?? '';
       defaultData.shortFr = i18n.fr.short ?? '';
     }
+
     return defaultData;
   }, []);
 
@@ -74,23 +75,23 @@ const AdminEditCharParam: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(charParamData),
       [createDefaultData, charParamData]
-    ),
+    )
   });
 
   const onSaveCharParam: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, short, shortFr, formulaId }) => {
       if (
-        charParamText === null ||
-        charParamTextFr === null ||
-        textEditor === null ||
-        textFrEditor === null ||
-        formulaId === null ||
-        api === undefined
+        charParamText === null
+        || charParamTextFr === null
+        || textEditor === null
+        || textFrEditor === null
+        || formulaId === null
+        || api === undefined
       ) {
         return;
       }
@@ -109,8 +110,8 @@ const AdminEditCharParam: FC = () => {
           fr: {
             title: nameFr,
             short: shortFr ?? '',
-            text: htmlTextFr,
-          },
+            text: htmlTextFr
+          }
         };
       }
 
@@ -121,7 +122,7 @@ const AdminEditCharParam: FC = () => {
           short,
           formulaId,
           summary: htmlText,
-          i18n,
+          i18n
         })
         .then((charParam) => {
           const newId = getNewId();
@@ -131,7 +132,7 @@ const AdminEditCharParam: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditCharParam.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadCharParams();
         })
@@ -141,15 +142,15 @@ const AdminEditCharParam: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id',
-              })} by ${data.sent}`,
+                field: 'Formula Id'
+              })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -165,7 +166,7 @@ const AdminEditCharParam: FC = () => {
       createAlert,
       t,
       reloadCharParams,
-      setError,
+      setError
     ]
   );
 
@@ -178,9 +179,9 @@ const AdminEditCharParam: FC = () => {
         title: t('adminEditCharParam.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditCharParam.confirmDeletion.text', {
           ns: 'pages',
-          elt: charParamData?.charParam.title,
+          elt: charParamData?.charParam.title
         }),
-        confirmCta: t('adminEditCharParam.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditCharParam.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
@@ -195,7 +196,7 @@ const AdminEditCharParam: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditCharParam.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
                 reloadCharParams();
                 void navigate('/admin/charparams');
@@ -206,15 +207,15 @@ const AdminEditCharParam: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.charParam.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.charParam.name`), 'capitalize')
+                    })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.charParam.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.charParam.name`), 'capitalize')
+                    })
                   });
                 }
               });
@@ -235,7 +236,7 @@ const AdminEditCharParam: FC = () => {
     createAlert,
     reloadCharParams,
     navigate,
-    setError,
+    setError
   ]);
 
   useEffect(() => {
@@ -259,7 +260,7 @@ const AdminEditCharParam: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -274,6 +275,7 @@ const AdminEditCharParam: FC = () => {
         () => {}
       );
     }, 600000);
+
     return () => {
       if (saveTimer.current !== null) {
         clearInterval(saveTimer.current);
@@ -302,9 +304,11 @@ const AdminEditCharParam: FC = () => {
         <Button className="adminEditCharParam__return-btn" href="/admin/charparams" size="small">
           {t('adminEditCharParam.return', { ns: 'pages' })}
         </Button>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror className="adminEditCharParam__error">{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror className="adminEditCharParam__error">{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminEditCharParam__basics">
           <Input
             control={control}
@@ -319,7 +323,7 @@ const AdminEditCharParam: FC = () => {
             inputName="short"
             type="text"
             rules={{
-              required: t('nameCharParamShort.required', { ns: 'fields' }),
+              required: t('nameCharParamShort.required', { ns: 'fields' })
             }}
             label={t('nameCharParamShort.label', { ns: 'fields' })}
             className="adminNewCharParam__basics__name"
@@ -340,8 +344,8 @@ const AdminEditCharParam: FC = () => {
               required: t('charParamFormula.required', { ns: 'fields' }),
               pattern: {
                 value: /^([a-z]){2,3}$/,
-                message: t('charParamFormula.format', { ns: 'fields' }),
-              },
+                message: t('charParamFormula.format', { ns: 'fields' })
+              }
             }}
             label={t('charParamFormula.label', { ns: 'fields' })}
           />

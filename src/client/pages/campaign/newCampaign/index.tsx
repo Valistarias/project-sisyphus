@@ -14,7 +14,7 @@ import { Alert } from '../../../organisms';
 import './newCampaign.scss';
 
 interface FormValues {
-  name: string;
+  name: string
 }
 
 const NewCampaign: FC = () => {
@@ -27,7 +27,7 @@ const NewCampaign: FC = () => {
     control,
     handleSubmit,
     setError,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
@@ -35,7 +35,7 @@ const NewCampaign: FC = () => {
       if (api !== undefined) {
         api.campaigns
           .create({
-            name,
+            name
           })
           .then(({ campaignId }) => {
             const newId = getNewId();
@@ -45,7 +45,7 @@ const NewCampaign: FC = () => {
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{t('newCampaign.successCreate', { ns: 'pages' })}</Ap>
                 </Alert>
-              ),
+              )
             });
             void navigate(`/campaign/${campaignId}`);
           })
@@ -54,8 +54,8 @@ const NewCampaign: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize')
+              })
             });
           });
       }
@@ -67,15 +67,17 @@ const NewCampaign: FC = () => {
     <div className="newcampaign">
       <Atitle level={1}>{t('newCampaign.title', { ns: 'pages' })}</Atitle>
       <form className="newcampaign__form" onSubmit={handleSubmit(onSubmit)} noValidate>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <Input
           control={control}
           inputName="campaignName"
           type="text"
           rules={{
-            required: t('campaignName.required', { ns: 'fields' }),
+            required: t('campaignName.required', { ns: 'fields' })
           }}
           label={t('campaignName.label', { ns: 'fields' })}
         />

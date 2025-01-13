@@ -16,15 +16,15 @@ import './campaignEventLine.scss';
 
 interface ICampaignEventResult {
   /** The total result of the dice roll */
-  result: number;
+  result: number
   /** The name of the author of the dice roll */
-  authorName: string;
+  authorName: string
   /** The formula of each die */
-  formula?: string;
+  formula?: string
   /** When the die was rolled */
-  createdAt: Date;
+  createdAt: Date
   /** The type of the roll */
-  type: TypeCampaignEvent;
+  type: TypeCampaignEvent
 }
 
 const CampaignEventResult: FC<ICampaignEventResult> = ({
@@ -32,7 +32,7 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
   authorName,
   formula,
   createdAt,
-  type,
+  type
 }) => {
   const { t } = useTranslation();
   const { skills, stats } = useGlobalVars();
@@ -44,9 +44,9 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
       return null;
     }
     const dicesToUse: Array<{
-      id: number;
-      type: number;
-      value: number;
+      id: number
+      type: number
+      value: number
     }> = [];
     let idDie = 0;
     let totalOffset = 0;
@@ -56,7 +56,7 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
           dicesToUse.push({
             id: idDie,
             type: diceCat.type,
-            value: result,
+            value: result
           });
           idDie += 1;
         });
@@ -69,9 +69,11 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
         {dicesToUse.map(({ id, type, value }, index) => (
           <DiceCard key={id} type={type as TypeDice} value={value} size="xsmall" skip />
         ))}
-        {totalOffset !== 0 ? (
-          <Ap className="campaign-event-line__info__content__offset">{addSymbol(totalOffset)}</Ap>
-        ) : null}
+        {totalOffset !== 0
+          ? (
+              <Ap className="campaign-event-line__info__content__offset">{addSymbol(totalOffset)}</Ap>
+            )
+          : null}
       </>
     );
   }, [formula]);
@@ -84,6 +86,7 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
       if (skill !== undefined) {
         // TODO: Handle i18n here
         const text = skill.skill;
+
         return (
           <Ap
             className="campaign-event-line__result__type__text"
@@ -102,6 +105,7 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
       if (stat !== undefined) {
         // TODO: Handle i18n here
         const text = stat.stat;
+
         return (
           <Ap
             className="campaign-event-line__result__type__text"
@@ -113,6 +117,7 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
         );
       }
     }
+
     return (
       <Ap className="campaign-event-line__result__type__text">
         <span className="campaign-event-line__result__type__text__long">
@@ -153,7 +158,7 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
           <Ap className="campaign-event-line__result__content__character">{authorName}</Ap>
           <Ap
             onClick={() => {
-              setOpen((prev) => !prev);
+              setOpen(prev => !prev);
             }}
             className="campaign-event-line__result__content__score"
           >
@@ -161,12 +166,14 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
           </Ap>
         </div>
       </div>
-      {isOpen && detailScores !== null ? (
-        <div className="campaign-event-line__info">
-          <div className="campaign-event-line__info__arrow" />
-          <div className="campaign-event-line__info__content">{detailScores}</div>
-        </div>
-      ) : null}
+      {isOpen && detailScores !== null
+        ? (
+            <div className="campaign-event-line__info">
+              <div className="campaign-event-line__info__arrow" />
+              <div className="campaign-event-line__info__content">{detailScores}</div>
+            </div>
+          )
+        : null}
     </div>
   );
 };

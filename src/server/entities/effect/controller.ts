@@ -42,24 +42,25 @@ const findEffectById = async (id: string): Promise<HydratedIEffect> =>
       });
   });
 interface ISentEffect {
-  id?: string;
-  title: string;
-  summary: string;
-  formula?: string;
-  type: string;
+  id?: string
+  title: string
+  summary: string
+  formula?: string
+  type: string
   i18n?: {
-    title: string;
-    summary: string;
-  };
+    title: string
+    summary: string
+  }
 }
 
 const updateEffects = (
   elts: ISentEffect[],
   ids: string[],
-  cb: (err: Error | null, res?: string[]) => void
+  cb: (err: unknown | null, res?: string[]) => void
 ): void => {
   if (elts.length === 0) {
     cb(null, ids);
+
     return;
   }
   const { id, title, summary, type, i18n = null, formula } = elts[0];
@@ -68,7 +69,7 @@ const updateEffects = (
       title,
       summary,
       formula,
-      type,
+      type
     });
 
     if (i18n !== null) {
@@ -105,7 +106,7 @@ const updateEffects = (
           const newIntl = {
             ...(effect.i18n !== null && effect.i18n !== undefined && effect.i18n !== ''
               ? JSON.parse(effect.i18n)
-              : {}),
+              : {})
           };
 
           Object.keys(i18n as Record<string, any>).forEach((lang) => {
@@ -134,17 +135,17 @@ const updateEffects = (
 
 const smartUpdateEffects = async ({
   effectsToRemove,
-  effectsToUpdate,
+  effectsToUpdate
 }: {
-  effectsToRemove: string[];
-  effectsToUpdate: ISentEffect[];
+  effectsToRemove: string[]
+  effectsToUpdate: ISentEffect[]
 }): Promise<string[]> =>
   await new Promise((resolve, reject) => {
     Effect.deleteMany({
-      _id: { $in: effectsToRemove },
+      _id: { $in: effectsToRemove }
     })
       .then(() => {
-        updateEffects(effectsToUpdate, [], (err: Error | null, ids?: string[]) => {
+        updateEffects(effectsToUpdate, [], (err: unknown | null, ids?: string[]) => {
           if (err !== null) {
             reject(err);
           } else {
@@ -152,7 +153,7 @@ const smartUpdateEffects = async ({
           }
         });
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -161,6 +162,7 @@ const create = (req: Request, res: Response): void => {
   const { title, summary, type, i18n = null, formula } = req.body;
   if (title === undefined || summary === undefined || type === undefined) {
     res.status(400).send(gemInvalidField('Effect'));
+
     return;
   }
 
@@ -168,7 +170,7 @@ const create = (req: Request, res: Response): void => {
     title,
     summary,
     formula,
-    type,
+    type
   });
 
   if (i18n !== null) {
@@ -180,7 +182,7 @@ const create = (req: Request, res: Response): void => {
     .then(() => {
       res.send(effect);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -189,6 +191,7 @@ const update = (req: Request, res: Response): void => {
   const { id, title = null, summary = null, i18n, formula = null, type = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Effect ID'));
+
     return;
   }
   findEffectById(id as string)
@@ -210,7 +213,7 @@ const update = (req: Request, res: Response): void => {
         const newIntl = {
           ...(effect.i18n !== null && effect.i18n !== undefined && effect.i18n !== ''
             ? JSON.parse(effect.i18n)
-            : {}),
+            : {})
         };
 
         Object.keys(i18n as Record<string, any>).forEach((lang) => {
@@ -225,7 +228,7 @@ const update = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'Effect was updated successfully!', effect });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -238,13 +241,14 @@ const deleteEffectById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Effect ID'));
+
       return;
     }
     Effect.findByIdAndDelete(id)
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
@@ -255,31 +259,32 @@ const deleteEffect = (req: Request, res: Response): void => {
     .then(() => {
       res.send({ message: 'Effect was deleted successfully!' });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
 
 export interface CuratedIEffect {
-  i18n: Record<string, any> | Record<string, unknown>;
-  effect: HydratedIEffect;
+  i18n: Record<string, unknown>
+  effect: HydratedIEffect
 }
 
 const findSingle = (req: Request, res: Response): void => {
   const { effectId } = req.query;
   if (effectId === undefined || typeof effectId !== 'string') {
     res.status(400).send(gemInvalidField('Effect ID'));
+
     return;
   }
   findEffectById(effectId)
     .then((effect) => {
       const sentObj = {
         effect,
-        i18n: curateI18n(effect.i18n),
+        i18n: curateI18n(effect.i18n)
       };
       res.send(sentObj);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
@@ -292,13 +297,13 @@ const findAll = (req: Request, res: Response): void => {
       effects.forEach((effect) => {
         curatedEffects.push({
           effect,
-          i18n: curateI18n(effect.i18n),
+          i18n: curateI18n(effect.i18n)
         });
       });
 
       res.send(curatedEffects);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export { create, deleteEffect, findAll, findEffectById, findSingle, smartUpdateEffects, update };

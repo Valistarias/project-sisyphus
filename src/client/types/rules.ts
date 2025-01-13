@@ -4,239 +4,239 @@ import type { IRuleBook } from './rulebook';
 // Stat ------------------------------------
 export interface IStat {
   /** The ID of the Stat */
-  _id: string;
+  _id: string
   /** The title of the Stat */
-  title: string;
+  title: string
   /** The summary of the Stat */
-  summary: string;
+  summary: string
   /** A 3 letter string used for the formulas */
-  formulaId: string;
+  formulaId: string
   /** The short version of the Stat name */
-  short: string;
+  short: string
   /** When the Stat was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 export interface ICuratedStat {
-  i18n: InternationalizationType;
-  stat: IStat;
+  i18n: InternationalizationType
+  stat: IStat
 }
 
 // Stat Bonus ------------------------------------
 export interface IStatBonus {
   /** The ID of the stat bonus */
-  _id: string;
+  _id: string
   /** The stat itself */
-  stat: string;
+  stat: string
   /** The value of the bonus */
-  value: number;
+  value: number
   /** When the stat bonus was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 // Skill ------------------------------------
 export interface ISkill {
   /** The ID of the Skill */
-  _id: string;
+  _id: string
   /** The title of the Skill */
-  title: string;
+  title: string
   /** The summary of the Skill */
-  summary: string;
+  summary: string
   /** A 3 letter string used for the formulas */
-  formulaId: string;
+  formulaId: string
   /** The correlated stat */
-  stat: IStat;
+  stat: IStat
   /** The correlated branches */
-  branches: ICuratedSkillBranch[];
+  branches: ICuratedSkillBranch[]
   /** When the Skill was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 export interface ICuratedSkill {
-  i18n: InternationalizationType;
-  skill: ISkill;
+  i18n: InternationalizationType
+  skill: ISkill
 }
 
 // Skill Bonus ------------------------------------
 export interface ISkillBonus {
   /** The ID of the skill bonus */
-  _id: string;
+  _id: string
   /** The skill itself */
-  skill: string;
+  skill: string
   /** The value of the bonus */
-  value: number;
+  value: number
   /** When the skill bonus was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 // Skill Branch ------------------------------------
 export interface ISkillBranch {
   /** The ID of the Skill Branch */
-  _id: string;
+  _id: string
   /** The title of the Skill Branch */
-  title: string;
+  title: string
   /** The summary of the Skill Branch */
-  summary: string;
+  summary: string
   /** The skill linked to this branch */
-  skill: ISkill | string;
+  skill: ISkill | string
   /** The nodes of this branch */
-  nodes: ICuratedNode[];
+  nodes: ICuratedNode[]
   /** When the skill Branch was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 export interface ICuratedSkillBranch {
-  i18n: InternationalizationType;
-  skillBranch: ISkillBranch;
+  i18n: InternationalizationType
+  skillBranch: ISkillBranch
 }
 
 // Actions ------------------------------------
 export interface IActionType {
   /** The ID of the action type */
-  _id: string;
+  _id: string
   /** The name of the action type */
-  name: string;
+  name: string
 }
 
 export interface IActionDuration {
   /** The ID of the action duration */
-  _id: string;
+  _id: string
   /** The name of the action duration */
-  name: string;
+  name: string
 }
 
 export interface IAction {
   /** The ID of the action */
-  _id: string;
+  _id: string
   /** The type of the action */
-  type: string;
+  type: string
   /** The duration of the action */
-  duration: string;
+  duration: string
   /** The title of the action */
-  title: string;
+  title: string
   /** The summary of the action */
-  summary: string;
+  summary: string
   /** The time to execute the action ? */
-  time?: string;
+  time?: string
   /** The associated skill */
-  skill?: string;
+  skill?: string
   /** The bonus (or malus) associated with the skill */
-  offsetSkill?: string;
+  offsetSkill?: string
   /** Is this action a karma offering ? */
-  isKarmic: boolean;
+  isKarmic: boolean
   /** Cost of karma, if karmic offering */
-  karmicCost?: number;
+  karmicCost?: number
   /** How many times the action is usable in a day */
-  uses?: number;
+  uses?: number
   /** All the related Chapters */
-  damages: string;
+  damages: string
   /** When the action was created */
-  createdAt: Date;
+  createdAt: Date
   /** The internationalization */
-  i18n: InternationalizationType;
+  i18n: InternationalizationType
 }
 
 export interface ICuratedAction {
-  i18n: InternationalizationType;
-  action: IAction;
+  i18n: InternationalizationType
+  action: IAction
 }
 
 // Effects ------------------------------------
 export interface IEffect {
   /** The ID of the effect */
-  _id: string;
+  _id: string
   /** The type of the effect */
-  type: string;
+  type: string
   /** The title of the effect */
-  title: string;
+  title: string
   /** The summary of the effect */
-  summary: string;
+  summary: string
   /** The formula used for this effect */
-  formula?: string;
+  formula?: string
   /** When the effect was created */
-  createdAt: Date;
+  createdAt: Date
   /** The internationalization */
-  i18n: InternationalizationType;
+  i18n: InternationalizationType
 }
 
 export interface ICuratedEffect {
-  i18n: InternationalizationType;
-  effect: IEffect;
+  i18n: InternationalizationType
+  effect: IEffect
 }
 
 // Character Params ------------------------------------
 export interface ICharParam {
   /** The ID of the charParam */
-  _id: string;
+  _id: string
   /** The title of the charParam */
-  title: string;
+  title: string
   /** A 3 letter string used for the formulas */
-  formulaId: string;
+  formulaId: string
   /** The summary of the charParam */
-  summary: string;
+  summary: string
   /** The time to execute the charParam ? */
-  short: string;
+  short: string
   /** When the charParam was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 export interface ICuratedCharParam {
-  i18n: InternationalizationType;
-  charParam: ICharParam;
+  i18n: InternationalizationType
+  charParam: ICharParam
 }
 
 // Character Params Bonus ------------------------------------
 export interface ICharParamBonus {
   /** The ID of the charParam bonus */
-  _id: string;
+  _id: string
   /** The char param */
-  charParam: string;
+  charParam: string
   /** The value of the bonus */
-  value: number;
+  value: number
   /** When the charParam bonus was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 // CyberFrame ------------------------------------
 export interface ICyberFrame {
   /** The ID of the CyberFrame */
-  _id: string;
+  _id: string
   /** The title of the CyberFrame */
-  title: string;
+  title: string
   /** The summary of the CyberFrame */
-  summary: string;
+  summary: string
   /** The rulebook where the CyberFrame is present */
-  ruleBook: IRuleBook;
+  ruleBook: IRuleBook
   /** The correlated branches */
-  branches: ICuratedCyberFrameBranch[];
+  branches: ICuratedCyberFrameBranch[]
   /** When the CyberFrame was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 export interface ICuratedCyberFrame {
-  i18n: InternationalizationType;
-  cyberFrame: ICyberFrame;
+  i18n: InternationalizationType
+  cyberFrame: ICyberFrame
 }
 
 // CyberFrame Branch ------------------------------------
 export interface ICyberFrameBranch {
   /** The ID of the CyberFrame Branch */
-  _id: string;
+  _id: string
   /** The title of the CyberFrame Branch */
-  title: string;
+  title: string
   /** The summary of the CyberFrame Branch */
-  summary: string;
+  summary: string
   /** The cyberframe of this branch */
-  cyberFrame: ICyberFrame | string;
+  cyberFrame: ICyberFrame | string
   /** The nodes of this branch */
-  nodes: ICuratedNode[];
+  nodes: ICuratedNode[]
   /** When the cyberFrame Branch was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 export interface ICuratedCyberFrameBranch {
-  i18n: InternationalizationType;
-  cyberFrameBranch: ICyberFrameBranch;
+  i18n: InternationalizationType
+  cyberFrameBranch: ICyberFrameBranch
 }
 
 // Node ------------------------------------
@@ -325,99 +325,99 @@ export const possibleNodeIcons = [
   'tactic',
   'throwable',
   'time',
-  'vault',
+  'vault'
 ] as const;
 
 export type TypeNodeIcons = (typeof possibleNodeIcons)[number];
 export interface INode {
   /** The ID of the Node */
-  _id: string;
+  _id: string
   /** The title of the Node */
-  title: string;
+  title: string
   /** The summary of the Node */
-  summary: string;
+  summary: string
   /** The icon of the Node */
-  icon: TypeNodeIcons;
+  icon: TypeNodeIcons
   /** Some lore for this node, MTG style */
-  quote?: string;
+  quote?: string
   /** The correlated skill branch, id any */
-  skillBranch?: ISkillBranch | string;
+  skillBranch?: ISkillBranch | string
   /** The correlated cyberFrame branch, id any */
-  cyberFrameBranch?: ICyberFrameBranch | string;
+  cyberFrameBranch?: ICyberFrameBranch | string
   /** The position/rank where the node is located */
-  rank: number;
+  rank: number
   /** The effects related to the node */
-  effects?: IEffect[];
+  effects?: IEffect[]
   /** The actions related to the node */
-  actions?: IAction[];
+  actions?: IAction[]
   /** The skill bonuses related to the node */
-  skillBonuses?: ISkillBonus[];
+  skillBonuses?: ISkillBonus[]
   /** The stat bonuses related to the node */
-  statBonuses?: IStatBonus[];
+  statBonuses?: IStatBonus[]
   /** The charParam bonuses related to the node */
-  charParamBonuses?: ICharParamBonus[];
+  charParamBonuses?: ICharParamBonus[]
   /** The overriden nodes by this one (to upgrade a previous node) */
-  overrides?: string[];
+  overrides?: string[]
   /** When the Node was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 export interface ICuratedNode {
-  i18n: InternationalizationType;
-  node: INode;
+  i18n: InternationalizationType
+  node: INode
 }
 
 // TipTexts ------------------------------------
 
 export interface ITipText {
   /** The ID of the effect */
-  _id: string;
+  _id: string
   /** The title of the item modifier */
-  title: string;
+  title: string
   /** A summary of the item modifier */
-  summary: string;
+  summary: string
   /** A string used for identifying and displaying the right tip */
-  tipId: string;
+  tipId: string
   /** When the effect was created */
-  createdAt: Date;
+  createdAt: Date
   /** The internationalization */
-  i18n: InternationalizationType;
+  i18n: InternationalizationType
 }
 
 export interface ICuratedTipText {
-  i18n: InternationalizationType;
-  tipText: ITipText;
+  i18n: InternationalizationType
+  tipText: ITipText
 }
 
 // Global Values ------------------------------------
 export interface IGlobalValue {
   /** The ID of the global value */
-  _id: string;
+  _id: string
   /** A string as name of the global value (never displayed as is, used for data) */
-  name: string;
+  name: string
   /** The value of the parameter */
-  value: string;
+  value: string
 }
 
 // Backgrounds ------------------------------------
 export interface IBackground {
   /** The ID of the background */
-  _id: string;
+  _id: string
   /** The title of the background */
-  title: string;
+  title: string
   /** The summary of the background */
-  summary: string;
+  summary: string
   /** The skill bonuses related to the background */
-  skillBonuses?: ISkillBonus[];
+  skillBonuses?: ISkillBonus[]
   /** The stat bonuses related to the background */
-  statBonuses?: IStatBonus[];
+  statBonuses?: IStatBonus[]
   /** The charParam bonuses related to the background */
-  charParamBonuses?: ICharParamBonus[];
+  charParamBonuses?: ICharParamBonus[]
   /** When the background was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 export interface ICuratedBackground {
-  i18n: InternationalizationType;
-  background: IBackground;
+  i18n: InternationalizationType
+  background: IBackground
 }

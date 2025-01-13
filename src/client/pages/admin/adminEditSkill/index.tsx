@@ -19,10 +19,10 @@ import { classTrim } from '../../../utils';
 import './adminEditSkill.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  stat: string;
-  formulaId: string;
+  name: string
+  nameFr: string
+  stat: string
+  formulaId: string
 }
 
 const AdminEditSkill: FC = () => {
@@ -32,7 +32,7 @@ const AdminEditSkill: FC = () => {
   const { stats, reloadSkills } = useGlobalVars();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
-    ConfMessageEvent: {},
+    ConfMessageEvent: {}
   };
   const { id } = useParams();
   const navigate = useNavigate();
@@ -49,11 +49,11 @@ const AdminEditSkill: FC = () => {
   const [skillTextFr, setSkillTextFr] = useState('');
 
   const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const nodeTree = useMemo(() => {
@@ -61,16 +61,17 @@ const AdminEditSkill: FC = () => {
     const tempTree: Record<
       string,
       {
-        branch: ISkillBranch;
-        nodes: ICuratedNode[];
+        branch: ISkillBranch
+        nodes: ICuratedNode[]
       }
     > = {};
     branches?.forEach(({ skillBranch }) => {
       tempTree[skillBranch._id] = {
         branch: skillBranch,
-        nodes: skillBranch.nodes,
+        nodes: skillBranch.nodes
       };
     });
+
     return Object.values(tempTree);
   }, [skillData]);
 
@@ -79,7 +80,7 @@ const AdminEditSkill: FC = () => {
       stats.map(({ stat }) => ({
         value: stat._id,
         // TODO : Handle Internationalization
-        label: stat.title,
+        label: stat.title
       })),
     [stats]
   );
@@ -93,13 +94,14 @@ const AdminEditSkill: FC = () => {
       const defaultData: Partial<FormValues> = {};
       defaultData.name = skill.title;
       defaultData.formulaId = skill.formulaId;
-      const selectedfield = stats.find((statType) => statType.value === skill.stat._id);
+      const selectedfield = stats.find(statType => statType.value === skill.stat._id);
       if (selectedfield !== undefined) {
         defaultData.stat = String(selectedfield.value);
       }
       if (i18n.fr !== undefined) {
         defaultData.nameFr = i18n.fr.title ?? '';
       }
+
       return defaultData;
     },
     []
@@ -110,12 +112,12 @@ const AdminEditSkill: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(skillData, statSelect),
       [createDefaultData, statSelect, skillData]
-    ),
+    )
   });
 
   const onSaveSkill: SubmitHandler<FormValues> = useCallback(
@@ -137,8 +139,8 @@ const AdminEditSkill: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            text: htmlTextFr,
-          },
+            text: htmlTextFr
+          }
         };
       }
 
@@ -149,7 +151,7 @@ const AdminEditSkill: FC = () => {
           stat,
           formulaId,
           summary: htmlText,
-          i18n,
+          i18n
         })
         .then((skill) => {
           const newId = getNewId();
@@ -159,7 +161,7 @@ const AdminEditSkill: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditSkill.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadSkills();
         })
@@ -169,15 +171,15 @@ const AdminEditSkill: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id',
-              })} by ${data.sent}`,
+                field: 'Formula Id'
+              })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -194,9 +196,9 @@ const AdminEditSkill: FC = () => {
         title: t('adminEditSkill.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditSkill.confirmDeletion.text', {
           ns: 'pages',
-          elt: skillData?.skill.title,
+          elt: skillData?.skill.title
         }),
-        confirmCta: t('adminEditSkill.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditSkill.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
@@ -211,7 +213,7 @@ const AdminEditSkill: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditSkill.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
                 reloadSkills();
                 void navigate('/admin/skills');
@@ -222,15 +224,15 @@ const AdminEditSkill: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.skill.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.skill.name`), 'capitalize')
+                    })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.skill.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.skill.name`), 'capitalize')
+                    })
                   });
                 }
               });
@@ -251,7 +253,7 @@ const AdminEditSkill: FC = () => {
     createAlert,
     reloadSkills,
     navigate,
-    setError,
+    setError
   ]);
 
   useEffect(() => {
@@ -275,7 +277,7 @@ const AdminEditSkill: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -290,6 +292,7 @@ const AdminEditSkill: FC = () => {
         () => {}
       );
     }, 600000);
+
     return () => {
       if (saveTimer.current !== null) {
         clearInterval(saveTimer.current);
@@ -320,9 +323,11 @@ const AdminEditSkill: FC = () => {
           {t('adminEditSkill.return', { ns: 'pages' })}
         </Button>
         <Atitle level={2}>{t('adminEditSkill.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror className="adminEditSkill__error">{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror className="adminEditSkill__error">{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminEditSkill__basics">
           <Input
             control={control}
@@ -356,8 +361,8 @@ const AdminEditSkill: FC = () => {
               required: t('skillFormula.required', { ns: 'fields' }),
               pattern: {
                 value: /^([a-z]){2,3}$/,
-                message: t('skillFormula.format', { ns: 'fields' }),
-              },
+                message: t('skillFormula.format', { ns: 'fields' })
+              }
             }}
             label={t('skillFormula.label', { ns: 'fields' })}
           />
@@ -375,7 +380,7 @@ const AdminEditSkill: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt((prev) => !prev);
+              setDisplayInt(prev => !prev);
             }}
             className="adminEditSkill__intl-title__btn"
           />

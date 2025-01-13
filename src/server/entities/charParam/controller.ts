@@ -5,7 +5,7 @@ import {
   gemDuplicate,
   gemInvalidField,
   gemNotFound,
-  gemServerError,
+  gemServerError
 } from '../../utils/globalErrorMessage';
 import { checkDuplicateSkillFormulaId } from '../skill/controller';
 import { checkDuplicateStatFormulaId } from '../stat/controller';
@@ -83,21 +83,21 @@ const checkDuplicateFormulaId = async (
                       resolve(responseStat);
                     }
                   })
-                  .catch((err: Error) => {
+                  .catch((err: unknown) => {
                     reject(err);
                   });
               } else {
                 resolve(responseSkill);
               }
             })
-            .catch((err: Error) => {
+            .catch((err: unknown) => {
               reject(err);
             });
         } else {
           resolve(responseCharParam);
         }
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -105,12 +105,13 @@ const checkDuplicateFormulaId = async (
 const create = (req: Request, res: Response): void => {
   const { title, summary, short, i18n = null, formulaId } = req.body;
   if (
-    title === undefined ||
-    summary === undefined ||
-    short === undefined ||
-    formulaId === undefined
+    title === undefined
+    || summary === undefined
+    || short === undefined
+    || formulaId === undefined
   ) {
     res.status(400).send(gemInvalidField('CharParam'));
+
     return;
   }
   checkDuplicateFormulaId(formulaId as string, false)
@@ -120,7 +121,7 @@ const create = (req: Request, res: Response): void => {
           title,
           summary,
           formulaId,
-          short,
+          short
         });
 
         if (i18n !== null) {
@@ -132,14 +133,14 @@ const create = (req: Request, res: Response): void => {
           .then(() => {
             res.send(charParam);
           })
-          .catch((err: Error) => {
+          .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
           });
       } else {
         res.status(400).send(gemDuplicate(response));
       }
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -148,6 +149,7 @@ const update = (req: Request, res: Response): void => {
   const { id, title = null, summary = null, i18n, short = null, formulaId = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('CharParam ID'));
+
     return;
   }
   findCharParamById(id as string)
@@ -173,7 +175,7 @@ const update = (req: Request, res: Response): void => {
               const newIntl = {
                 ...(charParam.i18n !== null && charParam.i18n !== undefined && charParam.i18n !== ''
                   ? JSON.parse(charParam.i18n)
-                  : {}),
+                  : {})
               };
 
               Object.keys(i18n as Record<string, any>).forEach((lang) => {
@@ -188,14 +190,14 @@ const update = (req: Request, res: Response): void => {
               .then(() => {
                 res.send({ message: 'CharParam was updated successfully!', charParam });
               })
-              .catch((err: Error) => {
+              .catch((err: unknown) => {
                 res.status(500).send(gemServerError(err));
               });
           } else {
             res.status(400).send(gemDuplicate(response));
           }
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -208,13 +210,14 @@ const deleteCharParamById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('CharParam ID'));
+
       return;
     }
     CharParam.findByIdAndDelete(id)
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
@@ -225,31 +228,32 @@ const deleteCharParam = (req: Request, res: Response): void => {
     .then(() => {
       res.send({ message: 'CharParam was deleted successfully!' });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
 
 interface CuratedICharParam {
-  i18n: Record<string, any> | Record<string, unknown>;
-  charParam: HydratedICharParam;
+  i18n: Record<string, unknown>
+  charParam: HydratedICharParam
 }
 
 const findSingle = (req: Request, res: Response): void => {
   const { charParamId } = req.query;
   if (charParamId === undefined || typeof charParamId !== 'string') {
     res.status(400).send(gemInvalidField('CharParam ID'));
+
     return;
   }
   findCharParamById(charParamId)
     .then((charParam) => {
       const sentObj = {
         charParam,
-        i18n: curateI18n(charParam.i18n),
+        i18n: curateI18n(charParam.i18n)
       };
       res.send(sentObj);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
@@ -262,13 +266,13 @@ const findAll = (req: Request, res: Response): void => {
       charParams.forEach((charParam) => {
         curatedCharParams.push({
           charParam,
-          i18n: curateI18n(charParam.i18n),
+          i18n: curateI18n(charParam.i18n)
         });
       });
 
       res.send(curatedCharParams);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export {
@@ -278,5 +282,5 @@ export {
   findAll,
   findCharParamById,
   findSingle,
-  update,
+  update
 };

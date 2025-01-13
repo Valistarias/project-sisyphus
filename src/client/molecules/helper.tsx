@@ -12,13 +12,13 @@ import './helper.scss';
 
 interface IHelper extends IQuarkProps {
   /** The content of the helper */
-  children: ReactNode;
+  children: ReactNode
   /** The size of the helper */
-  size?: 'medium' | 'small';
+  size?: 'medium' | 'small'
   /** The theme of the helper */
-  theme?: 'solid' | 'text-only';
+  theme?: 'solid' | 'text-only'
   /** When the helper is clicked */
-  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void
 }
 
 const Helper: FC<IHelper> = ({ children, size = 'medium', theme = 'solid', onClick }) => {
@@ -46,8 +46,8 @@ const Helper: FC<IHelper> = ({ children, size = 'medium', theme = 'solid', onCli
       if (topBottom === 'top' && dimensions.bottom + dimensions.height + 30 < windowHeight) {
         topBottom = 'bottom';
       } else if (
-        topBottom === 'bottom' &&
-        dimensions.bottom + dimensions.height + 30 > windowHeight
+        topBottom === 'bottom'
+        && dimensions.bottom + dimensions.height + 30 > windowHeight
       ) {
         topBottom = 'top';
       }
@@ -94,9 +94,11 @@ const Helper: FC<IHelper> = ({ children, size = 'medium', theme = 'solid', onCli
       />
       <span className="helper__content" ref={domHelperContent}>
         {children}
-        {onClick !== undefined ? (
-          <span className="helper__content__info">{t('helper.more', { ns: 'components' })}</span>
-        ) : null}
+        {onClick !== undefined
+          ? (
+              <span className="helper__content__info">{t('helper.more', { ns: 'components' })}</span>
+            )
+          : null}
       </span>
     </Quark>
   );

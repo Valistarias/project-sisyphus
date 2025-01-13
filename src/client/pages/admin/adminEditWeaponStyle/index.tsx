@@ -19,9 +19,9 @@ import { classTrim } from '../../../utils';
 import './adminEditWeaponStyle.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  skill: string;
+  name: string
+  nameFr: string
+  skill: string
 }
 
 const AdminEditWeaponStyle: FC = () => {
@@ -31,7 +31,7 @@ const AdminEditWeaponStyle: FC = () => {
   const { skills, reloadWeaponStyles } = useGlobalVars();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
-    ConfMessageEvent: {},
+    ConfMessageEvent: {}
   };
   const { id } = useParams();
   const navigate = useNavigate();
@@ -48,11 +48,11 @@ const AdminEditWeaponStyle: FC = () => {
   const [weaponStyleTextFr, setWeaponStyleTextFr] = useState('');
 
   const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const skillSelect = useMemo<ISingleValueSelect[]>(
@@ -60,7 +60,7 @@ const AdminEditWeaponStyle: FC = () => {
       skills.map(({ skill }) => ({
         value: skill._id,
         // TODO : Handle Internationalization
-        label: skill.title,
+        label: skill.title
       })),
     [skills]
   );
@@ -73,13 +73,14 @@ const AdminEditWeaponStyle: FC = () => {
       const { weaponStyle, i18n } = weaponStyleData;
       const defaultData: Partial<FormValues> = {};
       defaultData.name = weaponStyle.title;
-      const selectedfield = skills.find((skillType) => skillType.value === weaponStyle.skill._id);
+      const selectedfield = skills.find(skillType => skillType.value === weaponStyle.skill._id);
       if (selectedfield !== undefined) {
         defaultData.skill = String(selectedfield.value);
       }
       if (i18n.fr !== undefined) {
         defaultData.nameFr = i18n.fr.title ?? '';
       }
+
       return defaultData;
     },
     []
@@ -90,22 +91,22 @@ const AdminEditWeaponStyle: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(weaponStyleData, skillSelect),
       [createDefaultData, skillSelect, weaponStyleData]
-    ),
+    )
   });
 
   const onSaveWeaponStyle: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, skill }) => {
       if (
-        weaponStyleText === null ||
-        weaponStyleTextFr === null ||
-        textEditor === null ||
-        textFrEditor === null ||
-        api === undefined
+        weaponStyleText === null
+        || weaponStyleTextFr === null
+        || textEditor === null
+        || textFrEditor === null
+        || api === undefined
       ) {
         return;
       }
@@ -123,8 +124,8 @@ const AdminEditWeaponStyle: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            text: htmlTextFr,
-          },
+            text: htmlTextFr
+          }
         };
       }
 
@@ -134,7 +135,7 @@ const AdminEditWeaponStyle: FC = () => {
           title: name,
           skill,
           summary: htmlText,
-          i18n,
+          i18n
         })
         .then(() => {
           const newId = getNewId();
@@ -144,7 +145,7 @@ const AdminEditWeaponStyle: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditWeaponStyle.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadWeaponStyles();
         })
@@ -154,15 +155,15 @@ const AdminEditWeaponStyle: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id',
-              })} by ${data.sent}`,
+                field: 'Formula Id'
+              })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -178,7 +179,7 @@ const AdminEditWeaponStyle: FC = () => {
       createAlert,
       t,
       reloadWeaponStyles,
-      setError,
+      setError
     ]
   );
 
@@ -191,9 +192,9 @@ const AdminEditWeaponStyle: FC = () => {
         title: t('adminEditWeaponStyle.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditWeaponStyle.confirmDeletion.text', {
           ns: 'pages',
-          elt: weaponStyleData?.weaponStyle.title,
+          elt: weaponStyleData?.weaponStyle.title
         }),
-        confirmCta: t('adminEditWeaponStyle.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditWeaponStyle.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
@@ -208,7 +209,7 @@ const AdminEditWeaponStyle: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditWeaponStyle.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
                 reloadWeaponStyles();
                 void navigate('/admin/weaponstyles');
@@ -219,15 +220,15 @@ const AdminEditWeaponStyle: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.weaponStyle.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.weaponStyle.name`), 'capitalize')
+                    })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.weaponStyle.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.weaponStyle.name`), 'capitalize')
+                    })
                   });
                 }
               });
@@ -248,7 +249,7 @@ const AdminEditWeaponStyle: FC = () => {
     createAlert,
     reloadWeaponStyles,
     navigate,
-    setError,
+    setError
   ]);
 
   useEffect(() => {
@@ -272,7 +273,7 @@ const AdminEditWeaponStyle: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -287,6 +288,7 @@ const AdminEditWeaponStyle: FC = () => {
         () => {}
       );
     }, 600000);
+
     return () => {
       if (saveTimer.current !== null) {
         clearInterval(saveTimer.current);
@@ -325,9 +327,11 @@ const AdminEditWeaponStyle: FC = () => {
           {t('adminEditWeaponStyle.return', { ns: 'pages' })}
         </Button>
         <Atitle level={2}>{t('adminEditWeaponStyle.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror className="adminEditWeaponStyle__error">{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror className="adminEditWeaponStyle__error">{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminEditWeaponStyle__basics">
           <Input
             control={control}
@@ -367,7 +371,7 @@ const AdminEditWeaponStyle: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt((prev) => !prev);
+              setDisplayInt(prev => !prev);
             }}
             className="adminEditWeaponStyle__intl-title__btn"
           />

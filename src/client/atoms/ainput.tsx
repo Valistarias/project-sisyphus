@@ -9,23 +9,23 @@ import './ainput.scss';
 
 interface IAinput extends IQuarkProps {
   /** The type of input */
-  type?: 'text' | 'password' | 'email' | 'number' | 'textarea';
+  type?: 'text' | 'password' | 'email' | 'number' | 'textarea'
   /** The size of the input */
-  size?: 'medium' | 'small';
+  size?: 'medium' | 'small'
   /** Is the input inline ? */
-  inline?: boolean;
+  inline?: boolean
   /** The placeholder of the input element */
-  placeholder?: string;
+  placeholder?: string
   /** The value of the input element */
-  value: string;
+  value: string
   /** Is the field hidden */
-  hidden?: boolean;
+  hidden?: boolean
   /** Is the field editable */
-  readOnly?: boolean;
+  readOnly?: boolean
   /** Allow the user's password manager to automatically enter the password */
-  autoComplete?: string;
+  autoComplete?: string
   /** When the field changes */
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 const Ainput: FC<IAinput> = ({
@@ -40,7 +40,7 @@ const Ainput: FC<IAinput> = ({
   type = 'text',
   onFocus,
   onBlur,
-  value,
+  value
 }) => (
   <Quark
     quarkType="input"

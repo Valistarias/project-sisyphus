@@ -4,29 +4,29 @@ import type { IDamageType } from '../damageType/model';
 
 interface IDamage {
   /** The associated damageType */
-  damageType: ObjectId;
+  damageType: ObjectId
   /** The dices formula of the damage (ex: 2d6 + 1) */
-  dices: string;
+  dices: string
   /** When the damageType branch was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 type HydratedIDamage = HydratedDocument<
   Omit<IDamage, 'damageType'> & {
-    damageType: IDamageType;
+    damageType: IDamageType
   }
 >;
 
 const damageSchema = new Schema<IDamage>({
   damageType: {
     type: Schema.Types.ObjectId,
-    ref: 'DamageType',
+    ref: 'DamageType'
   },
   dices: String,
   createdAt: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
 });
 
 const DamageModel = (): Model<IDamage> => model('Damage', damageSchema);

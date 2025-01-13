@@ -4,20 +4,20 @@ import type { HydratedICyberFrameBranch, IRuleBook } from '../index';
 
 interface ICyberFrame {
   /** The title of the Character Param */
-  title: string;
+  title: string
   /** A summary of the Character Param */
-  summary: string;
+  summary: string
   /** The internationnal content, as a json, stringified */
-  i18n?: string;
+  i18n?: string
   /** The associated RuleBook */
-  ruleBook: ObjectId;
+  ruleBook: ObjectId
   /** When the Character Param was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 type LeanICyberFrame = Omit<ICyberFrame, 'ruleBook'> & {
-  ruleBook: IRuleBook;
-  branches: HydratedICyberFrameBranch[];
+  ruleBook: IRuleBook
+  branches: HydratedICyberFrameBranch[]
 };
 
 type HydratedICyberFrame = HydratedDocument<LeanICyberFrame>;
@@ -29,16 +29,16 @@ const cyberFrameSchema = new Schema<ICyberFrame>(
     i18n: String,
     ruleBook: {
       type: Schema.Types.ObjectId,
-      ref: 'RuleBook',
+      ref: 'RuleBook'
     },
     createdAt: {
       type: Date,
-      default: Date.now,
-    },
+      default: Date.now
+    }
   },
   {
     toJSON: { virtuals: true },
-    toObject: { virtuals: true },
+    toObject: { virtuals: true }
   }
 );
 
@@ -47,7 +47,7 @@ const cyberFrameSchema = new Schema<ICyberFrame>(
 cyberFrameSchema.virtual('branches', {
   ref: 'CyberFrameBranch',
   localField: '_id',
-  foreignField: 'cyberFrame',
+  foreignField: 'cyberFrame'
 });
 
 const CyberFrameModel = (): Model<ICyberFrame> => model('CyberFrame', cyberFrameSchema);

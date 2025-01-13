@@ -4,7 +4,6 @@ import type { Error, HydratedDocument } from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt, { type JwtPayload, type Secret } from 'jsonwebtoken';
 
-
 import config from '../../config/db.config';
 import db from '../../models';
 import {
@@ -12,7 +11,7 @@ import {
   gemNotAllowed,
   gemNotFound,
   gemServerError,
-  gemUnverifiedUser,
+  gemUnverifiedUser
 } from '../../utils/globalErrorMessage';
 import { removeToken } from '../mailToken/controller';
 import { findUserById } from '../user/controller';
@@ -23,16 +22,16 @@ import type { IMailgunClient } from 'mailgun.js/Interfaces';
 const { User, Role } = db;
 
 interface IVerifyTokenRequest extends Request {
-  userId: string;
+  userId: string
   session: {
-    token: string;
-  };
+    token: string
+  }
 }
 
 interface ISigninRequest extends Request {
   session: {
-    token: string;
-  } | null;
+    token: string
+  } | null
 }
 
 const signUp = (req: Request, res: Response, mg: IMailgunClient): void => {
@@ -42,7 +41,7 @@ const signUp = (req: Request, res: Response, mg: IMailgunClient): void => {
     password: bcrypt.hashSync(req.body.password as string, 8),
     lang: 'en',
     theme: 'dark',
-    scale: 1,
+    scale: 1
   });
 
   user
@@ -58,7 +57,7 @@ const signUp = (req: Request, res: Response, mg: IMailgunClient): void => {
                 { IdMail: user._id },
                 config.secret(process.env) as Secret,
                 {
-                  expiresIn: '7d',
+                  expiresIn: '7d'
                 }
               );
               const url = `http://localhost:3000/verify/${verifToken}`;
@@ -68,24 +67,24 @@ const signUp = (req: Request, res: Response, mg: IMailgunClient): void => {
                   to: ['mallet.victor.france@gmail.com'],
                   subject: 'Project Sisyphus - Registration',
                   text: 'Click to confirm your email!',
-                  html: `Click <a href = '${url}'>here</a> to confirm your email.`,
+                  html: `Click <a href = '${url}'>here</a> to confirm your email.`
                 })
                 .then(() => {
                   res.send({ message: 'User was registered successfully!' });
                 })
-                .catch((err: Error) => {
+                .catch((err: unknown) => {
                   res.status(500).send(gemServerError(err));
                 });
             })
-            .catch((err: Error) => {
+            .catch((err: unknown) => {
               res.status(500).send(gemServerError(err));
             });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -98,7 +97,7 @@ const registerRoleByName = async (): Promise<string[]> =>
           resolve([role._id.toString()]);
         }
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -109,6 +108,7 @@ const signIn = (req: ISigninRequest, res: Response): void => {
     .then((user: HydratedIUser) => {
       if (user === null) {
         res.status(404).send(gemNotFound('User'));
+
         return;
       }
 
@@ -116,21 +116,23 @@ const signIn = (req: ISigninRequest, res: Response): void => {
 
       if (!passwordIsValid) {
         res.status(400).send(gemInvalidField('password'));
+
         return;
       }
 
       if (!user.verified) {
         res.status(401).send(gemUnverifiedUser());
+
         return;
       }
 
       const token = jwt.sign({ id: user.id }, config.secret(process.env) as Secret, {
-        expiresIn: 86400, // 24 hours
+        expiresIn: 86400 // 24 hours
       });
 
       if (req.session === null || req.session === undefined) {
         req.session = {
-          token,
+          token
         };
       } else {
         req.session.token = token;
@@ -138,14 +140,14 @@ const signIn = (req: ISigninRequest, res: Response): void => {
 
       res.status(200).send(user);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
 
 const signOut = (req: ISigninRequest, res: Response): void => {
   req.session = null;
-  res.status(200).send({ message: "You've been signed out!" });
+  res.status(200).send({ message: 'You\'ve been signed out!' });
 };
 
 const verifyTokenSingIn = async (token: string): Promise<boolean> =>
@@ -161,7 +163,7 @@ const verifyTokenSingIn = async (token: string): Promise<boolean> =>
         reject(gemNotFound('Token'));
       } else {
         User.findOne({
-          _id: payload.IdMail,
+          _id: payload.IdMail
         })
           .then((user) => {
             if (user === null) {
@@ -175,7 +177,7 @@ const verifyTokenSingIn = async (token: string): Promise<boolean> =>
                 .then(() => {
                   resolve(true);
                 })
-                .catch((err: Error) => {
+                .catch((err: unknown) => {
                   reject(err);
                 });
             }
@@ -217,7 +219,7 @@ const updatePassword = (req: Request, res: Response): void => {
                 .then(() => {
                   res.send({ message: 'User was updated successfully!', user });
                 })
-                .catch((err: Error) => {
+                .catch((err: unknown) => {
                   res.status(500).send(gemServerError(err));
                 });
             }

@@ -4,9 +4,8 @@ import Entity from './entity';
 
 import type { IActionType } from '../../types';
 
-
 interface IActionTypePayload {
-  actionTypeId: string;
+  actionTypeId: string
 }
 
 export default class ActionTypes extends Entity {
@@ -15,7 +14,7 @@ export default class ActionTypes extends Entity {
   constructor() {
     super('actiontypes');
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })

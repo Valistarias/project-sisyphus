@@ -5,13 +5,13 @@ import type { INode } from '../../node/model';
 const { CharacterNode } = db;
 
 const replaceCyberFrameNodeByCharacter = async (req: {
-  characterId: string;
-  nodeIds: string[];
+  characterId: string
+  nodeIds: string[]
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { characterId, nodeIds } = req;
     CharacterNode.find({
-      character: characterId,
+      character: characterId
     })
       .populate<{ node: INode }>('node')
       .then(async (res) => {
@@ -25,10 +25,10 @@ const replaceCyberFrameNodeByCharacter = async (req: {
         CharacterNode.deleteMany({ _id: { $in: idToDel } })
           .then(() => {
             CharacterNode.create(
-              nodeIds.map((nodeId) => ({
+              nodeIds.map(nodeId => ({
                 character: characterId,
                 node: nodeId,
-                used: 0,
+                used: 0
               }))
             )
               .then(() => {
@@ -48,16 +48,16 @@ const replaceCyberFrameNodeByCharacter = async (req: {
   });
 
 const createNodesByCharacter = async (req: {
-  characterId: string;
-  nodeIds: string[];
+  characterId: string
+  nodeIds: string[]
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { characterId, nodeIds } = req;
     CharacterNode.create(
-      nodeIds.map((nodeId) => ({
+      nodeIds.map(nodeId => ({
         character: characterId,
         node: nodeId,
-        used: 0,
+        used: 0
       }))
     )
       .then(() => {
@@ -69,16 +69,16 @@ const createNodesByCharacter = async (req: {
   });
 
 const updateNodeByCharacter = async (req: {
-  characterId: string;
-  nodeId: string;
-  used: number;
+  characterId: string
+  nodeId: string
+  used: number
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { characterId, nodeId, used } = req;
     CharacterNode.findOneAndUpdate(
       {
         character: characterId,
-        node: nodeId,
+        node: nodeId
       },
       { used }
     )
@@ -91,14 +91,14 @@ const updateNodeByCharacter = async (req: {
   });
 
 const deleteSpecificNodesByCharacter = async (req: {
-  characterId: string;
-  nodeIds: string[];
+  characterId: string
+  nodeIds: string[]
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { characterId, nodeIds } = req;
     CharacterNode.deleteMany({
       character: characterId,
-      node: { $in: nodeIds },
+      node: { $in: nodeIds }
     })
       .then(() => {
         resolve(true);
@@ -111,7 +111,7 @@ const deleteSpecificNodesByCharacter = async (req: {
 const deleteNodesByCharacter = async (characterId: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     CharacterNode.deleteMany({
-      character: characterId,
+      character: characterId
     })
       .then(() => {
         resolve(true);
@@ -126,5 +126,5 @@ export {
   deleteNodesByCharacter,
   deleteSpecificNodesByCharacter,
   replaceCyberFrameNodeByCharacter,
-  updateNodeByCharacter,
+  updateNodeByCharacter
 };

@@ -4,21 +4,21 @@ import type { ICyberFrame, INode } from '../index';
 
 interface ICyberFrameBranch {
   /** The title of the cyberframe branch */
-  title: string;
+  title: string
   /** A summary of the cyberframe branch */
-  summary: string;
+  summary: string
   /** The internationnal content, as a json, stringified */
-  i18n?: string;
+  i18n?: string
   /** The associated cyberFrame */
-  cyberFrame: ObjectId;
+  cyberFrame: ObjectId
   /** When the cyberframe branch was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 type HydratedICyberFrameBranch = HydratedDocument<
   Omit<ICyberFrameBranch, 'cyberFrame'> & {
-    cyberFrame: ICyberFrame;
-    nodes?: INode[];
+    cyberFrame: ICyberFrame
+    nodes?: INode[]
   }
 >;
 
@@ -29,16 +29,16 @@ const cyberFrameBranchSchema = new Schema<ICyberFrameBranch>(
     i18n: String,
     cyberFrame: {
       type: Schema.Types.ObjectId,
-      ref: 'CyberFrame',
+      ref: 'CyberFrame'
     },
     createdAt: {
       type: Date,
-      default: Date.now,
-    },
+      default: Date.now
+    }
   },
   {
     toJSON: { virtuals: true },
-    toObject: { virtuals: true },
+    toObject: { virtuals: true }
   }
 );
 
@@ -47,7 +47,7 @@ const cyberFrameBranchSchema = new Schema<ICyberFrameBranch>(
 cyberFrameBranchSchema.virtual('nodes', {
   ref: 'Node',
   localField: '_id',
-  foreignField: 'cyberFrameBranch',
+  foreignField: 'cyberFrameBranch'
 });
 
 const CyberFrameBranchModel = (): Model<ICyberFrameBranch> =>

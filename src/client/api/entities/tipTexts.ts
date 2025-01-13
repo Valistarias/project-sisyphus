@@ -4,9 +4,8 @@ import Entity from './entity';
 
 import type { ICuratedTipText } from '../../types';
 
-
 interface ITipTextPayload {
-  tipTextId: string;
+  tipTextId: string
 }
 
 export default class TipTexts extends Entity {
@@ -15,7 +14,7 @@ export default class TipTexts extends Entity {
   constructor() {
     super('tiptexts');
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })

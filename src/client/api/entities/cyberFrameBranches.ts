@@ -4,13 +4,12 @@ import Entity from './entity';
 
 import type { ICuratedCyberFrameBranch } from '../../types';
 
-
 interface ICyberFrameBranchesPayload {
-  cyberFrameId: string;
+  cyberFrameId: string
 }
 
 interface ICyberFrameBranchPayload {
-  cyberFrameBranchId: string;
+  cyberFrameBranchId: string
 }
 
 export default class CyberFrameBranches extends Entity {
@@ -20,7 +19,7 @@ export default class CyberFrameBranches extends Entity {
   constructor() {
     super('cyberframebranches');
 
-    this.getAllByCyberFrame = async (payload) =>
+    this.getAllByCyberFrame = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/byframe/`, { params: payload })
@@ -32,7 +31,7 @@ export default class CyberFrameBranches extends Entity {
           });
       });
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })

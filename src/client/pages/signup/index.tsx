@@ -16,10 +16,10 @@ import { regexMail } from '../../utils';
 import './signup.scss';
 
 interface FormValues {
-  username: string;
-  mail: string;
-  password: string;
-  confirmPassword: string;
+  username: string
+  mail: string
+  password: string
+  confirmPassword: string
 }
 
 const Signup: FC = () => {
@@ -33,7 +33,7 @@ const Signup: FC = () => {
     handleSubmit,
     watch,
     setError,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
@@ -43,7 +43,7 @@ const Signup: FC = () => {
           .signup({
             username,
             mail,
-            password,
+            password
           })
           .then(() => {
             const newId = getNewId();
@@ -53,7 +53,7 @@ const Signup: FC = () => {
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{t('signup.successSent', { ns: 'pages', mail })}</Ap>
                 </Alert>
-              ),
+              )
             });
             void navigate('/');
           })
@@ -63,15 +63,15 @@ const Signup: FC = () => {
               setError(data.sent as string, {
                 type: 'server',
                 message: t(`serverErrors.${data.code}`, {
-                  field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
-                }),
+                  field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize')
+                })
               });
             } else {
               setError('root.serverError', {
                 type: 'server',
                 message: t(`serverErrors.${data.code}`, {
-                  field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
-                }),
+                  field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize')
+                })
               });
             }
           });
@@ -85,14 +85,16 @@ const Signup: FC = () => {
       <div className="signup__main">
         <Atitle level={1}>{t('signup.title', { ns: 'pages' })}</Atitle>
         <form className="signup__main__form" onSubmit={handleSubmit(onSubmit)} noValidate>
-          {errors.root?.serverError.message !== undefined ? (
-            <Aerror>{errors.root.serverError.message}</Aerror>
-          ) : null}
+          {errors.root?.serverError.message !== undefined
+            ? (
+                <Aerror>{errors.root.serverError.message}</Aerror>
+              )
+            : null}
           <Input
             control={control}
             inputName="username"
             rules={{
-              required: t('username.required', { ns: 'fields' }),
+              required: t('username.required', { ns: 'fields' })
             }}
             type="text"
             label={t('username.label', { ns: 'fields' })}
@@ -105,8 +107,8 @@ const Signup: FC = () => {
               required: t('mail.required', { ns: 'fields' }),
               pattern: {
                 value: regexMail,
-                message: t('mail.pattern', { ns: 'fields' }),
-              },
+                message: t('mail.pattern', { ns: 'fields' })
+              }
             }}
             label={t('mail.label', { ns: 'fields' })}
             autoComplete="email"
@@ -116,7 +118,7 @@ const Signup: FC = () => {
             inputName="password"
             type="password"
             rules={{
-              required: t('password.required', { ns: 'fields' }),
+              required: t('password.required', { ns: 'fields' })
             }}
             label={t('password.label', { ns: 'fields' })}
             autoComplete="new-password"
@@ -131,7 +133,7 @@ const Signup: FC = () => {
                 if (watch('password') !== val) {
                   return t('confirmPassword.validate', { ns: 'fields' });
                 }
-              },
+              }
             }}
             label={t('confirmPassword.label', { ns: 'fields' })}
             autoComplete="new-password"

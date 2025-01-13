@@ -17,11 +17,11 @@ import type { ICuratedStat } from '../../../types';
 import './adminEditStat.scss';
 
 interface FormValues {
-  name: string;
-  short: string;
-  nameFr: string;
-  shortFr: string;
-  formulaId: string;
+  name: string
+  short: string
+  nameFr: string
+  shortFr: string
+  formulaId: string
 }
 
 const AdminEditStat: FC = () => {
@@ -31,7 +31,7 @@ const AdminEditStat: FC = () => {
   const { reloadStats } = useGlobalVars();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
-    ConfMessageEvent: {},
+    ConfMessageEvent: {}
   };
   const { id } = useParams();
   const navigate = useNavigate();
@@ -46,11 +46,11 @@ const AdminEditStat: FC = () => {
   const [statTextFr, setStatTextFr] = useState('');
 
   const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const createDefaultData = useCallback((statData: ICuratedStat | null) => {
@@ -66,6 +66,7 @@ const AdminEditStat: FC = () => {
       defaultData.nameFr = i18n.fr.title ?? '';
       defaultData.shortFr = i18n.fr.short ?? '';
     }
+
     return defaultData;
   }, []);
 
@@ -74,20 +75,20 @@ const AdminEditStat: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
-    defaultValues: useMemo(() => createDefaultData(statData), [createDefaultData, statData]),
+    defaultValues: useMemo(() => createDefaultData(statData), [createDefaultData, statData])
   });
 
   const onSaveStat: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, short, shortFr, formulaId }) => {
       if (
-        statText === null ||
-        statTextFr === null ||
-        textEditor === null ||
-        textFrEditor === null ||
-        formulaId === null ||
-        api === undefined
+        statText === null
+        || statTextFr === null
+        || textEditor === null
+        || textFrEditor === null
+        || formulaId === null
+        || api === undefined
       ) {
         return;
       }
@@ -106,8 +107,8 @@ const AdminEditStat: FC = () => {
           fr: {
             title: nameFr,
             short: shortFr ?? '',
-            text: htmlTextFr,
-          },
+            text: htmlTextFr
+          }
         };
       }
 
@@ -118,7 +119,7 @@ const AdminEditStat: FC = () => {
           short,
           formulaId,
           summary: htmlText,
-          i18n,
+          i18n
         })
         .then((stat) => {
           const newId = getNewId();
@@ -128,7 +129,7 @@ const AdminEditStat: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditStat.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadStats();
         })
@@ -138,15 +139,15 @@ const AdminEditStat: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id',
-              })} by ${data.sent}`,
+                field: 'Formula Id'
+              })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -162,7 +163,7 @@ const AdminEditStat: FC = () => {
       createAlert,
       t,
       reloadStats,
-      setError,
+      setError
     ]
   );
 
@@ -175,9 +176,9 @@ const AdminEditStat: FC = () => {
         title: t('adminEditStat.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditStat.confirmDeletion.text', {
           ns: 'pages',
-          elt: statData?.stat.title,
+          elt: statData?.stat.title
         }),
-        confirmCta: t('adminEditStat.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditStat.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
@@ -192,7 +193,7 @@ const AdminEditStat: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditStat.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
                 reloadStats();
                 void navigate('/admin/stats');
@@ -203,15 +204,15 @@ const AdminEditStat: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.stat.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.stat.name`), 'capitalize')
+                    })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.stat.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.stat.name`), 'capitalize')
+                    })
                   });
                 }
               });
@@ -232,7 +233,7 @@ const AdminEditStat: FC = () => {
     createAlert,
     reloadStats,
     navigate,
-    setError,
+    setError
   ]);
 
   useEffect(() => {
@@ -256,7 +257,7 @@ const AdminEditStat: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -271,6 +272,7 @@ const AdminEditStat: FC = () => {
         () => {}
       );
     }, 600000);
+
     return () => {
       if (saveTimer.current !== null) {
         clearInterval(saveTimer.current);
@@ -292,9 +294,11 @@ const AdminEditStat: FC = () => {
             {t('adminEditStat.delete', { ns: 'pages' })}
           </Button>
         </div>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror className="adminEditStat__error">{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror className="adminEditStat__error">{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminEditStat__basics">
           <Input
             control={control}
@@ -309,7 +313,7 @@ const AdminEditStat: FC = () => {
             inputName="short"
             type="text"
             rules={{
-              required: t('nameStatShort.required', { ns: 'fields' }),
+              required: t('nameStatShort.required', { ns: 'fields' })
             }}
             label={t('nameStatShort.label', { ns: 'fields' })}
             className="adminNewStat__basics__name"
@@ -330,8 +334,8 @@ const AdminEditStat: FC = () => {
               required: t('statFormula.required', { ns: 'fields' }),
               pattern: {
                 value: /^([a-z]){2,3}$/,
-                message: t('statFormula.format', { ns: 'fields' }),
-              },
+                message: t('statFormula.format', { ns: 'fields' })
+              }
             }}
             label={t('statFormula.label', { ns: 'fields' })}
           />

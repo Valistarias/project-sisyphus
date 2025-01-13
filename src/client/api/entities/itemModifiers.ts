@@ -4,9 +4,8 @@ import Entity from './entity';
 
 import type { ICuratedItemModifier } from '../../types';
 
-
 interface IItemModifierPayload {
-  itemModifierId: string;
+  itemModifierId: string
 }
 
 export default class ItemModifiers extends Entity {
@@ -15,7 +14,7 @@ export default class ItemModifiers extends Entity {
   constructor() {
     super('itemmodifiers');
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })

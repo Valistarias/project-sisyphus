@@ -4,16 +4,15 @@ import Entity from './entity';
 
 import type { ICuratedRarity } from '../../types';
 
-
 interface IRarityPayload {
-  rarityId: string;
+  rarityId: string
 }
 
 interface IChangeRaritiesOrder {
   order: Array<{
-    id: string;
-    position: number;
-  }>;
+    id: string
+    position: number
+  }>
 }
 
 export default class Rarities extends Entity {
@@ -23,7 +22,7 @@ export default class Rarities extends Entity {
   constructor() {
     super('rarities');
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })
@@ -35,7 +34,7 @@ export default class Rarities extends Entity {
           });
       });
 
-    this.changeRaritiesOrder = async (payload) =>
+    this.changeRaritiesOrder = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/changeraritiesorder/`, payload)

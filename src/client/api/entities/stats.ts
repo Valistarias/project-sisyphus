@@ -4,9 +4,8 @@ import Entity from './entity';
 
 import type { ICuratedStat } from '../../types';
 
-
 interface IStatPayload {
-  statId: string;
+  statId: string
 }
 
 export default class Stats extends Entity {
@@ -15,7 +14,7 @@ export default class Stats extends Entity {
   constructor() {
     super('stats');
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })

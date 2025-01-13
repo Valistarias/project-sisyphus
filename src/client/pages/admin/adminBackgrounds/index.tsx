@@ -28,6 +28,7 @@ const AdminBackgrounds: FC = () => {
     if (backgrounds === null || backgrounds.length === 0) {
       return null;
     }
+
     return (
       <Aul className="adminBackgrounds__background-list" noPoints>
         {backgrounds.map(({ background }) => (
@@ -63,7 +64,7 @@ const AdminBackgrounds: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }

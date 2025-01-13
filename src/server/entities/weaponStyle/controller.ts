@@ -6,7 +6,6 @@ import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/global
 import type { HydratedIWeaponStyle } from './model';
 import type { ISkill } from '../skill/model';
 
-
 import { curateI18n } from '../../utils';
 
 const { WeaponStyle } = db;
@@ -47,13 +46,14 @@ const create = (req: Request, res: Response): void => {
   const { title, summary, i18n = null, skill } = req.body;
   if (title === undefined || summary === undefined || skill === undefined) {
     res.status(400).send(gemInvalidField('Weapon Style'));
+
     return;
   }
 
   const weaponStyle = new WeaponStyle({
     title,
     summary,
-    skill,
+    skill
   });
 
   if (i18n !== null) {
@@ -65,7 +65,7 @@ const create = (req: Request, res: Response): void => {
     .then(() => {
       res.send(weaponStyle);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -74,6 +74,7 @@ const update = (req: Request, res: Response): void => {
   const { id, title = null, summary = null, skill = null, i18n } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Weapon Style ID'));
+
     return;
   }
   findWeaponStyleById(id as string)
@@ -92,7 +93,7 @@ const update = (req: Request, res: Response): void => {
         const newIntl = {
           ...(weaponStyle.i18n !== null && weaponStyle.i18n !== undefined && weaponStyle.i18n !== ''
             ? JSON.parse(weaponStyle.i18n)
-            : {}),
+            : {})
         };
 
         Object.keys(i18n as Record<string, any>).forEach((lang) => {
@@ -107,7 +108,7 @@ const update = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'Weapon Style was updated successfully!', weaponStyle });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -120,13 +121,14 @@ const deleteWeaponStyleById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Weapon Style ID'));
+
       return;
     }
     WeaponStyle.findByIdAndDelete(id)
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
@@ -137,31 +139,32 @@ const deleteWeaponStyle = (req: Request, res: Response): void => {
     .then(() => {
       res.send({ message: 'Weapon Style was deleted successfully!' });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
 
 interface CuratedIWeaponStyle {
-  i18n: Record<string, any> | Record<string, unknown>;
-  weaponStyle: HydratedIWeaponStyle;
+  i18n: Record<string, unknown>
+  weaponStyle: HydratedIWeaponStyle
 }
 
 const findSingle = (req: Request, res: Response): void => {
   const { weaponStyleId } = req.query;
   if (weaponStyleId === undefined || typeof weaponStyleId !== 'string') {
     res.status(400).send(gemInvalidField('WeaponStyle ID'));
+
     return;
   }
   findWeaponStyleById(weaponStyleId)
     .then((weaponStyle) => {
       const sentObj = {
         weaponStyle,
-        i18n: curateI18n(weaponStyle.i18n),
+        i18n: curateI18n(weaponStyle.i18n)
       };
       res.send(sentObj);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
@@ -174,13 +177,13 @@ const findAll = (req: Request, res: Response): void => {
       weaponStyles.forEach((weaponStyle) => {
         curatedWeaponStyles.push({
           weaponStyle,
-          i18n: curateI18n(weaponStyle.i18n),
+          i18n: curateI18n(weaponStyle.i18n)
         });
       });
 
       res.send(curatedWeaponStyles);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export { create, deleteWeaponStyle, findAll, findSingle, findWeaponStyleById, update };

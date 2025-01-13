@@ -29,6 +29,7 @@ const AdminAmmos: FC = () => {
     if (ammos === null || ammos.length === 0) {
       return null;
     }
+
     return (
       <Aul className="adminAmmos__ammo-list" noPoints>
         {ammos.map(({ ammo }) => (
@@ -64,7 +65,7 @@ const AdminAmmos: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }

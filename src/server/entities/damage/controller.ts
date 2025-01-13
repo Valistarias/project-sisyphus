@@ -43,14 +43,15 @@ const findDamageById = async (id: string): Promise<HydratedIDamage> =>
 
 const createReadDamage = (
   elts: Array<{
-    damageType: string;
-    dices: string;
+    damageType: string
+    dices: string
   }>,
   ids: string[],
-  cb: (err: Error | null, res?: string[]) => void
+  cb: (err: unknown | null, res?: string[]) => void
 ): void => {
   if (elts.length === 0) {
     cb(null, ids);
+
     return;
   }
   const actualElt = elts[0];
@@ -86,9 +87,10 @@ const createReadDamage = (
     });
 };
 
-const smartDeleteDamage = (elts: string[], cb: (err: Error | null) => void): void => {
+const smartDeleteDamage = (elts: string[], cb: (err: unknown | null) => void): void => {
   if (elts.length === 0) {
     cb(null);
+
     return;
   }
   const actualElt = elts[0];
@@ -118,21 +120,21 @@ const smartDeleteDamage = (elts: string[], cb: (err: Error | null) => void): voi
 const curateDamageIds = async ({
   damagesToRemove,
   damagesToAdd,
-  damagesToStay,
+  damagesToStay
 }: {
-  damagesToRemove: string[];
+  damagesToRemove: string[]
   damagesToAdd: Array<{
-    damageType: string;
-    dices: string;
-  }>;
-  damagesToStay: string[];
+    damageType: string
+    dices: string
+  }>
+  damagesToStay: string[]
 }): Promise<string[]> =>
   await new Promise((resolve, reject) => {
-    smartDeleteDamage(damagesToRemove, (err: Error | null) => {
+    smartDeleteDamage(damagesToRemove, (err: unknown | null) => {
       if (err !== null) {
         reject(err);
       } else {
-        createReadDamage(damagesToAdd, [], (err: Error | null, res?: string[]) => {
+        createReadDamage(damagesToAdd, [], (err: unknown | null, res?: string[]) => {
           if (err !== null) {
             reject(err);
           } else {
@@ -147,12 +149,13 @@ const create = (req: Request, res: Response): void => {
   const { damageType, dices } = req.body;
   if (damageType === undefined || dices === undefined) {
     res.status(400).send(gemInvalidField('Damage'));
+
     return;
   }
 
   const damage = new Damage({
     damageType,
-    dices,
+    dices
   });
 
   damage
@@ -160,7 +163,7 @@ const create = (req: Request, res: Response): void => {
     .then(() => {
       res.send(damage);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -169,6 +172,7 @@ const update = (req: Request, res: Response): void => {
   const { id, damageType = null, dices = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Damage ID'));
+
     return;
   }
   findDamageById(id as string)
@@ -185,7 +189,7 @@ const update = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'Damage was updated successfully!', damage });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -198,13 +202,14 @@ const deleteDamageById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Damage ID'));
+
       return;
     }
     Damage.findByIdAndDelete(id)
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
@@ -215,7 +220,7 @@ const deleteDamage = (req: Request, res: Response): void => {
     .then(() => {
       res.send({ message: 'Damage was deleted successfully!' });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -224,13 +229,14 @@ const findSingle = (req: Request, res: Response): void => {
   const { damageId } = req.query;
   if (damageId === undefined || typeof damageId !== 'string') {
     res.status(400).send(gemInvalidField('Damage ID'));
+
     return;
   }
   findDamageById(damageId)
     .then((damage) => {
       res.send(damage);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
@@ -240,7 +246,7 @@ const findAll = (req: Request, res: Response): void => {
     .then((damages) => {
       res.send(damages);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export { create, curateDamageIds, deleteDamage, findAll, findDamageById, findSingle, update };

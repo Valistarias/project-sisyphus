@@ -15,8 +15,8 @@ import { Alert, RichTextElement, completeRichTextElementExtentions } from '../..
 import './adminNewArmorType.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
+  name: string
+  nameFr: string
 }
 
 const AdminNewArmorType: FC = () => {
@@ -30,18 +30,18 @@ const AdminNewArmorType: FC = () => {
   const calledApi = useRef(false);
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   const onSaveArmorType: SubmitHandler<FormValues> = useCallback(
@@ -61,8 +61,8 @@ const AdminNewArmorType: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            summary: htmlFr,
-          },
+            summary: htmlFr
+          }
         };
       }
 
@@ -70,7 +70,7 @@ const AdminNewArmorType: FC = () => {
         .create({
           title: name,
           summary: html,
-          i18n,
+          i18n
         })
         .then((armorType) => {
           const newId = getNewId();
@@ -80,7 +80,7 @@ const AdminNewArmorType: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewArmorType.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadArmorTypes();
           void navigate(`/admin/armortype/${armorType._id}`);
@@ -91,15 +91,15 @@ const AdminNewArmorType: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id',
-              })} by ${data.sent}`,
+                field: 'Formula Id'
+              })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -113,7 +113,7 @@ const AdminNewArmorType: FC = () => {
       t,
       reloadArmorTypes,
       navigate,
-      setError,
+      setError
     ]
   );
 
@@ -132,16 +132,18 @@ const AdminNewArmorType: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewArmorType.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminNewArmorType__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameArmorType.required', { ns: 'fields' }),
+              required: t('nameArmorType.required', { ns: 'fields' })
             }}
             label={t('nameArmorType.label', { ns: 'fields' })}
             className="adminNewArmorType__basics__name"
@@ -151,7 +153,7 @@ const AdminNewArmorType: FC = () => {
           <RichTextElement
             label={t('armorTypeSummary.title', { ns: 'fields' })}
             editor={introEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />
@@ -176,7 +178,7 @@ const AdminNewArmorType: FC = () => {
           <RichTextElement
             label={`${t('armorTypeSummary.title', { ns: 'fields' })} (FR)`}
             editor={introFrEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />

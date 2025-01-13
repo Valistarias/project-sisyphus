@@ -11,13 +11,13 @@ import './anodeIcon.scss';
 
 interface IANodeIcon extends IQuarkProps {
   /** The size of the node icon */
-  size?: 'small' | 'medium' | 'large';
+  size?: 'small' | 'medium' | 'large'
   /** The type of node icon */
-  type: TypeNodeIcons;
+  type: TypeNodeIcons
   /** The level of rarity for the icon */
-  rarity?: number;
+  rarity?: number
   /** Is the background animated ? */
-  animated?: boolean;
+  animated?: boolean
 }
 
 // When adding a new icon, dont forget to add it in the scss file, as before content
@@ -29,7 +29,7 @@ const ANodeIcon: FC<IANodeIcon> = ({
   className,
   rarity,
   onClick,
-  animated = false,
+  animated = false
 }) => {
   const classes = useMemo<string>(
     () =>

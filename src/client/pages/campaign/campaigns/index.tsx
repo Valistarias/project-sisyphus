@@ -19,7 +19,7 @@ const Campaigns: FC = () => {
   const { user, campaigns, reloadCampaigns } = useGlobalVars();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
-    ConfMessageEvent: {},
+    ConfMessageEvent: {}
   };
 
   const onDeleteCampaign = useCallback(
@@ -32,7 +32,7 @@ const Campaigns: FC = () => {
           title: t('campaigns.confirmDelete.title', { ns: 'pages' }),
           text: t('campaigns.confirmDelete.text', { ns: 'pages', elt: name }),
           confirmCta: t('campaigns.confirmDelete.confirmCta', { ns: 'pages' }),
-          theme: 'error',
+          theme: 'error'
         },
         (evtId: string) => {
           const confirmDelete = ({ detail }): void => {
@@ -47,7 +47,7 @@ const Campaigns: FC = () => {
                       <Alert key={newId} id={newId} timer={5}>
                         <Ap>{t('campaigns.successDelete', { ns: 'pages' })}</Ap>
                       </Alert>
-                    ),
+                    )
                   });
                   reloadCampaigns();
                 })
@@ -59,7 +59,7 @@ const Campaigns: FC = () => {
                       <Alert key={newId} id={newId} timer={5}>
                         <Ap>{t('serverErrors.CYPU-301')}</Ap>
                       </Alert>
-                    ),
+                    )
                   });
                 });
             }
@@ -89,27 +89,33 @@ const Campaigns: FC = () => {
           <Atitle className="campaigns__campaign-list__elt__title" level={3}>
             {campaign.name}
           </Atitle>
-          <Ap className="campaigns__campaign-list__elt__owner">{`${t('terms.general.gm')}: ${
-            isOwner ? t('terms.general.you') : campaign.owner.username
-          }`}</Ap>
-          <Ap className="campaigns__campaign-list__elt__players">{`${t('terms.general.player', {
-            count: campaign.players.length,
-          })}: ${campaign.players.length}`}</Ap>
+          <Ap className="campaigns__campaign-list__elt__owner">
+            {`${t('terms.general.gm')}: ${
+              isOwner ? t('terms.general.you') : campaign.owner.username
+            }`}
+          </Ap>
+          <Ap className="campaigns__campaign-list__elt__players">
+            {`${t('terms.general.player', {
+              count: campaign.players.length
+            })}: ${campaign.players.length}`}
+          </Ap>
           <div className="campaigns__campaign-list__elt__buttons">
             <Button href={`/campaign/${campaign._id}`}>
               {t('campaigns.openCampaign', { ns: 'pages' })}
             </Button>
-            {isOwner ? (
-              <Button
-                theme="text-only"
-                color="error"
-                onClick={() => {
-                  onDeleteCampaign(campaign._id, campaign.name);
-                }}
-              >
-                {t('campaigns.deleteCampaign', { ns: 'pages' })}
-              </Button>
-            ) : null}
+            {isOwner
+              ? (
+                  <Button
+                    theme="text-only"
+                    color="error"
+                    onClick={() => {
+                      onDeleteCampaign(campaign._id, campaign.name);
+                    }}
+                  >
+                    {t('campaigns.deleteCampaign', { ns: 'pages' })}
+                  </Button>
+                )
+              : null}
           </div>
         </Ali>
       );

@@ -8,44 +8,44 @@ import type { IUser } from '../../user/model';
 
 interface ICharacter {
   /** The first name of the character */
-  firstName?: string;
+  firstName?: string
   /** The last name of the character */
-  lastName?: string;
+  lastName?: string
   /** The nickname of the character */
-  nickName?: string;
+  nickName?: string
   /** The gender of the character */
-  gender?: string;
+  gender?: string
   /** The pronouns of the character */
-  pronouns?: string;
+  pronouns?: string
   /** The bio of the character */
-  bio?: string;
+  bio?: string
   /** The money of the character */
-  money?: number;
+  money?: number
   /** The karma of the character */
-  karma?: number;
+  karma?: number
   /** The level of the character */
-  level?: number;
+  level?: number
   /** Is the character fully finished in the character editor ? */
-  isReady: boolean;
+  isReady: boolean
   /** When the character was created */
-  createdAt: Date;
+  createdAt: Date
   /** The player of the character */
-  player?: ObjectId;
+  player?: ObjectId
   /** Who has created this character */
-  createdBy: ObjectId;
+  createdBy: ObjectId
   /** The campaign where the character plays */
-  campaign?: ObjectId;
+  campaign?: ObjectId
   /** The background of this character */
-  background?: ObjectId;
+  background?: ObjectId
 }
 
 type LeanICharacter = Omit<ICharacter, 'player' | 'campaign' | 'createdBy' | 'background'> & {
-  player?: HydratedDocument<IUser>;
-  createdBy: HydratedDocument<IUser>;
-  campaign?: HydratedDocument<ICampaign>;
-  nodes?: HydratedINode[];
-  bodies?: HydratedIBody[];
-  background?: HydratedIBackground;
+  player?: HydratedDocument<IUser>
+  createdBy: HydratedDocument<IUser>
+  campaign?: HydratedDocument<ICampaign>
+  nodes?: HydratedINode[]
+  bodies?: HydratedIBody[]
+  background?: HydratedIBackground
 };
 
 type HydratedICharacter = HydratedDocument<LeanICharacter>;
@@ -63,33 +63,33 @@ const characterSchema = new Schema<ICharacter>(
     level: Number,
     isReady: {
       type: Boolean,
-      default: false,
+      default: false
     },
     player: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'User'
     },
     createdBy: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'User'
     },
     campaign: {
       type: Schema.Types.ObjectId,
       ref: 'Campaign',
-      default: null,
+      default: null
     },
     background: {
       type: Schema.Types.ObjectId,
-      ref: 'Background',
+      ref: 'Background'
     },
     createdAt: {
       type: Date,
-      default: Date.now,
-    },
+      default: Date.now
+    }
   },
   {
     toJSON: { virtuals: true },
-    toObject: { virtuals: true },
+    toObject: { virtuals: true }
   }
 );
 
@@ -98,13 +98,13 @@ const characterSchema = new Schema<ICharacter>(
 characterSchema.virtual('nodes', {
   ref: 'CharacterNode',
   localField: '_id',
-  foreignField: 'character',
+  foreignField: 'character'
 });
 
 characterSchema.virtual('bodies', {
   ref: 'Body',
   localField: '_id',
-  foreignField: 'character',
+  foreignField: 'character'
 });
 
 const CharacterModel = (): Model<ICharacter> => model('Character', characterSchema);

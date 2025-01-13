@@ -29,6 +29,7 @@ const AdminBags: FC = () => {
     if (bags === null || bags.length === 0) {
       return null;
     }
+
     return (
       <Aul className="adminBags__bag-list" noPoints>
         {bags.map(({ bag }) => (
@@ -64,7 +65,7 @@ const AdminBags: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }

@@ -3,7 +3,7 @@ import axios from 'axios';
 import Entity from './entity';
 
 interface IRuleBooksTypesPayload {
-  ruleBookTypeId: string;
+  ruleBookTypeId: string
 }
 
 export default class RuleBooksTypes extends Entity {
@@ -12,7 +12,7 @@ export default class RuleBooksTypes extends Entity {
   constructor() {
     super('rulebooktypes');
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })

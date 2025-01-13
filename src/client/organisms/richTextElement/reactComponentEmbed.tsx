@@ -7,7 +7,7 @@ import { EmbedNotion } from '../../molecules';
 
 interface ITest {
   /** The Node element */
-  node: unknown;
+  node: unknown
 }
 
 const EmbedReact: FC<ITest> = ({ node }) => (
@@ -24,16 +24,16 @@ export default Node.create({
   addAttributes() {
     return {
       notionId: {
-        default: '',
-      },
+        default: ''
+      }
     };
   },
 
   parseHTML() {
     return [
       {
-        tag: 'react-component-embed',
-      },
+        tag: 'react-component-embed'
+      }
     ];
   },
 
@@ -43,5 +43,5 @@ export default Node.create({
 
   addNodeView() {
     return ReactNodeViewRenderer(EmbedReact);
-  },
+  }
 });

@@ -3,15 +3,15 @@ import type { IUser } from './global';
 // Campaign ------------------------------------
 export interface ICampaign {
   /** The ID of the campaign */
-  _id: string;
+  _id: string
   /** The name of the campaign */
-  name: string;
+  name: string
   /** The code of the campaign to connect to it */
-  code: string;
+  code: string
   /** The owner of the campaign */
-  owner: IUser;
+  owner: IUser
   /** The players of the campaign */
-  players: IUser[];
+  players: IUser[]
   /** When the campaign was created */
-  createdAt: Date;
+  createdAt: Date
 }

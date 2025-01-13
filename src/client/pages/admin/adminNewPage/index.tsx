@@ -15,8 +15,8 @@ import { Alert, RichTextElement, completeRichTextElementExtentions } from '../..
 import './adminNewPage.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
+  name: string
+  nameFr: string
 }
 
 const AdminNewPage: FC = () => {
@@ -29,28 +29,28 @@ const AdminNewPage: FC = () => {
   const params = useMemo(() => new URLSearchParams(search), [search]);
 
   const contentEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const contentFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   const onSavePage: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr }) => {
       if (
-        contentEditor === null ||
-        contentFrEditor === null ||
-        api === undefined ||
-        params.get('ruleBookId') === undefined ||
-        params.get('chapterId') === undefined
+        contentEditor === null
+        || contentFrEditor === null
+        || api === undefined
+        || params.get('ruleBookId') === undefined
+        || params.get('chapterId') === undefined
       ) {
         return;
       }
@@ -66,8 +66,8 @@ const AdminNewPage: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            content: htmlFr,
-          },
+            content: htmlFr
+          }
         };
       }
 
@@ -76,7 +76,7 @@ const AdminNewPage: FC = () => {
           title: name,
           chapter: params.get('chapterId'),
           content: html,
-          i18n,
+          i18n
         })
         .then((page) => {
           const newId = getNewId();
@@ -86,7 +86,7 @@ const AdminNewPage: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewPage.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           void navigate(`/admin/page/${page._id}`);
         })
@@ -96,15 +96,15 @@ const AdminNewPage: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize')
+              })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -116,15 +116,17 @@ const AdminNewPage: FC = () => {
     <div className="adminNewPage">
       <form onSubmit={handleSubmit(onSavePage)} noValidate className="adminNewPage__content">
         <Atitle level={1}>{t('adminNewPage.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminNewPage__basics">
           <Input
             control={control}
             inputName="name"
             rules={{
-              required: t('namePage.required', { ns: 'fields' }),
+              required: t('namePage.required', { ns: 'fields' })
             }}
             type="text"
             label={t('namePage.label', { ns: 'fields' })}
@@ -135,7 +137,7 @@ const AdminNewPage: FC = () => {
           <RichTextElement
             label={t('pageContent.title', { ns: 'fields' })}
             editor={contentEditor}
-            rawStringContent={''}
+            rawStringContent=""
             ruleBookId={params.get('ruleBookId') ?? undefined}
             complete
           />
@@ -158,7 +160,7 @@ const AdminNewPage: FC = () => {
           <RichTextElement
             label={`${t('pageContent.title', { ns: 'fields' })} (FR)`}
             editor={contentFrEditor}
-            rawStringContent={''}
+            rawStringContent=""
             ruleBookId={params.get('ruleBookId') ?? undefined}
             complete
           />

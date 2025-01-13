@@ -8,11 +8,11 @@ import './aloadbar.scss';
 
 interface IAloadbar extends IQuarkProps {
   /** The main color of the Aloadbar */
-  color?: 'primary' | 'secondary' | 'tertiary' | 'error';
+  color?: 'primary' | 'secondary' | 'tertiary' | 'error'
   /** Value from 0 to 1 that determine how much the bar had progressed */
-  progress: number;
+  progress: number
   /** Is the Progress Bar changing color when a specific threshold is passed (fixed) */
-  withDangerZone?: boolean;
+  withDangerZone?: boolean
 }
 
 const Aloadbar: FC<IAloadbar> = ({
@@ -20,7 +20,7 @@ const Aloadbar: FC<IAloadbar> = ({
   withDangerZone = false,
   progress,
   color = 'primary',
-  htmlFor,
+  htmlFor
 }) => (
   <Quark
     quarkType="div"

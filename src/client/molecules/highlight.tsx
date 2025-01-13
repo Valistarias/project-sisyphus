@@ -14,11 +14,11 @@ import './highlight.scss';
 
 interface IHighlight {
   /** The id of the selected element */
-  id: string;
+  id: string
   /** The type of element to highlight */
-  type: string;
+  type: string
   /** The children element to be displayed */
-  children: ReactNode;
+  children: ReactNode
 }
 
 const Highlight: FC<IHighlight> = ({ id, type, children }) => {
@@ -31,7 +31,7 @@ const Highlight: FC<IHighlight> = ({ id, type, children }) => {
 
   const textEditor = useEditor({
     extensions: completeRichTextElementExtentions,
-    editable: false,
+    editable: false
   });
 
   const loading = useMemo(() => <Ap>Loading</Ap>, []);
@@ -43,6 +43,7 @@ const Highlight: FC<IHighlight> = ({ id, type, children }) => {
     if (type === 'notions') {
       return highlightContent.notion.text;
     }
+
     return null;
   }, [highlightContent, type]);
 
@@ -50,6 +51,7 @@ const Highlight: FC<IHighlight> = ({ id, type, children }) => {
     if (type === 'notions') {
       return { notionId: id };
     }
+
     return null;
   }, [type, id]);
 
@@ -71,7 +73,7 @@ const Highlight: FC<IHighlight> = ({ id, type, children }) => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -101,11 +103,13 @@ const Highlight: FC<IHighlight> = ({ id, type, children }) => {
         className="highlight__info"
         style={isHighlightShown ? { opacity: '1', pointerEvents: 'all' } : undefined}
       >
-        {contentHighlight === null ? (
-          loading
-        ) : (
-          <RichTextElement editor={textEditor} rawStringContent={contentHighlight} readOnly />
-        )}
+        {contentHighlight === null
+          ? (
+              loading
+            )
+          : (
+              <RichTextElement editor={textEditor} rawStringContent={contentHighlight} readOnly />
+            )}
       </span>
     </span>
   );

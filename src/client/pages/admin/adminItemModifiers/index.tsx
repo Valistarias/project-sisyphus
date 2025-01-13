@@ -20,6 +20,7 @@ const AdminItemModifiers: FC = () => {
     if (itemModifiers === null || itemModifiers.length === 0) {
       return null;
     }
+
     return (
       <Aul className="adminItemModifiers__item-modifier-list" noPoints>
         {itemModifiers.map(({ itemModifier }) => (

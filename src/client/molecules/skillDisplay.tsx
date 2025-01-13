@@ -8,7 +8,6 @@ import DetailsBonuses from './detailsBonuses';
 import type { ICuratedSkill, ICuratedStat } from '../types';
 import type { IScoreStatSkill } from '../utils/character';
 
-
 import { addSymbol } from '../utils';
 
 import './skillDisplay.scss';
@@ -16,24 +15,25 @@ import './skillDisplay.scss';
 interface ISkillDisplay {
   /** The skill to display */
   skill: ICuratedSkill & {
-    score: IScoreStatSkill;
-    stat: ICuratedStat;
-  };
+    score: IScoreStatSkill
+    stat: ICuratedStat
+  }
   /** When the clickable zone is clicked */
   onSkillClick: (
     skill: ICuratedSkill & {
-      score: IScoreStatSkill;
-      stat: ICuratedStat;
+      score: IScoreStatSkill
+      stat: ICuratedStat
     }
-  ) => void;
+  ) => void
 }
 
 const SkillDisplay: FC<ISkillDisplay> = ({ skill, onSkillClick }) => {
   // TODO: Deal with i18n
-  const texts = useMemo(() => 
+  const texts = useMemo(() =>
     // insert lang detection here
-     skill.skill
+    skill.skill
   , [skill]);
+
   return (
     <div className="skill-display">
       <Ap className="skill-display__title">{texts.title}</Ap>

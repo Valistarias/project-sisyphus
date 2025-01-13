@@ -9,13 +9,7 @@ import { smartUpdateEffects } from '../effect/controller';
 import { curateSkillBonusIds } from '../skillBonus/controller';
 import { curateStatBonusIds } from '../statBonus/controller';
 
-import type {
-  IAction,
-  ICharParamBonus,
-  IEffect,
-  ISkillBonus,
-  IStatBonus,
-} from '../index';
+import type { IAction, ICharParamBonus, IEffect, ISkillBonus, IStatBonus } from '../index';
 import type { HydratedIItem } from './model';
 
 import { curateI18n } from '../../utils';
@@ -23,7 +17,7 @@ import { curateI18n } from '../../utils';
 const { Item } = db;
 
 interface findAllPayload {
-  starterKit?: string | Record<string, string[]>;
+  starterKit?: string | Record<string, string[]>
 }
 
 const findItems = async (options?: findAllPayload): Promise<HydratedIItem[]> =>
@@ -41,7 +35,7 @@ const findItems = async (options?: findAllPayload): Promise<HydratedIItem[]> =>
           resolve(res);
         }
       })
-      .catch(async (err: Error) => {
+      .catch(async (err: unknown) => {
         reject(err);
       });
   });
@@ -61,7 +55,7 @@ const findItemById = async (id: string): Promise<HydratedIItem> =>
           resolve(res);
         }
       })
-      .catch(async (err: Error) => {
+      .catch(async (err: unknown) => {
         reject(err);
       });
   });
@@ -80,16 +74,17 @@ const create = (req: Request, res: Response): void => {
     actions,
     skillBonuses,
     statBonuses,
-    charParamBonuses,
+    charParamBonuses
   } = req.body;
   if (
-    title === undefined ||
-    summary === undefined ||
-    rarity === undefined ||
-    cost === undefined ||
-    itemType === undefined
+    title === undefined
+    || summary === undefined
+    || rarity === undefined
+    || cost === undefined
+    || itemType === undefined
   ) {
     res.status(400).send(gemInvalidField('Item'));
+
     return;
   }
 
@@ -100,7 +95,7 @@ const create = (req: Request, res: Response): void => {
     starterKit,
     cost,
     itemType,
-    itemModifiers,
+    itemModifiers
   });
 
   if (i18n !== null) {
@@ -111,82 +106,82 @@ const create = (req: Request, res: Response): void => {
     skillBonusesToRemove: [],
     skillBonusesToStay: [],
     skillBonusesToAdd: skillBonuses as Array<{
-      skill: string;
-      value: number;
-    }>,
+      skill: string
+      value: number
+    }>
   })
     .then((skillBonusIds) => {
       if (skillBonusIds.length > 0) {
-        item.skillBonuses = skillBonusIds.map((skillBonusId) => String(skillBonusId));
+        item.skillBonuses = skillBonusIds.map(skillBonusId => String(skillBonusId));
       }
       curateStatBonusIds({
         statBonusesToRemove: [],
         statBonusesToStay: [],
         statBonusesToAdd: statBonuses as Array<{
-          stat: string;
-          value: number;
-        }>,
+          stat: string
+          value: number
+        }>
       })
         .then((statBonusIds) => {
           if (statBonusIds.length > 0) {
-            item.statBonuses = statBonusIds.map((statBonusId) => String(statBonusId));
+            item.statBonuses = statBonusIds.map(statBonusId => String(statBonusId));
           }
           curateCharParamBonusIds({
             charParamBonusesToRemove: [],
             charParamBonusesToStay: [],
             charParamBonusesToAdd: charParamBonuses as Array<{
-              charParam: string;
-              value: number;
-            }>,
+              charParam: string
+              value: number
+            }>
           })
             .then((charParamBonusIds) => {
               if (charParamBonusIds.length > 0) {
-                item.charParamBonuses = charParamBonusIds.map((charParamBonusId) =>
+                item.charParamBonuses = charParamBonusIds.map(charParamBonusId =>
                   String(charParamBonusId)
                 );
               }
               smartUpdateEffects({
                 effectsToRemove: [],
-                effectsToUpdate: effects,
+                effectsToUpdate: effects
               })
                 .then((effectsIds) => {
                   if (effectsIds.length > 0) {
-                    item.effects = effectsIds.map((effectsId) => String(effectsId));
+                    item.effects = effectsIds.map(effectsId => String(effectsId));
                   }
                   smartUpdateActions({
                     actionsToRemove: [],
-                    actionsToUpdate: actions,
+                    actionsToUpdate: actions
                   })
                     .then((actionsIds) => {
                       if (actionsIds.length > 0) {
-                        item.actions = actionsIds.map((actionsId) => String(actionsId));
+                        item.actions = actionsIds.map(actionsId => String(actionsId));
                       }
                       item
                         .save()
                         .then(() => {
                           res.send(item);
                         })
-                        .catch((err: Error) => {
+                        .catch((err: unknown) => {
                           res.status(500).send(gemServerError(err));
                         });
                     })
-                    .catch((err: Error) => {
+                    .catch((err: unknown) => {
                       res.status(500).send(gemServerError(err));
                     });
                 })
-                .catch((err: Error) => {
+                .catch((err: unknown) => {
                   res.status(500).send(gemServerError(err));
                 });
             })
-            .catch((err: Error) => {
+            .catch((err: unknown) => {
               res.status(500).send(gemServerError(err));
             });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -206,10 +201,11 @@ const update = (req: Request, res: Response): void => {
     actions = null,
     skillBonuses = null,
     statBonuses = null,
-    charParamBonuses = null,
+    charParamBonuses = null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Item ID'));
+
     return;
   }
 
@@ -239,18 +235,19 @@ const update = (req: Request, res: Response): void => {
 
       const skillBonusesToStay: string[] = [];
       interface ISkillBonusElt extends ISkillBonus {
-        _id: ObjectId;
+        _id: ObjectId
       }
       const skillBonusesToRemove = item.skillBonuses.reduce(
         (result: string[], elt: ISkillBonusElt) => {
           const foundSkillBonus = skillBonuses.find(
-            (skillBonus) => skillBonus.skill === String(elt.skill) && skillBonus.value === elt.value
+            skillBonus => skillBonus.skill === String(elt.skill) && skillBonus.value === elt.value
           );
           if (foundSkillBonus === undefined) {
             result.push(String(elt._id));
           } else {
             skillBonusesToStay.push(String(elt._id));
           }
+
           return result;
         },
         []
@@ -259,23 +256,24 @@ const update = (req: Request, res: Response): void => {
       const skillBonusesToAdd = skillBonuses.reduce(
         (
           result: Array<{
-            skill: string;
-            value: number;
+            skill: string
+            value: number
           }>,
           elt: {
-            skill: string;
-            value: number;
+            skill: string
+            value: number
           }
         ) => {
           const foundSkillBonus = item.skillBonuses.find(
-            (skillBonus) =>
-              typeof skillBonus !== 'string' &&
-              String(skillBonus.skill) === elt.skill &&
-              skillBonus.value === elt.value
+            skillBonus =>
+              typeof skillBonus !== 'string'
+              && String(skillBonus.skill) === elt.skill
+              && skillBonus.value === elt.value
           );
           if (foundSkillBonus === undefined) {
             result.push(elt);
           }
+
           return result;
         },
         []
@@ -283,18 +281,19 @@ const update = (req: Request, res: Response): void => {
 
       const statBonusesToStay: string[] = [];
       interface IStatBonusElt extends IStatBonus {
-        _id: ObjectId;
+        _id: ObjectId
       }
       const statBonusesToRemove = item.statBonuses.reduce(
         (result: string[], elt: IStatBonusElt) => {
           const foundStatBonus = statBonuses.find(
-            (statBonus) => statBonus.stat === String(elt.stat) && statBonus.value === elt.value
+            statBonus => statBonus.stat === String(elt.stat) && statBonus.value === elt.value
           );
           if (foundStatBonus === undefined) {
             result.push(String(elt._id));
           } else {
             statBonusesToStay.push(String(elt._id));
           }
+
           return result;
         },
         []
@@ -303,23 +302,24 @@ const update = (req: Request, res: Response): void => {
       const statBonusesToAdd = statBonuses.reduce(
         (
           result: Array<{
-            stat: string;
-            value: number;
+            stat: string
+            value: number
           }>,
           elt: {
-            stat: string;
-            value: number;
+            stat: string
+            value: number
           }
         ) => {
           const foundStatBonus = item.statBonuses.find(
-            (statBonus) =>
-              typeof statBonus !== 'string' &&
-              String(statBonus.stat) === elt.stat &&
-              statBonus.value === elt.value
+            statBonus =>
+              typeof statBonus !== 'string'
+              && String(statBonus.stat) === elt.stat
+              && statBonus.value === elt.value
           );
           if (foundStatBonus === undefined) {
             result.push(elt);
           }
+
           return result;
         },
         []
@@ -327,20 +327,21 @@ const update = (req: Request, res: Response): void => {
 
       const charParamBonusesToStay: string[] = [];
       interface ICharParamBonusElt extends ICharParamBonus {
-        _id: ObjectId;
+        _id: ObjectId
       }
       const charParamBonusesToRemove = item.charParamBonuses.reduce(
         (result: string[], elt: ICharParamBonusElt) => {
           const foundCharParamBonus = charParamBonuses.find(
-            (charParamBonus) =>
-              charParamBonus.charParam === String(elt.charParam) &&
-              charParamBonus.value === elt.value
+            charParamBonus =>
+              charParamBonus.charParam === String(elt.charParam)
+              && charParamBonus.value === elt.value
           );
           if (foundCharParamBonus === undefined) {
             result.push(String(elt._id));
           } else {
             charParamBonusesToStay.push(String(elt._id));
           }
+
           return result;
         },
         []
@@ -349,51 +350,54 @@ const update = (req: Request, res: Response): void => {
       const charParamBonusesToAdd = charParamBonuses.reduce(
         (
           result: Array<{
-            charParam: string;
-            value: number;
+            charParam: string
+            value: number
           }>,
           elt: {
-            charParam: string;
-            value: number;
+            charParam: string
+            value: number
           }
         ) => {
           const foundCharParamBonus = item.charParamBonuses.find(
-            (charParamBonus) =>
-              typeof charParamBonus !== 'string' &&
-              String(charParamBonus.charParam) === elt.charParam &&
-              charParamBonus.value === elt.value
+            charParamBonus =>
+              typeof charParamBonus !== 'string'
+              && String(charParamBonus.charParam) === elt.charParam
+              && charParamBonus.value === elt.value
           );
           if (foundCharParamBonus === undefined) {
             result.push(elt);
           }
+
           return result;
         },
         []
       );
 
       interface IEffectElt extends IEffect {
-        _id: ObjectId;
+        _id: ObjectId
       }
       const effectsToRemove = item.effects.reduce((result: string[], elt: IEffectElt) => {
         const foundEffect = effects.find(
-          (effect) => effect.id !== undefined && String(effect.id) === String(elt._id)
+          effect => effect.id !== undefined && String(effect.id) === String(elt._id)
         );
         if (foundEffect === undefined) {
           result.push(String(elt._id));
         }
+
         return result;
       }, []);
 
       interface IActionElt extends IAction {
-        _id: ObjectId;
+        _id: ObjectId
       }
       const actionsToRemove = item.actions.reduce((result: string[], elt: IActionElt) => {
         const foundAction = actions.find(
-          (action) => action.id !== undefined && String(action.id) === String(elt._id)
+          action => action.id !== undefined && String(action.id) === String(elt._id)
         );
         if (foundAction === undefined) {
           result.push(String(elt._id));
         }
+
         return result;
       }, []);
 
@@ -401,7 +405,7 @@ const update = (req: Request, res: Response): void => {
         const newIntl = {
           ...(item.i18n !== null && item.i18n !== undefined && item.i18n !== ''
             ? JSON.parse(item.i18n)
-            : {}),
+            : {})
         };
 
         Object.keys(i18n as Record<string, any>).forEach((lang) => {
@@ -414,76 +418,76 @@ const update = (req: Request, res: Response): void => {
       curateSkillBonusIds({
         skillBonusesToRemove,
         skillBonusesToAdd,
-        skillBonusesToStay,
+        skillBonusesToStay
       })
         .then((skillBonusIds) => {
           if (skillBonusIds.length > 0) {
-            item.skillBonuses = skillBonusIds.map((skillBonusId) => String(skillBonusId));
+            item.skillBonuses = skillBonusIds.map(skillBonusId => String(skillBonusId));
           } else if (skillBonuses !== null && skillBonuses.length === 0) {
             item.skillBonuses = [];
           }
           curateStatBonusIds({
             statBonusesToRemove,
             statBonusesToAdd,
-            statBonusesToStay,
+            statBonusesToStay
           })
             .then((statBonusIds) => {
               if (statBonusIds.length > 0) {
-                item.statBonuses = statBonusIds.map((statBonusId) => String(statBonusId));
+                item.statBonuses = statBonusIds.map(statBonusId => String(statBonusId));
               }
               curateCharParamBonusIds({
                 charParamBonusesToRemove,
                 charParamBonusesToAdd,
-                charParamBonusesToStay,
+                charParamBonusesToStay
               })
                 .then((charParamBonusIds) => {
                   if (charParamBonusIds.length > 0) {
-                    item.charParamBonuses = charParamBonusIds.map((charParamBonusId) =>
+                    item.charParamBonuses = charParamBonusIds.map(charParamBonusId =>
                       String(charParamBonusId)
                     );
                   }
                   smartUpdateEffects({
                     effectsToRemove,
-                    effectsToUpdate: effects,
+                    effectsToUpdate: effects
                   })
                     .then((effectsIds) => {
                       if (effectsIds.length > 0) {
-                        item.effects = effectsIds.map((effectsId) => String(effectsId));
+                        item.effects = effectsIds.map(effectsId => String(effectsId));
                       }
                       smartUpdateActions({
                         actionsToRemove,
-                        actionsToUpdate: actions,
+                        actionsToUpdate: actions
                       })
                         .then((actionsIds) => {
                           if (actionsIds.length > 0) {
-                            item.actions = actionsIds.map((actionsId) => String(actionsId));
+                            item.actions = actionsIds.map(actionsId => String(actionsId));
                           }
                           item
                             .save()
                             .then(() => {
                               res.send({ message: 'Item was updated successfully!', item });
                             })
-                            .catch((err: Error) => {
+                            .catch((err: unknown) => {
                               res.status(500).send(gemServerError(err));
                             });
                         })
-                        .catch((err: Error) => {
+                        .catch((err: unknown) => {
                           res.status(500).send(gemServerError(err));
                         });
                     })
-                    .catch((err: Error) => {
+                    .catch((err: unknown) => {
                       res.status(500).send(gemServerError(err));
                     });
                 })
-                .catch((err: Error) => {
+                .catch((err: unknown) => {
                   res.status(500).send(gemServerError(err));
                 });
             })
-            .catch((err: Error) => {
+            .catch((err: unknown) => {
               res.status(500).send(gemServerError(err));
             });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -496,13 +500,14 @@ const deleteItemById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Item ID'));
+
       return;
     }
     Item.findByIdAndDelete(id)
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
@@ -512,65 +517,65 @@ const deleteItem = (req: Request, res: Response): void => {
 
   findItemById(id as string)
     .then((item) => {
-      const skillBonusesToRemove = item.skillBonuses.map((elt) => elt._id);
-      const statBonusesToRemove = item.statBonuses.map((elt) => elt._id);
-      const charParamBonusesToRemove = item.charParamBonuses.map((elt) => elt._id);
-      const effectsToRemove = item.effects.map((elt) => elt._id);
-      const actionsToRemove = item.actions.map((elt) => elt._id);
+      const skillBonusesToRemove = item.skillBonuses.map(elt => elt._id);
+      const statBonusesToRemove = item.statBonuses.map(elt => elt._id);
+      const charParamBonusesToRemove = item.charParamBonuses.map(elt => elt._id);
+      const effectsToRemove = item.effects.map(elt => elt._id);
+      const actionsToRemove = item.actions.map(elt => elt._id);
 
       curateSkillBonusIds({
         skillBonusesToRemove,
         skillBonusesToAdd: [],
-        skillBonusesToStay: [],
+        skillBonusesToStay: []
       })
         .then(() => {
           curateStatBonusIds({
             statBonusesToRemove,
             statBonusesToAdd: [],
-            statBonusesToStay: [],
+            statBonusesToStay: []
           })
             .then(() => {
               curateCharParamBonusIds({
                 charParamBonusesToRemove,
                 charParamBonusesToAdd: [],
-                charParamBonusesToStay: [],
+                charParamBonusesToStay: []
               })
                 .then(() => {
                   smartUpdateEffects({
                     effectsToRemove,
-                    effectsToUpdate: [],
+                    effectsToUpdate: []
                   })
                     .then(() => {
                       smartUpdateActions({
                         actionsToRemove,
-                        actionsToUpdate: [],
+                        actionsToUpdate: []
                       })
                         .then(() => {
                           deleteItemById(id as string)
                             .then(() => {
                               res.send({ message: 'Item was deleted successfully!' });
                             })
-                            .catch((err: Error) => {
+                            .catch((err: unknown) => {
                               res.status(500).send(gemServerError(err));
                             });
                         })
-                        .catch((err: Error) => {
+                        .catch((err: unknown) => {
                           res.status(500).send(gemServerError(err));
                         });
                     })
-                    .catch((err: Error) => {
+                    .catch((err: unknown) => {
                       res.status(500).send(gemServerError(err));
                     });
                 })
-                .catch((err: Error) => {
+                .catch((err: unknown) => {
                   res.status(500).send(gemServerError(err));
                 });
             })
-            .catch((err: Error) => {
+            .catch((err: unknown) => {
               res.status(500).send(gemServerError(err));
             });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -580,35 +585,38 @@ const deleteItem = (req: Request, res: Response): void => {
 };
 
 interface CuratedIItem {
-  i18n: Record<string, any> | Record<string, unknown>;
-  item: any;
+  i18n: Record<string, unknown>
+  item: any
 }
 
 const findSingle = (req: Request, res: Response): void => {
   const { itemId } = req.query;
   if (itemId === undefined || typeof itemId !== 'string') {
     res.status(400).send(gemInvalidField('Item ID'));
+
     return;
   }
   findItemById(itemId)
     .then((itemSent) => {
-      const curatedActions =
-        itemSent.actions.length > 0
+      const curatedActions
+        = itemSent.actions.length > 0
           ? itemSent.actions.map((action) => {
               const data = action.toJSON();
+
               return {
                 ...data,
-                ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {})
               };
             })
           : [];
-      const curatedEffects =
-        itemSent.effects.length > 0
+      const curatedEffects
+        = itemSent.effects.length > 0
           ? itemSent.effects.map((effect) => {
               const data = effect.toJSON();
+
               return {
                 ...data,
-                ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {})
               };
             })
           : [];
@@ -617,11 +625,11 @@ const findSingle = (req: Request, res: Response): void => {
       item.effects = curatedEffects;
       const sentObj = {
         item,
-        i18n: curateI18n(itemSent.i18n),
+        i18n: curateI18n(itemSent.i18n)
       };
       res.send(sentObj);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
@@ -631,23 +639,25 @@ const findAll = (req: Request, res: Response): void => {
     .then((items) => {
       const curatedItems: CuratedIItem[] = [];
       items.forEach((itemSent) => {
-        const curatedActions =
-          itemSent.actions.length > 0
+        const curatedActions
+          = itemSent.actions.length > 0
             ? itemSent.actions.map((action) => {
                 const data = action.toJSON();
+
                 return {
                   ...data,
-                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {})
                 };
               })
             : [];
-        const curatedEffects =
-          itemSent.effects.length > 0
+        const curatedEffects
+          = itemSent.effects.length > 0
             ? itemSent.effects.map((effect) => {
                 const data = effect.toJSON();
+
                 return {
                   ...data,
-                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {})
                 };
               })
             : [];
@@ -656,13 +666,13 @@ const findAll = (req: Request, res: Response): void => {
         item.effects = curatedEffects;
         curatedItems.push({
           item,
-          i18n: curateI18n(itemSent.i18n),
+          i18n: curateI18n(itemSent.i18n)
         });
       });
 
       res.send(curatedItems);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const findAllStarter = (req: Request, res: Response): void => {
@@ -670,23 +680,25 @@ const findAllStarter = (req: Request, res: Response): void => {
     .then((items) => {
       const curatedItems: CuratedIItem[] = [];
       items.forEach((itemSent) => {
-        const curatedActions =
-          itemSent.actions.length > 0
+        const curatedActions
+          = itemSent.actions.length > 0
             ? itemSent.actions.map((action) => {
                 const data = action.toJSON();
+
                 return {
                   ...data,
-                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {})
                 };
               })
             : [];
-        const curatedEffects =
-          itemSent.effects.length > 0
+        const curatedEffects
+          = itemSent.effects.length > 0
             ? itemSent.effects.map((effect) => {
                 const data = effect.toJSON();
+
                 return {
                   ...data,
-                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {})
                 };
               })
             : [];
@@ -695,13 +707,13 @@ const findAllStarter = (req: Request, res: Response): void => {
         item.effects = curatedEffects;
         curatedItems.push({
           item,
-          i18n: curateI18n(itemSent.i18n),
+          i18n: curateI18n(itemSent.i18n)
         });
       });
 
       res.send(curatedItems);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export { create, deleteItem, findAll, findAllStarter, findItemById, findSingle, update };

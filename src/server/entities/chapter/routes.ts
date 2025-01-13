@@ -9,7 +9,7 @@ import {
   findAll,
   findSingle,
   findAllByRuleBook,
-  changePagesOrder,
+  changePagesOrder
 } from './controller';
 
 export default (app: Router): void => {

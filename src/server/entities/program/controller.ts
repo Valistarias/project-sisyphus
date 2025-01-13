@@ -14,7 +14,7 @@ import { curateI18n } from '../../utils';
 const { Program } = db;
 
 interface findAllPayload {
-  starterKit?: string | Record<string, string[]>;
+  starterKit?: string | Record<string, string[]>
 }
 
 const findPrograms = async (options?: findAllPayload): Promise<HydratedIProgram[]> =>
@@ -29,7 +29,7 @@ const findPrograms = async (options?: findAllPayload): Promise<HydratedIProgram[
           resolve(res);
         }
       })
-      .catch(async (err: Error) => {
+      .catch(async (err: unknown) => {
         reject(err);
       });
   });
@@ -46,7 +46,7 @@ const findProgramById = async (id: string): Promise<HydratedIProgram> =>
           resolve(res);
         }
       })
-      .catch(async (err: Error) => {
+      .catch(async (err: unknown) => {
         reject(err);
       });
   });
@@ -66,18 +66,19 @@ const create = (req: Request, res: Response): void => {
     aiSummoned,
     uses,
     radius,
-    damages,
+    damages
   } = req.body;
   if (
-    title === undefined ||
-    summary === undefined ||
-    ram === undefined ||
-    rarity === undefined ||
-    programScope === undefined ||
-    itemType === undefined ||
-    cost === undefined
+    title === undefined
+    || summary === undefined
+    || ram === undefined
+    || rarity === undefined
+    || programScope === undefined
+    || itemType === undefined
+    || cost === undefined
   ) {
     res.status(400).send(gemInvalidField('Program'));
+
     return;
   }
 
@@ -93,7 +94,7 @@ const create = (req: Request, res: Response): void => {
     programScope,
     starterKit,
     itemType,
-    uses,
+    uses
   });
 
   if (i18n !== null) {
@@ -104,24 +105,24 @@ const create = (req: Request, res: Response): void => {
     damagesToRemove: [],
     damagesToStay: [],
     damagesToAdd: damages as Array<{
-      damageType: string;
-      dices: string;
-    }>,
+      damageType: string
+      dices: string
+    }>
   })
     .then((damageIds) => {
       if (damageIds.length > 0) {
-        program.damages = damageIds.map((damageId) => String(damageId));
+        program.damages = damageIds.map(damageId => String(damageId));
       }
       program
         .save()
         .then(() => {
           res.send(program);
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -142,10 +143,11 @@ const update = (req: Request, res: Response): void => {
     uses = null,
     radius = null,
     damages = null,
-    itemType = null,
+    itemType = null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Program ID'));
+
     return;
   }
 
@@ -190,40 +192,42 @@ const update = (req: Request, res: Response): void => {
 
       const damagesToStay: string[] = [];
       interface IDamageElt extends IDamage {
-        _id: ObjectId;
+        _id: ObjectId
       }
       const damagesToRemove = program.damages.reduce((result: string[], elt: IDamageElt) => {
         const foundDamage = damages.find(
-          (damage) => damage.damageType === String(elt.damageType) && damage.dices === elt.dices
+          damage => damage.damageType === String(elt.damageType) && damage.dices === elt.dices
         );
         if (foundDamage === undefined) {
           result.push(String(elt._id));
         } else {
           damagesToStay.push(String(elt._id));
         }
+
         return result;
       }, []);
 
       const damagesToAdd = damages.reduce(
         (
           result: Array<{
-            damageType: string;
-            dices: string;
+            damageType: string
+            dices: string
           }>,
           elt: {
-            damageType: string;
-            dices: string;
+            damageType: string
+            dices: string
           }
         ) => {
           const foundDamage = program.damages.find(
-            (damage) =>
-              typeof damage !== 'string' &&
-              String(damage.damageType) === elt.damageType &&
-              damage.dices === elt.dices
+            damage =>
+              typeof damage !== 'string'
+              && String(damage.damageType) === elt.damageType
+              && damage.dices === elt.dices
           );
           if (foundDamage === undefined) {
             result.push(elt);
           }
+
           return result;
         },
         []
@@ -233,7 +237,7 @@ const update = (req: Request, res: Response): void => {
         const newIntl = {
           ...(program.i18n !== null && program.i18n !== undefined && program.i18n !== ''
             ? JSON.parse(program.i18n)
-            : {}),
+            : {})
         };
 
         Object.keys(i18n as Record<string, any>).forEach((lang) => {
@@ -246,11 +250,11 @@ const update = (req: Request, res: Response): void => {
       curateDamageIds({
         damagesToRemove,
         damagesToAdd,
-        damagesToStay,
+        damagesToStay
       })
         .then((damageIds) => {
           if (damageIds.length > 0) {
-            program.damages = damageIds.map((skillBonusId) => String(skillBonusId));
+            program.damages = damageIds.map(skillBonusId => String(skillBonusId));
           } else if (damageIds !== null && damageIds.length === 0) {
             program.damages = [];
           }
@@ -259,11 +263,11 @@ const update = (req: Request, res: Response): void => {
             .then(() => {
               res.send({ message: 'Program was updated successfully!', program });
             })
-            .catch((err: Error) => {
+            .catch((err: unknown) => {
               res.status(500).send(gemServerError(err));
             });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -276,13 +280,14 @@ const deleteProgramById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Program ID'));
+
       return;
     }
     Program.findByIdAndDelete(id)
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
@@ -296,7 +301,7 @@ const deleteProgram = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'Program was deleted successfully!' });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -307,20 +312,21 @@ const deleteProgram = (req: Request, res: Response): void => {
 
 interface InternationalizedProgram extends Omit<IProgram, 'ai'> {
   ai?: {
-    i18n: Record<string, any> | Record<string, unknown>;
-    nPC: any;
-  };
+    i18n: Record<string, unknown>
+    nPC: any
+  }
 }
 
 interface CuratedIProgram {
-  i18n: Record<string, any> | Record<string, unknown>;
-  program: InternationalizedProgram;
+  i18n: Record<string, unknown>
+  program: InternationalizedProgram
 }
 
 const findSingle = (req: Request, res: Response): void => {
   const { programId } = req.query;
   if (programId === undefined || typeof programId !== 'string') {
     res.status(400).send(gemInvalidField('Program ID'));
+
     return;
   }
   findProgramById(programId)
@@ -329,16 +335,16 @@ const findSingle = (req: Request, res: Response): void => {
       if (programSent.ai !== undefined) {
         program.ai = {
           nPC: program.ai,
-          i18n: programSent.ai.i18n !== undefined ? JSON.parse(programSent.ai.i18n) : {},
+          i18n: programSent.ai.i18n !== undefined ? JSON.parse(programSent.ai.i18n) : {}
         };
       }
       const sentObj = {
         program,
-        i18n: curateI18n(programSent.i18n),
+        i18n: curateI18n(programSent.i18n)
       };
       res.send(sentObj);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
@@ -352,18 +358,18 @@ const findAll = (req: Request, res: Response): void => {
         if (programSent.ai !== undefined) {
           program.ai = {
             nPC: program.ai,
-            i18n: programSent.ai.i18n !== undefined ? JSON.parse(programSent.ai.i18n) : {},
+            i18n: programSent.ai.i18n !== undefined ? JSON.parse(programSent.ai.i18n) : {}
           };
         }
         curatedPrograms.push({
           program,
-          i18n: curateI18n(programSent.i18n),
+          i18n: curateI18n(programSent.i18n)
         });
       });
 
       res.send(curatedPrograms);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const findAllStarter = (req: Request, res: Response): void => {
@@ -375,18 +381,18 @@ const findAllStarter = (req: Request, res: Response): void => {
         if (programSent.ai !== undefined) {
           program.ai = {
             nPC: program.ai,
-            i18n: programSent.ai.i18n !== undefined ? JSON.parse(programSent.ai.i18n) : {},
+            i18n: programSent.ai.i18n !== undefined ? JSON.parse(programSent.ai.i18n) : {}
           };
         }
         curatedPrograms.push({
           program,
-          i18n: curateI18n(programSent.i18n),
+          i18n: curateI18n(programSent.i18n)
         });
       });
 
       res.send(curatedPrograms);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export { create, deleteProgram, findAll, findAllStarter, findProgramById, findSingle, update };

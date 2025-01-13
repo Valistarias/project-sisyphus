@@ -8,7 +8,6 @@ import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/global
 import type { HydratedIUser } from './model';
 import type { IRole } from '../role/model';
 
-
 const { User } = db;
 
 const findUserById = async (id: string): Promise<HydratedIUser> =>
@@ -36,10 +35,11 @@ const update = (req: Request, res: Response): void => {
     newPass = null,
     theme = null,
     charCreationTips = null,
-    scale = null,
+    scale = null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('User ID'));
+
     return;
   }
   findUserById(id as string)
@@ -54,6 +54,7 @@ const update = (req: Request, res: Response): void => {
         const passwordIsValid = bcrypt.compareSync(oldPass as string, user.password);
         if (!passwordIsValid) {
           res.status(400).send(gemInvalidField('password'));
+
           return;
         }
         user.password = bcrypt.hashSync(newPass as string, 8);
@@ -81,7 +82,7 @@ const update = (req: Request, res: Response): void => {
 
           res.send(user);
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })

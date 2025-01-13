@@ -4,13 +4,12 @@ import Entity from './entity';
 
 import type { ICuratedNotion } from '../../types';
 
-
 interface INotionsPayload {
-  notionId: string;
+  notionId: string
 }
 
 interface IRulebookPayload {
-  ruleBookId?: string;
+  ruleBookId?: string
 }
 
 export default class Notions extends Entity {
@@ -20,7 +19,7 @@ export default class Notions extends Entity {
   constructor() {
     super('notions');
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })
@@ -32,7 +31,7 @@ export default class Notions extends Entity {
           });
       });
 
-    this.getAllByRuleBook = async (payload) =>
+    this.getAllByRuleBook = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/byrulebook/`, { params: payload })

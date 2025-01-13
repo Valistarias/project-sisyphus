@@ -20,9 +20,10 @@ const AdminGlobalValues: FC = () => {
     if (globalValues === null || globalValues.length === 0) {
       return null;
     }
+
     return (
       <Aul className="adminGlobalValues__global-value-list" noPoints>
-        {globalValues.map((globalValue) => (
+        {globalValues.map(globalValue => (
           <Ali
             className={classTrim(`
               adminGlobalValues__global-value-list__elt

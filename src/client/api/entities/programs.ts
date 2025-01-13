@@ -4,9 +4,8 @@ import Entity from './entity';
 
 import type { ICuratedProgram } from '../../types';
 
-
 interface IProgramPayload {
-  programId: string;
+  programId: string
 }
 
 export default class Programs extends Entity {
@@ -16,7 +15,7 @@ export default class Programs extends Entity {
   constructor() {
     super('programs');
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })

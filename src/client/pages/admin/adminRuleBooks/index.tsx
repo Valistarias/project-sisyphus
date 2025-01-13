@@ -22,6 +22,7 @@ const AdminRuleBooks: FC = () => {
     if (ruleBooks.length === 0) {
       return null;
     }
+
     return (
       <Aul className="adminRuleBooks__rulebook-list" noPoints>
         {ruleBooks.map(({ ruleBook }) => (
@@ -36,9 +37,11 @@ const AdminRuleBooks: FC = () => {
             <Ap className="adminRuleBooks__rulebook-list__elt__type">
               {t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 })}
             </Ap>
-            <Ap className="adminRuleBooks__rulebook-list__elt__details">{`${
-              ruleBook.archived ? t('terms.ruleBook.archived') : ''
-            } ${ruleBook.draft ? t('terms.ruleBook.draft') : ''}`}</Ap>
+            <Ap className="adminRuleBooks__rulebook-list__elt__details">
+              {`${
+                ruleBook.archived ? t('terms.ruleBook.archived') : ''
+              } ${ruleBook.draft ? t('terms.ruleBook.draft') : ''}`}
+            </Ap>
             <Button href={`/admin/rulebook/${ruleBook._id}`}>
               {t('adminRuleBooks.editRuleBook', { ns: 'pages' })}
             </Button>

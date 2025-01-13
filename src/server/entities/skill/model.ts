@@ -4,22 +4,22 @@ import type { HydratedISkillBranch, IStat } from '../index';
 
 interface ISkill {
   /** The title of the skill */
-  title: string;
+  title: string
   /** A summary of the skill */
-  summary: string;
+  summary: string
   /** A 3 letter string used for the formulas */
-  formulaId: string;
+  formulaId: string
   /** The internationnal content, as a json, stringified */
-  i18n?: string;
+  i18n?: string
   /** The associated stat */
-  stat: ObjectId;
+  stat: ObjectId
   /** When the skill was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 type LeanISkill = Omit<ISkill, 'stat'> & {
-  stat: IStat;
-  branches: HydratedISkillBranch[];
+  stat: IStat
+  branches: HydratedISkillBranch[]
 };
 
 type HydratedISkill = HydratedDocument<LeanISkill>;
@@ -32,16 +32,16 @@ const skillSchema = new Schema<ISkill>(
     i18n: String,
     stat: {
       type: Schema.Types.ObjectId,
-      ref: 'Stat',
+      ref: 'Stat'
     },
     createdAt: {
       type: Date,
-      default: Date.now,
-    },
+      default: Date.now
+    }
   },
   {
     toJSON: { virtuals: true },
-    toObject: { virtuals: true },
+    toObject: { virtuals: true }
   }
 );
 
@@ -50,7 +50,7 @@ const skillSchema = new Schema<ISkill>(
 skillSchema.virtual('branches', {
   ref: 'SkillBranch',
   localField: '_id',
-  foreignField: 'skill',
+  foreignField: 'skill'
 });
 
 const SkillModel = (): Model<ISkill> => model('Skill', skillSchema);

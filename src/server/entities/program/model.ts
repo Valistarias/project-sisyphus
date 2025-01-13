@@ -4,42 +4,42 @@ import type { IDamage, INPC } from '../index';
 
 interface IProgram {
   /** The title of the program */
-  title: string;
+  title: string
   /** A summary of the program */
-  summary: string;
+  summary: string
   /** The internationnal content, as a json, stringified */
-  i18n?: string;
+  i18n?: string
   /** The rarity of the program */
-  rarity: ObjectId;
+  rarity: ObjectId
   /** Is this weapon in the starter kit ?
    * (always -> element included, never -> not included, option -> can be chosen with similar weapons) */
-  starterKit?: 'always' | 'never' | 'option';
+  starterKit?: 'always' | 'never' | 'option'
   /** The type of item */
-  itemType: ObjectId;
+  itemType: ObjectId
   /** The type of program, as his range or type */
-  programScope: ObjectId;
+  programScope: ObjectId
   /** How many times the program is usable before detroying itseld (undefined | 0 = no limits) */
-  uses: number;
+  uses: number
   /** How many RAM it costs */
-  ram: number;
+  ram: number
   /** How many meters it blasts (in meter) */
-  radius?: number;
+  radius?: number
   /** The cost of the program */
-  cost: number;
+  cost: number
   /** The summon of the program */
-  ai?: ObjectId;
+  ai?: ObjectId
   /** How many AIs the program summons */
-  aiSummoned?: number;
+  aiSummoned?: number
   /** The damages of the program */
-  damages?: string[] | ObjectId[];
+  damages?: string[] | ObjectId[]
   /** When the program was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 type HydratedIProgram = HydratedDocument<
   Omit<IProgram, 'damages' | 'ai'> & {
-    damages: IDamage[] | string[];
-    ai: INPC;
+    damages: IDamage[] | string[]
+    ai: INPC
   }
 >;
 
@@ -52,36 +52,36 @@ const programSchema = new Schema<IProgram>({
   i18n: String,
   rarity: {
     type: Schema.Types.ObjectId,
-    ref: 'Rarity',
+    ref: 'Rarity'
   },
   starterKit: {
     type: String,
-    default: 'never',
+    default: 'never'
   },
   itemType: {
     type: Schema.Types.ObjectId,
-    ref: 'ItemType',
+    ref: 'ItemType'
   },
   programScope: {
     type: Schema.Types.ObjectId,
-    ref: 'ProgramScope',
+    ref: 'ProgramScope'
   },
   ai: {
     type: Schema.Types.ObjectId,
-    ref: 'NPC',
+    ref: 'NPC'
   },
   damages: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'Damage',
-    },
+      ref: 'Damage'
+    }
   ],
   uses: Number,
   cost: Number,
   createdAt: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
 });
 
 const ProgramModel = (): Model<IProgram> => model('Program', programSchema);

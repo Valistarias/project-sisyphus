@@ -17,13 +17,13 @@ import './menuBar.scss';
 
 interface IMenuBar {
   /** The text Editor */
-  editor?: Editor | undefined;
+  editor?: Editor | undefined
   /** Is the text editor with all options ? */
-  complete: boolean;
+  complete: boolean
   /** The className of the menubar */
-  className: string;
+  className: string
   /** The RuleBookId, if there is one */
-  ruleBookId?: string;
+  ruleBookId?: string
 }
 
 export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId }) => {
@@ -46,7 +46,7 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId 
     () =>
       notions.map(({ notion }) => ({
         value: notion._id,
-        label: notion.title,
+        label: notion.title
       })),
     [notions]
   );
@@ -55,13 +55,13 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId 
     const groupedOptions: IGroupedOption[] = [];
     const notionOptions = notions.map(({ notion }) => ({
       value: notion._id,
-      label: notion.title,
+      label: notion.title
     }));
 
     groupedOptions.push({
       label: t('richTextElement.highlight.highlightNotionCat', { ns: 'components' }),
       cat: 'notions',
-      options: notionOptions,
+      options: notionOptions
     });
 
     return groupedOptions;
@@ -72,6 +72,7 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId 
       await new Promise((resolve) => {
         if (api === undefined) {
           resolve(false);
+
           return;
         }
 
@@ -89,7 +90,7 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId 
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{t('serverErrors.CYPU-301')}</Ap>
                 </Alert>
-              ),
+              )
             });
             resolve(false);
           });
@@ -127,7 +128,7 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId 
       .chain()
       .insertContentAt(editor.state.selection.head, {
         type: 'reactComponentEmbed',
-        attrs: { notionId: selectedEmbed },
+        attrs: { notionId: selectedEmbed }
       })
       .focus()
       .run();
@@ -141,9 +142,10 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId 
     }
 
     const selectedGroup = highlightSelectChoices.find((groupElt) => {
-      if (groupElt.options.find((option) => option.value === selectedHighlight) !== null) {
+      if (groupElt.options.find(option => option.value === selectedHighlight) !== null) {
         return true;
       }
+
       return false;
     });
 
@@ -154,8 +156,8 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId 
         attrs: {
           idElt: selectedHighlight,
           textElt: textHighlight !== '' ? textHighlight : null,
-          typeElt: selectedGroup?.cat ?? null,
-        },
+          typeElt: selectedGroup?.cat ?? null
+        }
       })
       .focus()
       .run();
@@ -245,8 +247,7 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId 
           <Button
             size="small"
             onClick={() =>
-              editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
-            }
+              editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
           >
             {t('richTextElement.table.new', { ns: 'components' })}
           </Button>
@@ -283,85 +284,91 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId 
                 .chain()
                 .command(() => {
                   onHighlight();
+
                   return true;
                 })
-                .run()
-            }
+                .run()}
             active={editor.isActive('reactComponentHighlight')}
           >
             {t('richTextElement.highlight.button', { ns: 'components' })}
           </Button>
-          {highlightOpened ? (
-            <div className="menubar__categories__highlight__highlightbar">
-              <SmartSelect
-                options={highlightSelectChoices}
-                onChange={(choice) => {
-                  setTextHighlight(choice.label);
-                  setSelectedHighlight(choice.value);
-                }}
-              />
-              <Input
-                type="text"
-                placeholder={t('richTextElement.highlight.title', { ns: 'components' })}
-                onChange={(e) => {
-                  setTextHighlight(e.target.value);
-                }}
-                value={textHighlight}
-              />
-              <Button onClick={onConfirmHighlightBar}>
-                {t('richTextElement.highlight.confirm', { ns: 'components' })}
-              </Button>
-              <Button
-                onClick={() => {
-                  highlightOpen(false);
-                }}
-              >
-                {t('richTextElement.highlight.abort', { ns: 'components' })}
-              </Button>
-            </div>
-          ) : null}
+          {highlightOpened
+            ? (
+                <div className="menubar__categories__highlight__highlightbar">
+                  <SmartSelect
+                    options={highlightSelectChoices}
+                    onChange={(choice) => {
+                      setTextHighlight(choice.label);
+                      setSelectedHighlight(choice.value);
+                    }}
+                  />
+                  <Input
+                    type="text"
+                    placeholder={t('richTextElement.highlight.title', { ns: 'components' })}
+                    onChange={(e) => {
+                      setTextHighlight(e.target.value);
+                    }}
+                    value={textHighlight}
+                  />
+                  <Button onClick={onConfirmHighlightBar}>
+                    {t('richTextElement.highlight.confirm', { ns: 'components' })}
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      highlightOpen(false);
+                    }}
+                  >
+                    {t('richTextElement.highlight.abort', { ns: 'components' })}
+                  </Button>
+                </div>
+              )
+            : null}
         </div>
-        {complete ? (
-          <div className="menubar__categories__embeds">
-            <Ap className="menubar__titles">
-              {t('richTextElement.textEmbed', { ns: 'components' })}
-            </Ap>
-            <Button
-              onClick={() =>
-                editor
-                  .chain()
-                  .command(() => {
-                    onEmbed();
-                    return true;
-                  })
-                  .run()
-              }
-              active={editor.isActive('reactComponentEmbed')}
-            >
-              {t('richTextElement.notion.button', { ns: 'components' })}
-            </Button>
-            {embedBarOpened ? (
-              <div className="menubar__categories__embeds__embedbar">
-                <SmartSelect
-                  options={embedSelectChoices}
-                  onChange={(value) => {
-                    setSelectedEmbed(value);
-                  }}
-                />
-                <Button onClick={onConfirmEmbedBar}>
-                  {t('richTextElement.notion.confirm', { ns: 'components' })}
-                </Button>
+        {complete
+          ? (
+              <div className="menubar__categories__embeds">
+                <Ap className="menubar__titles">
+                  {t('richTextElement.textEmbed', { ns: 'components' })}
+                </Ap>
                 <Button
-                  onClick={() => {
-                    embedBarOpen(false);
-                  }}
+                  onClick={() =>
+                    editor
+                      .chain()
+                      .command(() => {
+                        onEmbed();
+
+                        return true;
+                      })
+                      .run()}
+                  active={editor.isActive('reactComponentEmbed')}
                 >
-                  {t('richTextElement.notion.abort', { ns: 'components' })}
+                  {t('richTextElement.notion.button', { ns: 'components' })}
                 </Button>
+                {embedBarOpened
+                  ? (
+                      <div className="menubar__categories__embeds__embedbar">
+                        <SmartSelect
+                          options={embedSelectChoices}
+                          onChange={(value) => {
+                            setSelectedEmbed(value);
+                          }}
+                        />
+                        <Button onClick={onConfirmEmbedBar}>
+                          {t('richTextElement.notion.confirm', { ns: 'components' })}
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            embedBarOpen(false);
+                          }}
+                        >
+                          {t('richTextElement.notion.abort', { ns: 'components' })}
+                        </Button>
+                      </div>
+                    )
+                  : null}
               </div>
-            ) : null}
-          </div>
-        ) : null}
+            )
+          : null}
       </div>
     </div>
   );

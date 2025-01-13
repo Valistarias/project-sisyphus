@@ -19,8 +19,8 @@ import { regexMail } from '../../utils';
 import './login.scss';
 
 interface FormValues {
-  mail: string;
-  password: string;
+  mail: string
+  password: string
 }
 
 const Login: FC = () => {
@@ -37,7 +37,7 @@ const Login: FC = () => {
     control,
     handleSubmit,
     setError,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   const params = useMemo(() => new URLSearchParams(search), [search]);
@@ -51,7 +51,7 @@ const Login: FC = () => {
           <Alert key={newId} id={newId} timer={5}>
             <Ap>{t('login.successRegister', { ns: 'pages' })}</Ap>
           </Alert>
-        ),
+        )
       });
       alertSent.current = true;
     }
@@ -63,7 +63,7 @@ const Login: FC = () => {
         api.auth
           .signin({
             mail,
-            password,
+            password
           })
           .then((data: IUser) => {
             setUser(data);
@@ -77,15 +77,15 @@ const Login: FC = () => {
               setError(data.sent as 'mail' | 'password', {
                 type: 'server',
                 message: t(`serverErrors.${data.code}`, {
-                  field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
-                }),
+                  field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize')
+                })
               });
             } else {
               setError('root.serverError', {
                 type: 'server',
                 message: t(`serverErrors.${data.code}`, {
-                  field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
-                }),
+                  field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize')
+                })
               });
             }
           });
@@ -99,9 +99,11 @@ const Login: FC = () => {
       <div className="login__main">
         <Avideo video="logo" className="login__main__video" />
         <form className="login__main__form" onSubmit={handleSubmit(onSubmit)} noValidate>
-          {errors.root?.serverError.message !== undefined ? (
-            <Aerror>{errors.root.serverError.message}</Aerror>
-          ) : null}
+          {errors.root?.serverError.message !== undefined
+            ? (
+                <Aerror>{errors.root.serverError.message}</Aerror>
+              )
+            : null}
           <Input
             control={control}
             inputName="mail"
@@ -110,8 +112,8 @@ const Login: FC = () => {
               required: t('mail.required', { ns: 'fields' }),
               pattern: {
                 value: regexMail,
-                message: t('mail.pattern', { ns: 'fields' }),
-              },
+                message: t('mail.pattern', { ns: 'fields' })
+              }
             }}
             label={t('mail.label', { ns: 'fields' })}
             autoComplete="username"
@@ -121,7 +123,7 @@ const Login: FC = () => {
             inputName="password"
             type="password"
             rules={{
-              required: t('password.required', { ns: 'fields' }),
+              required: t('password.required', { ns: 'fields' })
             }}
             label={t('password.label', { ns: 'fields' })}
             autoComplete="current-password"

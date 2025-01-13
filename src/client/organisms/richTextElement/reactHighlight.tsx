@@ -7,7 +7,7 @@ import { Highlight } from '../../molecules';
 
 interface ITest {
   /** The Node element */
-  node: unknown;
+  node: unknown
 }
 
 const HighlightReact: FC<ITest> = ({ node }) => (
@@ -27,22 +27,22 @@ export default Node.create({
   addAttributes() {
     return {
       idElt: {
-        default: '',
+        default: ''
       },
       typeElt: {
-        default: 'notion',
+        default: 'notion'
       },
       textElt: {
-        default: 'Link',
-      },
+        default: 'Link'
+      }
     };
   },
 
   parseHTML() {
     return [
       {
-        tag: 'react-component-highlight',
-      },
+        tag: 'react-component-highlight'
+      }
     ];
   },
 
@@ -52,5 +52,5 @@ export default Node.create({
 
   addNodeView() {
     return ReactNodeViewRenderer(HighlightReact);
-  },
+  }
 });

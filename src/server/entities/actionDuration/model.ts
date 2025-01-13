@@ -1,11 +1,11 @@
 import { Schema, model, type Model } from 'mongoose';
 
 interface IActionDuration {
-  name: string;
+  name: string
 }
 
 const ActionDurationSchema = new Schema<IActionDuration>({
-  name: String,
+  name: String
 });
 
 const ActionDurationModel = (): Model<IActionDuration> =>

@@ -28,6 +28,7 @@ const AdminImplants: FC = () => {
     if (implants === null || implants.length === 0) {
       return null;
     }
+
     return (
       <Aul className="adminImplants__implant-list" noPoints>
         {implants.map(({ implant }) => (
@@ -63,7 +64,7 @@ const AdminImplants: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }

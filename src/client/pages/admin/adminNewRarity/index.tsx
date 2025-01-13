@@ -15,8 +15,8 @@ import { Alert, RichTextElement, completeRichTextElementExtentions } from '../..
 import './adminNewRarity.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
+  name: string
+  nameFr: string
 }
 
 const AdminNewRarity: FC = () => {
@@ -30,18 +30,18 @@ const AdminNewRarity: FC = () => {
   const calledApi = useRef(false);
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   const onSaveRarity: SubmitHandler<FormValues> = useCallback(
@@ -61,8 +61,8 @@ const AdminNewRarity: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            summary: htmlFr,
-          },
+            summary: htmlFr
+          }
         };
       }
 
@@ -70,7 +70,7 @@ const AdminNewRarity: FC = () => {
         .create({
           title: name,
           summary: html,
-          i18n,
+          i18n
         })
         .then((rarity) => {
           const newId = getNewId();
@@ -80,7 +80,7 @@ const AdminNewRarity: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewRarity.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadRarities();
           void navigate(`/admin/rarity/${rarity._id}`);
@@ -91,15 +91,15 @@ const AdminNewRarity: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id',
-              })} by ${data.sent}`,
+                field: 'Formula Id'
+              })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -118,16 +118,18 @@ const AdminNewRarity: FC = () => {
     <div className="adminNewRarity">
       <form className="adminNewRarity__content" onSubmit={handleSubmit(onSaveRarity)} noValidate>
         <Atitle level={1}>{t('adminNewRarity.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminNewRarity__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameRarity.required', { ns: 'fields' }),
+              required: t('nameRarity.required', { ns: 'fields' })
             }}
             label={t('nameRarity.label', { ns: 'fields' })}
             className="adminNewRarity__basics__name"
@@ -137,7 +139,7 @@ const AdminNewRarity: FC = () => {
           <RichTextElement
             label={t('raritySummary.title', { ns: 'fields' })}
             editor={introEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />
@@ -162,7 +164,7 @@ const AdminNewRarity: FC = () => {
           <RichTextElement
             label={`${t('raritySummary.title', { ns: 'fields' })} (FR)`}
             editor={introFrEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />

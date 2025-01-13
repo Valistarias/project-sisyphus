@@ -12,7 +12,7 @@ import './embedNotion.scss';
 
 interface IEmbedNotion {
   /** The id for the notion called */
-  notionId: string;
+  notionId: string
 }
 
 const EmbedNotion: FC<IEmbedNotion> = ({ notionId }) => {
@@ -22,7 +22,7 @@ const EmbedNotion: FC<IEmbedNotion> = ({ notionId }) => {
 
   const textEditor = useEditor({
     extensions: completeRichTextElementExtentions,
-    editable: false,
+    editable: false
   });
 
   const calledApi = useRef(false);
@@ -46,7 +46,7 @@ const EmbedNotion: FC<IEmbedNotion> = ({ notionId }) => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }

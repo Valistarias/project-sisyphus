@@ -3,71 +3,71 @@ import type { InternationalizationType } from './global';
 // EnnemyAttacks ------------------------------------
 export interface IEnnemyAttack {
   /** The ID of the damage type */
-  _id: string;
+  _id: string
   /** The title of the Ennemy Attack */
-  title: string;
+  title: string
   /** A summary of the Ennemy Attack */
-  summary: string;
+  summary: string
   /** The internationnal content, as a json, stringified */
-  i18n: InternationalizationType;
+  i18n: InternationalizationType
   /** The associated damageType */
-  damageType: string;
+  damageType: string
   /** The range of the attack */
-  weaponScope: string;
+  weaponScope: string
   /** The dices formula of the damage (ex: 2d6 + 1) */
-  dices: string;
+  dices: string
   /** The bonus to roll this attack */
-  bonusToHit?: number;
+  bonusToHit?: number
   /** When the Ennemy Attack was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 export interface ICuratedEnnemyAttack {
-  i18n: InternationalizationType;
-  ennemyAttack: IEnnemyAttack;
+  i18n: InternationalizationType
+  ennemyAttack: IEnnemyAttack
 }
 
 // NPC ------------------------------------
 export interface INPC {
   /** The ID of the rarity */
-  _id: string;
+  _id: string
   /** The title of the NPC */
-  title: string;
+  title: string
   /** A summary of the NPC */
-  summary: string;
+  summary: string
   /** Is the NPC virtual */
-  virtual: boolean;
+  virtual: boolean
   /** The internationnal content, as a json, stringified */
-  i18n?: string;
+  i18n?: string
   /** The land speed of the NPC (in meter) */
-  speed: number;
+  speed: number
   /** The flight speed of the NPC (in meter) */
-  flightSpeed?: number;
+  flightSpeed?: number
   /** The swim speed of the NPC (in meter) */
-  swimSpeed?: number;
+  swimSpeed?: number
   /** The HP of the NPC */
-  hp: number;
+  hp: number
   /** The physical resistance of the NPC */
-  pr?: number;
+  pr?: number
   /** The ArtNet resistance of the NPC */
-  ar: number;
+  ar: number
   /** The attacks of the NPC */
-  attacks: IEnnemyAttack[];
+  attacks: IEnnemyAttack[]
   /** When the NPC was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 export interface BasicNPC extends Omit<INPC, 'attacks'> {
   /** The attacks of the NPC */
-  attacks: string[];
+  attacks: string[]
 }
 
 export interface ICuratedNPC {
-  i18n: InternationalizationType;
-  nPC: INPC;
+  i18n: InternationalizationType
+  nPC: INPC
 }
 
 export interface ICuratedBasicNPC {
-  i18n: InternationalizationType;
-  nPC: BasicNPC;
+  i18n: InternationalizationType
+  nPC: BasicNPC
 }

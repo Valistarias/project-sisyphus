@@ -14,7 +14,7 @@ import {
   Input,
   NodeIconSelect,
   SmartSelect,
-  type ISingleValueSelect,
+  type ISingleValueSelect
 } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
@@ -25,12 +25,12 @@ import { classTrim } from '../../../utils';
 import './adminEditWeaponType.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  weaponStyle: string;
-  itemType: string;
-  icon: string;
-  needTraining: string;
+  name: string
+  nameFr: string
+  weaponStyle: string
+  itemType: string
+  icon: string
+  needTraining: string
 }
 
 const AdminEditWeaponType: FC = () => {
@@ -40,7 +40,7 @@ const AdminEditWeaponType: FC = () => {
   const { weaponStyles, itemTypes, reloadWeaponTypes } = useGlobalVars();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
-    ConfMessageEvent: {},
+    ConfMessageEvent: {}
   };
   const { id } = useParams();
   const navigate = useNavigate();
@@ -57,23 +57,23 @@ const AdminEditWeaponType: FC = () => {
   const [weaponTypeTextFr, setWeaponTypeTextFr] = useState('');
 
   const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const boolRange = useMemo(
     () => [
       {
         value: '1',
-        label: t('terms.general.yes'),
+        label: t('terms.general.yes')
       },
       {
         value: '0',
-        label: t('terms.general.no'),
-      },
+        label: t('terms.general.no')
+      }
     ],
     [t]
   );
@@ -83,24 +83,25 @@ const AdminEditWeaponType: FC = () => {
       weaponStyles.map(({ weaponStyle }) => ({
         value: weaponStyle._id,
         // TODO : Handle Internationalization
-        label: weaponStyle.title,
+        label: weaponStyle.title
       })),
     [weaponStyles]
   );
 
   const itemTypeList = useMemo(() => {
     const curatedList: Array<{
-      value: string;
-      label: string;
+      value: string
+      label: string
     }> = [];
     itemTypes.forEach((itemType) => {
       if (itemType.name === 'wep' || itemType.name === 'psm') {
         curatedList.push({
           value: itemType._id,
-          label: t(`itemTypeNames.${itemType.name}`),
+          label: t(`itemTypeNames.${itemType.name}`)
         });
       }
     });
+
     return curatedList;
   }, [itemTypes, t]);
 
@@ -119,13 +120,13 @@ const AdminEditWeaponType: FC = () => {
       defaultData.icon = weaponType.icon;
       defaultData.needTraining = weaponType.needTraining ? '1' : '0';
       const selectedWeaponStyle = weaponStylesSelect.find(
-        (weaponStyleType) => weaponStyleType.value === weaponType.weaponStyle._id
+        weaponStyleType => weaponStyleType.value === weaponType.weaponStyle._id
       );
       if (selectedWeaponStyle !== undefined) {
         defaultData.weaponStyle = String(selectedWeaponStyle.value);
       }
       const selectedItemType = itemTypesSelect.find(
-        (itemType) => itemType.value === weaponType.itemType._id
+        itemType => itemType.value === weaponType.itemType._id
       );
       if (selectedItemType !== undefined) {
         defaultData.itemType = String(selectedItemType.value);
@@ -133,6 +134,7 @@ const AdminEditWeaponType: FC = () => {
       if (i18n.fr !== undefined) {
         defaultData.nameFr = i18n.fr.title ?? '';
       }
+
       return defaultData;
     },
     []
@@ -143,25 +145,25 @@ const AdminEditWeaponType: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(weaponTypeData, weaponStyleSelect, itemTypeList),
       [createDefaultData, weaponStyleSelect, weaponTypeData, itemTypeList]
-    ),
+    )
   });
 
   const onSaveWeaponType: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, weaponStyle, icon, needTraining, itemType }) => {
       if (
-        weaponTypeText === null ||
-        weaponTypeTextFr === null ||
-        textEditor === null ||
-        textFrEditor === null ||
-        icon === null ||
-        needTraining === null ||
-        itemType === null ||
-        api === undefined
+        weaponTypeText === null
+        || weaponTypeTextFr === null
+        || textEditor === null
+        || textFrEditor === null
+        || icon === null
+        || needTraining === null
+        || itemType === null
+        || api === undefined
       ) {
         return;
       }
@@ -179,8 +181,8 @@ const AdminEditWeaponType: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            text: htmlTextFr,
-          },
+            text: htmlTextFr
+          }
         };
       }
 
@@ -193,7 +195,7 @@ const AdminEditWeaponType: FC = () => {
           itemType,
           needTraining: needTraining === '1',
           summary: htmlText,
-          i18n,
+          i18n
         })
         .then(() => {
           const newId = getNewId();
@@ -203,7 +205,7 @@ const AdminEditWeaponType: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditWeaponType.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadWeaponTypes();
         })
@@ -213,15 +215,15 @@ const AdminEditWeaponType: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id',
-              })} by ${data.sent}`,
+                field: 'Formula Id'
+              })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -237,7 +239,7 @@ const AdminEditWeaponType: FC = () => {
       createAlert,
       t,
       reloadWeaponTypes,
-      setError,
+      setError
     ]
   );
 
@@ -250,9 +252,9 @@ const AdminEditWeaponType: FC = () => {
         title: t('adminEditWeaponType.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditWeaponType.confirmDeletion.text', {
           ns: 'pages',
-          elt: weaponTypeData?.weaponType.title,
+          elt: weaponTypeData?.weaponType.title
         }),
-        confirmCta: t('adminEditWeaponType.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditWeaponType.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
@@ -267,7 +269,7 @@ const AdminEditWeaponType: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditWeaponType.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
                 reloadWeaponTypes();
                 void navigate('/admin/weapontypes');
@@ -278,15 +280,15 @@ const AdminEditWeaponType: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.weaponType.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.weaponType.name`), 'capitalize')
+                    })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.weaponType.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.weaponType.name`), 'capitalize')
+                    })
                   });
                 }
               });
@@ -307,7 +309,7 @@ const AdminEditWeaponType: FC = () => {
     createAlert,
     reloadWeaponTypes,
     navigate,
-    setError,
+    setError
   ]);
 
   useEffect(() => {
@@ -331,7 +333,7 @@ const AdminEditWeaponType: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -346,6 +348,7 @@ const AdminEditWeaponType: FC = () => {
         () => {}
       );
     }, 600000);
+
     return () => {
       if (saveTimer.current !== null) {
         clearInterval(saveTimer.current);
@@ -380,16 +383,18 @@ const AdminEditWeaponType: FC = () => {
           {t('adminEditWeaponType.return', { ns: 'pages' })}
         </Button>
         <Atitle level={2}>{t('adminEditWeaponType.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror className="adminEditWeaponType__error">{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror className="adminEditWeaponType__error">{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminEditWeaponType__visual">
           <NodeIconSelect
             label={t('iconWeaponType.label', { ns: 'fields' })}
             control={control}
             inputName="icon"
             rules={{
-              required: t('iconWeaponType.required', { ns: 'fields' }),
+              required: t('iconWeaponType.required', { ns: 'fields' })
             }}
           />
         </div>
@@ -421,7 +426,7 @@ const AdminEditWeaponType: FC = () => {
             />
             <SmartSelect
               control={control}
-              inputName={`needTraining`}
+              inputName="needTraining"
               label={t('weaponTypeNeedTraining.label', { ns: 'fields' })}
               rules={{ required: t('weaponTypeNeedTraining.required', { ns: 'fields' }) }}
               options={boolRange}
@@ -450,7 +455,7 @@ const AdminEditWeaponType: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt((prev) => !prev);
+              setDisplayInt(prev => !prev);
             }}
             className="adminEditWeaponType__intl-title__btn"
           />

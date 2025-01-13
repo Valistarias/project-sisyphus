@@ -11,7 +11,7 @@ import { ThemeProvider, useTheme } from './theme';
 
 interface ProviderProps {
   /** The childrens of the Providers element */
-  children: ReactNode;
+  children: ReactNode
 }
 
 const Providers: FC<ProviderProps> = ({ children }) => (
@@ -41,5 +41,5 @@ export {
   useLang,
   useSocket,
   useSystemAlerts,
-  useTheme,
+  useTheme
 };

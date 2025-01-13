@@ -20,6 +20,7 @@ const AdminTipTexts: FC = () => {
     if (tipTexts === null || tipTexts.length === 0) {
       return null;
     }
+
     return (
       <Aul className="adminTipTexts__tip-text-list" noPoints>
         {tipTexts.map(({ tipText }) => (

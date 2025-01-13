@@ -21,8 +21,8 @@ const findChapters = async (): Promise<HydratedIChapter[]> =>
         path: 'pages',
         select: '_id title chapter position',
         options: {
-          sort: { position: 'asc' },
-        },
+          sort: { position: 'asc' }
+        }
       })
       .then(async (res?: HydratedIChapter[] | null) => {
         if (res === undefined || res === null) {
@@ -45,8 +45,8 @@ const findChaptersByRuleBook = async (ruleBookId: string): Promise<HydratedIChap
         path: 'pages',
         select: '_id title chapter position',
         options: {
-          sort: { position: 'asc' },
-        },
+          sort: { position: 'asc' }
+        }
       })
       .then(async (res?: HydratedIChapter[] | null) => {
         if (res === undefined || res === null) {
@@ -69,8 +69,8 @@ const findChapterById = async (id: string): Promise<HydratedIChapter> =>
         path: 'pages',
         select: '_id title chapter position content i18n',
         options: {
-          sort: { position: 'asc' },
-        },
+          sort: { position: 'asc' }
+        }
       })
       .then(async (res?: HydratedIChapter | null) => {
         if (res === undefined || res === null) {
@@ -88,6 +88,7 @@ const create = (req: Request, res: Response): void => {
   const { title, summary, type, ruleBook, i18n = null } = req.body;
   if (title === undefined || summary === undefined || ruleBook === undefined) {
     res.status(400).send(gemInvalidField('Chapter'));
+
     return;
   }
 
@@ -98,7 +99,7 @@ const create = (req: Request, res: Response): void => {
         summary,
         type,
         ruleBook,
-        position: chapters.length,
+        position: chapters.length
       });
 
       if (i18n !== null) {
@@ -110,17 +111,18 @@ const create = (req: Request, res: Response): void => {
         .then(() => {
           res.send(chapter);
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const update = (req: Request, res: Response): void => {
   const { id, title = null, summary = null, i18n } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Chapter ID'));
+
     return;
   }
   findChapterById(id as string)
@@ -136,7 +138,7 @@ const update = (req: Request, res: Response): void => {
         const newIntl = {
           ...(chapter.i18n !== null && chapter.i18n !== undefined && chapter.i18n !== ''
             ? JSON.parse(chapter.i18n)
-            : {}),
+            : {})
         };
 
         Object.keys(i18n as Record<string, any>).forEach((lang) => {
@@ -151,7 +153,7 @@ const update = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'Chapter was updated successfully!', chapter });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -179,6 +181,7 @@ const changePagesOrder = (req: Request, res: Response): void => {
   const { id, order } = req.body;
   if (id === undefined || order === undefined) {
     res.status(400).send(gemInvalidField('Chapter Reordering'));
+
     return;
   }
   updateMultiplePagesPosition(order, (err) => {
@@ -194,6 +197,7 @@ const deleteChapterById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Chapter ID'));
+
       return;
     }
     deletePagesByChapterId(id)
@@ -202,11 +206,11 @@ const deleteChapterById = async (id: string): Promise<boolean> =>
           .then(() => {
             resolve(true);
           })
-          .catch((err: Error) => {
+          .catch((err: unknown) => {
             reject(gemServerError(err));
           });
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
@@ -233,6 +237,7 @@ const deleteChaptersRecursive = async (chapters: string[]): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (chapters.length === 0) {
       resolve(true);
+
       return;
     }
     deleteChaptersAndPagesByPagesId(chapters, (err) => {
@@ -250,20 +255,21 @@ const deleteChapter = (req: Request, res: Response): void => {
     .then(() => {
       res.send({ message: 'Chapter was deleted successfully!' });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
 
 interface CuratedIChapter {
-  i18n: Record<string, any> | Record<string, unknown>;
-  chapter: HydratedIChapter;
+  i18n: Record<string, unknown>
+  chapter: HydratedIChapter
 }
 
 const findSingle = (req: Request, res: Response): void => {
   const { chapterId } = req.query;
   if (chapterId === undefined || typeof chapterId !== 'string') {
     res.status(400).send(gemInvalidField('Chapter ID'));
+
     return;
   }
   isAdmin(req)
@@ -275,16 +281,16 @@ const findSingle = (req: Request, res: Response): void => {
           } else {
             const sentObj = {
               chapter,
-              i18n: curateI18n(chapter.i18n),
+              i18n: curateI18n(chapter.i18n)
             };
             res.send(sentObj);
           }
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(404).send(err);
         });
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const findAll = (req: Request, res: Response): void => {
@@ -295,19 +301,20 @@ const findAll = (req: Request, res: Response): void => {
       chapters.forEach((chapter) => {
         curatedChapters.push({
           chapter,
-          i18n: curateI18n(chapter.i18n),
+          i18n: curateI18n(chapter.i18n)
         });
       });
 
       res.send(curatedChapters);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const findAllByRuleBook = (req: Request, res: Response): void => {
   const { ruleBookId } = req.query;
   if (ruleBookId === undefined || typeof ruleBookId !== 'string') {
     res.status(400).send(gemInvalidField('RuleBook ID'));
+
     return;
   }
   findChaptersByRuleBook(ruleBookId)
@@ -317,13 +324,13 @@ const findAllByRuleBook = (req: Request, res: Response): void => {
       chapters.forEach((chapter) => {
         curatedChapters.push({
           chapter,
-          i18n: curateI18n(chapter.i18n),
+          i18n: curateI18n(chapter.i18n)
         });
       });
 
       res.send(curatedChapters);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export {
@@ -336,5 +343,5 @@ export {
   findChapterById,
   findChaptersByRuleBook,
   findSingle,
-  update,
+  update
 };

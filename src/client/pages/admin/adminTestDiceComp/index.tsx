@@ -11,7 +11,7 @@ import { regexDiceFormula } from '../../../utils';
 import './adminTestDiceComp.scss';
 
 interface FormValues {
-  diceFormula: string;
+  diceFormula: string
 }
 
 const AdminTestDiceComp: FC = () => {
@@ -28,14 +28,14 @@ const AdminTestDiceComp: FC = () => {
       string,
       {
         // rolls: number[][];
-        count: number;
-        thisP?: number;
-        orMoreP?: number;
-        orLessP?: number;
+        count: number
+        thisP?: number
+        orMoreP?: number
+        orLessP?: number
       }
     > = {};
     const increments: number[] = [];
-    const [diceNumber, valueDice] = formula.split('d').map((val) => Number(val));
+    const [diceNumber, valueDice] = formula.split('d').map(val => Number(val));
     const variations = Math.pow(valueDice, diceNumber);
     for (let i = 0; i < diceNumber; i++) {
       increments.push(Math.pow(valueDice, i));
@@ -56,7 +56,7 @@ const AdminTestDiceComp: FC = () => {
       } else {
         scores[total] = {
           // rolls: [diceVal],
-          count: 1,
+          count: 1
         };
       }
     }
@@ -92,6 +92,7 @@ const AdminTestDiceComp: FC = () => {
         <tbody>
           {possibleScores.map((possibleScore, index) => {
             const { count, thisP, orMoreP, orLessP } = scores[possibleScore];
+
             return (
               <tr key={index}>
                 <th scope="row">{possibleScore}</th>
@@ -124,16 +125,18 @@ const AdminTestDiceComp: FC = () => {
             required: t('diceFormula.required', { ns: 'fields' }),
             pattern: {
               value: regexDiceFormula,
-              message: t('diceFormula.pattern', { ns: 'fields' }),
-            },
+              message: t('diceFormula.pattern', { ns: 'fields' })
+            }
           }}
           label={t('diceFormula.label', { ns: 'fields' })}
         />
         <Button type="submit">{t('adminTestDiceComp.formCTA', { ns: 'pages' })}</Button>
       </form>
-      {formula != null ? (
-        <div className="adminTestDiceComp__formula-results">{formulaScores}</div>
-      ) : null}
+      {formula != null
+        ? (
+            <div className="adminTestDiceComp__formula-results">{formulaScores}</div>
+          )
+        : null}
     </div>
   );
 };

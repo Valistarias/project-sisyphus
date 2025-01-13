@@ -17,19 +17,19 @@ import './bagDisplay.scss';
 
 interface IBagDisplay extends IQuarkProps {
   /** The bag to be displayed */
-  bag: ICuratedBag;
+  bag: ICuratedBag
   /** The display mode */
-  mode?: 'basic' | 'hover';
+  mode?: 'basic' | 'hover'
 }
 
 interface ICompleteBag
   extends Omit<IBag, 'bagType' | 'itemModifiers' | 'rarity' | 'charParamBonuses'> {
-  itemModifiers: ICuratedItemModifier[] | undefined;
-  rarity: ICuratedRarity | undefined;
+  itemModifiers: ICuratedItemModifier[] | undefined
+  rarity: ICuratedRarity | undefined
 }
 
 interface ICuratedCompleteBag extends Omit<ICuratedBag, 'bag'> {
-  bag: ICompleteBag;
+  bag: ICompleteBag
 }
 
 const BagDisplay: FC<IBagDisplay> = ({ bag, mode = 'basic' }) => {
@@ -44,23 +44,25 @@ const BagDisplay: FC<IBagDisplay> = ({ bag, mode = 'basic' }) => {
       return null;
     }
     const { bag: bagObj, i18n } = bag;
+
     return {
       bag: {
         ...bagObj,
-        rarity: rarities.find((rarity) => rarity.rarity._id === bagObj.rarity),
+        rarity: rarities.find(rarity => rarity.rarity._id === bagObj.rarity),
         itemModifiers: bagObj.itemModifiers?.map(
-          (itemModifierId) =>
+          itemModifierId =>
             itemModifiers.find(
-              (itemModifier) => itemModifier.itemModifier._id === itemModifierId
+              itemModifier => itemModifier.itemModifier._id === itemModifierId
             ) ?? itemModifiers[0]
         ),
         storableItemTypes: bagObj.storableItemTypes.map((itemTypeId) => {
-          const elt =
-            itemTypes.find((itemType) => itemType._id === itemTypeId)?.name ?? itemTypes[0].name;
+          const elt
+            = itemTypes.find(itemType => itemType._id === itemTypeId)?.name ?? itemTypes[0].name;
+
           return t(`itemTypeNames.${elt}`);
-        }),
+        })
       },
-      i18n,
+      i18n
     };
   }, [bag, rarities, itemModifiers, itemTypes, t]);
 
@@ -90,8 +92,8 @@ const BagDisplay: FC<IBagDisplay> = ({ bag, mode = 'basic' }) => {
     const { bag } = curateBag;
     const { rarity } = bag;
 
-    const listItemTypes =
-      bag.storableItemTypes.length === itemTypes.length
+    const listItemTypes
+      = bag.storableItemTypes.length === itemTypes.length
         ? t('display.bag.all', { ns: 'components' })
         : bag.storableItemTypes.join(', ');
 
@@ -104,7 +106,7 @@ const BagDisplay: FC<IBagDisplay> = ({ bag, mode = 'basic' }) => {
         title={bag.title}
         type={t('itemTypeNames.bag')}
         itemModifiers={bag.itemModifiers}
-        mainNode={
+        mainNode={(
           <div className="bag-display__block__main">
             <Ap className="bag-display__block__main__text">
               {t('display.bag.text', { ns: 'components', list: listItemTypes })}
@@ -113,7 +115,7 @@ const BagDisplay: FC<IBagDisplay> = ({ bag, mode = 'basic' }) => {
               {t('display.bag.qty', { ns: 'components', qty: bag.size })}
             </Ap>
           </div>
-        }
+        )}
       />
     );
   }, [curateBag, itemTypes, t]);

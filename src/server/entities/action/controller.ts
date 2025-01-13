@@ -4,6 +4,7 @@ import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
 import type { HydratedIAction } from './model';
+import type { InternationalizationType } from '../../utils/types';
 import type { IActionDuration, IActionType, ISkill } from '../index';
 
 import { curateI18n } from '../../utils';
@@ -47,32 +48,33 @@ const findActionById = async (id: string): Promise<HydratedIAction> =>
   });
 
 interface ISentAction {
-  id?: string;
-  title: string;
-  summary: string;
-  type: string;
-  skill: string;
-  duration: string;
-  time?: string;
-  damages?: string;
-  offsetSkill?: string;
-  uses?: number;
-  isKarmic?: boolean;
-  karmicCost?: number;
+  id?: string
+  title: string
+  summary: string
+  type: string
+  skill: string
+  duration: string
+  time?: string
+  damages?: string
+  offsetSkill?: string
+  uses?: number
+  isKarmic?: boolean
+  karmicCost?: number
   i18n?: {
-    title: string;
-    summary: string;
-    time: string;
-  };
+    title: string
+    summary: string
+    time: string
+  }
 }
 
 const updateActions = (
   elts: ISentAction[],
   ids: string[],
-  cb: (err: Error | null, res?: string[]) => void
+  cb: (err: unknown | null, res?: string[]) => void
 ): void => {
   if (elts.length === 0) {
     cb(null, ids);
+
     return;
   }
   const {
@@ -88,7 +90,7 @@ const updateActions = (
     offsetSkill = null,
     damages = null,
     isKarmic = null,
-    karmicCost = null,
+    karmicCost = null
   } = elts[0];
   if (id === undefined) {
     const action = new Action({
@@ -102,7 +104,7 @@ const updateActions = (
       offsetSkill,
       damages,
       isKarmic,
-      karmicCost,
+      karmicCost
     });
 
     if (i18n !== null) {
@@ -160,10 +162,10 @@ const updateActions = (
           const newIntl = {
             ...(action.i18n !== null && action.i18n !== undefined && action.i18n !== ''
               ? JSON.parse(action.i18n)
-              : {}),
+              : {})
           };
 
-          Object.keys(i18n as Record<string, any>).forEach((lang) => {
+          Object.keys(i18n as InternationalizationType).forEach((lang) => {
             newIntl[lang] = i18n[lang];
           });
 
@@ -189,17 +191,17 @@ const updateActions = (
 
 const smartUpdateActions = async ({
   actionsToRemove,
-  actionsToUpdate,
+  actionsToUpdate
 }: {
-  actionsToRemove: string[];
-  actionsToUpdate: ISentAction[];
+  actionsToRemove: string[]
+  actionsToUpdate: ISentAction[]
 }): Promise<string[]> =>
   await new Promise((resolve, reject) => {
     Action.deleteMany({
-      _id: { $in: actionsToRemove },
+      _id: { $in: actionsToRemove }
     })
       .then(() => {
-        updateActions(actionsToUpdate, [], (err: Error | null, ids?: string[]) => {
+        updateActions(actionsToUpdate, [], (err: unknown | null, ids?: string[]) => {
           if (err !== null) {
             reject(err);
           } else {
@@ -207,7 +209,7 @@ const smartUpdateActions = async ({
           }
         });
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -225,15 +227,16 @@ const create = (req: Request, res: Response): void => {
     offsetSkill,
     damages,
     isKarmic = false,
-    karmicCost,
+    karmicCost
   } = req.body;
   if (
-    title === undefined ||
-    summary === undefined ||
-    type === undefined ||
-    duration === undefined
+    title === undefined
+    || summary === undefined
+    || type === undefined
+    || duration === undefined
   ) {
     res.status(400).send(gemInvalidField('Action'));
+
     return;
   }
 
@@ -248,7 +251,7 @@ const create = (req: Request, res: Response): void => {
     offsetSkill,
     damages,
     isKarmic,
-    karmicCost,
+    karmicCost
   });
 
   if (i18n !== null) {
@@ -260,7 +263,7 @@ const create = (req: Request, res: Response): void => {
     .then(() => {
       res.send(action);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -279,10 +282,11 @@ const update = (req: Request, res: Response): void => {
     offsetSkill = null,
     damages = null,
     isKarmic = null,
-    karmicCost = null,
+    karmicCost = null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Action ID'));
+
     return;
   }
   findActionById(id as string)
@@ -325,10 +329,10 @@ const update = (req: Request, res: Response): void => {
         const newIntl = {
           ...(action.i18n !== null && action.i18n !== undefined && action.i18n !== ''
             ? JSON.parse(action.i18n)
-            : {}),
+            : {})
         };
 
-        Object.keys(i18n as Record<string, any>).forEach((lang) => {
+        Object.keys(i18n as InternationalizationType).forEach((lang) => {
           newIntl[lang] = i18n[lang];
         });
 
@@ -340,7 +344,7 @@ const update = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'Action was updated successfully!', action });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -353,13 +357,14 @@ const deleteActionById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Action ID'));
+
       return;
     }
     Action.findByIdAndDelete(id)
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
@@ -370,31 +375,32 @@ const deleteAction = (req: Request, res: Response): void => {
     .then(() => {
       res.send({ message: 'Action was deleted successfully!' });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
 
 interface CuratedIAction {
-  i18n: Record<string, any> | Record<string, unknown>;
-  action: HydratedIAction;
+  i18n: Record<string, unknown>
+  action: HydratedIAction
 }
 
 const findSingle = (req: Request, res: Response): void => {
   const { actionId } = req.query;
   if (actionId === undefined || typeof actionId !== 'string') {
     res.status(400).send(gemInvalidField('Action ID'));
+
     return;
   }
   findActionById(actionId)
     .then((action) => {
       const sentObj = {
         action,
-        i18n: curateI18n(action.i18n),
+        i18n: curateI18n(action.i18n)
       };
       res.send(sentObj);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
@@ -407,13 +413,13 @@ const findAll = (req: Request, res: Response): void => {
       actions.forEach((action) => {
         curatedActions.push({
           action,
-          i18n: curateI18n(action.i18n),
+          i18n: curateI18n(action.i18n)
         });
       });
 
       res.send(curatedActions);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export { create, deleteAction, findActionById, findAll, findSingle, smartUpdateActions, update };

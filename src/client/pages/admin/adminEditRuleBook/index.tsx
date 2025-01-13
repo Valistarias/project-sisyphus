@@ -15,7 +15,7 @@ import {
   DragList,
   RichTextElement,
   completeRichTextElementExtentions,
-  type IDragElt,
+  type IDragElt
 } from '../../../organisms';
 
 import type { IChapterType, ICuratedRuleBook, IRuleBookType } from '../../../types';
@@ -25,10 +25,10 @@ import { arraysEqual, formatDate } from '../../../utils';
 import './adminEditRuleBook.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  type: string;
-  draft: string;
+  name: string
+  nameFr: string
+  type: string
+  draft: string
 }
 
 const AdminEditRuleBook: FC = () => {
@@ -38,7 +38,7 @@ const AdminEditRuleBook: FC = () => {
   const { id } = useParams();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
-    ConfMessageEvent: {},
+    ConfMessageEvent: {}
   };
   const navigate = useNavigate();
   const { reloadRuleBooks } = useGlobalVars();
@@ -57,12 +57,12 @@ const AdminEditRuleBook: FC = () => {
   const [draftChoices] = useState([
     {
       value: 'draft',
-      label: i18next.format(t('terms.ruleBook.draft'), 'capitalize'),
+      label: i18next.format(t('terms.ruleBook.draft'), 'capitalize')
     },
     {
       value: 'published',
-      label: i18next.format(t('terms.ruleBook.published'), 'capitalize'),
-    },
+      label: i18next.format(t('terms.ruleBook.published'), 'capitalize')
+    }
   ]);
 
   const [rulebookData, setRulebookData] = useState<ICuratedRuleBook | null>(null);
@@ -74,11 +74,11 @@ const AdminEditRuleBook: FC = () => {
   const [chaptersOrder, setChaptersOrder] = useState<string[]>([]);
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const createDefaultData = useCallback(
@@ -93,12 +93,13 @@ const AdminEditRuleBook: FC = () => {
       defaultData.name = ruleBook.title ?? '';
       if (sentApiType != null && ruleBookTypes.length > 0) {
         defaultData.type = String(
-          ruleBookTypes.find((ruleBookType) => ruleBookType.value === sentApiType)?.value
+          ruleBookTypes.find(ruleBookType => ruleBookType.value === sentApiType)?.value
         );
       }
       if (i18n.fr !== undefined) {
         defaultData.nameFr = i18n.fr.title ?? '';
       }
+
       return defaultData;
     },
     []
@@ -109,12 +110,12 @@ const AdminEditRuleBook: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(ruleBookTypes, rulebookData),
       [createDefaultData, ruleBookTypes, rulebookData]
-    ),
+    )
   });
 
   const notionsListDom = useMemo(() => {
@@ -122,9 +123,10 @@ const AdminEditRuleBook: FC = () => {
     if (notionsData.length === 0) {
       return null;
     }
+
     return (
       <Aul className="adminEditRuleBook__notion-list" noPoints>
-        {notionsData.map((notion) => (
+        {notionsData.map(notion => (
           <Ali className="adminEditRuleBook__notion-list__elt" key={notion._id}>
             <Atitle level={4}>{notion.title}</Atitle>
             <Button size="small" href={`/admin/notion/${notion._id}`}>
@@ -149,8 +151,8 @@ const AdminEditRuleBook: FC = () => {
         title: chapterData.title,
         button: {
           href: `/admin/chapter/${chapterData._id}`,
-          content: t('adminEditRuleBook.editChapter', { ns: 'pages' }),
-        },
+          content: t('adminEditRuleBook.editChapter', { ns: 'pages' })
+        }
       };
     });
 
@@ -181,8 +183,8 @@ const AdminEditRuleBook: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            summary: htmlFr,
-          },
+            summary: htmlFr
+          }
         };
       }
 
@@ -193,7 +195,7 @@ const AdminEditRuleBook: FC = () => {
           type,
           summary: html,
           draft: draft === 'draft',
-          i18n,
+          i18n
         })
         .then(() => {
           if (!silentSave.current) {
@@ -204,7 +206,7 @@ const AdminEditRuleBook: FC = () => {
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{t('adminEditRuleBook.successUpdate', { ns: 'pages' })}</Ap>
                 </Alert>
-              ),
+              )
             });
             reloadRuleBooks();
           } else {
@@ -213,7 +215,7 @@ const AdminEditRuleBook: FC = () => {
               t('autosave', {
                 date: date.date,
                 hour: date.hour,
-                ns: 'components',
+                ns: 'components'
               })
             );
           }
@@ -225,15 +227,15 @@ const AdminEditRuleBook: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize')
+              })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -251,8 +253,8 @@ const AdminEditRuleBook: FC = () => {
         id,
         order: chaptersOrder.map((chapter, index) => ({
           id: chapter,
-          position: index,
-        })),
+          position: index
+        }))
       })
       .then(() => {
         const newId = getNewId();
@@ -262,7 +264,7 @@ const AdminEditRuleBook: FC = () => {
             <Alert key={newId} id={newId} timer={5}>
               <Ap>{t('adminEditRuleBook.successUpdate', { ns: 'pages' })}</Ap>
             </Alert>
-          ),
+          )
         });
         setInitialOrder(chaptersOrder);
       })
@@ -272,15 +274,15 @@ const AdminEditRuleBook: FC = () => {
           setError('root.serverError', {
             type: 'server',
             message: t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
-            }),
+              field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize')
+            })
           });
         } else {
           setError('root.serverError', {
             type: 'server',
             message: t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
-            }),
+              field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize')
+            })
           });
         }
       });
@@ -310,7 +312,7 @@ const AdminEditRuleBook: FC = () => {
             : 'adminEditRuleBook.confirmArchive.confirmCta',
           { ns: 'pages' }
         ),
-        theme: archived ? 'info' : 'error',
+        theme: archived ? 'info' : 'error'
       },
       (evtId: string) => {
         const confirmArchive = ({ detail }): void => {
@@ -332,7 +334,7 @@ const AdminEditRuleBook: FC = () => {
                         )}
                       </Ap>
                     </Alert>
-                  ),
+                  )
                 });
                 reloadRuleBooks();
                 void navigate('/admin/rulebooks');
@@ -343,15 +345,15 @@ const AdminEditRuleBook: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize')
+                    })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize')
+                    })
                   });
                 }
               });
@@ -373,7 +375,7 @@ const AdminEditRuleBook: FC = () => {
     createAlert,
     reloadRuleBooks,
     navigate,
-    setError,
+    setError
   ]);
 
   useEffect(() => {
@@ -397,17 +399,17 @@ const AdminEditRuleBook: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
       api.ruleBookTypes
         .getAll()
         .then((data: IRuleBookType[]) => {
           setRuleBookTypes(
-            data.map((ruleBookType) => ({
+            data.map(ruleBookType => ({
               value: ruleBookType._id,
               label: t(`ruleBookTypeNames.${ruleBookType.name}`, { count: 1 }),
-              details: ruleBookType.name,
+              details: ruleBookType.name
             }))
           );
         })
@@ -419,14 +421,14 @@ const AdminEditRuleBook: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
       api.chapterTypes
         .getAll()
         .then((data: IChapterType[]) => {
           setDefaultTypeChapterId(
-            data.find((chapterType) => chapterType.name === 'default')?._id ?? null
+            data.find(chapterType => chapterType.name === 'default')?._id ?? null
           );
         })
         .catch(({ response }) => {
@@ -437,7 +439,7 @@ const AdminEditRuleBook: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -452,6 +454,7 @@ const AdminEditRuleBook: FC = () => {
         () => {}
       );
     }, 600000);
+
     return () => {
       if (saveTimer.current !== null) {
         clearInterval(saveTimer.current);
@@ -470,7 +473,7 @@ const AdminEditRuleBook: FC = () => {
         <Atitle level={1}>{t('adminEditRuleBook.title', { ns: 'pages' })}</Atitle>
         <Button onClick={onAskArchive} color={archived ? 'tertiary' : 'error'}>
           {t(archived ? 'adminEditRuleBook.unarchive' : 'adminEditRuleBook.archive', {
-            ns: 'pages',
+            ns: 'pages'
           })}
         </Button>
       </div>
@@ -481,16 +484,18 @@ const AdminEditRuleBook: FC = () => {
           onSubmit={handleSubmit(onSaveRuleBook)}
           noValidate
         >
-          {errors.root?.serverError.message !== undefined ? (
-            <Aerror>{errors.root.serverError.message}</Aerror>
-          ) : null}
+          {errors.root?.serverError.message !== undefined
+            ? (
+                <Aerror>{errors.root.serverError.message}</Aerror>
+              )
+            : null}
           <div className="adminEditRuleBook__basics">
             <Input
               control={control}
               inputName="name"
               type="text"
               rules={{
-                required: t('nameRuleBook.required', { ns: 'fields' }),
+                required: t('nameRuleBook.required', { ns: 'fields' })
               }}
               label={t('nameRuleBook.label', { ns: 'fields' })}
               className="adminEditRuleBook__basics__name"
@@ -499,7 +504,7 @@ const AdminEditRuleBook: FC = () => {
               control={control}
               inputName="type"
               rules={{
-                required: t('typeRuleBook.required', { ns: 'fields' }),
+                required: t('typeRuleBook.required', { ns: 'fields' })
               }}
               label={t('typeRuleBook.select', { ns: 'fields' })}
               options={ruleBookTypes}
@@ -563,11 +568,13 @@ const AdminEditRuleBook: FC = () => {
               onChange={onChapterOrder}
             />
             <div className="adminEditRuleBook__block-children__buttons">
-              {!arraysEqual(chaptersOrder, initialOrder) ? (
-                <Button onClick={onUpdateOrder}>
-                  {t('adminEditRuleBook.updateOrder', { ns: 'pages' })}
-                </Button>
-              ) : null}
+              {!arraysEqual(chaptersOrder, initialOrder)
+                ? (
+                    <Button onClick={onUpdateOrder}>
+                      {t('adminEditRuleBook.updateOrder', { ns: 'pages' })}
+                    </Button>
+                  )
+                : null}
               <Button href={`/admin/chapter/new?ruleBookId=${id}&type=${defaultTypeChapterId}`}>
                 {t('adminEditRuleBook.createDefaultChapter', { ns: 'pages' })}
               </Button>

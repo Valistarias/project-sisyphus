@@ -9,7 +9,7 @@ import {
   useCampaignEventWindow,
   useGlobalVars,
   useSocket,
-  useSystemAlerts,
+  useSystemAlerts
 } from '../../providers';
 
 import { Aicon, Aloadbar, Ap, Atitle } from '../../atoms';
@@ -21,24 +21,24 @@ import {
   classTrim,
   getCyberFrameLevelsByNodes,
   romanize,
-  type ICyberFrameLevels,
+  type ICyberFrameLevels
 } from '../../utils';
 
 import './characterHeader.scss';
 
 interface FormHpValues {
-  hp: string;
+  hp: string
 }
 
 interface FormKarmaValues {
-  karma: string;
+  karma: string
 }
 
 interface ICharacterHeader {
   /** When the "Dices and Timeline" is clicked */
-  onClickEventTab: (e: React.MouseEvent<HTMLElement>) => void;
+  onClickEventTab: (e: React.MouseEvent<HTMLElement>) => void
   /** Is the event tab open ? */
-  isEventTabOpen: boolean;
+  isEventTabOpen: boolean
 }
 
 const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen }) => {
@@ -54,14 +54,16 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
       return null;
     }
     const cyberFrameLevelsByNodes = getCyberFrameLevelsByNodes(character.nodes, cyberFrames);
+
     return cyberFrameLevelsByNodes.reduce(
       (chosenCyberFrame: ICyberFrameLevels | null, actualCyberFrame: ICyberFrameLevels) => {
         if (
-          chosenCyberFrame === null ||
-          (chosenCyberFrame !== null && actualCyberFrame.level > chosenCyberFrame.level)
+          chosenCyberFrame === null
+          || (chosenCyberFrame !== null && actualCyberFrame.level > chosenCyberFrame.level)
         ) {
           return actualCyberFrame;
         }
+
         return chosenCyberFrame;
       },
       null
@@ -72,6 +74,7 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
     if (character === null || character === false) {
       return '';
     }
+
     return `${character.firstName !== undefined ? `${character.firstName} ` : ''}${character.nickName !== undefined ? `"${character.nickName}" ` : ''}${character.lastName ?? ''}`;
   }, [character]);
 
@@ -89,23 +92,24 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
     if (character === null || character === false) {
       return 0;
     }
+
     return character.karma ?? 0;
   }, [character]);
 
   const {
     handleSubmit: handleSubmitHp,
     control: controlHp,
-    reset: resetHp,
+    reset: resetHp
   } = useForm({
-    defaultValues: useMemo(() => ({ hp: hpValues.isLoading ? 0 : hpValues.hp }), [hpValues]),
+    defaultValues: useMemo(() => ({ hp: hpValues.isLoading ? 0 : hpValues.hp }), [hpValues])
   });
 
   const {
     handleSubmit: handleSubmitKarma,
     control: controlKarma,
-    reset: resetKarma,
+    reset: resetKarma
   } = useForm({
-    defaultValues: useMemo(() => ({ karma: charKarma }), [charKarma]),
+    defaultValues: useMemo(() => ({ karma: charKarma }), [charKarma])
   });
 
   const onSaveHp: SubmitHandler<FormHpValues> = useCallback(
@@ -122,13 +126,13 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
         api.bodies
           .update({
             id: body?._id,
-            hp: hpSent,
+            hp: hpSent
           })
           .then(() => {
             setCharacterFromId(character._id);
             dispatchCampaignEvent({
               result: (actualHp - hpSent) * -1,
-              mode: gainedLife ? 'hpGain' : 'hpLoss',
+              mode: gainedLife ? 'hpGain' : 'hpLoss'
             });
           })
           .catch(({ response }) => {
@@ -139,7 +143,7 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{response}</Ap>
                 </Alert>
-              ),
+              )
             });
           });
       }
@@ -153,7 +157,7 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
       hpValues.hp,
       hpValues.total,
       setCharacterFromId,
-      socket,
+      socket
     ]
   );
 
@@ -165,7 +169,7 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
       api.characters
         .update({
           id: character._id,
-          karma,
+          karma
         })
         .then(() => {
           setCharacterFromId(character._id);
@@ -178,7 +182,7 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{response}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     },
@@ -205,21 +209,23 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
           <Atitle level={1} className="char-header__left__title">
             {displayedName}
           </Atitle>
-          {mainCyberFrame !== null ? (
-            <Ap className="char-header__left__sub">
-              {t('character.cyberframeLevel', {
-                ns: 'pages',
-                cyberFrame: mainCyberFrame.cyberFrame.cyberFrame.title,
-                cyberFrameLevel: romanize(mainCyberFrame.level),
-                level: character !== false ? character?.level ?? 1 : 1,
-              })}
-            </Ap>
-          ) : null}
+          {mainCyberFrame !== null
+            ? (
+                <Ap className="char-header__left__sub">
+                  {t('character.cyberframeLevel', {
+                    ns: 'pages',
+                    cyberFrame: mainCyberFrame.cyberFrame.cyberFrame.title,
+                    cyberFrameLevel: romanize(mainCyberFrame.level),
+                    level: character !== false ? character?.level ?? 1 : 1
+                  })}
+                </Ap>
+              )
+            : null}
         </div>
         <div className="char-header__mid">
           <HintButton
             hint={t('character.buttons.editChar', {
-              ns: 'pages',
+              ns: 'pages'
             })}
             icon="Edit"
             size="small"
@@ -228,7 +234,7 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
           />
           <HintButton
             hint={t('character.buttons.editChar', {
-              ns: 'pages',
+              ns: 'pages'
             })}
             icon="Edit"
             size="small"
@@ -237,7 +243,7 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
           />
           <HintButton
             hint={t('character.buttons.editChar', {
-              ns: 'pages',
+              ns: 'pages'
             })}
             icon="Edit"
             size="small"
@@ -261,7 +267,7 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
                   size="small"
                   inline
                   rules={{
-                    required: t('hp.required', { ns: 'fields' }),
+                    required: t('hp.required', { ns: 'fields' })
                   }}
                   className="char-header__health__field__input"
                   onBlur={handleSubmitHp(onSaveHp)}
@@ -294,12 +300,12 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
                   size="small"
                   inline
                   rules={{
-                    required: t('karma.required', { ns: 'fields' }),
+                    required: t('karma.required', { ns: 'fields' })
                   }}
                   className="char-header__karma__field__input"
                   onBlur={handleSubmitKarma(onSaveKarma)}
                 />
-                <Ap className="char-header__karma__field__total">{`/ ??`}</Ap>
+                <Ap className="char-header__karma__field__total">/ ??</Ap>
               </div>
             </form>
 

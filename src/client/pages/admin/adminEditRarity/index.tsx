@@ -19,8 +19,8 @@ import { classTrim } from '../../../utils';
 import './adminEditRarity.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
+  name: string
+  nameFr: string
 }
 
 const AdminEditRarity: FC = () => {
@@ -30,7 +30,7 @@ const AdminEditRarity: FC = () => {
   const { reloadRarities } = useGlobalVars();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
-    ConfMessageEvent: {},
+    ConfMessageEvent: {}
   };
   const { id } = useParams();
   const navigate = useNavigate();
@@ -47,11 +47,11 @@ const AdminEditRarity: FC = () => {
   const [rarityTextFr, setRarityTextFr] = useState('');
 
   const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const createDefaultData = useCallback((rarityData: ICuratedRarity | null) => {
@@ -64,6 +64,7 @@ const AdminEditRarity: FC = () => {
     if (i18n.fr !== undefined) {
       defaultData.nameFr = i18n.fr.title ?? '';
     }
+
     return defaultData;
   }, []);
 
@@ -72,19 +73,19 @@ const AdminEditRarity: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
-    defaultValues: useMemo(() => createDefaultData(rarityData), [createDefaultData, rarityData]),
+    defaultValues: useMemo(() => createDefaultData(rarityData), [createDefaultData, rarityData])
   });
 
   const onSaveRarity: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr }) => {
       if (
-        rarityText === null ||
-        rarityTextFr === null ||
-        textEditor === null ||
-        textFrEditor === null ||
-        api === undefined
+        rarityText === null
+        || rarityTextFr === null
+        || textEditor === null
+        || textFrEditor === null
+        || api === undefined
       ) {
         return;
       }
@@ -102,8 +103,8 @@ const AdminEditRarity: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            text: htmlTextFr,
-          },
+            text: htmlTextFr
+          }
         };
       }
 
@@ -112,7 +113,7 @@ const AdminEditRarity: FC = () => {
           id,
           title: name,
           summary: htmlText,
-          i18n,
+          i18n
         })
         .then((rarity) => {
           const newId = getNewId();
@@ -122,7 +123,7 @@ const AdminEditRarity: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditRarity.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadRarities();
         })
@@ -132,15 +133,15 @@ const AdminEditRarity: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id',
-              })} by ${data.sent}`,
+                field: 'Formula Id'
+              })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -156,7 +157,7 @@ const AdminEditRarity: FC = () => {
       createAlert,
       t,
       reloadRarities,
-      setError,
+      setError
     ]
   );
 
@@ -169,9 +170,9 @@ const AdminEditRarity: FC = () => {
         title: t('adminEditRarity.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditRarity.confirmDeletion.text', {
           ns: 'pages',
-          elt: rarityData?.rarity.title,
+          elt: rarityData?.rarity.title
         }),
-        confirmCta: t('adminEditRarity.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditRarity.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
@@ -186,7 +187,7 @@ const AdminEditRarity: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditRarity.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
                 reloadRarities();
                 void navigate('/admin/rarities');
@@ -197,15 +198,15 @@ const AdminEditRarity: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.rarity.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.rarity.name`), 'capitalize')
+                    })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.rarity.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.rarity.name`), 'capitalize')
+                    })
                   });
                 }
               });
@@ -226,7 +227,7 @@ const AdminEditRarity: FC = () => {
     createAlert,
     reloadRarities,
     navigate,
-    setError,
+    setError
   ]);
 
   useEffect(() => {
@@ -250,7 +251,7 @@ const AdminEditRarity: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -265,6 +266,7 @@ const AdminEditRarity: FC = () => {
         () => {}
       );
     }, 600000);
+
     return () => {
       if (saveTimer.current !== null) {
         clearInterval(saveTimer.current);
@@ -295,9 +297,11 @@ const AdminEditRarity: FC = () => {
           {t('adminEditRarity.return', { ns: 'pages' })}
         </Button>
         <Atitle level={2}>{t('adminEditRarity.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror className="adminEditRarity__error">{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror className="adminEditRarity__error">{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminEditRarity__basics">
           <Input
             control={control}
@@ -329,7 +333,7 @@ const AdminEditRarity: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt((prev) => !prev);
+              setDisplayInt(prev => !prev);
             }}
             className="adminEditRarity__intl-title__btn"
           />

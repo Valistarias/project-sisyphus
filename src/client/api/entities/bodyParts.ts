@@ -4,9 +4,8 @@ import Entity from './entity';
 
 import type { ICuratedBodyPart } from '../../types';
 
-
 interface IBodyPartPayload {
-  bodyPartId: string;
+  bodyPartId: string
 }
 
 export default class BodyParts extends Entity {
@@ -15,7 +14,7 @@ export default class BodyParts extends Entity {
   constructor() {
     super('bodyparts');
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })

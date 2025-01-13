@@ -4,44 +4,44 @@ import type { IItem } from '../../item/model';
 
 interface IBodyItem {
   /** When the body was created */
-  createdAt: Date;
+  createdAt: Date
   /** The body targeted */
-  body: ObjectId;
+  body: ObjectId
   /** The linked Item */
-  item: ObjectId;
+  item: ObjectId
   /** The bag that store this item */
-  bag: ObjectId;
+  bag: ObjectId
   /** How many items the player have */
-  qty: number;
+  qty: number
 }
 
 type HydratedIBodyItem = HydratedDocument<
   Omit<IBodyItem, 'item'> & {
-    item: HydratedDocument<IItem>;
+    item: HydratedDocument<IItem>
   }
 >;
 
 const BodyItemSchema = new Schema<IBodyItem>({
   body: {
     type: Schema.Types.ObjectId,
-    ref: 'Body',
+    ref: 'Body'
   },
   item: {
     type: Schema.Types.ObjectId,
-    ref: 'Item',
+    ref: 'Item'
   },
   bag: {
     type: Schema.Types.ObjectId,
-    ref: 'BodyBag',
+    ref: 'BodyBag'
   },
   qty: {
     type: Number,
-    default: 1,
+    default: 1
   },
   createdAt: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
 });
 
 const BodyItemModel = (): Model<IBodyItem> => model('BodyItem', BodyItemSchema);

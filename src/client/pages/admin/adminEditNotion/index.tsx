@@ -17,9 +17,9 @@ import type { ICuratedNotion } from '../../../types';
 import './adminEditNotion.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  type: string;
+  name: string
+  nameFr: string
+  type: string
 }
 
 const AdminEditNotions: FC = () => {
@@ -28,7 +28,7 @@ const AdminEditNotions: FC = () => {
   const { createAlert, getNewId } = useSystemAlerts();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
-    ConfMessageEvent: {},
+    ConfMessageEvent: {}
   };
   const { id } = useParams();
   const { ruleBooks } = useGlobalVars();
@@ -44,11 +44,11 @@ const AdminEditNotions: FC = () => {
   const [notionTextFr, setNotionTextFr] = useState('');
 
   const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const createDefaultData = useCallback(
@@ -59,36 +59,37 @@ const AdminEditNotions: FC = () => {
       const { notion, i18n } = notionData;
       const defaultData: Partial<FormValues> = {};
       defaultData.name = notion.title;
-      const selectedfield = ruleBooks.find((notionType) => notionType.value === notion.ruleBook);
+      const selectedfield = ruleBooks.find(notionType => notionType.value === notion.ruleBook);
       if (selectedfield !== undefined) {
         defaultData.type = String(selectedfield.value);
       }
       if (i18n.fr !== undefined) {
         defaultData.nameFr = i18n.fr.title ?? '';
       }
+
       return defaultData;
     },
     []
   );
 
   const ruleBookSelect = useMemo(() => ruleBooks.map(({ ruleBook }) => ({
-      value: ruleBook._id,
-      // TODO : Handle Internationalization
-      label: ruleBook.title,
-      details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 }),
-    })), [t, ruleBooks]);
+    value: ruleBook._id,
+    // TODO : Handle Internationalization
+    label: ruleBook.title,
+    details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 })
+  })), [t, ruleBooks]);
 
   const {
     handleSubmit,
     setError,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(notionData, ruleBookSelect),
       [createDefaultData, notionData, ruleBookSelect]
-    ),
+    )
   });
 
   const ruleBook = useMemo(() => notionData?.notion.ruleBook, [notionData]);
@@ -96,11 +97,11 @@ const AdminEditNotions: FC = () => {
   const onSaveNotion: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, type }) => {
       if (
-        notionText === null ||
-        notionTextFr === null ||
-        textEditor === null ||
-        textFrEditor === null ||
-        api === undefined
+        notionText === null
+        || notionTextFr === null
+        || textEditor === null
+        || textFrEditor === null
+        || api === undefined
       ) {
         return;
       }
@@ -118,8 +119,8 @@ const AdminEditNotions: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            text: htmlTextFr,
-          },
+            text: htmlTextFr
+          }
         };
       }
 
@@ -129,7 +130,7 @@ const AdminEditNotions: FC = () => {
           title: name,
           ruleBook: type,
           text: htmlText,
-          i18n,
+          i18n
         })
         .then((rulebook) => {
           const newId = getNewId();
@@ -139,7 +140,7 @@ const AdminEditNotions: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditNotion.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
         })
         .catch(({ response }) => {
@@ -148,15 +149,15 @@ const AdminEditNotions: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.notionType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.notionType.${data.sent}`), 'capitalize')
+              })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.notionType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.notionType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -171,7 +172,7 @@ const AdminEditNotions: FC = () => {
       getNewId,
       createAlert,
       t,
-      setError,
+      setError
     ]
   );
 
@@ -184,9 +185,9 @@ const AdminEditNotions: FC = () => {
         title: t('adminEditNotion.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditNotion.confirmDeletion.text', {
           ns: 'pages',
-          elt: notionData?.notion.title,
+          elt: notionData?.notion.title
         }),
-        confirmCta: t('adminEditNotion.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditNotion.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
@@ -201,7 +202,7 @@ const AdminEditNotions: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditNotion.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
                 void navigate('/admin/rulebooks');
               })
@@ -211,15 +212,15 @@ const AdminEditNotions: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize')
+                    })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize')
+                    })
                   });
                 }
               });
@@ -239,7 +240,7 @@ const AdminEditNotions: FC = () => {
     getNewId,
     createAlert,
     navigate,
-    setError,
+    setError
   ]);
 
   useEffect(() => {
@@ -263,7 +264,7 @@ const AdminEditNotions: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -278,6 +279,7 @@ const AdminEditNotions: FC = () => {
         () => {}
       );
     }, 600000);
+
     return () => {
       if (saveTimer.current !== null) {
         clearInterval(saveTimer.current);
@@ -299,9 +301,11 @@ const AdminEditNotions: FC = () => {
             {t('adminEditNotion.delete', { ns: 'pages' })}
           </Button>
         </div>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror className="adminEditNotion__error">{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror className="adminEditNotion__error">{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminEditNotion__basics">
           <Input
             control={control}

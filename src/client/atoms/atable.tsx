@@ -8,7 +8,7 @@ import './atable.scss';
 
 interface IAtable extends IQuarkProps {
   /** The childrens of the Table element */
-  children: ReactNode;
+  children: ReactNode
 }
 
 const ATable: FC<IAtable> = ({ className, children }) => (

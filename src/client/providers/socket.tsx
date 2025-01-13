@@ -6,14 +6,14 @@ import type { DefaultEventsMap } from 'socket.io/dist/typed-events';
 
 interface ISocketContext {
   /** The socket event when something happens  */
-  socket: Socket | null;
+  socket: Socket | null
   /** Is the socket ready  */
-  loading: boolean;
+  loading: boolean
 }
 
 interface SocketProviderProps {
   /** The childrens of the Providers element */
-  children: ReactNode;
+  children: ReactNode
 }
 
 const SocketContext = React.createContext<ISocketContext | null>(null);
@@ -31,7 +31,7 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
   const providerValues = useMemo(
     () => ({
       socket,
-      loading,
+      loading
     }),
     [socket, loading]
   );

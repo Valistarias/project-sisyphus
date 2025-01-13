@@ -21,6 +21,7 @@ const AdminSkills: FC = () => {
     if (skills === null || skills.length === 0) {
       return null;
     }
+
     return (
       <Aul className="adminSkills__skill-list" noPoints>
         {skills.map(({ skill }) => (

@@ -11,13 +11,13 @@ import './aa.scss';
 
 interface IAA extends IQuarkProps {
   /** The link to another page */
-  href: string;
+  href: string
   /** When the link is clicked */
-  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void
   /** If the target is different to this page */
-  target?: string;
+  target?: string
   /** The childrens of the P element */
-  children: ReactNode;
+  children: ReactNode
 }
 
 const AA: FC<IAA> = ({ className, children, href, target, onClick }) => (

@@ -25,6 +25,7 @@ const CharacterCreationStep7: FC = () => {
     if (character === null || character === false) {
       return null;
     }
+
     return getCyberFrameLevelsByNodes(character.nodes, cyberFrames)[0]?.cyberFrame;
   }, [character, cyberFrames]);
 
@@ -42,16 +43,16 @@ const CharacterCreationStep7: FC = () => {
         ${displayNext ? 'characterCreation-step7--next' : ''}
       `)}
       initial={{
-        opacity: 0,
+        opacity: 0
       }}
       animate={{
         opacity: 1,
         transitionEnd: {
-          transform: 'none',
-        },
+          transform: 'none'
+        }
       }}
       exit={{
-        opacity: 0,
+        opacity: 0
       }}
       transition={{ ease: 'easeInOut', duration: 0.2 }}
     >
@@ -71,7 +72,7 @@ const CharacterCreationStep7: FC = () => {
           `${t('characterCreation.step7.text.name', { ns: 'components', name })}\n${t('characterCreation.step7.text.cyberFrame', { ns: 'components', cyberFrame: chosenCyberFrame?.cyberFrame.title })}\n${t('characterCreation.step7.text.cyberFrameR', { ns: 'components' })}\n${t('characterCreation.step7.text.psa', { ns: 'components' })}`,
           () => {
             setDisplayNext(true);
-          },
+          }
         ]}
         speed={70}
         omitDeletionAnimation={true}

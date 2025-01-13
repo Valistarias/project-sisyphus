@@ -4,22 +4,21 @@ import Entity from './entity';
 
 import type { ICuratedRuleBook } from '../../types';
 
-
 interface IRuleBooksPayload {
-  ruleBookId: string;
+  ruleBookId: string
 }
 
 interface IRuleBooksChapterOrder {
-  id: string;
+  id: string
   order: Array<{
-    id: string;
-    position: number;
-  }>;
+    id: string
+    position: number
+  }>
 }
 
 interface IArchivedPayload {
-  id: string;
-  archived: boolean;
+  id: string
+  archived: boolean
 }
 
 export default class RuleBooks extends Entity {
@@ -30,7 +29,7 @@ export default class RuleBooks extends Entity {
   constructor() {
     super('rulebooks');
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })
@@ -42,7 +41,7 @@ export default class RuleBooks extends Entity {
           });
       });
 
-    this.changeChaptersOrder = async (payload) =>
+    this.changeChaptersOrder = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/changechaptersorder/`, payload)
@@ -54,7 +53,7 @@ export default class RuleBooks extends Entity {
           });
       });
 
-    this.archive = async (payload) =>
+    this.archive = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/archive/`, payload)

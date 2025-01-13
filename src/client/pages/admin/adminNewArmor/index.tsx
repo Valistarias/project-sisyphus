@@ -18,64 +18,64 @@ import { classTrim, isThereDuplicate } from '../../../utils';
 import './adminNewArmor.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  cost: number;
-  rarity: string;
-  starterKit: string;
-  armorType: string;
-  itemModifiers: string[];
+  name: string
+  nameFr: string
+  cost: number
+  rarity: string
+  starterKit: string
+  armorType: string
+  itemModifiers: string[]
   skillBonuses?: Record<
     string,
     {
-      skill: string;
-      value: number;
+      skill: string
+      value: number
     }
-  >;
+  >
   statBonuses?: Record<
     string,
     {
-      stat: string;
-      value: number;
+      stat: string
+      value: number
     }
-  >;
+  >
   charParamBonuses?: Record<
     string,
     {
-      charParam: string;
-      value: number;
+      charParam: string
+      value: number
     }
-  >;
+  >
   effects?: Record<
     string,
     {
-      title: string;
-      titleFr?: string;
-      summary: string;
-      summaryFr?: string;
-      type: string;
-      formula?: string;
+      title: string
+      titleFr?: string
+      summary: string
+      summaryFr?: string
+      type: string
+      formula?: string
     }
-  >;
+  >
   actions?: Record<
     string,
     {
-      title: string;
-      titleFr?: string;
-      summary: string;
-      summaryFr?: string;
-      type: string;
-      skill: string;
-      duration: string;
-      time?: string;
-      timeFr?: string;
-      damages?: string;
-      offsetSkill?: string;
-      uses?: number;
-      isKarmic?: boolean;
-      karmicCost?: number;
+      title: string
+      titleFr?: string
+      summary: string
+      summaryFr?: string
+      type: string
+      skill: string
+      duration: string
+      time?: string
+      timeFr?: string
+      damages?: string
+      offsetSkill?: string
+      uses?: number
+      isKarmic?: boolean
+      karmicCost?: number
     }
-  >;
+  >
 }
 
 const AdminNewArmor: FC = () => {
@@ -92,7 +92,7 @@ const AdminNewArmor: FC = () => {
     armorTypes,
     rarities,
     itemTypes,
-    itemModifiers,
+    itemModifiers
   } = useGlobalVars();
 
   const [displayInt, setDisplayInt] = useState(false);
@@ -103,7 +103,7 @@ const AdminNewArmor: FC = () => {
       skills.map(({ skill }) => ({
         value: skill._id,
         // TODO : Handle Internationalization
-        label: skill.title,
+        label: skill.title
       })),
     [skills]
   );
@@ -115,7 +115,7 @@ const AdminNewArmor: FC = () => {
       stats.map(({ stat }) => ({
         value: stat._id,
         // TODO : Handle Internationalization
-        label: stat.title,
+        label: stat.title
       })),
     [stats]
   );
@@ -126,7 +126,7 @@ const AdminNewArmor: FC = () => {
       charParams.map(({ charParam }) => ({
         value: charParam._id,
         // TODO : Handle Internationalization
-        label: charParam.title,
+        label: charParam.title
       })),
     [charParams]
   );
@@ -136,7 +136,7 @@ const AdminNewArmor: FC = () => {
     () =>
       actionTypes.map(({ name, _id }) => ({
         value: _id,
-        label: t(`terms.actionType.${name}`),
+        label: t(`terms.actionType.${name}`)
       })),
     [actionTypes, t]
   );
@@ -145,7 +145,7 @@ const AdminNewArmor: FC = () => {
     () =>
       actionDurations.map(({ name, _id }) => ({
         value: _id,
-        label: t(`terms.actionDuration.${name}`),
+        label: t(`terms.actionDuration.${name}`)
       })),
     [actionDurations, t]
   );
@@ -154,26 +154,26 @@ const AdminNewArmor: FC = () => {
     () =>
       armorTypes.map(({ armorType }) => ({
         value: armorType._id,
-        label: armorType.title,
+        label: armorType.title
       })),
     [armorTypes]
   );
 
   const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
-      value: rarity._id,
-      label: rarity.title,
-    })), [rarities]);
+    value: rarity._id,
+    label: rarity.title
+  })), [rarities]);
 
   const itemModifierList = useMemo(() => itemModifiers.map(({ itemModifier }) => ({
-      value: itemModifier._id,
-      label: itemModifier.title,
-    })), [itemModifiers]);
+    value: itemModifier._id,
+    label: itemModifier.title
+  })), [itemModifiers]);
 
   const starterKitList = useMemo(
     () =>
-      possibleStarterKitValues.map((possibleStarterKitValue) => ({
+      possibleStarterKitValues.map(possibleStarterKitValue => ({
         value: possibleStarterKitValue,
-        label: t(`terms.starterKit.${possibleStarterKitValue}`),
+        label: t(`terms.starterKit.${possibleStarterKitValue}`)
       })),
     [t]
   );
@@ -183,11 +183,11 @@ const AdminNewArmor: FC = () => {
   const [actionIds, setActionIds] = useState<number[]>([]);
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const {
@@ -195,23 +195,23 @@ const AdminNewArmor: FC = () => {
     setError,
     unregister,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm({
     defaultValues: {
-      icon: 'default',
-    },
+      icon: 'default'
+    }
   });
 
   const boolRange = useMemo(
     () => [
       {
         value: '1',
-        label: t('terms.general.yes'),
+        label: t('terms.general.yes')
       },
       {
         value: '0',
-        label: t('terms.general.no'),
-      },
+        label: t('terms.general.no')
+      }
     ],
     [t]
   );
@@ -221,6 +221,7 @@ const AdminNewArmor: FC = () => {
       const next = [...prev];
       next.push(idIncrement.current);
       idIncrement.current += 1;
+
       return next;
     });
   }, []);
@@ -230,6 +231,7 @@ const AdminNewArmor: FC = () => {
       const next = [...prev];
       next.push(idIncrement.current);
       idIncrement.current += 1;
+
       return next;
     });
   }, []);
@@ -239,6 +241,7 @@ const AdminNewArmor: FC = () => {
       const next = [...prev];
       next.push(idIncrement.current);
       idIncrement.current += 1;
+
       return next;
     });
   }, []);
@@ -248,6 +251,7 @@ const AdminNewArmor: FC = () => {
       const next = [...prev];
       next.push(idIncrement.current);
       idIncrement.current += 1;
+
       return next;
     });
   }, []);
@@ -257,6 +261,7 @@ const AdminNewArmor: FC = () => {
       const next = [...prev];
       next.push(idIncrement.current);
       idIncrement.current += 1;
+
       return next;
     });
   }, []);
@@ -283,14 +288,15 @@ const AdminNewArmor: FC = () => {
       let duplicateSkillBonuses = false;
       if (skillBonuses.length > 0) {
         duplicateSkillBonuses = isThereDuplicate(
-          skillBonuses.map((skillBonus) => skillBonus.skill)
+          skillBonuses.map(skillBonus => skillBonus.skill)
         );
       }
       if (duplicateSkillBonuses) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminNewArmor.errorDuplicateSkill', { ns: 'pages' }),
+          message: t('adminNewArmor.errorDuplicateSkill', { ns: 'pages' })
         });
+
         return;
       }
 
@@ -298,44 +304,46 @@ const AdminNewArmor: FC = () => {
       const statBonuses = elts.statBonuses !== undefined ? Object.values(elts.statBonuses) : [];
       let duplicateStatBonuses = false;
       if (statBonuses.length > 0) {
-        duplicateStatBonuses = isThereDuplicate(statBonuses.map((statBonus) => statBonus.stat));
+        duplicateStatBonuses = isThereDuplicate(statBonuses.map(statBonus => statBonus.stat));
       }
       if (duplicateStatBonuses) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminNewArmor.errorDuplicateStat', { ns: 'pages' }),
+          message: t('adminNewArmor.errorDuplicateStat', { ns: 'pages' })
         });
+
         return;
       }
 
       // Check duplicate on character param
-      const charParamBonuses =
-        elts.charParamBonuses !== undefined ? Object.values(elts.charParamBonuses) : [];
+      const charParamBonuses
+        = elts.charParamBonuses !== undefined ? Object.values(elts.charParamBonuses) : [];
       let duplicateCharParamBonuses = false;
       if (charParamBonuses.length > 0) {
         duplicateCharParamBonuses = isThereDuplicate(
-          charParamBonuses.map((charParamBonus) => charParamBonus.charParam)
+          charParamBonuses.map(charParamBonus => charParamBonus.charParam)
         );
       }
       if (duplicateCharParamBonuses) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminNewArmor.errorDuplicateCharParam', { ns: 'pages' }),
+          message: t('adminNewArmor.errorDuplicateCharParam', { ns: 'pages' })
         });
+
         return;
       }
 
       const curatedSkillBonuses = skillBonuses.map(({ skill, value }) => ({
         skill,
-        value: Number(value),
+        value: Number(value)
       }));
       const curatedStatBonuses = statBonuses.map(({ stat, value }) => ({
         stat,
-        value: Number(value),
+        value: Number(value)
       }));
       const curatedCharParamBonuses = charParamBonuses.map(({ charParam, value }) => ({
         charParam,
-        value: Number(value),
+        value: Number(value)
       }));
 
       const effectsArr = effects !== undefined ? Object.values(effects) : [];
@@ -350,11 +358,11 @@ const AdminNewArmor: FC = () => {
               ? {
                   fr: {
                     title: titleFr,
-                    summary: summaryFr,
-                  },
+                    summary: summaryFr
+                  }
                 }
-              : {}),
-          },
+              : {})
+          }
         })
       );
 
@@ -375,7 +383,7 @@ const AdminNewArmor: FC = () => {
           uses,
           isKarmic,
           karmicCost,
-          summaryFr,
+          summaryFr
         }) => ({
           title,
           summary,
@@ -394,11 +402,11 @@ const AdminNewArmor: FC = () => {
                   fr: {
                     title: titleFr,
                     summary: summaryFr,
-                    time: timeFr,
-                  },
+                    time: timeFr
+                  }
                 }
-              : {}),
-          },
+              : {})
+          }
         })
       );
 
@@ -414,8 +422,8 @@ const AdminNewArmor: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            summary: htmlFr,
-          },
+            summary: htmlFr
+          }
         };
       }
 
@@ -426,7 +434,7 @@ const AdminNewArmor: FC = () => {
           rarity,
           starterKit,
           summary: html,
-          itemType: itemTypes.find((itemType) => itemType.name === 'shi')?._id ?? undefined,
+          itemType: itemTypes.find(itemType => itemType.name === 'shi')?._id ?? undefined,
           itemModifiers,
           armorType,
           i18n,
@@ -434,7 +442,7 @@ const AdminNewArmor: FC = () => {
           statBonuses: curatedStatBonuses,
           charParamBonuses: curatedCharParamBonuses,
           effects: curatedEffects,
-          actions: curatedActions,
+          actions: curatedActions
         })
         .then((quote) => {
           const newId = getNewId();
@@ -444,7 +452,7 @@ const AdminNewArmor: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewArmor.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           void navigate(`/admin/armor/${quote._id}`);
         })
@@ -454,15 +462,15 @@ const AdminNewArmor: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize')
+              })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -481,16 +489,18 @@ const AdminNewArmor: FC = () => {
         <Atitle className="adminNewArmor__head" level={1}>
           {t('adminNewArmor.title', { ns: 'pages' })}
         </Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminNewArmor__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameArmor.required', { ns: 'fields' }),
+              required: t('nameArmor.required', { ns: 'fields' })
             }}
             label={t('nameArmor.label', { ns: 'fields' })}
             className="adminNewArmor__basics__name"
@@ -501,7 +511,7 @@ const AdminNewArmor: FC = () => {
               inputName="armorType"
               isMulti
               rules={{
-                required: t('armorType.required', { ns: 'fields' }),
+                required: t('armorType.required', { ns: 'fields' })
               }}
               label={t('armorType.label', { ns: 'fields' })}
               options={armorTypeSelect}
@@ -513,7 +523,7 @@ const AdminNewArmor: FC = () => {
           <RichTextElement
             label={t('armorSummary.title', { ns: 'fields' })}
             editor={introEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />
@@ -523,7 +533,7 @@ const AdminNewArmor: FC = () => {
               inputName="cost"
               type="number"
               rules={{
-                required: t('armorCost.required', { ns: 'fields' }),
+                required: t('armorCost.required', { ns: 'fields' })
               }}
               label={t('armorCost.label', { ns: 'fields' })}
               className="adminNewArmor__details__fields__elt"
@@ -558,7 +568,7 @@ const AdminNewArmor: FC = () => {
         </Atitle>
         <div className="adminNewArmor__bonuses">
           <div className="adminNewArmor__bonuses__elts">
-            {skillBonusIds.map((skillBonusId) => (
+            {skillBonusIds.map(skillBonusId => (
               <div className="adminNewArmor__bonus" key={`skill-${skillBonusId}`}>
                 <Atitle className="adminNewArmor__bonus__title" level={4}>
                   {t('adminNewArmor.skillBonusTitle', { ns: 'pages' })}
@@ -568,7 +578,7 @@ const AdminNewArmor: FC = () => {
                     control={control}
                     inputName={`skillBonuses.skill-${skillBonusId}.skill`}
                     rules={{
-                      required: t('skillBonusSkill.required', { ns: 'fields' }),
+                      required: t('skillBonusSkill.required', { ns: 'fields' })
                     }}
                     label={t('skillBonusSkill.label', { ns: 'fields' })}
                     options={skillSelect}
@@ -579,7 +589,7 @@ const AdminNewArmor: FC = () => {
                     inputName={`skillBonuses.skill-${skillBonusId}.value`}
                     type="number"
                     rules={{
-                      required: t('skillBonusValue.required', { ns: 'fields' }),
+                      required: t('skillBonusValue.required', { ns: 'fields' })
                     }}
                     label={t('skillBonusValue.label', { ns: 'fields' })}
                     className="adminNewArmor__bonus__value"
@@ -589,11 +599,12 @@ const AdminNewArmor: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setSkillBonusIds((prev) =>
+                    setSkillBonusIds(prev =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== skillBonusId) {
                           result.push(elt);
                         }
+
                         return result;
                       }, [])
                     );
@@ -603,7 +614,7 @@ const AdminNewArmor: FC = () => {
                 />
               </div>
             ))}
-            {statBonusIds.map((statBonusId) => (
+            {statBonusIds.map(statBonusId => (
               <div className="adminNewArmor__bonus" key={`stat-${statBonusId}`}>
                 <Atitle className="adminNewArmor__bonus__title" level={4}>
                   {t('adminNewArmor.statBonusTitle', { ns: 'pages' })}
@@ -613,7 +624,7 @@ const AdminNewArmor: FC = () => {
                     control={control}
                     inputName={`statBonuses.stat-${statBonusId}.stat`}
                     rules={{
-                      required: t('statBonusStat.required', { ns: 'fields' }),
+                      required: t('statBonusStat.required', { ns: 'fields' })
                     }}
                     label={t('statBonusStat.label', { ns: 'fields' })}
                     options={statSelect}
@@ -624,7 +635,7 @@ const AdminNewArmor: FC = () => {
                     inputName={`statBonuses.stat-${statBonusId}.value`}
                     type="number"
                     rules={{
-                      required: t('statBonusValue.required', { ns: 'fields' }),
+                      required: t('statBonusValue.required', { ns: 'fields' })
                     }}
                     label={t('statBonusValue.label', { ns: 'fields' })}
                     className="adminNewArmor__bonus__value"
@@ -634,11 +645,12 @@ const AdminNewArmor: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setStatBonusIds((prev) =>
+                    setStatBonusIds(prev =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== statBonusId) {
                           result.push(elt);
                         }
+
                         return result;
                       }, [])
                     );
@@ -648,7 +660,7 @@ const AdminNewArmor: FC = () => {
                 />
               </div>
             ))}
-            {charParamBonusIds.map((charParamBonusId) => (
+            {charParamBonusIds.map(charParamBonusId => (
               <div className="adminNewArmor__bonus" key={`charParam-${charParamBonusId}`}>
                 <Atitle className="adminNewArmor__bonus__title" level={4}>
                   {t('adminNewArmor.charParamBonusTitle', { ns: 'pages' })}
@@ -658,7 +670,7 @@ const AdminNewArmor: FC = () => {
                     control={control}
                     inputName={`charParamBonuses.charParam-${charParamBonusId}.charParam`}
                     rules={{
-                      required: t('charParamBonusStat.required', { ns: 'fields' }),
+                      required: t('charParamBonusStat.required', { ns: 'fields' })
                     }}
                     label={t('charParamBonusStat.label', { ns: 'fields' })}
                     options={charParamSelect}
@@ -669,7 +681,7 @@ const AdminNewArmor: FC = () => {
                     inputName={`charParamBonuses.charParam-${charParamBonusId}.value`}
                     type="number"
                     rules={{
-                      required: t('charParamBonusValue.required', { ns: 'fields' }),
+                      required: t('charParamBonusValue.required', { ns: 'fields' })
                     }}
                     label={t('charParamBonusValue.label', { ns: 'fields' })}
                     className="adminNewArmor__bonus__value"
@@ -679,11 +691,12 @@ const AdminNewArmor: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setCharParamBonusIds((prev) =>
+                    setCharParamBonusIds(prev =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== charParamBonusId) {
                           result.push(elt);
                         }
+
                         return result;
                       }, [])
                     );
@@ -693,7 +706,7 @@ const AdminNewArmor: FC = () => {
                 />
               </div>
             ))}
-            {effectIds.map((effectId) => (
+            {effectIds.map(effectId => (
               <div className="adminNewArmor__bonus" key={`charParam-${effectId}`}>
                 <Atitle className="adminNewArmor__bonus__title" level={4}>
                   {t('adminNewArmor.effectTitle', { ns: 'pages' })}
@@ -703,7 +716,7 @@ const AdminNewArmor: FC = () => {
                     control={control}
                     inputName={`effects.effect-${effectId}.title`}
                     rules={{
-                      required: t('effectTitle.required', { ns: 'fields' }),
+                      required: t('effectTitle.required', { ns: 'fields' })
                     }}
                     label={t('effectTitle.label', { ns: 'fields' })}
                     className="adminNewArmor__bonus__value adminNewArmor__bonus__value--s"
@@ -712,7 +725,7 @@ const AdminNewArmor: FC = () => {
                     control={control}
                     inputName={`effects.effect-${effectId}.type`}
                     rules={{
-                      required: t('effectType.required', { ns: 'fields' }),
+                      required: t('effectType.required', { ns: 'fields' })
                     }}
                     label={t('effectType.label', { ns: 'fields' })}
                     options={actionTypeSelect}
@@ -723,7 +736,7 @@ const AdminNewArmor: FC = () => {
                     type="textarea"
                     inputName={`effects.effect-${effectId}.summary`}
                     rules={{
-                      required: t('effectSummary.required', { ns: 'fields' }),
+                      required: t('effectSummary.required', { ns: 'fields' })
                     }}
                     label={t('effectSummary.label', { ns: 'fields' })}
                     className="adminNewArmor__bonus__value adminNewArmor__bonus__value--l"
@@ -755,11 +768,12 @@ const AdminNewArmor: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setEffectIds((prev) =>
+                    setEffectIds(prev =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== effectId) {
                           result.push(elt);
                         }
+
                         return result;
                       }, [])
                     );
@@ -769,7 +783,7 @@ const AdminNewArmor: FC = () => {
                 />
               </div>
             ))}
-            {actionIds.map((actionId) => (
+            {actionIds.map(actionId => (
               <div className="adminNewArmor__bonus" key={`charParam-${actionId}`}>
                 <Atitle className="adminNewArmor__bonus__title" level={4}>
                   {t('adminNewArmor.actionTitle', { ns: 'pages' })}
@@ -779,7 +793,7 @@ const AdminNewArmor: FC = () => {
                     control={control}
                     inputName={`actions.action-${actionId}.title`}
                     rules={{
-                      required: t('actionTitle.required', { ns: 'fields' }),
+                      required: t('actionTitle.required', { ns: 'fields' })
                     }}
                     label={t('actionTitle.label', { ns: 'fields' })}
                     className="adminNewArmor__bonus__value adminNewArmor__bonus__value--l"
@@ -788,7 +802,7 @@ const AdminNewArmor: FC = () => {
                     control={control}
                     inputName={`actions.action-${actionId}.type`}
                     rules={{
-                      required: t('actionType.required', { ns: 'fields' }),
+                      required: t('actionType.required', { ns: 'fields' })
                     }}
                     label={t('actionType.label', { ns: 'fields' })}
                     options={actionTypeSelect}
@@ -798,7 +812,7 @@ const AdminNewArmor: FC = () => {
                     control={control}
                     inputName={`actions.action-${actionId}.duration`}
                     rules={{
-                      required: t('actionDuration.required', { ns: 'fields' }),
+                      required: t('actionDuration.required', { ns: 'fields' })
                     }}
                     label={t('actionDuration.label', { ns: 'fields' })}
                     options={actionDurationSelect}
@@ -809,7 +823,7 @@ const AdminNewArmor: FC = () => {
                     type="textarea"
                     inputName={`actions.action-${actionId}.summary`}
                     rules={{
-                      required: t('actionSummary.required', { ns: 'fields' }),
+                      required: t('actionSummary.required', { ns: 'fields' })
                     }}
                     label={t('actionSummary.label', { ns: 'fields' })}
                     className="adminNewArmor__bonus__value adminNewArmor__bonus__value--l"
@@ -833,9 +847,9 @@ const AdminNewArmor: FC = () => {
                     options={[
                       {
                         value: '',
-                        label: '',
+                        label: ''
                       },
-                      ...skillSelect,
+                      ...skillSelect
                     ]}
                     className="adminNewArmor__bonus__select adminNewArmor__bonus__value--s"
                   />
@@ -893,11 +907,12 @@ const AdminNewArmor: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setActionIds((prev) =>
+                    setActionIds(prev =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== actionId) {
                           result.push(elt);
                         }
+
                         return result;
                       }, [])
                     );
@@ -939,7 +954,7 @@ const AdminNewArmor: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt((prev) => !prev);
+              setDisplayInt(prev => !prev);
             }}
             className="adminNewArmor__intl-title__btn"
           />
@@ -958,7 +973,7 @@ const AdminNewArmor: FC = () => {
             <RichTextElement
               label={`${t('armorSummary.title', { ns: 'fields' })} (FR)`}
               editor={introFrEditor}
-              rawStringContent={''}
+              rawStringContent=""
               small
               complete
             />

@@ -43,5 +43,5 @@ export {
   Aul,
   Avideo,
   type IAButton,
-  type typeIcons,
+  type typeIcons
 };

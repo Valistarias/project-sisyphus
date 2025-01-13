@@ -5,7 +5,7 @@ import {
   gemDuplicate,
   gemInvalidField,
   gemNotFound,
-  gemServerError,
+  gemServerError
 } from '../../utils/globalErrorMessage';
 import { checkDuplicateCharParamFormulaId } from '../charParam/controller';
 import { checkDuplicateSkillFormulaId } from '../skill/controller';
@@ -83,21 +83,21 @@ const checkDuplicateFormulaId = async (
                       resolve(responseStat);
                     }
                   })
-                  .catch((err: Error) => {
+                  .catch((err: unknown) => {
                     reject(err);
                   });
               } else {
                 resolve(responseSkill);
               }
             })
-            .catch((err: Error) => {
+            .catch((err: unknown) => {
               reject(err);
             });
         } else {
           resolve(responseCharParam);
         }
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -105,12 +105,13 @@ const checkDuplicateFormulaId = async (
 const create = (req: Request, res: Response): void => {
   const { title, summary, short, i18n = null, formulaId } = req.body;
   if (
-    title === undefined ||
-    summary === undefined ||
-    short === undefined ||
-    formulaId === undefined
+    title === undefined
+    || summary === undefined
+    || short === undefined
+    || formulaId === undefined
   ) {
     res.status(400).send(gemInvalidField('Stat'));
+
     return;
   }
 
@@ -121,7 +122,7 @@ const create = (req: Request, res: Response): void => {
           title,
           summary,
           short,
-          formulaId,
+          formulaId
         });
 
         if (i18n !== null) {
@@ -133,14 +134,14 @@ const create = (req: Request, res: Response): void => {
           .then(() => {
             res.send(stat);
           })
-          .catch((err: Error) => {
+          .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
           });
       } else {
         res.status(400).send(gemDuplicate(response));
       }
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -149,6 +150,7 @@ const update = (req: Request, res: Response): void => {
   const { id, title = null, summary = null, i18n, short = null, formulaId = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Stat ID'));
+
     return;
   }
   findStatById(id as string)
@@ -174,7 +176,7 @@ const update = (req: Request, res: Response): void => {
               const newIntl = {
                 ...(stat.i18n !== null && stat.i18n !== undefined && stat.i18n !== ''
                   ? JSON.parse(stat.i18n)
-                  : {}),
+                  : {})
               };
 
               Object.keys(i18n as Record<string, any>).forEach((lang) => {
@@ -189,14 +191,14 @@ const update = (req: Request, res: Response): void => {
               .then(() => {
                 res.send({ message: 'Stat was updated successfully!', stat });
               })
-              .catch((err: Error) => {
+              .catch((err: unknown) => {
                 res.status(500).send(gemServerError(err));
               });
           } else {
             res.status(400).send(gemInvalidField('CharParam'));
           }
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -209,13 +211,14 @@ const deleteStatById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Stat ID'));
+
       return;
     }
     Stat.findByIdAndDelete(id)
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
@@ -226,31 +229,32 @@ const deleteStat = (req: Request, res: Response): void => {
     .then(() => {
       res.send({ message: 'Stat was deleted successfully!' });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
 
 interface CuratedIStat {
-  i18n: Record<string, any> | Record<string, unknown>;
-  stat: HydratedIStat;
+  i18n: Record<string, unknown>
+  stat: HydratedIStat
 }
 
 const findSingle = (req: Request, res: Response): void => {
   const { statId } = req.query;
   if (statId === undefined || typeof statId !== 'string') {
     res.status(400).send(gemInvalidField('Stat ID'));
+
     return;
   }
   findStatById(statId)
     .then((stat) => {
       const sentObj = {
         stat,
-        i18n: curateI18n(stat.i18n),
+        i18n: curateI18n(stat.i18n)
       };
       res.send(sentObj);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
@@ -263,13 +267,13 @@ const findAll = (req: Request, res: Response): void => {
       stats.forEach((stat) => {
         curatedStats.push({
           stat,
-          i18n: curateI18n(stat.i18n),
+          i18n: curateI18n(stat.i18n)
         });
       });
 
       res.send(curatedStats);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export {
@@ -279,5 +283,5 @@ export {
   findAll,
   findSingle,
   findStatById,
-  update,
+  update
 };

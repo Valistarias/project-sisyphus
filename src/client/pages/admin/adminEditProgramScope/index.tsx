@@ -19,9 +19,9 @@ import { classTrim } from '../../../utils';
 import './adminEditProgramScope.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  scopeId: string;
+  name: string
+  nameFr: string
+  scopeId: string
 }
 
 const AdminEditProgramScope: FC = () => {
@@ -31,7 +31,7 @@ const AdminEditProgramScope: FC = () => {
   const { reloadProgramScopes } = useGlobalVars();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
-    ConfMessageEvent: {},
+    ConfMessageEvent: {}
   };
   const { id } = useParams();
   const navigate = useNavigate();
@@ -48,11 +48,11 @@ const AdminEditProgramScope: FC = () => {
   const [programScopeTextFr, setProgramScopeTextFr] = useState('');
 
   const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const createDefaultData = useCallback((programScopeData: ICuratedProgramScope | null) => {
@@ -66,6 +66,7 @@ const AdminEditProgramScope: FC = () => {
     if (i18n.fr !== undefined) {
       defaultData.nameFr = i18n.fr.title ?? '';
     }
+
     return defaultData;
   }, []);
 
@@ -74,23 +75,23 @@ const AdminEditProgramScope: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(programScopeData),
       [createDefaultData, programScopeData]
-    ),
+    )
   });
 
   const onSaveProgramScope: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, scopeId }) => {
       if (
-        programScopeText === null ||
-        programScopeTextFr === null ||
-        textEditor === null ||
-        textFrEditor === null ||
-        scopeId === null ||
-        api === undefined
+        programScopeText === null
+        || programScopeTextFr === null
+        || textEditor === null
+        || textFrEditor === null
+        || scopeId === null
+        || api === undefined
       ) {
         return;
       }
@@ -108,8 +109,8 @@ const AdminEditProgramScope: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            text: htmlTextFr,
-          },
+            text: htmlTextFr
+          }
         };
       }
 
@@ -119,7 +120,7 @@ const AdminEditProgramScope: FC = () => {
           title: name,
           summary: htmlText,
           scopeId,
-          i18n,
+          i18n
         })
         .then((programScope) => {
           const newId = getNewId();
@@ -129,7 +130,7 @@ const AdminEditProgramScope: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditProgramScope.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadProgramScopes();
         })
@@ -139,15 +140,15 @@ const AdminEditProgramScope: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id',
-              })} by ${data.sent}`,
+                field: 'Formula Id'
+              })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -163,7 +164,7 @@ const AdminEditProgramScope: FC = () => {
       createAlert,
       t,
       reloadProgramScopes,
-      setError,
+      setError
     ]
   );
 
@@ -176,9 +177,9 @@ const AdminEditProgramScope: FC = () => {
         title: t('adminEditProgramScope.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditProgramScope.confirmDeletion.text', {
           ns: 'pages',
-          elt: programScopeData?.programScope.title,
+          elt: programScopeData?.programScope.title
         }),
-        confirmCta: t('adminEditProgramScope.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditProgramScope.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
@@ -193,7 +194,7 @@ const AdminEditProgramScope: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditProgramScope.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
                 reloadProgramScopes();
                 void navigate('/admin/programscopes');
@@ -204,15 +205,15 @@ const AdminEditProgramScope: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.programScope.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.programScope.name`), 'capitalize')
+                    })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.programScope.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.programScope.name`), 'capitalize')
+                    })
                   });
                 }
               });
@@ -233,7 +234,7 @@ const AdminEditProgramScope: FC = () => {
     createAlert,
     reloadProgramScopes,
     navigate,
-    setError,
+    setError
   ]);
 
   useEffect(() => {
@@ -257,7 +258,7 @@ const AdminEditProgramScope: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -272,6 +273,7 @@ const AdminEditProgramScope: FC = () => {
         () => {}
       );
     }, 600000);
+
     return () => {
       if (saveTimer.current !== null) {
         clearInterval(saveTimer.current);
@@ -303,11 +305,13 @@ const AdminEditProgramScope: FC = () => {
           </Button>
         </div>
         <Atitle level={2}>{t('adminEditProgramScope.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror className="adminEditProgramScope__error">
-            {errors.root.serverError.message}
-          </Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror className="adminEditProgramScope__error">
+                {errors.root.serverError.message}
+              </Aerror>
+            )
+          : null}
         <div className="adminEditProgramScope__basics">
           <Input
             control={control}
@@ -333,8 +337,8 @@ const AdminEditProgramScope: FC = () => {
               required: t('programScopeFormula.required', { ns: 'fields' }),
               pattern: {
                 value: /^([a-z]){2,3}$/,
-                message: t('programScopeFormula.format', { ns: 'fields' }),
-              },
+                message: t('programScopeFormula.format', { ns: 'fields' })
+              }
             }}
             label={t('programScopeFormula.label', { ns: 'fields' })}
           />
@@ -352,7 +356,7 @@ const AdminEditProgramScope: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt((prev) => !prev);
+              setDisplayInt(prev => !prev);
             }}
             className="adminEditProgramScope__intl-title__btn"
           />

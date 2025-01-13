@@ -4,22 +4,21 @@ import Entity from './entity';
 
 import type { IBody } from '../../types';
 
-
 interface IUpdateStatsPayload {
-  id: string;
-  stats: Array<{ id: string; value: number }>;
+  id: string
+  stats: Array<{ id: string, value: number }>
 }
 interface IResetItemsPayload {
-  id: string;
-  weapons: string[];
-  armors: string[];
-  bags: string[];
-  items: string[];
-  programs: string[];
-  implants: string[];
+  id: string
+  weapons: string[]
+  armors: string[]
+  bags: string[]
+  items: string[]
+  programs: string[]
+  implants: string[]
 }
 interface IBodyPayload {
-  characterId: string;
+  characterId: string
 }
 
 export default class Bodys extends Entity {
@@ -30,7 +29,7 @@ export default class Bodys extends Entity {
   constructor() {
     super('bodies');
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })
@@ -42,7 +41,7 @@ export default class Bodys extends Entity {
           });
       });
 
-    this.updateStats = async (payload) =>
+    this.updateStats = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/updatestats/`, payload)
@@ -54,7 +53,7 @@ export default class Bodys extends Entity {
           });
       });
 
-    this.resetItems = async (payload) =>
+    this.resetItems = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/resetitems/`, payload)

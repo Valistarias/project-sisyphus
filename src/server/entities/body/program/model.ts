@@ -4,44 +4,44 @@ import type { IProgram } from '../../program/model';
 
 interface IBodyProgram {
   /** When the body was created */
-  createdAt: Date;
+  createdAt: Date
   /** The body targeted */
-  body: ObjectId;
+  body: ObjectId
   /** The linked Program */
-  program: ObjectId;
+  program: ObjectId
   /** The bag that store this program */
-  bag: ObjectId;
+  bag: ObjectId
   /** How many times the progam was used in the day */
-  uses: number;
+  uses: number
 }
 
 type HydratedIBodyProgram = HydratedDocument<
   Omit<IBodyProgram, 'program'> & {
-    program: HydratedDocument<IProgram>;
+    program: HydratedDocument<IProgram>
   }
 >;
 
 const BodyProgramSchema = new Schema<IBodyProgram>({
   body: {
     type: Schema.Types.ObjectId,
-    ref: 'Body',
+    ref: 'Body'
   },
   program: {
     type: Schema.Types.ObjectId,
-    ref: 'Program',
+    ref: 'Program'
   },
   bag: {
     type: Schema.Types.ObjectId,
-    ref: 'BodyBag',
+    ref: 'BodyBag'
   },
   uses: {
     type: Number,
-    default: 0,
+    default: 0
   },
   createdAt: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
 });
 
 const BodyProgramModel = (): Model<IBodyProgram> => model('BodyProgram', BodyProgramSchema);

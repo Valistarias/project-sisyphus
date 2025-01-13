@@ -4,38 +4,38 @@ import type { IActionDuration, IActionType, ISkill } from '../index';
 
 interface IAction {
   /** The title of the action */
-  title: string;
+  title: string
   /** A summary of the action */
-  summary: string;
+  summary: string
   /** The internationnal content, as a json, stringified */
-  i18n?: string;
+  i18n?: string
   /** The action type */
-  type: ObjectId;
+  type: ObjectId
   /** The action duration */
-  duration: ObjectId;
+  duration: ObjectId
   /** Is this action a karma offering ? */
-  isKarmic: boolean;
+  isKarmic: boolean
   /** Cost of karma, if karmic offering */
-  karmicCost?: number;
+  karmicCost?: number
   /** The time spent to execute this action */
-  time?: string;
+  time?: string
   /** The skill associated to this action (for skill checks and attacks) */
-  skill?: ObjectId;
+  skill?: ObjectId
   /** The offset used for the skill check */
-  offsetSkill?: string;
+  offsetSkill?: string
   /** How many times the action is usable in a day */
-  uses?: number;
+  uses?: number
   /** The formula for the damages caused */
-  damages?: string;
+  damages?: string
   /** When the action was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 type HydratedIAction = HydratedDocument<
   Omit<IAction, 'type' | 'skill' | 'duration'> & {
-    type: IActionType | string;
-    duration: IActionDuration | string;
-    skill: ISkill | string;
+    type: IActionType | string
+    duration: IActionDuration | string
+    skill: ISkill | string
   }
 >;
 
@@ -45,11 +45,11 @@ const actionSchema = new Schema<IAction>({
   i18n: String,
   type: {
     type: Schema.Types.ObjectId,
-    ref: 'ActionType',
+    ref: 'ActionType'
   },
   duration: {
     type: Schema.Types.ObjectId,
-    ref: 'ActionDuration',
+    ref: 'ActionDuration'
   },
   isKarmic: Boolean,
   karmicCost: Number,
@@ -57,14 +57,14 @@ const actionSchema = new Schema<IAction>({
   time: String,
   skill: {
     type: Schema.Types.ObjectId,
-    ref: 'Skill',
+    ref: 'Skill'
   },
   offsetSkill: String,
   damages: String,
   createdAt: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
 });
 
 const ActionModel = (): Model<IAction> => model('Action', actionSchema);

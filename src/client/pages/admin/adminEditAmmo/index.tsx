@@ -19,14 +19,14 @@ import { classTrim } from '../../../utils';
 import './adminEditAmmo.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  weaponTypes: string[];
-  offsetToHit?: number;
-  offsetDamage?: number;
-  cost: number;
-  rarity: string;
-  itemModifiers: string[];
+  name: string
+  nameFr: string
+  weaponTypes: string[]
+  offsetToHit?: number
+  offsetDamage?: number
+  cost: number
+  rarity: string
+  itemModifiers: string[]
 }
 
 const AdminEditAmmo: FC = () => {
@@ -35,7 +35,7 @@ const AdminEditAmmo: FC = () => {
   const { id } = useParams();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
-    ConfMessageEvent: {},
+    ConfMessageEvent: {}
   };
   const { itemModifiers, weaponTypes, rarities } = useGlobalVars();
   const { createAlert, getNewId } = useSystemAlerts();
@@ -51,11 +51,11 @@ const AdminEditAmmo: FC = () => {
   const [ammoTextFr, setAmmoTextFr] = useState('');
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const createDefaultData = useCallback((ammoData: ICuratedAmmo | null) => {
@@ -83,9 +83,9 @@ const AdminEditAmmo: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
-    defaultValues: useMemo(() => createDefaultData(ammoData), [createDefaultData, ammoData]),
+    defaultValues: useMemo(() => createDefaultData(ammoData), [createDefaultData, ammoData])
   });
 
   // TODO: Internationalization
@@ -93,7 +93,7 @@ const AdminEditAmmo: FC = () => {
     () =>
       itemModifiers.map(({ itemModifier }) => ({
         value: itemModifier._id,
-        label: itemModifier.title,
+        label: itemModifier.title
       })),
     [itemModifiers]
   );
@@ -102,7 +102,7 @@ const AdminEditAmmo: FC = () => {
     () =>
       rarities.map(({ rarity }) => ({
         value: rarity._id,
-        label: rarity.title,
+        label: rarity.title
       })),
     [rarities]
   );
@@ -111,7 +111,7 @@ const AdminEditAmmo: FC = () => {
     () =>
       weaponTypes.map(({ weaponType }) => ({
         value: weaponType._id,
-        label: weaponType.title,
+        label: weaponType.title
       })),
     [weaponTypes]
   );
@@ -119,10 +119,10 @@ const AdminEditAmmo: FC = () => {
   const onSaveAmmo: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, rarity, cost, weaponTypes, itemModifiers, offsetToHit, offsetDamage }) => {
       if (
-        introEditor === null ||
-        introFrEditor === null ||
-        api === undefined ||
-        weaponTypes === undefined
+        introEditor === null
+        || introFrEditor === null
+        || api === undefined
+        || weaponTypes === undefined
       ) {
         return;
       }
@@ -139,8 +139,8 @@ const AdminEditAmmo: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            summary: htmlFr,
-          },
+            summary: htmlFr
+          }
         };
       }
 
@@ -156,7 +156,7 @@ const AdminEditAmmo: FC = () => {
           cost: Number(cost),
           itemModifiers,
           summary: html,
-          i18n,
+          i18n
         })
         .then(() => {
           const newId = getNewId();
@@ -166,7 +166,7 @@ const AdminEditAmmo: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditAmmo.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
         })
         .catch(({ response }) => {
@@ -174,8 +174,8 @@ const AdminEditAmmo: FC = () => {
           setError('root.serverError', {
             type: 'server',
             message: t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-            }),
+              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+            })
           });
         });
     },
@@ -188,7 +188,7 @@ const AdminEditAmmo: FC = () => {
       getNewId,
       createAlert,
       t,
-      setError,
+      setError
     ]
   );
 
@@ -201,9 +201,9 @@ const AdminEditAmmo: FC = () => {
         title: t('adminEditAmmo.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditAmmo.confirmDeletion.text', {
           ns: 'pages',
-          elt: ammoData.ammo.title,
+          elt: ammoData.ammo.title
         }),
-        confirmCta: t('adminEditAmmo.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditAmmo.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
@@ -218,7 +218,7 @@ const AdminEditAmmo: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditAmmo.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
                 void navigate(`/admin/ammos`);
               })
@@ -228,15 +228,15 @@ const AdminEditAmmo: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize')
+                    })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize')
+                    })
                   });
                 }
               });
@@ -256,7 +256,7 @@ const AdminEditAmmo: FC = () => {
     getNewId,
     createAlert,
     navigate,
-    setError,
+    setError
   ]);
 
   useEffect(() => {
@@ -280,7 +280,7 @@ const AdminEditAmmo: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -307,16 +307,18 @@ const AdminEditAmmo: FC = () => {
             {t('adminEditAmmo.delete', { ns: 'pages' })}
           </Button>
         </div>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminEditAmmo__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameAmmo.required', { ns: 'fields' }),
+              required: t('nameAmmo.required', { ns: 'fields' })
             }}
             label={t('nameAmmo.label', { ns: 'fields' })}
             className="adminEditAmmo__basics__name"
@@ -327,7 +329,7 @@ const AdminEditAmmo: FC = () => {
               inputName="offsetToHit"
               type="number"
               rules={{
-                required: t('ammoOffsetToHit.required', { ns: 'fields' }),
+                required: t('ammoOffsetToHit.required', { ns: 'fields' })
               }}
               label={t('ammoOffsetToHit.label', { ns: 'fields' })}
             />
@@ -336,7 +338,7 @@ const AdminEditAmmo: FC = () => {
               inputName="offsetDamage"
               type="number"
               rules={{
-                required: t('ammoOffsetDamage.required', { ns: 'fields' }),
+                required: t('ammoOffsetDamage.required', { ns: 'fields' })
               }}
               label={t('ammoOffsetDamage.label', { ns: 'fields' })}
             />
@@ -346,7 +348,7 @@ const AdminEditAmmo: FC = () => {
               inputName="weaponTypes"
               label={t('ammoWeaponTypes.label', { ns: 'fields' })}
               rules={{
-                required: t('ammoWeaponTypes.required', { ns: 'fields' }),
+                required: t('ammoWeaponTypes.required', { ns: 'fields' })
               }}
               options={weaponList}
               className="adminNewWeapon__details__fields__elt"
@@ -375,7 +377,7 @@ const AdminEditAmmo: FC = () => {
               inputName="cost"
               type="number"
               rules={{
-                required: t('ammoCost.required', { ns: 'fields' }),
+                required: t('ammoCost.required', { ns: 'fields' })
               }}
               label={t('ammoCost.label', { ns: 'fields' })}
               className="adminEditAmmo__details__fields__elt"
@@ -403,7 +405,7 @@ const AdminEditAmmo: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt((prev) => !prev);
+              setDisplayInt(prev => !prev);
             }}
             className="adminEditAmmo__intl-title__btn"
           />

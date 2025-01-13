@@ -3,8 +3,8 @@ import db from '../../../models';
 const { BodyImplant } = db;
 
 const replaceImplantByBody = async (req: {
-  bodyId: string;
-  implantIds: string[];
+  bodyId: string
+  implantIds: string[]
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { bodyId } = req;
@@ -24,15 +24,15 @@ const replaceImplantByBody = async (req: {
   });
 
 const createImplantsByBody = async (req: {
-  bodyId: string;
-  implantIds: string[];
+  bodyId: string
+  implantIds: string[]
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { bodyId, implantIds } = req;
     BodyImplant.create(
-      implantIds.map((implantId) => ({
+      implantIds.map(implantId => ({
         body: bodyId,
-        implant: implantId,
+        implant: implantId
       }))
     )
       .then(() => {
@@ -44,16 +44,16 @@ const createImplantsByBody = async (req: {
   });
 
 const updateImplantByBody = async (req: {
-  bodyId: string;
-  implantId: string;
-  equiped?: string;
-  bag?: string;
+  bodyId: string
+  implantId: string
+  equiped?: string
+  bag?: string
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { bodyId, implantId, equiped = null, bag = null } = req;
     const updateObj: {
-      bag?: string;
-      equiped?: string;
+      bag?: string
+      equiped?: string
     } = {};
     if (bag !== null) {
       updateObj.bag = bag;
@@ -67,7 +67,7 @@ const updateImplantByBody = async (req: {
     BodyImplant.findOneAndUpdate(
       {
         body: bodyId,
-        implant: implantId,
+        implant: implantId
       },
       updateObj
     )
@@ -82,7 +82,7 @@ const updateImplantByBody = async (req: {
 const deleteImplantsByBody = async (bodyId: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     BodyImplant.deleteMany({
-      body: bodyId,
+      body: bodyId
     })
       .then(() => {
         resolve(true);

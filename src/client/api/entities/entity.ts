@@ -27,7 +27,7 @@ export default class Entity {
           });
       });
 
-    this.create = async (payload) =>
+    this.create = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/create/`, payload)
@@ -39,7 +39,7 @@ export default class Entity {
           });
       });
 
-    this.update = async (payload) =>
+    this.update = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/update/`, payload)
@@ -51,7 +51,7 @@ export default class Entity {
           });
       });
 
-    this.delete = async (payload) =>
+    this.delete = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/delete/`, payload)

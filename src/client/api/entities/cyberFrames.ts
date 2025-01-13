@@ -4,9 +4,8 @@ import Entity from './entity';
 
 import type { ICuratedCyberFrame } from '../../types';
 
-
 interface ICyberFramePayload {
-  cyberFrameId: string;
+  cyberFrameId: string
 }
 
 export default class CyberFrames extends Entity {
@@ -15,7 +14,7 @@ export default class CyberFrames extends Entity {
   constructor() {
     super('cyberframes');
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })

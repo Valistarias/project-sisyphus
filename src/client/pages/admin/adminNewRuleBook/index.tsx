@@ -17,9 +17,9 @@ import type { IRuleBookType } from '../../../types';
 import './adminNewRuleBook.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  type: string;
+  name: string
+  nameFr: string
+  type: string
 }
 
 const AdminNewRuleBooks: FC = () => {
@@ -32,18 +32,18 @@ const AdminNewRuleBooks: FC = () => {
   const [ruleBookTypes, setRuleBookTypes] = useState<ISingleValueSelect[]>([]);
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   const onSaveRuleBook: SubmitHandler<FormValues> = useCallback(
@@ -63,8 +63,8 @@ const AdminNewRuleBooks: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            summary: htmlFr,
-          },
+            summary: htmlFr
+          }
         };
       }
 
@@ -73,7 +73,7 @@ const AdminNewRuleBooks: FC = () => {
           title: name,
           type,
           summary: html,
-          i18n,
+          i18n
         })
         .then((ruleBook) => {
           const newId = getNewId();
@@ -83,7 +83,7 @@ const AdminNewRuleBooks: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewRuleBook.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadRuleBooks();
           void navigate(`/admin/ruleBook/${ruleBook._id}`);
@@ -94,15 +94,15 @@ const AdminNewRuleBooks: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize')
+              })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -116,10 +116,10 @@ const AdminNewRuleBooks: FC = () => {
         .getAll()
         .then((data: IRuleBookType[]) => {
           setRuleBookTypes(
-            data.map((ruleBookType) => ({
+            data.map(ruleBookType => ({
               value: ruleBookType._id,
               label: t(`ruleBookTypeNames.${ruleBookType.name}`, { count: 1 }),
-              details: ruleBookType.name,
+              details: ruleBookType.name
             }))
           );
         })
@@ -131,7 +131,7 @@ const AdminNewRuleBooks: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -145,16 +145,18 @@ const AdminNewRuleBooks: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewRuleBook.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminNewRuleBook__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameRuleBook.required', { ns: 'fields' }),
+              required: t('nameRuleBook.required', { ns: 'fields' })
             }}
             label={t('nameRuleBook.label', { ns: 'fields' })}
             className="adminNewRuleBook__basics__name"
@@ -163,7 +165,7 @@ const AdminNewRuleBooks: FC = () => {
             control={control}
             inputName="type"
             rules={{
-              required: t('typeRuleBook.required', { ns: 'fields' }),
+              required: t('typeRuleBook.required', { ns: 'fields' })
             }}
             label={t('typeRuleBook.select', { ns: 'fields' })}
             options={ruleBookTypes}
@@ -174,7 +176,7 @@ const AdminNewRuleBooks: FC = () => {
           <RichTextElement
             label={t('ruleBookSummary.title', { ns: 'fields' })}
             editor={introEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />
@@ -199,7 +201,7 @@ const AdminNewRuleBooks: FC = () => {
           <RichTextElement
             label={`${t('ruleBookSummary.title', { ns: 'fields' })} (FR)`}
             editor={introFrEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />

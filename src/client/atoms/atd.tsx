@@ -8,7 +8,7 @@ import './atd.scss';
 
 interface IAtd extends IQuarkProps {
   /** The childrens of the Table Cell element */
-  children: ReactNode;
+  children: ReactNode
 }
 
 const ATd: FC<IAtd> = ({ className, children }) => (

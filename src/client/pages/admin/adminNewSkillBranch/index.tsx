@@ -17,8 +17,8 @@ import type { ICuratedSkill } from '../../../types';
 import './adminNewSkillBranch.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
+  name: string
+  nameFr: string
 }
 
 const AdminNewSkillBranch: FC = () => {
@@ -36,25 +36,25 @@ const AdminNewSkillBranch: FC = () => {
   const calledApi = useRef(false);
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   const getSkill = useCallback(() => {
     if (api !== undefined && params.get('skillId') !== undefined) {
       api.skills
         .get({
-          skillId: params.get('skillId') ?? '',
+          skillId: params.get('skillId') ?? ''
         })
         .then((sentSkill: ICuratedSkill) => {
           setLoading(false);
@@ -69,7 +69,7 @@ const AdminNewSkillBranch: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -78,10 +78,10 @@ const AdminNewSkillBranch: FC = () => {
   const onSaveSkillBranch: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr }) => {
       if (
-        introEditor === null ||
-        introFrEditor === null ||
-        api === undefined ||
-        params.get('skillId') === undefined
+        introEditor === null
+        || introFrEditor === null
+        || api === undefined
+        || params.get('skillId') === undefined
       ) {
         return;
       }
@@ -97,8 +97,8 @@ const AdminNewSkillBranch: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            summary: htmlFr,
-          },
+            summary: htmlFr
+          }
         };
       }
 
@@ -107,7 +107,7 @@ const AdminNewSkillBranch: FC = () => {
           title: name,
           skill: params.get('skillId'),
           summary: html,
-          i18n,
+          i18n
         })
         .then((skillBranch) => {
           const newId = getNewId();
@@ -117,7 +117,7 @@ const AdminNewSkillBranch: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewSkillBranch.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           void navigate(`/admin/skillbranch/${skillBranch._id}`);
         })
@@ -127,15 +127,15 @@ const AdminNewSkillBranch: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.skillBranchType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.skillBranchType.${data.sent}`), 'capitalize')
+              })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.skillBranchType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.skillBranchType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -166,16 +166,18 @@ const AdminNewSkillBranch: FC = () => {
             {`${t(`terms.skill.name`)}: ${skill?.skill.title}`}
           </Ap>
         </div>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminNewSkillBranch__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameSkillBranch.required', { ns: 'fields' }),
+              required: t('nameSkillBranch.required', { ns: 'fields' })
             }}
             label={t('nameSkillBranch.label', { ns: 'fields' })}
             className="adminNewSkillBranch__basics__name"
@@ -185,7 +187,7 @@ const AdminNewSkillBranch: FC = () => {
           <RichTextElement
             label={t('skillBranchSummary.title', { ns: 'fields' })}
             editor={introEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />
@@ -210,7 +212,7 @@ const AdminNewSkillBranch: FC = () => {
           <RichTextElement
             label={`${t('skillBranchSummary.title', { ns: 'fields' })} (FR)`}
             editor={introFrEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />

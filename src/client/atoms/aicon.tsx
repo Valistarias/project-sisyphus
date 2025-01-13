@@ -43,18 +43,18 @@ const icons = {
   Main,
   Minus,
   Question,
-  Search,
+  Search
 };
 
 type typeIcons = keyof typeof icons;
 
 interface IAicon extends IQuarkProps {
   /** The size of the icon */
-  size?: 'small' | 'medium' | 'large' | 'unsized';
+  size?: 'small' | 'medium' | 'large' | 'unsized'
   /** The type of icon */
-  type: typeIcons;
+  type: typeIcons
   /** When the icon is clicked */
-  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void
 }
 
 const Aicon: FC<IAicon> = ({
@@ -63,13 +63,13 @@ const Aicon: FC<IAicon> = ({
   className,
   onClick,
   onMouseEnter,
-  onMouseLeave,
+  onMouseLeave
 }) => {
   const params = useMemo(
     () => ({
       onClick,
       onMouseEnter,
-      onMouseLeave,
+      onMouseLeave
     }),
     [onClick, onMouseEnter, onMouseLeave]
   );

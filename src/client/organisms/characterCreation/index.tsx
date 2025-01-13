@@ -13,5 +13,5 @@ export {
   CharCreationStep4,
   CharCreationStep5,
   CharCreationStep6,
-  CharCreationStep7,
+  CharCreationStep7
 };

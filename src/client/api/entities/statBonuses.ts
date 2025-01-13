@@ -4,9 +4,8 @@ import Entity from './entity';
 
 import type { IStatBonus } from '../../types';
 
-
 interface IStatBonusPayload {
-  statBonusId: string;
+  statBonusId: string
 }
 
 export default class StatBonuses extends Entity {
@@ -15,7 +14,7 @@ export default class StatBonuses extends Entity {
   constructor() {
     super('statbonuses');
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })

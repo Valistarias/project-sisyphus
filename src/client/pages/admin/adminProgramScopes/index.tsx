@@ -20,6 +20,7 @@ const AdminProgramScopes: FC = () => {
     if (programScopes === null || programScopes.length === 0) {
       return null;
     }
+
     return (
       <Aul className="adminProgramScopes__program-scope-list" noPoints>
         {programScopes.map(({ programScope }) => (

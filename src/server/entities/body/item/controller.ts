@@ -3,11 +3,11 @@ import db from '../../../models';
 const { BodyItem } = db;
 
 const replaceItemByBody = async (req: {
-  bodyId: string;
+  bodyId: string
   items: Array<{
-    id: string;
-    qty: number;
-  }>;
+    id: string
+    qty: number
+  }>
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { bodyId } = req;
@@ -27,11 +27,11 @@ const replaceItemByBody = async (req: {
   });
 
 const createItemsByBody = async (req: {
-  bodyId: string;
+  bodyId: string
   items: Array<{
-    id: string;
-    qty: number;
-  }>;
+    id: string
+    qty: number
+  }>
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { bodyId, items } = req;
@@ -39,7 +39,7 @@ const createItemsByBody = async (req: {
       items.map(({ id, qty }) => ({
         body: bodyId,
         item: id,
-        qty,
+        qty
       }))
     )
       .then(() => {
@@ -51,16 +51,16 @@ const createItemsByBody = async (req: {
   });
 
 const updateItemByBody = async (req: {
-  bodyId: string;
-  itemId: string;
-  qty?: number;
-  bag?: string;
+  bodyId: string
+  itemId: string
+  qty?: number
+  bag?: string
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { bodyId, itemId, qty = null, bag = null } = req;
     const updateObj: {
-      bag?: string;
-      qty?: number;
+      bag?: string
+      qty?: number
     } = {};
     if (qty !== null) {
       updateObj.qty = qty;
@@ -71,7 +71,7 @@ const updateItemByBody = async (req: {
     BodyItem.findOneAndUpdate(
       {
         body: bodyId,
-        item: itemId,
+        item: itemId
       },
       updateObj
     )
@@ -86,7 +86,7 @@ const updateItemByBody = async (req: {
 const deleteItemsByBody = async (bodyId: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     BodyItem.deleteMany({
-      body: bodyId,
+      body: bodyId
     })
       .then(() => {
         resolve(true);

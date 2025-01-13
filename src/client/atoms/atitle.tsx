@@ -8,9 +8,9 @@ import './atitle.scss';
 
 interface IAtitle extends IQuarkProps {
   /** The class of the title */
-  level?: 1 | 2 | 3 | 4;
+  level?: 1 | 2 | 3 | 4
   /** The childrens of the P element */
-  children?: ReactNode;
+  children?: ReactNode
 }
 
 const Atitle: FC<IAtitle> = ({ className, children, level = 1 }) => (

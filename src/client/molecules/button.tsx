@@ -11,30 +11,30 @@ import './button.scss';
 
 export type IButton = IAButton & {
   /** The theme of the button */
-  theme?: 'solid' | 'line' | 'afterglow' | 'text-only' | 'bland';
+  theme?: 'solid' | 'line' | 'afterglow' | 'text-only' | 'bland'
   /** The main color of the button */
-  color?: 'primary' | 'secondary' | 'tertiary' | 'error';
+  color?: 'primary' | 'secondary' | 'tertiary' | 'error'
   /** The size of the button */
-  size?: 'xlarge' | 'large' | 'medium' | 'small';
+  size?: 'xlarge' | 'large' | 'medium' | 'small'
   /** The redirect (if there is) on a button click */
-  href?: string;
+  href?: string
   /** Similar to disabled, but without the opacity */
-  unclickable?: boolean;
+  unclickable?: boolean
   /** Is the button activated by any means ? */
-  active?: boolean;
+  active?: boolean
 } & (
-    | {
-        /** The icon of the button */
-        icon: typeIcons;
-        /** The children (if any) of the button */
-        children?: IAButton['children'];
-      }
-    | {
-        /** The icon (if any) of the button */
-        icon?: typeIcons;
-        /** The children of the button */
-        children: IAButton['children'];
-      }
+  | {
+    /** The icon of the button */
+    icon: typeIcons
+    /** The children (if any) of the button */
+    children?: IAButton['children']
+  }
+  | {
+    /** The icon (if any) of the button */
+    icon?: typeIcons
+    /** The children of the button */
+    children: IAButton['children']
+  }
   );
 
 const Button: FC<IButton> = ({
@@ -52,7 +52,7 @@ const Button: FC<IButton> = ({
   onClick,
   onContextMenu,
   onMouseEnter,
-  onMouseLeave,
+  onMouseLeave
 }) => {
   let navigate: NavigateFunction | null = null;
   if (href !== null) {

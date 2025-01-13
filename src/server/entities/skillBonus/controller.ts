@@ -43,14 +43,15 @@ const findSkillBonusById = async (id: string): Promise<HydratedISkillBonus> =>
 
 const createReadSkillBonus = (
   elts: Array<{
-    skill: string;
-    value: number;
+    skill: string
+    value: number
   }>,
   ids: string[],
-  cb: (err: Error | null, res?: string[]) => void
+  cb: (err: unknown | null, res?: string[]) => void
 ): void => {
   if (elts.length === 0) {
     cb(null, ids);
+
     return;
   }
   const actualElt = elts[0];
@@ -86,9 +87,10 @@ const createReadSkillBonus = (
     });
 };
 
-const smartDeleteSkillBonus = (elts: string[], cb: (err: Error | null) => void): void => {
+const smartDeleteSkillBonus = (elts: string[], cb: (err: unknown | null) => void): void => {
   if (elts.length === 0) {
     cb(null);
+
     return;
   }
   const actualElt = elts[0];
@@ -118,21 +120,21 @@ const smartDeleteSkillBonus = (elts: string[], cb: (err: Error | null) => void):
 const curateSkillBonusIds = async ({
   skillBonusesToRemove,
   skillBonusesToAdd,
-  skillBonusesToStay,
+  skillBonusesToStay
 }: {
-  skillBonusesToRemove: string[];
+  skillBonusesToRemove: string[]
   skillBonusesToAdd: Array<{
-    skill: string;
-    value: number;
-  }>;
-  skillBonusesToStay: string[];
+    skill: string
+    value: number
+  }>
+  skillBonusesToStay: string[]
 }): Promise<string[]> =>
   await new Promise((resolve, reject) => {
-    smartDeleteSkillBonus(skillBonusesToRemove, (err: Error | null) => {
+    smartDeleteSkillBonus(skillBonusesToRemove, (err: unknown | null) => {
       if (err !== null) {
         reject(err);
       } else {
-        createReadSkillBonus(skillBonusesToAdd, [], (err: Error | null, res?: string[]) => {
+        createReadSkillBonus(skillBonusesToAdd, [], (err: unknown | null, res?: string[]) => {
           if (err !== null) {
             reject(err);
           } else {
@@ -147,12 +149,13 @@ const create = (req: Request, res: Response): void => {
   const { skill, value } = req.body;
   if (skill === undefined || value === undefined) {
     res.status(400).send(gemInvalidField('SkillBonus'));
+
     return;
   }
 
   const skillBonus = new SkillBonus({
     skill,
-    value,
+    value
   });
 
   skillBonus
@@ -160,7 +163,7 @@ const create = (req: Request, res: Response): void => {
     .then(() => {
       res.send(skillBonus);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -169,6 +172,7 @@ const update = (req: Request, res: Response): void => {
   const { id, skill = null, value = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('SkillBonus ID'));
+
     return;
   }
   findSkillBonusById(id as string)
@@ -185,7 +189,7 @@ const update = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'Skill bonus was updated successfully!', skillBonus });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -198,13 +202,14 @@ const deleteSkillBonusById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('SkillBonus ID'));
+
       return;
     }
     SkillBonus.findByIdAndDelete(id)
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
@@ -215,7 +220,7 @@ const deleteSkillBonus = (req: Request, res: Response): void => {
     .then(() => {
       res.send({ message: 'Skill bonus was deleted successfully!' });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -224,13 +229,14 @@ const findSingle = (req: Request, res: Response): void => {
   const { skillBonusId } = req.query;
   if (skillBonusId === undefined || typeof skillBonusId !== 'string') {
     res.status(400).send(gemInvalidField('SkillBonus ID'));
+
     return;
   }
   findSkillBonusById(skillBonusId)
     .then((skillBonus) => {
       res.send(skillBonus);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
@@ -240,7 +246,7 @@ const findAll = (req: Request, res: Response): void => {
     .then((skillBonuses) => {
       res.send(skillBonuses);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export {
@@ -250,5 +256,5 @@ export {
   findAll,
   findSingle,
   findSkillBonusById,
-  update,
+  update
 };

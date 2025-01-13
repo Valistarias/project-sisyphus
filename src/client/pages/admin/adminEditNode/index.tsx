@@ -18,7 +18,7 @@ import type {
   ICuratedNode,
   ICuratedSkill,
   ICuratedSkillBranch,
-  ISkillBranch,
+  ISkillBranch
 } from '../../../types';
 
 import { classTrim, isThereDuplicate } from '../../../utils';
@@ -26,76 +26,76 @@ import { classTrim, isThereDuplicate } from '../../../utils';
 import './adminEditNode.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  quote: string;
-  quoteFr: string;
-  rank: number;
-  icon: string;
-  branch: string;
+  name: string
+  nameFr: string
+  quote: string
+  quoteFr: string
+  rank: number
+  icon: string
+  branch: string
   skillBonuses?: Record<
     string,
     {
-      skill: string;
-      value: number;
+      skill: string
+      value: number
     }
-  >;
+  >
   statBonuses?: Record<
     string,
     {
-      stat: string;
-      value: number;
+      stat: string
+      value: number
     }
-  >;
+  >
   charParamBonuses?: Record<
     string,
     {
-      charParam: string;
-      value: number;
+      charParam: string
+      value: number
     }
-  >;
+  >
   effects?: Record<
     string,
     {
-      id: string;
-      title: string;
-      titleFr?: string;
-      summary: string;
-      summaryFr?: string;
-      type: string;
-      formula?: string;
+      id: string
+      title: string
+      titleFr?: string
+      summary: string
+      summaryFr?: string
+      type: string
+      formula?: string
     }
-  >;
+  >
   actions?: Record<
     string,
     {
-      id: string;
-      title: string;
-      titleFr?: string;
-      summary: string;
-      summaryFr?: string;
-      type: string;
-      skill?: string;
-      duration: string;
-      time?: string;
-      timeFr?: string;
-      damages?: string;
-      offsetSkill?: string;
-      uses?: number;
-      isKarmic?: string;
-      karmicCost?: number;
+      id: string
+      title: string
+      titleFr?: string
+      summary: string
+      summaryFr?: string
+      type: string
+      skill?: string
+      duration: string
+      time?: string
+      timeFr?: string
+      damages?: string
+      offsetSkill?: string
+      uses?: number
+      isKarmic?: string
+      karmicCost?: number
     }
-  >;
+  >
 }
 
 const generalRange = [...Array(2)].map((_, i) => ({
   value: i + 1,
-  label: String(i + 1),
+  label: String(i + 1)
 }));
 
 const branchRange = [...Array(8)].map((_, i) => ({
   value: i + 3,
-  label: String(i + 3),
+  label: String(i + 3)
 }));
 
 const AdminEditNode: FC = () => {
@@ -104,7 +104,7 @@ const AdminEditNode: FC = () => {
   const { id } = useParams();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
-    ConfMessageEvent: {},
+    ConfMessageEvent: {}
   };
   const {
     skills,
@@ -113,7 +113,7 @@ const AdminEditNode: FC = () => {
     actionTypes,
     actionDurations,
     reloadSkills,
-    reloadCyberFrames,
+    reloadCyberFrames
   } = useGlobalVars();
   const { createAlert, getNewId } = useSystemAlerts();
   const navigate = useNavigate();
@@ -130,7 +130,7 @@ const AdminEditNode: FC = () => {
       skills.map(({ skill }) => ({
         value: skill._id,
         // TODO : Handle Internationalization
-        label: skill.title,
+        label: skill.title
       })),
     [skills]
   );
@@ -142,7 +142,7 @@ const AdminEditNode: FC = () => {
       stats.map(({ stat }) => ({
         value: stat._id,
         // TODO : Handle Internationalization
-        label: stat.title,
+        label: stat.title
       })),
     [stats]
   );
@@ -153,7 +153,7 @@ const AdminEditNode: FC = () => {
       charParams.map(({ charParam }) => ({
         value: charParam._id,
         // TODO : Handle Internationalization
-        label: charParam.title,
+        label: charParam.title
       })),
     [charParams]
   );
@@ -163,8 +163,8 @@ const AdminEditNode: FC = () => {
 
   const [rankSelect, setLevelSelect] = useState<
     Array<{
-      value: number;
-      label: string;
+      value: number
+      label: string
     }>
   >([]);
 
@@ -172,7 +172,7 @@ const AdminEditNode: FC = () => {
     () =>
       actionTypes.map(({ name, _id }) => ({
         value: _id,
-        label: t(`terms.actionType.${name}`),
+        label: t(`terms.actionType.${name}`)
       })),
     [actionTypes, t]
   );
@@ -181,7 +181,7 @@ const AdminEditNode: FC = () => {
     () =>
       actionDurations.map(({ name, _id }) => ({
         value: _id,
-        label: t(`terms.actionDuration.${name}`),
+        label: t(`terms.actionDuration.${name}`)
       })),
     [actionDurations, t]
   );
@@ -198,11 +198,11 @@ const AdminEditNode: FC = () => {
   const [nodeTextFr, setNodeTextFr] = useState('');
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const createDefaultData = useCallback((nodeData: ICuratedNode | null) => {
@@ -233,7 +233,7 @@ const AdminEditNode: FC = () => {
       }
       defaultData.skillBonuses[`skill-${idIncrement.current}`] = {
         skill: skillBonus.skill,
-        value: skillBonus.value,
+        value: skillBonus.value
       };
 
       tempSkillBonusId.push(idIncrement.current);
@@ -249,7 +249,7 @@ const AdminEditNode: FC = () => {
       }
       defaultData.statBonuses[`stat-${idIncrement.current}`] = {
         stat: statBonus.stat,
-        value: statBonus.value,
+        value: statBonus.value
       };
 
       tempStatBonusId.push(idIncrement.current);
@@ -265,7 +265,7 @@ const AdminEditNode: FC = () => {
       }
       defaultData.charParamBonuses[`charParam-${idIncrement.current}`] = {
         charParam: charParamBonus.charParam,
-        value: charParamBonus.value,
+        value: charParamBonus.value
       };
 
       tempCharParamBonusId.push(idIncrement.current);
@@ -294,7 +294,7 @@ const AdminEditNode: FC = () => {
         summary: action.summary,
         titleFr: action.i18n.fr.title,
         summaryFr: action.i18n.fr.summary,
-        timeFr: action.i18n.fr.time,
+        timeFr: action.i18n.fr.time
       };
 
       tempActionId.push(idIncrement.current);
@@ -315,7 +315,7 @@ const AdminEditNode: FC = () => {
         formula: effect.formula,
         summary: effect.summary,
         titleFr: effect.i18n.fr.title,
-        summaryFr: effect.i18n.fr.summary,
+        summaryFr: effect.i18n.fr.summary
       };
 
       tempEffectId.push(idIncrement.current);
@@ -333,54 +333,56 @@ const AdminEditNode: FC = () => {
     unregister,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
-    defaultValues: useMemo(() => createDefaultData(nodeData), [createDefaultData, nodeData]),
+    defaultValues: useMemo(() => createDefaultData(nodeData), [createDefaultData, nodeData])
   });
 
   const boolRange = useMemo(
     () => [
       {
         value: '1',
-        label: t('terms.general.yes'),
+        label: t('terms.general.yes')
       },
       {
         value: '0',
-        label: t('terms.general.no'),
-      },
+        label: t('terms.general.no')
+      }
     ],
     [t]
   );
 
   const branchSelect = useMemo(() => branches.reduce(
-      (
-        result: Array<{
-          value: string;
-          label: string;
-        }>,
-        elt: ICuratedSkillBranch | ICuratedCyberFrameBranch
-      ) => {
-        if (elt !== undefined) {
-          const relevantElt =
-            (elt as ICuratedCyberFrameBranch).cyberFrameBranch ??
-            (elt as ICuratedSkillBranch).skillBranch;
-          result.push({
-            value: relevantElt._id,
-            // TODO : Handle Internationalization
-            label:
-              relevantElt.title === '_general' ? t('terms.node.generalBranch') : relevantElt.title,
-          });
-        }
-        return result;
-      },
-      []
-    ), [branches, t]);
+    (
+      result: Array<{
+        value: string
+        label: string
+      }>,
+      elt: ICuratedSkillBranch | ICuratedCyberFrameBranch
+    ) => {
+      if (elt !== undefined) {
+        const relevantElt
+            = (elt as ICuratedCyberFrameBranch).cyberFrameBranch
+              ?? (elt as ICuratedSkillBranch).skillBranch;
+        result.push({
+          value: relevantElt._id,
+          // TODO : Handle Internationalization
+          label:
+              relevantElt.title === '_general' ? t('terms.node.generalBranch') : relevantElt.title
+        });
+      }
+
+      return result;
+    },
+    []
+  ), [branches, t]);
 
   const onAddSkillBonus = useCallback(() => {
     setSkillBonusIds((prev) => {
       const next = [...prev];
       next.push(idIncrement.current);
       idIncrement.current += 1;
+
       return next;
     });
   }, []);
@@ -390,6 +392,7 @@ const AdminEditNode: FC = () => {
       const next = [...prev];
       next.push(idIncrement.current);
       idIncrement.current += 1;
+
       return next;
     });
   }, []);
@@ -399,6 +402,7 @@ const AdminEditNode: FC = () => {
       const next = [...prev];
       next.push(idIncrement.current);
       idIncrement.current += 1;
+
       return next;
     });
   }, []);
@@ -408,6 +412,7 @@ const AdminEditNode: FC = () => {
       const next = [...prev];
       next.push(idIncrement.current);
       idIncrement.current += 1;
+
       return next;
     });
   }, []);
@@ -417,6 +422,7 @@ const AdminEditNode: FC = () => {
       const next = [...prev];
       next.push(idIncrement.current);
       idIncrement.current += 1;
+
       return next;
     });
   }, []);
@@ -431,57 +437,60 @@ const AdminEditNode: FC = () => {
       let duplicateSkillBonuses = false;
       if (skillBonuses.length > 0) {
         duplicateSkillBonuses = isThereDuplicate(
-          skillBonuses.map((skillBonus) => skillBonus.skill)
+          skillBonuses.map(skillBonus => skillBonus.skill)
         );
       }
       if (duplicateSkillBonuses) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminEditNode.errorDuplicateSkill', { ns: 'pages' }),
+          message: t('adminEditNode.errorDuplicateSkill', { ns: 'pages' })
         });
+
         return;
       }
       // Check duplicate on stats
       const statBonuses = elts.statBonuses !== undefined ? Object.values(elts.statBonuses) : [];
       let duplicateStatBonuses = false;
       if (statBonuses.length > 0) {
-        duplicateStatBonuses = isThereDuplicate(statBonuses.map((statBonus) => statBonus.stat));
+        duplicateStatBonuses = isThereDuplicate(statBonuses.map(statBonus => statBonus.stat));
       }
       if (duplicateStatBonuses) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminEditNode.errorDuplicateStat', { ns: 'pages' }),
+          message: t('adminEditNode.errorDuplicateStat', { ns: 'pages' })
         });
+
         return;
       }
       // Check duplicate on character param
-      const charParamBonuses =
-        elts.charParamBonuses !== undefined ? Object.values(elts.charParamBonuses) : [];
+      const charParamBonuses
+        = elts.charParamBonuses !== undefined ? Object.values(elts.charParamBonuses) : [];
       let duplicateCharParamBonuses = false;
       if (charParamBonuses.length > 0) {
         duplicateCharParamBonuses = isThereDuplicate(
-          charParamBonuses.map((charParamBonus) => charParamBonus.charParam)
+          charParamBonuses.map(charParamBonus => charParamBonus.charParam)
         );
       }
       if (duplicateCharParamBonuses) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminEditNode.errorDuplicateCharParam', { ns: 'pages' }),
+          message: t('adminEditNode.errorDuplicateCharParam', { ns: 'pages' })
         });
+
         return;
       }
       const skillId = (nodeData?.node.skillBranch as ISkillBranch)._id;
       const curatedSkillBonuses = skillBonuses.map(({ skill, value }) => ({
         skill,
-        value: Number(value),
+        value: Number(value)
       }));
       const curatedStatBonuses = statBonuses.map(({ stat, value }) => ({
         stat,
-        value: Number(value),
+        value: Number(value)
       }));
       const curatedCharParamBonuses = charParamBonuses.map(({ charParam, value }) => ({
         charParam,
-        value: Number(value),
+        value: Number(value)
       }));
 
       const effectsArr = effects !== undefined ? Object.values(effects) : [];
@@ -497,11 +506,11 @@ const AdminEditNode: FC = () => {
               ? {
                   fr: {
                     title: titleFr,
-                    summary: summaryFr,
-                  },
+                    summary: summaryFr
+                  }
                 }
-              : {}),
-          },
+              : {})
+          }
         })
       );
 
@@ -522,7 +531,7 @@ const AdminEditNode: FC = () => {
           uses,
           isKarmic,
           karmicCost,
-          summaryFr,
+          summaryFr
         }) => ({
           ...(id !== undefined ? { id } : {}),
           title,
@@ -542,11 +551,11 @@ const AdminEditNode: FC = () => {
                   fr: {
                     title: titleFr,
                     summary: summaryFr,
-                    time: timeFr,
-                  },
+                    time: timeFr
+                  }
                 }
-              : {}),
-          },
+              : {})
+          }
         })
       );
 
@@ -558,8 +567,8 @@ const AdminEditNode: FC = () => {
           fr: {
             title: nameFr,
             summary: htmlFr,
-            quote: quoteFr,
-          },
+            quote: quoteFr
+          }
         };
       }
       api.nodes
@@ -576,7 +585,7 @@ const AdminEditNode: FC = () => {
           statBonuses: curatedStatBonuses,
           charParamBonuses: curatedCharParamBonuses,
           effects: curatedEffects,
-          actions: curatedActions,
+          actions: curatedActions
         })
         .then((quote) => {
           const newId = getNewId();
@@ -586,7 +595,7 @@ const AdminEditNode: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditNode.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           if (skillId !== undefined) {
             reloadSkills();
@@ -600,15 +609,15 @@ const AdminEditNode: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize')
+              })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -624,7 +633,7 @@ const AdminEditNode: FC = () => {
       getNewId,
       createAlert,
       reloadSkills,
-      reloadCyberFrames,
+      reloadCyberFrames
     ]
   );
 
@@ -637,9 +646,9 @@ const AdminEditNode: FC = () => {
         title: t('adminEditNode.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditNode.confirmDeletion.text', {
           ns: 'pages',
-          elt: nodeData.node.title,
+          elt: nodeData.node.title
         }),
-        confirmCta: t('adminEditNode.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditNode.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
         const { node } = nodeData;
@@ -648,8 +657,8 @@ const AdminEditNode: FC = () => {
         if (node.skillBranch !== undefined && typeof node.skillBranch !== 'string') {
           routeId = node.skillBranch.skill as string;
         } else if (
-          node.cyberFrameBranch !== undefined &&
-          typeof node.cyberFrameBranch !== 'string'
+          node.cyberFrameBranch !== undefined
+          && typeof node.cyberFrameBranch !== 'string'
         ) {
           routeId = node.cyberFrameBranch.cyberFrame as string;
         }
@@ -665,7 +674,7 @@ const AdminEditNode: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditNode.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
                 void navigate(`/admin/${route}/${routeId}`);
               })
@@ -675,15 +684,15 @@ const AdminEditNode: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize')
+                    })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize')
+                    })
                   });
                 }
               });
@@ -703,7 +712,7 @@ const AdminEditNode: FC = () => {
     getNewId,
     createAlert,
     navigate,
-    setError,
+    setError
   ]);
 
   useEffect(() => {
@@ -722,8 +731,8 @@ const AdminEditNode: FC = () => {
           if (node.skillBranch !== undefined && typeof node.skillBranch !== 'string') {
             titleBranch = node.skillBranch.title;
           } else if (
-            node.cyberFrameBranch !== undefined &&
-            typeof node.cyberFrameBranch !== 'string'
+            node.cyberFrameBranch !== undefined
+            && typeof node.cyberFrameBranch !== 'string'
           ) {
             titleBranch = node.cyberFrameBranch.title;
           }
@@ -736,7 +745,7 @@ const AdminEditNode: FC = () => {
             const skillId = String(node.skillBranch.skill);
             api.skills
               .get({
-                skillId,
+                skillId
               })
               .then((curatedSkill: ICuratedSkill) => {
                 setSkill(curatedSkill);
@@ -750,17 +759,17 @@ const AdminEditNode: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('serverErrors.CYPU-301')}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
               });
           } else if (
-            node.cyberFrameBranch !== undefined &&
-            typeof node.cyberFrameBranch !== 'string'
+            node.cyberFrameBranch !== undefined
+            && typeof node.cyberFrameBranch !== 'string'
           ) {
             const cyberFrameId = String(node.cyberFrameBranch.cyberFrame);
             api.cyberFrames
               .get({
-                cyberFrameId,
+                cyberFrameId
               })
               .then((sentCyberFrame: ICuratedCyberFrame) => {
                 setCyberFrame(sentCyberFrame);
@@ -775,7 +784,7 @@ const AdminEditNode: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('serverErrors.CYPU-301')}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
               });
           }
@@ -796,7 +805,7 @@ const AdminEditNode: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -831,31 +840,35 @@ const AdminEditNode: FC = () => {
         </div>
         <div className="adminEditNode__ariane">
           <Ap className="adminEditNode__ariane__elt">
-            {skill !== null ? (
-              <>
-                {`${t(`terms.skill.name`)}:`}
-                <Aa href={`/admin/skill/${skill.skill._id}`}>{skill.skill.title}</Aa>
-              </>
-            ) : (
-              <>
-                {`${t(`terms.cyberFrame.name`)}:`}
-                <Aa href={`/admin/cyberframe/${cyberFrame?.cyberFrame._id}`}>
-                  {cyberFrame?.cyberFrame.title}
-                </Aa>
-              </>
-            )}
+            {skill !== null
+              ? (
+                  <>
+                    {`${t(`terms.skill.name`)}:`}
+                    <Aa href={`/admin/skill/${skill.skill._id}`}>{skill.skill.title}</Aa>
+                  </>
+                )
+              : (
+                  <>
+                    {`${t(`terms.cyberFrame.name`)}:`}
+                    <Aa href={`/admin/cyberframe/${cyberFrame?.cyberFrame._id}`}>
+                      {cyberFrame?.cyberFrame.title}
+                    </Aa>
+                  </>
+                )}
           </Ap>
         </div>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminEditNode__visual">
           <NodeIconSelect
             label={t('iconNode.label', { ns: 'fields' })}
             control={control}
             inputName="icon"
             rules={{
-              required: t('iconNode.required', { ns: 'fields' }),
+              required: t('iconNode.required', { ns: 'fields' })
             }}
           />
         </div>
@@ -865,7 +878,7 @@ const AdminEditNode: FC = () => {
             inputName="name"
             type="text"
             rules={{
-              required: t('nameNode.required', { ns: 'fields' }),
+              required: t('nameNode.required', { ns: 'fields' })
             }}
             label={t('nameNode.label', { ns: 'fields' })}
             className="adminEditNode__basics__name"
@@ -874,16 +887,16 @@ const AdminEditNode: FC = () => {
             control={control}
             inputName="branch"
             rules={{
-              required: t('branchNode.required', { ns: 'fields' }),
+              required: t('branchNode.required', { ns: 'fields' })
             }}
             label={t('branchNode.label', { ns: 'fields' })}
             options={branchSelect}
             onChange={(e) => {
               let titleBranch: string | null = null;
               branches.forEach((elt: ICuratedSkillBranch | ICuratedCyberFrameBranch) => {
-                const relevantElt =
-                  (elt as ICuratedCyberFrameBranch).cyberFrameBranch ??
-                  (elt as ICuratedSkillBranch).skillBranch;
+                const relevantElt
+                  = (elt as ICuratedCyberFrameBranch).cyberFrameBranch
+                    ?? (elt as ICuratedSkillBranch).skillBranch;
                 if (relevantElt !== undefined && relevantElt._id === e) {
                   titleBranch = relevantElt.title;
                 }
@@ -898,10 +911,10 @@ const AdminEditNode: FC = () => {
           />
           <SmartSelect
             control={control}
-            placeholder={'0'}
+            placeholder="0"
             inputName="rank"
             rules={{
-              required: t('rankNode.required', { ns: 'fields' }),
+              required: t('rankNode.required', { ns: 'fields' })
             }}
             label={t('rankNode.label', { ns: 'fields' })}
             options={rankSelect}
@@ -930,7 +943,7 @@ const AdminEditNode: FC = () => {
         </Atitle>
         <div className="adminEditNode__bonuses">
           <div className="adminEditNode__bonuses__elts">
-            {skillBonusIds.map((skillBonusId) => (
+            {skillBonusIds.map(skillBonusId => (
               <div className="adminEditNode__bonus" key={`skill-${skillBonusId}`}>
                 <Atitle className="adminEditNode__bonus__title" level={4}>
                   {t('adminEditNode.skillBonusTitle', { ns: 'pages' })}
@@ -940,7 +953,7 @@ const AdminEditNode: FC = () => {
                     control={control}
                     inputName={`skillBonuses.skill-${skillBonusId}.skill`}
                     rules={{
-                      required: t('skillBonusSkill.required', { ns: 'fields' }),
+                      required: t('skillBonusSkill.required', { ns: 'fields' })
                     }}
                     label={t('skillBonusSkill.label', { ns: 'fields' })}
                     options={skillSelect}
@@ -951,7 +964,7 @@ const AdminEditNode: FC = () => {
                     inputName={`skillBonuses.skill-${skillBonusId}.value`}
                     type="number"
                     rules={{
-                      required: t('skillBonusValue.required', { ns: 'fields' }),
+                      required: t('skillBonusValue.required', { ns: 'fields' })
                     }}
                     label={t('skillBonusValue.label', { ns: 'fields' })}
                     className="adminEditNode__bonus__value"
@@ -961,11 +974,12 @@ const AdminEditNode: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setSkillBonusIds((prev) =>
+                    setSkillBonusIds(prev =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== skillBonusId) {
                           result.push(elt);
                         }
+
                         return result;
                       }, [])
                     );
@@ -975,7 +989,7 @@ const AdminEditNode: FC = () => {
                 />
               </div>
             ))}
-            {statBonusIds.map((statBonusId) => (
+            {statBonusIds.map(statBonusId => (
               <div className="adminEditNode__bonus" key={`stat-${statBonusId}`}>
                 <Atitle className="adminEditNode__bonus__title" level={4}>
                   {t('adminEditNode.statBonusTitle', { ns: 'pages' })}
@@ -985,7 +999,7 @@ const AdminEditNode: FC = () => {
                     control={control}
                     inputName={`statBonuses.stat-${statBonusId}.stat`}
                     rules={{
-                      required: t('statBonusStat.required', { ns: 'fields' }),
+                      required: t('statBonusStat.required', { ns: 'fields' })
                     }}
                     label={t('statBonusStat.label', { ns: 'fields' })}
                     options={statSelect}
@@ -996,7 +1010,7 @@ const AdminEditNode: FC = () => {
                     inputName={`statBonuses.stat-${statBonusId}.value`}
                     type="number"
                     rules={{
-                      required: t('statBonusValue.required', { ns: 'fields' }),
+                      required: t('statBonusValue.required', { ns: 'fields' })
                     }}
                     label={t('statBonusValue.label', { ns: 'fields' })}
                     className="adminEditNode__bonus__value"
@@ -1006,11 +1020,12 @@ const AdminEditNode: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setStatBonusIds((prev) =>
+                    setStatBonusIds(prev =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== statBonusId) {
                           result.push(elt);
                         }
+
                         return result;
                       }, [])
                     );
@@ -1020,7 +1035,7 @@ const AdminEditNode: FC = () => {
                 />
               </div>
             ))}
-            {charParamBonusIds.map((charParamBonusId) => (
+            {charParamBonusIds.map(charParamBonusId => (
               <div className="adminEditNode__bonus" key={`charParam-${charParamBonusId}`}>
                 <Atitle className="adminEditNode__bonus__title" level={4}>
                   {t('adminEditNode.charParamBonusTitle', { ns: 'pages' })}
@@ -1030,7 +1045,7 @@ const AdminEditNode: FC = () => {
                     control={control}
                     inputName={`charParamBonuses.charParam-${charParamBonusId}.charParam`}
                     rules={{
-                      required: t('charParamBonusStat.required', { ns: 'fields' }),
+                      required: t('charParamBonusStat.required', { ns: 'fields' })
                     }}
                     label={t('charParamBonusStat.label', { ns: 'fields' })}
                     options={charParamSelect}
@@ -1041,7 +1056,7 @@ const AdminEditNode: FC = () => {
                     inputName={`charParamBonuses.charParam-${charParamBonusId}.value`}
                     type="number"
                     rules={{
-                      required: t('charParamBonusValue.required', { ns: 'fields' }),
+                      required: t('charParamBonusValue.required', { ns: 'fields' })
                     }}
                     label={t('charParamBonusValue.label', { ns: 'fields' })}
                     className="adminEditNode__bonus__value"
@@ -1051,11 +1066,12 @@ const AdminEditNode: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setCharParamBonusIds((prev) =>
+                    setCharParamBonusIds(prev =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== charParamBonusId) {
                           result.push(elt);
                         }
+
                         return result;
                       }, [])
                     );
@@ -1065,7 +1081,7 @@ const AdminEditNode: FC = () => {
                 />
               </div>
             ))}
-            {effectIds.map((effectId) => (
+            {effectIds.map(effectId => (
               <div className="adminEditNode__bonus" key={`charParam-${effectId}`}>
                 <Atitle className="adminEditNode__bonus__title" level={4}>
                   {t('adminEditNode.effectTitle', { ns: 'pages' })}
@@ -1075,7 +1091,7 @@ const AdminEditNode: FC = () => {
                     control={control}
                     inputName={`effects.effect-${effectId}.title`}
                     rules={{
-                      required: t('effectTitle.required', { ns: 'fields' }),
+                      required: t('effectTitle.required', { ns: 'fields' })
                     }}
                     label={t('effectTitle.label', { ns: 'fields' })}
                     className="adminEditNode__bonus__value adminEditNode__bonus__value--s"
@@ -1084,7 +1100,7 @@ const AdminEditNode: FC = () => {
                     control={control}
                     inputName={`effects.effect-${effectId}.type`}
                     rules={{
-                      required: t('effectType.required', { ns: 'fields' }),
+                      required: t('effectType.required', { ns: 'fields' })
                     }}
                     label={t('effectType.label', { ns: 'fields' })}
                     options={actionTypeSelect}
@@ -1095,7 +1111,7 @@ const AdminEditNode: FC = () => {
                     type="textarea"
                     inputName={`effects.effect-${effectId}.summary`}
                     rules={{
-                      required: t('effectSummary.required', { ns: 'fields' }),
+                      required: t('effectSummary.required', { ns: 'fields' })
                     }}
                     label={t('effectSummary.label', { ns: 'fields' })}
                     className="adminEditNode__bonus__value adminEditNode__bonus__value--l"
@@ -1127,11 +1143,12 @@ const AdminEditNode: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setEffectIds((prev) =>
+                    setEffectIds(prev =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== effectId) {
                           result.push(elt);
                         }
+
                         return result;
                       }, [])
                     );
@@ -1141,7 +1158,7 @@ const AdminEditNode: FC = () => {
                 />
               </div>
             ))}
-            {actionIds.map((actionId) => (
+            {actionIds.map(actionId => (
               <div className="adminEditNode__bonus" key={`charParam-${actionId}`}>
                 <Atitle className="adminEditNode__bonus__title" level={4}>
                   {t('adminEditNode.actionTitle', { ns: 'pages' })}
@@ -1151,7 +1168,7 @@ const AdminEditNode: FC = () => {
                     control={control}
                     inputName={`actions.action-${actionId}.title`}
                     rules={{
-                      required: t('actionTitle.required', { ns: 'fields' }),
+                      required: t('actionTitle.required', { ns: 'fields' })
                     }}
                     label={t('actionTitle.label', { ns: 'fields' })}
                     className="adminEditNode__bonus__value adminEditNode__bonus__value--l"
@@ -1160,7 +1177,7 @@ const AdminEditNode: FC = () => {
                     control={control}
                     inputName={`actions.action-${actionId}.type`}
                     rules={{
-                      required: t('actionType.required', { ns: 'fields' }),
+                      required: t('actionType.required', { ns: 'fields' })
                     }}
                     label={t('actionType.label', { ns: 'fields' })}
                     options={actionTypeSelect}
@@ -1170,7 +1187,7 @@ const AdminEditNode: FC = () => {
                     control={control}
                     inputName={`actions.action-${actionId}.duration`}
                     rules={{
-                      required: t('actionDuration.required', { ns: 'fields' }),
+                      required: t('actionDuration.required', { ns: 'fields' })
                     }}
                     label={t('actionDuration.label', { ns: 'fields' })}
                     options={actionDurationSelect}
@@ -1181,7 +1198,7 @@ const AdminEditNode: FC = () => {
                     type="textarea"
                     inputName={`actions.action-${actionId}.summary`}
                     rules={{
-                      required: t('actionSummary.required', { ns: 'fields' }),
+                      required: t('actionSummary.required', { ns: 'fields' })
                     }}
                     label={t('actionSummary.label', { ns: 'fields' })}
                     className="adminEditNode__bonus__value adminEditNode__bonus__value--l"
@@ -1205,9 +1222,9 @@ const AdminEditNode: FC = () => {
                     options={[
                       {
                         value: '',
-                        label: '',
+                        label: ''
                       },
-                      ...skillSelect,
+                      ...skillSelect
                     ]}
                     className="adminEditNode__bonus__select adminEditNode__bonus__value--s"
                   />
@@ -1265,11 +1282,12 @@ const AdminEditNode: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setActionIds((prev) =>
+                    setActionIds(prev =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== actionId) {
                           result.push(elt);
                         }
+
                         return result;
                       }, [])
                     );
@@ -1311,7 +1329,7 @@ const AdminEditNode: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt((prev) => !prev);
+              setDisplayInt(prev => !prev);
             }}
             className="adminEditNode__intl-title__btn"
           />

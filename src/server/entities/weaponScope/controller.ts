@@ -5,7 +5,7 @@ import {
   gemDuplicate,
   gemInvalidField,
   gemNotFound,
-  gemServerError,
+  gemServerError
 } from '../../utils/globalErrorMessage';
 
 import type { HydratedIWeaponScope } from './model';
@@ -75,7 +75,7 @@ const checkDuplicateScopeId = async (
           resolve(responseWeaponScope);
         }
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -84,6 +84,7 @@ const create = (req: Request, res: Response): void => {
   const { title, summary, i18n = null, scopeId } = req.body;
   if (title === undefined || summary === undefined || scopeId === undefined) {
     res.status(400).send(gemInvalidField('Weapon Scope'));
+
     return;
   }
 
@@ -93,7 +94,7 @@ const create = (req: Request, res: Response): void => {
         const weaponScope = new WeaponScope({
           title,
           summary,
-          scopeId,
+          scopeId
         });
 
         if (i18n !== null) {
@@ -105,14 +106,14 @@ const create = (req: Request, res: Response): void => {
           .then(() => {
             res.send(weaponScope);
           })
-          .catch((err: Error) => {
+          .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
           });
       } else {
         res.status(400).send(gemDuplicate(response));
       }
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -121,6 +122,7 @@ const update = (req: Request, res: Response): void => {
   const { id, title = null, summary = null, i18n, scopeId = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Weapon Scope ID'));
+
     return;
   }
   findWeaponScopeById(id as string)
@@ -141,11 +143,11 @@ const update = (req: Request, res: Response): void => {
 
             if (i18n !== null) {
               const newIntl = {
-                ...(weaponScope.i18n !== null &&
-                weaponScope.i18n !== undefined &&
-                weaponScope.i18n !== ''
+                ...(weaponScope.i18n !== null
+                  && weaponScope.i18n !== undefined
+                  && weaponScope.i18n !== ''
                   ? JSON.parse(weaponScope.i18n)
-                  : {}),
+                  : {})
               };
 
               Object.keys(i18n as Record<string, any>).forEach((lang) => {
@@ -160,14 +162,14 @@ const update = (req: Request, res: Response): void => {
               .then(() => {
                 res.send({ message: 'Weapon Scope was updated successfully!', weaponScope });
               })
-              .catch((err: Error) => {
+              .catch((err: unknown) => {
                 res.status(500).send(gemServerError(err));
               });
           } else {
             res.status(400).send(gemInvalidField('WeaponScope'));
           }
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -180,13 +182,14 @@ const deleteWeaponScopeById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Weapon Scope ID'));
+
       return;
     }
     WeaponScope.findByIdAndDelete(id)
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
@@ -197,31 +200,32 @@ const deleteWeaponScope = (req: Request, res: Response): void => {
     .then(() => {
       res.send({ message: 'Weapon Scope was deleted successfully!' });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
 
 interface CuratedIWeaponScope {
-  i18n: Record<string, any> | Record<string, unknown>;
-  weaponScope: HydratedIWeaponScope;
+  i18n: Record<string, unknown>
+  weaponScope: HydratedIWeaponScope
 }
 
 const findSingle = (req: Request, res: Response): void => {
   const { weaponScopeId } = req.query;
   if (weaponScopeId === undefined || typeof weaponScopeId !== 'string') {
     res.status(400).send(gemInvalidField('WeaponScope ID'));
+
     return;
   }
   findWeaponScopeById(weaponScopeId)
     .then((weaponScope) => {
       const sentObj = {
         weaponScope,
-        i18n: curateI18n(weaponScope.i18n),
+        i18n: curateI18n(weaponScope.i18n)
       };
       res.send(sentObj);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
@@ -234,13 +238,13 @@ const findAll = (req: Request, res: Response): void => {
       weaponScopes.forEach((weaponScope) => {
         curatedWeaponScopes.push({
           weaponScope,
-          i18n: curateI18n(weaponScope.i18n),
+          i18n: curateI18n(weaponScope.i18n)
         });
       });
 
       res.send(curatedWeaponScopes);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export {
@@ -250,5 +254,5 @@ export {
   findAll,
   findSingle,
   findWeaponScopeById,
-  update,
+  update
 };

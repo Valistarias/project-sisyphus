@@ -23,7 +23,7 @@ const findNPCs = async (): Promise<HydratedINPC[]> =>
           resolve(res);
         }
       })
-      .catch(async (err: Error) => {
+      .catch(async (err: unknown) => {
         reject(err);
       });
   });
@@ -38,7 +38,7 @@ const basicListNPCs = async (): Promise<BasicHydratedINPC[]> =>
           resolve(res);
         }
       })
-      .catch(async (err: Error) => {
+      .catch(async (err: unknown) => {
         reject(err);
       });
   });
@@ -54,7 +54,7 @@ const findNPCById = async (id: string): Promise<HydratedINPC> =>
           resolve(res as HydratedINPC);
         }
       })
-      .catch(async (err: Error) => {
+      .catch(async (err: unknown) => {
         reject(err);
       });
   });
@@ -71,16 +71,17 @@ const create = (req: Request, res: Response): void => {
     summary,
     swimSpeed,
     title,
-    virtual,
+    virtual
   } = req.body;
   if (
-    title === undefined ||
-    summary === undefined ||
-    speed === undefined ||
-    hp === undefined ||
-    ar === undefined
+    title === undefined
+    || summary === undefined
+    || speed === undefined
+    || hp === undefined
+    || ar === undefined
   ) {
     res.status(400).send(gemInvalidField('NPC'));
+
     return;
   }
 
@@ -93,7 +94,7 @@ const create = (req: Request, res: Response): void => {
     summary,
     swimSpeed,
     title,
-    virtual,
+    virtual
   });
 
   if (i18n !== null) {
@@ -102,22 +103,22 @@ const create = (req: Request, res: Response): void => {
 
   smartUpdateAttacks({
     attacksToRemove: [],
-    attacksToUpdate: attacks,
+    attacksToUpdate: attacks
   })
     .then((attackIds) => {
       if (attackIds.length > 0) {
-        nPC.attacks = attackIds.map((attackId) => String(attackId));
+        nPC.attacks = attackIds.map(attackId => String(attackId));
       }
       nPC
         .save()
         .then(() => {
           res.send(nPC);
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -135,10 +136,11 @@ const update = (req: Request, res: Response): void => {
     summary = null,
     swimSpeed = null,
     title = null,
-    virtual = null,
+    virtual = null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('NPC ID'));
+
     return;
   }
 
@@ -173,15 +175,16 @@ const update = (req: Request, res: Response): void => {
       }
 
       interface IEnnemyAttackElt extends IEnnemyAttack {
-        _id: ObjectId;
+        _id: ObjectId
       }
       const attacksToRemove = nPC.attacks.reduce((result: string[], elt: IEnnemyAttackElt) => {
         const foundAttack = attacks.find(
-          (attack) => attack.id !== undefined && String(attack.id) === String(elt._id)
+          attack => attack.id !== undefined && String(attack.id) === String(elt._id)
         );
         if (foundAttack === undefined) {
           result.push(String(elt._id));
         }
+
         return result;
       }, []);
 
@@ -189,7 +192,7 @@ const update = (req: Request, res: Response): void => {
         const newIntl = {
           ...(nPC.i18n !== null && nPC.i18n !== undefined && nPC.i18n !== ''
             ? JSON.parse(nPC.i18n)
-            : {}),
+            : {})
         };
 
         Object.keys(i18n as Record<string, any>).forEach((lang) => {
@@ -201,22 +204,22 @@ const update = (req: Request, res: Response): void => {
 
       smartUpdateAttacks({
         attacksToRemove,
-        attacksToUpdate: attacks,
+        attacksToUpdate: attacks
       })
         .then((attackIds) => {
           if (attackIds.length > 0) {
-            nPC.attacks = attackIds.map((attackId) => String(attackId));
+            nPC.attacks = attackIds.map(attackId => String(attackId));
           }
           nPC
             .save()
             .then(() => {
               res.send({ message: 'NPC was updated successfully!', nPC });
             })
-            .catch((err: Error) => {
+            .catch((err: unknown) => {
               res.status(500).send(gemServerError(err));
             });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -229,13 +232,14 @@ const deleteNPCById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('NPC ID'));
+
       return;
     }
     NPC.findByIdAndDelete(id)
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
@@ -249,7 +253,7 @@ const deleteNPC = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'NPC was deleted successfully!' });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -259,25 +263,27 @@ const deleteNPC = (req: Request, res: Response): void => {
 };
 
 interface CuratedINPC {
-  i18n: Record<string, any> | Record<string, unknown>;
-  nPC: any;
+  i18n: Record<string, unknown>
+  nPC: any
 }
 
 const findSingle = (req: Request, res: Response): void => {
   const { nPCId } = req.query;
   if (nPCId === undefined || typeof nPCId !== 'string') {
     res.status(400).send(gemInvalidField('NPC ID'));
+
     return;
   }
   findNPCById(nPCId)
     .then((nPCSent) => {
-      const curatedActions =
-        nPCSent.attacks.length > 0
+      const curatedActions
+        = nPCSent.attacks.length > 0
           ? nPCSent.attacks.map((action) => {
               const data = action.toJSON();
+
               return {
                 ...data,
-                ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {})
               };
             })
           : [];
@@ -285,10 +291,10 @@ const findSingle = (req: Request, res: Response): void => {
       nPC.attacks = curatedActions;
       res.send({
         nPC,
-        i18n: curateI18n(nPCSent.i18n),
+        i18n: curateI18n(nPCSent.i18n)
       });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
@@ -299,13 +305,14 @@ const findAll = (req: Request, res: Response): void => {
       const curatedNPCs: CuratedINPC[] = [];
 
       nPCs.forEach((nPCSent) => {
-        const curatedActions =
-          nPCSent.attacks.length > 0
+        const curatedActions
+          = nPCSent.attacks.length > 0
             ? nPCSent.attacks.map((action) => {
                 const data = action.toJSON();
+
                 return {
                   ...data,
-                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {}),
+                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {})
                 };
               })
             : [];
@@ -313,13 +320,13 @@ const findAll = (req: Request, res: Response): void => {
         nPC.attacks = curatedActions;
         curatedNPCs.push({
           nPC,
-          i18n: curateI18n(nPCSent.i18n),
+          i18n: curateI18n(nPCSent.i18n)
         });
       });
 
       res.send(curatedNPCs);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const findAllBasic = (req: Request, res: Response): void => {
@@ -331,13 +338,13 @@ const findAllBasic = (req: Request, res: Response): void => {
         const nPC = nPCSent.toJSON();
         curatedNPCs.push({
           nPC,
-          i18n: curateI18n(nPCSent.i18n),
+          i18n: curateI18n(nPCSent.i18n)
         });
       });
 
       res.send(curatedNPCs);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export { create, deleteNPC, findAll, findAllBasic, findNPCById, findSingle, update };

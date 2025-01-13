@@ -8,7 +8,7 @@ import './aerror.scss';
 
 interface IAerror extends IQuarkProps {
   /** The childrens of the P element */
-  children: ReactNode;
+  children: ReactNode
 }
 
 const Aerror: FC<IAerror> = ({ className, children }) => (

@@ -5,7 +5,7 @@ import {
   gemDuplicate,
   gemInvalidField,
   gemNotFound,
-  gemServerError,
+  gemServerError
 } from '../../utils/globalErrorMessage';
 
 import type { HydratedITipText } from './model';
@@ -75,7 +75,7 @@ const checkDuplicateTipId = async (
           resolve(responseTipText);
         }
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -84,6 +84,7 @@ const create = (req: Request, res: Response): void => {
   const { title, summary, i18n = null, tipId } = req.body;
   if (title === undefined || summary === undefined || tipId === undefined) {
     res.status(400).send(gemInvalidField('Item Modifier'));
+
     return;
   }
 
@@ -93,7 +94,7 @@ const create = (req: Request, res: Response): void => {
         const tipText = new TipText({
           title,
           summary,
-          tipId,
+          tipId
         });
 
         if (i18n !== null) {
@@ -105,14 +106,14 @@ const create = (req: Request, res: Response): void => {
           .then(() => {
             res.send(tipText);
           })
-          .catch((err: Error) => {
+          .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
           });
       } else {
         res.status(400).send(gemDuplicate(response));
       }
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -121,6 +122,7 @@ const update = (req: Request, res: Response): void => {
   const { id, title = null, summary = null, i18n, tipId = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Item Modifier ID'));
+
     return;
   }
   findTipTextById(id as string)
@@ -143,7 +145,7 @@ const update = (req: Request, res: Response): void => {
               const newIntl = {
                 ...(tipText.i18n !== null && tipText.i18n !== undefined && tipText.i18n !== ''
                   ? JSON.parse(tipText.i18n)
-                  : {}),
+                  : {})
               };
 
               Object.keys(i18n as Record<string, any>).forEach((lang) => {
@@ -158,14 +160,14 @@ const update = (req: Request, res: Response): void => {
               .then(() => {
                 res.send({ message: 'Item Modifier was updated successfully!', tipText });
               })
-              .catch((err: Error) => {
+              .catch((err: unknown) => {
                 res.status(500).send(gemServerError(err));
               });
           } else {
             res.status(400).send(gemInvalidField('TipId'));
           }
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -178,13 +180,14 @@ const deleteTipTextById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Item Modifier ID'));
+
       return;
     }
     TipText.findByIdAndDelete(id)
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
@@ -195,31 +198,32 @@ const deleteTipText = (req: Request, res: Response): void => {
     .then(() => {
       res.send({ message: 'Item Modifier was deleted successfully!' });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
 
 interface CuratedITipText {
-  i18n: Record<string, any> | Record<string, unknown>;
-  tipText: HydratedITipText;
+  i18n: Record<string, unknown>
+  tipText: HydratedITipText
 }
 
 const findSingle = (req: Request, res: Response): void => {
   const { tipTextId } = req.query;
   if (tipTextId === undefined || typeof tipTextId !== 'string') {
     res.status(400).send(gemInvalidField('TipText ID'));
+
     return;
   }
   findTipTextById(tipTextId)
     .then((tipText) => {
       const sentObj = {
         tipText,
-        i18n: curateI18n(tipText.i18n),
+        i18n: curateI18n(tipText.i18n)
       };
       res.send(sentObj);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
@@ -232,13 +236,13 @@ const findAll = (req: Request, res: Response): void => {
       tipTexts.forEach((tipText) => {
         curatedTipTexts.push({
           tipText,
-          i18n: curateI18n(tipText.i18n),
+          i18n: curateI18n(tipText.i18n)
         });
       });
 
       res.send(curatedTipTexts);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export {
@@ -248,5 +252,5 @@ export {
   findAll,
   findSingle,
   findTipTextById,
-  update,
+  update
 };

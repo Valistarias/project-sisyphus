@@ -11,7 +11,6 @@ import type { ICharacter } from '../character';
 import type { HydratedICompleteCampaign, HydratedISimpleCampaign } from './model';
 import type { IUser } from '../user/model';
 
-
 const { Campaign } = db;
 
 const findCampaigns = async (req: Request): Promise<HydratedICompleteCampaign[]> =>
@@ -20,6 +19,7 @@ const findCampaigns = async (req: Request): Promise<HydratedICompleteCampaign[]>
       .then((user) => {
         if (user === null) {
           reject(gemNotFound('User'));
+
           return;
         }
         Campaign.find()
@@ -28,7 +28,7 @@ const findCampaigns = async (req: Request): Promise<HydratedICompleteCampaign[]>
           .populate<{ players: Array<HydratedDocument<IUser>> }>('players')
           .populate<{ characters: ICharacter[] }>({
             path: 'characters',
-            select: '_id name campaign',
+            select: '_id name campaign'
           })
           .then(async (res?: HydratedICompleteCampaign[] | null) => {
             if (res === undefined || res === null) {
@@ -52,6 +52,7 @@ const findCampaignById = async (id: string, req: Request): Promise<HydratedIComp
       .then((user) => {
         if (user === null) {
           reject(gemNotFound('User'));
+
           return;
         }
         Campaign.findById(id)
@@ -60,7 +61,7 @@ const findCampaignById = async (id: string, req: Request): Promise<HydratedIComp
           .populate<{ players: Array<HydratedDocument<IUser>> }>('players')
           .populate<{ characters: ICharacter[] }>({
             path: 'characters',
-            select: '_id name campaign',
+            select: '_id name campaign'
           })
           .then(async (res?: HydratedICompleteCampaign | null) => {
             if (res === undefined || res === null) {
@@ -84,6 +85,7 @@ const findCampaignByCode = async (id: string, req: Request): Promise<HydratedISi
       .then((user) => {
         if (user === null) {
           reject(gemNotFound('User'));
+
           return;
         }
         Campaign.find({ code: id })
@@ -108,18 +110,20 @@ const create = (req: Request, res: Response): void => {
   const { name } = req.body;
   if (name === undefined) {
     res.status(400).send(gemInvalidField('Campaign'));
+
     return;
   }
   getUserFromToken(req as IVerifyTokenRequest)
     .then((user) => {
       if (user === null) {
         res.status(404).send(gemNotFound('User'));
+
         return;
       }
       const campaign = new Campaign({
         name,
         owner: user._id,
-        code: uuidv4(),
+        code: uuidv4()
       });
 
       campaign
@@ -127,17 +131,18 @@ const create = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'Campaign was created successfully!', campaignId: campaign._id });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const update = (req: Request, res: Response): void => {
   const { id, name = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Campaign ID'));
+
     return;
   }
   findCampaignById(id as string, req)
@@ -151,20 +156,21 @@ const update = (req: Request, res: Response): void => {
           .then(() => {
             res.send({ message: 'Campaign was updated successfully!', campaign });
           })
-          .catch((err: Error) => {
+          .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
           });
       } else {
         res.status(404).send(gemNotFound('Campaign'));
       }
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const generateCode = (req: Request, res: Response): void => {
   const { campaignId } = req.body;
   if (campaignId === undefined) {
     res.status(400).send(gemInvalidField('Campaign ID'));
+
     return;
   }
   getUserFromToken(req as IVerifyTokenRequest)
@@ -172,9 +178,9 @@ const generateCode = (req: Request, res: Response): void => {
       findCampaignById(campaignId as string, req)
         .then((campaign) => {
           if (
-            campaign !== undefined &&
-            user !== null &&
-            String(campaign.owner._id) === String(user._id)
+            campaign !== undefined
+            && user !== null
+            && String(campaign.owner._id) === String(user._id)
           ) {
             campaign.code = uuidv4();
             campaign
@@ -182,39 +188,40 @@ const generateCode = (req: Request, res: Response): void => {
               .then(() => {
                 res.send({ message: 'Campaign code was changed successfully!', campaign });
               })
-              .catch((err: Error) => {
+              .catch((err: unknown) => {
                 res.status(500).send(gemServerError(err));
               });
           } else {
             res.status(404).send(gemNotFound('Campaign'));
           }
         })
-        .catch((err: Error) => res.status(500).send(gemServerError(err)));
+        .catch((err: unknown) => res.status(500).send(gemServerError(err)));
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const register = (req: Request, res: Response): void => {
   const { campaignCode } = req.body;
   if (campaignCode === undefined) {
     res.status(400).send(gemInvalidField('Campaign Code'));
+
     return;
   }
 
   interface ICampaignPayload extends Omit<HydratedISimpleCampaign, 'players'> {
-    players: string[] | ObjectId[];
+    players: string[] | ObjectId[]
   }
 
   getUserFromToken(req as IVerifyTokenRequest)
     .then((user) => {
       findCampaignByCode(campaignCode as string, req)
         .then((campaign: ICampaignPayload) => {
-          const foundPlayer =
-            user !== null
-              ? Boolean(campaign.players.find((player) => String(player) === String(user._id)))
+          const foundPlayer
+            = user !== null
+              ? Boolean(campaign.players.find(player => String(player) === String(user._id)))
               : false;
           if (campaign !== undefined && user !== null && !foundPlayer) {
-            const newArray = campaign.players.map((player) => String(player));
+            const newArray = campaign.players.map(player => String(player));
             newArray.push(String(user._id));
             campaign.players = newArray;
             campaign
@@ -222,39 +229,40 @@ const register = (req: Request, res: Response): void => {
               .then(() => {
                 res.send({
                   message: 'Campaign was updated successfully!',
-                  campaignId: campaign._id,
+                  campaignId: campaign._id
                 });
               })
-              .catch((err: Error) => {
+              .catch((err: unknown) => {
                 res.status(500).send(gemServerError(err));
               });
           } else {
             res.status(404).send(gemNotFound('Campaign'));
           }
         })
-        .catch((err: Error) => res.status(500).send(gemServerError(err)));
+        .catch((err: unknown) => res.status(500).send(gemServerError(err)));
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const unregister = (req: Request, res: Response): void => {
   const { campaignId } = req.body;
   if (campaignId === undefined) {
     res.status(400).send(gemInvalidField('Campaign Id'));
+
     return;
   }
 
   interface ICampaignPayload extends Omit<HydratedICompleteCampaign, 'players'> {
-    players: string[] | IUser[];
+    players: string[] | IUser[]
   }
 
   getUserFromToken(req as IVerifyTokenRequest)
     .then((user) => {
       findCampaignById(campaignId as string, req)
         .then((campaign: ICampaignPayload) => {
-          const foundPlayer =
-            user !== null
-              ? Boolean(campaign.players.find((player) => String(player) === String(user._id)))
+          const foundPlayer
+            = user !== null
+              ? Boolean(campaign.players.find(player => String(player) === String(user._id)))
               : false;
           if (campaign !== undefined && user !== null && foundPlayer) {
             const newArray: string[] = [];
@@ -270,29 +278,30 @@ const unregister = (req: Request, res: Response): void => {
               .then(() => {
                 res.send({ message: 'Campaign was updated successfully!' });
               })
-              .catch((err: Error) => {
+              .catch((err: unknown) => {
                 res.status(500).send(gemServerError(err));
               });
           } else {
             res.status(404).send(gemNotFound('Campaign'));
           }
         })
-        .catch((err: Error) => res.status(500).send(gemServerError(err)));
+        .catch((err: unknown) => res.status(500).send(gemServerError(err)));
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const deleteCampaign = (req: Request, res: Response): void => {
   const { id } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Campaign ID'));
+
     return;
   }
   Campaign.findByIdAndDelete(id)
     .then(() => {
       res.send({ message: 'Campaign was deleted successfully!' });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -301,28 +310,30 @@ const findSingle = (req: Request, res: Response): void => {
   const { campaignId } = req.query;
   if (campaignId === undefined || typeof campaignId !== 'string') {
     res.status(400).send(gemInvalidField('Campaign ID'));
+
     return;
   }
   findCampaignById(campaignId, req)
-    .then((campaign) => res.send(campaign))
-    .catch((err) => res.status(404).send(err));
+    .then(campaign => res.send(campaign))
+    .catch(err => res.status(404).send(err));
 };
 
 const findByCode = (req: Request, res: Response): void => {
   const { campaignCode } = req.query;
   if (campaignCode === undefined || typeof campaignCode !== 'string') {
     res.status(400).send(gemInvalidField('Campaign Code'));
+
     return;
   }
   findCampaignByCode(campaignCode, req)
-    .then((campaign) => res.send(campaign))
-    .catch((err) => res.status(404).send(err));
+    .then(campaign => res.send(campaign))
+    .catch(err => res.status(404).send(err));
 };
 
 const findAll = (req: Request, res: Response): void => {
   findCampaigns(req)
-    .then((campaigns) => res.send(campaigns))
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .then(campaigns => res.send(campaigns))
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export {
@@ -334,5 +345,5 @@ export {
   generateCode,
   register,
   unregister,
-  update,
+  update
 };

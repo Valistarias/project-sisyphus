@@ -4,38 +4,38 @@ import type { IBag } from '../../bag/model';
 
 interface IBodyBag {
   /** When the body was created */
-  createdAt: Date;
+  createdAt: Date
   /** The body targeted */
-  body: ObjectId;
+  body: ObjectId
   /** The linked Bag */
-  bag: ObjectId;
+  bag: ObjectId
   /** Is the bag equiped ? */
-  equiped: boolean;
+  equiped: boolean
 }
 
 type HydratedIBodyBag = HydratedDocument<
   Omit<IBodyBag, 'bag'> & {
-    bag: HydratedDocument<IBag>;
+    bag: HydratedDocument<IBag>
   }
 >;
 
 const BodyBagSchema = new Schema<IBodyBag>({
   body: {
     type: Schema.Types.ObjectId,
-    ref: 'Body',
+    ref: 'Body'
   },
   bag: {
     type: Schema.Types.ObjectId,
-    ref: 'Bag',
+    ref: 'Bag'
   },
   equiped: {
     type: Boolean,
-    default: false,
+    default: false
   },
   createdAt: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
 });
 
 const BodyBagModel = (): Model<IBodyBag> => model('BodyBag', BodyBagSchema);

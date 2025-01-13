@@ -13,34 +13,34 @@ import { classTrim } from '../utils';
 import './select.scss';
 
 interface ISingleValueSelect {
-  value: string | number;
-  label: string;
-  details?: string;
+  value: string | number
+  label: string
+  details?: string
 }
 
 interface IGroupedOption {
-  readonly label: string;
-  readonly cat: string;
-  readonly options: readonly ISingleValueSelect[];
+  readonly label: string
+  readonly cat: string
+  readonly options: readonly ISingleValueSelect[]
 }
 
 interface IAp extends IReactHookFormInputs {
   /** The options for the select */
-  options: ISingleValueSelect[];
+  options: ISingleValueSelect[]
   /** Define the placeholder for this field */
-  placeholder?: string;
+  placeholder?: string
   /** The label, if any */
-  label?: string;
+  label?: string
   /** Is the selector a multi select */
-  isMulti?: boolean;
+  isMulti?: boolean
   /** The classname of the select */
-  className?: string;
+  className?: string
   /** Triggered when the selected field is changing */
-  onChange?: (val: string | number | string[]) => void;
+  onChange?: (val: string | number | string[]) => void
   /** The size of the select */
-  size?: 'medium' | 'small';
+  size?: 'medium' | 'small'
   /** Is the field disabled */
-  disabled?: boolean;
+  disabled?: boolean
 }
 
 const Option: FC<OptionProps<ISingleValueSelect, false>> = ({ children, ...props }) => {
@@ -58,6 +58,7 @@ const Option: FC<OptionProps<ISingleValueSelect, false>> = ({ children, ...props
       </components.Option>
     );
   }
+
   return <components.Option {...props}>{children}</components.Option>;
 };
 
@@ -79,9 +80,10 @@ const SmartSelect: FC<IAp> = ({
   placeholder = null,
   className = null,
   disabled = false,
-  rules,
+  rules
 }) => {
   const { t } = useTranslation();
+
   return (
     <div
       className={classTrim(`
@@ -97,18 +99,20 @@ const SmartSelect: FC<IAp> = ({
         rules={rules}
         render={({ field: { onChange, onBlur, value, name, ref }, fieldState: { error } }) => (
           <>
-            {label !== undefined ? (
-              <Alabel className="smartselect__label" htmlFor={name}>
-                {label}
-              </Alabel>
-            ) : null}
+            {label !== undefined
+              ? (
+                  <Alabel className="smartselect__label" htmlFor={name}>
+                    {label}
+                  </Alabel>
+                )
+              : null}
             <Select
               options={options}
               isMulti={isMulti}
               value={
                 isMulti
-                  ? options.filter((c) => value?.includes(c.value))
-                  : options.find((c) => c.value === value)
+                  ? options.filter(c => value?.includes(c.value))
+                  : options.find(c => c.value === value)
               }
               onChange={(val) => {
                 if (val != null && !isMulti) {
@@ -117,7 +121,7 @@ const SmartSelect: FC<IAp> = ({
                     exteriorChange((val as ISingleValueSelect).value);
                   }
                 } else if (val != null && isMulti) {
-                  onChange((val as MultiValue<ISingleValueSelect>).map((valElt) => valElt.value));
+                  onChange((val as MultiValue<ISingleValueSelect>).map(valElt => valElt.value));
                 }
               }}
               className="smartselect__field"
@@ -127,9 +131,11 @@ const SmartSelect: FC<IAp> = ({
               noOptionsMessage={() => <Ap>{t('smartselect.notfound', { ns: 'components' })}</Ap>}
               formatGroupLabel={formatGroupLabel}
             />
-            {error?.message !== undefined ? (
-              <Aerror className="input__error">{error.message}</Aerror>
-            ) : null}
+            {error?.message !== undefined
+              ? (
+                  <Aerror className="input__error">{error.message}</Aerror>
+                )
+              : null}
           </>
         )}
       />

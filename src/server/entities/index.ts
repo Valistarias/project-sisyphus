@@ -31,14 +31,14 @@ export {
   type IBodyImplant,
   type IBodyProgram,
   type IBodyStat,
-  type IBodyWeapon,
+  type IBodyWeapon
 } from './body';
 export { BodyPartModel, type HydratedIBodyPart, type IBodyPart } from './bodyPart/model';
 export {
   CampaignModel,
   type HydratedICompleteCampaign,
   type HydratedISimpleCampaign,
-  type ICampaign,
+  type ICampaign
 } from './campaign/model';
 export { CampaignEventModel, type ICampaignEvent } from './campaignEvent/model';
 export { ChapterModel, type HydratedIChapter, type IChapter } from './chapter/model';
@@ -49,19 +49,19 @@ export {
   type HydratedICharacter,
   type HydratedICharacterNode,
   type ICharacter,
-  type ICharacterNode,
+  type ICharacterNode
 } from './character';
 export { CharParamModel, type HydratedICharParam, type ICharParam } from './charParam/model';
 export {
   CharParamBonusModel,
   type HydratedICharParamBonus,
-  type ICharParamBonus,
+  type ICharParamBonus
 } from './charParamBonus/model';
 export { CyberFrameModel, type HydratedICyberFrame, type ICyberFrame } from './cyberFrame/model';
 export {
   CyberFrameBranchModel,
   type HydratedICyberFrameBranch,
-  type ICyberFrameBranch,
+  type ICyberFrameBranch
 } from './cyberFrameBranch/model';
 export { DamageModel, type HydratedIDamage, type IDamage } from './damage/model';
 export { DamageTypeModel, type HydratedIDamageType, type IDamageType } from './damageType/model';
@@ -69,7 +69,7 @@ export { EffectModel, type HydratedIEffect, type IEffect } from './effect/model'
 export {
   EnnemyAttackModel,
   type HydratedIEnnemyAttack,
-  type IEnnemyAttack,
+  type IEnnemyAttack
 } from './ennemyAttack/model';
 export { GlobalValueModel, type IGlobalValue } from './globalValue/model';
 export { ImplantModel, type HydratedIImplant, type IImplant } from './implant/model';
@@ -77,7 +77,7 @@ export { ItemModel, type HydratedIItem, type IItem } from './item/model';
 export {
   ItemModifierModel,
   type HydratedIItemModifier,
-  type IItemModifier,
+  type IItemModifier
 } from './itemModifier/model';
 export { ItemTypeModel, type IItemType } from './itemType/model';
 export { MailTokenModel, type IMailToken } from './mailToken/model';
@@ -89,7 +89,7 @@ export { ProgramModel, type HydratedIProgram, type IProgram } from './program/mo
 export {
   ProgramScopeModel,
   type HydratedIProgramScope,
-  type IProgramScope,
+  type IProgramScope
 } from './programScope/model';
 export { RarityModel, type HydratedIRarity, type IRarity } from './rarity/model';
 export { RoleModel, type IRole } from './role/model';
@@ -100,7 +100,7 @@ export { SkillBonusModel, type HydratedISkillBonus, type ISkillBonus } from './s
 export {
   SkillBranchModel,
   type HydratedISkillBranch,
-  type ISkillBranch,
+  type ISkillBranch
 } from './skillBranch/model';
 export { StatModel, type HydratedIStat, type IStat } from './stat/model';
 export { StatBonusModel, type HydratedIStatBonus, type IStatBonus } from './statBonus/model';
@@ -110,11 +110,11 @@ export { WeaponModel, type HydratedIWeapon, type IWeapon } from './weapon/model'
 export {
   WeaponScopeModel,
   type HydratedIWeaponScope,
-  type IWeaponScope,
+  type IWeaponScope
 } from './weaponScope/model';
 export {
   WeaponStyleModel,
   type HydratedIWeaponStyle,
-  type IWeaponStyle,
+  type IWeaponStyle
 } from './weaponStyle/model';
 export { WeaponTypeModel, type HydratedIWeaponType, type IWeaponType } from './weaponType/model';

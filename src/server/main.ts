@@ -80,14 +80,14 @@ const io = new Server(httpServer);
 const port = process.env.PORT ?? 3000;
 const mailgunApi = process.env.MAILGUN_API_KEY ?? '';
 const {
-  env: { COOKIE_SECRET: cookieSecret },
+  env: { COOKIE_SECRET: cookieSecret }
 } = process;
 
 const mailgun = new Mailgun(formData);
 const mg = mailgun.client({ username: 'api', key: mailgunApi });
 
 const corsOptions = {
-  origin: `http://localhost:${port}`,
+  origin: `http://localhost:${port}`
 };
 
 app.use(cors(corsOptions));
@@ -103,14 +103,14 @@ app.use(
   cookieSession({
     name: 'sisyphus-charsheet-session',
     secret: cookieSecret, // should use as secret environment variable
-    httpOnly: true,
+    httpOnly: true
   })
 );
 // ----------------------------------------------------------------------------------------
 
 // Database Connection ---------------------------------------------------------------------
 const clientOptions: mongoose.ConnectOptions = {
-  serverApi: { version: '1', strict: true, deprecationErrors: true },
+  serverApi: { version: '1', strict: true, deprecationErrors: true }
 };
 
 mongoose
@@ -199,7 +199,7 @@ app.use('/api/', apiRouter);
 // (Need to be elsewhere)
 app.get('/verify/:id', (req: Request, res: Response) => {
   const {
-    params: { id },
+    params: { id }
   } = req;
   verifyTokenSingIn(id)
     .then(() => {
@@ -212,7 +212,7 @@ app.get('/verify/:id', (req: Request, res: Response) => {
 
 app.get('/reset/password/:userId/:token', (req: Request, res: Response, next: () => void) => {
   const {
-    params: { userId, token },
+    params: { userId, token }
   } = req;
   verifyMailToken({ userId, token })
     .then(() => {
@@ -242,7 +242,7 @@ io.on('connection', (socket) => {
 
   socket.on(
     'newCampaignEvent',
-    ({ room, data }: { room: string; data: Record<string, unknown> }) => {
+    ({ room, data }: { room: string, data: Record<string, unknown> }) => {
       socket.to(room).emit('newCampaignEvent', data);
     }
   );

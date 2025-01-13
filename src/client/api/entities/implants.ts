@@ -4,9 +4,8 @@ import Entity from './entity';
 
 import type { ICuratedImplant } from '../../types';
 
-
 interface IImplantPayload {
-  implantId: string;
+  implantId: string
 }
 
 export default class Implants extends Entity {
@@ -16,7 +15,7 @@ export default class Implants extends Entity {
   constructor() {
     super('implants');
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })

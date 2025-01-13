@@ -28,6 +28,7 @@ const AdminItems: FC = () => {
     if (items === null || items.length === 0) {
       return null;
     }
+
     return (
       <Aul className="adminItems__item-list" noPoints>
         {items.map(({ item }) => (
@@ -63,7 +64,7 @@ const AdminItems: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }

@@ -19,9 +19,9 @@ import { classTrim } from '../../../utils';
 import './adminEditCyberFrame.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  ruleBook: string;
+  name: string
+  nameFr: string
+  ruleBook: string
 }
 
 const AdminEditCyberFrame: FC = () => {
@@ -30,7 +30,7 @@ const AdminEditCyberFrame: FC = () => {
   const { createAlert, getNewId } = useSystemAlerts();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
-    ConfMessageEvent: {},
+    ConfMessageEvent: {}
   };
   const { id } = useParams();
   const { ruleBooks, reloadCyberFrames } = useGlobalVars();
@@ -48,11 +48,11 @@ const AdminEditCyberFrame: FC = () => {
   const [cyberFrameTextFr, setCyberFrameTextFr] = useState('');
 
   const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const nodeTree = useMemo(() => {
@@ -60,25 +60,26 @@ const AdminEditCyberFrame: FC = () => {
     const tempTree: Record<
       string,
       {
-        branch: ICyberFrameBranch;
-        nodes: ICuratedNode[];
+        branch: ICyberFrameBranch
+        nodes: ICuratedNode[]
       }
     > = {};
     branches?.forEach(({ cyberFrameBranch }) => {
       tempTree[cyberFrameBranch._id] = {
         branch: cyberFrameBranch,
-        nodes: cyberFrameBranch.nodes,
+        nodes: cyberFrameBranch.nodes
       };
     });
+
     return Object.values(tempTree);
   }, [cyberFrameData]);
 
   const ruleBookSelect = useMemo(() => ruleBooks.map(({ ruleBook }) => ({
-      value: ruleBook._id,
-      // TODO : Handle Internationalization
-      label: ruleBook.title,
-      details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 }),
-    })), [t, ruleBooks]);
+    value: ruleBook._id,
+    // TODO : Handle Internationalization
+    label: ruleBook.title,
+    details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 })
+  })), [t, ruleBooks]);
 
   const createDefaultData = useCallback(
     (cyberFrameData: ICuratedCyberFrame | null, ruleBookSelect: ISingleValueSelect[]) => {
@@ -89,7 +90,7 @@ const AdminEditCyberFrame: FC = () => {
       const defaultData: Partial<FormValues> = {};
       defaultData.name = cyberFrame.title;
       const selectedfield = ruleBookSelect.find(
-        (singleSelect) => singleSelect.value === cyberFrame.ruleBook._id
+        singleSelect => singleSelect.value === cyberFrame.ruleBook._id
       );
       if (selectedfield !== undefined) {
         defaultData.ruleBook = String(selectedfield.value);
@@ -97,6 +98,7 @@ const AdminEditCyberFrame: FC = () => {
       if (i18n.fr !== undefined) {
         defaultData.nameFr = i18n.fr.title ?? '';
       }
+
       return defaultData;
     },
     []
@@ -107,12 +109,12 @@ const AdminEditCyberFrame: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(cyberFrameData, ruleBookSelect),
       [createDefaultData, cyberFrameData, ruleBookSelect]
-    ),
+    )
   });
 
   const ruleBook = useMemo(() => cyberFrameData?.cyberFrame.ruleBook, [cyberFrameData]);
@@ -120,11 +122,11 @@ const AdminEditCyberFrame: FC = () => {
   const onSaveCyberFrame: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, ruleBook }) => {
       if (
-        cyberFrameText === null ||
-        cyberFrameTextFr === null ||
-        textEditor === null ||
-        textFrEditor === null ||
-        api === undefined
+        cyberFrameText === null
+        || cyberFrameTextFr === null
+        || textEditor === null
+        || textFrEditor === null
+        || api === undefined
       ) {
         return;
       }
@@ -142,8 +144,8 @@ const AdminEditCyberFrame: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            text: htmlTextFr,
-          },
+            text: htmlTextFr
+          }
         };
       }
 
@@ -153,7 +155,7 @@ const AdminEditCyberFrame: FC = () => {
           title: name,
           ruleBook,
           summary: htmlText,
-          i18n,
+          i18n
         })
         .then(() => {
           const newId = getNewId();
@@ -163,7 +165,7 @@ const AdminEditCyberFrame: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditCyberFrame.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadCyberFrames();
         })
@@ -173,15 +175,15 @@ const AdminEditCyberFrame: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.cyberFrameType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.cyberFrameType.${data.sent}`), 'capitalize')
+              })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.cyberFrameType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.cyberFrameType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -197,7 +199,7 @@ const AdminEditCyberFrame: FC = () => {
       createAlert,
       t,
       reloadCyberFrames,
-      setError,
+      setError
     ]
   );
 
@@ -210,9 +212,9 @@ const AdminEditCyberFrame: FC = () => {
         title: t('adminEditCyberFrame.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditCyberFrame.confirmDeletion.text', {
           ns: 'pages',
-          elt: cyberFrameData?.cyberFrame.title,
+          elt: cyberFrameData?.cyberFrame.title
         }),
-        confirmCta: t('adminEditCyberFrame.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditCyberFrame.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
@@ -227,7 +229,7 @@ const AdminEditCyberFrame: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditCyberFrame.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
                 reloadCyberFrames();
                 void navigate('/admin/cyberframes');
@@ -238,15 +240,15 @@ const AdminEditCyberFrame: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.cyberFrame.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.cyberFrame.name`), 'capitalize')
+                    })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.cyberFrame.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.cyberFrame.name`), 'capitalize')
+                    })
                   });
                 }
               });
@@ -267,7 +269,7 @@ const AdminEditCyberFrame: FC = () => {
     createAlert,
     reloadCyberFrames,
     navigate,
-    setError,
+    setError
   ]);
 
   useEffect(() => {
@@ -291,7 +293,7 @@ const AdminEditCyberFrame: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -306,6 +308,7 @@ const AdminEditCyberFrame: FC = () => {
         () => {}
       );
     }, 600000);
+
     return () => {
       if (saveTimer.current !== null) {
         clearInterval(saveTimer.current);
@@ -337,9 +340,11 @@ const AdminEditCyberFrame: FC = () => {
           </Button>
         </div>
         <Atitle level={2}>{t('adminEditCyberFrame.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror className="adminEditCyberFrame__error">{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror className="adminEditCyberFrame__error">{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminEditCyberFrame__basics">
           <Input
             control={control}
@@ -353,7 +358,7 @@ const AdminEditCyberFrame: FC = () => {
             control={control}
             inputName="ruleBook"
             rules={{
-              required: t('linkedRuleBook.required', { ns: 'fields' }),
+              required: t('linkedRuleBook.required', { ns: 'fields' })
             }}
             label={t('linkedRuleBook.label', { ns: 'fields' })}
             options={ruleBookSelect}
@@ -384,7 +389,7 @@ const AdminEditCyberFrame: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt((prev) => !prev);
+              setDisplayInt(prev => !prev);
             }}
             className="adminEditCyberFrame__intl-title__btn"
           />

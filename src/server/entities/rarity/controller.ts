@@ -13,7 +13,7 @@ const findRarities = async (): Promise<HydratedIRarity[]> =>
   await new Promise((resolve, reject) => {
     Rarity.find()
       .sort({
-        position: 'asc',
+        position: 'asc'
       })
       .then(async (res?: HydratedIRarity[] | null) => {
         if (res === undefined || res === null) {
@@ -46,6 +46,7 @@ const create = (req: Request, res: Response): void => {
   const { title, summary, i18n = null } = req.body;
   if (title === undefined || summary === undefined) {
     res.status(400).send(gemInvalidField('Item Modifier'));
+
     return;
   }
 
@@ -54,7 +55,7 @@ const create = (req: Request, res: Response): void => {
       const rarity = new Rarity({
         title,
         summary,
-        position: rarities.length,
+        position: rarities.length
       });
 
       if (i18n !== null) {
@@ -66,17 +67,18 @@ const create = (req: Request, res: Response): void => {
         .then(() => {
           res.send(rarity);
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const update = (req: Request, res: Response): void => {
   const { id, title = null, summary = null, i18n } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Item Modifier ID'));
+
     return;
   }
   findRarityById(id as string)
@@ -92,7 +94,7 @@ const update = (req: Request, res: Response): void => {
         const newIntl = {
           ...(rarity.i18n !== null && rarity.i18n !== undefined && rarity.i18n !== ''
             ? JSON.parse(rarity.i18n)
-            : {}),
+            : {})
         };
 
         Object.keys(i18n as Record<string, any>).forEach((lang) => {
@@ -107,7 +109,7 @@ const update = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'Item Modifier was updated successfully!', rarity });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -135,6 +137,7 @@ const changeRaritiesOrder = (req: Request, res: Response): void => {
   const { order } = req.body;
   if (order === undefined) {
     res.status(400).send(gemInvalidField('Rarity Reordering'));
+
     return;
   }
   updateMultipleRaritiesPosition(order, (err) => {
@@ -150,13 +153,14 @@ const deleteRarityById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Item Modifier ID'));
+
       return;
     }
     Rarity.findByIdAndDelete(id)
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
@@ -167,31 +171,32 @@ const deleteRarity = (req: Request, res: Response): void => {
     .then(() => {
       res.send({ message: 'Item Modifier was deleted successfully!' });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
 
 interface CuratedIRarity {
-  i18n: Record<string, any> | Record<string, unknown>;
-  rarity: HydratedIRarity;
+  i18n: Record<string, unknown>
+  rarity: HydratedIRarity
 }
 
 const findSingle = (req: Request, res: Response): void => {
   const { rarityId } = req.query;
   if (rarityId === undefined || typeof rarityId !== 'string') {
     res.status(400).send(gemInvalidField('Rarity ID'));
+
     return;
   }
   findRarityById(rarityId)
     .then((rarity) => {
       const sentObj = {
         rarity,
-        i18n: curateI18n(rarity.i18n),
+        i18n: curateI18n(rarity.i18n)
       };
       res.send(sentObj);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
@@ -204,13 +209,13 @@ const findAll = (req: Request, res: Response): void => {
       rarities.forEach((rarity) => {
         curatedRarities.push({
           rarity,
-          i18n: curateI18n(rarity.i18n),
+          i18n: curateI18n(rarity.i18n)
         });
       });
 
       res.send(curatedRarities);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export { changeRaritiesOrder, create, deleteRarity, findAll, findRarityById, findSingle, update };

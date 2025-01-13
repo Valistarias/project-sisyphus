@@ -15,10 +15,9 @@ import type {
   ICuratedCharParam,
   ICuratedItem,
   ICuratedItemModifier,
-  ICuratedRarity,
+  ICuratedRarity
 } from '../types';
 import type { IItem } from '../types/items';
-
 
 import { classTrim } from '../utils';
 
@@ -26,24 +25,24 @@ import './itemDisplay.scss';
 
 interface IItemDisplay extends IQuarkProps {
   /** The item to be displayed */
-  item: ICuratedItem;
+  item: ICuratedItem
   /** The display mode */
-  mode?: 'basic' | 'hover';
+  mode?: 'basic' | 'hover'
 }
 
 interface ICompleteCharParamBonus extends Omit<ICharParamBonus, 'charParam'> {
-  charParam: ICuratedCharParam | undefined;
+  charParam: ICuratedCharParam | undefined
 }
 
 interface ICompleteItem
   extends Omit<IItem, 'itemType' | 'itemModifiers' | 'rarity' | 'charParamBonuses'> {
-  itemModifiers: ICuratedItemModifier[] | undefined;
-  rarity: ICuratedRarity | undefined;
-  charParamBonuses: ICompleteCharParamBonus[];
+  itemModifiers: ICuratedItemModifier[] | undefined
+  rarity: ICuratedRarity | undefined
+  charParamBonuses: ICompleteCharParamBonus[]
 }
 
 interface ICuratedCompleteItem extends Omit<ICuratedItem, 'item'> {
-  item: ICompleteItem;
+  item: ICompleteItem
 }
 
 const ItemDisplay: FC<IItemDisplay> = ({ item, mode = 'basic' }) => {
@@ -58,25 +57,26 @@ const ItemDisplay: FC<IItemDisplay> = ({ item, mode = 'basic' }) => {
       return null;
     }
     const { item: itemObj, i18n } = item;
+
     return {
       item: {
         ...itemObj,
-        rarity: rarities.find((rarity) => rarity.rarity._id === itemObj.rarity),
+        rarity: rarities.find(rarity => rarity.rarity._id === itemObj.rarity),
         itemModifiers: itemObj.itemModifiers?.map(
-          (itemModifierId) =>
+          itemModifierId =>
             itemModifiers.find(
-              (itemModifier) => itemModifier.itemModifier._id === itemModifierId
+              itemModifier => itemModifier.itemModifier._id === itemModifierId
             ) ?? itemModifiers[0]
         ),
         charParamBonuses:
-          itemObj.charParamBonuses?.map((charParamBonus) => ({
+          itemObj.charParamBonuses?.map(charParamBonus => ({
             ...charParamBonus,
             charParam: charParams.find(
               ({ charParam }) => charParam._id === charParamBonus.charParam
-            ),
-          })) ?? [],
+            )
+          })) ?? []
       },
-      i18n,
+      i18n
     };
   }, [itemTypes, item, rarities, itemModifiers, charParams]);
 
@@ -115,7 +115,7 @@ const ItemDisplay: FC<IItemDisplay> = ({ item, mode = 'basic' }) => {
         title={item.title}
         type={t('itemTypeNames.itm')}
         itemModifiers={item.itemModifiers}
-        mainNode={
+        mainNode={(
           <div className="item-display__block__main">
             <RichTextElement
               className="item-display__block__main__text"
@@ -123,7 +123,7 @@ const ItemDisplay: FC<IItemDisplay> = ({ item, mode = 'basic' }) => {
               readOnly
             />
           </div>
-        }
+        )}
       />
     );
   }, [curateItem, t]);

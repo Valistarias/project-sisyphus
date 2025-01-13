@@ -28,6 +28,7 @@ const AdminArmors: FC = () => {
     if (armors === null || armors.length === 0) {
       return null;
     }
+
     return (
       <Aul className="adminArmors__armor-list" noPoints>
         {armors.map(({ armor }) => (
@@ -63,7 +64,7 @@ const AdminArmors: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }

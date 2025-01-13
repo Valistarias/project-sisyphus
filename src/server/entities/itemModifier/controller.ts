@@ -5,7 +5,7 @@ import {
   gemDuplicate,
   gemInvalidField,
   gemNotFound,
-  gemServerError,
+  gemServerError
 } from '../../utils/globalErrorMessage';
 
 import type { HydratedIItemModifier } from './model';
@@ -75,7 +75,7 @@ const checkDuplicateModifierId = async (
           resolve(responseItemModifier);
         }
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -84,6 +84,7 @@ const create = (req: Request, res: Response): void => {
   const { title, summary, i18n = null, modifierId } = req.body;
   if (title === undefined || summary === undefined || modifierId === undefined) {
     res.status(400).send(gemInvalidField('Item Modifier'));
+
     return;
   }
 
@@ -93,7 +94,7 @@ const create = (req: Request, res: Response): void => {
         const itemModifier = new ItemModifier({
           title,
           summary,
-          modifierId,
+          modifierId
         });
 
         if (i18n !== null) {
@@ -105,14 +106,14 @@ const create = (req: Request, res: Response): void => {
           .then(() => {
             res.send(itemModifier);
           })
-          .catch((err: Error) => {
+          .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
           });
       } else {
         res.status(400).send(gemDuplicate(response));
       }
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -121,12 +122,13 @@ const update = (req: Request, res: Response): void => {
   const { id, title = null, summary = null, i18n, modifierId = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Item Modifier ID'));
+
     return;
   }
   findItemModifierById(id as string)
     .then((itemModifier) => {
-      const alreadyExistOnce =
-        typeof modifierId === 'string' && modifierId === itemModifier.modifierId;
+      const alreadyExistOnce
+        = typeof modifierId === 'string' && modifierId === itemModifier.modifierId;
       checkDuplicateModifierId(modifierId as string, alreadyExistOnce)
         .then((response) => {
           if (typeof response === 'boolean') {
@@ -142,11 +144,11 @@ const update = (req: Request, res: Response): void => {
 
             if (i18n !== null) {
               const newIntl = {
-                ...(itemModifier.i18n !== null &&
-                itemModifier.i18n !== undefined &&
-                itemModifier.i18n !== ''
+                ...(itemModifier.i18n !== null
+                  && itemModifier.i18n !== undefined
+                  && itemModifier.i18n !== ''
                   ? JSON.parse(itemModifier.i18n)
-                  : {}),
+                  : {})
               };
 
               Object.keys(i18n as Record<string, any>).forEach((lang) => {
@@ -161,14 +163,14 @@ const update = (req: Request, res: Response): void => {
               .then(() => {
                 res.send({ message: 'Item Modifier was updated successfully!', itemModifier });
               })
-              .catch((err: Error) => {
+              .catch((err: unknown) => {
                 res.status(500).send(gemServerError(err));
               });
           } else {
             res.status(400).send(gemInvalidField('ModifierId'));
           }
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -181,13 +183,14 @@ const deleteItemModifierById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Item Modifier ID'));
+
       return;
     }
     ItemModifier.findByIdAndDelete(id)
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
@@ -198,31 +201,32 @@ const deleteItemModifier = (req: Request, res: Response): void => {
     .then(() => {
       res.send({ message: 'Item Modifier was deleted successfully!' });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
 
 interface CuratedIItemModifier {
-  i18n: Record<string, any> | Record<string, unknown>;
-  itemModifier: HydratedIItemModifier;
+  i18n: Record<string, unknown>
+  itemModifier: HydratedIItemModifier
 }
 
 const findSingle = (req: Request, res: Response): void => {
   const { itemModifierId } = req.query;
   if (itemModifierId === undefined || typeof itemModifierId !== 'string') {
     res.status(400).send(gemInvalidField('ItemModifier ID'));
+
     return;
   }
   findItemModifierById(itemModifierId)
     .then((itemModifier) => {
       const sentObj = {
         itemModifier,
-        i18n: curateI18n(itemModifier.i18n),
+        i18n: curateI18n(itemModifier.i18n)
       };
       res.send(sentObj);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
@@ -235,13 +239,13 @@ const findAll = (req: Request, res: Response): void => {
       itemModifiers.forEach((itemModifier) => {
         curatedItemModifiers.push({
           itemModifier,
-          i18n: curateI18n(itemModifier.i18n),
+          i18n: curateI18n(itemModifier.i18n)
         });
       });
 
       res.send(curatedItemModifiers);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export {
@@ -251,5 +255,5 @@ export {
   findAll,
   findItemModifierById,
   findSingle,
-  update,
+  update
 };

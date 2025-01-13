@@ -1,14 +1,17 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "Node16",
     "jsx": "react",
     "target": "esnext",
-    "lib": ["es2015", "dom", "dom.iterable"],
+    "lib": ["ES2023", "dom", "dom.iterable"],
     "sourceMap": true,
     "strictNullChecks": true,
     "types": ["node", "vite-plugin-svgr/client"],
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "noEmit": true,
+    "allowJs": true,
+    "allowImportingTsExtensions": true
   },
   "include": ["./"]
 }

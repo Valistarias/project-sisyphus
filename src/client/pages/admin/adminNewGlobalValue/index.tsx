@@ -14,8 +14,8 @@ import { Alert } from '../../../organisms';
 import './adminNewGlobalValue.scss';
 
 interface FormValues {
-  name: string;
-  value: string;
+  name: string
+  value: string
 }
 
 const AdminNewGlobalValue: FC = () => {
@@ -32,7 +32,7 @@ const AdminNewGlobalValue: FC = () => {
     handleSubmit,
     setError,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   const onSaveGlobalValue: SubmitHandler<FormValues> = useCallback(
@@ -44,7 +44,7 @@ const AdminNewGlobalValue: FC = () => {
       api.globalValues
         .create({
           name,
-          value,
+          value
         })
         .then((globalValue) => {
           const newId = getNewId();
@@ -54,7 +54,7 @@ const AdminNewGlobalValue: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewGlobalValue.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadGlobalValues();
           void navigate(`/admin/globalvalue/${globalValue._id}`);
@@ -64,8 +64,8 @@ const AdminNewGlobalValue: FC = () => {
           setError('root.serverError', {
             type: 'server',
             message: t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-            }),
+              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+            })
           });
         });
     },
@@ -87,16 +87,18 @@ const AdminNewGlobalValue: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewGlobalValue.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminNewGlobalValue__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameGlobalValue.required', { ns: 'fields' }),
+              required: t('nameGlobalValue.required', { ns: 'fields' })
             }}
             label={t('nameGlobalValue.label', { ns: 'fields' })}
             className="adminNewGlobalValue__basics__name"
@@ -106,7 +108,7 @@ const AdminNewGlobalValue: FC = () => {
             inputName="value"
             type="text"
             rules={{
-              required: t('nameGlobalValueValue.required', { ns: 'fields' }),
+              required: t('nameGlobalValueValue.required', { ns: 'fields' })
             }}
             label={t('nameGlobalValueValue.label', { ns: 'fields' })}
             className="adminNewGlobalValue__basics__name"

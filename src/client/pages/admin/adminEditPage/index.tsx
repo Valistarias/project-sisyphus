@@ -19,8 +19,8 @@ import { formatDate } from '../../../utils';
 import './adminEditPage.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
+  name: string
+  nameFr: string
 }
 
 const AdminEditPages: FC = () => {
@@ -30,7 +30,7 @@ const AdminEditPages: FC = () => {
   const { id } = useParams();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
-    ConfMessageEvent: {},
+    ConfMessageEvent: {}
   };
   const navigate = useNavigate();
 
@@ -46,11 +46,11 @@ const AdminEditPages: FC = () => {
   const [pageContentFr, setPageContentFr] = useState('');
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const createDefaultData = useCallback((pageData: ICuratedPage | null) => {
@@ -63,6 +63,7 @@ const AdminEditPages: FC = () => {
     if (i18n.fr !== undefined) {
       defaultData.nameFr = i18n.fr.title ?? '';
     }
+
     return defaultData;
   }, []);
 
@@ -71,9 +72,9 @@ const AdminEditPages: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
-    defaultValues: useMemo(() => createDefaultData(pageData), [createDefaultData, pageData]),
+    defaultValues: useMemo(() => createDefaultData(pageData), [createDefaultData, pageData])
   });
 
   const ruleBook = useMemo(() => pageData?.page.chapter.ruleBook, [pageData]);
@@ -96,8 +97,8 @@ const AdminEditPages: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            content: htmlFr,
-          },
+            content: htmlFr
+          }
         };
       }
 
@@ -106,7 +107,7 @@ const AdminEditPages: FC = () => {
           id,
           title: name,
           content: html,
-          i18n,
+          i18n
         })
         .then(() => {
           if (!silentSave.current) {
@@ -117,7 +118,7 @@ const AdminEditPages: FC = () => {
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{t('adminEditPage.successUpdate', { ns: 'pages' })}</Ap>
                 </Alert>
-              ),
+              )
             });
           } else {
             const date = formatDate(new Date(Date.now()));
@@ -125,7 +126,7 @@ const AdminEditPages: FC = () => {
               t('autosave', {
                 date: date.date,
                 hour: date.hour,
-                ns: 'components',
+                ns: 'components'
               })
             );
           }
@@ -137,15 +138,15 @@ const AdminEditPages: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize')
+              })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -161,7 +162,7 @@ const AdminEditPages: FC = () => {
       {
         title: t('adminEditPage.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditPage.confirmDeletion.text', { ns: 'pages', elt: chapter.title }),
-        confirmCta: t('adminEditPage.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditPage.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
@@ -176,7 +177,7 @@ const AdminEditPages: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditPage.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
                 void navigate(`/admin/chapter/${chapter._id}`);
               })
@@ -186,15 +187,15 @@ const AdminEditPages: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize')
+                    })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize')
+                    })
                   });
                 }
               });
@@ -214,7 +215,7 @@ const AdminEditPages: FC = () => {
     getNewId,
     createAlert,
     navigate,
-    setError,
+    setError
   ]);
 
   useEffect(() => {
@@ -239,7 +240,7 @@ const AdminEditPages: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -254,6 +255,7 @@ const AdminEditPages: FC = () => {
         () => {}
       );
     }, 600000);
+
     return () => {
       if (saveTimer.current !== null) {
         clearInterval(saveTimer.current);
@@ -291,15 +293,17 @@ const AdminEditPages: FC = () => {
           noValidate
           className="adminEditPage__content__left"
         >
-          {errors.root?.serverError.message !== undefined ? (
-            <Aerror>{errors.root.serverError.message}</Aerror>
-          ) : null}
+          {errors.root?.serverError.message !== undefined
+            ? (
+                <Aerror>{errors.root.serverError.message}</Aerror>
+              )
+            : null}
           <div className="adminEditPage__basics">
             <Input
               control={control}
               inputName="name"
               rules={{
-                required: t('namePage.required', { ns: 'fields' }),
+                required: t('namePage.required', { ns: 'fields' })
               }}
               type="text"
               label={t('namePage.label', { ns: 'fields' })}

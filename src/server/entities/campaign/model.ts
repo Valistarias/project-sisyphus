@@ -5,28 +5,28 @@ import type { IUser } from '../user/model';
 
 interface ICampaign {
   /** The name of the campaign */
-  name: string;
+  name: string
   /** The code to join the campaign */
-  code: string;
+  code: string
   /** When the campaign was created */
-  createdAt: Date;
+  createdAt: Date
   /** The owner of the campaign */
-  owner: ObjectId;
+  owner: ObjectId
   /** The players in the campaign */
-  players: ObjectId[];
+  players: ObjectId[]
 }
 
 type HydratedICompleteCampaign = HydratedDocument<
   Omit<ICampaign, 'owner' | 'players' | 'characters'> & {
-    owner: HydratedDocument<IUser>;
-    players: Array<HydratedDocument<IUser>>;
-    characters: ICharacter[];
+    owner: HydratedDocument<IUser>
+    players: Array<HydratedDocument<IUser>>
+    characters: ICharacter[]
   }
 >;
 
 type HydratedISimpleCampaign = HydratedDocument<
   Omit<ICampaign, 'owner' | 'characters'> & {
-    owner: HydratedDocument<IUser>;
+    owner: HydratedDocument<IUser>
   }
 >;
 
@@ -36,31 +36,31 @@ const campaignSchema = new Schema<ICampaign>(
     code: String,
     owner: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'User'
     },
     players: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'User',
-      },
+        ref: 'User'
+      }
     ],
     createdAt: {
       type: Date,
-      default: Date.now,
-    },
+      default: Date.now
+    }
   },
   {
     // So `res.json()` and other `JSON.stringify()` functions include virtuals
     toJSON: { virtuals: true },
     // So `console.log()` and other functions that use `toObject()` include virtuals
-    toObject: { virtuals: true },
+    toObject: { virtuals: true }
   }
 );
 
 campaignSchema.virtual('characters', {
   ref: 'Character',
   localField: '_id',
-  foreignField: 'campaign',
+  foreignField: 'campaign'
 });
 
 const CampaignModel = (): Model<ICampaign> => model('Campaign', campaignSchema);
@@ -69,5 +69,5 @@ export {
   CampaignModel,
   type HydratedICompleteCampaign,
   type HydratedISimpleCampaign,
-  type ICampaign,
+  type ICampaign
 };

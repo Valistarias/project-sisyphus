@@ -7,30 +7,30 @@ export type InternationalizationType = Record<string, Record<string, string>>;
 // User ------------------------------------
 export interface IUser {
   /** The ID of the user */
-  _id: string;
+  _id: string
   /** The username of the user */
-  username: string;
+  username: string
   /** The mail of the user */
-  mail: string;
+  mail: string
   /** The user password (encrypted) */
-  password: string;
+  password: string
   /** The name of the user */
-  name: string;
+  name: string
   /** The chosen language for the UI */
-  lang: string;
+  lang: string
   /** The chosen theme for the UI */
-  theme: string;
+  theme: string
   /** The scale of the UI */
-  scale: number;
+  scale: number
   /** Is the user verified */
-  verified: boolean;
+  verified: boolean
   /** Is the tips automatically displays in the character creation */
-  charCreationTips: boolean;
+  charCreationTips: boolean
   /** The user roles */
   roles: Array<{
-    _id: string;
-    name: string;
-  }>;
+    _id: string
+    name: string
+  }>
 }
 
 // Dices and CampaignEvents ------------------------------------
@@ -46,17 +46,17 @@ export type TypeCampaignEvent =
 
 export interface ICampaignEvent {
   /** The ID of the roll */
-  _id: string;
+  _id: string
   /** The type of the roll */
-  type: string;
+  type: string
   /** The result of the roll, as value */
-  result: number;
+  result: number
   /** The formula of the roll, as string */
-  formula: string;
+  formula: string
   /** The owner of the roll */
-  character: ICharacter;
+  character: ICharacter
   /** The campaign of the roll */
-  campaign: ICampaign;
+  campaign: ICampaign
   /** When the roll was executed */
-  createdAt: Date;
+  createdAt: Date
 }

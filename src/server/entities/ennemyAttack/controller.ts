@@ -43,27 +43,28 @@ const findEnnemyAttackById = async (id: string): Promise<HydratedIEnnemyAttack> 
   });
 
 interface ISentEnnemyAttack {
-  id?: string;
-  title: string;
-  summary: string;
-  damageType: string;
-  weaponScope: string;
-  dices: string;
-  bonusToHit: number;
+  id?: string
+  title: string
+  summary: string
+  damageType: string
+  weaponScope: string
+  dices: string
+  bonusToHit: number
   i18n?: {
-    title: string;
-    summary: string;
-    time: string;
-  };
+    title: string
+    summary: string
+    time: string
+  }
 }
 
 const updateEnnemyAttacks = (
   elts: ISentEnnemyAttack[],
   ids: string[],
-  cb: (err: Error | null, res?: string[]) => void
+  cb: (err: unknown | null, res?: string[]) => void
 ): void => {
   if (elts.length === 0) {
     cb(null, ids);
+
     return;
   }
   const {
@@ -74,7 +75,7 @@ const updateEnnemyAttacks = (
     damageType = null,
     weaponScope = null,
     dices = null,
-    bonusToHit = null,
+    bonusToHit = null
   } = elts[0];
   if (id === undefined) {
     const ennemyAttack = new EnnemyAttack({
@@ -83,7 +84,7 @@ const updateEnnemyAttacks = (
       damageType,
       weaponScope,
       dices,
-      bonusToHit,
+      bonusToHit
     });
 
     if (i18n !== null) {
@@ -124,11 +125,11 @@ const updateEnnemyAttacks = (
 
         if (i18n !== null) {
           const newIntl = {
-            ...(ennemyAttack.i18n !== null &&
-            ennemyAttack.i18n !== undefined &&
-            ennemyAttack.i18n !== ''
+            ...(ennemyAttack.i18n !== null
+              && ennemyAttack.i18n !== undefined
+              && ennemyAttack.i18n !== ''
               ? JSON.parse(ennemyAttack.i18n)
-              : {}),
+              : {})
           };
 
           Object.keys(i18n as Record<string, any>).forEach((lang) => {
@@ -157,17 +158,17 @@ const updateEnnemyAttacks = (
 
 const smartUpdateAttacks = async ({
   attacksToRemove,
-  attacksToUpdate,
+  attacksToUpdate
 }: {
-  attacksToRemove: string[];
-  attacksToUpdate: ISentEnnemyAttack[];
+  attacksToRemove: string[]
+  attacksToUpdate: ISentEnnemyAttack[]
 }): Promise<string[]> =>
   await new Promise((resolve, reject) => {
     EnnemyAttack.deleteMany({
-      _id: { $in: attacksToRemove },
+      _id: { $in: attacksToRemove }
     })
       .then(() => {
-        updateEnnemyAttacks(attacksToUpdate, [], (err: Error | null, ids?: string[]) => {
+        updateEnnemyAttacks(attacksToUpdate, [], (err: unknown | null, ids?: string[]) => {
           if (err !== null) {
             reject(err);
           } else {
@@ -175,7 +176,7 @@ const smartUpdateAttacks = async ({
           }
         });
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -183,13 +184,14 @@ const smartUpdateAttacks = async ({
 const create = (req: Request, res: Response): void => {
   const { title, summary, i18n = null, damageType, dices, weaponScope, bonusToHit } = req.body;
   if (
-    title === undefined ||
-    summary === undefined ||
-    damageType === undefined ||
-    weaponScope === undefined ||
-    dices === undefined
+    title === undefined
+    || summary === undefined
+    || damageType === undefined
+    || weaponScope === undefined
+    || dices === undefined
   ) {
     res.status(400).send(gemInvalidField('EnnemyAttack'));
+
     return;
   }
 
@@ -199,7 +201,7 @@ const create = (req: Request, res: Response): void => {
     damageType,
     weaponScope,
     dices,
-    bonusToHit,
+    bonusToHit
   });
 
   if (i18n !== null) {
@@ -211,7 +213,7 @@ const create = (req: Request, res: Response): void => {
     .then(() => {
       res.send(ennemyAttack);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -225,10 +227,11 @@ const update = (req: Request, res: Response): void => {
     damageType = null,
     dices = null,
     weaponScope = null,
-    bonusToHit = null,
+    bonusToHit = null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('EnnemyAttack ID'));
+
     return;
   }
   findEnnemyAttackById(id as string)
@@ -254,11 +257,11 @@ const update = (req: Request, res: Response): void => {
 
       if (i18n !== null) {
         const newIntl = {
-          ...(ennemyAttack.i18n !== null &&
-          ennemyAttack.i18n !== undefined &&
-          ennemyAttack.i18n !== ''
+          ...(ennemyAttack.i18n !== null
+            && ennemyAttack.i18n !== undefined
+            && ennemyAttack.i18n !== ''
             ? JSON.parse(ennemyAttack.i18n)
-            : {}),
+            : {})
         };
 
         Object.keys(i18n as Record<string, any>).forEach((lang) => {
@@ -273,7 +276,7 @@ const update = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'EnnemyAttack was updated successfully!', ennemyAttack });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -286,13 +289,14 @@ const deleteEnnemyAttackById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('EnnemyAttack ID'));
+
       return;
     }
     EnnemyAttack.findByIdAndDelete(id)
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
@@ -303,31 +307,32 @@ const deleteEnnemyAttack = (req: Request, res: Response): void => {
     .then(() => {
       res.send({ message: 'EnnemyAttack was deleted successfully!' });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
 
 interface CuratedIEnnemyAttack {
-  i18n: Record<string, any> | Record<string, unknown>;
-  ennemyAttack: HydratedIEnnemyAttack;
+  i18n: Record<string, unknown>
+  ennemyAttack: HydratedIEnnemyAttack
 }
 
 const findSingle = (req: Request, res: Response): void => {
   const { ennemyAttackId } = req.query;
   if (ennemyAttackId === undefined || typeof ennemyAttackId !== 'string') {
     res.status(400).send(gemInvalidField('EnnemyAttack ID'));
+
     return;
   }
   findEnnemyAttackById(ennemyAttackId)
     .then((ennemyAttack) => {
       const sentObj = {
         ennemyAttack,
-        i18n: curateI18n(ennemyAttack.i18n),
+        i18n: curateI18n(ennemyAttack.i18n)
       };
       res.send(sentObj);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
@@ -340,13 +345,13 @@ const findAll = (req: Request, res: Response): void => {
       ennemyAttacks.forEach((ennemyAttack) => {
         curatedEnnemyAttacks.push({
           ennemyAttack,
-          i18n: curateI18n(ennemyAttack.i18n),
+          i18n: curateI18n(ennemyAttack.i18n)
         });
       });
 
       res.send(curatedEnnemyAttacks);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export {
@@ -356,5 +361,5 @@ export {
   findEnnemyAttackById,
   findSingle,
   smartUpdateAttacks,
-  update,
+  update
 };

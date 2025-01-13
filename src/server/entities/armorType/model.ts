@@ -2,13 +2,13 @@ import { Schema, model, type HydratedDocument, type Model } from 'mongoose';
 
 interface IArmorType {
   /** The title of the armor type */
-  title: string;
+  title: string
   /** A summary of the armor type */
-  summary: string;
+  summary: string
   /** The internationnal content, as a json, stringified */
-  i18n?: string;
+  i18n?: string
   /** When the armor type was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 type HydratedIArmorType = HydratedDocument<IArmorType>;
@@ -19,8 +19,8 @@ const armorTypeSchema = new Schema<IArmorType>({
   i18n: String,
   createdAt: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
 });
 
 const ArmorTypeModel = (): Model<IArmorType> => model('ArmorType', armorTypeSchema);

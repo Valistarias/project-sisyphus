@@ -30,49 +30,49 @@ const basicRichTextElementExtentions = [
     // Configure an included extension
     bold: {
       HTMLAttributes: {
-        class: 'richTextElt--bold',
-      },
+        class: 'richTextElt--bold'
+      }
     },
     italic: {
       HTMLAttributes: {
-        class: 'richTextElt--italic',
-      },
+        class: 'richTextElt--italic'
+      }
     },
     bulletList: {
       HTMLAttributes: {
-        class: 'aul',
-      },
+        class: 'aul'
+      }
     },
     listItem: {
       HTMLAttributes: {
-        class: 'ali',
-      },
-    },
+        class: 'ali'
+      }
+    }
   }),
   Paragraph.configure({
     HTMLAttributes: {
-      class: 'ap',
-    },
+      class: 'ap'
+    }
   }),
   Table.configure({
     HTMLAttributes: {
-      class: 'atable',
-    },
+      class: 'atable'
+    }
   }),
   TableRow.configure({
     HTMLAttributes: {
-      class: 'atr',
-    },
+      class: 'atr'
+    }
   }),
   TableHeader.configure({
     HTMLAttributes: {
-      class: 'ath',
-    },
+      class: 'ath'
+    }
   }),
   TableCell.configure({
     HTMLAttributes: {
-      class: 'atd',
-    },
+      class: 'atd'
+    }
   }),
   Heading.configure({ levels: [1, 2, 3] }).extend({
     renderHTML({ node, HTMLAttributes }) {
@@ -82,34 +82,34 @@ const basicRichTextElementExtentions = [
       return [
         `h${level}`,
         mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
-          class: `atitle atitle--h${level}`,
+          class: `atitle atitle--h${level}`
         }),
-        0,
+        0
       ];
-    },
+    }
   }),
-  ReactHighlight,
+  ReactHighlight
 ];
 
 const completeRichTextElementExtentions = [...basicRichTextElementExtentions, ReactComponentEmbed];
 
 interface IRichTextElement {
   /** The text Editor */
-  editor?: Editor | null;
+  editor?: Editor | null
   /** Is there raw content (stringified) to be displayed */
-  rawStringContent?: string;
+  rawStringContent?: string
   /** The title of the editor, if any */
-  label?: string;
+  label?: string
   /** Is the text element readOnly */
-  readOnly?: boolean;
+  readOnly?: boolean
   /** Is the text editor with all options ? */
-  complete?: boolean;
+  complete?: boolean
   /** Is the text editor small in height ? */
-  small?: boolean;
+  small?: boolean
   /** The RuleBookId, if there is one */
-  ruleBookId?: string;
+  ruleBookId?: string
   /** The classname of the text element */
-  className?: string;
+  className?: string
 }
 
 const RichTextElement: FC<IRichTextElement> = ({
@@ -120,11 +120,11 @@ const RichTextElement: FC<IRichTextElement> = ({
   complete = false,
   small = false,
   ruleBookId,
-  className,
+  className
 }) => {
   const basicEditor = useEditor({
     extensions: completeRichTextElementExtentions,
-    editable: !readOnly,
+    editable: !readOnly
   });
 
   useEffect(() => {
@@ -152,14 +152,16 @@ const RichTextElement: FC<IRichTextElement> = ({
         `)}
     >
       {label !== undefined ? <Alabel>{label}</Alabel> : null}
-      {!readOnly ? (
-        <MenuBar
-          editor={editor ?? undefined}
-          complete={complete}
-          ruleBookId={ruleBookId}
-          className="richTextElt__menu"
-        />
-      ) : null}
+      {!readOnly
+        ? (
+            <MenuBar
+              editor={editor ?? undefined}
+              complete={complete}
+              ruleBookId={ruleBookId}
+              className="richTextElt__menu"
+            />
+          )
+        : null}
       <EditorContent
         editor={editor ?? basicEditor}
         className="richTextElt__editor"

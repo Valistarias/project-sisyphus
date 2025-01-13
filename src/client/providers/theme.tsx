@@ -4,12 +4,12 @@ import { useGlobalVars } from './globalVars';
 
 interface IThemeContext {
   /** The chosen theme */
-  colorMode: string;
+  colorMode: string
 }
 
 interface ThemeProviderProps {
   /** The childrens of the Providers element */
-  children: ReactNode;
+  children: ReactNode
 }
 
 const ThemeContext = React.createContext<IThemeContext | null>(null);
@@ -23,6 +23,7 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
     if (user?.theme === undefined) {
       return 'dark-theme';
     }
+
     return `${user.theme}-theme`;
   }, [user]);
 
@@ -30,6 +31,7 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
     if (user?.scale === undefined) {
       return 100;
     }
+
     return user.scale * 100;
   }, [user]);
 
@@ -58,7 +60,7 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
 
   const providerValues = useMemo(
     () => ({
-      colorMode,
+      colorMode
     }),
     [colorMode]
   );

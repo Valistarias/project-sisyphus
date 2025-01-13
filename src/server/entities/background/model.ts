@@ -4,26 +4,26 @@ import type { ICharParamBonus, ISkillBonus, IStatBonus } from '../index';
 
 interface IBackground {
   /** The title of the Background */
-  title: string;
+  title: string
   /** A summary of the Background */
-  summary: string;
+  summary: string
   /** The internationnal content, as a json, stringified */
-  i18n?: string;
+  i18n?: string
   /** The skill bonuses related to the Background */
-  skillBonuses?: string[] | ObjectId[];
+  skillBonuses?: string[] | ObjectId[]
   /** The stat bonuses related to the Background */
-  statBonuses?: string[] | ObjectId[];
+  statBonuses?: string[] | ObjectId[]
   /** The charParam bonuses related to the Background */
-  charParamBonuses?: string[] | ObjectId[];
+  charParamBonuses?: string[] | ObjectId[]
   /** When the Background was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 type HydratedIBackground = HydratedDocument<
   Omit<IBackground, 'skillBonuses' | 'statBonuses' | 'charParamBonuses'> & {
-    skillBonuses: ISkillBonus[] | string[];
-    statBonuses: IStatBonus[] | string[];
-    charParamBonuses: ICharParamBonus[] | string[];
+    skillBonuses: ISkillBonus[] | string[]
+    statBonuses: IStatBonus[] | string[]
+    charParamBonuses: ICharParamBonus[] | string[]
   }
 >;
 
@@ -34,25 +34,25 @@ const backgroundSchema = new Schema<IBackground>({
   skillBonuses: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'SkillBonus',
-    },
+      ref: 'SkillBonus'
+    }
   ],
   statBonuses: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'StatBonus',
-    },
+      ref: 'StatBonus'
+    }
   ],
   charParamBonuses: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'CharParamBonus',
-    },
+      ref: 'CharParamBonus'
+    }
   ],
   createdAt: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
 });
 
 const BackgroundModel = (): Model<IBackground> => model('Background', backgroundSchema);

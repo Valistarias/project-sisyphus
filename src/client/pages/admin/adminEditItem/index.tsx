@@ -20,65 +20,65 @@ import { classTrim, isThereDuplicate } from '../../../utils';
 import './adminEditItem.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  cost: number;
-  rarity: string;
-  starterKit: string;
-  itemModifiers: string[];
+  name: string
+  nameFr: string
+  cost: number
+  rarity: string
+  starterKit: string
+  itemModifiers: string[]
   skillBonuses?: Record<
     string,
     {
-      skill: string;
-      value: number;
+      skill: string
+      value: number
     }
-  >;
+  >
   statBonuses?: Record<
     string,
     {
-      stat: string;
-      value: number;
+      stat: string
+      value: number
     }
-  >;
+  >
   charParamBonuses?: Record<
     string,
     {
-      charParam: string;
-      value: number;
+      charParam: string
+      value: number
     }
-  >;
+  >
   effects?: Record<
     string,
     {
-      id: string;
-      title: string;
-      titleFr?: string;
-      summary: string;
-      summaryFr?: string;
-      type: string;
-      formula?: string;
+      id: string
+      title: string
+      titleFr?: string
+      summary: string
+      summaryFr?: string
+      type: string
+      formula?: string
     }
-  >;
+  >
   actions?: Record<
     string,
     {
-      id: string;
-      title: string;
-      titleFr?: string;
-      summary: string;
-      summaryFr?: string;
-      type: string;
-      skill?: string;
-      duration: string;
-      time?: string;
-      timeFr?: string;
-      damages?: string;
-      offsetSkill?: string;
-      uses?: number;
-      isKarmic?: string;
-      karmicCost?: number;
+      id: string
+      title: string
+      titleFr?: string
+      summary: string
+      summaryFr?: string
+      type: string
+      skill?: string
+      duration: string
+      time?: string
+      timeFr?: string
+      damages?: string
+      offsetSkill?: string
+      uses?: number
+      isKarmic?: string
+      karmicCost?: number
     }
-  >;
+  >
 }
 
 const AdminEditItem: FC = () => {
@@ -87,10 +87,10 @@ const AdminEditItem: FC = () => {
   const { id } = useParams();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
-    ConfMessageEvent: {},
+    ConfMessageEvent: {}
   };
-  const { skills, stats, charParams, actionTypes, actionDurations, rarities, itemModifiers } =
-    useGlobalVars();
+  const { skills, stats, charParams, actionTypes, actionDurations, rarities, itemModifiers }
+    = useGlobalVars();
   const { createAlert, getNewId } = useSystemAlerts();
   const navigate = useNavigate();
 
@@ -102,7 +102,7 @@ const AdminEditItem: FC = () => {
       skills.map(({ skill }) => ({
         value: skill._id,
         // TODO : Handle Internationalization
-        label: skill.title,
+        label: skill.title
       })),
     [skills]
   );
@@ -114,7 +114,7 @@ const AdminEditItem: FC = () => {
       stats.map(({ stat }) => ({
         value: stat._id,
         // TODO : Handle Internationalization
-        label: stat.title,
+        label: stat.title
       })),
     [stats]
   );
@@ -125,7 +125,7 @@ const AdminEditItem: FC = () => {
       charParams.map(({ charParam }) => ({
         value: charParam._id,
         // TODO : Handle Internationalization
-        label: charParam.title,
+        label: charParam.title
       })),
     [charParams]
   );
@@ -135,7 +135,7 @@ const AdminEditItem: FC = () => {
     () =>
       actionTypes.map(({ name, _id }) => ({
         value: _id,
-        label: t(`terms.actionType.${name}`),
+        label: t(`terms.actionType.${name}`)
       })),
     [actionTypes, t]
   );
@@ -144,26 +144,34 @@ const AdminEditItem: FC = () => {
     () =>
       actionDurations.map(({ name, _id }) => ({
         value: _id,
-        label: t(`terms.actionDuration.${name}`),
+        label: t(`terms.actionDuration.${name}`)
       })),
     [actionDurations, t]
   );
 
-  const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
-      value: rarity._id,
-      label: rarity.title,
-    })), [rarities]);
+  const rarityList = useMemo(
+    () =>
+      rarities.map(({ rarity }) => ({
+        value: rarity._id,
+        label: rarity.title
+      })),
+    [rarities]
+  );
 
-  const itemModifierList = useMemo(() => itemModifiers.map(({ itemModifier }) => ({
-      value: itemModifier._id,
-      label: itemModifier.title,
-    })), [itemModifiers]);
+  const itemModifierList = useMemo(
+    () =>
+      itemModifiers.map(({ itemModifier }) => ({
+        value: itemModifier._id,
+        label: itemModifier.title
+      })),
+    [itemModifiers]
+  );
 
   const starterKitList = useMemo(
     () =>
-      possibleStarterKitValues.map((possibleStarterKitValue) => ({
+      possibleStarterKitValues.map(possibleStarterKitValue => ({
         value: possibleStarterKitValue,
-        label: t(`terms.starterKit.${possibleStarterKitValue}`),
+        label: t(`terms.starterKit.${possibleStarterKitValue}`)
       })),
     [t]
   );
@@ -179,11 +187,11 @@ const AdminEditItem: FC = () => {
   const [itemTextFr, setItemTextFr] = useState('');
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const createDefaultData = useCallback((itemData: ICuratedItem | null) => {
@@ -209,7 +217,7 @@ const AdminEditItem: FC = () => {
       }
       defaultData.skillBonuses[`skill-${idIncrement.current}`] = {
         skill: skillBonus.skill,
-        value: skillBonus.value,
+        value: skillBonus.value
       };
 
       tempSkillBonusId.push(idIncrement.current);
@@ -225,7 +233,7 @@ const AdminEditItem: FC = () => {
       }
       defaultData.statBonuses[`stat-${idIncrement.current}`] = {
         stat: statBonus.stat,
-        value: statBonus.value,
+        value: statBonus.value
       };
 
       tempStatBonusId.push(idIncrement.current);
@@ -241,7 +249,7 @@ const AdminEditItem: FC = () => {
       }
       defaultData.charParamBonuses[`charParam-${idIncrement.current}`] = {
         charParam: charParamBonus.charParam,
-        value: charParamBonus.value,
+        value: charParamBonus.value
       };
 
       tempCharParamBonusId.push(idIncrement.current);
@@ -270,7 +278,7 @@ const AdminEditItem: FC = () => {
         summary: action.summary,
         titleFr: action.i18n.fr.title,
         summaryFr: action.i18n.fr.summary,
-        timeFr: action.i18n.fr.time,
+        timeFr: action.i18n.fr.time
       };
 
       tempActionId.push(idIncrement.current);
@@ -291,7 +299,7 @@ const AdminEditItem: FC = () => {
         formula: effect.formula,
         summary: effect.summary,
         titleFr: effect.i18n.fr.title,
-        summaryFr: effect.i18n.fr.summary,
+        summaryFr: effect.i18n.fr.summary
       };
 
       tempEffectId.push(idIncrement.current);
@@ -308,21 +316,21 @@ const AdminEditItem: FC = () => {
     unregister,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
-    defaultValues: useMemo(() => createDefaultData(itemData), [createDefaultData, itemData]),
+    defaultValues: useMemo(() => createDefaultData(itemData), [createDefaultData, itemData])
   });
 
   const boolRange = useMemo(
     () => [
       {
         value: '1',
-        label: t('terms.general.yes'),
+        label: t('terms.general.yes')
       },
       {
         value: '0',
-        label: t('terms.general.no'),
-      },
+        label: t('terms.general.no')
+      }
     ],
     [t]
   );
@@ -332,6 +340,7 @@ const AdminEditItem: FC = () => {
       const next = [...prev];
       next.push(idIncrement.current);
       idIncrement.current += 1;
+
       return next;
     });
   }, []);
@@ -341,6 +350,7 @@ const AdminEditItem: FC = () => {
       const next = [...prev];
       next.push(idIncrement.current);
       idIncrement.current += 1;
+
       return next;
     });
   }, []);
@@ -350,6 +360,7 @@ const AdminEditItem: FC = () => {
       const next = [...prev];
       next.push(idIncrement.current);
       idIncrement.current += 1;
+
       return next;
     });
   }, []);
@@ -359,6 +370,7 @@ const AdminEditItem: FC = () => {
       const next = [...prev];
       next.push(idIncrement.current);
       idIncrement.current += 1;
+
       return next;
     });
   }, []);
@@ -368,6 +380,7 @@ const AdminEditItem: FC = () => {
       const next = [...prev];
       next.push(idIncrement.current);
       idIncrement.current += 1;
+
       return next;
     });
   }, []);
@@ -382,56 +395,59 @@ const AdminEditItem: FC = () => {
       let duplicateSkillBonuses = false;
       if (skillBonuses.length > 0) {
         duplicateSkillBonuses = isThereDuplicate(
-          skillBonuses.map((skillBonus) => skillBonus.skill)
+          skillBonuses.map(skillBonus => skillBonus.skill)
         );
       }
       if (duplicateSkillBonuses) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminEditItem.errorDuplicateSkill', { ns: 'pages' }),
+          message: t('adminEditItem.errorDuplicateSkill', { ns: 'pages' })
         });
+
         return;
       }
       // Check duplicate on stats
       const statBonuses = elts.statBonuses !== undefined ? Object.values(elts.statBonuses) : [];
       let duplicateStatBonuses = false;
       if (statBonuses.length > 0) {
-        duplicateStatBonuses = isThereDuplicate(statBonuses.map((statBonus) => statBonus.stat));
+        duplicateStatBonuses = isThereDuplicate(statBonuses.map(statBonus => statBonus.stat));
       }
       if (duplicateStatBonuses) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminEditItem.errorDuplicateStat', { ns: 'pages' }),
+          message: t('adminEditItem.errorDuplicateStat', { ns: 'pages' })
         });
+
         return;
       }
       // Check duplicate on character param
-      const charParamBonuses =
-        elts.charParamBonuses !== undefined ? Object.values(elts.charParamBonuses) : [];
+      const charParamBonuses
+        = elts.charParamBonuses !== undefined ? Object.values(elts.charParamBonuses) : [];
       let duplicateCharParamBonuses = false;
       if (charParamBonuses.length > 0) {
         duplicateCharParamBonuses = isThereDuplicate(
-          charParamBonuses.map((charParamBonus) => charParamBonus.charParam)
+          charParamBonuses.map(charParamBonus => charParamBonus.charParam)
         );
       }
       if (duplicateCharParamBonuses) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminEditItem.errorDuplicateCharParam', { ns: 'pages' }),
+          message: t('adminEditItem.errorDuplicateCharParam', { ns: 'pages' })
         });
+
         return;
       }
       const curatedSkillBonuses = skillBonuses.map(({ skill, value }) => ({
         skill,
-        value: Number(value),
+        value: Number(value)
       }));
       const curatedStatBonuses = statBonuses.map(({ stat, value }) => ({
         stat,
-        value: Number(value),
+        value: Number(value)
       }));
       const curatedCharParamBonuses = charParamBonuses.map(({ charParam, value }) => ({
         charParam,
-        value: Number(value),
+        value: Number(value)
       }));
 
       const effectsArr = effects !== undefined ? Object.values(effects) : [];
@@ -447,11 +463,11 @@ const AdminEditItem: FC = () => {
               ? {
                   fr: {
                     title: titleFr,
-                    summary: summaryFr,
-                  },
+                    summary: summaryFr
+                  }
                 }
-              : {}),
-          },
+              : {})
+          }
         })
       );
 
@@ -472,7 +488,7 @@ const AdminEditItem: FC = () => {
           uses,
           isKarmic,
           karmicCost,
-          summaryFr,
+          summaryFr
         }) => ({
           ...(id !== undefined ? { id } : {}),
           title,
@@ -492,11 +508,11 @@ const AdminEditItem: FC = () => {
                   fr: {
                     title: titleFr,
                     summary: summaryFr,
-                    time: timeFr,
-                  },
+                    time: timeFr
+                  }
                 }
-              : {}),
-          },
+              : {})
+          }
         })
       );
 
@@ -510,8 +526,8 @@ const AdminEditItem: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            summary: htmlFr,
-          },
+            summary: htmlFr
+          }
         };
       }
       api.items
@@ -529,7 +545,7 @@ const AdminEditItem: FC = () => {
           statBonuses: curatedStatBonuses,
           charParamBonuses: curatedCharParamBonuses,
           effects: curatedEffects,
-          actions: curatedActions,
+          actions: curatedActions
         })
         .then((quote) => {
           const newId = getNewId();
@@ -539,7 +555,7 @@ const AdminEditItem: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditItem.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
         })
         .catch(({ response }) => {
@@ -548,15 +564,15 @@ const AdminEditItem: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize')
+              })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -573,9 +589,9 @@ const AdminEditItem: FC = () => {
         title: t('adminEditItem.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditItem.confirmDeletion.text', {
           ns: 'pages',
-          elt: itemData.item.title,
+          elt: itemData.item.title
         }),
-        confirmCta: t('adminEditItem.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditItem.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
@@ -590,7 +606,7 @@ const AdminEditItem: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditItem.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
                 void navigate('/admin/items');
               })
@@ -600,15 +616,15 @@ const AdminEditItem: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize')
+                    })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize')
+                    })
                   });
                 }
               });
@@ -628,7 +644,7 @@ const AdminEditItem: FC = () => {
     getNewId,
     createAlert,
     navigate,
-    setError,
+    setError
   ]);
 
   useEffect(() => {
@@ -652,7 +668,7 @@ const AdminEditItem: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -682,16 +698,18 @@ const AdminEditItem: FC = () => {
         <Button className="adminEditItem__return-btn" href="/admin/items" size="small">
           {t('adminEditItem.return', { ns: 'pages' })}
         </Button>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminEditItem__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameItem.required', { ns: 'fields' }),
+              required: t('nameItem.required', { ns: 'fields' })
             }}
             label={t('nameItem.label', { ns: 'fields' })}
             className="adminEditItem__basics__name"
@@ -711,7 +729,7 @@ const AdminEditItem: FC = () => {
               inputName="cost"
               type="number"
               rules={{
-                required: t('itemCost.required', { ns: 'fields' }),
+                required: t('itemCost.required', { ns: 'fields' })
               }}
               label={t('itemCost.label', { ns: 'fields' })}
               className="adminEditItem__details__fields__elt"
@@ -746,7 +764,7 @@ const AdminEditItem: FC = () => {
         </Atitle>
         <div className="adminEditItem__bonuses">
           <div className="adminEditItem__bonuses__elts">
-            {skillBonusIds.map((skillBonusId) => (
+            {skillBonusIds.map(skillBonusId => (
               <div className="adminEditItem__bonus" key={`skill-${skillBonusId}`}>
                 <Atitle className="adminEditItem__bonus__title" level={4}>
                   {t('adminEditItem.skillBonusTitle', { ns: 'pages' })}
@@ -756,7 +774,7 @@ const AdminEditItem: FC = () => {
                     control={control}
                     inputName={`skillBonuses.skill-${skillBonusId}.skill`}
                     rules={{
-                      required: t('skillBonusSkill.required', { ns: 'fields' }),
+                      required: t('skillBonusSkill.required', { ns: 'fields' })
                     }}
                     label={t('skillBonusSkill.label', { ns: 'fields' })}
                     options={skillSelect}
@@ -767,7 +785,7 @@ const AdminEditItem: FC = () => {
                     inputName={`skillBonuses.skill-${skillBonusId}.value`}
                     type="number"
                     rules={{
-                      required: t('skillBonusValue.required', { ns: 'fields' }),
+                      required: t('skillBonusValue.required', { ns: 'fields' })
                     }}
                     label={t('skillBonusValue.label', { ns: 'fields' })}
                     className="adminEditItem__bonus__value"
@@ -777,11 +795,12 @@ const AdminEditItem: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setSkillBonusIds((prev) =>
+                    setSkillBonusIds(prev =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== skillBonusId) {
                           result.push(elt);
                         }
+
                         return result;
                       }, [])
                     );
@@ -791,7 +810,7 @@ const AdminEditItem: FC = () => {
                 />
               </div>
             ))}
-            {statBonusIds.map((statBonusId) => (
+            {statBonusIds.map(statBonusId => (
               <div className="adminEditItem__bonus" key={`stat-${statBonusId}`}>
                 <Atitle className="adminEditItem__bonus__title" level={4}>
                   {t('adminEditItem.statBonusTitle', { ns: 'pages' })}
@@ -801,7 +820,7 @@ const AdminEditItem: FC = () => {
                     control={control}
                     inputName={`statBonuses.stat-${statBonusId}.stat`}
                     rules={{
-                      required: t('statBonusStat.required', { ns: 'fields' }),
+                      required: t('statBonusStat.required', { ns: 'fields' })
                     }}
                     label={t('statBonusStat.label', { ns: 'fields' })}
                     options={statSelect}
@@ -812,7 +831,7 @@ const AdminEditItem: FC = () => {
                     inputName={`statBonuses.stat-${statBonusId}.value`}
                     type="number"
                     rules={{
-                      required: t('statBonusValue.required', { ns: 'fields' }),
+                      required: t('statBonusValue.required', { ns: 'fields' })
                     }}
                     label={t('statBonusValue.label', { ns: 'fields' })}
                     className="adminEditItem__bonus__value"
@@ -822,11 +841,12 @@ const AdminEditItem: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setStatBonusIds((prev) =>
+                    setStatBonusIds(prev =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== statBonusId) {
                           result.push(elt);
                         }
+
                         return result;
                       }, [])
                     );
@@ -836,7 +856,7 @@ const AdminEditItem: FC = () => {
                 />
               </div>
             ))}
-            {charParamBonusIds.map((charParamBonusId) => (
+            {charParamBonusIds.map(charParamBonusId => (
               <div className="adminEditItem__bonus" key={`charParam-${charParamBonusId}`}>
                 <Atitle className="adminEditItem__bonus__title" level={4}>
                   {t('adminEditItem.charParamBonusTitle', { ns: 'pages' })}
@@ -846,7 +866,7 @@ const AdminEditItem: FC = () => {
                     control={control}
                     inputName={`charParamBonuses.charParam-${charParamBonusId}.charParam`}
                     rules={{
-                      required: t('charParamBonusStat.required', { ns: 'fields' }),
+                      required: t('charParamBonusStat.required', { ns: 'fields' })
                     }}
                     label={t('charParamBonusStat.label', { ns: 'fields' })}
                     options={charParamSelect}
@@ -857,7 +877,7 @@ const AdminEditItem: FC = () => {
                     inputName={`charParamBonuses.charParam-${charParamBonusId}.value`}
                     type="number"
                     rules={{
-                      required: t('charParamBonusValue.required', { ns: 'fields' }),
+                      required: t('charParamBonusValue.required', { ns: 'fields' })
                     }}
                     label={t('charParamBonusValue.label', { ns: 'fields' })}
                     className="adminEditItem__bonus__value"
@@ -867,11 +887,12 @@ const AdminEditItem: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setCharParamBonusIds((prev) =>
+                    setCharParamBonusIds(prev =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== charParamBonusId) {
                           result.push(elt);
                         }
+
                         return result;
                       }, [])
                     );
@@ -881,7 +902,7 @@ const AdminEditItem: FC = () => {
                 />
               </div>
             ))}
-            {effectIds.map((effectId) => (
+            {effectIds.map(effectId => (
               <div className="adminEditItem__bonus" key={`charParam-${effectId}`}>
                 <Atitle className="adminEditItem__bonus__title" level={4}>
                   {t('adminEditItem.effectTitle', { ns: 'pages' })}
@@ -891,7 +912,7 @@ const AdminEditItem: FC = () => {
                     control={control}
                     inputName={`effects.effect-${effectId}.title`}
                     rules={{
-                      required: t('effectTitle.required', { ns: 'fields' }),
+                      required: t('effectTitle.required', { ns: 'fields' })
                     }}
                     label={t('effectTitle.label', { ns: 'fields' })}
                     className="adminEditItem__bonus__value adminEditItem__bonus__value--s"
@@ -900,7 +921,7 @@ const AdminEditItem: FC = () => {
                     control={control}
                     inputName={`effects.effect-${effectId}.type`}
                     rules={{
-                      required: t('effectType.required', { ns: 'fields' }),
+                      required: t('effectType.required', { ns: 'fields' })
                     }}
                     label={t('effectType.label', { ns: 'fields' })}
                     options={actionTypeSelect}
@@ -911,7 +932,7 @@ const AdminEditItem: FC = () => {
                     type="textarea"
                     inputName={`effects.effect-${effectId}.summary`}
                     rules={{
-                      required: t('effectSummary.required', { ns: 'fields' }),
+                      required: t('effectSummary.required', { ns: 'fields' })
                     }}
                     label={t('effectSummary.label', { ns: 'fields' })}
                     className="adminEditItem__bonus__value adminEditItem__bonus__value--l"
@@ -943,11 +964,12 @@ const AdminEditItem: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setEffectIds((prev) =>
+                    setEffectIds(prev =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== effectId) {
                           result.push(elt);
                         }
+
                         return result;
                       }, [])
                     );
@@ -957,7 +979,7 @@ const AdminEditItem: FC = () => {
                 />
               </div>
             ))}
-            {actionIds.map((actionId) => (
+            {actionIds.map(actionId => (
               <div className="adminEditItem__bonus" key={`charParam-${actionId}`}>
                 <Atitle className="adminEditItem__bonus__title" level={4}>
                   {t('adminEditItem.actionTitle', { ns: 'pages' })}
@@ -967,7 +989,7 @@ const AdminEditItem: FC = () => {
                     control={control}
                     inputName={`actions.action-${actionId}.title`}
                     rules={{
-                      required: t('actionTitle.required', { ns: 'fields' }),
+                      required: t('actionTitle.required', { ns: 'fields' })
                     }}
                     label={t('actionTitle.label', { ns: 'fields' })}
                     className="adminEditItem__bonus__value adminEditItem__bonus__value--l"
@@ -976,7 +998,7 @@ const AdminEditItem: FC = () => {
                     control={control}
                     inputName={`actions.action-${actionId}.type`}
                     rules={{
-                      required: t('actionType.required', { ns: 'fields' }),
+                      required: t('actionType.required', { ns: 'fields' })
                     }}
                     label={t('actionType.label', { ns: 'fields' })}
                     options={actionTypeSelect}
@@ -986,7 +1008,7 @@ const AdminEditItem: FC = () => {
                     control={control}
                     inputName={`actions.action-${actionId}.duration`}
                     rules={{
-                      required: t('actionDuration.required', { ns: 'fields' }),
+                      required: t('actionDuration.required', { ns: 'fields' })
                     }}
                     label={t('actionDuration.label', { ns: 'fields' })}
                     options={actionDurationSelect}
@@ -997,7 +1019,7 @@ const AdminEditItem: FC = () => {
                     type="textarea"
                     inputName={`actions.action-${actionId}.summary`}
                     rules={{
-                      required: t('actionSummary.required', { ns: 'fields' }),
+                      required: t('actionSummary.required', { ns: 'fields' })
                     }}
                     label={t('actionSummary.label', { ns: 'fields' })}
                     className="adminEditItem__bonus__value adminEditItem__bonus__value--l"
@@ -1021,9 +1043,9 @@ const AdminEditItem: FC = () => {
                     options={[
                       {
                         value: '',
-                        label: '',
+                        label: ''
                       },
-                      ...skillSelect,
+                      ...skillSelect
                     ]}
                     className="adminEditItem__bonus__select adminEditItem__bonus__value--s"
                   />
@@ -1081,11 +1103,12 @@ const AdminEditItem: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setActionIds((prev) =>
+                    setActionIds(prev =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== actionId) {
                           result.push(elt);
                         }
+
                         return result;
                       }, [])
                     );
@@ -1127,7 +1150,7 @@ const AdminEditItem: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt((prev) => !prev);
+              setDisplayInt(prev => !prev);
             }}
             className="adminEditItem__intl-title__btn"
           />

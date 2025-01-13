@@ -4,26 +4,26 @@ import type { IChapterType, IPage, IRuleBook } from '../index';
 
 interface IChapter {
   /** The title of the ruleBook */
-  title: string;
+  title: string
   /** A summary of the ruleBook */
-  summary: string;
+  summary: string
   /** The position of this chapter, in reference with others */
-  position: number;
+  position: number
   /** The rulebook where this chapter is */
-  ruleBook: ObjectId;
+  ruleBook: ObjectId
   /** The internationnal content, as a json, stringified */
-  i18n?: string;
+  i18n?: string
   /** The rulebook type */
-  type: ObjectId | null;
+  type: ObjectId | null
   /** When the ruleBook was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 type HydratedIChapter = HydratedDocument<
   Omit<IChapter, 'type' | 'ruleBook'> & {
-    type: IChapterType;
-    ruleBook: IRuleBook;
-    pages: IPage[];
+    type: IChapterType
+    ruleBook: IRuleBook
+    pages: IPage[]
   }
 >;
 
@@ -35,22 +35,22 @@ const chapterSchema = new Schema<IChapter>(
     position: Number,
     ruleBook: {
       type: Schema.Types.ObjectId,
-      ref: 'RuleBook',
+      ref: 'RuleBook'
     },
     type: {
       type: Schema.Types.ObjectId,
-      ref: 'ChapterType',
+      ref: 'ChapterType'
     },
     createdAt: {
       type: Date,
-      default: Date.now,
-    },
+      default: Date.now
+    }
   },
   {
     // So `res.json()` and other `JSON.stringify()` functions include virtuals
     toJSON: { virtuals: true },
     // So `console.log()` and other functions that use `toObject()` include virtuals
-    toObject: { virtuals: true },
+    toObject: { virtuals: true }
   }
 );
 
@@ -59,7 +59,7 @@ const chapterSchema = new Schema<IChapter>(
 chapterSchema.virtual('pages', {
   ref: 'Page',
   localField: '_id',
-  foreignField: 'chapter',
+  foreignField: 'chapter'
 });
 
 const ChapterModel = (): Model<IChapter> => model('Chapter', chapterSchema);

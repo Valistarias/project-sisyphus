@@ -14,7 +14,7 @@ import { Alert } from '../../../organisms';
 import './adminNewItemType.scss';
 
 interface FormValues {
-  name: string;
+  name: string
 }
 
 const AdminNewItemType: FC = () => {
@@ -31,7 +31,7 @@ const AdminNewItemType: FC = () => {
     handleSubmit,
     setError,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   const onSaveItemType: SubmitHandler<FormValues> = useCallback(
@@ -42,7 +42,7 @@ const AdminNewItemType: FC = () => {
 
       api.itemTypes
         .create({
-          name,
+          name
         })
         .then((itemType) => {
           const newId = getNewId();
@@ -52,7 +52,7 @@ const AdminNewItemType: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewItemType.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadItemTypes();
           void navigate(`/admin/itemtype/${itemType._id}`);
@@ -62,8 +62,8 @@ const AdminNewItemType: FC = () => {
           setError('root.serverError', {
             type: 'server',
             message: t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-            }),
+              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+            })
           });
         });
     },
@@ -85,9 +85,11 @@ const AdminNewItemType: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewItemType.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminNewItemType__basics">
           <Input
             control={control}
@@ -97,8 +99,8 @@ const AdminNewItemType: FC = () => {
               required: t('nameItemType.required', { ns: 'fields' }),
               pattern: {
                 value: /^([a-z]){2,3}$/,
-                message: t('nameItemType.format', { ns: 'fields' }),
-              },
+                message: t('nameItemType.format', { ns: 'fields' })
+              }
             }}
             label={t('nameItemType.label', { ns: 'fields' })}
             className="adminNewItemType__basics__name"

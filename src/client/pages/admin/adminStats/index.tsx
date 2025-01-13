@@ -20,6 +20,7 @@ const AdminStats: FC = () => {
     if (stats === null || stats.length === 0) {
       return null;
     }
+
     return (
       <Aul className="adminStats__stat-list" noPoints>
         {stats.map(({ stat }) => (

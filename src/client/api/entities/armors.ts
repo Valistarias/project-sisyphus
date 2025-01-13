@@ -4,9 +4,8 @@ import Entity from './entity';
 
 import type { ICuratedArmor } from '../../types';
 
-
 interface IArmorPayload {
-  armorId: string;
+  armorId: string
 }
 
 export default class Armors extends Entity {
@@ -16,7 +15,7 @@ export default class Armors extends Entity {
   constructor() {
     super('armors');
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })

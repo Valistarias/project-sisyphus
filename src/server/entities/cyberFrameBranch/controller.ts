@@ -5,13 +5,12 @@ import {
   gemForbidden,
   gemInvalidField,
   gemNotFound,
-  gemServerError,
+  gemServerError
 } from '../../utils/globalErrorMessage';
 
 import type { ICyberFrame } from '../index';
 import type { HydratedICyberFrameBranch, ICyberFrameBranch } from './model';
 import type { CuratedINode } from '../node/controller';
-
 
 import { curateI18n } from '../../utils';
 
@@ -71,17 +70,19 @@ const create = (req: Request, res: Response): void => {
   const { title, summary, cyberFrame, i18n = null } = req.body;
   if (title === undefined || summary === undefined || cyberFrame === undefined) {
     res.status(400).send(gemInvalidField('CyberFrameBranch'));
+
     return;
   }
   if (title === '_general') {
     res.status(403).send(gemForbidden());
+
     return;
   }
 
   const cyberFrameBranch = new CyberFrameBranch({
     title,
     summary,
-    cyberFrame,
+    cyberFrame
   });
 
   if (i18n !== null) {
@@ -93,7 +94,7 @@ const create = (req: Request, res: Response): void => {
     .then(() => {
       res.send(cyberFrameBranch);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -102,19 +103,20 @@ const createGeneralForCyberFrameId = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('CyberFrame ID'));
+
       return;
     }
     const cyberFrameBranch = new CyberFrameBranch({
       title: '_general',
       summary: '',
-      cyberFrame: id,
+      cyberFrame: id
     });
     cyberFrameBranch
       .save()
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
@@ -123,16 +125,19 @@ const update = (req: Request, res: Response): void => {
   const { id, title = null, summary = null, cyberFrame = null, i18n } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('CyberFrameBranch ID'));
+
     return;
   }
   if (title === '_general') {
     res.status(403).send(gemForbidden());
+
     return;
   }
   findCyberFrameBranchById(id as string)
     .then((cyberFrameBranch) => {
       if (cyberFrameBranch.title === '_general') {
         res.status(403).send(gemForbidden());
+
         return;
       }
       if (title !== null) {
@@ -147,11 +152,11 @@ const update = (req: Request, res: Response): void => {
 
       if (i18n !== null) {
         const newIntl = {
-          ...(cyberFrameBranch.i18n !== null &&
-          cyberFrameBranch.i18n !== undefined &&
-          cyberFrameBranch.i18n !== ''
+          ...(cyberFrameBranch.i18n !== null
+            && cyberFrameBranch.i18n !== undefined
+            && cyberFrameBranch.i18n !== ''
             ? JSON.parse(cyberFrameBranch.i18n)
-            : {}),
+            : {})
         };
 
         Object.keys(i18n as Record<string, any>).forEach((lang) => {
@@ -166,7 +171,7 @@ const update = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'CyberFrame branch was updated successfully!', cyberFrameBranch });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -179,6 +184,7 @@ const deleteCyberFrameBranchById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('CyberFrameBranch ID'));
+
       return;
     }
     findCyberFrameBranchById(id)
@@ -190,12 +196,12 @@ const deleteCyberFrameBranchById = async (id: string): Promise<boolean> =>
             .then(() => {
               resolve(true);
             })
-            .catch((err: Error) => {
+            .catch((err: unknown) => {
               reject(gemServerError(err));
             });
         }
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
@@ -206,7 +212,7 @@ const deleteCyberFrameBranch = (req: Request, res: Response): void => {
     .then(() => {
       res.send({ message: 'CyberFrame branch was deleted successfully!' });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -215,42 +221,44 @@ const deleteCyberFrameBranchesByCyberFrameId = async (cyberFrameId: string): Pro
   await new Promise((resolve, reject) => {
     if (cyberFrameId === undefined) {
       resolve(true);
+
       return;
     }
     CyberFrameBranch.deleteMany({ cyberFrame: cyberFrameId })
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
 
 type CuratedICyberFrameBranch = Omit<ICyberFrameBranch, 'cyberFrame'> & {
-  cyberFrame: ICyberFrame;
-  nodes?: CuratedINode[];
+  cyberFrame: ICyberFrame
+  nodes?: CuratedINode[]
 };
 
 interface CuratedIntICyberFrameBranch {
-  i18n: Record<string, any> | Record<string, unknown>;
-  cyberFrameBranch: CuratedICyberFrameBranch;
+  i18n: Record<string, unknown>
+  cyberFrameBranch: CuratedICyberFrameBranch
 }
 
 const findSingle = (req: Request, res: Response): void => {
   const { cyberFrameBranchId } = req.query;
   if (cyberFrameBranchId === undefined || typeof cyberFrameBranchId !== 'string') {
     res.status(400).send(gemInvalidField('CyberFrameBranch ID'));
+
     return;
   }
   findCyberFrameBranchById(cyberFrameBranchId)
     .then((cyberFrameBranch) => {
       const sentObj = {
         cyberFrameBranch,
-        i18n: curateI18n(cyberFrameBranch.i18n),
+        i18n: curateI18n(cyberFrameBranch.i18n)
       };
       res.send(sentObj);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
@@ -265,27 +273,28 @@ const findAll = (req: Request, res: Response): void => {
           ...cyberFrameBranch,
           nodes:
             cyberFrameBranch.nodes !== undefined
-              ? cyberFrameBranch.nodes.map((node) => ({
+              ? cyberFrameBranch.nodes.map(node => ({
                   node,
-                  i18n: curateI18n(node.i18n),
+                  i18n: curateI18n(node.i18n)
                 }))
-              : [],
+              : []
         };
         curatedCyberFrameBranches.push({
           cyberFrameBranch: cleanCyberFrameBranch,
-          i18n: curateI18n(cleanCyberFrameBranch.i18n),
+          i18n: curateI18n(cleanCyberFrameBranch.i18n)
         });
       });
 
       res.send(curatedCyberFrameBranches);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const findAllByFrame = (req: Request, res: Response): void => {
   const { cyberFrameId } = req.query;
   if (cyberFrameId === undefined || typeof cyberFrameId !== 'string') {
     res.status(400).send(gemInvalidField('CyberFrame ID'));
+
     return;
   }
   findCyberFrameBranchesByFrame(cyberFrameId)
@@ -297,21 +306,21 @@ const findAllByFrame = (req: Request, res: Response): void => {
           ...cyberFrameBranch,
           nodes:
             cyberFrameBranch.nodes !== undefined
-              ? cyberFrameBranch.nodes.map((node) => ({
+              ? cyberFrameBranch.nodes.map(node => ({
                   node,
-                  i18n: curateI18n(node.i18n),
+                  i18n: curateI18n(node.i18n)
                 }))
-              : [],
+              : []
         };
         curatedCyberFrameBranches.push({
           cyberFrameBranch: cleanCyberFrameBranch,
-          i18n: curateI18n(cleanCyberFrameBranch.i18n),
+          i18n: curateI18n(cleanCyberFrameBranch.i18n)
         });
       });
 
       res.send(curatedCyberFrameBranches);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export {
@@ -325,5 +334,5 @@ export {
   findCyberFrameBranchesByFrame,
   findSingle,
   update,
-  type CuratedIntICyberFrameBranch,
+  type CuratedIntICyberFrameBranch
 };

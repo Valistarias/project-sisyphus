@@ -15,10 +15,10 @@ import { Alert, RichTextElement, completeRichTextElementExtentions } from '../..
 import './adminNewSkill.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  stat: string;
-  formulaId: string;
+  name: string
+  nameFr: string
+  stat: string
+  formulaId: string
 }
 
 const AdminNewSkill: FC = () => {
@@ -32,24 +32,24 @@ const AdminNewSkill: FC = () => {
   const calledApi = useRef(false);
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   const statList = useMemo(() => stats.map(({ stat }) => ({
-      value: stat._id,
-      label: stat.title,
-    })), [stats]);
+    value: stat._id,
+    label: stat.title
+  })), [stats]);
 
   const onSaveSkill: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, stat, formulaId }) => {
@@ -68,8 +68,8 @@ const AdminNewSkill: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            summary: htmlFr,
-          },
+            summary: htmlFr
+          }
         };
       }
 
@@ -79,7 +79,7 @@ const AdminNewSkill: FC = () => {
           stat,
           formulaId,
           summary: html,
-          i18n,
+          i18n
         })
         .then((skill) => {
           const newId = getNewId();
@@ -89,7 +89,7 @@ const AdminNewSkill: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewSkill.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadSkills();
           void navigate(`/admin/skill/${skill._id}`);
@@ -100,15 +100,15 @@ const AdminNewSkill: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id',
-              })} by ${data.sent}`,
+                field: 'Formula Id'
+              })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -127,16 +127,18 @@ const AdminNewSkill: FC = () => {
     <div className="adminNewSkill">
       <form className="adminNewSkill__content" onSubmit={handleSubmit(onSaveSkill)} noValidate>
         <Atitle level={1}>{t('adminNewSkill.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminNewSkill__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameSkill.required', { ns: 'fields' }),
+              required: t('nameSkill.required', { ns: 'fields' })
             }}
             label={t('nameSkill.label', { ns: 'fields' })}
             className="adminNewSkill__basics__name"
@@ -154,7 +156,7 @@ const AdminNewSkill: FC = () => {
           <RichTextElement
             label={t('skillSummary.title', { ns: 'fields' })}
             editor={introEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />
@@ -166,8 +168,8 @@ const AdminNewSkill: FC = () => {
               required: t('skillFormula.required', { ns: 'fields' }),
               pattern: {
                 value: /^([a-z]){2,3}$/,
-                message: t('skillFormula.format', { ns: 'fields' }),
-              },
+                message: t('skillFormula.format', { ns: 'fields' })
+              }
             }}
             label={t('skillFormula.label', { ns: 'fields' })}
           />
@@ -190,7 +192,7 @@ const AdminNewSkill: FC = () => {
           <RichTextElement
             label={`${t('skillSummary.title', { ns: 'fields' })} (FR)`}
             editor={introFrEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />

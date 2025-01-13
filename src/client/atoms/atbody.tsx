@@ -8,9 +8,9 @@ import './atbody.scss';
 
 interface IAtbody extends IQuarkProps {
   /** The class of the Table Head element */
-  className?: string;
+  className?: string
   /** The childrens of the Table Head element */
-  children: ReactNode;
+  children: ReactNode
 }
 
 const ATbody: FC<IAtbody> = ({ className, children }) => (

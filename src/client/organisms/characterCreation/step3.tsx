@@ -12,7 +12,7 @@ import {
   calculateStatMod,
   getActualBody,
   getBaseSkillNode,
-  getCyberFrameLevelsByNodes,
+  getCyberFrameLevelsByNodes
 } from '../../utils/character';
 import { RichTextElement } from '../richTextElement';
 
@@ -24,7 +24,7 @@ import './characterCreation.scss';
 
 interface ICharacterCreationStep2 {
   /** When the user click send and the data is send perfectly */
-  onSubmitSkills: (nodes: string[]) => void;
+  onSubmitSkills: (nodes: string[]) => void
 }
 
 const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills }) => {
@@ -72,10 +72,10 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
     const statBonuses: Record<
       string,
       {
-        bonus: number;
-        source: string;
-        sourceId: string;
-        broad: boolean;
+        bonus: number
+        source: string
+        sourceId: string
+        broad: boolean
       }
     > = {};
 
@@ -90,7 +90,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
                 bonus: statBonus.value,
                 source: cyberFrame.cyberFrame.title,
                 sourceId: cyberFrame.cyberFrame._id,
-                broad: false,
+                broad: false
               };
             } else {
               statBonuses[statBonus.stat].bonus += statBonus.value;
@@ -114,16 +114,17 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
     const tempTree: Record<
       string,
       {
-        branch: ISkillBranch;
-        nodes: ICuratedNode[];
+        branch: ISkillBranch
+        nodes: ICuratedNode[]
       }
     > = {};
     skill.branches.forEach(({ skillBranch }) => {
       tempTree[skillBranch._id] = {
         branch: skillBranch,
-        nodes: skillBranch.nodes,
+        nodes: skillBranch.nodes
       };
     });
+
     return (
       <div className="characterCreation-step3__detail-block">
         <NodeTree
@@ -142,17 +143,19 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
             />
           </div>
           <div className="characterCreation-step3__detail-block__btns">
-            {openedSkill.skill._id === skill._id ? null : (
-              <Button
-                theme="afterglow"
-                size="large"
-                onClick={() => {
-                  setDetailsOpened(false);
-                }}
-              >
-                {t('characterCreation.step3.chooseCta', { ns: 'components' })}
-              </Button>
-            )}
+            {openedSkill.skill._id === skill._id
+              ? null
+              : (
+                  <Button
+                    theme="afterglow"
+                    size="large"
+                    onClick={() => {
+                      setDetailsOpened(false);
+                    }}
+                  >
+                    {t('characterCreation.step3.chooseCta', { ns: 'components' })}
+                  </Button>
+                )}
             <Button
               theme="text-only"
               size="large"
@@ -208,8 +211,8 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
             </div>
             <Aul noPoints className="characterCreation-step3__stat-block__content">
               {skills.map((skill) => {
-                const selected =
-                  selectedSkills.find((skillId) => skillId === skill.skill._id) !== undefined;
+                const selected
+                  = selectedSkills.find(skillId => skillId === skill.skill._id) !== undefined;
                 const baseNode = getBaseSkillNode(skill.skill);
                 let bonus = 0;
                 if (baseNode !== undefined) {
@@ -230,6 +233,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
                 } else if (nbSkillSelected === 0) {
                   icon = 'Cross';
                 }
+
                 return (
                   <Ali
                     key={skill.skill._id}
@@ -247,12 +251,13 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
                         onClick={() => {
                           setSelectedSkills((prev) => {
                             const next = [...prev];
-                            const valIndex = next.findIndex((val) => val === skill.skill._id);
+                            const valIndex = next.findIndex(val => val === skill.skill._id);
                             if (valIndex !== -1) {
                               next.splice(valIndex, 1);
                             } else {
                               next.push(skill.skill._id);
                             }
+
                             return next;
                           });
                         }}
@@ -305,6 +310,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
         }
       }
     });
+
     return statElts;
   }, [
     character,
@@ -313,15 +319,15 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
     aggregatedSkills,
     bonusesByStat,
     t,
-    handleSubmitSkills,
+    handleSubmitSkills
   ]);
 
   useEffect(() => {
     if (
-      character !== null &&
-      character !== false &&
-      character.nodes !== undefined &&
-      character.nodes.length > 1
+      character !== null
+      && character !== false
+      && character.nodes !== undefined
+      && character.nodes.length > 1
     ) {
       const nodeBranchIds = character.nodes
         .filter(({ node }) => node.skillBranch !== undefined)
@@ -347,16 +353,16 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
         ${detailsOpened ? 'characterCreation-step3--details' : ''}
       `)}
       initial={{
-        transform: 'skew(80deg, 0deg) scale3d(.2, .2, .2)',
+        transform: 'skew(80deg, 0deg) scale3d(.2, .2, .2)'
       }}
       animate={{
         transform: 'skew(0, 0) scale3d(1, 1, 1)',
         transitionEnd: {
-          transform: 'none',
-        },
+          transform: 'none'
+        }
       }}
       exit={{
-        transform: 'skew(-80deg, 0deg) scale3d(.2, .2, .2)',
+        transform: 'skew(-80deg, 0deg) scale3d(.2, .2, .2)'
       }}
       transition={{ ease: 'easeInOut', duration: 0.2 }}
     >

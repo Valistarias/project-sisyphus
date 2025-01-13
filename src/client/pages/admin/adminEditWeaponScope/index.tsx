@@ -19,9 +19,9 @@ import { classTrim } from '../../../utils';
 import './adminEditWeaponScope.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  scopeId: string;
+  name: string
+  nameFr: string
+  scopeId: string
 }
 
 const AdminEditWeaponScope: FC = () => {
@@ -31,7 +31,7 @@ const AdminEditWeaponScope: FC = () => {
   const { reloadWeaponScopes } = useGlobalVars();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
-    ConfMessageEvent: {},
+    ConfMessageEvent: {}
   };
   const { id } = useParams();
   const navigate = useNavigate();
@@ -48,11 +48,11 @@ const AdminEditWeaponScope: FC = () => {
   const [weaponScopeTextFr, setWeaponScopeTextFr] = useState('');
 
   const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const createDefaultData = useCallback((weaponScopeData: ICuratedWeaponScope | null) => {
@@ -66,6 +66,7 @@ const AdminEditWeaponScope: FC = () => {
     if (i18n.fr !== undefined) {
       defaultData.nameFr = i18n.fr.title ?? '';
     }
+
     return defaultData;
   }, []);
 
@@ -74,23 +75,23 @@ const AdminEditWeaponScope: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(weaponScopeData),
       [createDefaultData, weaponScopeData]
-    ),
+    )
   });
 
   const onSaveWeaponScope: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, scopeId }) => {
       if (
-        weaponScopeText === null ||
-        weaponScopeTextFr === null ||
-        textEditor === null ||
-        textFrEditor === null ||
-        scopeId === null ||
-        api === undefined
+        weaponScopeText === null
+        || weaponScopeTextFr === null
+        || textEditor === null
+        || textFrEditor === null
+        || scopeId === null
+        || api === undefined
       ) {
         return;
       }
@@ -108,8 +109,8 @@ const AdminEditWeaponScope: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            text: htmlTextFr,
-          },
+            text: htmlTextFr
+          }
         };
       }
 
@@ -119,7 +120,7 @@ const AdminEditWeaponScope: FC = () => {
           title: name,
           summary: htmlText,
           scopeId,
-          i18n,
+          i18n
         })
         .then((weaponScope) => {
           const newId = getNewId();
@@ -129,7 +130,7 @@ const AdminEditWeaponScope: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditWeaponScope.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadWeaponScopes();
         })
@@ -139,15 +140,15 @@ const AdminEditWeaponScope: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id',
-              })} by ${data.sent}`,
+                field: 'Formula Id'
+              })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -163,7 +164,7 @@ const AdminEditWeaponScope: FC = () => {
       createAlert,
       t,
       reloadWeaponScopes,
-      setError,
+      setError
     ]
   );
 
@@ -176,9 +177,9 @@ const AdminEditWeaponScope: FC = () => {
         title: t('adminEditWeaponScope.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditWeaponScope.confirmDeletion.text', {
           ns: 'pages',
-          elt: weaponScopeData?.weaponScope.title,
+          elt: weaponScopeData?.weaponScope.title
         }),
-        confirmCta: t('adminEditWeaponScope.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditWeaponScope.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
@@ -193,7 +194,7 @@ const AdminEditWeaponScope: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditWeaponScope.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
                 reloadWeaponScopes();
                 void navigate('/admin/weaponscopes');
@@ -204,15 +205,15 @@ const AdminEditWeaponScope: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.weaponScope.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.weaponScope.name`), 'capitalize')
+                    })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.weaponScope.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.weaponScope.name`), 'capitalize')
+                    })
                   });
                 }
               });
@@ -233,7 +234,7 @@ const AdminEditWeaponScope: FC = () => {
     createAlert,
     reloadWeaponScopes,
     navigate,
-    setError,
+    setError
   ]);
 
   useEffect(() => {
@@ -257,7 +258,7 @@ const AdminEditWeaponScope: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -272,6 +273,7 @@ const AdminEditWeaponScope: FC = () => {
         () => {}
       );
     }, 600000);
+
     return () => {
       if (saveTimer.current !== null) {
         clearInterval(saveTimer.current);
@@ -310,9 +312,11 @@ const AdminEditWeaponScope: FC = () => {
           {t('adminEditWeaponScope.return', { ns: 'pages' })}
         </Button>
         <Atitle level={2}>{t('adminEditWeaponScope.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror className="adminEditWeaponScope__error">{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror className="adminEditWeaponScope__error">{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminEditWeaponScope__basics">
           <Input
             control={control}
@@ -338,8 +342,8 @@ const AdminEditWeaponScope: FC = () => {
               required: t('weaponScopeFormula.required', { ns: 'fields' }),
               pattern: {
                 value: /^([a-z]){2,3}$/,
-                message: t('weaponScopeFormula.format', { ns: 'fields' }),
-              },
+                message: t('weaponScopeFormula.format', { ns: 'fields' })
+              }
             }}
             label={t('weaponScopeFormula.label', { ns: 'fields' })}
           />
@@ -357,7 +361,7 @@ const AdminEditWeaponScope: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt((prev) => !prev);
+              setDisplayInt(prev => !prev);
             }}
             className="adminEditWeaponScope__intl-title__btn"
           />

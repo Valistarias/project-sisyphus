@@ -20,57 +20,57 @@ import { classTrim, isThereDuplicate } from '../../../utils';
 import './adminEditWeapon.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  quote: string;
-  quoteFr: string;
-  weaponType: string;
-  weaponScope: string;
-  starterKit: string;
-  magasine?: number;
-  ammoPerShot?: number;
-  cost: number;
-  rarity: string;
-  itemModifiers: string[];
+  name: string
+  nameFr: string
+  quote: string
+  quoteFr: string
+  weaponType: string
+  weaponScope: string
+  starterKit: string
+  magasine?: number
+  ammoPerShot?: number
+  cost: number
+  rarity: string
+  itemModifiers: string[]
   damages?: Record<
     string,
     {
-      damageType: string;
-      dices: string;
+      damageType: string
+      dices: string
     }
-  >;
+  >
   effects?: Record<
     string,
     {
-      id: string;
-      title: string;
-      titleFr?: string;
-      summary: string;
-      summaryFr?: string;
-      type: string;
-      formula?: string;
+      id: string
+      title: string
+      titleFr?: string
+      summary: string
+      summaryFr?: string
+      type: string
+      formula?: string
     }
-  >;
+  >
   actions?: Record<
     string,
     {
-      id: string;
-      title: string;
-      titleFr?: string;
-      summary: string;
-      summaryFr?: string;
-      type: string;
-      skill?: string;
-      duration: string;
-      time?: string;
-      timeFr?: string;
-      damages?: string;
-      offsetSkill?: string;
-      uses?: number;
-      isKarmic?: string;
-      karmicCost?: number;
+      id: string
+      title: string
+      titleFr?: string
+      summary: string
+      summaryFr?: string
+      type: string
+      skill?: string
+      duration: string
+      time?: string
+      timeFr?: string
+      damages?: string
+      offsetSkill?: string
+      uses?: number
+      isKarmic?: string
+      karmicCost?: number
     }
-  >;
+  >
 }
 
 const AdminEditWeapon: FC = () => {
@@ -79,7 +79,7 @@ const AdminEditWeapon: FC = () => {
   const { id } = useParams();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
-    ConfMessageEvent: {},
+    ConfMessageEvent: {}
   };
   const {
     weaponTypes,
@@ -89,7 +89,7 @@ const AdminEditWeapon: FC = () => {
     damageTypes,
     actionTypes,
     actionDurations,
-    skills,
+    skills
   } = useGlobalVars();
   const { createAlert, getNewId } = useSystemAlerts();
   const navigate = useNavigate();
@@ -109,11 +109,11 @@ const AdminEditWeapon: FC = () => {
   const [weaponTextFr, setWeaponTextFr] = useState('');
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const createDefaultData = useCallback((weaponData: ICuratedWeapon | null) => {
@@ -145,7 +145,7 @@ const AdminEditWeapon: FC = () => {
       }
       defaultData.damages[`damage-${idIncrement.current}`] = {
         damageType: damage.damageType,
-        dices: damage.dices,
+        dices: damage.dices
       };
 
       damageIds.push(idIncrement.current);
@@ -174,7 +174,7 @@ const AdminEditWeapon: FC = () => {
         summary: action.summary,
         titleFr: action.i18n.fr.title,
         summaryFr: action.i18n.fr.summary,
-        timeFr: action.i18n.fr.time,
+        timeFr: action.i18n.fr.time
       };
 
       tempActionId.push(idIncrement.current);
@@ -195,7 +195,7 @@ const AdminEditWeapon: FC = () => {
         formula: effect.formula,
         summary: effect.summary,
         titleFr: effect.i18n.fr.title,
-        summaryFr: effect.i18n.fr.summary,
+        summaryFr: effect.i18n.fr.summary
       };
 
       tempEffectId.push(idIncrement.current);
@@ -212,51 +212,51 @@ const AdminEditWeapon: FC = () => {
     unregister,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
-    defaultValues: useMemo(() => createDefaultData(weaponData), [createDefaultData, weaponData]),
+    defaultValues: useMemo(() => createDefaultData(weaponData), [createDefaultData, weaponData])
   });
 
   // TODO: Internationalization
   const weaponTypeList = useMemo(() => weaponTypes.map(({ weaponType }) => ({
-      value: weaponType._id,
-      label: weaponType.title,
-    })), [weaponTypes]);
+    value: weaponType._id,
+    label: weaponType.title
+  })), [weaponTypes]);
 
   const weaponScopeList = useMemo(() => weaponScopes.map(({ weaponScope }) => ({
-      value: weaponScope._id,
-      label: weaponScope.title,
-    })), [weaponScopes]);
+    value: weaponScope._id,
+    label: weaponScope.title
+  })), [weaponScopes]);
 
   const damageTypeList = useMemo(() => damageTypes.map(({ damageType }) => ({
-      value: damageType._id,
-      label: damageType.title,
-    })), [damageTypes]);
+    value: damageType._id,
+    label: damageType.title
+  })), [damageTypes]);
 
   const itemModifierList = useMemo(() => itemModifiers.map(({ itemModifier }) => ({
-      value: itemModifier._id,
-      label: itemModifier.title,
-    })), [itemModifiers]);
+    value: itemModifier._id,
+    label: itemModifier.title
+  })), [itemModifiers]);
 
   const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
-      value: rarity._id,
-      label: rarity.title,
-    })), [rarities]);
+    value: rarity._id,
+    label: rarity.title
+  })), [rarities]);
 
   const actionTypeSelect = useMemo(
     () =>
       actionTypes.map(({ name, _id }) => ({
         value: _id,
-        label: t(`terms.actionType.${name}`),
+        label: t(`terms.actionType.${name}`)
       })),
     [actionTypes, t]
   );
 
   const starterKitList = useMemo(
     () =>
-      possibleStarterKitValues.map((possibleStarterKitValue) => ({
+      possibleStarterKitValues.map(possibleStarterKitValue => ({
         value: possibleStarterKitValue,
-        label: t(`terms.starterKit.${possibleStarterKitValue}`),
+        label: t(`terms.starterKit.${possibleStarterKitValue}`)
       })),
     [t]
   );
@@ -265,7 +265,7 @@ const AdminEditWeapon: FC = () => {
     () =>
       actionDurations.map(({ name, _id }) => ({
         value: _id,
-        label: t(`terms.actionDuration.${name}`),
+        label: t(`terms.actionDuration.${name}`)
       })),
     [actionDurations, t]
   );
@@ -275,7 +275,7 @@ const AdminEditWeapon: FC = () => {
       skills.map(({ skill }) => ({
         value: skill._id,
         // TODO : Handle Internationalization
-        label: skill.title,
+        label: skill.title
       })),
     [skills]
   );
@@ -284,12 +284,12 @@ const AdminEditWeapon: FC = () => {
     () => [
       {
         value: '1',
-        label: t('terms.general.yes'),
+        label: t('terms.general.yes')
       },
       {
         value: '0',
-        label: t('terms.general.no'),
-      },
+        label: t('terms.general.no')
+      }
     ],
     [t]
   );
@@ -299,6 +299,7 @@ const AdminEditWeapon: FC = () => {
       const next = [...prev];
       next.push(idIncrement.current);
       idIncrement.current += 1;
+
       return next;
     });
   }, []);
@@ -308,6 +309,7 @@ const AdminEditWeapon: FC = () => {
       const next = [...prev];
       next.push(idIncrement.current);
       idIncrement.current += 1;
+
       return next;
     });
   }, []);
@@ -317,6 +319,7 @@ const AdminEditWeapon: FC = () => {
       const next = [...prev];
       next.push(idIncrement.current);
       idIncrement.current += 1;
+
       return next;
     });
   }, []);
@@ -337,14 +340,14 @@ const AdminEditWeapon: FC = () => {
       ammoPerShot,
       damages,
       effects,
-      actions,
+      actions
     }) => {
       if (
-        introEditor === null ||
-        introFrEditor === null ||
-        api === undefined ||
-        weaponScope === undefined ||
-        rarity === undefined
+        introEditor === null
+        || introFrEditor === null
+        || api === undefined
+        || weaponScope === undefined
+        || rarity === undefined
       ) {
         return;
       }
@@ -353,19 +356,20 @@ const AdminEditWeapon: FC = () => {
       const sortedDamages = damages !== undefined ? Object.values(damages) : [];
       let duplicateDamages = false;
       if (sortedDamages.length > 0) {
-        duplicateDamages = isThereDuplicate(sortedDamages.map((damage) => damage.damageType));
+        duplicateDamages = isThereDuplicate(sortedDamages.map(damage => damage.damageType));
       }
       if (duplicateDamages) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminNewNode.errorDuplicateCharParam', { ns: 'pages' }),
+          message: t('adminNewNode.errorDuplicateCharParam', { ns: 'pages' })
         });
+
         return;
       }
 
       const curatedDamages = sortedDamages.map(({ damageType, dices }) => ({
         damageType,
-        dices,
+        dices
       }));
 
       const effectsArr = effects !== undefined ? Object.values(effects) : [];
@@ -380,11 +384,11 @@ const AdminEditWeapon: FC = () => {
               ? {
                   fr: {
                     title: titleFr,
-                    summary: summaryFr,
-                  },
+                    summary: summaryFr
+                  }
                 }
-              : {}),
-          },
+              : {})
+          }
         })
       );
 
@@ -405,7 +409,7 @@ const AdminEditWeapon: FC = () => {
           uses,
           isKarmic,
           karmicCost,
-          summaryFr,
+          summaryFr
         }) => ({
           title,
           summary,
@@ -424,11 +428,11 @@ const AdminEditWeapon: FC = () => {
                   fr: {
                     title: titleFr,
                     summary: summaryFr,
-                    time: timeFr,
-                  },
+                    time: timeFr
+                  }
                 }
-              : {}),
-          },
+              : {})
+          }
         })
       );
 
@@ -445,8 +449,8 @@ const AdminEditWeapon: FC = () => {
           fr: {
             title: nameFr,
             summary: htmlFr,
-            quote: quoteFr,
-          },
+            quote: quoteFr
+          }
         };
       }
 
@@ -467,7 +471,7 @@ const AdminEditWeapon: FC = () => {
           quote,
           damages: curatedDamages,
           effects: curatedEffects,
-          actions: curatedActions,
+          actions: curatedActions
         })
         .then(() => {
           const newId = getNewId();
@@ -477,7 +481,7 @@ const AdminEditWeapon: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditWeapon.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
         })
         .catch(({ response }) => {
@@ -485,8 +489,8 @@ const AdminEditWeapon: FC = () => {
           setError('root.serverError', {
             type: 'server',
             message: t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-            }),
+              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+            })
           });
         });
     },
@@ -502,9 +506,9 @@ const AdminEditWeapon: FC = () => {
         title: t('adminEditWeapon.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditWeapon.confirmDeletion.text', {
           ns: 'pages',
-          elt: weaponData.weapon.title,
+          elt: weaponData.weapon.title
         }),
-        confirmCta: t('adminEditWeapon.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditWeapon.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
@@ -519,7 +523,7 @@ const AdminEditWeapon: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditWeapon.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
                 void navigate(`/admin/weapons`);
               })
@@ -529,15 +533,15 @@ const AdminEditWeapon: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize')
+                    })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize')
+                    })
                   });
                 }
               });
@@ -557,7 +561,7 @@ const AdminEditWeapon: FC = () => {
     getNewId,
     createAlert,
     navigate,
-    setError,
+    setError
   ]);
 
   useEffect(() => {
@@ -581,7 +585,7 @@ const AdminEditWeapon: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -611,16 +615,18 @@ const AdminEditWeapon: FC = () => {
         <Button className="adminEditWeapon__return-btn" href="/admin/weapons" size="small">
           {t('adminEditWeapon.return', { ns: 'pages' })}
         </Button>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminEditWeapon__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameWeapon.required', { ns: 'fields' }),
+              required: t('nameWeapon.required', { ns: 'fields' })
             }}
             label={t('nameWeapon.label', { ns: 'fields' })}
             className="adminEditWeapon__basics__name"
@@ -664,7 +670,7 @@ const AdminEditWeapon: FC = () => {
               inputName="cost"
               type="number"
               rules={{
-                required: t('weaponCost.required', { ns: 'fields' }),
+                required: t('weaponCost.required', { ns: 'fields' })
               }}
               label={t('weaponCost.label', { ns: 'fields' })}
               className="adminEditWeapon__details__fields__elt"
@@ -713,7 +719,7 @@ const AdminEditWeapon: FC = () => {
         </Atitle>
         <div className="adminEditWeapon__bonuses">
           <div className="adminEditWeapon__bonuses__elts">
-            {damagesIds.map((damagesId) => (
+            {damagesIds.map(damagesId => (
               <div className="adminEditWeapon__bonus" key={`damage-${damagesId}`}>
                 <Atitle className="adminEditWeapon__bonus__title" level={4}>
                   {t('adminEditWeapon.damageTitle', { ns: 'pages' })}
@@ -723,7 +729,7 @@ const AdminEditWeapon: FC = () => {
                     control={control}
                     inputName={`damages.damage-${damagesId}.damageType`}
                     rules={{
-                      required: t('damagesType.required', { ns: 'fields' }),
+                      required: t('damagesType.required', { ns: 'fields' })
                     }}
                     label={t('damagesType.label', { ns: 'fields' })}
                     options={damageTypeList}
@@ -734,7 +740,7 @@ const AdminEditWeapon: FC = () => {
                     inputName={`damages.damage-${damagesId}.dices`}
                     type="text"
                     rules={{
-                      required: t('damagesValue.required', { ns: 'fields' }),
+                      required: t('damagesValue.required', { ns: 'fields' })
                     }}
                     label={t('damagesValue.label', { ns: 'fields' })}
                     className="adminEditWeapon__bonus__value"
@@ -744,11 +750,12 @@ const AdminEditWeapon: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setDamagesIds((prev) =>
+                    setDamagesIds(prev =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== damagesId) {
                           result.push(elt);
                         }
+
                         return result;
                       }, [])
                     );
@@ -758,7 +765,7 @@ const AdminEditWeapon: FC = () => {
                 />
               </div>
             ))}
-            {effectIds.map((effectId) => (
+            {effectIds.map(effectId => (
               <div className="adminEditWeapon__bonus" key={`charParam-${effectId}`}>
                 <Atitle className="adminEditWeapon__bonus__title" level={4}>
                   {t('adminEditWeapon.effectTitle', { ns: 'pages' })}
@@ -768,7 +775,7 @@ const AdminEditWeapon: FC = () => {
                     control={control}
                     inputName={`effects.effect-${effectId}.title`}
                     rules={{
-                      required: t('effectTitle.required', { ns: 'fields' }),
+                      required: t('effectTitle.required', { ns: 'fields' })
                     }}
                     label={t('effectTitle.label', { ns: 'fields' })}
                     className="adminEditWeapon__bonus__value adminEditWeapon__bonus__value--s"
@@ -777,7 +784,7 @@ const AdminEditWeapon: FC = () => {
                     control={control}
                     inputName={`effects.effect-${effectId}.type`}
                     rules={{
-                      required: t('effectType.required', { ns: 'fields' }),
+                      required: t('effectType.required', { ns: 'fields' })
                     }}
                     label={t('effectType.label', { ns: 'fields' })}
                     options={actionTypeSelect}
@@ -788,7 +795,7 @@ const AdminEditWeapon: FC = () => {
                     type="textarea"
                     inputName={`effects.effect-${effectId}.summary`}
                     rules={{
-                      required: t('effectSummary.required', { ns: 'fields' }),
+                      required: t('effectSummary.required', { ns: 'fields' })
                     }}
                     label={t('effectSummary.label', { ns: 'fields' })}
                     className="adminEditWeapon__bonus__value adminEditWeapon__bonus__value--l"
@@ -820,11 +827,12 @@ const AdminEditWeapon: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setEffectIds((prev) =>
+                    setEffectIds(prev =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== effectId) {
                           result.push(elt);
                         }
+
                         return result;
                       }, [])
                     );
@@ -834,7 +842,7 @@ const AdminEditWeapon: FC = () => {
                 />
               </div>
             ))}
-            {actionIds.map((actionId) => (
+            {actionIds.map(actionId => (
               <div className="adminEditWeapon__bonus" key={`charParam-${actionId}`}>
                 <Atitle className="adminEditWeapon__bonus__title" level={4}>
                   {t('adminEditWeapon.actionTitle', { ns: 'pages' })}
@@ -844,7 +852,7 @@ const AdminEditWeapon: FC = () => {
                     control={control}
                     inputName={`actions.action-${actionId}.title`}
                     rules={{
-                      required: t('actionTitle.required', { ns: 'fields' }),
+                      required: t('actionTitle.required', { ns: 'fields' })
                     }}
                     label={t('actionTitle.label', { ns: 'fields' })}
                     className="adminEditWeapon__bonus__value adminEditWeapon__bonus__value--l"
@@ -853,7 +861,7 @@ const AdminEditWeapon: FC = () => {
                     control={control}
                     inputName={`actions.action-${actionId}.type`}
                     rules={{
-                      required: t('actionType.required', { ns: 'fields' }),
+                      required: t('actionType.required', { ns: 'fields' })
                     }}
                     label={t('actionType.label', { ns: 'fields' })}
                     options={actionTypeSelect}
@@ -863,7 +871,7 @@ const AdminEditWeapon: FC = () => {
                     control={control}
                     inputName={`actions.action-${actionId}.duration`}
                     rules={{
-                      required: t('actionDuration.required', { ns: 'fields' }),
+                      required: t('actionDuration.required', { ns: 'fields' })
                     }}
                     label={t('actionDuration.label', { ns: 'fields' })}
                     options={actionDurationSelect}
@@ -874,7 +882,7 @@ const AdminEditWeapon: FC = () => {
                     type="textarea"
                     inputName={`actions.action-${actionId}.summary`}
                     rules={{
-                      required: t('actionSummary.required', { ns: 'fields' }),
+                      required: t('actionSummary.required', { ns: 'fields' })
                     }}
                     label={t('actionSummary.label', { ns: 'fields' })}
                     className="adminEditWeapon__bonus__value adminEditWeapon__bonus__value--l"
@@ -898,9 +906,9 @@ const AdminEditWeapon: FC = () => {
                     options={[
                       {
                         value: '',
-                        label: '',
+                        label: ''
                       },
-                      ...skillSelect,
+                      ...skillSelect
                     ]}
                     className="adminEditWeapon__bonus__select adminEditWeapon__bonus__value--s"
                   />
@@ -958,11 +966,12 @@ const AdminEditWeapon: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setActionIds((prev) =>
+                    setActionIds(prev =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== actionId) {
                           result.push(elt);
                         }
+
                         return result;
                       }, [])
                     );
@@ -998,7 +1007,7 @@ const AdminEditWeapon: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt((prev) => !prev);
+              setDisplayInt(prev => !prev);
             }}
             className="adminEditWeapon__intl-title__btn"
           />

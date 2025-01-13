@@ -4,10 +4,9 @@ import Entity from './entity';
 
 import type { ICampaignEvent } from '../../types';
 
-
 interface ICampaignEventsPayload {
-  campaignId: string;
-  offset: number;
+  campaignId: string
+  offset: number
 }
 
 export default class CampaignEvents extends Entity {
@@ -16,7 +15,7 @@ export default class CampaignEvents extends Entity {
   constructor() {
     super('campaignevents');
 
-    this.getAllByCampaign = async (payload) =>
+    this.getAllByCampaign = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/bycampaign/`, { params: payload })

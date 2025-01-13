@@ -4,12 +4,12 @@ import Api from '../api';
 
 interface IApiContext {
   /** The childrens of the Providers element */
-  api?: Api;
+  api?: Api
 }
 
 interface IApiProvider {
   /** The childrens of the Providers element */
-  children: ReactNode;
+  children: ReactNode
 }
 
 const ApiContext = React.createContext<IApiContext | undefined>(undefined);
@@ -17,7 +17,7 @@ const ApiContext = React.createContext<IApiContext | undefined>(undefined);
 export const ApiProvider: FC<IApiProvider> = ({ children }) => {
   const providerValues = useMemo(
     () => ({
-      api: new Api(),
+      api: new Api()
     }),
     []
   );

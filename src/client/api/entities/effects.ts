@@ -4,9 +4,8 @@ import Entity from './entity';
 
 import type { ICuratedEffect } from '../../types';
 
-
 interface IEffectPayload {
-  effectId: string;
+  effectId: string
 }
 
 export default class Effects extends Entity {
@@ -15,7 +14,7 @@ export default class Effects extends Entity {
   constructor() {
     super('effects');
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })

@@ -8,7 +8,7 @@ import {
   CampaignEventTab,
   CharacterHeader,
   CharacterSkills,
-  CharacterStatus,
+  CharacterStatus
 } from '../../../organisms';
 import { ErrorPage } from '../../index';
 
@@ -59,7 +59,7 @@ const Character: FC = () => {
       />
       <CharacterHeader
         onClickEventTab={() => {
-          setEventTabOpen((prev) => !prev);
+          setEventTabOpen(prev => !prev);
         }}
         isEventTabOpen={eventTabOpen}
       />

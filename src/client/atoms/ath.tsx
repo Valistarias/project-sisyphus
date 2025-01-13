@@ -8,7 +8,7 @@ import './ath.scss';
 
 interface IAth extends IQuarkProps {
   /** The childrens of the Table Head Cell element */
-  children: ReactNode;
+  children: ReactNode
 }
 
 const ATh: FC<IAth> = ({ className, children }) => (

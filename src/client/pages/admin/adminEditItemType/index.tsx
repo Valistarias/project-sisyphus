@@ -16,7 +16,7 @@ import type { IItemType } from '../../../types';
 import './adminEditItemType.scss';
 
 interface FormValues {
-  name: string;
+  name: string
 }
 
 const AdminEditItemType: FC = () => {
@@ -26,7 +26,7 @@ const AdminEditItemType: FC = () => {
   const { reloadItemTypes } = useGlobalVars();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
-    ConfMessageEvent: {},
+    ConfMessageEvent: {}
   };
   const { id } = useParams();
   const navigate = useNavigate();
@@ -43,6 +43,7 @@ const AdminEditItemType: FC = () => {
     }
     const defaultData: Partial<FormValues> = {};
     defaultData.name = itemTypeData.name;
+
     return defaultData;
   }, []);
 
@@ -51,12 +52,12 @@ const AdminEditItemType: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(itemTypeData),
       [createDefaultData, itemTypeData]
-    ),
+    )
   });
 
   const onSaveItemType: SubmitHandler<FormValues> = useCallback(
@@ -68,7 +69,7 @@ const AdminEditItemType: FC = () => {
       api.itemTypes
         .update({
           id,
-          name,
+          name
         })
         .then(() => {
           const newId = getNewId();
@@ -78,7 +79,7 @@ const AdminEditItemType: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditItemType.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadItemTypes();
         })
@@ -88,15 +89,15 @@ const AdminEditItemType: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id',
-              })} by ${data.sent}`,
+                field: 'Formula Id'
+              })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -113,9 +114,9 @@ const AdminEditItemType: FC = () => {
         title: t('adminEditItemType.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditItemType.confirmDeletion.text', {
           ns: 'pages',
-          elt: itemTypeData?.name,
+          elt: itemTypeData?.name
         }),
-        confirmCta: t('adminEditItemType.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditItemType.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
@@ -130,7 +131,7 @@ const AdminEditItemType: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditItemType.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
                 reloadItemTypes();
                 void navigate('/admin/itemtypes');
@@ -141,15 +142,15 @@ const AdminEditItemType: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.itemType.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.itemType.name`), 'capitalize')
+                    })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.itemType.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.itemType.name`), 'capitalize')
+                    })
                   });
                 }
               });
@@ -170,7 +171,7 @@ const AdminEditItemType: FC = () => {
     createAlert,
     reloadItemTypes,
     navigate,
-    setError,
+    setError
   ]);
 
   useEffect(() => {
@@ -189,7 +190,7 @@ const AdminEditItemType: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -204,6 +205,7 @@ const AdminEditItemType: FC = () => {
         () => {}
       );
     }, 600000);
+
     return () => {
       if (saveTimer.current !== null) {
         clearInterval(saveTimer.current);
@@ -230,9 +232,11 @@ const AdminEditItemType: FC = () => {
           </Button>
         </div>
         <Atitle level={2}>{t('adminEditItemType.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror className="adminEditItemType__error">{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror className="adminEditItemType__error">{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminEditItemType__basics">
           <Input
             control={control}
@@ -242,8 +246,8 @@ const AdminEditItemType: FC = () => {
               required: t('nameItemType.required', { ns: 'fields' }),
               pattern: {
                 value: /^([a-z]){2,3}$/,
-                message: t('nameItemType.format', { ns: 'fields' }),
-              },
+                message: t('nameItemType.format', { ns: 'fields' })
+              }
             }}
             label={t('nameItemType.label', { ns: 'fields' })}
             className="adminEditItemType__basics__name"

@@ -15,9 +15,9 @@ import { Alert, RichTextElement, completeRichTextElementExtentions } from '../..
 import './adminNewTipText.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  tipId: string;
+  name: string
+  nameFr: string
+  tipId: string
 }
 
 const AdminNewTipText: FC = () => {
@@ -31,18 +31,18 @@ const AdminNewTipText: FC = () => {
   const calledApi = useRef(false);
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   const onSaveTipText: SubmitHandler<FormValues> = useCallback(
@@ -62,8 +62,8 @@ const AdminNewTipText: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            summary: htmlFr,
-          },
+            summary: htmlFr
+          }
         };
       }
 
@@ -72,7 +72,7 @@ const AdminNewTipText: FC = () => {
           title: name,
           tipId,
           summary: html,
-          i18n,
+          i18n
         })
         .then((tipText) => {
           const newId = getNewId();
@@ -82,7 +82,7 @@ const AdminNewTipText: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewTipText.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadTipTexts();
           void navigate(`/admin/tiptext/${tipText._id}`);
@@ -93,15 +93,15 @@ const AdminNewTipText: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id',
-              })} by ${data.sent}`,
+                field: 'Formula Id'
+              })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -120,16 +120,18 @@ const AdminNewTipText: FC = () => {
     <div className="adminNewTipText">
       <form className="adminNewTipText__content" onSubmit={handleSubmit(onSaveTipText)} noValidate>
         <Atitle level={1}>{t('adminNewTipText.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminNewTipText__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameTipText.required', { ns: 'fields' }),
+              required: t('nameTipText.required', { ns: 'fields' })
             }}
             label={t('nameTipText.label', { ns: 'fields' })}
             className="adminNewTipText__basics__name"
@@ -139,7 +141,7 @@ const AdminNewTipText: FC = () => {
           <RichTextElement
             label={t('tipTextSummary.title', { ns: 'fields' })}
             editor={introEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />
@@ -148,7 +150,7 @@ const AdminNewTipText: FC = () => {
             inputName="tipId"
             type="text"
             rules={{
-              required: t('tipTextFormula.required', { ns: 'fields' }),
+              required: t('tipTextFormula.required', { ns: 'fields' })
             }}
             label={t('tipTextFormula.label', { ns: 'fields' })}
           />
@@ -173,7 +175,7 @@ const AdminNewTipText: FC = () => {
           <RichTextElement
             label={`${t('tipTextSummary.title', { ns: 'fields' })} (FR)`}
             editor={introFrEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />

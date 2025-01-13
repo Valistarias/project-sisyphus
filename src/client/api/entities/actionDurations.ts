@@ -4,9 +4,8 @@ import Entity from './entity';
 
 import type { IActionDuration } from '../../types';
 
-
 interface IActionDurationPayload {
-  actionDurationId: string;
+  actionDurationId: string
 }
 
 export default class ActionDurations extends Entity {
@@ -15,7 +14,7 @@ export default class ActionDurations extends Entity {
   constructor() {
     super('actiondurations');
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })

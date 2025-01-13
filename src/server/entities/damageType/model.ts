@@ -2,13 +2,13 @@ import { Schema, model, type HydratedDocument, type Model } from 'mongoose';
 
 interface IDamageType {
   /** The title of the damage type */
-  title: string;
+  title: string
   /** A summary of the damage type */
-  summary: string;
+  summary: string
   /** The internationnal content, as a json, stringified */
-  i18n?: string;
+  i18n?: string
   /** When the damage type was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 type HydratedIDamageType = HydratedDocument<IDamageType>;
@@ -19,8 +19,8 @@ const damageTypeSchema = new Schema<IDamageType>({
   i18n: String,
   createdAt: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
 });
 
 const DamageTypeModel = (): Model<IDamageType> => model('DamageType', damageTypeSchema);

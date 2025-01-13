@@ -15,7 +15,7 @@ const findPages = async (): Promise<HydratedIPage[]> =>
     Page.find()
       .populate<{ chapter: HydratedIChapter }>({
         path: 'chapter',
-        populate: 'ruleBook',
+        populate: 'ruleBook'
       })
       .then(async (res?: HydratedIPage[] | null) => {
         if (res === undefined || res === null) {
@@ -34,7 +34,7 @@ const findPagesByChapter = async (chapterId: string): Promise<HydratedIPage[]> =
     Page.find({ chapter: chapterId })
       .populate<{ chapter: HydratedIChapter }>({
         path: 'chapter',
-        populate: 'ruleBook',
+        populate: 'ruleBook'
       })
       .then(async (res?: HydratedIPage[] | null) => {
         if (res === undefined || res === null) {
@@ -53,7 +53,7 @@ const findPageById = async (id: string): Promise<HydratedIPage> =>
     Page.findById(id)
       .populate<{ chapter: HydratedIChapter }>({
         path: 'chapter',
-        populate: 'ruleBook',
+        populate: 'ruleBook'
       })
       .then(async (res?: HydratedIPage | null) => {
         if (res === undefined || res === null) {
@@ -71,6 +71,7 @@ const create = (req: Request, res: Response): void => {
   const { title, content, chapter, i18n = null } = req.body;
   if (title === undefined || content === undefined || chapter === undefined) {
     res.status(400).send(gemInvalidField('Page'));
+
     return;
   }
 
@@ -80,7 +81,7 @@ const create = (req: Request, res: Response): void => {
         title,
         content,
         chapter,
-        position: pages.length,
+        position: pages.length
       });
 
       if (i18n !== null) {
@@ -92,17 +93,18 @@ const create = (req: Request, res: Response): void => {
         .then(() => {
           res.send(page);
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const update = (req: Request, res: Response): void => {
   const { id, title = null, content = null, i18n } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Page ID'));
+
     return;
   }
   findPageById(id as string)
@@ -118,7 +120,7 @@ const update = (req: Request, res: Response): void => {
         const newIntl = {
           ...(page.i18n !== null && page.i18n !== undefined && page.i18n !== ''
             ? JSON.parse(page.i18n)
-            : {}),
+            : {})
         };
 
         Object.keys(i18n as Record<string, any>).forEach((lang) => {
@@ -133,7 +135,7 @@ const update = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'Page was updated successfully!', page });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -146,13 +148,14 @@ const deletePage = (req: Request, res: Response): void => {
   const { id } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Page ID'));
+
     return;
   }
   Page.findByIdAndDelete(id)
     .then(() => {
       res.send({ message: 'Page was deleted successfully!' });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -161,37 +164,39 @@ const deletePagesByChapterId = async (chapterId: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (chapterId === undefined) {
       resolve(true);
+
       return;
     }
     Page.deleteMany({ chapter: chapterId })
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
 
 interface CuratedIPage {
-  i18n: Record<string, any> | Record<string, unknown>;
-  page: HydratedIPage;
+  i18n: Record<string, unknown>
+  page: HydratedIPage
 }
 
 const findSingle = (req: Request, res: Response): void => {
   const { pageId } = req.query;
   if (pageId === undefined || typeof pageId !== 'string') {
     res.status(400).send(gemInvalidField('Page ID'));
+
     return;
   }
   findPageById(pageId)
     .then((page) => {
       const sentObj = {
         page,
-        i18n: curateI18n(page.i18n),
+        i18n: curateI18n(page.i18n)
       };
       res.send(sentObj);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
@@ -204,19 +209,20 @@ const findAll = (req: Request, res: Response): void => {
       pages.forEach((page) => {
         curatedPages.push({
           page,
-          i18n: curateI18n(page.i18n),
+          i18n: curateI18n(page.i18n)
         });
       });
 
       res.send(curatedPages);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const findAllByChapter = (req: Request, res: Response): void => {
   const { chapterId } = req.query;
   if (chapterId === undefined || typeof chapterId !== 'string') {
     res.status(400).send(gemInvalidField('RuleBook ID'));
+
     return;
   }
   findPagesByChapter(chapterId)
@@ -226,13 +232,13 @@ const findAllByChapter = (req: Request, res: Response): void => {
       pages.forEach((page) => {
         curatedChapters.push({
           page,
-          i18n: curateI18n(page.i18n),
+          i18n: curateI18n(page.i18n)
         });
       });
 
       res.send(curatedChapters);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export {
@@ -244,5 +250,5 @@ export {
   findPageById,
   findPagesByChapter,
   findSingle,
-  update,
+  update
 };

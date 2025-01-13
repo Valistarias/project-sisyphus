@@ -100,5 +100,5 @@ export {
   WeaponScopes,
   WeaponStyles,
   WeaponTypes,
-  Weapons,
+  Weapons
 };

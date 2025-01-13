@@ -9,7 +9,7 @@ import {
   CharCreationStep2,
   CharCreationStep3,
   CharCreationStep4,
-  CharCreationStep5,
+  CharCreationStep5
 } from './characterCreation';
 import { DragList, type IDragElt } from './dragList';
 import HeaderBar from './headerBar';
@@ -19,7 +19,7 @@ import ProgramDisplay from './programDisplay';
 import {
   RichTextElement,
   basicRichTextElementExtentions,
-  completeRichTextElementExtentions,
+  completeRichTextElementExtentions
 } from './richTextElement';
 import WeaponDisplay from './weaponDisplay';
 
@@ -46,5 +46,5 @@ export {
   WeaponDisplay,
   basicRichTextElementExtentions,
   completeRichTextElementExtentions,
-  type IDragElt,
+  type IDragElt
 };

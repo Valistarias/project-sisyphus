@@ -2,7 +2,7 @@ import db from '../../../models';
 
 const { BodyArmor } = db;
 
-const replaceArmorByBody = async (req: { bodyId: string; armorIds: string[] }): Promise<boolean> =>
+const replaceArmorByBody = async (req: { bodyId: string, armorIds: string[] }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { bodyId } = req;
     BodyArmor.deleteMany({ body: bodyId })
@@ -20,13 +20,13 @@ const replaceArmorByBody = async (req: { bodyId: string; armorIds: string[] }): 
       });
   });
 
-const createArmorsByBody = async (req: { bodyId: string; armorIds: string[] }): Promise<boolean> =>
+const createArmorsByBody = async (req: { bodyId: string, armorIds: string[] }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { bodyId, armorIds } = req;
     BodyArmor.create(
-      armorIds.map((armorId) => ({
+      armorIds.map(armorId => ({
         body: bodyId,
-        armor: armorId,
+        armor: armorId
       }))
     )
       .then(() => {
@@ -38,16 +38,16 @@ const createArmorsByBody = async (req: { bodyId: string; armorIds: string[] }): 
   });
 
 const updateArmorByBody = async (req: {
-  bodyId: string;
-  armorId: string;
-  equiped?: boolean;
-  bag?: string;
+  bodyId: string
+  armorId: string
+  equiped?: boolean
+  bag?: string
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { bodyId, armorId, equiped = null, bag = null } = req;
     const updateObj: {
-      bag?: string;
-      equiped?: boolean;
+      bag?: string
+      equiped?: boolean
     } = {};
     if (bag !== null) {
       updateObj.bag = bag;
@@ -61,7 +61,7 @@ const updateArmorByBody = async (req: {
     BodyArmor.findOneAndUpdate(
       {
         body: bodyId,
-        armor: armorId,
+        armor: armorId
       },
       updateObj
     )
@@ -76,7 +76,7 @@ const updateArmorByBody = async (req: {
 const deleteArmorsByBody = async (bodyId: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     BodyArmor.deleteMany({
-      body: bodyId,
+      body: bodyId
     })
       .then(() => {
         resolve(true);

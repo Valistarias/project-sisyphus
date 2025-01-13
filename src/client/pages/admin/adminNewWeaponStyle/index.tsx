@@ -15,9 +15,9 @@ import { Alert, RichTextElement, completeRichTextElementExtentions } from '../..
 import './adminNewWeaponStyle.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  skill: string;
+  name: string
+  nameFr: string
+  skill: string
 }
 
 const AdminNewWeaponStyle: FC = () => {
@@ -31,24 +31,24 @@ const AdminNewWeaponStyle: FC = () => {
   const calledApi = useRef(false);
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   const skillList = useMemo(() => skills.map(({ skill }) => ({
-      value: skill._id,
-      label: skill.title,
-    })), [skills]);
+    value: skill._id,
+    label: skill.title
+  })), [skills]);
 
   const onSaveWeaponStyle: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, skill }) => {
@@ -67,8 +67,8 @@ const AdminNewWeaponStyle: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            summary: htmlFr,
-          },
+            summary: htmlFr
+          }
         };
       }
 
@@ -77,7 +77,7 @@ const AdminNewWeaponStyle: FC = () => {
           title: name,
           skill,
           summary: html,
-          i18n,
+          i18n
         })
         .then((skill) => {
           const newId = getNewId();
@@ -87,7 +87,7 @@ const AdminNewWeaponStyle: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewWeaponStyle.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadWeaponStyles();
           void navigate(`/admin/weaponstyle/${skill._id}`);
@@ -97,8 +97,8 @@ const AdminNewWeaponStyle: FC = () => {
           setError('root.serverError', {
             type: 'server',
             message: t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-            }),
+              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+            })
           });
         });
     },
@@ -111,7 +111,7 @@ const AdminNewWeaponStyle: FC = () => {
       t,
       reloadWeaponStyles,
       navigate,
-      setError,
+      setError
     ]
   );
 
@@ -130,16 +130,18 @@ const AdminNewWeaponStyle: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewWeaponStyle.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminNewWeaponStyle__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameWeaponStyle.required', { ns: 'fields' }),
+              required: t('nameWeaponStyle.required', { ns: 'fields' })
             }}
             label={t('nameWeaponStyle.label', { ns: 'fields' })}
             className="adminNewWeaponStyle__basics__name"
@@ -157,7 +159,7 @@ const AdminNewWeaponStyle: FC = () => {
           <RichTextElement
             label={t('skillSummary.title', { ns: 'fields' })}
             editor={introEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />
@@ -182,7 +184,7 @@ const AdminNewWeaponStyle: FC = () => {
           <RichTextElement
             label={`${t('skillSummary.title', { ns: 'fields' })} (FR)`}
             editor={introFrEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />

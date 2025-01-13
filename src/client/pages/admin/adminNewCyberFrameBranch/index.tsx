@@ -17,8 +17,8 @@ import type { ICuratedCyberFrame } from '../../../types';
 import './adminNewCyberFrameBranch.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
+  name: string
+  nameFr: string
 }
 
 const AdminNewCyberFrameBranch: FC = () => {
@@ -36,25 +36,25 @@ const AdminNewCyberFrameBranch: FC = () => {
   const calledApi = useRef(false);
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   const getCyberFrame = useCallback(() => {
     if (api !== undefined && params.get('cyberFrameId') !== undefined) {
       api.cyberFrames
         .get({
-          cyberFrameId: params.get('cyberFrameId') ?? '',
+          cyberFrameId: params.get('cyberFrameId') ?? ''
         })
         .then((sentCyberFrame: ICuratedCyberFrame) => {
           setLoading(false);
@@ -69,7 +69,7 @@ const AdminNewCyberFrameBranch: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -78,10 +78,10 @@ const AdminNewCyberFrameBranch: FC = () => {
   const onSaveCyberFrameBranch: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr }) => {
       if (
-        introEditor === null ||
-        introFrEditor === null ||
-        api === undefined ||
-        params.get('cyberFrameId') === undefined
+        introEditor === null
+        || introFrEditor === null
+        || api === undefined
+        || params.get('cyberFrameId') === undefined
       ) {
         return;
       }
@@ -97,8 +97,8 @@ const AdminNewCyberFrameBranch: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            summary: htmlFr,
-          },
+            summary: htmlFr
+          }
         };
       }
 
@@ -107,7 +107,7 @@ const AdminNewCyberFrameBranch: FC = () => {
           title: name,
           cyberFrame: params.get('cyberFrameId'),
           summary: html,
-          i18n,
+          i18n
         })
         .then((cyberFrameBranch) => {
           const newId = getNewId();
@@ -117,7 +117,7 @@ const AdminNewCyberFrameBranch: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewCyberFrameBranch.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           void navigate(`/admin/cyberFrameBranch/${cyberFrameBranch._id}`);
         })
@@ -127,15 +127,15 @@ const AdminNewCyberFrameBranch: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.cyberFrameBranchType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.cyberFrameBranchType.${data.sent}`), 'capitalize')
+              })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.cyberFrameBranchType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.cyberFrameBranchType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -166,16 +166,18 @@ const AdminNewCyberFrameBranch: FC = () => {
             {`${t(`terms.cyberFrame.name`)}: ${cyberFrame?.cyberFrame.title}`}
           </Ap>
         </div>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminNewCyberFrameBranch__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameCyberFrameBranch.required', { ns: 'fields' }),
+              required: t('nameCyberFrameBranch.required', { ns: 'fields' })
             }}
             label={t('nameCyberFrameBranch.label', { ns: 'fields' })}
             className="adminNewCyberFrameBranch__basics__name"
@@ -185,7 +187,7 @@ const AdminNewCyberFrameBranch: FC = () => {
           <RichTextElement
             label={t('cyberFrameBranchSummary.title', { ns: 'fields' })}
             editor={introEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />
@@ -210,7 +212,7 @@ const AdminNewCyberFrameBranch: FC = () => {
           <RichTextElement
             label={`${t('cyberFrameBranchSummary.title', { ns: 'fields' })} (FR)`}
             editor={introFrEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />

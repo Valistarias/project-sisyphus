@@ -11,7 +11,7 @@ import {
   generateCode,
   register,
   unregister,
-  update,
+  update
 } from './controller';
 
 export default (app: Router): void => {

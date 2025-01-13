@@ -15,12 +15,12 @@ import { Alert, RichTextElement, completeRichTextElementExtentions } from '../..
 import './adminNewWeaponType.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  weaponStyle: string;
-  itemType: string;
-  icon: string;
-  needTraining: string;
+  name: string
+  nameFr: string
+  weaponStyle: string
+  itemType: string
+  icon: string
+  needTraining: string
 }
 
 const AdminNewWeaponType: FC = () => {
@@ -34,23 +34,23 @@ const AdminNewWeaponType: FC = () => {
   const calledApi = useRef(false);
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const boolRange = useMemo(
     () => [
       {
         value: '1',
-        label: t('terms.general.yes'),
+        label: t('terms.general.yes')
       },
       {
         value: '0',
-        label: t('terms.general.no'),
-      },
+        label: t('terms.general.no')
+      }
     ],
     [t]
   );
@@ -59,37 +59,38 @@ const AdminNewWeaponType: FC = () => {
     handleSubmit,
     setError,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   const weaponStyleList = useMemo(() => weaponStyles.map(({ weaponStyle }) => ({
-      value: weaponStyle._id,
-      label: weaponStyle.title,
-    })), [weaponStyles]);
+    value: weaponStyle._id,
+    label: weaponStyle.title
+  })), [weaponStyles]);
 
   const itemTypeList = useMemo(() => {
     const curatedList: Array<{
-      value: string;
-      label: string;
+      value: string
+      label: string
     }> = [];
     itemTypes.forEach((itemType) => {
       if (itemType.name === 'wep' || itemType.name === 'psm') {
         curatedList.push({
           value: itemType._id,
-          label: t(`itemTypeNames.${itemType.name}`),
+          label: t(`itemTypeNames.${itemType.name}`)
         });
       }
     });
+
     return curatedList;
   }, [itemTypes, t]);
 
   const onSaveWeaponType: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, weaponStyle, icon, needTraining, itemType }) => {
       if (
-        introEditor === null ||
-        introFrEditor === null ||
-        api === undefined ||
-        icon === undefined
+        introEditor === null
+        || introFrEditor === null
+        || api === undefined
+        || icon === undefined
       ) {
         return;
       }
@@ -105,8 +106,8 @@ const AdminNewWeaponType: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            summary: htmlFr,
-          },
+            summary: htmlFr
+          }
         };
       }
 
@@ -118,7 +119,7 @@ const AdminNewWeaponType: FC = () => {
           icon,
           needTraining: needTraining === '1',
           summary: html,
-          i18n,
+          i18n
         })
         .then((weaponStyle) => {
           const newId = getNewId();
@@ -128,7 +129,7 @@ const AdminNewWeaponType: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewWeaponType.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadWeaponTypes();
           void navigate(`/admin/weapontype/${weaponStyle._id}`);
@@ -138,8 +139,8 @@ const AdminNewWeaponType: FC = () => {
           setError('root.serverError', {
             type: 'server',
             message: t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-            }),
+              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+            })
           });
         });
     },
@@ -152,7 +153,7 @@ const AdminNewWeaponType: FC = () => {
       t,
       reloadWeaponTypes,
       navigate,
-      setError,
+      setError
     ]
   );
 
@@ -171,16 +172,18 @@ const AdminNewWeaponType: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewWeaponType.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminNewWeaponType__visual">
           <NodeIconSelect
             label={t('iconWeaponType.label', { ns: 'fields' })}
             control={control}
             inputName="icon"
             rules={{
-              required: t('iconWeaponType.required', { ns: 'fields' }),
+              required: t('iconWeaponType.required', { ns: 'fields' })
             }}
           />
         </div>
@@ -190,7 +193,7 @@ const AdminNewWeaponType: FC = () => {
             inputName="name"
             type="text"
             rules={{
-              required: t('nameWeaponType.required', { ns: 'fields' }),
+              required: t('nameWeaponType.required', { ns: 'fields' })
             }}
             label={t('nameWeaponType.label', { ns: 'fields' })}
             className="adminNewWeaponType__basics__name"
@@ -226,7 +229,7 @@ const AdminNewWeaponType: FC = () => {
           <RichTextElement
             label={t('weaponStyleSummary.title', { ns: 'fields' })}
             editor={introEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />
@@ -251,7 +254,7 @@ const AdminNewWeaponType: FC = () => {
           <RichTextElement
             label={`${t('weaponStyleSummary.title', { ns: 'fields' })} (FR)`}
             editor={introFrEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />

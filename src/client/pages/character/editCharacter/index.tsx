@@ -18,12 +18,12 @@ import type { ICampaign, ICharacter } from '../../../types';
 import './editCharacter.scss';
 
 interface FormValues {
-  firstName: string;
-  lastName: string;
-  nickName: string;
-  gender: string;
-  pronouns: string;
-  campaign: string;
+  firstName: string
+  lastName: string
+  nickName: string
+  gender: string
+  pronouns: string
+  campaign: string
 }
 
 const EditCharacter: FC = () => {
@@ -32,7 +32,7 @@ const EditCharacter: FC = () => {
   const { createAlert, getNewId } = useSystemAlerts();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
-    ConfMessageEvent: {},
+    ConfMessageEvent: {}
   };
   const { user } = useGlobalVars();
   const { id } = useParams();
@@ -47,7 +47,7 @@ const EditCharacter: FC = () => {
   const [bioText, setBioText] = useState('');
 
   const bioEditor = useEditor({
-    extensions: basicRichTextElementExtentions,
+    extensions: basicRichTextElementExtentions
   });
 
   const calledApi = useRef(false);
@@ -63,6 +63,7 @@ const EditCharacter: FC = () => {
     defaultData.gender = character.gender;
     defaultData.pronouns = character.pronouns;
     defaultData.campaign = character.campaign?._id ?? '';
+
     return defaultData;
   }, []);
 
@@ -70,20 +71,20 @@ const EditCharacter: FC = () => {
     () => [
       {
         value: 'M',
-        label: t('terms.gender.male'),
+        label: t('terms.gender.male')
       },
       {
         value: 'F',
-        label: t('terms.gender.female'),
+        label: t('terms.gender.female')
       },
       {
         value: 'N',
-        label: t('terms.gender.neutral'),
+        label: t('terms.gender.neutral')
       },
       {
         value: 'O',
-        label: t('terms.gender.other'),
-      },
+        label: t('terms.gender.other')
+      }
     ],
     [t]
   );
@@ -93,21 +94,21 @@ const EditCharacter: FC = () => {
     handleSubmit,
     setError,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm({
-    defaultValues: useMemo(() => createDefaultData(character), [createDefaultData, character]),
+    defaultValues: useMemo(() => createDefaultData(character), [createDefaultData, character])
   });
 
   const campaignList = useMemo(() => campaigns.map(({ _id, name, owner }) => ({
-      value: _id,
-      label: name,
-      details: i18next.format(
-        t('terms.general.createdByShort', {
-          owner: owner._id === user?._id ? t('terms.general.you') : owner.username,
-        }),
-        'capitalize'
-      ),
-    })), [campaigns, t, user]);
+    value: _id,
+    label: name,
+    details: i18next.format(
+      t('terms.general.createdByShort', {
+        owner: owner._id === user?._id ? t('terms.general.you') : owner.username
+      }),
+      'capitalize'
+    )
+  })), [campaigns, t, user]);
 
   const getCampaigns = useCallback(() => {
     if (api !== undefined) {
@@ -126,7 +127,7 @@ const EditCharacter: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -143,7 +144,7 @@ const EditCharacter: FC = () => {
             nickName,
             gender,
             pronouns,
-            campaignId: campaign !== '' ? campaign : undefined,
+            campaignId: campaign !== '' ? campaign : undefined
           })
           .then(() => {
             const newId = getNewId();
@@ -153,7 +154,7 @@ const EditCharacter: FC = () => {
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{t('editCharacter.successEdit', { ns: 'pages' })}</Ap>
                 </Alert>
-              ),
+              )
             });
           })
           .catch(({ response }) => {
@@ -161,8 +162,8 @@ const EditCharacter: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize')
+              })
             });
           });
       }
@@ -184,7 +185,7 @@ const EditCharacter: FC = () => {
         text: t('characters.confirmDelete.text', { ns: 'pages', elt: displayedName }),
         confirmCta: t('characters.confirmDelete.confirmCta', { ns: 'pages' }),
         confirmWord: t('terms.general.delete'),
-        theme: 'error',
+        theme: 'error'
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
@@ -199,7 +200,7 @@ const EditCharacter: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('characters.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
                 void navigate('/characters');
               })
@@ -211,7 +212,7 @@ const EditCharacter: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('serverErrors.CYPU-301')}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
               });
           }
@@ -229,7 +230,7 @@ const EditCharacter: FC = () => {
       getCampaigns();
       api.characters
         .get({
-          characterId: id,
+          characterId: id
         })
         .then((sentCharacter: ICharacter) => {
           if (sentCharacter === undefined) {
@@ -251,7 +252,7 @@ const EditCharacter: FC = () => {
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{t('serverErrors.CYPU-301')}</Ap>
                 </Alert>
-              ),
+              )
             });
           }
           setLoading(false);
@@ -297,9 +298,11 @@ const EditCharacter: FC = () => {
         {t('editCharacter.return', { ns: 'pages' })}
       </Button>
       <form className="editcharacter__form" onSubmit={handleSubmit(onSubmit)} noValidate>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="editcharacter__form__basics">
           <Input
             control={control}
@@ -307,7 +310,7 @@ const EditCharacter: FC = () => {
             type="text"
             autoComplete="username"
             rules={{
-              required: t('firstName.required', { ns: 'fields' }),
+              required: t('firstName.required', { ns: 'fields' })
             }}
             label={t('firstName.label', { ns: 'fields' })}
             className="editcharacter__form__basics__elt"
@@ -318,7 +321,7 @@ const EditCharacter: FC = () => {
             type="text"
             autoComplete="username"
             rules={{
-              required: t('lastName.required', { ns: 'fields' }),
+              required: t('lastName.required', { ns: 'fields' })
             }}
             label={t('lastName.label', { ns: 'fields' })}
             className="editcharacter__form__basics__elt"
@@ -338,7 +341,7 @@ const EditCharacter: FC = () => {
             inputName="gender"
             label={t('gender.label', { ns: 'fields' })}
             rules={{
-              required: t('gender.required', { ns: 'fields' }),
+              required: t('gender.required', { ns: 'fields' })
             }}
             options={genderRange}
             className="editcharacter__form__core__elt"

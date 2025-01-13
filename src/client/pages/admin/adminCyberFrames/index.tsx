@@ -21,6 +21,7 @@ const AdminCyberFrames: FC = () => {
     if (cyberFrames === null || cyberFrames.length === 0) {
       return null;
     }
+
     return (
       <Aul className="adminCyberFrames__cyberframe-list" noPoints>
         {cyberFrames.map(({ cyberFrame }) => (

@@ -4,14 +4,13 @@ import Entity from './entity';
 
 import type { ICuratedNode } from '../../types';
 
-
 interface IBranchPayload {
-  cyberFrameBranchId?: string;
-  skillBranchId?: string;
+  cyberFrameBranchId?: string
+  skillBranchId?: string
 }
 
 interface INodePayload {
-  nodeId: string;
+  nodeId: string
 }
 
 export default class Nodes extends Entity {
@@ -23,7 +22,7 @@ export default class Nodes extends Entity {
   constructor() {
     super('nodes');
 
-    this.getAllByBranch = async (payload) =>
+    this.getAllByBranch = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/bybranch/`, { params: payload })
@@ -35,7 +34,7 @@ export default class Nodes extends Entity {
           });
       });
 
-    this.getAllBySkill = async (payload) =>
+    this.getAllBySkill = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/byskill/`, { params: payload })
@@ -47,7 +46,7 @@ export default class Nodes extends Entity {
           });
       });
 
-    this.getAllByCyberFrame = async (payload) =>
+    this.getAllByCyberFrame = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/bycyberframe/`, { params: payload })
@@ -59,7 +58,7 @@ export default class Nodes extends Entity {
           });
       });
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })

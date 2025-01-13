@@ -20,6 +20,7 @@ const AdminBodyParts: FC = () => {
     if (bodyParts === null || bodyParts.length === 0) {
       return null;
     }
+
     return (
       <Aul className="adminBodyParts__body-part-list" noPoints>
         {bodyParts.map(({ bodyPart }) => (

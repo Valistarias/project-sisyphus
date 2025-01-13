@@ -20,6 +20,7 @@ const AdminWeaponStyles: FC = () => {
     if (weaponStyles === null || weaponStyles.length === 0) {
       return null;
     }
+
     return (
       <Aul className="adminWeaponStyles__weapon-style-list" noPoints>
         {weaponStyles.map(({ weaponStyle }) => (

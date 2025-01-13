@@ -31,12 +31,14 @@ const RuleBook: FC = () => {
       return;
     }
     const { ruleBook: singleRuleBook } = ruleBook;
+
     return singleRuleBook.chapters.map(({ _id: chapterId, title: chapterTitle, pages }) => {
       const listPages = pages.map(({ _id: pageId, title: pageTitle }) => (
         <Aa key={pageId} href={`/rulebook/${ruleBookId}/${chapterId}#${pageId}`}>
           {pageTitle}
         </Aa>
       ));
+
       return (
         <div key={chapterId} className="rulebook__table-content__chapter">
           <Aa href={`/rulebook/${ruleBookId}/${chapterId}`}>{chapterTitle}</Aa>
@@ -72,7 +74,7 @@ const RuleBook: FC = () => {
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{t('serverErrors.CYPU-301')}</Ap>
                 </Alert>
-              ),
+              )
             });
           }
         });

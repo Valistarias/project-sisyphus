@@ -17,23 +17,23 @@ import {
   arrSum,
   classTrim,
   getCyberFrameLevelsByNodes,
-  getValuesFromGlobalValues,
+  getValuesFromGlobalValues
 } from '../../utils';
 
 import './characterCreation.scss';
 
 interface FormValues {
-  stats: Record<string, number>;
+  stats: Record<string, number>
 }
 
 interface ICharacterCreationStep2 {
   /** When the user click send and the data is send perfectly */
   onSubmitStats: (
     stats: Array<{
-      id: string;
-      value: number;
+      id: string
+      value: number
     }>
-  ) => void;
+  ) => void
 }
 
 const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) => {
@@ -77,9 +77,9 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
     ({ stats }) => {
       if (onSubmitStats !== undefined) {
         onSubmitStats(
-          Object.keys(stats).map((statKey) => ({
+          Object.keys(stats).map(statKey => ({
             id: statKey,
-            value: stats[statKey],
+            value: stats[statKey]
           }))
         );
       }
@@ -91,7 +91,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
     defaultValues: useMemo(
       () => createDefaultData(stats, character),
       [createDefaultData, stats, character]
-    ),
+    )
   });
 
   const { baseStatPoints, minStatAtCreation } = useMemo(
@@ -111,10 +111,10 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
     const statBonuses: Record<
       string,
       {
-        bonus: number;
-        source: string;
-        sourceId: string;
-        broad: boolean;
+        bonus: number
+        source: string
+        sourceId: string
+        broad: boolean
       }
     > = {};
 
@@ -129,7 +129,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
                 bonus: statBonus.value,
                 source: cyberFrame.cyberFrame.title,
                 sourceId: cyberFrame.cyberFrame._id,
-                broad: false,
+                broad: false
               };
             } else {
               statBonuses[statBonus.stat].bonus += statBonus.value;
@@ -171,20 +171,22 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
                 <RichTextElement rawStringContent={stat.summary} readOnly />
               </Helper>
             </Atitle>
-            {bonusesByStat[stat._id] !== undefined ? (
-              <Ap className="characterCreation-step2__stats__content__bonus">
-                {bonusesByStat[stat._id].broad === true
-                  ? t('characterCreation.step2.generalBonus', {
-                      ns: 'components',
-                      points: bonusesByStat[stat._id].bonus,
-                    })
-                  : t('characterCreation.step2.cFrameBonus', {
-                      ns: 'components',
-                      points: bonusesByStat[stat._id].bonus,
-                      cFrameName: bonusesByStat[stat._id].source,
-                    })}
-              </Ap>
-            ) : null}
+            {bonusesByStat[stat._id] !== undefined
+              ? (
+                  <Ap className="characterCreation-step2__stats__content__bonus">
+                    {bonusesByStat[stat._id].broad === true
+                      ? t('characterCreation.step2.generalBonus', {
+                          ns: 'components',
+                          points: bonusesByStat[stat._id].bonus
+                        })
+                      : t('characterCreation.step2.cFrameBonus', {
+                          ns: 'components',
+                          points: bonusesByStat[stat._id].bonus,
+                          cFrameName: bonusesByStat[stat._id].source
+                        })}
+                  </Ap>
+                )
+              : null}
             <Ap className="characterCreation-step2__stats__content__text">
               <span className="characterCreation-step2__stats__content__text__title">
                 {t(
@@ -240,6 +242,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
         statBlock = [];
       }
     });
+
     return cStatElts;
   };
 
@@ -249,16 +252,16 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
         characterCreation-step2
       `)}
       initial={{
-        transform: 'skew(90deg, 0deg) scale3d(.2, .2, .2)',
+        transform: 'skew(90deg, 0deg) scale3d(.2, .2, .2)'
       }}
       animate={{
         transform: 'skew(0, 0) scale3d(1, 1, 1)',
         transitionEnd: {
-          transform: 'none',
-        },
+          transform: 'none'
+        }
       }}
       exit={{
-        transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)',
+        transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)'
       }}
       transition={{ ease: 'easeInOut', duration: 0.2 }}
     >

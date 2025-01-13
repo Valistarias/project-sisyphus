@@ -5,13 +5,13 @@ import React, {
   useRef,
   useState,
   type FC,
-  type ReactNode,
+  type ReactNode
 } from 'react';
 
 import { combine } from '@atlaskit/pragmatic-drag-and-drop/combine';
 import {
   draggable,
-  dropTargetForElements,
+  dropTargetForElements
 } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { attachClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import invariant from 'tiny-invariant';
@@ -24,31 +24,31 @@ import { classTrim } from '../utils';
 import './dragList.scss';
 
 interface IDragElt {
-  id: string;
-  title: string;
-  titleLevel?: 1 | 2 | 3 | 4;
+  id: string
+  title: string
+  titleLevel?: 1 | 2 | 3 | 4
   button?: {
-    href: string;
-    content: string;
-  };
+    href: string
+    content: string
+  }
 }
 
 interface IDragList {
   /** The class of the DragList */
-  className?: string;
+  className?: string
   /** The data of the DragList */
-  data: Record<string, IDragElt>;
+  data: Record<string, IDragElt>
   /** The id of the DragList */
-  id: string;
+  id: string
   /** When the list changes of order */
-  onChange: (elts: string[], isInitial: boolean) => void;
+  onChange: (elts: string[], isInitial: boolean) => void
 }
 
 interface IDragListCard {
   /** The index of the DragList */
-  index: string;
+  index: string
   /** The children inside the Drag List card */
-  children: ReactNode;
+  children: ReactNode
 }
 
 const DragListCard: FC<IDragListCard> = ({ children, index }) => {
@@ -68,7 +68,7 @@ const DragListCard: FC<IDragListCard> = ({ children, index }) => {
         },
         onDrop: () => {
           setIsDragging(false);
-        },
+        }
       }),
       dropTargetForElements({
         element: cardEl,
@@ -78,10 +78,10 @@ const DragListCard: FC<IDragListCard> = ({ children, index }) => {
           return attachClosestEdge(data, {
             input,
             element,
-            allowedEdges: ['top', 'bottom'],
+            allowedEdges: ['top', 'bottom']
           });
         },
-        getIsSticky: () => true,
+        getIsSticky: () => true
       })
     );
   }, [index]);
@@ -106,10 +106,10 @@ const DragList: FC<IDragList> = ({ data, className, id, onChange }) => {
   const [order, setOrder] = useState<string[]>([]);
 
   const reorderCard = useCallback(
-    ({ movedIndex, destinationIndex }: { movedIndex: string; destinationIndex: string }) => {
+    ({ movedIndex, destinationIndex }: { movedIndex: string, destinationIndex: string }) => {
       setOrder((prev: string[]) => {
-        const movedPos = prev.findIndex((id) => id === movedIndex);
-        const destinationPos = prev.findIndex((id) => id === destinationIndex);
+        const movedPos = prev.findIndex(id => id === movedIndex);
+        const destinationPos = prev.findIndex(id => id === destinationIndex);
         if (movedPos < 0 || destinationPos < 0) {
           return prev;
         }
@@ -117,6 +117,7 @@ const DragList: FC<IDragList> = ({ data, className, id, onChange }) => {
         next.splice(movedPos, 1);
         next.splice(destinationPos, 0, movedIndex);
         onChange(next, false);
+
         return next;
       });
     },
@@ -139,7 +140,7 @@ const DragList: FC<IDragList> = ({ data, className, id, onChange }) => {
         if (movedIndex !== destinationIndex) {
           reorderCard({
             movedIndex,
-            destinationIndex,
+            destinationIndex
           });
         }
       }
@@ -148,17 +149,20 @@ const DragList: FC<IDragList> = ({ data, className, id, onChange }) => {
   );
 
   const listContent = useMemo(() => {
-    const eltList = order.map((orderElt) => data[orderElt]);
+    const eltList = order.map(orderElt => data[orderElt]);
+
     return eltList.map((singleData: IDragElt) => (
       <DragListCard key={singleData.id} index={singleData.id}>
         <Atitle className="draglist__elt__title" level={singleData.titleLevel ?? 3}>
           {singleData.title}
         </Atitle>
-        {singleData.button !== undefined ? (
-          <Button size="small" href={singleData.button.href}>
-            {singleData.button.content}
-          </Button>
-        ) : null}
+        {singleData.button !== undefined
+          ? (
+              <Button size="small" href={singleData.button.href}>
+                {singleData.button.content}
+              </Button>
+            )
+          : null}
       </DragListCard>
     ));
   }, [data, order]);
@@ -184,7 +188,7 @@ const DragList: FC<IDragList> = ({ data, className, id, onChange }) => {
         setIsDraggedOver(false);
       },
       onDrop: handleDrop,
-      getIsSticky: () => true,
+      getIsSticky: () => true
     });
   }, [handleDrop]);
 

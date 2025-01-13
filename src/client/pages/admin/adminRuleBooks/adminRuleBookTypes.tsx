@@ -15,7 +15,7 @@ import type { IRuleBookType } from '../../../types';
 import './adminRuleBookTypes.scss';
 
 interface FormValues {
-  name: string;
+  name: string
 }
 
 const AdminRuleBookTypes: FC = () => {
@@ -34,7 +34,7 @@ const AdminRuleBookTypes: FC = () => {
     setError,
     reset,
     setValue,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   const loadRuleBookTypes = useCallback(() => {
@@ -52,7 +52,7 @@ const AdminRuleBookTypes: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -66,7 +66,7 @@ const AdminRuleBookTypes: FC = () => {
           api.ruleBookTypes
             .update({
               id: updateBookTypeMode,
-              name,
+              name
             })
             .then(() => {
               const newId = getNewId();
@@ -76,7 +76,7 @@ const AdminRuleBookTypes: FC = () => {
                   <Alert key={newId} id={newId} timer={5}>
                     <Ap>{t('adminRuleBooks.successUpdateType', { ns: 'pages' })}</Ap>
                   </Alert>
-                ),
+                )
               });
               loadRuleBookTypes();
               setUpdateBookTypeMode('');
@@ -88,15 +88,15 @@ const AdminRuleBookTypes: FC = () => {
                 setError(data.sent as 'name', {
                   type: 'server',
                   message: t(`serverErrors.${data.code}`, {
-                    field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
-                  }),
+                    field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize')
+                  })
                 });
               } else {
                 setError('root.serverError', {
                   type: 'server',
                   message: t(`serverErrors.${data.code}`, {
-                    field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
-                  }),
+                    field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize')
+                  })
                 });
               }
             });
@@ -104,7 +104,7 @@ const AdminRuleBookTypes: FC = () => {
           // Creating a Rulebook Type
           api.ruleBookTypes
             .create({
-              name,
+              name
             })
             .then(() => {
               const newId = getNewId();
@@ -114,7 +114,7 @@ const AdminRuleBookTypes: FC = () => {
                   <Alert key={newId} id={newId} timer={5}>
                     <Ap>{t('adminRuleBooks.successCreateType', { ns: 'pages' })}</Ap>
                   </Alert>
-                ),
+                )
               });
               loadRuleBookTypes();
               setCreateBookTypeMode(false);
@@ -126,15 +126,15 @@ const AdminRuleBookTypes: FC = () => {
                 setError(data.sent as 'name', {
                   type: 'server',
                   message: t(`serverErrors.${data.code}`, {
-                    field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
-                  }),
+                    field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize')
+                  })
                 });
               } else {
                 setError('root.serverError', {
                   type: 'server',
                   message: t(`serverErrors.${data.code}`, {
-                    field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
-                  }),
+                    field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize')
+                  })
                 });
               }
             });
@@ -170,7 +170,7 @@ const AdminRuleBookTypes: FC = () => {
                   <Alert key={newId} id={newId} timer={5}>
                     <Ap>{t('adminRuleBooks.successDeleteType', { ns: 'pages' })}</Ap>
                   </Alert>
-                ),
+                )
               });
               loadRuleBookTypes();
               setDeleteBookTypeMode('');
@@ -184,11 +184,11 @@ const AdminRuleBookTypes: FC = () => {
                   <Alert key={newId} id={newId} timer={5}>
                     <Ap>
                       {t(`serverErrors.${data.code}`, {
-                        field: data.sent,
+                        field: data.sent
                       })}
                     </Ap>
                   </Alert>
-                ),
+                )
               });
               setDeleteBookTypeMode('');
             });
@@ -231,6 +231,7 @@ const AdminRuleBookTypes: FC = () => {
     if (updateBookTypeMode !== '') {
       return t('adminRuleBooks.updateType', { ns: 'pages' });
     }
+
     return createBookTypeMode
       ? t('adminRuleBooks.saveType', { ns: 'pages' })
       : t('adminRuleBooks.createType', { ns: 'pages' });
@@ -245,32 +246,38 @@ const AdminRuleBookTypes: FC = () => {
       <Atitle level={2}>
         {i18next.format(t('terms.ruleBook.type', { count: ruleBookTypes.length }), 'capitalize')}
       </Atitle>
-      {deleteBookTypeMode !== '' ? (
-        <Ap className="adminRuleBooktypes__alert">
-          {t('adminRuleBooks.deleteRuleBookTypeMessage', { ns: 'pages' })}
-        </Ap>
-      ) : null}
+      {deleteBookTypeMode !== ''
+        ? (
+            <Ap className="adminRuleBooktypes__alert">
+              {t('adminRuleBooks.deleteRuleBookTypeMessage', { ns: 'pages' })}
+            </Ap>
+          )
+        : null}
       <Aul className="adminRuleBooktypes__list" noPoints>
         {ruleBookTypes.length > 0 ? rulebookTypesDom : null}
       </Aul>
       <div className="adminRuleBooktypes__create">
-        {createBookTypeMode || updateBookTypeMode !== '' ? (
-          <form className="signup__form" onSubmit={handleSubmit(onSubmit)}>
-            {errors.root?.serverError.message !== undefined ? (
-              <Aerror>{errors.root.serverError.message}</Aerror>
-            ) : null}
-            <Input
-              control={control}
-              inputName="name"
-              type="text"
-              size="small"
-              rules={{
-                required: t('nameRuleBookType.required', { ns: 'fields' }),
-              }}
-              label={t('nameRuleBookType.label', { ns: 'fields' })}
-            />
-          </form>
-        ) : null}
+        {createBookTypeMode || updateBookTypeMode !== ''
+          ? (
+              <form className="signup__form" onSubmit={handleSubmit(onSubmit)}>
+                {errors.root?.serverError.message !== undefined
+                  ? (
+                      <Aerror>{errors.root.serverError.message}</Aerror>
+                    )
+                  : null}
+                <Input
+                  control={control}
+                  inputName="name"
+                  type="text"
+                  size="small"
+                  rules={{
+                    required: t('nameRuleBookType.required', { ns: 'fields' })
+                  }}
+                  label={t('nameRuleBookType.label', { ns: 'fields' })}
+                />
+              </form>
+            )
+          : null}
         <div className="adminRuleBooktypes__create__buttons">
           <Button
             size="small"
@@ -284,18 +291,20 @@ const AdminRuleBookTypes: FC = () => {
           >
             {createUpdateRuleBookTypesText}
           </Button>
-          {createBookTypeMode || updateBookTypeMode !== '' ? (
-            <Button
-              size="small"
-              onClick={() => {
-                setCreateBookTypeMode(false);
-                setUpdateBookTypeMode('');
-                reset();
-              }}
-            >
-              {t('adminRuleBooks.abortSaveType', { ns: 'pages' })}
-            </Button>
-          ) : null}
+          {createBookTypeMode || updateBookTypeMode !== ''
+            ? (
+                <Button
+                  size="small"
+                  onClick={() => {
+                    setCreateBookTypeMode(false);
+                    setUpdateBookTypeMode('');
+                    reset();
+                  }}
+                >
+                  {t('adminRuleBooks.abortSaveType', { ns: 'pages' })}
+                </Button>
+              )
+            : null}
         </div>
       </div>
     </div>

@@ -6,7 +6,7 @@ import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/global
 import {
   createGeneralForCyberFrameId,
   deleteCyberFrameBranchesByCyberFrameId,
-  type CuratedIntICyberFrameBranch,
+  type CuratedIntICyberFrameBranch
 } from '../cyberFrameBranch/controller';
 
 import type { HydratedICyberFrameBranch, IRuleBook } from '../index';
@@ -34,9 +34,9 @@ const findCyberFrames = async (): Promise<LeanICyberFrame[]> =>
             'skillBonuses',
             'skillBonuses',
             'statBonuses',
-            'charParamBonuses',
-          ],
-        },
+            'charParamBonuses'
+          ]
+        }
       })
       .then(async (res?: LeanICyberFrame[] | null) => {
         if (res === undefined || res === null) {
@@ -67,9 +67,9 @@ const findCyberFrameById = async (id: string): Promise<HydratedICyberFrame> =>
             'skillBonuses',
             'skillBonuses',
             'statBonuses',
-            'charParamBonuses',
-          ],
-        },
+            'charParamBonuses'
+          ]
+        }
       })
       .then(async (res?: HydratedICyberFrame | null) => {
         if (res === undefined || res === null) {
@@ -87,13 +87,14 @@ const create = (req: Request, res: Response): void => {
   const { title, summary, i18n = null, ruleBook } = req.body;
   if (title === undefined || summary === undefined || ruleBook === undefined) {
     res.status(400).send(gemInvalidField('CyberFrame'));
+
     return;
   }
 
   const cyberFrame = new CyberFrame({
     title,
     summary,
-    ruleBook,
+    ruleBook
   });
 
   if (i18n !== null) {
@@ -107,11 +108,11 @@ const create = (req: Request, res: Response): void => {
         .then(() => {
           res.send(cyberFrame);
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -120,6 +121,7 @@ const update = (req: Request, res: Response): void => {
   const { id, title = null, summary = null, ruleBook = null, i18n } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('CyberFrame ID'));
+
     return;
   }
   findCyberFrameById(id as string)
@@ -138,7 +140,7 @@ const update = (req: Request, res: Response): void => {
         const newIntl = {
           ...(cyberFrame.i18n !== null && cyberFrame.i18n !== undefined && cyberFrame.i18n !== ''
             ? JSON.parse(cyberFrame.i18n)
-            : {}),
+            : {})
         };
 
         Object.keys(i18n as Record<string, any>).forEach((lang) => {
@@ -153,7 +155,7 @@ const update = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'CyberFrame was updated successfully!', cyberFrame });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -166,6 +168,7 @@ const deleteCyberFrameById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('CyberFrame ID'));
+
       return;
     }
     deleteCyberFrameBranchesByCyberFrameId(id)
@@ -174,11 +177,11 @@ const deleteCyberFrameById = async (id: string): Promise<boolean> =>
           .then(() => {
             resolve(true);
           })
-          .catch((err: Error) => {
+          .catch((err: unknown) => {
             reject(gemServerError(err));
           });
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
@@ -189,30 +192,31 @@ const deleteCyberFrame = (req: Request, res: Response): void => {
     .then(() => {
       res.send({ message: 'CyberFrame was deleted successfully!' });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
 
 interface CuratedICyberFrame extends Omit<LeanICyberFrame, 'branches'> {
-  branches: CuratedIntICyberFrameBranch[];
+  branches: CuratedIntICyberFrameBranch[]
 }
 
 interface CuratedIntICyberFrame {
-  i18n: Record<string, any> | Record<string, unknown>;
-  cyberFrame: CuratedICyberFrame;
+  i18n: Record<string, unknown>
+  cyberFrame: CuratedICyberFrame
 }
 
 const findSingle = (req: Request, res: Response): void => {
   const { cyberFrameId } = req.query;
   if (cyberFrameId === undefined || typeof cyberFrameId !== 'string') {
     res.status(400).send(gemInvalidField('CyberFrame ID'));
+
     return;
   }
   findCyberFrameById(cyberFrameId)
     .then((cyberFrameSent) => {
-      const cyberFrame: FlattenMaps<HydratedICyberFrame & { _id: ObjectId }> =
-        cyberFrameSent.toJSON();
+      const cyberFrame: FlattenMaps<HydratedICyberFrame & { _id: ObjectId }>
+        = cyberFrameSent.toJSON();
       const cleanCyberFrame = {
         ...cyberFrame,
         branches: cyberFrame.branches.map((cyberFrameBranch) => {
@@ -220,26 +224,27 @@ const findSingle = (req: Request, res: Response): void => {
             ...cyberFrameBranch,
             nodes:
               cyberFrameBranch.nodes !== undefined
-                ? cyberFrameBranch.nodes.map((node) => ({
+                ? cyberFrameBranch.nodes.map(node => ({
                     node,
-                    i18n: curateI18n(node.i18n),
+                    i18n: curateI18n(node.i18n)
                   }))
-                : [],
+                : []
           };
+
           return {
             cyberFrameBranch: cleanCyberFrameBranch,
-            i18n: curateI18n(cleanCyberFrameBranch.i18n),
+            i18n: curateI18n(cleanCyberFrameBranch.i18n)
           };
-        }),
+        })
       };
 
       const sentObj = {
         cyberFrame: cleanCyberFrame,
-        i18n: curateI18n(cyberFrame.i18n),
+        i18n: curateI18n(cyberFrame.i18n)
       };
       res.send(sentObj);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
@@ -257,28 +262,29 @@ const findAll = (req: Request, res: Response): void => {
               ...cyberFrameBranch,
               nodes:
                 cyberFrameBranch.nodes !== undefined
-                  ? cyberFrameBranch.nodes.map((node) => ({
+                  ? cyberFrameBranch.nodes.map(node => ({
                       node,
-                      i18n: curateI18n(node.i18n),
+                      i18n: curateI18n(node.i18n)
                     }))
-                  : [],
+                  : []
             };
+
             return {
               cyberFrameBranch: cleanCyberFrameBranch,
-              i18n: curateI18n(cleanCyberFrameBranch.i18n),
+              i18n: curateI18n(cleanCyberFrameBranch.i18n)
             };
-          }),
+          })
         };
 
         curatedCyberFrames.push({
           cyberFrame: cleanCyberFrame,
-          i18n: curateI18n(cyberFrame.i18n),
+          i18n: curateI18n(cyberFrame.i18n)
         });
       });
 
       res.send(curatedCyberFrames);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export { create, deleteCyberFrame, findAll, findCyberFrameById, findSingle, update };

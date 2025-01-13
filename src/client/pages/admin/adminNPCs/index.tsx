@@ -28,6 +28,7 @@ const AdminNPCs: FC = () => {
     if (nPCs === null || nPCs.length === 0) {
       return null;
     }
+
     return (
       <Aul className="adminNPCs__nPC-list" noPoints>
         {nPCs.map(({ nPC }) => (
@@ -63,7 +64,7 @@ const AdminNPCs: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }

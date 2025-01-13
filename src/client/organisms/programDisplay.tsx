@@ -17,23 +17,23 @@ import './programDisplay.scss';
 
 interface IProgramDisplay extends IQuarkProps {
   /** The program to be displayed */
-  program: ICuratedProgram;
+  program: ICuratedProgram
   /** The display mode */
-  mode?: 'basic' | 'hover';
+  mode?: 'basic' | 'hover'
 }
 
 interface ICompleteDamage extends Omit<IDamage, 'damageType'> {
-  damageType: ICuratedDamageType | undefined;
+  damageType: ICuratedDamageType | undefined
 }
 
 interface ICompleteProgram extends Omit<IProgram, 'programScope' | 'rarity' | 'damages'> {
-  programScope: ICuratedProgramScope | undefined;
-  rarity: ICuratedRarity | undefined;
-  damages: ICompleteDamage[];
+  programScope: ICuratedProgramScope | undefined
+  rarity: ICuratedRarity | undefined
+  damages: ICompleteDamage[]
 }
 
 interface ICuratedCompleteProgram extends Omit<ICuratedProgram, 'program'> {
-  program: ICompleteProgram;
+  program: ICompleteProgram
 }
 
 const ProgramDisplay: FC<IProgramDisplay> = ({ program, mode = 'basic' }) => {
@@ -48,22 +48,23 @@ const ProgramDisplay: FC<IProgramDisplay> = ({ program, mode = 'basic' }) => {
       return null;
     }
     const { program: programObj, i18n } = program;
+
     return {
       program: {
         ...programObj,
         programScope: programScopes.find(
-          (programScope) => programScope.programScope._id === programObj.programScope
+          programScope => programScope.programScope._id === programObj.programScope
         ),
-        rarity: rarities.find((rarity) => rarity.rarity._id === programObj.rarity),
+        rarity: rarities.find(rarity => rarity.rarity._id === programObj.rarity),
         damages:
-          programObj.damages?.map((programDamage) => ({
+          programObj.damages?.map(programDamage => ({
             ...programDamage,
             damageType: damageTypes.find(
-              (damageType) => damageType.damageType._id === programDamage.damageType
-            ),
-          })) ?? [],
+              damageType => damageType.damageType._id === programDamage.damageType
+            )
+          })) ?? []
       },
-      i18n,
+      i18n
     };
   }, [programScopes, program, rarities, damageTypes]);
 
@@ -103,13 +104,13 @@ const ProgramDisplay: FC<IProgramDisplay> = ({ program, mode = 'basic' }) => {
         title={program.title}
         subTitle={`${scope?.programScope.title}${program.radius !== undefined ? ` (${program.radius}m)` : ''}`}
         type={t('itemTypeNames.pro')}
-        mainNode={
+        mainNode={(
           <div className="program-display__block__main">
             <Atitle className="program-display__block__main__title" level={4}>
               {t('display.cat.damages', { ns: 'components' })}
             </Atitle>
             <Aul noPoints className="program-display__block__damages">
-              {program.damages.map((damage) => (
+              {program.damages.map(damage => (
                 <Ali key={damage._id} className="program-display__block__damages__elt">
                   {damage.dices}
                   <span className="program-display__block__damages__elt__type">{`(${damage.damageType?.damageType.title})`}</span>
@@ -117,7 +118,7 @@ const ProgramDisplay: FC<IProgramDisplay> = ({ program, mode = 'basic' }) => {
               ))}
             </Aul>
           </div>
-        }
+        )}
       />
     );
   }, [curatedProgram, t]);

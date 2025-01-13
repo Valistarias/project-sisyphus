@@ -12,9 +12,9 @@ type typeVideos = 'logo';
 
 interface IAvideo extends IQuarkProps {
   /** The type of icon */
-  video: typeVideos;
+  video: typeVideos
   /** When the icon is clicked */
-  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void
 }
 
 const Avideo: FC<IAvideo> = ({ video, className, onClick }) => {

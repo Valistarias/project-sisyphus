@@ -8,7 +8,7 @@ import './aimg.scss';
 
 interface IAimg extends IQuarkProps {
   /** The url of the image */
-  src: string;
+  src: string
 }
 
 const Aimg: FC<IAimg> = ({ className, src }) => (

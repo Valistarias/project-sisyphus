@@ -20,6 +20,7 @@ const AdminCharParams: FC = () => {
     if (charParams === null || charParams.length === 0) {
       return null;
     }
+
     return (
       <Aul className="adminCharParams__charParam-list" noPoints>
         {charParams.map(({ charParam }) => (

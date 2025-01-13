@@ -15,11 +15,11 @@ import { Alert, RichTextElement, completeRichTextElementExtentions } from '../..
 import './adminNewCharParam.scss';
 
 interface FormValues {
-  name: string;
-  short: string;
-  nameFr: string;
-  shortFr: string;
-  formulaId: string;
+  name: string
+  short: string
+  nameFr: string
+  shortFr: string
+  formulaId: string
 }
 
 const AdminNewCharParam: FC = () => {
@@ -30,18 +30,18 @@ const AdminNewCharParam: FC = () => {
   const { reloadCharParams } = useGlobalVars();
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   const onSaveCharParam: SubmitHandler<FormValues> = useCallback(
@@ -62,8 +62,8 @@ const AdminNewCharParam: FC = () => {
           fr: {
             title: nameFr,
             short: shortFr ?? '',
-            summary: htmlFr,
-          },
+            summary: htmlFr
+          }
         };
       }
 
@@ -73,7 +73,7 @@ const AdminNewCharParam: FC = () => {
           formulaId,
           short,
           summary: html,
-          i18n,
+          i18n
         })
         .then((charParams) => {
           const newId = getNewId();
@@ -83,7 +83,7 @@ const AdminNewCharParam: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewCharParam.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadCharParams();
           void navigate(`/admin/charparam/${charParams._id}`);
@@ -94,15 +94,15 @@ const AdminNewCharParam: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id',
-              })} by ${data.sent}`,
+                field: 'Formula Id'
+              })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -116,7 +116,7 @@ const AdminNewCharParam: FC = () => {
       t,
       reloadCharParams,
       navigate,
-      setError,
+      setError
     ]
   );
 
@@ -128,16 +128,18 @@ const AdminNewCharParam: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewCharParam.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminNewCharParam__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameCharParam.required', { ns: 'fields' }),
+              required: t('nameCharParam.required', { ns: 'fields' })
             }}
             label={t('nameCharParam.label', { ns: 'fields' })}
             className="adminNewCharParam__basics__name"
@@ -147,7 +149,7 @@ const AdminNewCharParam: FC = () => {
             inputName="short"
             type="text"
             rules={{
-              required: t('nameCharParamShort.required', { ns: 'fields' }),
+              required: t('nameCharParamShort.required', { ns: 'fields' })
             }}
             label={t('nameCharParamShort.label', { ns: 'fields' })}
             className="adminNewCharParam__basics__name"
@@ -157,7 +159,7 @@ const AdminNewCharParam: FC = () => {
           <RichTextElement
             label={t('charParamSummary.title', { ns: 'fields' })}
             editor={introEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />
@@ -169,8 +171,8 @@ const AdminNewCharParam: FC = () => {
               required: t('charParamFormula.required', { ns: 'fields' }),
               pattern: {
                 value: /^([a-z]){2,3}$/,
-                message: t('charParamFormula.format', { ns: 'fields' }),
-              },
+                message: t('charParamFormula.format', { ns: 'fields' })
+              }
             }}
             label={t('charParamFormula.label', { ns: 'fields' })}
           />
@@ -202,7 +204,7 @@ const AdminNewCharParam: FC = () => {
           <RichTextElement
             label={`${t('charParamSummary.title', { ns: 'fields' })} (FR)`}
             editor={introFrEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />

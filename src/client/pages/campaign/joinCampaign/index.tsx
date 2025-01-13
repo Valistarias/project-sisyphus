@@ -34,7 +34,7 @@ const JoinCampaign: FC = () => {
       calledApi.current = true;
       api.campaigns
         .register({
-          campaignCode: id,
+          campaignCode: id
         })
         .then(({ campaignId }) => {
           const newId = getNewId();
@@ -44,7 +44,7 @@ const JoinCampaign: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('joinCampaign.successJoin', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           void navigate(`/campaign/${campaignId}`);
         })
@@ -56,7 +56,7 @@ const JoinCampaign: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -76,7 +76,7 @@ const JoinCampaign: FC = () => {
         </>
       );
     }
-    if (campaign.players.find((player) => player._id === user._id) !== undefined) {
+    if (campaign.players.find(player => player._id === user._id) !== undefined) {
       return (
         <>
           <Ap>{t('joinCampaign.alreadyPlayer', { ns: 'pages' })}</Ap>
@@ -86,6 +86,7 @@ const JoinCampaign: FC = () => {
         </>
       );
     }
+
     return (
       <>
         <Ap>{t('joinCampaign.text', { ns: 'pages' })}</Ap>
@@ -101,7 +102,7 @@ const JoinCampaign: FC = () => {
       calledApi.current = true;
       api.campaigns
         .find({
-          campaignCode: id,
+          campaignCode: id
         })
         .then((sentJoinCampaign: ICampaign) => {
           setLoading(false);
@@ -123,7 +124,7 @@ const JoinCampaign: FC = () => {
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{t('serverErrors.CYPU-301')}</Ap>
                 </Alert>
-              ),
+              )
             });
           }
         });

@@ -4,9 +4,8 @@ import Entity from './entity';
 
 import type { ICuratedBasicNPC, ICuratedNPC } from '../../types';
 
-
 interface INPCPayload {
-  nPCId: string;
+  nPCId: string
 }
 
 export default class NPCs extends Entity {
@@ -16,7 +15,7 @@ export default class NPCs extends Entity {
   constructor() {
     super('npcs');
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })

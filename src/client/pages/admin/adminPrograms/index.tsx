@@ -28,6 +28,7 @@ const AdminPrograms: FC = () => {
     if (programs === null || programs.length === 0) {
       return null;
     }
+
     return (
       <Aul className="adminPrograms__program-list" noPoints>
         {programs.map(({ program }) => (
@@ -63,7 +64,7 @@ const AdminPrograms: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }

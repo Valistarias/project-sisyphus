@@ -19,10 +19,10 @@ import { classTrim } from '../../../utils';
 import './adminEditBodyPart.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  partId: string;
-  limit: number;
+  name: string
+  nameFr: string
+  partId: string
+  limit: number
 }
 
 const AdminEditBodyPart: FC = () => {
@@ -32,7 +32,7 @@ const AdminEditBodyPart: FC = () => {
   const { reloadBodyParts } = useGlobalVars();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
-    ConfMessageEvent: {},
+    ConfMessageEvent: {}
   };
   const { id } = useParams();
   const navigate = useNavigate();
@@ -49,11 +49,11 @@ const AdminEditBodyPart: FC = () => {
   const [bodyPartTextFr, setBodyPartTextFr] = useState('');
 
   const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const createDefaultData = useCallback((bodyPartData: ICuratedBodyPart | null) => {
@@ -68,6 +68,7 @@ const AdminEditBodyPart: FC = () => {
     if (i18n.fr !== undefined) {
       defaultData.nameFr = i18n.fr.title ?? '';
     }
+
     return defaultData;
   }, []);
 
@@ -76,24 +77,24 @@ const AdminEditBodyPart: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(bodyPartData),
       [createDefaultData, bodyPartData]
-    ),
+    )
   });
 
   const onSaveBodyPart: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, partId, limit }) => {
       if (
-        bodyPartText === null ||
-        bodyPartTextFr === null ||
-        textEditor === null ||
-        textFrEditor === null ||
-        limit === null ||
-        partId === null ||
-        api === undefined
+        bodyPartText === null
+        || bodyPartTextFr === null
+        || textEditor === null
+        || textFrEditor === null
+        || limit === null
+        || partId === null
+        || api === undefined
       ) {
         return;
       }
@@ -111,8 +112,8 @@ const AdminEditBodyPart: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            text: htmlTextFr,
-          },
+            text: htmlTextFr
+          }
         };
       }
 
@@ -123,7 +124,7 @@ const AdminEditBodyPart: FC = () => {
           summary: htmlText,
           partId,
           limit: Number(limit),
-          i18n,
+          i18n
         })
         .then((bodyPart) => {
           const newId = getNewId();
@@ -133,7 +134,7 @@ const AdminEditBodyPart: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditBodyPart.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadBodyParts();
         })
@@ -143,15 +144,15 @@ const AdminEditBodyPart: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id',
-              })} by ${data.sent}`,
+                field: 'Formula Id'
+              })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -167,7 +168,7 @@ const AdminEditBodyPart: FC = () => {
       createAlert,
       t,
       reloadBodyParts,
-      setError,
+      setError
     ]
   );
 
@@ -180,9 +181,9 @@ const AdminEditBodyPart: FC = () => {
         title: t('adminEditBodyPart.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditBodyPart.confirmDeletion.text', {
           ns: 'pages',
-          elt: bodyPartData?.bodyPart.title,
+          elt: bodyPartData?.bodyPart.title
         }),
-        confirmCta: t('adminEditBodyPart.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditBodyPart.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
@@ -197,7 +198,7 @@ const AdminEditBodyPart: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditBodyPart.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
                 reloadBodyParts();
                 void navigate('/admin/bodyparts');
@@ -208,15 +209,15 @@ const AdminEditBodyPart: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.bodyPart.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.bodyPart.name`), 'capitalize')
+                    })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.bodyPart.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.bodyPart.name`), 'capitalize')
+                    })
                   });
                 }
               });
@@ -237,7 +238,7 @@ const AdminEditBodyPart: FC = () => {
     createAlert,
     reloadBodyParts,
     navigate,
-    setError,
+    setError
   ]);
 
   useEffect(() => {
@@ -261,7 +262,7 @@ const AdminEditBodyPart: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -276,6 +277,7 @@ const AdminEditBodyPart: FC = () => {
         () => {}
       );
     }, 600000);
+
     return () => {
       if (saveTimer.current !== null) {
         clearInterval(saveTimer.current);
@@ -310,9 +312,11 @@ const AdminEditBodyPart: FC = () => {
           {t('adminEditBodyPart.return', { ns: 'pages' })}
         </Button>
         <Atitle level={2}>{t('adminEditBodyPart.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror className="adminEditBodyPart__error">{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror className="adminEditBodyPart__error">{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminEditBodyPart__basics">
           <Input
             control={control}
@@ -329,7 +333,7 @@ const AdminEditBodyPart: FC = () => {
               type="number"
               label={t('bodyPartLimit.label', { ns: 'fields' })}
               rules={{
-                required: t('bodyPartLimit.required', { ns: 'fields' }),
+                required: t('bodyPartLimit.required', { ns: 'fields' })
               }}
             />
           </div>
@@ -349,8 +353,8 @@ const AdminEditBodyPart: FC = () => {
               required: t('bodyPartFormula.required', { ns: 'fields' }),
               pattern: {
                 value: /^([a-z]){2,3}$/,
-                message: t('bodyPartFormula.format', { ns: 'fields' }),
-              },
+                message: t('bodyPartFormula.format', { ns: 'fields' })
+              }
             }}
             label={t('bodyPartFormula.label', { ns: 'fields' })}
           />
@@ -368,7 +372,7 @@ const AdminEditBodyPart: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt((prev) => !prev);
+              setDisplayInt(prev => !prev);
             }}
             className="adminEditBodyPart__intl-title__btn"
           />

@@ -11,13 +11,13 @@ import './diceCard.scss';
 
 interface IDiceCard {
   /** The type of dice displayed */
-  type: TypeDice;
+  type: TypeDice
   /** The number got */
-  value?: number | null;
+  value?: number | null
   /** The size of the card */
-  size?: 'xsmall' | 'small' | 'medium' | 'large' | 'single';
+  size?: 'xsmall' | 'small' | 'medium' | 'large' | 'single'
   /** Is the card to be skipped ? */
-  skip?: boolean;
+  skip?: boolean
 }
 
 // Number of ticks before the animation finishes
@@ -48,11 +48,13 @@ const DiceCard: FC<IDiceCard> = ({ type, value, size = 'medium', skip = false })
       if (type >= 10 && value < 10) {
         return value.toString();
       }
+
       return value.toString();
     }
     if (type >= 20 && displayedValue < 10 && !animEnded) {
       return `0${displayedValue}`;
     }
+
     return displayedValue.toString();
   }, [displayedValue, skip, type, value, animEnded]);
 
@@ -99,13 +101,13 @@ const DiceCard: FC<IDiceCard> = ({ type, value, size = 'medium', skip = false })
   }, [skip]);
 
   useEffect(() => () => {
-      if (intervalTick.current !== null) {
-        clearTimeout(intervalTick.current);
-        intervalTick.current = null;
-      }
-      tick.current = 0;
-      storedThreshold.current = 0;
-    }, []);
+    if (intervalTick.current !== null) {
+      clearTimeout(intervalTick.current);
+      intervalTick.current = null;
+    }
+    tick.current = 0;
+    storedThreshold.current = 0;
+  }, []);
 
   return (
     <div

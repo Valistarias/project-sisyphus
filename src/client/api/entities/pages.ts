@@ -4,13 +4,12 @@ import Entity from './entity';
 
 import type { ICuratedPage } from '../../types';
 
-
 interface IPagesPayload {
-  pageId: string;
+  pageId: string
 }
 
 interface IChapterPayload {
-  chapterId: string;
+  chapterId: string
 }
 
 export default class Pages extends Entity {
@@ -20,7 +19,7 @@ export default class Pages extends Entity {
   constructor() {
     super('pages');
 
-    this.getAllByChapter = async (payload) =>
+    this.getAllByChapter = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/pagesbychapterid/`, { params: payload })
@@ -32,7 +31,7 @@ export default class Pages extends Entity {
           });
       });
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })

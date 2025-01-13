@@ -15,8 +15,8 @@ import { Alert, RichTextElement, completeRichTextElementExtentions } from '../..
 import './adminNewChapter.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
+  name: string
+  nameFr: string
 }
 
 const AdminNewChapters: FC = () => {
@@ -29,28 +29,28 @@ const AdminNewChapters: FC = () => {
   const params = useMemo(() => new URLSearchParams(search), [search]);
 
   const summaryEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const summaryFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   const onSaveChapter: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr }) => {
       if (
-        summaryEditor === null ||
-        summaryFrEditor === null ||
-        api === undefined ||
-        params.get('ruleBookId') === undefined ||
-        params.get('type') === undefined
+        summaryEditor === null
+        || summaryFrEditor === null
+        || api === undefined
+        || params.get('ruleBookId') === undefined
+        || params.get('type') === undefined
       ) {
         return;
       }
@@ -66,8 +66,8 @@ const AdminNewChapters: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            summary: htmlFr,
-          },
+            summary: htmlFr
+          }
         };
       }
 
@@ -77,7 +77,7 @@ const AdminNewChapters: FC = () => {
           type: params.get('type'),
           ruleBook: params.get('ruleBookId'),
           summary: html,
-          i18n,
+          i18n
         })
         .then((chapter) => {
           const newId = getNewId();
@@ -87,7 +87,7 @@ const AdminNewChapters: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewChapter.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           void navigate(`/admin/chapter/${chapter._id}`);
         })
@@ -97,15 +97,15 @@ const AdminNewChapters: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize')
+              })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -117,15 +117,17 @@ const AdminNewChapters: FC = () => {
     <div className="adminNewChapter">
       <form onSubmit={handleSubmit(onSaveChapter)} noValidate className="adminNewChapter__content">
         <Atitle level={1}>{t('adminNewChapter.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminNewChapter__basics">
           <Input
             control={control}
             inputName="name"
             rules={{
-              required: t('nameChapter.required', { ns: 'fields' }),
+              required: t('nameChapter.required', { ns: 'fields' })
             }}
             type="text"
             label={t('nameChapter.label', { ns: 'fields' })}
@@ -136,7 +138,7 @@ const AdminNewChapters: FC = () => {
           <RichTextElement
             label={t('chapterSummary.title', { ns: 'fields' })}
             editor={summaryEditor}
-            rawStringContent={''}
+            rawStringContent=""
             ruleBookId={params.get('ruleBookId') ?? undefined}
             small
             complete
@@ -162,7 +164,7 @@ const AdminNewChapters: FC = () => {
           <RichTextElement
             label={`${t('chapterSummary.title', { ns: 'fields' })} (FR)`}
             editor={summaryFrEditor}
-            rawStringContent={''}
+            rawStringContent=""
             ruleBookId={params.get('ruleBookId') ?? undefined}
             small
             complete

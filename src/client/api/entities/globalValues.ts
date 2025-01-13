@@ -4,9 +4,8 @@ import Entity from './entity';
 
 import type { IGlobalValue } from '../../types';
 
-
 interface IGlobalValuesPayload {
-  globalValueId: string;
+  globalValueId: string
 }
 
 export default class GlobalValues extends Entity {
@@ -15,7 +14,7 @@ export default class GlobalValues extends Entity {
   constructor() {
     super('globalvalues');
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })

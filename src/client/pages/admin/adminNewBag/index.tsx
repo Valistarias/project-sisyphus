@@ -16,14 +16,14 @@ import { possibleStarterKitValues } from '../../../types/items';
 import './adminNewBag.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  storableItemTypes: string[];
-  size: number;
-  cost: number;
-  rarity: string;
-  starterKit: string;
-  itemModifiers: string[];
+  name: string
+  nameFr: string
+  storableItemTypes: string[]
+  size: number
+  cost: number
+  rarity: string
+  starterKit: string
+  itemModifiers: string[]
 }
 
 const AdminNewBag: FC = () => {
@@ -37,45 +37,45 @@ const AdminNewBag: FC = () => {
   const calledApi = useRef(false);
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   // TODO: Internationalization
   const itemModifierList = useMemo(() => itemModifiers.map(({ itemModifier }) => ({
-      value: itemModifier._id,
-      label: itemModifier.title,
-    })), [itemModifiers]);
+    value: itemModifier._id,
+    label: itemModifier.title
+  })), [itemModifiers]);
 
   const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
-      value: rarity._id,
-      label: rarity.title,
-    })), [rarities]);
+    value: rarity._id,
+    label: rarity.title
+  })), [rarities]);
 
   const itemTypeList = useMemo(
     () =>
-      itemTypes.map((itemType) => ({
+      itemTypes.map(itemType => ({
         value: itemType._id,
-        label: t(`itemTypeNames.${itemType.name}`),
+        label: t(`itemTypeNames.${itemType.name}`)
       })),
     [itemTypes, t]
   );
 
   const starterKitList = useMemo(
     () =>
-      possibleStarterKitValues.map((possibleStarterKitValue) => ({
+      possibleStarterKitValues.map(possibleStarterKitValue => ({
         value: possibleStarterKitValue,
-        label: t(`terms.starterKit.${possibleStarterKitValue}`),
+        label: t(`terms.starterKit.${possibleStarterKitValue}`)
       })),
     [t]
   );
@@ -83,11 +83,11 @@ const AdminNewBag: FC = () => {
   const onSaveBag: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, rarity, cost, storableItemTypes, itemModifiers, size, starterKit }) => {
       if (
-        introEditor === null ||
-        introFrEditor === null ||
-        api === undefined ||
-        storableItemTypes === undefined ||
-        size === undefined
+        introEditor === null
+        || introFrEditor === null
+        || api === undefined
+        || storableItemTypes === undefined
+        || size === undefined
       ) {
         return;
       }
@@ -104,8 +104,8 @@ const AdminNewBag: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            summary: htmlFr,
-          },
+            summary: htmlFr
+          }
         };
       }
 
@@ -116,11 +116,11 @@ const AdminNewBag: FC = () => {
           rarity,
           starterKit,
           size,
-          itemType: itemTypes.find((itemType) => itemType.name === 'bag')?._id ?? undefined,
+          itemType: itemTypes.find(itemType => itemType.name === 'bag')?._id ?? undefined,
           cost: Number(cost),
           itemModifiers,
           summary: html,
-          i18n,
+          i18n
         })
         .then((bagType) => {
           const newId = getNewId();
@@ -130,7 +130,7 @@ const AdminNewBag: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewBag.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           void navigate(`/admin/bag/${bagType._id}`);
         })
@@ -139,8 +139,8 @@ const AdminNewBag: FC = () => {
           setError('root.serverError', {
             type: 'server',
             message: t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-            }),
+              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+            })
           });
         });
     },
@@ -158,16 +158,18 @@ const AdminNewBag: FC = () => {
     <div className="adminNewBag">
       <form className="adminNewBag__content" onSubmit={handleSubmit(onSaveBag)} noValidate>
         <Atitle level={1}>{t('adminNewBag.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminNewBag__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameBag.required', { ns: 'fields' }),
+              required: t('nameBag.required', { ns: 'fields' })
             }}
             label={t('nameBag.label', { ns: 'fields' })}
             className="adminNewBag__basics__name"
@@ -178,7 +180,7 @@ const AdminNewBag: FC = () => {
               inputName="size"
               type="number"
               rules={{
-                required: t('bagSize.required', { ns: 'fields' }),
+                required: t('bagSize.required', { ns: 'fields' })
               }}
               label={t('bagSize.label', { ns: 'fields' })}
             />
@@ -188,7 +190,7 @@ const AdminNewBag: FC = () => {
               inputName="storableItemTypes"
               label={t('bagStorableItemTypes.label', { ns: 'fields' })}
               rules={{
-                required: t('bagStorableItemTypes.required', { ns: 'fields' }),
+                required: t('bagStorableItemTypes.required', { ns: 'fields' })
               }}
               options={itemTypeList}
               className="adminNewWeapon__details__fields__elt"
@@ -199,7 +201,7 @@ const AdminNewBag: FC = () => {
           <RichTextElement
             label={t('bagTypeSummary.title', { ns: 'fields' })}
             editor={introEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />
@@ -217,7 +219,7 @@ const AdminNewBag: FC = () => {
               inputName="cost"
               type="number"
               rules={{
-                required: t('bagCost.required', { ns: 'fields' }),
+                required: t('bagCost.required', { ns: 'fields' })
               }}
               label={t('bagCost.label', { ns: 'fields' })}
               className="adminNewBag__details__fields__elt"
@@ -256,7 +258,7 @@ const AdminNewBag: FC = () => {
           <RichTextElement
             label={`${t('bagTypeSummary.title', { ns: 'fields' })} (FR)`}
             editor={introFrEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />

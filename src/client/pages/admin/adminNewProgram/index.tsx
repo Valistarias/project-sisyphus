@@ -20,24 +20,24 @@ import { isThereDuplicate } from '../../../utils';
 import './adminNewProgram.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  programScope: string;
-  starterKit: string;
-  uses?: number;
-  radius?: number;
-  ram: number;
-  cost: number;
-  rarity: string;
-  ai: string;
-  aiSummoned?: number;
+  name: string
+  nameFr: string
+  programScope: string
+  starterKit: string
+  uses?: number
+  radius?: number
+  ram: number
+  cost: number
+  rarity: string
+  ai: string
+  aiSummoned?: number
   damages?: Record<
     string,
     {
-      damageType: string;
-      dices: string;
+      damageType: string
+      dices: string
     }
-  >;
+  >
 }
 
 const AdminNewProgram: FC = () => {
@@ -55,11 +55,11 @@ const AdminNewProgram: FC = () => {
   const [damagesIds, setDamagesIds] = useState<number[]>([]);
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const {
@@ -67,37 +67,37 @@ const AdminNewProgram: FC = () => {
     setError,
     control,
     formState: { errors },
-    unregister,
+    unregister
   } = useForm();
 
   // TODO: Internationalization
   const programScopeList = useMemo(() => programScopes.map(({ programScope }) => ({
-      value: programScope._id,
-      label: programScope.title,
-    })), [programScopes]);
+    value: programScope._id,
+    label: programScope.title
+  })), [programScopes]);
 
   const damageTypeList = useMemo(() => damageTypes.map(({ damageType }) => ({
-      value: damageType._id,
-      label: damageType.title,
-    })), [damageTypes]);
+    value: damageType._id,
+    label: damageType.title
+  })), [damageTypes]);
 
   const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
-      value: rarity._id,
-      label: rarity.title,
-    })), [rarities]);
+    value: rarity._id,
+    label: rarity.title
+  })), [rarities]);
 
   const aiList = useMemo(() => nPCs
-      .filter(({ nPC }) => nPC.virtual)
-      .map(({ nPC }) => ({
-        value: nPC._id,
-        label: nPC.title,
-      })), [nPCs]);
+    .filter(({ nPC }) => nPC.virtual)
+    .map(({ nPC }) => ({
+      value: nPC._id,
+      label: nPC.title
+    })), [nPCs]);
 
   const starterKitList = useMemo(
     () =>
-      possibleStarterKitValues.map((possibleStarterKitValue) => ({
+      possibleStarterKitValues.map(possibleStarterKitValue => ({
         value: possibleStarterKitValue,
-        label: t(`terms.starterKit.${possibleStarterKitValue}`),
+        label: t(`terms.starterKit.${possibleStarterKitValue}`)
       })),
     [t]
   );
@@ -107,6 +107,7 @@ const AdminNewProgram: FC = () => {
       const next = [...prev];
       next.push(idIncrement.current);
       idIncrement.current += 1;
+
       return next;
     });
   }, []);
@@ -126,7 +127,7 @@ const AdminNewProgram: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -145,15 +146,15 @@ const AdminNewProgram: FC = () => {
       ai,
       aiSummoned,
       damages,
-      starterKit,
+      starterKit
     }) => {
       if (
-        introEditor === null ||
-        introFrEditor === null ||
-        api === undefined ||
-        programScope === undefined ||
-        ram === undefined ||
-        rarity === undefined
+        introEditor === null
+        || introFrEditor === null
+        || api === undefined
+        || programScope === undefined
+        || ram === undefined
+        || rarity === undefined
       ) {
         return;
       }
@@ -162,19 +163,20 @@ const AdminNewProgram: FC = () => {
       const sortedDamages = damages !== undefined ? Object.values(damages) : [];
       let duplicateDamages = false;
       if (sortedDamages.length > 0) {
-        duplicateDamages = isThereDuplicate(sortedDamages.map((damage) => damage.damageType));
+        duplicateDamages = isThereDuplicate(sortedDamages.map(damage => damage.damageType));
       }
       if (duplicateDamages) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminNewNode.errorDuplicateCharParam', { ns: 'pages' }),
+          message: t('adminNewNode.errorDuplicateCharParam', { ns: 'pages' })
         });
+
         return;
       }
 
       const curatedDamages = sortedDamages.map(({ damageType, dices }) => ({
         damageType,
-        dices,
+        dices
       }));
 
       let html: string | null = introEditor.getHTML();
@@ -189,8 +191,8 @@ const AdminNewProgram: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            summary: htmlFr,
-          },
+            summary: htmlFr
+          }
         };
       }
 
@@ -204,12 +206,12 @@ const AdminNewProgram: FC = () => {
           cost: Number(cost),
           ram: Number(ram),
           summary: html,
-          itemType: itemTypes.find((itemType) => itemType.name === 'pro')?._id ?? undefined,
+          itemType: itemTypes.find(itemType => itemType.name === 'pro')?._id ?? undefined,
           uses: uses !== undefined ? Number(uses) : undefined,
           radius: radius !== undefined ? Number(radius) : undefined,
           aiSummoned: aiSummoned !== undefined ? Number(aiSummoned) : undefined,
           i18n,
-          damages: curatedDamages,
+          damages: curatedDamages
         })
         .then((programType) => {
           const newId = getNewId();
@@ -219,7 +221,7 @@ const AdminNewProgram: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewProgram.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           void navigate(`/admin/program/${programType._id}`);
         })
@@ -228,8 +230,8 @@ const AdminNewProgram: FC = () => {
           setError('root.serverError', {
             type: 'server',
             message: t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-            }),
+              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+            })
           });
         });
     },
@@ -248,16 +250,18 @@ const AdminNewProgram: FC = () => {
     <div className="adminNewProgram">
       <form className="adminNewProgram__content" onSubmit={handleSubmit(onSaveProgram)} noValidate>
         <Atitle level={1}>{t('adminNewProgram.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminNewProgram__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameProgram.required', { ns: 'fields' }),
+              required: t('nameProgram.required', { ns: 'fields' })
             }}
             label={t('nameProgram.label', { ns: 'fields' })}
             className="adminNewProgram__basics__name"
@@ -289,7 +293,7 @@ const AdminNewProgram: FC = () => {
           <RichTextElement
             label={t('programTypeSummary.title', { ns: 'fields' })}
             editor={introEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />
@@ -299,7 +303,7 @@ const AdminNewProgram: FC = () => {
               inputName="cost"
               type="number"
               rules={{
-                required: t('programCost.required', { ns: 'fields' }),
+                required: t('programCost.required', { ns: 'fields' })
               }}
               label={t('programCost.label', { ns: 'fields' })}
               className="adminNewProgram__details__fields__elt"
@@ -347,7 +351,7 @@ const AdminNewProgram: FC = () => {
         </Atitle>
         <div className="adminNewProgram__bonuses">
           <div className="adminNewProgram__bonuses__elts">
-            {damagesIds.map((damagesId) => (
+            {damagesIds.map(damagesId => (
               <div className="adminNewProgram__bonus" key={`damage-${damagesId}`}>
                 <Atitle className="adminNewProgram__bonus__title" level={4}>
                   {t('adminNewProgram.damageTitle', { ns: 'pages' })}
@@ -357,7 +361,7 @@ const AdminNewProgram: FC = () => {
                     control={control}
                     inputName={`damages.damage-${damagesId}.damageType`}
                     rules={{
-                      required: t('damagesType.required', { ns: 'fields' }),
+                      required: t('damagesType.required', { ns: 'fields' })
                     }}
                     label={t('damagesType.label', { ns: 'fields' })}
                     options={damageTypeList}
@@ -368,7 +372,7 @@ const AdminNewProgram: FC = () => {
                     inputName={`damages.damage-${damagesId}.dices`}
                     type="text"
                     rules={{
-                      required: t('damagesValue.required', { ns: 'fields' }),
+                      required: t('damagesValue.required', { ns: 'fields' })
                     }}
                     label={t('damagesValue.label', { ns: 'fields' })}
                     className="adminNewProgram__bonus__value"
@@ -378,11 +382,12 @@ const AdminNewProgram: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setDamagesIds((prev) =>
+                    setDamagesIds(prev =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== damagesId) {
                           result.push(elt);
                         }
+
                         return result;
                       }, [])
                     );
@@ -418,7 +423,7 @@ const AdminNewProgram: FC = () => {
           <RichTextElement
             label={`${t('programTypeSummary.title', { ns: 'fields' })} (FR)`}
             editor={introFrEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />

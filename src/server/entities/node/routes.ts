@@ -10,7 +10,7 @@ import {
   findAllByCyberFrame,
   findAllBySkill,
   findSingle,
-  update,
+  update
 } from './controller';
 
 export default (app: Router): void => {

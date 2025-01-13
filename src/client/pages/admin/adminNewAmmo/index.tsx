@@ -15,14 +15,14 @@ import { Alert, RichTextElement, completeRichTextElementExtentions } from '../..
 import './adminNewAmmo.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  weaponTypes: string[];
-  offsetToHit?: number;
-  offsetDamage?: number;
-  cost: number;
-  rarity: string;
-  itemModifiers: string[];
+  name: string
+  nameFr: string
+  weaponTypes: string[]
+  offsetToHit?: number
+  offsetDamage?: number
+  cost: number
+  rarity: string
+  itemModifiers: string[]
 }
 
 const AdminNewAmmo: FC = () => {
@@ -36,43 +36,43 @@ const AdminNewAmmo: FC = () => {
   const calledApi = useRef(false);
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   // TODO: Internationalization
   const itemModifierList = useMemo(() => itemModifiers.map(({ itemModifier }) => ({
-      value: itemModifier._id,
-      label: itemModifier.title,
-    })), [itemModifiers]);
+    value: itemModifier._id,
+    label: itemModifier.title
+  })), [itemModifiers]);
 
   const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
-      value: rarity._id,
-      label: rarity.title,
-    })), [rarities]);
+    value: rarity._id,
+    label: rarity.title
+  })), [rarities]);
 
   const weaponList = useMemo(() => weaponTypes.map(({ weaponType }) => ({
-      value: weaponType._id,
-      label: weaponType.title,
-    })), [weaponTypes]);
+    value: weaponType._id,
+    label: weaponType.title
+  })), [weaponTypes]);
 
   const onSaveAmmo: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, rarity, cost, weaponTypes, itemModifiers, offsetToHit, offsetDamage }) => {
       if (
-        introEditor === null ||
-        introFrEditor === null ||
-        api === undefined ||
-        weaponTypes === undefined
+        introEditor === null
+        || introFrEditor === null
+        || api === undefined
+        || weaponTypes === undefined
       ) {
         return;
       }
@@ -89,8 +89,8 @@ const AdminNewAmmo: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            summary: htmlFr,
-          },
+            summary: htmlFr
+          }
         };
       }
 
@@ -101,11 +101,11 @@ const AdminNewAmmo: FC = () => {
           rarity,
           offsetToHit,
           offsetDamage,
-          itemType: itemTypes.find((itemType) => itemType.name === 'amo')?._id ?? undefined,
+          itemType: itemTypes.find(itemType => itemType.name === 'amo')?._id ?? undefined,
           cost: Number(cost),
           itemModifiers,
           summary: html,
-          i18n,
+          i18n
         })
         .then((ammoType) => {
           const newId = getNewId();
@@ -115,7 +115,7 @@ const AdminNewAmmo: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewAmmo.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           void navigate(`/admin/ammo/${ammoType._id}`);
         })
@@ -124,8 +124,8 @@ const AdminNewAmmo: FC = () => {
           setError('root.serverError', {
             type: 'server',
             message: t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-            }),
+              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+            })
           });
         });
     },
@@ -143,16 +143,18 @@ const AdminNewAmmo: FC = () => {
     <div className="adminNewAmmo">
       <form className="adminNewAmmo__content" onSubmit={handleSubmit(onSaveAmmo)} noValidate>
         <Atitle level={1}>{t('adminNewAmmo.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminNewAmmo__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameAmmo.required', { ns: 'fields' }),
+              required: t('nameAmmo.required', { ns: 'fields' })
             }}
             label={t('nameAmmo.label', { ns: 'fields' })}
             className="adminNewAmmo__basics__name"
@@ -163,7 +165,7 @@ const AdminNewAmmo: FC = () => {
               inputName="offsetToHit"
               type="number"
               rules={{
-                required: t('ammoOffsetToHit.required', { ns: 'fields' }),
+                required: t('ammoOffsetToHit.required', { ns: 'fields' })
               }}
               label={t('ammoOffsetToHit.label', { ns: 'fields' })}
             />
@@ -172,7 +174,7 @@ const AdminNewAmmo: FC = () => {
               inputName="offsetDamage"
               type="number"
               rules={{
-                required: t('ammoOffsetDamage.required', { ns: 'fields' }),
+                required: t('ammoOffsetDamage.required', { ns: 'fields' })
               }}
               label={t('ammoOffsetDamage.label', { ns: 'fields' })}
             />
@@ -182,7 +184,7 @@ const AdminNewAmmo: FC = () => {
               inputName="weaponTypes"
               label={t('ammoWeaponTypes.label', { ns: 'fields' })}
               rules={{
-                required: t('ammoWeaponTypes.required', { ns: 'fields' }),
+                required: t('ammoWeaponTypes.required', { ns: 'fields' })
               }}
               options={weaponList}
               className="adminNewWeapon__details__fields__elt"
@@ -193,7 +195,7 @@ const AdminNewAmmo: FC = () => {
           <RichTextElement
             label={t('ammoSummary.title', { ns: 'fields' })}
             editor={introEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />
@@ -211,7 +213,7 @@ const AdminNewAmmo: FC = () => {
               inputName="cost"
               type="number"
               rules={{
-                required: t('ammoCost.required', { ns: 'fields' }),
+                required: t('ammoCost.required', { ns: 'fields' })
               }}
               label={t('ammoCost.label', { ns: 'fields' })}
               className="adminNewAmmo__details__fields__elt"
@@ -243,7 +245,7 @@ const AdminNewAmmo: FC = () => {
           <RichTextElement
             label={`${t('ammoSummary.title', { ns: 'fields' })} (FR)`}
             editor={introFrEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />

@@ -16,8 +16,8 @@ import type { IGlobalValue } from '../../../types';
 import './adminEditGlobalValue.scss';
 
 interface FormValues {
-  name: string;
-  value: string;
+  name: string
+  value: string
 }
 
 const AdminEditGlobalValue: FC = () => {
@@ -27,7 +27,7 @@ const AdminEditGlobalValue: FC = () => {
   const { reloadGlobalValues } = useGlobalVars();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
-    ConfMessageEvent: {},
+    ConfMessageEvent: {}
   };
   const { id } = useParams();
   const navigate = useNavigate();
@@ -43,6 +43,7 @@ const AdminEditGlobalValue: FC = () => {
     const defaultData: Partial<FormValues> = {};
     defaultData.name = globalValueData.name;
     defaultData.value = globalValueData.value;
+
     return defaultData;
   }, []);
 
@@ -51,12 +52,12 @@ const AdminEditGlobalValue: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(globalValueData),
       [createDefaultData, globalValueData]
-    ),
+    )
   });
 
   const onSaveGlobalValue: SubmitHandler<FormValues> = useCallback(
@@ -69,7 +70,7 @@ const AdminEditGlobalValue: FC = () => {
         .update({
           id,
           name,
-          value,
+          value
         })
         .then(() => {
           const newId = getNewId();
@@ -79,7 +80,7 @@ const AdminEditGlobalValue: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditGlobalValue.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadGlobalValues();
         })
@@ -89,15 +90,15 @@ const AdminEditGlobalValue: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id',
-              })} by ${data.sent}`,
+                field: 'Formula Id'
+              })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -114,9 +115,9 @@ const AdminEditGlobalValue: FC = () => {
         title: t('adminEditGlobalValue.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditGlobalValue.confirmDeletion.text', {
           ns: 'pages',
-          elt: globalValueData?.name,
+          elt: globalValueData?.name
         }),
-        confirmCta: t('adminEditGlobalValue.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditGlobalValue.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
@@ -131,7 +132,7 @@ const AdminEditGlobalValue: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditGlobalValue.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
                 reloadGlobalValues();
                 void navigate('/admin/globalvalues');
@@ -142,15 +143,15 @@ const AdminEditGlobalValue: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.globalValue.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.globalValue.name`), 'capitalize')
+                    })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.globalValue.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.globalValue.name`), 'capitalize')
+                    })
                   });
                 }
               });
@@ -171,7 +172,7 @@ const AdminEditGlobalValue: FC = () => {
     createAlert,
     reloadGlobalValues,
     navigate,
-    setError,
+    setError
   ]);
 
   useEffect(() => {
@@ -190,7 +191,7 @@ const AdminEditGlobalValue: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -222,16 +223,18 @@ const AdminEditGlobalValue: FC = () => {
           {t('adminEditGlobalValue.return', { ns: 'pages' })}
         </Button>
         <Atitle level={2}>{t('adminEditGlobalValue.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror className="adminEditGlobalValue__error">{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror className="adminEditGlobalValue__error">{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminEditGlobalValue__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameGlobalValue.required', { ns: 'fields' }),
+              required: t('nameGlobalValue.required', { ns: 'fields' })
             }}
             label={t('nameGlobalValue.label', { ns: 'fields' })}
             className="adminEditGlobalValue__basics__name"
@@ -241,7 +244,7 @@ const AdminEditGlobalValue: FC = () => {
             inputName="value"
             type="text"
             rules={{
-              required: t('nameGlobalValueValue.required', { ns: 'fields' }),
+              required: t('nameGlobalValueValue.required', { ns: 'fields' })
             }}
             label={t('nameGlobalValueValue.label', { ns: 'fields' })}
             className="adminNewGlobalValue__basics__name"

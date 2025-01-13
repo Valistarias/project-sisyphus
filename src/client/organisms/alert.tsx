@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
   type FC,
-  type ReactNode,
+  type ReactNode
 } from 'react';
 
 import { useTranslation } from 'react-i18next';
@@ -20,13 +20,13 @@ import './alert.scss';
 
 interface IAlert {
   /** The ID used on the alert provider */
-  id: number;
+  id: number
   /** The content of the alert */
-  children: ReactNode;
+  children: ReactNode
   /** If the timer is provided, the alert will close automatically after the timer (in seconds) */
-  timer?: number;
+  timer?: number
   /** Is the alert self closable */
-  closable?: boolean;
+  closable?: boolean
 }
 
 const Alert: FC<IAlert> = ({ id, children, timer, closable }) => {
@@ -52,11 +52,13 @@ const Alert: FC<IAlert> = ({ id, children, timer, closable }) => {
 
   const closeDom = useMemo(
     () =>
-      closable === true ? (
-        <Button theme="text-only" onClick={onCloseAlert}>
-          {t('alert.close', { ns: 'components' })}
-        </Button>
-      ) : null,
+      closable === true
+        ? (
+            <Button theme="text-only" onClick={onCloseAlert}>
+              {t('alert.close', { ns: 'components' })}
+            </Button>
+          )
+        : null,
     [closable, onCloseAlert, t]
   );
 
@@ -73,6 +75,7 @@ const Alert: FC<IAlert> = ({ id, children, timer, closable }) => {
         }, 410);
       }, timer * 1000);
     }
+
     return () => {
       if (timerDelete.current !== null) {
         clearTimeout(timerDelete.current);

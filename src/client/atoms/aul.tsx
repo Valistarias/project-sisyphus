@@ -8,11 +8,11 @@ import './aul.scss';
 
 interface IAul extends IQuarkProps {
   /** The childrens of the UL element */
-  children: ReactNode | null;
+  children: ReactNode | null
   /** Is the decoration to be removed ? */
-  noPoints?: boolean;
+  noPoints?: boolean
   /** The innerRef, if there is any */
-  innerRef?: RefObject<null | ReactNode>;
+  innerRef?: RefObject<null | ReactNode>
 }
 
 const Aul: FC<IAul> = (props) => {
@@ -27,7 +27,7 @@ const Aul: FC<IAul> = (props) => {
         ${noPoints ? 'aul--nodecor' : ''}
       `)}
       reactProps={{
-        ref: innerRef,
+        ref: innerRef
       }}
     >
       {children}

@@ -13,9 +13,9 @@ import './detailsBonuses.scss';
 
 interface IDetailsBonuses extends IAButton {
   /** The bonuses to display */
-  bonuses: ISourcePoints[];
+  bonuses: ISourcePoints[]
   /** The associated stat */
-  stat?: ICuratedStat;
+  stat?: ICuratedStat
 }
 
 const DetailsBonuses: FC<IDetailsBonuses> = ({ bonuses, stat }) => {
@@ -27,9 +27,9 @@ const DetailsBonuses: FC<IDetailsBonuses> = ({ bonuses, stat }) => {
   const lines: Record<
     string,
     {
-      id: string;
-      total: number;
-      text: string;
+      id: string
+      total: number
+      text: string
     }
   > = {};
   bonuses.forEach((bonus) => {
@@ -37,35 +37,35 @@ const DetailsBonuses: FC<IDetailsBonuses> = ({ bonuses, stat }) => {
       lines.body = {
         id: 'body',
         total: bonus.value,
-        text: t('detailBonuses.fromBody', { ns: 'components' }),
+        text: t('detailBonuses.fromBody', { ns: 'components' })
       };
     } else if (bonus.fromBase === true) {
       lines.body = {
         id: 'body',
         total: bonus.value,
-        text: t('detailBonuses.fromBase', { ns: 'components' }),
+        text: t('detailBonuses.fromBase', { ns: 'components' })
       };
     } else if (bonus.fromStat === true) {
       lines.stat = {
         id: 'stat',
         total: bonus.value,
-        text: statTexts?.title ?? t('detailBonuses.fromStatGeneric', { ns: 'components' }),
+        text: statTexts?.title ?? t('detailBonuses.fromStatGeneric', { ns: 'components' })
       };
     } else if (bonus.origin?.skill !== undefined || bonus.origin?.cyberFrame !== undefined) {
-      const relevantId =
-        bonus.origin.skill !== undefined
+      const relevantId
+        = bonus.origin.skill !== undefined
           ? `skill-${bonus.origin.skill.skill._id}`
           : `cyberFrame-${bonus.origin.cyberFrame?.cyberFrame._id}`;
       // TODO: Deal with i18n
-      const relevantText =
-        bonus.origin.skill !== undefined
+      const relevantText
+        = bonus.origin.skill !== undefined
           ? bonus.origin.skill.skill.title
           : bonus.origin.cyberFrame?.cyberFrame.title;
       if (lines[relevantId] === undefined) {
         lines[relevantId] = {
           id: relevantId,
           total: bonus.value,
-          text: relevantText ?? '',
+          text: relevantText ?? ''
         };
       } else {
         lines[relevantId].total += bonus.value;
@@ -74,7 +74,7 @@ const DetailsBonuses: FC<IDetailsBonuses> = ({ bonuses, stat }) => {
       lines.fromThrottleStat = {
         id: 'fromThrottleStat',
         total: bonus.value,
-        text: t('detailBonuses.fromThrottleStat', { ns: 'components' }),
+        text: t('detailBonuses.fromThrottleStat', { ns: 'components' })
       };
     }
   });

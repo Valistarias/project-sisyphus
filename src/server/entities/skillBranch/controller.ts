@@ -5,13 +5,12 @@ import {
   gemForbidden,
   gemInvalidField,
   gemNotFound,
-  gemServerError,
+  gemServerError
 } from '../../utils/globalErrorMessage';
 
 import type { ISkill } from '../index';
 import type { HydratedISkillBranch, ISkillBranch } from './model';
 import type { CuratedINode } from '../node/controller';
-
 
 import { curateI18n } from '../../utils';
 
@@ -69,17 +68,19 @@ const create = (req: Request, res: Response): void => {
   const { title, summary, skill, i18n = null } = req.body;
   if (title === undefined || summary === undefined || skill === undefined) {
     res.status(400).send(gemInvalidField('SkillBranch'));
+
     return;
   }
   if (title === '_general') {
     res.status(403).send(gemForbidden());
+
     return;
   }
 
   const skillBranch = new SkillBranch({
     title,
     summary,
-    skill,
+    skill
   });
 
   if (i18n !== null) {
@@ -91,7 +92,7 @@ const create = (req: Request, res: Response): void => {
     .then(() => {
       res.send(skillBranch);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -100,19 +101,20 @@ const createGeneralForSkillId = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Skill ID'));
+
       return;
     }
     const skillBranch = new SkillBranch({
       title: '_general',
       summary: '',
-      skill: id,
+      skill: id
     });
     skillBranch
       .save()
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
@@ -121,16 +123,19 @@ const update = (req: Request, res: Response): void => {
   const { id, title = null, summary = null, skill = null, i18n } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('SkillBranch ID'));
+
     return;
   }
   if (title === '_general') {
     res.status(403).send(gemForbidden());
+
     return;
   }
   findSkillBranchById(id as string)
     .then((skillBranch) => {
       if (skillBranch.title === '_general') {
         res.status(403).send(gemForbidden());
+
         return;
       }
       if (title !== null) {
@@ -147,7 +152,7 @@ const update = (req: Request, res: Response): void => {
         const newIntl = {
           ...(skillBranch.i18n !== null && skillBranch.i18n !== undefined && skillBranch.i18n !== ''
             ? JSON.parse(skillBranch.i18n)
-            : {}),
+            : {})
         };
 
         Object.keys(i18n as Record<string, any>).forEach((lang) => {
@@ -162,7 +167,7 @@ const update = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'Skill branch was updated successfully!', skillBranch });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -175,6 +180,7 @@ const deleteSkillBranchById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Skill ID'));
+
       return;
     }
     findSkillBranchById(id)
@@ -186,12 +192,12 @@ const deleteSkillBranchById = async (id: string): Promise<boolean> =>
             .then(() => {
               resolve(true);
             })
-            .catch((err: Error) => {
+            .catch((err: unknown) => {
               reject(gemServerError(err));
             });
         }
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
@@ -202,7 +208,7 @@ const deleteSkillBranch = (req: Request, res: Response): void => {
     .then(() => {
       res.send({ message: 'Skill branch was deleted successfully!' });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(err);
     });
 };
@@ -211,42 +217,44 @@ const deleteSkillBranchesBySkillId = async (skillId: string): Promise<boolean> =
   await new Promise((resolve, reject) => {
     if (skillId === undefined) {
       resolve(true);
+
       return;
     }
     SkillBranch.deleteMany({ skill: skillId })
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
 
 type CuratedISkillBranch = Omit<ISkillBranch, 'skill'> & {
-  skill: ISkill;
-  nodes?: CuratedINode[];
+  skill: ISkill
+  nodes?: CuratedINode[]
 };
 
 interface CuratedIntISkillBranch {
-  i18n: Record<string, any> | Record<string, unknown>;
-  skillBranch: CuratedISkillBranch;
+  i18n: Record<string, unknown>
+  skillBranch: CuratedISkillBranch
 }
 
 const findSingle = (req: Request, res: Response): void => {
   const { skillBranchId } = req.query;
   if (skillBranchId === undefined || typeof skillBranchId !== 'string') {
     res.status(400).send(gemInvalidField('SkillBranch ID'));
+
     return;
   }
   findSkillBranchById(skillBranchId)
     .then((skillBranch) => {
       const sentObj = {
         skillBranch,
-        i18n: curateI18n(skillBranch.i18n),
+        i18n: curateI18n(skillBranch.i18n)
       };
       res.send(sentObj);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
@@ -261,27 +269,28 @@ const findAll = (req: Request, res: Response): void => {
           ...skillBranch,
           nodes:
             skillBranch.nodes !== undefined
-              ? skillBranch.nodes.map((node) => ({
+              ? skillBranch.nodes.map(node => ({
                   node,
-                  i18n: curateI18n(node.i18n),
+                  i18n: curateI18n(node.i18n)
                 }))
-              : [],
+              : []
         };
         curatedSkillBranches.push({
           skillBranch: cleanSkillBranch,
-          i18n: curateI18n(cleanSkillBranch.i18n),
+          i18n: curateI18n(cleanSkillBranch.i18n)
         });
       });
 
       res.send(curatedSkillBranches);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const findAllBySkill = (req: Request, res: Response): void => {
   const { skillId } = req.query;
   if (skillId === undefined || typeof skillId !== 'string') {
     res.status(400).send(gemInvalidField('Skill ID'));
+
     return;
   }
   findSkillBranchesBySkill(skillId)
@@ -293,21 +302,21 @@ const findAllBySkill = (req: Request, res: Response): void => {
           ...skillBranch,
           nodes:
             skillBranch.nodes !== undefined
-              ? skillBranch.nodes.map((node) => ({
+              ? skillBranch.nodes.map(node => ({
                   node,
-                  i18n: curateI18n(node.i18n),
+                  i18n: curateI18n(node.i18n)
                 }))
-              : [],
+              : []
         };
         curatedSkillBranches.push({
           skillBranch: cleanSkillBranch,
-          i18n: curateI18n(cleanSkillBranch.i18n),
+          i18n: curateI18n(cleanSkillBranch.i18n)
         });
       });
 
       res.send(curatedSkillBranches);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export {
@@ -321,5 +330,5 @@ export {
   findSkillBranchById,
   findSkillBranchesBySkill,
   update,
-  type CuratedIntISkillBranch,
+  type CuratedIntISkillBranch
 };

@@ -37,7 +37,7 @@ const findRuleBookById = async (id: string): Promise<HydratedIRuleBook> =>
       .populate<{ type: IRuleBookType }>('type')
       .populate<{ notions: INotion[] }>({
         path: 'notions',
-        select: '_id title ruleBook',
+        select: '_id title ruleBook'
       })
       .populate<{ chapters: HydratedIChapter[] }>({
         path: 'chapters',
@@ -47,14 +47,14 @@ const findRuleBookById = async (id: string): Promise<HydratedIRuleBook> =>
             path: 'pages',
             select: '_id title chapter position',
             options: {
-              sort: { position: 'asc' },
-            },
+              sort: { position: 'asc' }
+            }
           },
-          'type',
+          'type'
         ],
         options: {
-          sort: { position: 'asc' },
-        },
+          sort: { position: 'asc' }
+        }
       })
       .then(async (res?: HydratedIRuleBook | null) => {
         if (res === undefined || res === null) {
@@ -72,12 +72,13 @@ const create = (req: Request, res: Response): void => {
   const { title, summary, type, i18n = null } = req.body;
   if (title === undefined || summary === undefined) {
     res.status(400).send(gemInvalidField('RuleBook'));
+
     return;
   }
   const ruleBook = new RuleBook({
     title,
     summary,
-    type,
+    type
   });
 
   if (i18n !== null) {
@@ -89,7 +90,7 @@ const create = (req: Request, res: Response): void => {
     .then(() => {
       res.send(ruleBook);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -98,6 +99,7 @@ const update = (req: Request, res: Response): void => {
   const { id, title = null, type = null, summary = null, draft = null, i18n } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('RuleBook ID'));
+
     return;
   }
   findRuleBookById(id as string)
@@ -117,7 +119,7 @@ const update = (req: Request, res: Response): void => {
 
       if (i18n !== null) {
         const newIntl = {
-          ...(ruleBook.i18n != null && ruleBook.i18n !== '' ? JSON.parse(ruleBook.i18n) : {}),
+          ...(ruleBook.i18n != null && ruleBook.i18n !== '' ? JSON.parse(ruleBook.i18n) : {})
         };
 
         Object.keys(i18n as Record<string, any>).forEach((lang) => {
@@ -132,7 +134,7 @@ const update = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'RuleBook was updated successfully!', ruleBook });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -145,6 +147,7 @@ const archive = (req: Request, res: Response): void => {
   const { id, archived = null } = req.body;
   if (id === undefined || archived === null) {
     res.status(400).send(gemInvalidField('RuleBook ID'));
+
     return;
   }
   findRuleBookById(id as string)
@@ -156,7 +159,7 @@ const archive = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'RuleBook was updated successfully!', ruleBook });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -184,6 +187,7 @@ const changeChaptersOrder = (req: Request, res: Response): void => {
   const { id, order } = req.body;
   if (id === undefined || order === undefined) {
     res.status(400).send(gemInvalidField('RuleBook Reordering'));
+
     return;
   }
   updateMultipleChaptersPosition(order, (err) => {
@@ -199,44 +203,46 @@ const deleteRuleBook = (req: Request, res: Response): void => {
   const { id } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('RuleBook ID'));
+
     return;
   }
   findRuleBookById(id as string)
     .then((ruleBook) => {
       deleteNotionsByRuleBookId(id as string)
         .then(() => {
-          deleteChaptersRecursive(ruleBook.chapters.map((chapter) => String(chapter._id)))
+          deleteChaptersRecursive(ruleBook.chapters.map(chapter => String(chapter._id)))
             .then(() => {
               RuleBook.findByIdAndDelete(id as string)
                 .then(() => {
                   res.send({ message: 'RuleBook was deleted successfully!' });
                 })
-                .catch((err: Error) => {
+                .catch((err: unknown) => {
                   res.status(500).send(gemServerError(err));
                 });
             })
-            .catch((err: Error) => {
+            .catch((err: unknown) => {
               res.status(500).send(gemServerError(err));
             });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
 
 interface CuratedIRuleBook {
-  i18n: Record<string, any> | Record<string, unknown>;
-  ruleBook: BasicHydratedIRuleBook;
+  i18n: Record<string, unknown>
+  ruleBook: BasicHydratedIRuleBook
 }
 
 const findSingle = (req: Request, res: Response): void => {
   const { ruleBookId } = req.query;
   if (ruleBookId === undefined || typeof ruleBookId !== 'string') {
     res.status(400).send(gemInvalidField('RuleBook ID'));
+
     return;
   }
   isAdmin(req)
@@ -248,16 +254,16 @@ const findSingle = (req: Request, res: Response): void => {
           } else {
             const sentObj = {
               ruleBook,
-              i18n: curateI18n(ruleBook.i18n),
+              i18n: curateI18n(ruleBook.i18n)
             };
             res.send(sentObj);
           }
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(404).send(err);
         });
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const findAll = (req: Request, res: Response): void => {
@@ -268,7 +274,7 @@ const findAll = (req: Request, res: Response): void => {
           const curatedRuleBooks: CuratedIRuleBook[] = [];
 
           if (!isUserAdmin) {
-            ruleBooks = ruleBooks.filter((ruleBook) => !ruleBook.archived && !ruleBook.draft);
+            ruleBooks = ruleBooks.filter(ruleBook => !ruleBook.archived && !ruleBook.draft);
           }
 
           // Sorting by state first (draft, archived)
@@ -296,30 +302,31 @@ const findAll = (req: Request, res: Response): void => {
               }
 
               if (
-                ruleBookOrder.findIndex((el) => el === rb1.type.name) >
-                ruleBookOrder.findIndex((el) => el === rb2.type.name)
+                ruleBookOrder.findIndex(el => el === rb1.type.name)
+                > ruleBookOrder.findIndex(el => el === rb2.type.name)
               ) {
                 return 1;
               } else if (
-                ruleBookOrder.findIndex((el) => el === rb1.type.name) <
-                ruleBookOrder.findIndex((el) => el === rb2.type.name)
+                ruleBookOrder.findIndex(el => el === rb1.type.name)
+                < ruleBookOrder.findIndex(el => el === rb2.type.name)
               ) {
                 return -1;
               }
+
               return 0;
             })
             .forEach((ruleBook) => {
               curatedRuleBooks.push({
                 ruleBook,
-                i18n: curateI18n(ruleBook.i18n),
+                i18n: curateI18n(ruleBook.i18n)
               });
             });
 
           res.send(curatedRuleBooks);
         })
-        .catch((err: Error) => res.status(500).send(gemServerError(err)));
+        .catch((err: unknown) => res.status(500).send(gemServerError(err)));
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export {
@@ -330,5 +337,5 @@ export {
   findAll,
   findRuleBookById,
   findSingle,
-  update,
+  update
 };

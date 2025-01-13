@@ -3,8 +3,8 @@ import db from '../../../models';
 const { BodyWeapon } = db;
 
 const replaceWeaponByBody = async (req: {
-  bodyId: string;
-  weaponIds: string[];
+  bodyId: string
+  weaponIds: string[]
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { bodyId } = req;
@@ -24,15 +24,15 @@ const replaceWeaponByBody = async (req: {
   });
 
 const createWeaponsByBody = async (req: {
-  bodyId: string;
-  weaponIds: string[];
+  bodyId: string
+  weaponIds: string[]
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { bodyId, weaponIds } = req;
     BodyWeapon.create(
-      weaponIds.map((weaponId) => ({
+      weaponIds.map(weaponId => ({
         body: bodyId,
-        weapon: weaponId,
+        weapon: weaponId
       }))
     )
       .then(() => {
@@ -44,18 +44,18 @@ const createWeaponsByBody = async (req: {
   });
 
 const updateWeaponByBody = async (req: {
-  bodyId: string;
-  weaponId: string;
-  ammoId?: string;
-  bullets?: number;
-  bag?: string;
+  bodyId: string
+  weaponId: string
+  ammoId?: string
+  bullets?: number
+  bag?: string
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { bodyId, weaponId, ammoId = null, bullets = null, bag = null } = req;
     const updateObj: {
-      ammo?: string;
-      bag?: string;
-      bullets?: number;
+      ammo?: string
+      bag?: string
+      bullets?: number
     } = {};
     if (ammoId !== null) {
       updateObj.ammo = ammoId;
@@ -69,7 +69,7 @@ const updateWeaponByBody = async (req: {
     BodyWeapon.findOneAndUpdate(
       {
         body: bodyId,
-        weapon: weaponId,
+        weapon: weaponId
       },
       updateObj
     )
@@ -84,7 +84,7 @@ const updateWeaponByBody = async (req: {
 const deleteWeaponsByBody = async (bodyId: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     BodyWeapon.deleteMany({
-      body: bodyId,
+      body: bodyId
     })
       .then(() => {
         resolve(true);

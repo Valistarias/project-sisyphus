@@ -8,7 +8,7 @@ import './atr.scss';
 
 interface IAtr extends IQuarkProps {
   /** The childrens of the Table Row element */
-  children: ReactNode;
+  children: ReactNode
 }
 
 const ATr: FC<IAtr> = ({ className, children }) => (

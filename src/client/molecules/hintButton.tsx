@@ -10,7 +10,7 @@ import './hintButton.scss';
 
 export type IHintButton = IButton & {
   /** The content of the hint */
-  hint: ReactNode;
+  hint: ReactNode
 };
 
 const HintButton: FC<IHintButton> = ({ className, hint, ...rest }) => {
@@ -36,8 +36,8 @@ const HintButton: FC<IHintButton> = ({ className, hint, ...rest }) => {
       if (topBottom === 'top' && dimensions.bottom + dimensions.height + 30 < windowHeight) {
         topBottom = 'bottom';
       } else if (
-        topBottom === 'bottom' &&
-        dimensions.bottom + dimensions.height + 30 > windowHeight
+        topBottom === 'bottom'
+        && dimensions.bottom + dimensions.height + 30 > windowHeight
       ) {
         topBottom = 'top';
       }

@@ -19,9 +19,9 @@ import { classTrim } from '../../../utils';
 import './adminEditTipText.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  tipId: string;
+  name: string
+  nameFr: string
+  tipId: string
 }
 
 const AdminEditTipText: FC = () => {
@@ -31,7 +31,7 @@ const AdminEditTipText: FC = () => {
   const { reloadTipTexts } = useGlobalVars();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
-    ConfMessageEvent: {},
+    ConfMessageEvent: {}
   };
   const { id } = useParams();
   const navigate = useNavigate();
@@ -48,11 +48,11 @@ const AdminEditTipText: FC = () => {
   const [tipTextTextFr, setTipTextTextFr] = useState('');
 
   const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const createDefaultData = useCallback((tipTextData: ICuratedTipText | null) => {
@@ -66,6 +66,7 @@ const AdminEditTipText: FC = () => {
     if (i18n.fr !== undefined) {
       defaultData.nameFr = i18n.fr.title ?? '';
     }
+
     return defaultData;
   }, []);
 
@@ -74,20 +75,20 @@ const AdminEditTipText: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
-    defaultValues: useMemo(() => createDefaultData(tipTextData), [createDefaultData, tipTextData]),
+    defaultValues: useMemo(() => createDefaultData(tipTextData), [createDefaultData, tipTextData])
   });
 
   const onSaveTipText: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, tipId }) => {
       if (
-        tipTextText === null ||
-        tipTextTextFr === null ||
-        textEditor === null ||
-        textFrEditor === null ||
-        tipId === null ||
-        api === undefined
+        tipTextText === null
+        || tipTextTextFr === null
+        || textEditor === null
+        || textFrEditor === null
+        || tipId === null
+        || api === undefined
       ) {
         return;
       }
@@ -105,8 +106,8 @@ const AdminEditTipText: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            text: htmlTextFr,
-          },
+            text: htmlTextFr
+          }
         };
       }
 
@@ -116,7 +117,7 @@ const AdminEditTipText: FC = () => {
           title: name,
           tipId,
           summary: htmlText,
-          i18n,
+          i18n
         })
         .then((tipText) => {
           const newId = getNewId();
@@ -126,7 +127,7 @@ const AdminEditTipText: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditTipText.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadTipTexts();
         })
@@ -136,15 +137,15 @@ const AdminEditTipText: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id',
-              })} by ${data.sent}`,
+                field: 'Formula Id'
+              })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -160,7 +161,7 @@ const AdminEditTipText: FC = () => {
       createAlert,
       t,
       reloadTipTexts,
-      setError,
+      setError
     ]
   );
 
@@ -173,9 +174,9 @@ const AdminEditTipText: FC = () => {
         title: t('adminEditTipText.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditTipText.confirmDeletion.text', {
           ns: 'pages',
-          elt: tipTextData?.tipText.title,
+          elt: tipTextData?.tipText.title
         }),
-        confirmCta: t('adminEditTipText.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditTipText.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
@@ -190,7 +191,7 @@ const AdminEditTipText: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditTipText.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
                 reloadTipTexts();
                 void navigate('/admin/tiptexts');
@@ -201,15 +202,15 @@ const AdminEditTipText: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.tipText.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.tipText.name`), 'capitalize')
+                    })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.tipText.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.tipText.name`), 'capitalize')
+                    })
                   });
                 }
               });
@@ -230,7 +231,7 @@ const AdminEditTipText: FC = () => {
     createAlert,
     reloadTipTexts,
     navigate,
-    setError,
+    setError
   ]);
 
   useEffect(() => {
@@ -254,7 +255,7 @@ const AdminEditTipText: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -269,6 +270,7 @@ const AdminEditTipText: FC = () => {
         () => {}
       );
     }, 600000);
+
     return () => {
       if (saveTimer.current !== null) {
         clearInterval(saveTimer.current);
@@ -299,9 +301,11 @@ const AdminEditTipText: FC = () => {
           {t('adminEditTipText.return', { ns: 'pages' })}
         </Button>
         <Atitle level={2}>{t('adminEditTipText.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror className="adminEditTipText__error">{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror className="adminEditTipText__error">{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminEditTipText__basics">
           <Input
             control={control}
@@ -324,7 +328,7 @@ const AdminEditTipText: FC = () => {
             inputName="tipId"
             type="text"
             rules={{
-              required: t('tipTextFormula.required', { ns: 'fields' }),
+              required: t('tipTextFormula.required', { ns: 'fields' })
             }}
             label={t('tipTextFormula.label', { ns: 'fields' })}
           />
@@ -342,7 +346,7 @@ const AdminEditTipText: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt((prev) => !prev);
+              setDisplayInt(prev => !prev);
             }}
             className="adminEditTipText__intl-title__btn"
           />

@@ -27,10 +27,10 @@ const Chapter: FC = () => {
 
   useEffect(() => {
     if (
-      api !== undefined &&
-      ruleBookId !== undefined &&
-      chapterId !== undefined &&
-      calledApi.current !== chapterId
+      api !== undefined
+      && ruleBookId !== undefined
+      && chapterId !== undefined
+      && calledApi.current !== chapterId
     ) {
       calledApi.current = chapterId;
       api.chapters
@@ -55,7 +55,7 @@ const Chapter: FC = () => {
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{t('serverErrors.CYPU-301')}</Ap>
                 </Alert>
-              ),
+              )
             });
           }
         });

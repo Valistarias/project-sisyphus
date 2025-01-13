@@ -15,9 +15,9 @@ import { Alert, RichTextElement, completeRichTextElementExtentions } from '../..
 import './adminNewWeaponScope.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  scopeId: string;
+  name: string
+  nameFr: string
+  scopeId: string
 }
 
 const AdminNewWeaponScope: FC = () => {
@@ -31,27 +31,27 @@ const AdminNewWeaponScope: FC = () => {
   const calledApi = useRef(false);
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   const onSaveWeaponScope: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, scopeId }) => {
       if (
-        introEditor === null ||
-        introFrEditor === null ||
-        api === undefined ||
-        scopeId === undefined
+        introEditor === null
+        || introFrEditor === null
+        || api === undefined
+        || scopeId === undefined
       ) {
         return;
       }
@@ -67,8 +67,8 @@ const AdminNewWeaponScope: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            summary: htmlFr,
-          },
+            summary: htmlFr
+          }
         };
       }
 
@@ -77,7 +77,7 @@ const AdminNewWeaponScope: FC = () => {
           title: name,
           summary: html,
           scopeId,
-          i18n,
+          i18n
         })
         .then((weaponScope) => {
           const newId = getNewId();
@@ -87,7 +87,7 @@ const AdminNewWeaponScope: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewWeaponScope.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadWeaponScopes();
           void navigate(`/admin/weaponscope/${weaponScope._id}`);
@@ -98,15 +98,15 @@ const AdminNewWeaponScope: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id',
-              })} by ${data.sent}`,
+                field: 'Formula Id'
+              })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -120,7 +120,7 @@ const AdminNewWeaponScope: FC = () => {
       t,
       reloadWeaponScopes,
       navigate,
-      setError,
+      setError
     ]
   );
 
@@ -139,16 +139,18 @@ const AdminNewWeaponScope: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewWeaponScope.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminNewWeaponScope__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameWeaponScope.required', { ns: 'fields' }),
+              required: t('nameWeaponScope.required', { ns: 'fields' })
             }}
             label={t('nameWeaponScope.label', { ns: 'fields' })}
             className="adminNewWeaponScope__basics__name"
@@ -158,7 +160,7 @@ const AdminNewWeaponScope: FC = () => {
           <RichTextElement
             label={t('weaponScopeSummary.title', { ns: 'fields' })}
             editor={introEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />
@@ -170,8 +172,8 @@ const AdminNewWeaponScope: FC = () => {
               required: t('weaponScopeFormula.required', { ns: 'fields' }),
               pattern: {
                 value: /^([a-z]){2,3}$/,
-                message: t('weaponScopeFormula.format', { ns: 'fields' }),
-              },
+                message: t('weaponScopeFormula.format', { ns: 'fields' })
+              }
             }}
             label={t('weaponScopeFormula.label', { ns: 'fields' })}
           />
@@ -196,7 +198,7 @@ const AdminNewWeaponScope: FC = () => {
           <RichTextElement
             label={`${t('weaponScopeSummary.title', { ns: 'fields' })} (FR)`}
             editor={introFrEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />

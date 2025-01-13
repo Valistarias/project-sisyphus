@@ -4,9 +4,8 @@ import Entity from './entity';
 
 import type { ICuratedCharParam } from '../../types';
 
-
 interface ICharParamPayload {
-  charParamId: string;
+  charParamId: string
 }
 
 export default class CharParams extends Entity {
@@ -15,7 +14,7 @@ export default class CharParams extends Entity {
   constructor() {
     super('charParams');
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })

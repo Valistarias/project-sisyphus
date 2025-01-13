@@ -10,67 +10,67 @@ import {
   gemNotAdmin,
   gemNotFound,
   gemServerError,
-  gemUnauthorized,
+  gemUnauthorized
 } from '../utils/globalErrorMessage';
 
 import type { HydratedIUser } from '../entities';
 
 interface IVerifyTokenRequest extends Request {
-  userId: string;
+  userId: string
   session: {
-    token: string;
-  };
+    token: string
+  }
 }
 
 const routes = [
   {
     url: '/',
-    role: 'all',
+    role: 'all'
   },
   {
     url: '/login',
-    role: 'unlogged',
+    role: 'unlogged'
   },
   {
     url: '/reset{/*param}',
-    role: 'unlogged',
+    role: 'unlogged'
   },
   {
     url: '/signup',
-    role: 'unlogged',
+    role: 'unlogged'
   },
   {
     url: '/rulebooks',
-    role: 'logged',
+    role: 'logged'
   },
   {
     url: '/rulebook{/*param}',
-    role: 'logged',
+    role: 'logged'
   },
   {
     url: '/campaigns',
-    role: 'logged',
+    role: 'logged'
   },
   {
     url: '/campaign{/*param}',
-    role: 'logged',
+    role: 'logged'
   },
   {
     url: '/characters',
-    role: 'logged',
+    role: 'logged'
   },
   {
     url: '/character{/*param}',
-    role: 'logged',
+    role: 'logged'
   },
   {
     url: '/subscribe{/*param}',
-    role: 'logged',
+    role: 'logged'
   },
   {
     url: '/admin{/*param}',
-    role: 'admin',
-  },
+    role: 'admin'
+  }
 ];
 
 const verifyToken = (
@@ -85,6 +85,7 @@ const verifyToken = (
     res
       .status(mute !== undefined ? 200 : 403)
       .send(mute !== undefined ? {} : gemInvalidField('token'));
+
     return;
   }
 
@@ -96,12 +97,13 @@ const verifyToken = (
         if (err !== null) {
           const isMute = mute !== undefined;
           res.status(isMute ? 200 : 401).send(isMute ? {} : gemUnauthorized());
+
           return;
         }
       }
       // Re-sign the token
       jwt.sign({ id: decoded.id }, config.secret(process.env) as Secret, {
-        expiresIn: 86400, // 24 hours
+        expiresIn: 86400 // 24 hours
       });
       req.userId = decoded.id as string;
       if (next !== undefined) {
@@ -124,7 +126,7 @@ const getUserFromToken = async (req: IVerifyTokenRequest): Promise<HydratedIUser
           }
           // Re-sign the token
           jwt.sign({ id: decoded.id }, config.secret(process.env) as Secret, {
-            expiresIn: 86400, // 24 hours
+            expiresIn: 86400 // 24 hours
           });
           findUserById(decoded.id as string)
             .then((user) => {
@@ -148,24 +150,25 @@ const isAdmin = async (req: Request): Promise<boolean> =>
     getUserFromToken(req as IVerifyTokenRequest)
       .then((user) => {
         if (
-          user !== null &&
-          user.roles.length > 0 &&
-          user.roles.some((role) => role.name === 'admin')
+          user !== null
+          && user.roles.length > 0
+          && user.roles.some(role => role.name === 'admin')
         ) {
           resolve(true);
         } else {
           resolve(false);
         }
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
 
 const generateVerificationMailToken = (userId: string): string => {
   const verificationToken = jwt.sign({ IdMail: userId }, config.secret(process.env) as Secret, {
-    expiresIn: '7d',
+    expiresIn: '7d'
   });
+
   return verificationToken;
 };
 
@@ -178,11 +181,11 @@ const adminNeeded = (req: Request, res: Response, next: () => void): void => {
         res.status(403).send(gemNotAdmin());
       }
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const checkRouteRights = (req: Request, res: Response, next: () => void): void => {
-  const urlMatch = routes.find((route) => pathToRegexp(route.url).regexp.exec(req.path) !== null);
+  const urlMatch = routes.find(route => pathToRegexp(route.url).regexp.exec(req.path) !== null);
   let rights = ['unlogged'];
   if (urlMatch === undefined || urlMatch.role === 'all') {
     next();
@@ -191,7 +194,7 @@ const checkRouteRights = (req: Request, res: Response, next: () => void): void =
       .then((user) => {
         if (user !== null && user.roles.length > 0) {
           rights = ['logged'];
-          if (user.roles.some((role) => role.name === 'admin')) {
+          if (user.roles.some(role => role.name === 'admin')) {
             rights.push('admin');
           }
         }
@@ -209,7 +212,7 @@ const checkRouteRights = (req: Request, res: Response, next: () => void): void =
           }
         }
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         if (err.name === 'TokenExpiredError') {
           req.session = null;
           res.redirect('/');
@@ -227,5 +230,5 @@ export {
   getUserFromToken,
   isAdmin,
   verifyToken,
-  type IVerifyTokenRequest,
+  type IVerifyTokenRequest
 };

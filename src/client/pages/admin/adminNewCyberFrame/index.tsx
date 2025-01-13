@@ -15,9 +15,9 @@ import { Alert, RichTextElement, completeRichTextElementExtentions } from '../..
 import './adminNewCyberFrame.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  ruleBook: string;
+  name: string
+  nameFr: string
+  ruleBook: string
 }
 
 const AdminNewCyberFrame: FC = () => {
@@ -28,26 +28,26 @@ const AdminNewCyberFrame: FC = () => {
   const { ruleBooks, reloadCyberFrames } = useGlobalVars();
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   const ruleBookSelect = useMemo(() => ruleBooks.map(({ ruleBook }) => ({
-      value: ruleBook._id,
-      // TODO : Handle Internationalization
-      label: ruleBook.title,
-      details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 }),
-    })), [t, ruleBooks]);
+    value: ruleBook._id,
+    // TODO : Handle Internationalization
+    label: ruleBook.title,
+    details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 })
+  })), [t, ruleBooks]);
 
   const onSaveCyberFrame: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, ruleBook }) => {
@@ -66,8 +66,8 @@ const AdminNewCyberFrame: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            summary: htmlFr,
-          },
+            summary: htmlFr
+          }
         };
       }
 
@@ -76,7 +76,7 @@ const AdminNewCyberFrame: FC = () => {
           title: name,
           ruleBook,
           summary: html,
-          i18n,
+          i18n
         })
         .then((cyberFrame) => {
           const newId = getNewId();
@@ -86,7 +86,7 @@ const AdminNewCyberFrame: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewCyberFrame.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadCyberFrames();
           void navigate(`/admin/cyberframe/${cyberFrame._id}`);
@@ -97,15 +97,15 @@ const AdminNewCyberFrame: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.cyberFrameType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.cyberFrameType.${data.sent}`), 'capitalize')
+              })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.cyberFrameType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.cyberFrameType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -119,7 +119,7 @@ const AdminNewCyberFrame: FC = () => {
       t,
       reloadCyberFrames,
       navigate,
-      setError,
+      setError
     ]
   );
 
@@ -131,16 +131,18 @@ const AdminNewCyberFrame: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewCyberFrame.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminNewCyberFrame__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameCyberFrame.required', { ns: 'fields' }),
+              required: t('nameCyberFrame.required', { ns: 'fields' })
             }}
             label={t('nameCyberFrame.label', { ns: 'fields' })}
             className="adminNewCyberFrame__basics__name"
@@ -149,7 +151,7 @@ const AdminNewCyberFrame: FC = () => {
             control={control}
             inputName="ruleBook"
             rules={{
-              required: t('linkedRuleBook.required', { ns: 'fields' }),
+              required: t('linkedRuleBook.required', { ns: 'fields' })
             }}
             label={t('linkedRuleBook.label', { ns: 'fields' })}
             options={ruleBookSelect}
@@ -160,7 +162,7 @@ const AdminNewCyberFrame: FC = () => {
           <RichTextElement
             label={t('cyberFrameText.title', { ns: 'fields' })}
             editor={introEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />
@@ -185,7 +187,7 @@ const AdminNewCyberFrame: FC = () => {
           <RichTextElement
             label={`${t('cyberFrameText.title', { ns: 'fields' })} (FR)`}
             editor={introFrEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />

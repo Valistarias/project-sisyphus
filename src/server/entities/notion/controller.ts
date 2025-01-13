@@ -8,7 +8,6 @@ import { findRuleBookById } from '../ruleBook/controller';
 import type { HydratedNotion, INotion } from './model';
 import type { HydratedIRuleBook } from '../ruleBook/model';
 
-
 import { curateI18n } from '../../utils';
 
 const { Notion } = db;
@@ -19,7 +18,7 @@ const findNotions = async (): Promise<HydratedNotion[]> =>
       .populate<{ ruleBook: HydratedIRuleBook }>({
         path: 'ruleBook',
         select: '_id title type',
-        populate: 'type',
+        populate: 'type'
       })
       .then(async (res?: HydratedNotion[] | null) => {
         if (res === undefined || res === null) {
@@ -52,12 +51,13 @@ const create = (req: Request, res: Response): void => {
   const { title, text, ruleBook, i18n = null } = req.body;
   if (title === undefined || text === undefined || ruleBook === undefined) {
     res.status(400).send(gemInvalidField('Notion'));
+
     return;
   }
   const notion = new Notion({
     title,
     text,
-    ruleBook,
+    ruleBook
   });
 
   if (i18n !== null) {
@@ -69,7 +69,7 @@ const create = (req: Request, res: Response): void => {
     .then(() => {
       res.send(notion);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -78,6 +78,7 @@ const update = (req: Request, res: Response): void => {
   const { id, title = null, text = null, ruleBook = null, i18n = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Notion ID'));
+
     return;
   }
   findNotionById(id as string)
@@ -105,7 +106,7 @@ const update = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'Notion was updated successfully!', notion });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -118,13 +119,14 @@ const deleteNotion = (req: Request, res: Response): void => {
   const { id } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Notion ID'));
+
     return;
   }
   Notion.findByIdAndDelete(id)
     .then(() => {
       res.send({ message: 'Notion was deleted successfully!' });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -133,13 +135,14 @@ const deleteNotionsByRuleBookId = async (ruleBookId: string): Promise<boolean> =
   await new Promise((resolve, reject) => {
     if (ruleBookId === undefined) {
       reject(gemInvalidField('Rulebook ID'));
+
       return;
     }
     Notion.deleteMany({ ruleBook: ruleBookId })
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -148,17 +151,18 @@ const findSingle = (req: Request, res: Response): void => {
   const { notionId } = req.query;
   if (notionId === undefined || typeof notionId !== 'string') {
     res.status(400).send(gemInvalidField('Notion ID'));
+
     return;
   }
   findNotionById(notionId)
     .then((notion) => {
       const sentObj = {
         notion,
-        i18n: curateI18n(notion.i18n),
+        i18n: curateI18n(notion.i18n)
       };
       res.send(sentObj);
     })
-    .catch((err: Error) => res.status(404).send(err));
+    .catch((err: unknown) => res.status(404).send(err));
 };
 
 const findAllByRuleBook = (req: Request, res: Response): void => {
@@ -187,7 +191,7 @@ const findAllByRuleBook = (req: Request, res: Response): void => {
         res.send(aggregatedNotions);
       }
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export { create, deleteNotion, deleteNotionsByRuleBookId, findAllByRuleBook, findSingle, update };

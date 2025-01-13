@@ -4,9 +4,8 @@ import Entity from './entity';
 
 import type { ICuratedBackground } from '../../types';
 
-
 interface IBackgroundPayload {
-  backgroundId: string;
+  backgroundId: string
 }
 
 export default class Backgrounds extends Entity {
@@ -15,7 +14,7 @@ export default class Backgrounds extends Entity {
   constructor() {
     super('backgrounds');
 
-    this.get = async (payload) =>
+    this.get = async payload =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })

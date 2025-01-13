@@ -19,7 +19,7 @@ const findCampaignEventsByCampaignId = async (
     CampaignEvent.find({ campaign: id })
       .lean()
       .sort({
-        createdAt: 'desc',
+        createdAt: 'desc'
       })
       .limit(perRequest)
       .skip(offset)
@@ -55,12 +55,13 @@ const findCampaignEventById = async (id: string): Promise<HydratedDocument<ICamp
 const create = (req: Request, res: Response): void => {
   const { result, formula, character, campaign, type } = req.body;
   if (
-    result === undefined ||
-    character === undefined ||
-    type === undefined ||
-    campaign === undefined
+    result === undefined
+    || character === undefined
+    || type === undefined
+    || campaign === undefined
   ) {
     res.status(400).send(gemInvalidField('CampaignEvent'));
+
     return;
   }
   const campaignEvent = new CampaignEvent({
@@ -68,7 +69,7 @@ const create = (req: Request, res: Response): void => {
     type,
     formula,
     character,
-    campaign,
+    campaign
   });
 
   campaignEvent
@@ -76,7 +77,7 @@ const create = (req: Request, res: Response): void => {
     .then(() => {
       res.send(campaignEvent);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -88,10 +89,11 @@ const update = (req: Request, res: Response): void => {
     formula = null,
     character = null,
     campaign = null,
-    type = null,
+    type = null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('CampaignEvent ID'));
+
     return;
   }
   findCampaignEventById(id as string)
@@ -116,7 +118,7 @@ const update = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'CampaignEvent was updated successfully!', campaignEvent });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -129,13 +131,14 @@ const deleteCampaignEventByCampaignId = async (campaignId: string): Promise<bool
   await new Promise((resolve, reject) => {
     if (campaignId === undefined) {
       reject(gemInvalidField('Campaign ID'));
+
       return;
     }
     CampaignEvent.deleteMany({ campaign: campaignId })
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -146,7 +149,7 @@ const findAllByCampaign = (req: Request, res: Response): void => {
     .then((campaignEvents) => {
       res.send(campaignEvents.reverse());
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export { create, deleteCampaignEventByCampaignId, findAllByCampaign, update };

@@ -9,21 +9,21 @@ import './atextarea.scss';
 
 interface IAtextarea extends IQuarkProps {
   /** The type of input */
-  type?: 'text' | 'password' | 'email' | 'number' | 'textarea';
+  type?: 'text' | 'password' | 'email' | 'number' | 'textarea'
   /** The size of the input */
-  size?: 'medium' | 'small';
+  size?: 'medium' | 'small'
   /** The placeholder of the Textarea element */
-  placeholder?: string;
+  placeholder?: string
   /** The value of the Textarea element */
-  value: string;
+  value: string
   /** Is the field editable */
-  readOnly?: boolean;
+  readOnly?: boolean
   /** Is the field hidden */
-  hidden?: boolean;
+  hidden?: boolean
   /** Allow the user's password manager to automatically enter the password */
-  autoComplete?: string;
+  autoComplete?: string
   /** When the field changes */
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
 }
 
 const Atextarea: FC<IAtextarea> = ({
@@ -37,7 +37,7 @@ const Atextarea: FC<IAtextarea> = ({
   autoComplete,
   onFocus,
   onBlur,
-  readOnly,
+  readOnly
 }) => (
   <Quark
     quarkType="textarea"

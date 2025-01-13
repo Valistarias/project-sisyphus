@@ -6,7 +6,7 @@ import {
   gemDuplicate,
   gemInvalidField,
   gemNotFound,
-  gemServerError,
+  gemServerError
 } from '../../utils/globalErrorMessage';
 
 import type { IActionType } from './model';
@@ -47,13 +47,14 @@ const create = (req: Request, res: Response): void => {
   const { name } = req.body;
   if (name === undefined) {
     res.status(400).send(gemInvalidField('ActionType'));
+
     return;
   }
   findActionTypes()
     .then((actionTypes) => {
-      if (actionTypes.find((actionType) => actionType.name === name) === undefined) {
+      if (actionTypes.find(actionType => actionType.name === name) === undefined) {
         const toSaveActionType = new ActionType({
-          name,
+          name
         });
 
         toSaveActionType
@@ -61,25 +62,26 @@ const create = (req: Request, res: Response): void => {
           .then(() => {
             res.send({ message: 'ActionType was registered successfully!' });
           })
-          .catch((err: Error) => {
+          .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
           });
       } else {
         res.status(400).send(gemDuplicate('Name'));
       }
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const update = (req: Request, res: Response): void => {
   const { id, name = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('ActionType ID'));
+
     return;
   }
   findActionTypes()
     .then((actionTypes) => {
-      const actualActionType = actionTypes.find((actionType) => String(actionType._id) === id);
+      const actualActionType = actionTypes.find(actionType => String(actionType._id) === id);
       if (actualActionType !== undefined) {
         if (name !== null && name !== actualActionType.name) {
           actualActionType.name = name;
@@ -89,27 +91,28 @@ const update = (req: Request, res: Response): void => {
           .then(() => {
             res.send({ message: 'ActionType was updated successfully!', actualActionType });
           })
-          .catch((err: Error) => {
+          .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
           });
       } else {
         res.status(404).send(gemNotFound('ActionType'));
       }
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const deleteActionType = (req: Request, res: Response): void => {
   const { id } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('ActionType ID'));
+
     return;
   }
   ActionType.findByIdAndDelete(id)
     .then(() => {
       res.send({ message: 'ActionType was deleted successfully!' });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -118,17 +121,18 @@ const findSingle = (req: Request, res: Response): void => {
   const { actionTypeId } = req.query;
   if (actionTypeId === undefined || typeof actionTypeId !== 'string') {
     res.status(400).send(gemInvalidField('ActionType ID'));
+
     return;
   }
   findActionTypeById(actionTypeId)
-    .then((actionType) => res.send(actionType))
-    .catch((err) => res.status(404).send(err));
+    .then(actionType => res.send(actionType))
+    .catch(err => res.status(404).send(err));
 };
 
 const findAll = (req: Request, res: Response): void => {
   findActionTypes()
-    .then((actionTypes) => res.send(actionTypes))
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .then(actionTypes => res.send(actionTypes))
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export { create, deleteActionType, findAll, findSingle, update };

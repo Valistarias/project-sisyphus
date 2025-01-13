@@ -20,6 +20,7 @@ const AdminWeaponScopes: FC = () => {
     if (weaponScopes === null || weaponScopes.length === 0) {
       return null;
     }
+
     return (
       <Aul className="adminWeaponScopes__weapon-scope-list" noPoints>
         {weaponScopes.map(({ weaponScope }) => (

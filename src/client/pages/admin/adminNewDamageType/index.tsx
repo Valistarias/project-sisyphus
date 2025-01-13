@@ -15,8 +15,8 @@ import { Alert, RichTextElement, completeRichTextElementExtentions } from '../..
 import './adminNewDamageType.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
+  name: string
+  nameFr: string
 }
 
 const AdminNewDamageType: FC = () => {
@@ -30,18 +30,18 @@ const AdminNewDamageType: FC = () => {
   const calledApi = useRef(false);
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   const onSaveDamageType: SubmitHandler<FormValues> = useCallback(
@@ -61,8 +61,8 @@ const AdminNewDamageType: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            summary: htmlFr,
-          },
+            summary: htmlFr
+          }
         };
       }
 
@@ -70,7 +70,7 @@ const AdminNewDamageType: FC = () => {
         .create({
           title: name,
           summary: html,
-          i18n,
+          i18n
         })
         .then((damageType) => {
           const newId = getNewId();
@@ -80,7 +80,7 @@ const AdminNewDamageType: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewDamageType.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadDamageTypes();
           void navigate(`/admin/damagetype/${damageType._id}`);
@@ -91,15 +91,15 @@ const AdminNewDamageType: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id',
-              })} by ${data.sent}`,
+                field: 'Formula Id'
+              })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -113,7 +113,7 @@ const AdminNewDamageType: FC = () => {
       t,
       reloadDamageTypes,
       navigate,
-      setError,
+      setError
     ]
   );
 
@@ -132,16 +132,18 @@ const AdminNewDamageType: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewDamageType.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminNewDamageType__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameDamageType.required', { ns: 'fields' }),
+              required: t('nameDamageType.required', { ns: 'fields' })
             }}
             label={t('nameDamageType.label', { ns: 'fields' })}
             className="adminNewDamageType__basics__name"
@@ -151,7 +153,7 @@ const AdminNewDamageType: FC = () => {
           <RichTextElement
             label={t('damageTypeSummary.title', { ns: 'fields' })}
             editor={introEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />
@@ -176,7 +178,7 @@ const AdminNewDamageType: FC = () => {
           <RichTextElement
             label={`${t('damageTypeSummary.title', { ns: 'fields' })} (FR)`}
             editor={introFrEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />

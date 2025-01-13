@@ -1,11 +1,11 @@
 import { model, type Model, Schema } from 'mongoose';
 
 interface IRuleBookType {
-  name: string;
+  name: string
 }
 
 const RuleBookTypeSchema = new Schema<IRuleBookType>({
-  name: String,
+  name: String
 });
 
 const RuleBookTypeModel = (): Model<IRuleBookType> => model('RuleBookType', RuleBookTypeSchema);

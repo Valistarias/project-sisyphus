@@ -1,9 +1,11 @@
 import type { Request, Response } from 'express';
+import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
-import type { HydratedIAmmo } from './model';
+import type { HydratedIAmmo, IAmmo } from './model';
+import type { InternationalizationType } from '../../utils/types';
 
 import { curateI18n } from '../../utils';
 
@@ -12,14 +14,14 @@ const { Ammo } = db;
 const findAmmos = async (): Promise<HydratedIAmmo[]> =>
   await new Promise((resolve, reject) => {
     Ammo.find()
-      .then(async (res?: HydratedIAmmo[] | null) => {
+      .then((res?: HydratedIAmmo[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Ammos'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err: Error) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -27,14 +29,14 @@ const findAmmos = async (): Promise<HydratedIAmmo[]> =>
 const findAmmoById = async (id: string): Promise<HydratedIAmmo> =>
   await new Promise((resolve, reject) => {
     Ammo.findById(id)
-      .then(async (res?: HydratedIAmmo | null) => {
+      .then((res?: HydratedIAmmo | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Ammo'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err: Error) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -50,17 +52,18 @@ const create = (req: Request, res: Response): void => {
     itemType,
     weaponTypes,
     itemModifiers,
-    cost,
+    cost
   } = req.body;
   if (
-    title === undefined ||
-    summary === undefined ||
-    rarity === undefined ||
-    itemType === undefined ||
-    weaponTypes === undefined ||
-    cost === undefined
+    title === undefined
+    || summary === undefined
+    || rarity === undefined
+    || itemType === undefined
+    || weaponTypes === undefined
+    || cost === undefined
   ) {
     res.status(400).send(gemInvalidField('Ammo'));
+
     return;
   }
 
@@ -73,7 +76,7 @@ const create = (req: Request, res: Response): void => {
     weaponTypes,
     offsetToHit,
     offsetDamage,
-    itemModifiers,
+    itemModifiers
   });
 
   if (i18n !== null) {
@@ -85,7 +88,7 @@ const create = (req: Request, res: Response): void => {
     .then(() => {
       res.send(ammo);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -102,14 +105,27 @@ const update = (req: Request, res: Response): void => {
     itemType = null,
     weaponTypes = null,
     itemModifiers = null,
-    cost = null,
+    cost = null
+  }: {
+    id?: string
+    title: string | null
+    summary: string | null
+    i18n: InternationalizationType | null
+    offsetToHit: number | null
+    offsetDamage: number | null
+    rarity: ObjectId | null
+    itemType: ObjectId | null
+    weaponTypes: ObjectId[] | null
+    itemModifiers: ObjectId[] | null
+    cost: number | null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Ammo ID'));
+
     return;
   }
 
-  findAmmoById(id as string)
+  findAmmoById(id)
     .then((ammo) => {
       if (title !== null) {
         ammo.title = title;
@@ -140,13 +156,11 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl = {
-          ...(ammo.i18n !== null && ammo.i18n !== undefined && ammo.i18n !== ''
-            ? JSON.parse(ammo.i18n)
-            : {}),
+        const newIntl: InternationalizationType = {
+          ...(ammo.i18n !== undefined && ammo.i18n !== '' ? JSON.parse(ammo.i18n) : {})
         };
 
-        Object.keys(i18n as Record<string, any>).forEach((lang) => {
+        Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
         });
 
@@ -158,7 +172,7 @@ const update = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'Ammo was updated successfully!', ammo });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -167,31 +181,34 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteAmmoById = async (id: string): Promise<boolean> =>
+const deleteAmmoById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Ammo ID'));
+
       return;
     }
     Ammo.findByIdAndDelete(id)
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
 
 const deleteAmmo = (req: Request, res: Response): void => {
-  const { id } = req.body;
+  const { id }: {
+    id: string
+  } = req.body;
 
-  findAmmoById(id as string)
+  findAmmoById(id)
     .then(() => {
-      deleteAmmoById(id as string)
+      deleteAmmoById(id)
         .then(() => {
           res.send({ message: 'Ammo was deleted successfully!' });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -201,14 +218,15 @@ const deleteAmmo = (req: Request, res: Response): void => {
 };
 
 interface CuratedIAmmo {
-  i18n: Record<string, any> | Record<string, unknown>;
-  ammo: any;
+  i18n?: Record<string, unknown>
+  ammo: IAmmo
 }
 
 const findSingle = (req: Request, res: Response): void => {
   const { ammoId } = req.query;
   if (ammoId === undefined || typeof ammoId !== 'string') {
     res.status(400).send(gemInvalidField('Ammo ID'));
+
     return;
   }
   findAmmoById(ammoId)
@@ -216,11 +234,11 @@ const findSingle = (req: Request, res: Response): void => {
       const ammo = ammoSent.toJSON();
       const sentObj = {
         ammo,
-        i18n: curateI18n(ammoSent.i18n),
+        i18n: curateI18n(ammoSent.i18n)
       };
       res.send(sentObj);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
@@ -233,13 +251,13 @@ const findAll = (req: Request, res: Response): void => {
         const ammo = ammoSent.toJSON();
         curatedAmmos.push({
           ammo,
-          i18n: curateI18n(ammoSent.i18n),
+          i18n: curateI18n(ammoSent.i18n)
         });
       });
 
       res.send(curatedAmmos);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export { create, deleteAmmo, findAll, findAmmoById, findSingle, update };

@@ -12,43 +12,43 @@ import type { HydratedIBodyWeapon } from '../weapon/model';
 
 interface IBody {
   /** Is this body alive */
-  alive: boolean;
+  alive: boolean
   /** The body HP */
-  hp: number;
+  hp: number
   /** The character associated to this body */
-  character: ObjectId;
+  character: ObjectId
   /** When the body was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 type HydratedIBody = HydratedDocument<
   Omit<IBody, 'character'> & {
-    character: HydratedDocument<ICharacter>;
-    stats: HydratedIBodyStat[];
-    ammos: HydratedIBodyAmmo[];
-    armors: HydratedIBodyArmor[];
-    bags: HydratedIBodyBag[];
-    implants: HydratedIBodyImplant[];
-    items: HydratedIBodyItem[];
-    programs: HydratedIBodyProgram[];
-    weapons: HydratedIBodyWeapon[];
+    character: HydratedDocument<ICharacter>
+    stats: HydratedIBodyStat[]
+    ammos: HydratedIBodyAmmo[]
+    armors: HydratedIBodyArmor[]
+    bags: HydratedIBodyBag[]
+    implants: HydratedIBodyImplant[]
+    items: HydratedIBodyItem[]
+    programs: HydratedIBodyProgram[]
+    weapons: HydratedIBodyWeapon[]
   }
 >;
 
 const bodySchema = new Schema<IBody>({
   alive: {
     type: Boolean,
-    default: true,
+    default: true
   },
   hp: Number,
   character: {
     type: Schema.Types.ObjectId,
-    ref: 'Character',
+    ref: 'Character'
   },
   createdAt: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
 });
 
 // Virtuals -------------------------
@@ -56,49 +56,49 @@ const bodySchema = new Schema<IBody>({
 bodySchema.virtual('stats', {
   ref: 'BodyStat',
   localField: '_id',
-  foreignField: 'body',
+  foreignField: 'body'
 });
 
 bodySchema.virtual('ammos', {
   ref: 'BodyAmmo',
   localField: '_id',
-  foreignField: 'body',
+  foreignField: 'body'
 });
 
 bodySchema.virtual('armors', {
   ref: 'BodyArmor',
   localField: '_id',
-  foreignField: 'body',
+  foreignField: 'body'
 });
 
 bodySchema.virtual('bags', {
   ref: 'BodyBag',
   localField: '_id',
-  foreignField: 'body',
+  foreignField: 'body'
 });
 
 bodySchema.virtual('implants', {
   ref: 'BodyImplant',
   localField: '_id',
-  foreignField: 'body',
+  foreignField: 'body'
 });
 
 bodySchema.virtual('items', {
   ref: 'BodyItem',
   localField: '_id',
-  foreignField: 'body',
+  foreignField: 'body'
 });
 
 bodySchema.virtual('programs', {
   ref: 'BodyProgram',
   localField: '_id',
-  foreignField: 'body',
+  foreignField: 'body'
 });
 
 bodySchema.virtual('weapons', {
   ref: 'BodyWeapon',
   localField: '_id',
-  foreignField: 'body',
+  foreignField: 'body'
 });
 
 const BodyModel = (): Model<IBody> => model('Body', bodySchema);

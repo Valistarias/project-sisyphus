@@ -19,8 +19,8 @@ import { classTrim } from '../../../utils';
 import './adminEditArmorType.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
+  name: string
+  nameFr: string
 }
 
 const AdminEditArmorType: FC = () => {
@@ -30,7 +30,7 @@ const AdminEditArmorType: FC = () => {
   const { reloadArmorTypes } = useGlobalVars();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
-    ConfMessageEvent: {},
+    ConfMessageEvent: {}
   };
   const { id } = useParams();
   const navigate = useNavigate();
@@ -47,11 +47,11 @@ const AdminEditArmorType: FC = () => {
   const [armorTypeTextFr, setArmorTypeTextFr] = useState('');
 
   const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const createDefaultData = useCallback((armorTypeData: ICuratedArmorType | null) => {
@@ -64,6 +64,7 @@ const AdminEditArmorType: FC = () => {
     if (i18n.fr !== undefined) {
       defaultData.nameFr = i18n.fr.title ?? '';
     }
+
     return defaultData;
   }, []);
 
@@ -72,22 +73,22 @@ const AdminEditArmorType: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(armorTypeData),
       [createDefaultData, armorTypeData]
-    ),
+    )
   });
 
   const onSaveArmorType: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr }) => {
       if (
-        armorTypeText === null ||
-        armorTypeTextFr === null ||
-        textEditor === null ||
-        textFrEditor === null ||
-        api === undefined
+        armorTypeText === null
+        || armorTypeTextFr === null
+        || textEditor === null
+        || textFrEditor === null
+        || api === undefined
       ) {
         return;
       }
@@ -105,8 +106,8 @@ const AdminEditArmorType: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            text: htmlTextFr,
-          },
+            text: htmlTextFr
+          }
         };
       }
 
@@ -115,7 +116,7 @@ const AdminEditArmorType: FC = () => {
           id,
           title: name,
           summary: htmlText,
-          i18n,
+          i18n
         })
         .then((armorType) => {
           const newId = getNewId();
@@ -125,7 +126,7 @@ const AdminEditArmorType: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditArmorType.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadArmorTypes();
         })
@@ -135,15 +136,15 @@ const AdminEditArmorType: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id',
-              })} by ${data.sent}`,
+                field: 'Formula Id'
+              })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -159,7 +160,7 @@ const AdminEditArmorType: FC = () => {
       createAlert,
       t,
       reloadArmorTypes,
-      setError,
+      setError
     ]
   );
 
@@ -172,9 +173,9 @@ const AdminEditArmorType: FC = () => {
         title: t('adminEditArmorType.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditArmorType.confirmDeletion.text', {
           ns: 'pages',
-          elt: armorTypeData?.armorType.title,
+          elt: armorTypeData?.armorType.title
         }),
-        confirmCta: t('adminEditArmorType.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditArmorType.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
@@ -189,7 +190,7 @@ const AdminEditArmorType: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditArmorType.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
                 reloadArmorTypes();
                 void navigate('/admin/armortypes');
@@ -200,15 +201,15 @@ const AdminEditArmorType: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.armorType.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.armorType.name`), 'capitalize')
+                    })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.armorType.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.armorType.name`), 'capitalize')
+                    })
                   });
                 }
               });
@@ -229,7 +230,7 @@ const AdminEditArmorType: FC = () => {
     createAlert,
     reloadArmorTypes,
     navigate,
-    setError,
+    setError
   ]);
 
   useEffect(() => {
@@ -253,7 +254,7 @@ const AdminEditArmorType: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -268,6 +269,7 @@ const AdminEditArmorType: FC = () => {
         () => {}
       );
     }, 600000);
+
     return () => {
       if (saveTimer.current !== null) {
         clearInterval(saveTimer.current);
@@ -302,9 +304,11 @@ const AdminEditArmorType: FC = () => {
           {t('adminEditArmorType.return', { ns: 'pages' })}
         </Button>
         <Atitle level={2}>{t('adminEditArmorType.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror className="adminEditArmorType__error">{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror className="adminEditArmorType__error">{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminEditArmorType__basics">
           <Input
             control={control}
@@ -336,7 +340,7 @@ const AdminEditArmorType: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt((prev) => !prev);
+              setDisplayInt(prev => !prev);
             }}
             className="adminEditArmorType__intl-title__btn"
           />

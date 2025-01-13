@@ -19,9 +19,9 @@ import { classTrim } from '../../../utils';
 import './adminEditItemModifier.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  modifierId: string;
+  name: string
+  nameFr: string
+  modifierId: string
 }
 
 const AdminEditItemModifier: FC = () => {
@@ -31,7 +31,7 @@ const AdminEditItemModifier: FC = () => {
   const { reloadItemModifiers } = useGlobalVars();
   const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
-    ConfMessageEvent: {},
+    ConfMessageEvent: {}
   };
   const { id } = useParams();
   const navigate = useNavigate();
@@ -48,11 +48,11 @@ const AdminEditItemModifier: FC = () => {
   const [itemModifierTextFr, setItemModifierTextFr] = useState('');
 
   const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const createDefaultData = useCallback((itemModifierData: ICuratedItemModifier | null) => {
@@ -66,6 +66,7 @@ const AdminEditItemModifier: FC = () => {
     if (i18n.fr !== undefined) {
       defaultData.nameFr = i18n.fr.title ?? '';
     }
+
     return defaultData;
   }, []);
 
@@ -74,23 +75,23 @@ const AdminEditItemModifier: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(itemModifierData),
       [createDefaultData, itemModifierData]
-    ),
+    )
   });
 
   const onSaveItemModifier: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, modifierId }) => {
       if (
-        itemModifierText === null ||
-        itemModifierTextFr === null ||
-        textEditor === null ||
-        textFrEditor === null ||
-        modifierId === null ||
-        api === undefined
+        itemModifierText === null
+        || itemModifierTextFr === null
+        || textEditor === null
+        || textFrEditor === null
+        || modifierId === null
+        || api === undefined
       ) {
         return;
       }
@@ -108,8 +109,8 @@ const AdminEditItemModifier: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            text: htmlTextFr,
-          },
+            text: htmlTextFr
+          }
         };
       }
 
@@ -119,7 +120,7 @@ const AdminEditItemModifier: FC = () => {
           title: name,
           modifierId,
           summary: htmlText,
-          i18n,
+          i18n
         })
         .then((itemModifier) => {
           const newId = getNewId();
@@ -129,7 +130,7 @@ const AdminEditItemModifier: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditItemModifier.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadItemModifiers();
         })
@@ -139,15 +140,15 @@ const AdminEditItemModifier: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id',
-              })} by ${data.sent}`,
+                field: 'Formula Id'
+              })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -163,7 +164,7 @@ const AdminEditItemModifier: FC = () => {
       createAlert,
       t,
       reloadItemModifiers,
-      setError,
+      setError
     ]
   );
 
@@ -176,9 +177,9 @@ const AdminEditItemModifier: FC = () => {
         title: t('adminEditItemModifier.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditItemModifier.confirmDeletion.text', {
           ns: 'pages',
-          elt: itemModifierData?.itemModifier.title,
+          elt: itemModifierData?.itemModifier.title
         }),
-        confirmCta: t('adminEditItemModifier.confirmDeletion.confirmCta', { ns: 'pages' }),
+        confirmCta: t('adminEditItemModifier.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
         const confirmDelete = ({ detail }): void => {
@@ -193,7 +194,7 @@ const AdminEditItemModifier: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditItemModifier.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  ),
+                  )
                 });
                 reloadItemModifiers();
                 void navigate('/admin/itemmodifiers');
@@ -204,15 +205,15 @@ const AdminEditItemModifier: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.itemModifier.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.itemModifier.name`), 'capitalize')
+                    })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.itemModifier.name`), 'capitalize'),
-                    }),
+                      field: i18next.format(t(`terms.itemModifier.name`), 'capitalize')
+                    })
                   });
                 }
               });
@@ -233,7 +234,7 @@ const AdminEditItemModifier: FC = () => {
     createAlert,
     reloadItemModifiers,
     navigate,
-    setError,
+    setError
   ]);
 
   useEffect(() => {
@@ -257,7 +258,7 @@ const AdminEditItemModifier: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            ),
+            )
           });
         });
     }
@@ -272,6 +273,7 @@ const AdminEditItemModifier: FC = () => {
         () => {}
       );
     }, 600000);
+
     return () => {
       if (saveTimer.current !== null) {
         clearInterval(saveTimer.current);
@@ -310,11 +312,13 @@ const AdminEditItemModifier: FC = () => {
           {t('adminEditItemModifier.return', { ns: 'pages' })}
         </Button>
         <Atitle level={2}>{t('adminEditItemModifier.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror className="adminEditItemModifier__error">
-            {errors.root.serverError.message}
-          </Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror className="adminEditItemModifier__error">
+                {errors.root.serverError.message}
+              </Aerror>
+            )
+          : null}
         <div className="adminEditItemModifier__basics">
           <Input
             control={control}
@@ -340,8 +344,8 @@ const AdminEditItemModifier: FC = () => {
               required: t('itemModifierFormula.required', { ns: 'fields' }),
               pattern: {
                 value: /^([a-z]){2,3}$/,
-                message: t('itemModifierFormula.format', { ns: 'fields' }),
-              },
+                message: t('itemModifierFormula.format', { ns: 'fields' })
+              }
             }}
             label={t('itemModifierFormula.label', { ns: 'fields' })}
           />
@@ -359,7 +363,7 @@ const AdminEditItemModifier: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt((prev) => !prev);
+              setDisplayInt(prev => !prev);
             }}
             className="adminEditItemModifier__intl-title__btn"
           />

@@ -15,9 +15,9 @@ import { Alert, RichTextElement, completeRichTextElementExtentions } from '../..
 import './adminNewNotion.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  type: string;
+  name: string
+  nameFr: string
+  type: string
 }
 
 const AdminNewNotions: FC = () => {
@@ -31,11 +31,11 @@ const AdminNewNotions: FC = () => {
   const params = useMemo(() => new URLSearchParams(search), [search]);
 
   const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const createDefaultData = useCallback(
@@ -44,34 +44,35 @@ const AdminNewNotions: FC = () => {
         return {};
       }
       const selectedfield = ruleBooks.find(
-        (ruleBook) => ruleBook.value === params.get('ruleBookId')
+        ruleBook => ruleBook.value === params.get('ruleBookId')
       );
       if (selectedfield !== undefined) {
         return { type: selectedfield.value };
       }
+
       return {};
     },
     []
   );
 
   const ruleBookSelect = useMemo(() => ruleBooks.map(({ ruleBook }) => ({
-      value: ruleBook._id,
-      // TODO : Handle Internationalization
-      label: ruleBook.title,
-      details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 }),
-    })), [t, ruleBooks]);
+    value: ruleBook._id,
+    // TODO : Handle Internationalization
+    label: ruleBook.title,
+    details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 })
+  })), [t, ruleBooks]);
 
   const {
     handleSubmit,
     setError,
     control,
     formState: { errors },
-    reset,
+    reset
   } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(params, ruleBookSelect),
       [createDefaultData, params, ruleBookSelect]
-    ),
+    )
   });
 
   const onSaveNotion: SubmitHandler<FormValues> = useCallback(
@@ -93,8 +94,8 @@ const AdminNewNotions: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            text: htmlTextFr,
-          },
+            text: htmlTextFr
+          }
         };
       }
 
@@ -103,7 +104,7 @@ const AdminNewNotions: FC = () => {
           title: name,
           ruleBook: type,
           text: htmlText,
-          i18n,
+          i18n
         })
         .then((notion) => {
           const newId = getNewId();
@@ -113,7 +114,7 @@ const AdminNewNotions: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewNotion.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           void navigate(`/admin/notion/${notion._id}`);
         })
@@ -123,15 +124,15 @@ const AdminNewNotions: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.notionType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.notionType.${data.sent}`), 'capitalize')
+              })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.notionType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.notionType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -148,9 +149,11 @@ const AdminNewNotions: FC = () => {
     <div className="adminNewNotion">
       <form onSubmit={handleSubmit(onSaveNotion)} noValidate className="adminNewNotion__content">
         <Atitle level={1}>{t('adminNewNotion.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminNewNotion__basics">
           <Input
             control={control}
@@ -173,7 +176,7 @@ const AdminNewNotions: FC = () => {
           <RichTextElement
             label={t('notionText.title', { ns: 'fields' })}
             editor={textEditor}
-            rawStringContent={''}
+            rawStringContent=""
           />
         </div>
 
@@ -196,7 +199,7 @@ const AdminNewNotions: FC = () => {
           <RichTextElement
             label={`${t('notionText.title', { ns: 'fields' })} (FR)`}
             editor={textFrEditor}
-            rawStringContent={''}
+            rawStringContent=""
           />
         </div>
         <Button type="submit">{t('adminNewNotion.button', { ns: 'pages' })}</Button>

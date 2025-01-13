@@ -4,22 +4,22 @@ import type { IActionType } from '../index';
 
 interface IEffect {
   /** The title of the effect */
-  title: string;
+  title: string
   /** A summary of the effect */
-  summary: string;
+  summary: string
   /** The effect action type */
-  type: ObjectId;
+  type: ObjectId
   /** The internationnal content, as a json, stringified */
-  i18n?: string;
+  i18n?: string
   /** The formula for the effect */
-  formula?: string;
+  formula?: string
   /** When the effect was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 type HydratedIEffect = HydratedDocument<
   Omit<IEffect, 'type'> & {
-    type: IActionType | string;
+    type: IActionType | string
   }
 >;
 
@@ -28,14 +28,14 @@ const effectSchema = new Schema<IEffect>({
   summary: String,
   type: {
     type: Schema.Types.ObjectId,
-    ref: 'ActionType',
+    ref: 'ActionType'
   },
   i18n: String,
   formula: String,
   createdAt: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
 });
 
 const EffectModel = (): Model<IEffect> => model('Effect', effectSchema);

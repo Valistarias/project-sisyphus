@@ -8,7 +8,7 @@ import {
   findAll,
   findAllByFrame,
   findSingle,
-  update,
+  update
 } from './controller';
 
 export default (app: Router): void => {

@@ -7,7 +7,7 @@ import {
   gemInvalidField,
   gemNotFound,
   gemServerError,
-  gemUnauthorizedGlobal,
+  gemUnauthorizedGlobal
 } from '../../utils/globalErrorMessage';
 import { deleteBodiesRecursive } from '../body/controller';
 
@@ -15,7 +15,7 @@ import {
   createNodesByCharacter,
   deleteNodesByCharacter,
   deleteSpecificNodesByCharacter,
-  replaceCyberFrameNodeByCharacter,
+  replaceCyberFrameNodeByCharacter
 } from './node/controller';
 
 import type { HydratedIBackground } from '../background/model';
@@ -34,6 +34,7 @@ const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[
       .then((user) => {
         if (user === null) {
           reject(gemNotFound('User'));
+
           return;
         }
         Character.find()
@@ -47,8 +48,8 @@ const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[
             populate: {
               path: 'node',
               select:
-                '_id title summary icon i18n rank quote cyberFrameBranch skillBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses',
-            },
+                '_id title summary icon i18n rank quote cyberFrameBranch skillBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses'
+            }
           })
           .populate<{ bodies: HydratedIBody[] }>({
             path: 'bodies',
@@ -56,37 +57,37 @@ const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[
             populate: [
               {
                 path: 'stats',
-                select: '_id body stat value',
+                select: '_id body stat value'
               },
               {
                 path: 'ammos',
-                select: '_id body ammo bag qty',
+                select: '_id body ammo bag qty'
               },
               {
                 path: 'armors',
-                select: '_id body armor bag equiped',
+                select: '_id body armor bag equiped'
               },
               {
                 path: 'bags',
-                select: '_id body bag equiped',
+                select: '_id body bag equiped'
               },
               {
                 path: 'implants',
-                select: '_id body implant bag equiped',
+                select: '_id body implant bag equiped'
               },
               {
                 path: 'items',
-                select: '_id body item bag qty',
+                select: '_id body item bag qty'
               },
               {
                 path: 'programs',
-                select: '_id body program bag uses',
+                select: '_id body program bag uses'
               },
               {
                 path: 'weapons',
-                select: '_id body weapon bag ammo bullets',
-              },
-            ],
+                select: '_id body weapon bag ammo bullets'
+              }
+            ]
           })
           .populate<{ background: HydratedIBackground }>('background')
           .then(async (res?: HydratedICharacter[] | null) => {
@@ -100,7 +101,7 @@ const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[
             reject(err);
           });
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -108,12 +109,13 @@ const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[
 const findCompleteCharacterById = async (
   id: string,
   req: Request
-): Promise<{ char: LeanICharacter; canEdit: boolean }> =>
+): Promise<{ char: LeanICharacter, canEdit: boolean }> =>
   await new Promise((resolve, reject) => {
     getUserFromToken(req as IVerifyTokenRequest)
       .then((user) => {
         if (user === null) {
           reject(gemNotFound('User'));
+
           return;
         }
         Character.findById(id)
@@ -128,8 +130,8 @@ const findCompleteCharacterById = async (
               path: 'node',
               select:
                 '_id title summary icon i18n rank quote cyberFrameBranch skillBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses',
-              populate: ['effects', 'actions', 'skillBonuses', 'statBonuses', 'charParamBonuses'],
-            },
+              populate: ['effects', 'actions', 'skillBonuses', 'statBonuses', 'charParamBonuses']
+            }
           })
           .populate<{ bodies: HydratedIBody[] }>({
             path: 'bodies',
@@ -137,42 +139,42 @@ const findCompleteCharacterById = async (
             populate: [
               {
                 path: 'stats',
-                select: '_id body stat value',
+                select: '_id body stat value'
               },
               {
                 path: 'ammos',
-                select: '_id body ammo bag qty',
+                select: '_id body ammo bag qty'
               },
               {
                 path: 'armors',
-                select: '_id body armor bag equiped',
+                select: '_id body armor bag equiped'
               },
               {
                 path: 'bags',
-                select: '_id body bag equiped',
+                select: '_id body bag equiped'
               },
               {
                 path: 'implants',
-                select: '_id body implant bag equiped',
+                select: '_id body implant bag equiped'
               },
               {
                 path: 'items',
-                select: '_id body item bag qty',
+                select: '_id body item bag qty'
               },
               {
                 path: 'programs',
-                select: '_id body program bag uses',
+                select: '_id body program bag uses'
               },
               {
                 path: 'weapons',
-                select: '_id body weapon bag ammo bullets',
-              },
-            ],
+                select: '_id body weapon bag ammo bullets'
+              }
+            ]
           })
           .populate<{ background: HydratedIBackground }>({
             path: 'background',
             select: '_id title summary i18n skillBonuses statBonuses charParamBonuses createdAt',
-            populate: ['skillBonuses', 'statBonuses', 'charParamBonuses'],
+            populate: ['skillBonuses', 'statBonuses', 'charParamBonuses']
           })
           .then(async (res?: LeanICharacter | null) => {
             if (res === undefined || res === null) {
@@ -180,7 +182,7 @@ const findCompleteCharacterById = async (
             } else {
               resolve({
                 char: res,
-                canEdit: String(res.player?._id) === String(user._id),
+                canEdit: String(res.player?._id) === String(user._id)
               });
             }
           })
@@ -188,7 +190,7 @@ const findCompleteCharacterById = async (
             reject(err);
           });
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -196,12 +198,13 @@ const findCompleteCharacterById = async (
 const findCharacterById = async (
   id: string,
   req: Request
-): Promise<{ char: HydratedICharacter; canEdit: boolean }> =>
+): Promise<{ char: HydratedICharacter, canEdit: boolean }> =>
   await new Promise((resolve, reject) => {
     getUserFromToken(req as IVerifyTokenRequest)
       .then((user) => {
         if (user === null) {
           reject(gemNotFound('User'));
+
           return;
         }
         Character.findById(id)
@@ -210,7 +213,7 @@ const findCharacterById = async (
           .populate<{ campaign: HydratedDocument<ICampaign> }>('campaign')
           .populate<{ nodes: HydratedINode[] }>({
             path: 'nodes',
-            select: '_id character node used',
+            select: '_id character node used'
           })
           .populate<{ bodies: HydratedIBody[] }>({
             path: 'bodies',
@@ -218,37 +221,37 @@ const findCharacterById = async (
             populate: [
               {
                 path: 'stats',
-                select: '_id body stat value',
+                select: '_id body stat value'
               },
               {
                 path: 'ammos',
-                select: '_id body ammo bag qty',
+                select: '_id body ammo bag qty'
               },
               {
                 path: 'armors',
-                select: '_id body armor bag equiped',
+                select: '_id body armor bag equiped'
               },
               {
                 path: 'bags',
-                select: '_id body bag equiped',
+                select: '_id body bag equiped'
               },
               {
                 path: 'implants',
-                select: '_id body implant bag equiped',
+                select: '_id body implant bag equiped'
               },
               {
                 path: 'items',
-                select: '_id body item bag qty',
+                select: '_id body item bag qty'
               },
               {
                 path: 'programs',
-                select: '_id body program bag uses',
+                select: '_id body program bag uses'
               },
               {
                 path: 'weapons',
-                select: '_id body weapon bag ammo bullets',
-              },
-            ],
+                select: '_id body weapon bag ammo bullets'
+              }
+            ]
           })
           .populate<{ background: HydratedIBackground }>('background')
           .then(async (res) => {
@@ -258,9 +261,9 @@ const findCharacterById = async (
               resolve({
                 char: res as HydratedICharacter,
                 canEdit:
-                  String((res as HydratedICharacter).player?._id) === String(user._id) ||
-                  (res.player._id === undefined &&
-                    String((res as HydratedICharacter).createdBy._id) === String(user._id)),
+                  String((res as HydratedICharacter).player?._id) === String(user._id)
+                  || (res.player._id === undefined
+                    && String((res as HydratedICharacter).createdBy._id) === String(user._id))
               });
             }
           })
@@ -268,7 +271,7 @@ const findCharacterById = async (
             reject(err);
           });
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -277,24 +280,25 @@ const addFirstCyberFrameNode = (req: Request, res: Response): void => {
   const { nodeId } = req.body;
   if (nodeId === undefined) {
     res.status(400).send(gemInvalidField('Character'));
+
     return;
   }
   createOrFindCharacter(req)
     .then((characterIdSent) => {
       replaceCyberFrameNodeByCharacter({
         characterId: characterIdSent,
-        nodeIds: [nodeId],
+        nodeIds: [nodeId]
       })
         .then(() => {
           findCompleteCharacterById(characterIdSent, req)
             .then(({ char }) => res.send(char))
-            .catch((err: Error) => res.status(404).send(err));
+            .catch((err: unknown) => res.status(404).send(err));
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -303,24 +307,25 @@ const addNode = (req: Request, res: Response): void => {
   const { nodeId } = req.body;
   if (nodeId === undefined) {
     res.status(400).send(gemInvalidField('Character'));
+
     return;
   }
   createOrFindCharacter(req)
     .then((characterIdSent) => {
       createNodesByCharacter({
         characterId: characterIdSent,
-        nodeIds: [nodeId],
+        nodeIds: [nodeId]
       })
         .then(() => {
           findCompleteCharacterById(characterIdSent, req)
             .then(({ char }) => res.send(char))
-            .catch((err: Error) => res.status(404).send(err));
+            .catch((err: unknown) => res.status(404).send(err));
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -329,33 +334,34 @@ const updateNodes = (req: Request, res: Response): void => {
   const { characterId, toAdd, toRemove } = req.body;
   if (characterId === undefined) {
     res.status(400).send(gemInvalidField('Character'));
+
     return;
   }
   createOrFindCharacter(req)
     .then((characterIdSent) => {
       deleteSpecificNodesByCharacter({
         characterId: characterIdSent,
-        nodeIds: toRemove,
+        nodeIds: toRemove
       })
         .then(() => {
           createNodesByCharacter({
             characterId: characterIdSent,
-            nodeIds: toAdd,
+            nodeIds: toAdd
           })
             .then(() => {
               findCompleteCharacterById(characterIdSent, req)
                 .then(({ char }) => res.send(char))
-                .catch((err: Error) => res.status(404).send(err));
+                .catch((err: unknown) => res.status(404).send(err));
             })
-            .catch((err: Error) => {
+            .catch((err: unknown) => {
               res.status(500).send(gemServerError(err));
             });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -373,12 +379,12 @@ const createOrFindCharacter = async (req: Request): Promise<string> =>
               .then(({ _id }) => {
                 resolve(_id.toString());
               })
-              .catch((err: Error) => {
+              .catch((err: unknown) => {
                 reject(err);
               });
           }
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           reject(err);
         });
     } else {
@@ -390,7 +396,7 @@ const createOrFindCharacter = async (req: Request): Promise<string> =>
             reject(gemUnauthorizedGlobal());
           }
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           reject(err);
         });
     }
@@ -402,10 +408,11 @@ const create = (req: Request, res: Response): void => {
     .then((user) => {
       if (user === null) {
         res.status(404).send(gemNotFound('User'));
+
         return;
       }
       const character = new Character({
-        createdBy: user._id,
+        createdBy: user._id
       });
 
       if (player !== null) {
@@ -421,11 +428,11 @@ const create = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'Character was created successfully!', characterId: character._id });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const updateInfos = (req: Request, res: Response): void => {
@@ -441,10 +448,11 @@ const updateInfos = (req: Request, res: Response): void => {
     gender = null,
     pronouns = null,
     bio = null,
-    isReady = null,
+    isReady = null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Character ID'));
+
     return;
   }
   findCharacterById(id as string, req)
@@ -494,14 +502,14 @@ const updateInfos = (req: Request, res: Response): void => {
           .then(() => {
             res.send({ message: 'Character was updated successfully!', char });
           })
-          .catch((err: Error) => {
+          .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
           });
       } else {
         res.status(404).send(gemNotFound('Character'));
       }
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -510,6 +518,7 @@ const quitCampaign = (req: Request, res: Response): void => {
   const { characterId } = req.body;
   if (characterId === undefined) {
     res.status(400).send(gemInvalidField('Character ID'));
+
     return;
   }
 
@@ -522,20 +531,21 @@ const quitCampaign = (req: Request, res: Response): void => {
           .then(() => {
             res.send({ message: 'Character was unlinked of his campaign!', char });
           })
-          .catch((err: Error) => {
+          .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
           });
       } else {
         res.status(404).send(gemNotFound('Character'));
       }
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const deleteCharacter = (req: Request, res: Response): void => {
   const { id } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Character ID'));
+
     return;
   }
   findCharacterById(id as string, req)
@@ -553,39 +563,40 @@ const deleteCharacter = (req: Request, res: Response): void => {
                   .then(() => {
                     res.send({ message: 'Character was deleted successfully!' });
                   })
-                  .catch((err: Error) => {
+                  .catch((err: unknown) => {
                     res.status(500).send(gemServerError(err));
                   });
               })
-              .catch((err: Error) => {
+              .catch((err: unknown) => {
                 res.status(500).send(gemServerError(err));
               });
           })
-          .catch((err: Error) => {
+          .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
           });
       } else {
         res.status(404).send(gemNotFound('Character'));
       }
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const findSingle = (req: Request, res: Response): void => {
   const { characterId } = req.query;
   if (characterId === undefined || typeof characterId !== 'string') {
     res.status(400).send(gemInvalidField('Character ID'));
+
     return;
   }
   findCompleteCharacterById(characterId, req)
     .then(({ char }) => res.send(char))
-    .catch((err: Error) => res.status(404).send(err));
+    .catch((err: unknown) => res.status(404).send(err));
 };
 
 const findAll = (req: Request, res: Response): void => {
   findCharactersByPlayer(req)
-    .then((characters) => res.send(characters))
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .then(characters => res.send(characters))
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export {
@@ -598,5 +609,5 @@ export {
   findSingle,
   quitCampaign,
   updateInfos,
-  updateNodes,
+  updateNodes
 };

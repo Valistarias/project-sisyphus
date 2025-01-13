@@ -43,14 +43,15 @@ const findCharParamBonusById = async (id: string): Promise<HydratedICharParamBon
 
 const createReadCharParamBonus = (
   elts: Array<{
-    charParam: string;
-    value: number;
+    charParam: string
+    value: number
   }>,
   ids: string[],
-  cb: (err: Error | null, res?: string[]) => void
+  cb: (err: unknown | null, res?: string[]) => void
 ): void => {
   if (elts.length === 0) {
     cb(null, ids);
+
     return;
   }
   const actualElt = elts[0];
@@ -86,9 +87,10 @@ const createReadCharParamBonus = (
     });
 };
 
-const smartDeleteCharParamBonus = (elts: string[], cb: (err: Error | null) => void): void => {
+const smartDeleteCharParamBonus = (elts: string[], cb: (err: unknown | null) => void): void => {
   if (elts.length === 0) {
     cb(null);
+
     return;
   }
   const actualElt = elts[0];
@@ -118,27 +120,31 @@ const smartDeleteCharParamBonus = (elts: string[], cb: (err: Error | null) => vo
 const curateCharParamBonusIds = async ({
   charParamBonusesToRemove,
   charParamBonusesToAdd,
-  charParamBonusesToStay,
+  charParamBonusesToStay
 }: {
-  charParamBonusesToRemove: string[];
+  charParamBonusesToRemove: string[]
   charParamBonusesToAdd: Array<{
-    charParam: string;
-    value: number;
-  }>;
-  charParamBonusesToStay: string[];
+    charParam: string
+    value: number
+  }>
+  charParamBonusesToStay: string[]
 }): Promise<string[]> =>
   await new Promise((resolve, reject) => {
-    smartDeleteCharParamBonus(charParamBonusesToRemove, (err: Error | null) => {
+    smartDeleteCharParamBonus(charParamBonusesToRemove, (err: unknown | null) => {
       if (err !== null) {
         reject(err);
       } else {
-        createReadCharParamBonus(charParamBonusesToAdd, [], (err: Error | null, res?: string[]) => {
-          if (err !== null) {
-            reject(err);
-          } else {
-            resolve([...charParamBonusesToStay, ...(res ?? [])]);
+        createReadCharParamBonus(
+          charParamBonusesToAdd,
+          [],
+          (err: unknown | null, res?: string[]) => {
+            if (err !== null) {
+              reject(err);
+            } else {
+              resolve([...charParamBonusesToStay, ...(res ?? [])]);
+            }
           }
-        });
+        );
       }
     });
   });
@@ -147,12 +153,13 @@ const create = (req: Request, res: Response): void => {
   const { charParam, value } = req.body;
   if (charParam === undefined || value === undefined) {
     res.status(400).send(gemInvalidField('CharParamBonus'));
+
     return;
   }
 
   const charParamBonus = new CharParamBonus({
     charParam,
-    value,
+    value
   });
 
   charParamBonus
@@ -160,7 +167,7 @@ const create = (req: Request, res: Response): void => {
     .then(() => {
       res.send(charParamBonus);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -169,6 +176,7 @@ const update = (req: Request, res: Response): void => {
   const { id, charParam = null, value = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('CharParamBonus ID'));
+
     return;
   }
   findCharParamBonusById(id as string)
@@ -185,7 +193,7 @@ const update = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'CharParam bonus was updated successfully!', charParamBonus });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -198,13 +206,14 @@ const deleteCharParamBonusById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('CharParamBonus ID'));
+
       return;
     }
     CharParamBonus.findByIdAndDelete(id)
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
@@ -215,7 +224,7 @@ const deleteCharParamBonus = (req: Request, res: Response): void => {
     .then(() => {
       res.send({ message: 'CharParam bonus was deleted successfully!' });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -224,13 +233,14 @@ const findSingle = (req: Request, res: Response): void => {
   const { charParamBonusId } = req.query;
   if (charParamBonusId === undefined || typeof charParamBonusId !== 'string') {
     res.status(400).send(gemInvalidField('CharParamBonus ID'));
+
     return;
   }
   findCharParamBonusById(charParamBonusId)
     .then((charParamBonus) => {
       res.send(charParamBonus);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
@@ -240,7 +250,7 @@ const findAll = (req: Request, res: Response): void => {
     .then((charParamBonuses) => {
       res.send(charParamBonuses);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export {
@@ -250,5 +260,5 @@ export {
   findAll,
   findCharParamBonusById,
   findSingle,
-  update,
+  update
 };

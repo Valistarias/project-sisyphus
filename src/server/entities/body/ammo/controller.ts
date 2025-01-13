@@ -3,11 +3,11 @@ import db from '../../../models';
 const { BodyAmmo } = db;
 
 const replaceAmmoByBody = async (req: {
-  bodyId: string;
+  bodyId: string
   ammos: Array<{
-    id: string;
-    qty: number;
-  }>;
+    id: string
+    qty: number
+  }>
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { bodyId } = req;
@@ -27,11 +27,11 @@ const replaceAmmoByBody = async (req: {
   });
 
 const createAmmosByBody = async (req: {
-  bodyId: string;
+  bodyId: string
   ammos: Array<{
-    id: string;
-    qty: number;
-  }>;
+    id: string
+    qty: number
+  }>
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { bodyId, ammos } = req;
@@ -39,7 +39,7 @@ const createAmmosByBody = async (req: {
       ammos.map(({ id, qty }) => ({
         body: bodyId,
         ammo: id,
-        qty,
+        qty
       }))
     )
       .then(() => {
@@ -51,16 +51,16 @@ const createAmmosByBody = async (req: {
   });
 
 const updateAmmoByBody = async (req: {
-  bodyId: string;
-  ammoId: string;
-  qty?: number;
-  bag?: string;
+  bodyId: string
+  ammoId: string
+  qty?: number
+  bag?: string
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { bodyId, ammoId, qty = null, bag = null } = req;
     const updateObj: {
-      bag?: string;
-      qty?: number;
+      bag?: string
+      qty?: number
     } = {};
     if (qty !== null) {
       updateObj.qty = qty;
@@ -71,7 +71,7 @@ const updateAmmoByBody = async (req: {
     BodyAmmo.findOneAndUpdate(
       {
         body: bodyId,
-        ammo: ammoId,
+        ammo: ammoId
       },
       updateObj
     )
@@ -86,7 +86,7 @@ const updateAmmoByBody = async (req: {
 const deleteAmmosByBody = async (bodyId: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     BodyAmmo.deleteMany({
-      body: bodyId,
+      body: bodyId
     })
       .then(() => {
         resolve(true);

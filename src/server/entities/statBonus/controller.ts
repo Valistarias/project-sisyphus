@@ -43,14 +43,15 @@ const findStatBonusById = async (id: string): Promise<HydratedIStatBonus> =>
 
 const createReadStatBonus = (
   elts: Array<{
-    stat: string;
-    value: number;
+    stat: string
+    value: number
   }>,
   ids: string[],
-  cb: (err: Error | null, res?: string[]) => void
+  cb: (err: unknown | null, res?: string[]) => void
 ): void => {
   if (elts.length === 0) {
     cb(null, ids);
+
     return;
   }
   const actualElt = elts[0];
@@ -86,9 +87,10 @@ const createReadStatBonus = (
     });
 };
 
-const smartDeleteStatBonus = (elts: string[], cb: (err: Error | null) => void): void => {
+const smartDeleteStatBonus = (elts: string[], cb: (err: unknown | null) => void): void => {
   if (elts.length === 0) {
     cb(null);
+
     return;
   }
   const actualElt = elts[0];
@@ -118,21 +120,21 @@ const smartDeleteStatBonus = (elts: string[], cb: (err: Error | null) => void): 
 const curateStatBonusIds = async ({
   statBonusesToRemove,
   statBonusesToAdd,
-  statBonusesToStay,
+  statBonusesToStay
 }: {
-  statBonusesToRemove: string[];
+  statBonusesToRemove: string[]
   statBonusesToAdd: Array<{
-    stat: string;
-    value: number;
-  }>;
-  statBonusesToStay: string[];
+    stat: string
+    value: number
+  }>
+  statBonusesToStay: string[]
 }): Promise<string[]> =>
   await new Promise((resolve, reject) => {
-    smartDeleteStatBonus(statBonusesToRemove, (err: Error | null) => {
+    smartDeleteStatBonus(statBonusesToRemove, (err: unknown | null) => {
       if (err !== null) {
         reject(err);
       } else {
-        createReadStatBonus(statBonusesToAdd, [], (err: Error | null, res?: string[]) => {
+        createReadStatBonus(statBonusesToAdd, [], (err: unknown | null, res?: string[]) => {
           if (err !== null) {
             reject(err);
           } else {
@@ -147,12 +149,13 @@ const create = (req: Request, res: Response): void => {
   const { stat, value } = req.body;
   if (stat === undefined || value === undefined) {
     res.status(400).send(gemInvalidField('StatBonus'));
+
     return;
   }
 
   const statBonus = new StatBonus({
     stat,
-    value,
+    value
   });
 
   statBonus
@@ -160,7 +163,7 @@ const create = (req: Request, res: Response): void => {
     .then(() => {
       res.send(statBonus);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -169,6 +172,7 @@ const update = (req: Request, res: Response): void => {
   const { id, stat = null, value = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('StatBonus ID'));
+
     return;
   }
   findStatBonusById(id as string)
@@ -185,7 +189,7 @@ const update = (req: Request, res: Response): void => {
         .then(() => {
           res.send({ message: 'Stat bonus was updated successfully!', statBonus });
         })
-        .catch((err: Error) => {
+        .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
@@ -198,13 +202,14 @@ const deleteStatBonusById = async (id: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('StatBonus ID'));
+
       return;
     }
     StatBonus.findByIdAndDelete(id)
       .then(() => {
         resolve(true);
       })
-      .catch((err: Error) => {
+      .catch((err: unknown) => {
         reject(gemServerError(err));
       });
   });
@@ -215,7 +220,7 @@ const deleteStatBonus = (req: Request, res: Response): void => {
     .then(() => {
       res.send({ message: 'Stat bonus was deleted successfully!' });
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
@@ -224,13 +229,14 @@ const findSingle = (req: Request, res: Response): void => {
   const { statBonusId } = req.query;
   if (statBonusId === undefined || typeof statBonusId !== 'string') {
     res.status(400).send(gemInvalidField('StatBonus ID'));
+
     return;
   }
   findStatBonusById(statBonusId)
     .then((statBonus) => {
       res.send(statBonus);
     })
-    .catch((err: Error) => {
+    .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
@@ -240,7 +246,7 @@ const findAll = (req: Request, res: Response): void => {
     .then((statBonuses) => {
       res.send(statBonuses);
     })
-    .catch((err: Error) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 export {
@@ -250,5 +256,5 @@ export {
   findAll,
   findSingle,
   findStatBonusById,
-  update,
+  update
 };

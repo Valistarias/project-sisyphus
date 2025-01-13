@@ -20,6 +20,7 @@ const AdminDamageTypes: FC = () => {
     if (damageTypes === null || damageTypes.length === 0) {
       return null;
     }
+
     return (
       <Aul className="adminDamageTypes__damage-type-list" noPoints>
         {damageTypes.map(({ damageType }) => (

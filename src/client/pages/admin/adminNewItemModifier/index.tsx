@@ -15,9 +15,9 @@ import { Alert, RichTextElement, completeRichTextElementExtentions } from '../..
 import './adminNewItemModifier.scss';
 
 interface FormValues {
-  name: string;
-  nameFr: string;
-  modifierId: string;
+  name: string
+  nameFr: string
+  modifierId: string
 }
 
 const AdminNewItemModifier: FC = () => {
@@ -31,18 +31,18 @@ const AdminNewItemModifier: FC = () => {
   const calledApi = useRef(false);
 
   const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions,
+    extensions: completeRichTextElementExtentions
   });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm();
 
   const onSaveItemModifier: SubmitHandler<FormValues> = useCallback(
@@ -62,8 +62,8 @@ const AdminNewItemModifier: FC = () => {
         i18n = {
           fr: {
             title: nameFr,
-            summary: htmlFr,
-          },
+            summary: htmlFr
+          }
         };
       }
 
@@ -72,7 +72,7 @@ const AdminNewItemModifier: FC = () => {
           title: name,
           modifierId,
           summary: html,
-          i18n,
+          i18n
         })
         .then((itemModifier) => {
           const newId = getNewId();
@@ -82,7 +82,7 @@ const AdminNewItemModifier: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewItemModifier.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            ),
+            )
           });
           reloadItemModifiers();
           void navigate(`/admin/itemmodifier/${itemModifier._id}`);
@@ -93,15 +93,15 @@ const AdminNewItemModifier: FC = () => {
             setError('root.serverError', {
               type: 'server',
               message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id',
-              })} by ${data.sent}`,
+                field: 'Formula Id'
+              })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
               message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
-              }),
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
+              })
             });
           }
         });
@@ -115,7 +115,7 @@ const AdminNewItemModifier: FC = () => {
       t,
       reloadItemModifiers,
       navigate,
-      setError,
+      setError
     ]
   );
 
@@ -134,16 +134,18 @@ const AdminNewItemModifier: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewItemModifier.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined ? (
-          <Aerror>{errors.root.serverError.message}</Aerror>
-        ) : null}
+        {errors.root?.serverError.message !== undefined
+          ? (
+              <Aerror>{errors.root.serverError.message}</Aerror>
+            )
+          : null}
         <div className="adminNewItemModifier__basics">
           <Input
             control={control}
             inputName="name"
             type="text"
             rules={{
-              required: t('nameItemModifier.required', { ns: 'fields' }),
+              required: t('nameItemModifier.required', { ns: 'fields' })
             }}
             label={t('nameItemModifier.label', { ns: 'fields' })}
             className="adminNewItemModifier__basics__name"
@@ -153,7 +155,7 @@ const AdminNewItemModifier: FC = () => {
           <RichTextElement
             label={t('itemModifierSummary.title', { ns: 'fields' })}
             editor={introEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />
@@ -165,8 +167,8 @@ const AdminNewItemModifier: FC = () => {
               required: t('itemModifierFormula.required', { ns: 'fields' }),
               pattern: {
                 value: /^([a-z]){2,3}$/,
-                message: t('itemModifierFormula.format', { ns: 'fields' }),
-              },
+                message: t('itemModifierFormula.format', { ns: 'fields' })
+              }
             }}
             label={t('itemModifierFormula.label', { ns: 'fields' })}
           />
@@ -191,7 +193,7 @@ const AdminNewItemModifier: FC = () => {
           <RichTextElement
             label={`${t('itemModifierSummary.title', { ns: 'fields' })} (FR)`}
             editor={introFrEditor}
-            rawStringContent={''}
+            rawStringContent=""
             small
             complete
           />

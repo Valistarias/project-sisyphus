@@ -4,22 +4,22 @@ import type { HydratedIChapter } from '../chapter/model';
 
 interface IPage {
   /** The title of the ruleBook */
-  title: string;
+  title: string
   /** A content of the ruleBook */
-  content: string;
+  content: string
   /** The position of this chapter, in reference with others */
-  position: number;
+  position: number
   /** The chapter where this page is */
-  chapter: ObjectId;
+  chapter: ObjectId
   /** The internationnal content, as a json, stringified */
-  i18n?: string;
+  i18n?: string
   /** When the ruleBook was created */
-  createdAt: Date;
+  createdAt: Date
 }
 
 type HydratedIPage = HydratedDocument<
   Omit<IPage, 'chapter'> & {
-    chapter: HydratedIChapter;
+    chapter: HydratedIChapter
   }
 >;
 
@@ -30,12 +30,12 @@ const pageSchema = new Schema<IPage>({
   position: Number,
   chapter: {
     type: Schema.Types.ObjectId,
-    ref: 'Chapter',
+    ref: 'Chapter'
   },
   createdAt: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
 });
 
 const PageModel = (): Model<IPage> => model('Page', pageSchema);
