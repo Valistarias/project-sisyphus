@@ -26,7 +26,7 @@ const Highlight: FC<IHighlight> = ({ id, type, children }) => {
   const { t } = useTranslation();
   const { createAlert, getNewId } = useSystemAlerts();
 
-  const [highlightContent, setHighlightContent] = useState<any>(null);
+  const [highlightContent, setHighlightContent] = useState<unknown>(null);
   const [isHighlightShown, setIsHighlightShown] = useState<boolean>(false);
 
   const textEditor = useEditor({

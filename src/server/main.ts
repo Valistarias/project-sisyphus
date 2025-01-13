@@ -1,4 +1,5 @@
-/* eslint-disable no-console */
+/* eslint-disable no-console -- Consoles are necessary to displays clean messages */
+
 import express, { type Request, type Response } from 'express';
 import mongoose from 'mongoose';
 
@@ -67,19 +68,20 @@ import WeaponScopeRoutes from './entities/weaponScope/routes';
 import WeaponStyleRoutes from './entities/weaponStyle/routes';
 import WeaponTypeRoutes from './entities/weaponType/routes';
 import { checkRouteRights } from './middlewares/authJwt';
-import { gemInvalidField } from './utils/globalErrorMessage';
 
 // Initialization -------------------------------------------------------------------
 dotenv.config();
 
 const app = express();
-const httpServer = http.createServer(app);
+const httpServer = http.createServer(app as (req: unknown, res: unknown) => void);
 const io = new Server(httpServer);
 
 // Env vars
 const port = process.env.PORT ?? 3000;
 const mailgunApi = process.env.MAILGUN_API_KEY ?? '';
-const cookieSecret = process.env.COOKIE_SECRET;
+const {
+  env: { COOKIE_SECRET: cookieSecret },
+} = process;
 
 const mailgun = new Mailgun(formData);
 const mg = mailgun.client({ username: 'api', key: mailgunApi });
@@ -116,7 +118,7 @@ mongoose
   .then(() => {
     console.log('Connected to the database!');
   })
-  .catch((err) => {
+  .catch((err: unknown) => {
     console.log('Cannot connect to the database!', err);
     process.exit();
   });
@@ -194,13 +196,11 @@ app.use('/api/', apiRouter);
 // ----------------------------------------------------------------------------------------
 
 // Automatic redirections ---------------------------------------------------------------------
-// (Neet to be elsewhere)
-app.get('/verify/:id', function (req: Request, res: Response) {
-  const { id } = req.params;
-  // Check we have an id
-  if (id === undefined) {
-    return res.status(422).send(gemInvalidField('UserId'));
-  }
+// (Need to be elsewhere)
+app.get('/verify/:id', (req: Request, res: Response) => {
+  const {
+    params: { id },
+  } = req;
   verifyTokenSingIn(id)
     .then(() => {
       res.redirect('/login?success=true');
@@ -210,12 +210,10 @@ app.get('/verify/:id', function (req: Request, res: Response) {
     });
 });
 
-app.get('/reset/password/:userId/:token', function (req: Request, res: Response, next: () => void) {
-  const { userId, token } = req.params;
-  // Check we have an id and token
-  if (userId === undefined || token === undefined) {
-    return res.status(422).send(gemInvalidField('Token or UserId'));
-  }
+app.get('/reset/password/:userId/:token', (req: Request, res: Response, next: () => void) => {
+  const {
+    params: { userId, token },
+  } = req;
   verifyMailToken({ userId, token })
     .then(() => {
       next();
@@ -242,9 +240,12 @@ io.on('connection', (socket) => {
     void socket.leave(data);
   });
 
-  socket.on('newCampaignEvent', ({ room, data }: { room: string; data: Record<string, any> }) => {
-    socket.to(room).emit('newCampaignEvent', data);
-  });
+  socket.on(
+    'newCampaignEvent',
+    ({ room, data }: { room: string; data: Record<string, unknown> }) => {
+      socket.to(room).emit('newCampaignEvent', data);
+    }
+  );
 });
 
 // ----------------------------------------------------------------------------------------
@@ -253,8 +254,5 @@ const server = httpServer.listen(3000, '0.0.0.0', () => {
   console.log('Server is listening...');
 });
 
-ViteExpress.bind(app, server).then(
-  () => {},
-  () => {}
-);
+void ViteExpress.bind(app, server);
 // ----------------------------------------------------------------------------------------

@@ -7,7 +7,7 @@ import { Highlight } from '../../molecules';
 
 interface ITest {
   /** The Node element */
-  node: any;
+  node: unknown;
 }
 
 const HighlightReact: FC<ITest> = ({ node }) => (

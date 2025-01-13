@@ -2,15 +2,15 @@ import axios from 'axios';
 
 import type { IUser } from '../../types';
 
-type IBasicRequests = (payload: any) => Promise<Record<string, any>>;
+type IBasicRequests = (payload: unknown) => Promise<Record<string, unknown>>;
 
 export default class Entity {
   url: string;
-  getAll: () => Promise<Record<string, any>>;
+  getAll: () => Promise<Record<string, unknown>>;
   create: IBasicRequests;
-  update: (payload: any) => Promise<IUser>;
+  update: (payload: unknown) => Promise<IUser>;
   delete: IBasicRequests;
-  basicPost: (target: string, payload: any) => Promise<Record<string, any>>;
+  basicPost: (target: string, payload: unknown) => Promise<Record<string, unknown>>;
 
   constructor(id: string) {
     this.url = `/api/${id}`;
@@ -20,7 +20,7 @@ export default class Entity {
         axios
           .get(`${this.url}/`)
           .then((res) => {
-            resolve(res.data as Record<string, any>);
+            resolve(res.data as Record<string, unknown>);
           })
           .catch((err) => {
             reject(err);
@@ -32,7 +32,7 @@ export default class Entity {
         axios
           .post(`${this.url}/create/`, payload)
           .then((res) => {
-            resolve(res.data as Record<string, any>);
+            resolve(res.data as Record<string, unknown>);
           })
           .catch((err) => {
             reject(err);
@@ -56,7 +56,7 @@ export default class Entity {
         axios
           .post(`${this.url}/delete/`, payload)
           .then((res) => {
-            resolve(res.data as Record<string, any>);
+            resolve(res.data as Record<string, unknown>);
           })
           .catch((err) => {
             reject(err);
@@ -68,7 +68,7 @@ export default class Entity {
         axios
           .post(`${this.url}/${target}/`, payload)
           .then((res) => {
-            resolve(res.data as Record<string, any>);
+            resolve(res.data as Record<string, unknown>);
           })
           .catch((err) => {
             reject(err);

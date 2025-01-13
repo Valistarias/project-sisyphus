@@ -89,20 +89,32 @@ const AdminEditAmmo: FC = () => {
   });
 
   // TODO: Internationalization
-  const itemModifierList = useMemo(() => itemModifiers.map(({ itemModifier }) => ({
-      value: itemModifier._id,
-      label: itemModifier.title,
-    })), [itemModifiers]);
+  const itemModifierList = useMemo(
+    () =>
+      itemModifiers.map(({ itemModifier }) => ({
+        value: itemModifier._id,
+        label: itemModifier.title,
+      })),
+    [itemModifiers]
+  );
 
-  const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
-      value: rarity._id,
-      label: rarity.title,
-    })), [rarities]);
+  const rarityList = useMemo(
+    () =>
+      rarities.map(({ rarity }) => ({
+        value: rarity._id,
+        label: rarity.title,
+      })),
+    [rarities]
+  );
 
-  const weaponList = useMemo(() => weaponTypes.map(({ weaponType }) => ({
-      value: weaponType._id,
-      label: weaponType.title,
-    })), [weaponTypes]);
+  const weaponList = useMemo(
+    () =>
+      weaponTypes.map(({ weaponType }) => ({
+        value: weaponType._id,
+        label: weaponType.title,
+      })),
+    [weaponTypes]
+  );
 
   const onSaveAmmo: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, rarity, cost, weaponTypes, itemModifiers, offsetToHit, offsetDamage }) => {

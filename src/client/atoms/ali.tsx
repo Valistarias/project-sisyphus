@@ -15,7 +15,7 @@ interface IAli extends IQuarkProps {
   role?: string;
   tabIndex?: number;
   draggable?: boolean;
-  onDragStart?: React.DragEventHandler<any>;
+  onDragStart?: React.DragEventHandler<unknown>;
   localStyle?: React.CSSProperties;
 }
 

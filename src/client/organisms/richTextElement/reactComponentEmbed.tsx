@@ -7,7 +7,7 @@ import { EmbedNotion } from '../../molecules';
 
 interface ITest {
   /** The Node element */
-  node: any;
+  node: unknown;
 }
 
 const EmbedReact: FC<ITest> = ({ node }) => (
