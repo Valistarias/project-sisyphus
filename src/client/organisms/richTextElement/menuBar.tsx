@@ -1,14 +1,15 @@
 import React, { useCallback, useMemo, useState, type FC } from 'react';
 
-import { type Editor } from '@tiptap/react';
 import { useTranslation } from 'react-i18next';
 
 import { useApi, useSystemAlerts } from '../../providers';
 
 import { Ap } from '../../atoms';
 import { Button, Input, SmartSelect, type IGroupedOption } from '../../molecules';
-import { type ICuratedNotion } from '../../types';
 import { Alert } from '../index';
+
+import type { ICuratedNotion } from '../../types';
+import type { Editor } from '@tiptap/react';
 
 import { classTrim } from '../../utils';
 

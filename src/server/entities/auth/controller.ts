@@ -1,9 +1,9 @@
-import { type Request, type Response } from 'express';
-import { type Error, type HydratedDocument } from 'mongoose';
+import type { Request, Response } from 'express';
+import type { Error, HydratedDocument } from 'mongoose';
 
 import bcrypt from 'bcryptjs';
 import jwt, { type JwtPayload, type Secret } from 'jsonwebtoken';
-import { type IMailgunClient } from 'mailgun.js/Interfaces';
+
 
 import config from '../../config/db.config';
 import db from '../../models';
@@ -14,9 +14,11 @@ import {
   gemServerError,
   gemUnverifiedUser,
 } from '../../utils/globalErrorMessage';
-import { type HydratedIUser, type IRole, type IUser } from '../index';
 import { removeToken } from '../mailToken/controller';
 import { findUserById } from '../user/controller';
+
+import type { HydratedIUser, IRole, IUser } from '../index';
+import type { IMailgunClient } from 'mailgun.js/Interfaces';
 
 const { User, Role } = db;
 

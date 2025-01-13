@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type IActionDuration } from '../../types';
-
 import Entity from './entity';
+
+import type { IActionDuration } from '../../types';
+
 
 interface IActionDurationPayload {
   actionDurationId: string;

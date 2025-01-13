@@ -44,7 +44,7 @@ const AdminNewBodyPart: FC = () => {
     setError,
     control,
     formState: { errors },
-  } = useForm<FieldValues>();
+  } = useForm();
 
   const onSaveBodyPart: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, partId, limit }) => {
@@ -132,7 +132,7 @@ const AdminNewBodyPart: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewBodyPart.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminNewBodyPart__basics">

@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type ICuratedWeaponType } from '../../types';
-
 import Entity from './entity';
+
+import type { ICuratedWeaponType } from '../../types';
+
 
 interface IWeaponTypePayload {
   weaponTypeId: string;

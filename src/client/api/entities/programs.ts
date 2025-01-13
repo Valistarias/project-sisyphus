@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type ICuratedProgram } from '../../types';
-
 import Entity from './entity';
+
+import type { ICuratedProgram } from '../../types';
+
 
 interface IProgramPayload {
   programId: string;

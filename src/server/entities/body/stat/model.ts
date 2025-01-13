@@ -1,6 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type IStat } from '../../stat/model';
+import type { IStat } from '../../stat/model';
 
 interface IBodyStat {
   /** When the body was created */

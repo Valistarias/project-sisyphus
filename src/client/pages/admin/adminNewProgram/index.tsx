@@ -11,8 +11,9 @@ import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, SmartSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type ICuratedBasicNPC } from '../../../types';
 import { possibleStarterKitValues } from '../../../types/items';
+
+import type { ICuratedBasicNPC } from '../../../types';
 
 import { isThereDuplicate } from '../../../utils';
 
@@ -67,38 +68,30 @@ const AdminNewProgram: FC = () => {
     control,
     formState: { errors },
     unregister,
-  } = useForm<FieldValues>();
+  } = useForm();
 
   // TODO: Internationalization
-  const programScopeList = useMemo(() => {
-    return programScopes.map(({ programScope }) => ({
+  const programScopeList = useMemo(() => programScopes.map(({ programScope }) => ({
       value: programScope._id,
       label: programScope.title,
-    }));
-  }, [programScopes]);
+    })), [programScopes]);
 
-  const damageTypeList = useMemo(() => {
-    return damageTypes.map(({ damageType }) => ({
+  const damageTypeList = useMemo(() => damageTypes.map(({ damageType }) => ({
       value: damageType._id,
       label: damageType.title,
-    }));
-  }, [damageTypes]);
+    })), [damageTypes]);
 
-  const rarityList = useMemo(() => {
-    return rarities.map(({ rarity }) => ({
+  const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
       value: rarity._id,
       label: rarity.title,
-    }));
-  }, [rarities]);
+    })), [rarities]);
 
-  const aiList = useMemo(() => {
-    return nPCs
+  const aiList = useMemo(() => nPCs
       .filter(({ nPC }) => nPC.virtual)
       .map(({ nPC }) => ({
         value: nPC._id,
         label: nPC.title,
-      }));
-  }, [nPCs]);
+      })), [nPCs]);
 
   const starterKitList = useMemo(
     () =>
@@ -255,7 +248,7 @@ const AdminNewProgram: FC = () => {
     <div className="adminNewProgram">
       <form className="adminNewProgram__content" onSubmit={handleSubmit(onSaveProgram)} noValidate>
         <Atitle level={1}>{t('adminNewProgram.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminNewProgram__basics">

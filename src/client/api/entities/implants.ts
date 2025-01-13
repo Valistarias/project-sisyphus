@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type ICuratedImplant } from '../../types';
-
 import Entity from './entity';
+
+import type { ICuratedImplant } from '../../types';
+
 
 interface IImplantPayload {
   implantId: string;

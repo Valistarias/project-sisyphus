@@ -1,5 +1,5 @@
-import { type Request, type Response } from 'express';
-import { type ObjectId } from 'mongoose';
+import type { Request, Response } from 'express';
+import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
@@ -7,20 +7,20 @@ import { smartUpdateActions } from '../action/controller';
 import { curateCharParamBonusIds } from '../charParamBonus/controller';
 import { findCyberFrameBranchesByFrame } from '../cyberFrameBranch/controller';
 import { smartUpdateEffects } from '../effect/controller';
-import {
-  type IAction,
-  type ICharParamBonus,
-  type ICyberFrameBranch,
-  type IEffect,
-  type ISkillBonus,
-  type ISkillBranch,
-  type IStatBonus,
-} from '../index';
 import { curateSkillBonusIds } from '../skillBonus/controller';
 import { findSkillBranchesBySkill } from '../skillBranch/controller';
 import { curateStatBonusIds } from '../statBonus/controller';
 
-import { type HydratedINode } from './model';
+import type {
+  IAction,
+  ICharParamBonus,
+  ICyberFrameBranch,
+  IEffect,
+  ISkillBonus,
+  ISkillBranch,
+  IStatBonus,
+} from '../index';
+import type { HydratedINode } from './model';
 
 import { curateI18n } from '../../utils';
 

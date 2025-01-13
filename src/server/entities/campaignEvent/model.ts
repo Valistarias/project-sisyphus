@@ -1,7 +1,7 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type ICampaign } from '../campaign/model';
-import { type ICharacter } from '../character';
+import type { ICampaign } from '../campaign/model';
+import type { ICharacter } from '../character';
 
 interface ICampaignEvent {
   /*  The type of the campaign event */

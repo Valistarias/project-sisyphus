@@ -11,8 +11,9 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, SmartSelect } from '../../../molecules';
 import { Alert, RichTextElement, basicRichTextElementExtentions } from '../../../organisms';
-import { type ICampaign, type ICharacter } from '../../../types';
 import { ErrorPage } from '../../index';
+
+import type { ICampaign, ICharacter } from '../../../types';
 
 import './editCharacter.scss';
 
@@ -29,7 +30,7 @@ const EditCharacter: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -93,12 +94,11 @@ const EditCharacter: FC = () => {
     setError,
     control,
     formState: { errors },
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(() => createDefaultData(character), [createDefaultData, character]),
   });
 
-  const campaignList = useMemo(() => {
-    return campaigns.map(({ _id, name, owner }) => ({
+  const campaignList = useMemo(() => campaigns.map(({ _id, name, owner }) => ({
       value: _id,
       label: name,
       details: i18next.format(
@@ -107,8 +107,7 @@ const EditCharacter: FC = () => {
         }),
         'capitalize'
       ),
-    }));
-  }, [campaigns, t, user]);
+    })), [campaigns, t, user]);
 
   const getCampaigns = useCallback(() => {
     if (api !== undefined) {
@@ -298,7 +297,7 @@ const EditCharacter: FC = () => {
         {t('editCharacter.return', { ns: 'pages' })}
       </Button>
       <form className="editcharacter__form" onSubmit={handleSubmit(onSubmit)} noValidate>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="editcharacter__form__basics">

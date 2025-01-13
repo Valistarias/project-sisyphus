@@ -1,4 +1,4 @@
-import { type Error } from 'mongoose';
+import type { Error } from 'mongoose';
 
 interface IGemRes {
   message: string;

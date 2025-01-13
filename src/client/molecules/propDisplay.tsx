@@ -5,8 +5,9 @@ import { useTranslation } from 'react-i18next';
 import { Ali, AnodeIcon, Ap, Atitle, Aul } from '../atoms';
 import { RichTextElement } from '../organisms';
 import { Quark, type IQuarkProps } from '../quark';
-import { type ICuratedItemModifier } from '../types';
-import { type ICuratedEffect, type TypeNodeIcons } from '../types/rules';
+
+import type { ICuratedItemModifier } from '../types';
+import type { ICuratedEffect, TypeNodeIcons } from '../types/rules';
 
 import { classTrim, curateStringFormula } from '../utils';
 
@@ -106,7 +107,7 @@ const PropDisplay = forwardRef<HTMLDivElement, IPropDisplay>(
             ) : null}
           </div>
         </div>
-        {effects !== undefined && effects?.length > 0 !== undefined ? (
+        {effects !== undefined && effects.length > 0 !== undefined ? (
           <div className="prop-display__effects">
             {effects.map(({ effect }) => (
               <div className="prop-display__effects__effect" key={`effect-${effect._id}`}>

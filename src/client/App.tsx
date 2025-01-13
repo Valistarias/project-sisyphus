@@ -1,4 +1,5 @@
-import React, { useMemo, useState, type FC } from 'react';
+import type React from 'react';
+import { useMemo, useState, type FC } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import { RouterProvider, createBrowserRouter, useLocation, useOutlet } from 'react-router-dom';

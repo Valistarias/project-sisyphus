@@ -54,14 +54,12 @@ const AdminNewNotions: FC = () => {
     []
   );
 
-  const ruleBookSelect = useMemo(() => {
-    return ruleBooks.map(({ ruleBook }) => ({
+  const ruleBookSelect = useMemo(() => ruleBooks.map(({ ruleBook }) => ({
       value: ruleBook._id,
       // TODO : Handle Internationalization
       label: ruleBook.title,
       details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 }),
-    }));
-  }, [t, ruleBooks]);
+    })), [t, ruleBooks]);
 
   const {
     handleSubmit,
@@ -69,7 +67,7 @@ const AdminNewNotions: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(params, ruleBookSelect),
       [createDefaultData, params, ruleBookSelect]
@@ -150,7 +148,7 @@ const AdminNewNotions: FC = () => {
     <div className="adminNewNotion">
       <form onSubmit={handleSubmit(onSaveNotion)} noValidate className="adminNewNotion__content">
         <Atitle level={1}>{t('adminNewNotion.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminNewNotion__basics">

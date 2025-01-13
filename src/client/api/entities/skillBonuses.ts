@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type ISkillBonus } from '../../types';
-
 import Entity from './entity';
+
+import type { ISkillBonus } from '../../types';
+
 
 interface ISkillBonusPayload {
   skillBonusId: string;

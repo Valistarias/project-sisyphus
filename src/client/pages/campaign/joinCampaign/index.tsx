@@ -8,8 +8,9 @@ import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 import { Ap, Atitle } from '../../../atoms';
 import { Button } from '../../../molecules';
 import { Alert } from '../../../organisms';
-import { type ICampaign } from '../../../types';
 import { ErrorPage } from '../../index';
+
+import type { ICampaign } from '../../../types';
 
 import './joinCampaign.scss';
 
@@ -75,7 +76,7 @@ const JoinCampaign: FC = () => {
         </>
       );
     }
-    if (campaign.players?.find((player) => player._id === user._id) !== undefined) {
+    if (campaign.players.find((player) => player._id === user._id) !== undefined) {
       return (
         <>
           <Ap>{t('joinCampaign.alreadyPlayer', { ns: 'pages' })}</Ap>

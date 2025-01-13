@@ -7,15 +7,16 @@ import { useGlobalVars } from '../providers';
 import { Ali, Ap, Atitle, Aul } from '../atoms';
 import { PropDisplay } from '../molecules';
 import { Quark, type IQuarkProps } from '../quark';
-import {
-  type ICharParamBonus,
-  type ICuratedArmor,
-  type ICuratedArmorType,
-  type ICuratedCharParam,
-  type ICuratedItemModifier,
-  type ICuratedRarity,
+
+import type {
+  ICharParamBonus,
+  ICuratedArmor,
+  ICuratedArmorType,
+  ICuratedCharParam,
+  ICuratedItemModifier,
+  ICuratedRarity,
 } from '../types';
-import { type IArmor } from '../types/items';
+import type { IArmor } from '../types/items';
 
 import { classTrim } from '../utils';
 

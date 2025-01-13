@@ -11,7 +11,8 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type ICuratedWeaponScope } from '../../../types';
+
+import type { ICuratedWeaponScope } from '../../../types';
 
 import { classTrim } from '../../../utils';
 
@@ -28,7 +29,7 @@ const AdminEditWeaponScope: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { reloadWeaponScopes } = useGlobalVars();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -74,7 +75,7 @@ const AdminEditWeaponScope: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(weaponScopeData),
       [createDefaultData, weaponScopeData]
@@ -309,7 +310,7 @@ const AdminEditWeaponScope: FC = () => {
           {t('adminEditWeaponScope.return', { ns: 'pages' })}
         </Button>
         <Atitle level={2}>{t('adminEditWeaponScope.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror className="adminEditWeaponScope__error">{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminEditWeaponScope__basics">

@@ -1,6 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type IDamageType } from '../damageType/model';
+import type { IDamageType } from '../damageType/model';
 
 interface IDamage {
   /** The associated damageType */

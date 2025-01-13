@@ -1,5 +1,4 @@
-export const introSequence = (): Array<string | number> => {
-  return [
+export const introSequence = (): Array<string | number> => [
     2000,
     'Elysium.SatelliteSystem Booting Up',
     50,
@@ -184,4 +183,3 @@ export const introSequence = (): Array<string | number> => {
     1000,
     "-- Welcome to Elysium, new Soul. --\nMay Eidolon and Olympia's favour guide you to a life of perpetual Heaven.",
   ];
-};

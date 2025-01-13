@@ -11,7 +11,8 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type ICuratedRarity } from '../../../types';
+
+import type { ICuratedRarity } from '../../../types';
 
 import { classTrim } from '../../../utils';
 
@@ -27,7 +28,7 @@ const AdminEditRarity: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { reloadRarities } = useGlobalVars();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -72,7 +73,7 @@ const AdminEditRarity: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(() => createDefaultData(rarityData), [createDefaultData, rarityData]),
   });
 
@@ -294,7 +295,7 @@ const AdminEditRarity: FC = () => {
           {t('adminEditRarity.return', { ns: 'pages' })}
         </Button>
         <Atitle level={2}>{t('adminEditRarity.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror className="adminEditRarity__error">{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminEditRarity__basics">

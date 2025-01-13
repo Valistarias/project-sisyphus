@@ -1,6 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type IDamage, type INPC } from '../index';
+import type { IDamage, INPC } from '../index';
 
 interface IProgram {
   /** The title of the program */

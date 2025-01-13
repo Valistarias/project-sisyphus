@@ -11,7 +11,8 @@ import { useApi, useSystemAlerts } from '../../../providers';
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type ICuratedSkill } from '../../../types';
+
+import type { ICuratedSkill } from '../../../types';
 
 import './adminNewSkillBranch.scss';
 
@@ -47,7 +48,7 @@ const AdminNewSkillBranch: FC = () => {
     setError,
     control,
     formState: { errors },
-  } = useForm<FieldValues>();
+  } = useForm();
 
   const getSkill = useCallback(() => {
     if (api !== undefined && params.get('skillId') !== undefined) {
@@ -165,7 +166,7 @@ const AdminNewSkillBranch: FC = () => {
             {`${t(`terms.skill.name`)}: ${skill?.skill.title}`}
           </Ap>
         </div>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminNewSkillBranch__basics">

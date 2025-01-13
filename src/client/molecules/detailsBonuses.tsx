@@ -3,8 +3,9 @@ import React, { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Ap, type IAButton } from '../atoms';
-import { type ICuratedStat } from '../types';
-import { type ISourcePoints } from '../utils/character';
+
+import type { ICuratedStat } from '../types';
+import type { ISourcePoints } from '../utils/character';
 
 import { addSymbol, classTrim } from '../utils';
 
@@ -52,14 +53,14 @@ const DetailsBonuses: FC<IDetailsBonuses> = ({ bonuses, stat }) => {
       };
     } else if (bonus.origin?.skill !== undefined || bonus.origin?.cyberFrame !== undefined) {
       const relevantId =
-        bonus.origin?.skill !== undefined
+        bonus.origin.skill !== undefined
           ? `skill-${bonus.origin.skill.skill._id}`
-          : `cyberFrame-${bonus.origin?.cyberFrame?.cyberFrame._id}`;
+          : `cyberFrame-${bonus.origin.cyberFrame?.cyberFrame._id}`;
       // TODO: Deal with i18n
       const relevantText =
-        bonus.origin?.skill !== undefined
+        bonus.origin.skill !== undefined
           ? bonus.origin.skill.skill.title
-          : bonus.origin?.cyberFrame?.cyberFrame.title;
+          : bonus.origin.cyberFrame?.cyberFrame.title;
       if (lines[relevantId] === undefined) {
         lines[relevantId] = {
           id: relevantId,

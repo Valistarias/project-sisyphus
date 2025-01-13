@@ -1,5 +1,5 @@
-import { type InternationalizationType } from './global';
-import { type IRuleBook } from './rulebook';
+import type { InternationalizationType } from './global';
+import type { IRuleBook } from './rulebook';
 
 // Stat ------------------------------------
 export interface IStat {

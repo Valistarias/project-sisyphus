@@ -1,5 +1,6 @@
 import db from '../../../models';
-import { type INode } from '../../node/model';
+
+import type { INode } from '../../node/model';
 
 const { CharacterNode } = db;
 

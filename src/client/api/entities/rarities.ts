@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type ICuratedRarity } from '../../types';
-
 import Entity from './entity';
+
+import type { ICuratedRarity } from '../../types';
+
 
 interface IRarityPayload {
   rarityId: string;

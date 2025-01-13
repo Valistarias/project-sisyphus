@@ -1,14 +1,14 @@
-import { type Request, type Response } from 'express';
-import { type ObjectId } from 'mongoose';
+import type { Request, Response } from 'express';
+import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { curateCharParamBonusIds } from '../charParamBonus/controller';
-import { type ICharParamBonus, type ISkillBonus, type IStatBonus } from '../index';
 import { curateSkillBonusIds } from '../skillBonus/controller';
 import { curateStatBonusIds } from '../statBonus/controller';
 
-import { type HydratedIBackground } from './model';
+import type { ICharParamBonus, ISkillBonus, IStatBonus } from '../index';
+import type { HydratedIBackground } from './model';
 
 import { curateI18n } from '../../utils';
 

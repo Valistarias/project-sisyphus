@@ -3,7 +3,8 @@ import React, { useCallback, useMemo, type FC } from 'react';
 import { useGlobalVars } from '../../providers';
 
 import { NumDisplay } from '../../molecules';
-import { type TypeCampaignEvent } from '../../types';
+
+import type { TypeCampaignEvent } from '../../types';
 
 import { addSymbol, classTrim, type DiceRequest } from '../../utils';
 
@@ -35,8 +36,7 @@ const CharacterStatus: FC<ICharacterStatus> = ({ className, onRollDices }) => {
     [onRollDices]
   );
 
-  const charParamList = useMemo(() => {
-    return (
+  const charParamList = useMemo(() => (
       <div className="char-status__char-params">
         {characterParams?.map((charParam) => {
           // TODO: Deal with i18n here
@@ -63,8 +63,7 @@ const CharacterStatus: FC<ICharacterStatus> = ({ className, onRollDices }) => {
           );
         })}
       </div>
-    );
-  }, [characterParams, onClickInit]);
+    ), [characterParams, onClickInit]);
 
   return (
     <div

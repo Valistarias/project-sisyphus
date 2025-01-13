@@ -1,4 +1,5 @@
-import React, { useMemo, type FC } from 'react';
+import type React from 'react';
+import { useMemo, type FC } from 'react';
 
 import Add from '../assets/icons/add.svg?react';
 import Arrow from '../assets/icons/arrow.svg?react';

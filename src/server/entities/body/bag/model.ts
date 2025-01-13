@@ -1,6 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type IBag } from '../../bag/model';
+import type { IBag } from '../../bag/model';
 
 interface IBodyBag {
   /** When the body was created */

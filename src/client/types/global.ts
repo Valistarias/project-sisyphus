@@ -1,5 +1,5 @@
-import { type ICampaign } from './campaign';
-import { type ICharacter } from './character';
+import type { ICampaign } from './campaign';
+import type { ICharacter } from './character';
 
 // Global Types ------------------------------------
 export type InternationalizationType = Record<string, Record<string, string>>;

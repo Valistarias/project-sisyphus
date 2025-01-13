@@ -5,8 +5,9 @@ import { useTranslation } from 'react-i18next';
 import { useGlobalVars } from '../../providers';
 
 import { NumDisplay, SearchBar, SkillDisplay } from '../../molecules';
-import { type TypeCampaignEvent } from '../../types';
 import { calculateStatMod, calculateStatModToString, malusStatMod } from '../../utils/character';
+
+import type { TypeCampaignEvent } from '../../types';
 
 import { classTrim, removeDiacritics, type DiceRequest } from '../../utils';
 
@@ -50,8 +51,7 @@ const CharacterSkills: FC<ICharacterSkills> = ({ className, onRollDices }) => {
     });
   }, [characterStatSkills, searchWord]);
 
-  const statList = useMemo(() => {
-    return (
+  const statList = useMemo(() => (
       <div className="char-skills__stats">
         {characterStatSkills?.stats.map((stat) => {
           // TODO: Deal with i18n here
@@ -85,8 +85,7 @@ const CharacterSkills: FC<ICharacterSkills> = ({ className, onRollDices }) => {
           );
         })}
       </div>
-    );
-  }, [characterStatSkills, onRollDices]);
+    ), [characterStatSkills, onRollDices]);
 
   return (
     <div

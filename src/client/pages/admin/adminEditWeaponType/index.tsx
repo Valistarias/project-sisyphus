@@ -17,7 +17,8 @@ import {
   type ISingleValueSelect,
 } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type ICuratedWeaponType } from '../../../types';
+
+import type { ICuratedWeaponType } from '../../../types';
 
 import { classTrim } from '../../../utils';
 
@@ -37,7 +38,7 @@ const AdminEditWeaponType: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { weaponStyles, itemTypes, reloadWeaponTypes } = useGlobalVars();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -118,13 +119,13 @@ const AdminEditWeaponType: FC = () => {
       defaultData.icon = weaponType.icon;
       defaultData.needTraining = weaponType.needTraining ? '1' : '0';
       const selectedWeaponStyle = weaponStylesSelect.find(
-        (weaponStyleType) => weaponStyleType.value === weaponType.weaponStyle?._id
+        (weaponStyleType) => weaponStyleType.value === weaponType.weaponStyle._id
       );
       if (selectedWeaponStyle !== undefined) {
         defaultData.weaponStyle = String(selectedWeaponStyle.value);
       }
       const selectedItemType = itemTypesSelect.find(
-        (itemType) => itemType.value === weaponType.itemType?._id
+        (itemType) => itemType.value === weaponType.itemType._id
       );
       if (selectedItemType !== undefined) {
         defaultData.itemType = String(selectedItemType.value);
@@ -143,7 +144,7 @@ const AdminEditWeaponType: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(weaponTypeData, weaponStyleSelect, itemTypeList),
       [createDefaultData, weaponStyleSelect, weaponTypeData, itemTypeList]
@@ -379,7 +380,7 @@ const AdminEditWeaponType: FC = () => {
           {t('adminEditWeaponType.return', { ns: 'pages' })}
         </Button>
         <Atitle level={2}>{t('adminEditWeaponType.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror className="adminEditWeaponType__error">{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminEditWeaponType__visual">

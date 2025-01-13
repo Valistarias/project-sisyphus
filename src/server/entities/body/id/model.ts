@@ -1,14 +1,14 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type ICharacter } from '../../character';
-import { type HydratedIBodyAmmo } from '../ammo/model';
-import { type HydratedIBodyArmor } from '../armor/model';
-import { type HydratedIBodyBag } from '../bag/model';
-import { type HydratedIBodyImplant } from '../implant/model';
-import { type HydratedIBodyItem } from '../item/model';
-import { type HydratedIBodyProgram } from '../program/model';
-import { type HydratedIBodyStat } from '../stat/model';
-import { type HydratedIBodyWeapon } from '../weapon/model';
+import type { ICharacter } from '../../character';
+import type { HydratedIBodyAmmo } from '../ammo/model';
+import type { HydratedIBodyArmor } from '../armor/model';
+import type { HydratedIBodyBag } from '../bag/model';
+import type { HydratedIBodyImplant } from '../implant/model';
+import type { HydratedIBodyItem } from '../item/model';
+import type { HydratedIBodyProgram } from '../program/model';
+import type { HydratedIBodyStat } from '../stat/model';
+import type { HydratedIBodyWeapon } from '../weapon/model';
 
 interface IBody {
   /** Is this body alive */

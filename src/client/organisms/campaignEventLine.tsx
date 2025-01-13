@@ -7,7 +7,8 @@ import { useGlobalVars } from '../providers';
 import holoBackground from '../assets/imgs/tvbg2.gif';
 import { Ap } from '../atoms';
 import DiceCard from '../molecules/diceCard';
-import { type TypeCampaignEvent, type TypeDice } from '../types';
+
+import type { TypeCampaignEvent, TypeDice } from '../types';
 
 import { addSymbol, classTrim, strTodiceResult } from '../utils';
 

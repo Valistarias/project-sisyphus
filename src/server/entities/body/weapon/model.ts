@@ -1,7 +1,7 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type IAmmo } from '../../ammo/model';
-import { type IWeapon } from '../../weapon/model';
+import type { IAmmo } from '../../ammo/model';
+import type { IWeapon } from '../../weapon/model';
 
 interface IBodyWeapon {
   /** When the body was created */

@@ -1,12 +1,13 @@
-import { type Request, type Response } from 'express';
+import type { Request, Response } from 'express';
 
 import bcrypt from 'bcryptjs';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
-import { type IRole } from '../role/model';
 
-import { type HydratedIUser } from './model';
+import type { HydratedIUser } from './model';
+import type { IRole } from '../role/model';
+
 
 const { User } = db;
 

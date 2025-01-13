@@ -42,7 +42,7 @@ const AdminNewRarity: FC = () => {
     setError,
     control,
     formState: { errors },
-  } = useForm<FieldValues>();
+  } = useForm();
 
   const onSaveRarity: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr }) => {
@@ -118,7 +118,7 @@ const AdminNewRarity: FC = () => {
     <div className="adminNewRarity">
       <form className="adminNewRarity__content" onSubmit={handleSubmit(onSaveRarity)} noValidate>
         <Atitle level={1}>{t('adminNewRarity.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminNewRarity__basics">

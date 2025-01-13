@@ -7,8 +7,9 @@ import { useGlobalVars } from '../providers';
 import { Ap } from '../atoms';
 import { PropDisplay } from '../molecules';
 import { Quark, type IQuarkProps } from '../quark';
-import { type ICuratedBag, type ICuratedItemModifier, type ICuratedRarity } from '../types';
-import { type IBag } from '../types/items';
+
+import type { ICuratedBag, ICuratedItemModifier, ICuratedRarity } from '../types';
+import type { IBag } from '../types/items';
 
 import { classTrim } from '../utils';
 
@@ -53,7 +54,7 @@ const BagDisplay: FC<IBagDisplay> = ({ bag, mode = 'basic' }) => {
               (itemModifier) => itemModifier.itemModifier._id === itemModifierId
             ) ?? itemModifiers[0]
         ),
-        storableItemTypes: bagObj.storableItemTypes?.map((itemTypeId) => {
+        storableItemTypes: bagObj.storableItemTypes.map((itemTypeId) => {
           const elt =
             itemTypes.find((itemType) => itemType._id === itemTypeId)?.name ?? itemTypes[0].name;
           return t(`itemTypeNames.${elt}`);

@@ -11,7 +11,8 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, SmartSelect, type ISingleValueSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type ICuratedNotion } from '../../../types';
+
+import type { ICuratedNotion } from '../../../types';
 
 import './adminEditNotion.scss';
 
@@ -25,7 +26,7 @@ const AdminEditNotions: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -70,14 +71,12 @@ const AdminEditNotions: FC = () => {
     []
   );
 
-  const ruleBookSelect = useMemo(() => {
-    return ruleBooks.map(({ ruleBook }) => ({
+  const ruleBookSelect = useMemo(() => ruleBooks.map(({ ruleBook }) => ({
       value: ruleBook._id,
       // TODO : Handle Internationalization
       label: ruleBook.title,
       details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 }),
-    }));
-  }, [t, ruleBooks]);
+    })), [t, ruleBooks]);
 
   const {
     handleSubmit,
@@ -85,7 +84,7 @@ const AdminEditNotions: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(notionData, ruleBookSelect),
       [createDefaultData, notionData, ruleBookSelect]
@@ -300,7 +299,7 @@ const AdminEditNotions: FC = () => {
             {t('adminEditNotion.delete', { ns: 'pages' })}
           </Button>
         </div>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror className="adminEditNotion__error">{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminEditNotion__basics">

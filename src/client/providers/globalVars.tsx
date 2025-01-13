@@ -546,6 +546,4 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
   return <GlobalVarsContext.Provider value={providerValues}>{children}</GlobalVarsContext.Provider>;
 };
 
-export const useGlobalVars = (): IGlobalVarsContext => {
-  return useContext(GlobalVarsContext) as IGlobalVarsContext;
-};
+export const useGlobalVars = (): IGlobalVarsContext => useContext(GlobalVarsContext)!;

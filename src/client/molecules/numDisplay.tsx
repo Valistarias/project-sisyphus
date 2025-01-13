@@ -2,12 +2,14 @@ import React, { type FC } from 'react';
 
 import { Ap } from '../atoms';
 import { RichTextElement } from '../organisms';
-import { type ICuratedStat } from '../types';
-import { type ISourcePoints } from '../utils/character';
+
 
 import ClickableText from './clickableText';
 import DetailsBonuses from './detailsBonuses';
 import Helper from './helper';
+
+import type { ICuratedStat } from '../types';
+import type { ISourcePoints } from '../utils/character';
 
 import './numDisplay.scss';
 
@@ -27,8 +29,7 @@ interface INumDisplay {
   bonuses?: ISourcePoints[];
 }
 
-const NumDisplay: FC<INumDisplay> = ({ text, stat, value, bonuses, onClick }) => {
-  return (
+const NumDisplay: FC<INumDisplay> = ({ text, stat, value, bonuses, onClick }) => (
     <div className="num-display">
       <Ap className="num-display__title">{text.title.length < 12 ? text.title : text.short}</Ap>
       <ClickableText
@@ -47,6 +48,5 @@ const NumDisplay: FC<INumDisplay> = ({ text, stat, value, bonuses, onClick }) =>
       <div className="num-display__bg" />
     </div>
   );
-};
 
 export default NumDisplay;

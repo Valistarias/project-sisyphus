@@ -1,7 +1,7 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type IItemType } from '../itemType/model';
-import { type IWeaponStyle } from '../weaponStyle/model';
+import type { IItemType } from '../itemType/model';
+import type { IWeaponStyle } from '../weaponStyle/model';
 
 interface IWeaponType {
   /** The title of the weapon style */

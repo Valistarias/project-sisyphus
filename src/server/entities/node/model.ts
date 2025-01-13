@@ -1,13 +1,13 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import {
-  type IAction,
-  type ICharParamBonus,
-  type ICyberFrameBranch,
-  type IEffect,
-  type ISkillBonus,
-  type ISkillBranch,
-  type IStatBonus,
+import type {
+  IAction,
+  ICharParamBonus,
+  ICyberFrameBranch,
+  IEffect,
+  ISkillBonus,
+  ISkillBranch,
+  IStatBonus,
 } from '../index';
 
 interface INode {

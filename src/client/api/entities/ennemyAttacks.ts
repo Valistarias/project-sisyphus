@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type ICuratedEnnemyAttack } from '../../types';
-
 import Entity from './entity';
+
+import type { ICuratedEnnemyAttack } from '../../types';
+
 
 interface IEnnemyAttackPayload {
   ennemyAttackId: string;

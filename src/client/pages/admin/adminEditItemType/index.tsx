@@ -10,7 +10,8 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input } from '../../../molecules';
 import { Alert } from '../../../organisms';
-import { type IItemType } from '../../../types';
+
+import type { IItemType } from '../../../types';
 
 import './adminEditItemType.scss';
 
@@ -23,7 +24,7 @@ const AdminEditItemType: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { reloadItemTypes } = useGlobalVars();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -51,7 +52,7 @@ const AdminEditItemType: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(itemTypeData),
       [createDefaultData, itemTypeData]
@@ -229,7 +230,7 @@ const AdminEditItemType: FC = () => {
           </Button>
         </div>
         <Atitle level={2}>{t('adminEditItemType.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror className="adminEditItemType__error">{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminEditItemType__basics">

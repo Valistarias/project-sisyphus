@@ -159,19 +159,15 @@ const AdminNewArmor: FC = () => {
     [armorTypes]
   );
 
-  const rarityList = useMemo(() => {
-    return rarities.map(({ rarity }) => ({
+  const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
       value: rarity._id,
       label: rarity.title,
-    }));
-  }, [rarities]);
+    })), [rarities]);
 
-  const itemModifierList = useMemo(() => {
-    return itemModifiers.map(({ itemModifier }) => ({
+  const itemModifierList = useMemo(() => itemModifiers.map(({ itemModifier }) => ({
       value: itemModifier._id,
       label: itemModifier.title,
-    }));
-  }, [itemModifiers]);
+    })), [itemModifiers]);
 
   const starterKitList = useMemo(
     () =>
@@ -200,7 +196,7 @@ const AdminNewArmor: FC = () => {
     unregister,
     control,
     formState: { errors },
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: {
       icon: 'default',
     },
@@ -485,7 +481,7 @@ const AdminNewArmor: FC = () => {
         <Atitle className="adminNewArmor__head" level={1}>
           {t('adminNewArmor.title', { ns: 'pages' })}
         </Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminNewArmor__basics">

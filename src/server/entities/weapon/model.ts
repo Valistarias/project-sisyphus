@@ -1,7 +1,7 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type IDamage } from '../damage/model';
-import { type IAction, type IEffect } from '../index';
+import type { IDamage } from '../damage/model';
+import type { IAction, IEffect } from '../index';
 
 interface IWeapon {
   /** The title of the weapon */

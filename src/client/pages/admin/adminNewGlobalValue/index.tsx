@@ -33,7 +33,7 @@ const AdminNewGlobalValue: FC = () => {
     setError,
     control,
     formState: { errors },
-  } = useForm<FieldValues>();
+  } = useForm();
 
   const onSaveGlobalValue: SubmitHandler<FormValues> = useCallback(
     ({ name, value }) => {
@@ -87,7 +87,7 @@ const AdminNewGlobalValue: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewGlobalValue.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminNewGlobalValue__basics">

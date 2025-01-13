@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type IBody } from '../../types';
-
 import Entity from './entity';
+
+import type { IBody } from '../../types';
+
 
 interface IUpdateStatsPayload {
   id: string;

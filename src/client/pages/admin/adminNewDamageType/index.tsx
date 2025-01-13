@@ -42,7 +42,7 @@ const AdminNewDamageType: FC = () => {
     setError,
     control,
     formState: { errors },
-  } = useForm<FieldValues>();
+  } = useForm();
 
   const onSaveDamageType: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr }) => {
@@ -132,7 +132,7 @@ const AdminNewDamageType: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewDamageType.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminNewDamageType__basics">

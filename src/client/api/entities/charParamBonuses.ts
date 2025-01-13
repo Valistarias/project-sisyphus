@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type ICharParamBonus } from '../../types';
-
 import Entity from './entity';
+
+import type { ICharParamBonus } from '../../types';
+
 
 interface ICharParamBonusPayload {
   charParamBonusId: string;

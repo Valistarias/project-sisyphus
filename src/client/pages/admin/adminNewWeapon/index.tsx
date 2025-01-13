@@ -107,43 +107,33 @@ const AdminNewWeapon: FC = () => {
     control,
     formState: { errors },
     unregister,
-  } = useForm<FieldValues>();
+  } = useForm();
 
   // TODO: Internationalization
-  const weaponTypeList = useMemo(() => {
-    return weaponTypes.map(({ weaponType }) => ({
+  const weaponTypeList = useMemo(() => weaponTypes.map(({ weaponType }) => ({
       value: weaponType._id,
       label: weaponType.title,
-    }));
-  }, [weaponTypes]);
+    })), [weaponTypes]);
 
-  const weaponScopeList = useMemo(() => {
-    return weaponScopes.map(({ weaponScope }) => ({
+  const weaponScopeList = useMemo(() => weaponScopes.map(({ weaponScope }) => ({
       value: weaponScope._id,
       label: weaponScope.title,
-    }));
-  }, [weaponScopes]);
+    })), [weaponScopes]);
 
-  const damageTypeList = useMemo(() => {
-    return damageTypes.map(({ damageType }) => ({
+  const damageTypeList = useMemo(() => damageTypes.map(({ damageType }) => ({
       value: damageType._id,
       label: damageType.title,
-    }));
-  }, [damageTypes]);
+    })), [damageTypes]);
 
-  const itemModifierList = useMemo(() => {
-    return itemModifiers.map(({ itemModifier }) => ({
+  const itemModifierList = useMemo(() => itemModifiers.map(({ itemModifier }) => ({
       value: itemModifier._id,
       label: itemModifier.title,
-    }));
-  }, [itemModifiers]);
+    })), [itemModifiers]);
 
-  const rarityList = useMemo(() => {
-    return rarities.map(({ rarity }) => ({
+  const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
       value: rarity._id,
       label: rarity.title,
-    }));
-  }, [rarities]);
+    })), [rarities]);
 
   const actionTypeSelect = useMemo(
     () =>
@@ -406,7 +396,7 @@ const AdminNewWeapon: FC = () => {
     <div className="adminNewWeapon">
       <form className="adminNewWeapon__content" onSubmit={handleSubmit(onSaveWeapon)} noValidate>
         <Atitle level={1}>{t('adminNewWeapon.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminNewWeapon__basics">

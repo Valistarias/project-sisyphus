@@ -11,7 +11,8 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type ICuratedProgramScope } from '../../../types';
+
+import type { ICuratedProgramScope } from '../../../types';
 
 import { classTrim } from '../../../utils';
 
@@ -28,7 +29,7 @@ const AdminEditProgramScope: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { reloadProgramScopes } = useGlobalVars();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -74,7 +75,7 @@ const AdminEditProgramScope: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(programScopeData),
       [createDefaultData, programScopeData]
@@ -302,7 +303,7 @@ const AdminEditProgramScope: FC = () => {
           </Button>
         </div>
         <Atitle level={2}>{t('adminEditProgramScope.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror className="adminEditProgramScope__error">
             {errors.root.serverError.message}
           </Aerror>

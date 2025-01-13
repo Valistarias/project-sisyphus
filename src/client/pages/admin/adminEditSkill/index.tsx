@@ -11,7 +11,8 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, NodeTree, SmartSelect, type ISingleValueSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type ICuratedNode, type ICuratedSkill, type ISkillBranch } from '../../../types';
+
+import type { ICuratedNode, ICuratedSkill, ISkillBranch } from '../../../types';
 
 import { classTrim } from '../../../utils';
 
@@ -29,7 +30,7 @@ const AdminEditSkill: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { stats, reloadSkills } = useGlobalVars();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -110,7 +111,7 @@ const AdminEditSkill: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(skillData, statSelect),
       [createDefaultData, statSelect, skillData]
@@ -319,7 +320,7 @@ const AdminEditSkill: FC = () => {
           {t('adminEditSkill.return', { ns: 'pages' })}
         </Button>
         <Atitle level={2}>{t('adminEditSkill.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror className="adminEditSkill__error">{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminEditSkill__basics">

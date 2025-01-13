@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useMemo, useState, type FC, type ReactNod
 
 import { io, type Socket } from 'socket.io-client';
 
-import { type DefaultEventsMap } from 'socket.io/dist/typed-events';
+import type { DefaultEventsMap } from 'socket.io/dist/typed-events';
 
 interface ISocketContext {
   /** The socket event when something happens  */
@@ -39,6 +39,4 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
   return <SocketContext.Provider value={providerValues}>{children}</SocketContext.Provider>;
 };
 
-export const useSocket = (): ISocketContext => {
-  return useContext(SocketContext) as ISocketContext;
-};
+export const useSocket = (): ISocketContext => useContext(SocketContext)!;

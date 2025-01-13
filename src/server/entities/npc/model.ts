@@ -1,6 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type IEnnemyAttack } from '../index';
+import type { IEnnemyAttack } from '../index';
 
 interface INPC {
   /** The title of the NPC */

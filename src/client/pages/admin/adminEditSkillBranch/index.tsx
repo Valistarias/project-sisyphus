@@ -11,7 +11,8 @@ import { useApi, useConfirmMessage, useSystemAlerts } from '../../../providers';
 import { Aa, Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type ICuratedSkillBranch } from '../../../types';
+
+import type { ICuratedSkillBranch } from '../../../types';
 
 import './adminEditSkillBranch.scss';
 
@@ -24,7 +25,7 @@ const AdminEditSkillBranch: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -37,7 +38,7 @@ const AdminEditSkillBranch: FC = () => {
 
   const [skillBranchData, seSkillBranchData] = useState<ICuratedSkillBranch | null>(null);
 
-  const limitedMode = skillBranchData === null || skillBranchData?.skillBranch.title === '_general';
+  const limitedMode = skillBranchData === null || skillBranchData.skillBranch.title === '_general';
 
   const [skillBranchText, seSkillBranchText] = useState('');
   const [skillBranchTextFr, seSkillBranchTextFr] = useState('');
@@ -69,7 +70,7 @@ const AdminEditSkillBranch: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(skillBranchData),
       [createDefaultData, skillBranchData]
@@ -151,8 +152,8 @@ const AdminEditSkillBranch: FC = () => {
       (evtId: string) => {
         const skillId =
           typeof skillBranchData?.skillBranch.skill === 'string'
-            ? skillBranchData?.skillBranch.skill
-            : skillBranchData?.skillBranch.skill?._id;
+            ? skillBranchData.skillBranch.skill
+            : skillBranchData?.skillBranch.skill._id;
         const confirmDelete = ({ detail }): void => {
           if (detail.proceed === true) {
             api.skillBranches
@@ -271,7 +272,7 @@ const AdminEditSkillBranch: FC = () => {
           <Ap className="adminEditSkillBranch__ariane__elt">
             {`${t(`terms.skill.name`)}: `}
             <Aa
-              href={`/admin/skill/${typeof skillBranchData?.skillBranch.skill === 'string' ? skillBranchData?.skillBranch.skill : skillBranchData?.skillBranch.skill._id}`}
+              href={`/admin/skill/${typeof skillBranchData?.skillBranch.skill === 'string' ? skillBranchData.skillBranch.skill : skillBranchData?.skillBranch.skill._id}`}
             >
               {typeof skillBranchData?.skillBranch.skill !== 'string'
                 ? skillBranchData?.skillBranch.skill.title
@@ -279,7 +280,7 @@ const AdminEditSkillBranch: FC = () => {
             </Aa>
           </Ap>
         </div>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror className="adminEditSkillBranch__error">{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminEditSkillBranch__basics">

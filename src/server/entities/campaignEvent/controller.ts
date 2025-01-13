@@ -1,19 +1,19 @@
-import { type Request, type Response } from 'express';
-import { type HydratedDocument } from 'mongoose';
+import type { Request, Response } from 'express';
+import type { HydratedDocument } from 'mongoose';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
-import { type ICampaign } from '../campaign/model';
-import { type ICharacter } from '../character';
 
-import { type ICampaignEvent, type LeanICampaignEvent } from './model';
+import type { ICampaign } from '../campaign/model';
+import type { ICharacter } from '../character';
+import type { ICampaignEvent, LeanICampaignEvent } from './model';
 
 const { CampaignEvent } = db;
 const perRequest = 10;
 
 const findCampaignEventsByCampaignId = async (
   id: string,
-  offset: number = 0
+  offset = 0
 ): Promise<LeanICampaignEvent[]> =>
   await new Promise((resolve, reject) => {
     CampaignEvent.find({ campaign: id })

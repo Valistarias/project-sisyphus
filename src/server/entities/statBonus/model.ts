@@ -1,6 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type IStat } from '../index';
+import type { IStat } from '../index';
 
 interface IStatBonus {
   /** The associated stat */

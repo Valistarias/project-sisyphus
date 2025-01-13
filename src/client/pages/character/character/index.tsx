@@ -10,11 +10,12 @@ import {
   CharacterSkills,
   CharacterStatus,
 } from '../../../organisms';
-import { type TypeCampaignEvent } from '../../../types';
 import { ErrorPage } from '../../index';
 
+import type { TypeCampaignEvent } from '../../../types';
+
 // import { calculateDices, diceResultToStr, type DiceResult } from '../../utils';
-import { type DiceRequest } from '../../../utils';
+import type { DiceRequest } from '../../../utils';
 
 import './character.scss';
 

@@ -1,11 +1,11 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import {
-  type IAction,
-  type ICharParamBonus,
-  type IEffect,
-  type ISkillBonus,
-  type IStatBonus,
+import type {
+  IAction,
+  ICharParamBonus,
+  IEffect,
+  ISkillBonus,
+  IStatBonus,
 } from '../index';
 
 interface IArmor {

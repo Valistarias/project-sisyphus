@@ -30,7 +30,7 @@ const ForgotPassword: FC = () => {
     handleSubmit,
     setError,
     formState: { errors },
-  } = useForm<FieldValues>();
+  } = useForm();
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
     ({ mail }) => {
@@ -69,7 +69,7 @@ const ForgotPassword: FC = () => {
     <div className="forgot-pass">
       <Atitle level={1}>{t('forgotPass.title', { ns: 'pages' })}</Atitle>
       <form className="forgot-pass__form" onSubmit={handleSubmit(onSubmit)} noValidate>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <Input

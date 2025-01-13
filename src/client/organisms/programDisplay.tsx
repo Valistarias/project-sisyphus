@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState, type FC } from 'react';
+import { useMemo, useRef, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -7,8 +7,9 @@ import { useGlobalVars } from '../providers';
 import { Ali, Ap, Atitle, Aul } from '../atoms';
 import { PropDisplay } from '../molecules';
 import { Quark, type IQuarkProps } from '../quark';
-import { type ICuratedProgram, type ICuratedProgramScope, type ICuratedRarity } from '../types';
-import { type ICuratedDamageType, type IDamage, type IProgram } from '../types/items';
+
+import type { ICuratedProgram, ICuratedProgramScope, ICuratedRarity } from '../types';
+import type { ICuratedDamageType, IDamage, IProgram } from '../types/items';
 
 import { classTrim } from '../utils';
 

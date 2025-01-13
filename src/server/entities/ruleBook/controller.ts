@@ -1,4 +1,4 @@
-import { type Request, type Response } from 'express';
+import type { Request, Response } from 'express';
 
 import { isAdmin } from '../../middlewares';
 import db from '../../models';
@@ -6,8 +6,7 @@ import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/global
 import { deleteChaptersRecursive } from '../chapter/controller';
 import { deleteNotionsByRuleBookId } from '../notion/controller';
 
-import { type BasicHydratedIRuleBook, type HydratedIRuleBook } from './model';
-
+import type { BasicHydratedIRuleBook, HydratedIRuleBook } from './model';
 import type { HydratedIChapter, INotion, IRuleBookType } from '../index';
 
 import { curateI18n } from '../../utils';

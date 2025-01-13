@@ -9,8 +9,9 @@ import { useGlobalVars } from '../../providers';
 
 import { Ap } from '../../atoms';
 import { Button, Input, SmartSelect } from '../../molecules';
-import { type ICharacter } from '../../types';
 import { RichTextElement, basicRichTextElementExtentions } from '../richTextElement';
+
+import type { ICharacter } from '../../types';
 
 import { classTrim } from '../../utils';
 

@@ -1,4 +1,4 @@
-import { type Router } from 'express';
+import type { Router } from 'express';
 
 import { adminNeeded, verifyToken } from '../../middlewares';
 

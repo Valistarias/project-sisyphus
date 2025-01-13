@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type ICuratedCyberFrame } from '../../types';
-
 import Entity from './entity';
+
+import type { ICuratedCyberFrame } from '../../types';
+
 
 interface ICyberFramePayload {
   cyberFrameId: string;

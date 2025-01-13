@@ -180,6 +180,4 @@ export const ConfirmMessageProvider: FC<ConfirmMessageProviderProps> = ({ childr
   );
 };
 
-export const useConfirmMessage = (): IConfirmMessageContext => {
-  return useContext(ConfirmMessageContext) as IConfirmMessageContext;
-};
+export const useConfirmMessage = (): IConfirmMessageContext => useContext(ConfirmMessageContext)!;

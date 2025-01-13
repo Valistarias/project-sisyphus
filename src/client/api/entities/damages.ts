@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type IDamage } from '../../types';
-
 import Entity from './entity';
+
+import type { IDamage } from '../../types';
+
 
 interface IDamagePayload {
   damageId: string;

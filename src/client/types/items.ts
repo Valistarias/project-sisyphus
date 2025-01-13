@@ -1,15 +1,15 @@
-import { type InternationalizationType } from './global';
-import { type ICuratedNPC } from './npc';
-import {
-  type IAction,
-  type ICharParamBonus,
-  type ICuratedAction,
-  type ICuratedEffect,
-  type IEffect,
-  type ISkill,
-  type ISkillBonus,
-  type IStatBonus,
-  type TypeNodeIcons,
+import type { InternationalizationType } from './global';
+import type { ICuratedNPC } from './npc';
+import type {
+  IAction,
+  ICharParamBonus,
+  ICuratedAction,
+  ICuratedEffect,
+  IEffect,
+  ISkill,
+  ISkillBonus,
+  IStatBonus,
+  TypeNodeIcons,
 } from './rules';
 
 export const possibleStarterKitValues = ['always', 'never', 'option'];

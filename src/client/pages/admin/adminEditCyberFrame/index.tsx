@@ -11,7 +11,8 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, NodeTree, SmartSelect, type ISingleValueSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type ICuratedCyberFrame, type ICuratedNode, type ICyberFrameBranch } from '../../../types';
+
+import type { ICuratedCyberFrame, ICuratedNode, ICyberFrameBranch } from '../../../types';
 
 import { classTrim } from '../../../utils';
 
@@ -27,7 +28,7 @@ const AdminEditCyberFrame: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -72,14 +73,12 @@ const AdminEditCyberFrame: FC = () => {
     return Object.values(tempTree);
   }, [cyberFrameData]);
 
-  const ruleBookSelect = useMemo(() => {
-    return ruleBooks.map(({ ruleBook }) => ({
+  const ruleBookSelect = useMemo(() => ruleBooks.map(({ ruleBook }) => ({
       value: ruleBook._id,
       // TODO : Handle Internationalization
       label: ruleBook.title,
       details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 }),
-    }));
-  }, [t, ruleBooks]);
+    })), [t, ruleBooks]);
 
   const createDefaultData = useCallback(
     (cyberFrameData: ICuratedCyberFrame | null, ruleBookSelect: ISingleValueSelect[]) => {
@@ -90,7 +89,7 @@ const AdminEditCyberFrame: FC = () => {
       const defaultData: Partial<FormValues> = {};
       defaultData.name = cyberFrame.title;
       const selectedfield = ruleBookSelect.find(
-        (singleSelect) => singleSelect.value === cyberFrame.ruleBook?._id
+        (singleSelect) => singleSelect.value === cyberFrame.ruleBook._id
       );
       if (selectedfield !== undefined) {
         defaultData.ruleBook = String(selectedfield.value);
@@ -109,7 +108,7 @@ const AdminEditCyberFrame: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(cyberFrameData, ruleBookSelect),
       [createDefaultData, cyberFrameData, ruleBookSelect]
@@ -338,7 +337,7 @@ const AdminEditCyberFrame: FC = () => {
           </Button>
         </div>
         <Atitle level={2}>{t('adminEditCyberFrame.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror className="adminEditCyberFrame__error">{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminEditCyberFrame__basics">

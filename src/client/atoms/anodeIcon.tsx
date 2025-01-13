@@ -2,7 +2,8 @@ import React, { useMemo, type FC } from 'react';
 
 import holoBackground from '../assets/imgs/tvbg2.gif';
 import { Quark, type IQuarkProps } from '../quark';
-import { type TypeNodeIcons } from '../types/rules';
+
+import type { TypeNodeIcons } from '../types/rules';
 
 import { classTrim } from '../utils';
 

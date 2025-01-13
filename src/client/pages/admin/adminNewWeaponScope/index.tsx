@@ -43,7 +43,7 @@ const AdminNewWeaponScope: FC = () => {
     setError,
     control,
     formState: { errors },
-  } = useForm<FieldValues>();
+  } = useForm();
 
   const onSaveWeaponScope: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, scopeId }) => {
@@ -139,7 +139,7 @@ const AdminNewWeaponScope: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewWeaponScope.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminNewWeaponScope__basics">

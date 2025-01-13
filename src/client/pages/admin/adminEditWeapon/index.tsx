@@ -11,8 +11,9 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, SmartSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type ICuratedWeapon } from '../../../types';
 import { possibleStarterKitValues } from '../../../types/items';
+
+import type { ICuratedWeapon } from '../../../types';
 
 import { classTrim, isThereDuplicate } from '../../../utils';
 
@@ -76,7 +77,7 @@ const AdminEditWeapon: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -138,7 +139,7 @@ const AdminEditWeapon: FC = () => {
 
     // Init Bonus Skill
     const damageIds: number[] = [];
-    weapon.damages?.forEach((damage) => {
+    weapon.damages.forEach((damage) => {
       if (defaultData.damages === undefined) {
         defaultData.damages = {};
       }
@@ -171,9 +172,9 @@ const AdminEditWeapon: FC = () => {
         ...(action.karmicCost !== undefined ? { karmicCost: action.karmicCost } : {}),
         ...(action.time !== undefined ? { time: action.time } : {}),
         summary: action.summary,
-        titleFr: action.i18n?.fr?.title,
-        summaryFr: action.i18n?.fr?.summary,
-        timeFr: action.i18n?.fr?.time,
+        titleFr: action.i18n.fr.title,
+        summaryFr: action.i18n.fr.summary,
+        timeFr: action.i18n.fr.time,
       };
 
       tempActionId.push(idIncrement.current);
@@ -193,8 +194,8 @@ const AdminEditWeapon: FC = () => {
         type: effect.type,
         formula: effect.formula,
         summary: effect.summary,
-        titleFr: effect.i18n?.fr?.title,
-        summaryFr: effect.i18n?.fr?.summary,
+        titleFr: effect.i18n.fr.title,
+        summaryFr: effect.i18n.fr.summary,
       };
 
       tempEffectId.push(idIncrement.current);
@@ -212,45 +213,35 @@ const AdminEditWeapon: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(() => createDefaultData(weaponData), [createDefaultData, weaponData]),
   });
 
   // TODO: Internationalization
-  const weaponTypeList = useMemo(() => {
-    return weaponTypes.map(({ weaponType }) => ({
+  const weaponTypeList = useMemo(() => weaponTypes.map(({ weaponType }) => ({
       value: weaponType._id,
       label: weaponType.title,
-    }));
-  }, [weaponTypes]);
+    })), [weaponTypes]);
 
-  const weaponScopeList = useMemo(() => {
-    return weaponScopes.map(({ weaponScope }) => ({
+  const weaponScopeList = useMemo(() => weaponScopes.map(({ weaponScope }) => ({
       value: weaponScope._id,
       label: weaponScope.title,
-    }));
-  }, [weaponScopes]);
+    })), [weaponScopes]);
 
-  const damageTypeList = useMemo(() => {
-    return damageTypes.map(({ damageType }) => ({
+  const damageTypeList = useMemo(() => damageTypes.map(({ damageType }) => ({
       value: damageType._id,
       label: damageType.title,
-    }));
-  }, [damageTypes]);
+    })), [damageTypes]);
 
-  const itemModifierList = useMemo(() => {
-    return itemModifiers.map(({ itemModifier }) => ({
+  const itemModifierList = useMemo(() => itemModifiers.map(({ itemModifier }) => ({
       value: itemModifier._id,
       label: itemModifier.title,
-    }));
-  }, [itemModifiers]);
+    })), [itemModifiers]);
 
-  const rarityList = useMemo(() => {
-    return rarities.map(({ rarity }) => ({
+  const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
       value: rarity._id,
       label: rarity.title,
-    }));
-  }, [rarities]);
+    })), [rarities]);
 
   const actionTypeSelect = useMemo(
     () =>
@@ -511,7 +502,7 @@ const AdminEditWeapon: FC = () => {
         title: t('adminEditWeapon.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditWeapon.confirmDeletion.text', {
           ns: 'pages',
-          elt: weaponData?.weapon.title,
+          elt: weaponData.weapon.title,
         }),
         confirmCta: t('adminEditWeapon.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
@@ -620,7 +611,7 @@ const AdminEditWeapon: FC = () => {
         <Button className="adminEditWeapon__return-btn" href="/admin/weapons" size="small">
           {t('adminEditWeapon.return', { ns: 'pages' })}
         </Button>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminEditWeapon__basics">

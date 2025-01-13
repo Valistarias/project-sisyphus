@@ -7,7 +7,6 @@ import { useGlobalVars } from '../../providers';
 
 import { Ali, Ap, Atitle, Aul, type typeIcons } from '../../atoms';
 import { Button, Helper, NodeTree } from '../../molecules';
-import { type ICuratedNode, type ICuratedSkill, type ISkillBranch } from '../../types';
 import {
   aggregateSkillsByStats,
   calculateStatMod,
@@ -16,6 +15,8 @@ import {
   getCyberFrameLevelsByNodes,
 } from '../../utils/character';
 import { RichTextElement } from '../richTextElement';
+
+import type { ICuratedNode, ICuratedSkill, ISkillBranch } from '../../types';
 
 import { classTrim, getValuesFromGlobalValues } from '../../utils';
 
@@ -117,7 +118,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
         nodes: ICuratedNode[];
       }
     > = {};
-    skill.branches?.forEach(({ skillBranch }) => {
+    skill.branches.forEach(({ skillBranch }) => {
       tempTree[skillBranch._id] = {
         branch: skillBranch,
         nodes: skillBranch.nodes,
@@ -141,7 +142,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
             />
           </div>
           <div className="characterCreation-step3__detail-block__btns">
-            {openedSkill?.skill._id === skill._id ? null : (
+            {openedSkill.skill._id === skill._id ? null : (
               <Button
                 theme="afterglow"
                 size="large"

@@ -1,11 +1,11 @@
-import { type Request, type Response } from 'express';
-import { type HydratedDocument } from 'mongoose';
+import type { Request, Response } from 'express';
+import type { HydratedDocument } from 'mongoose';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
-import { type ICharParam, type INode } from '../index';
 
-import { type HydratedICharParamBonus, type ICharParamBonus } from './model';
+import type { ICharParam, INode } from '../index';
+import type { HydratedICharParamBonus, ICharParamBonus } from './model';
 
 const { CharParamBonus, Node } = db;
 

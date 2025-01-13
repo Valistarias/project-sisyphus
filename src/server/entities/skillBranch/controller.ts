@@ -1,4 +1,4 @@
-import { type Request, type Response } from 'express';
+import type { Request, Response } from 'express';
 
 import db from '../../models';
 import {
@@ -7,10 +7,11 @@ import {
   gemNotFound,
   gemServerError,
 } from '../../utils/globalErrorMessage';
-import { type ISkill } from '../index';
-import { type CuratedINode } from '../node/controller';
 
-import { type HydratedISkillBranch, type ISkillBranch } from './model';
+import type { ISkill } from '../index';
+import type { HydratedISkillBranch, ISkillBranch } from './model';
+import type { CuratedINode } from '../node/controller';
+
 
 import { curateI18n } from '../../utils';
 

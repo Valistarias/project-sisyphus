@@ -1,4 +1,5 @@
-import React, { forwardRef, type MouseEventHandler } from 'react';
+import type React from 'react';
+import { forwardRef, type MouseEventHandler } from 'react';
 
 interface IQuarkProps {
   /** The class of the element */

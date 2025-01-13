@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type ICuratedBackground } from '../../types';
-
 import Entity from './entity';
+
+import type { ICuratedBackground } from '../../types';
+
 
 interface IBackgroundPayload {
   backgroundId: string;

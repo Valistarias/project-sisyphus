@@ -11,7 +11,8 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type ICuratedDamageType } from '../../../types';
+
+import type { ICuratedDamageType } from '../../../types';
 
 import { classTrim } from '../../../utils';
 
@@ -27,7 +28,7 @@ const AdminEditDamageType: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { reloadDamageTypes } = useGlobalVars();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -72,7 +73,7 @@ const AdminEditDamageType: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(damageTypeData),
       [createDefaultData, damageTypeData]
@@ -301,7 +302,7 @@ const AdminEditDamageType: FC = () => {
           {t('adminEditDamageType.return', { ns: 'pages' })}
         </Button>
         <Atitle level={2}>{t('adminEditDamageType.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror className="adminEditDamageType__error">{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminEditDamageType__basics">

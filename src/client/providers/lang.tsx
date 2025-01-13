@@ -70,6 +70,4 @@ export const LangProvider: FC<LangProviderProps> = ({ children }) => {
   );
 };
 
-export const useLang = (): ILangContext => {
-  return useContext(LangContext) as ILangContext;
-};
+export const useLang = (): ILangContext => useContext(LangContext)!;

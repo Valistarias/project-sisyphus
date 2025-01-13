@@ -9,16 +9,6 @@ import { useGlobalVars } from '../../providers';
 import { Ap, Atitle } from '../../atoms';
 import { Button, Checkbox } from '../../molecules';
 import {
-  type IBody,
-  type ICharacter,
-  type ICuratedArmor,
-  type ICuratedBag,
-  type ICuratedImplant,
-  type ICuratedItem,
-  type ICuratedProgram,
-  type ICuratedWeapon,
-} from '../../types';
-import {
   ArmorDisplay,
   BagDisplay,
   ImplantDisplay,
@@ -26,6 +16,17 @@ import {
   ProgramDisplay,
   WeaponDisplay,
 } from '../index';
+
+import type {
+  IBody,
+  ICharacter,
+  ICuratedArmor,
+  ICuratedBag,
+  ICuratedImplant,
+  ICuratedItem,
+  ICuratedProgram,
+  ICuratedWeapon,
+} from '../../types';
 
 import { classTrim, countTrueInArray, getValuesFromGlobalValues } from '../../utils';
 
@@ -95,7 +96,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
       }
       let relevantBody: IBody | undefined;
       if (character !== null && character !== false && character.bodies !== undefined) {
-        relevantBody = character.bodies?.find((body) => body.alive);
+        relevantBody = character.bodies.find((body) => body.alive);
       }
       const defaultData: Partial<FormValues> = {};
       weapons.forEach(({ weapon }) => {

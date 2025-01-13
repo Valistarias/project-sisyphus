@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type ICharacter } from '../../types';
-
 import Entity from './entity';
+
+import type { ICharacter } from '../../types';
+
 
 interface ICharacterPayload {
   characterId: string;

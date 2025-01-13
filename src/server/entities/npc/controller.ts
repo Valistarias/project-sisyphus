@@ -1,12 +1,12 @@
-import { type Request, type Response } from 'express';
-import { type ObjectId } from 'mongoose';
+import type { Request, Response } from 'express';
+import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { smartUpdateAttacks } from '../ennemyAttack/controller';
-import { type IEnnemyAttack } from '../index';
 
-import { type BasicHydratedINPC, type HydratedINPC } from './model';
+import type { IEnnemyAttack } from '../index';
+import type { BasicHydratedINPC, HydratedINPC } from './model';
 
 import { curateI18n } from '../../utils';
 

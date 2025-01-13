@@ -11,7 +11,8 @@ import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, SmartSelect, type ISingleValueSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type IRuleBookType } from '../../../types';
+
+import type { IRuleBookType } from '../../../types';
 
 import './adminNewRuleBook.scss';
 
@@ -43,7 +44,7 @@ const AdminNewRuleBooks: FC = () => {
     setError,
     control,
     formState: { errors },
-  } = useForm<FieldValues>();
+  } = useForm();
 
   const onSaveRuleBook: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, type }) => {
@@ -144,7 +145,7 @@ const AdminNewRuleBooks: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewRuleBook.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminNewRuleBook__basics">

@@ -1,5 +1,5 @@
-import { type Request, type Response } from 'express';
-import { type FlattenMaps, type ObjectId } from 'mongoose';
+import type { Request, Response } from 'express';
+import type { FlattenMaps, ObjectId } from 'mongoose';
 
 import db from '../../models';
 import {
@@ -9,7 +9,6 @@ import {
   gemServerError,
 } from '../../utils/globalErrorMessage';
 import { checkDuplicateCharParamFormulaId } from '../charParam/controller';
-import { type HydratedISkillBranch, type IStat } from '../index';
 import {
   createGeneralForSkillId,
   deleteSkillBranchesBySkillId,
@@ -17,7 +16,8 @@ import {
 } from '../skillBranch/controller';
 import { checkDuplicateStatFormulaId } from '../stat/controller';
 
-import { type HydratedISkill, type LeanISkill } from './model';
+import type { HydratedISkillBranch, IStat } from '../index';
+import type { HydratedISkill, LeanISkill } from './model';
 
 import { curateI18n } from '../../utils';
 
@@ -92,7 +92,7 @@ const findSkillById = async (id: string): Promise<HydratedISkill> =>
 
 const checkDuplicateSkillFormulaId = async (
   formulaId: string,
-  alreadyExistOnce: boolean = false
+  alreadyExistOnce = false
 ): Promise<string | boolean> =>
   await new Promise((resolve, reject) => {
     Skill.find({ formulaId })

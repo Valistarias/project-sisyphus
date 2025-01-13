@@ -1,5 +1,5 @@
-import { type Request, type Response } from 'express';
-import { type HydratedDocument } from 'mongoose';
+import type { Request, Response } from 'express';
+import type { HydratedDocument } from 'mongoose';
 
 import { getUserFromToken, type IVerifyTokenRequest } from '../../middlewares/authJwt';
 import db from '../../models';
@@ -9,7 +9,6 @@ import {
   gemServerError,
   gemUnauthorizedGlobal,
 } from '../../utils/globalErrorMessage';
-import { type ICharacter } from '../character';
 import { findCharacterById } from '../character/controller';
 
 import { deleteAmmosByBody } from './ammo/controller';
@@ -21,16 +20,17 @@ import { deleteProgramsByBody, replaceProgramByBody } from './program/controller
 import { createStatsByBody, deleteStatsByBody, replaceStatByBody } from './stat/controller';
 import { deleteWeaponsByBody, replaceWeaponByBody } from './weapon/controller';
 
-import {
-  type HydratedIBody,
-  type HydratedIBodyAmmo,
-  type HydratedIBodyArmor,
-  type HydratedIBodyBag,
-  type HydratedIBodyImplant,
-  type HydratedIBodyItem,
-  type HydratedIBodyProgram,
-  type HydratedIBodyStat,
-  type HydratedIBodyWeapon,
+import type { ICharacter } from '../character';
+import type {
+  HydratedIBody,
+  HydratedIBodyAmmo,
+  HydratedIBodyArmor,
+  HydratedIBodyBag,
+  HydratedIBodyImplant,
+  HydratedIBodyItem,
+  HydratedIBodyProgram,
+  HydratedIBodyStat,
+  HydratedIBodyWeapon,
 } from './index';
 
 const { Body } = db;

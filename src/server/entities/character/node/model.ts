@@ -1,6 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type INode } from '../../node/model';
+import type { INode } from '../../node/model';
 
 interface ICharacterNode {
   /** When the character was created */

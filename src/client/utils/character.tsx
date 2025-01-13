@@ -1,18 +1,19 @@
-import {
-  type IBody,
-  type ICharacter,
-  type ICharacterNode,
-  type ICuratedCharParam,
-  type ICuratedCyberFrame,
-  type ICuratedNode,
-  type ICuratedSkill,
-  type ICuratedStat,
-  type IGlobalValue,
-  type INode,
-  type ISkill,
+import { addSymbol, capitalizeFirstLetter } from '.';
+
+import type {
+  IBody,
+  ICharacter,
+  ICharacterNode,
+  ICuratedCharParam,
+  ICuratedCyberFrame,
+  ICuratedNode,
+  ICuratedSkill,
+  ICuratedStat,
+  IGlobalValue,
+  INode,
+  ISkill,
 } from '../types';
 
-import { addSymbol, capitalizeFirstLetter } from '.';
 
 export interface ICyberFrameLevels {
   cyberFrame: ICuratedCyberFrame;
@@ -131,7 +132,7 @@ const getActualBody = (
   body: IBody | undefined;
   duplicate: boolean;
 } => {
-  const relevantBodies = character?.bodies?.filter((body) => body.alive);
+  const relevantBodies = character.bodies?.filter((body) => body.alive);
   return {
     body: relevantBodies?.[0] ?? undefined,
     duplicate: relevantBodies !== undefined && relevantBodies.length > 1,
@@ -272,13 +273,13 @@ const curateCharacterSkills = (
         };
       }
       const score = {
-        total: calculateStatMod(relatedStatBonuses.total) + (relatedSkillBonuses?.total ?? 0),
+        total: calculateStatMod(relatedStatBonuses.total) + (relatedSkillBonuses.total ?? 0),
         sources: [
           {
             value: calculateStatMod(relatedStatBonuses.total),
             fromStat: true,
           },
-          ...(relatedSkillBonuses?.sources ?? []),
+          ...(relatedSkillBonuses.sources ?? []),
         ],
       };
       charSkills.push({
@@ -323,7 +324,7 @@ const curateCharacterParams = (
     );
     if (associatedCharParam !== undefined) {
       const id = associatedCharParam.charParam._id;
-      const formulaId = associatedCharParam.charParam.formulaId;
+      const {formulaId} = associatedCharParam.charParam;
       if (charParamList.includes(formulaId)) {
         let value = 0;
         const globalValueBonus =

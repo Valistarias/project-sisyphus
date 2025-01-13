@@ -36,7 +36,7 @@ const AdminEditRuleBook: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { id } = useParams();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -110,7 +110,7 @@ const AdminEditRuleBook: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(ruleBookTypes, rulebookData),
       [createDefaultData, ruleBookTypes, rulebookData]
@@ -481,7 +481,7 @@ const AdminEditRuleBook: FC = () => {
           onSubmit={handleSubmit(onSaveRuleBook)}
           noValidate
         >
-          {errors.root?.serverError?.message !== undefined ? (
+          {errors.root?.serverError.message !== undefined ? (
             <Aerror>{errors.root.serverError.message}</Aerror>
           ) : null}
           <div className="adminEditRuleBook__basics">

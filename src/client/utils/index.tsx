@@ -1,6 +1,7 @@
-import { type ICharacter, type IGlobalValue, type TypeDice } from '../types';
-
 import { diacriticsMap } from './diacriticsMap';
+
+import type { ICharacter, IGlobalValue, TypeDice } from '../types';
+
 
 export const degToRad = (degrees: number): number => degrees * (Math.PI / 180);
 
@@ -19,9 +20,7 @@ export const arrSum = (elt: number[]): number =>
     return prev + cur;
   });
 
-export const capitalizeFirstLetter = (string: string): string => {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-};
+export const capitalizeFirstLetter = (string: string): string => string.charAt(0).toUpperCase() + string.slice(1);
 
 export const regexMail = /([A-z0-9._%-])+@([A-z0-9.-])+\.([A-z0-9]{2,})/g;
 
@@ -282,9 +281,7 @@ export const calculateDices = (diceGroups: DiceResult[]): TotalResult => {
           worst,
         };
         canUseOptionnal = true;
-      } else if (canUseOptionnal) {
-        canUseOptionnal = false;
-      }
+      } else canUseOptionnal &&= false;
     }
   });
   return {
@@ -293,9 +290,7 @@ export const calculateDices = (diceGroups: DiceResult[]): TotalResult => {
   };
 };
 
-const applyFormula = (text: string, formula: string, char: ICharacter | null | false): string => {
-  return 'TAKE FORMULA IN CONSIDERATION';
-};
+const applyFormula = (text: string, formula: string, char: ICharacter | null | false): string => 'TAKE FORMULA IN CONSIDERATION';
 
 export const curateStringFormula = (
   text: string,

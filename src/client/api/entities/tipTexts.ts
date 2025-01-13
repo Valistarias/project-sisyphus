@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type ICuratedTipText } from '../../types';
-
 import Entity from './entity';
+
+import type { ICuratedTipText } from '../../types';
+
 
 interface ITipTextPayload {
   tipTextId: string;

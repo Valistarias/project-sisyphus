@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type ICuratedStat } from '../../types';
-
 import Entity from './entity';
+
+import type { ICuratedStat } from '../../types';
+
 
 interface IStatPayload {
   statId: string;

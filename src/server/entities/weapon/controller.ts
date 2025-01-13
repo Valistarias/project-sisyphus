@@ -1,15 +1,15 @@
-import { type Request, type Response } from 'express';
-import { type ObjectId } from 'mongoose';
+import type { Request, Response } from 'express';
+import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { smartUpdateActions } from '../action/controller';
 import { curateDamageIds } from '../damage/controller';
-import { type IDamage } from '../damage/model';
 import { smartUpdateEffects } from '../effect/controller';
-import { type IAction, type IEffect } from '../index';
 
-import { type HydratedIWeapon } from './model';
+import type { IDamage } from '../damage/model';
+import type { IAction, IEffect } from '../index';
+import type { HydratedIWeapon } from './model';
 
 import { curateI18n } from '../../utils';
 

@@ -11,7 +11,8 @@ import { useApi, useConfirmMessage, useSystemAlerts } from '../../../providers';
 import { Aa, Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type ICuratedCyberFrameBranch } from '../../../types';
+
+import type { ICuratedCyberFrameBranch } from '../../../types';
 
 import './adminEditCyberFrameBranch.scss';
 
@@ -24,7 +25,7 @@ const AdminEditCyberFrameBranch: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -40,7 +41,7 @@ const AdminEditCyberFrameBranch: FC = () => {
   );
 
   const limitedMode =
-    cyberFrameBranchData === null || cyberFrameBranchData?.cyberFrameBranch.title === '_general';
+    cyberFrameBranchData === null || cyberFrameBranchData.cyberFrameBranch.title === '_general';
 
   const [cyberFrameBranchText, setCyberFrameBranchText] = useState('');
   const [cyberFrameBranchTextFr, setCyberFrameBranchTextFr] = useState('');
@@ -72,7 +73,7 @@ const AdminEditCyberFrameBranch: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(cyberFrameBranchData),
       [createDefaultData, cyberFrameBranchData]
@@ -190,7 +191,7 @@ const AdminEditCyberFrameBranch: FC = () => {
                 });
                 if (typeof cyberFrameBranchData?.cyberFrameBranch.cyberFrame !== 'string') {
                   navigate(
-                    `/admin/cyberframe/${cyberFrameBranchData?.cyberFrameBranch.cyberFrame?._id}`
+                    `/admin/cyberframe/${cyberFrameBranchData?.cyberFrameBranch.cyberFrame._id}`
                   );
                 }
               })
@@ -297,16 +298,16 @@ const AdminEditCyberFrameBranch: FC = () => {
             {`${t(`terms.cyberFrame.name`)}: `}
             {typeof cyberFrameBranchData?.cyberFrameBranch.cyberFrame !== 'string' ? (
               <Aa
-                href={`/admin/cyberframe/${cyberFrameBranchData?.cyberFrameBranch.cyberFrame?._id}`}
+                href={`/admin/cyberframe/${cyberFrameBranchData?.cyberFrameBranch.cyberFrame._id}`}
               >
-                {cyberFrameBranchData?.cyberFrameBranch.cyberFrame.title as string}
+                {cyberFrameBranchData?.cyberFrameBranch.cyberFrame.title!}
               </Aa>
             ) : (
               ''
             )}
           </Ap>
         </div>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror className="adminEditCyberFrameBranch__error">
             {errors.root.serverError.message}
           </Aerror>

@@ -1,4 +1,4 @@
-import { type InternationalizationType } from './global';
+import type { InternationalizationType } from './global';
 
 // EnnemyAttacks ------------------------------------
 export interface IEnnemyAttack {

@@ -1,15 +1,16 @@
-import { type Request, type Response } from 'express';
-import { type HydratedDocument, type Error } from 'mongoose';
+import type { Request, Response } from 'express';
+import type { HydratedDocument, Error } from 'mongoose';
 
 import crypto from 'crypto';
 
 
-import { type IMailgunClient } from 'mailgun.js/Interfaces';
 
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
-import { type IUser } from '../user/model';
+
+import type { IUser } from '../user/model';
+import type { IMailgunClient } from 'mailgun.js/Interfaces';
 
 const { User, MailToken } = db;
 

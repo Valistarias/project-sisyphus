@@ -25,6 +25,4 @@ export const ApiProvider: FC<IApiProvider> = ({ children }) => {
   return <ApiContext.Provider value={providerValues}>{children}</ApiContext.Provider>;
 };
 
-export const useApi = (): IApiContext => {
-  return useContext(ApiContext) as IApiContext;
-};
+export const useApi = (): IApiContext => useContext(ApiContext)!;

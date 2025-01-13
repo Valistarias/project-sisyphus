@@ -1,22 +1,22 @@
-import { type Request, type Response } from 'express';
-import { type ObjectId } from 'mongoose';
+import type { Request, Response } from 'express';
+import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { smartUpdateActions } from '../action/controller';
 import { curateCharParamBonusIds } from '../charParamBonus/controller';
 import { smartUpdateEffects } from '../effect/controller';
-import {
-  type IAction,
-  type ICharParamBonus,
-  type IEffect,
-  type ISkillBonus,
-  type IStatBonus,
-} from '../index';
 import { curateSkillBonusIds } from '../skillBonus/controller';
 import { curateStatBonusIds } from '../statBonus/controller';
 
-import { type HydratedIItem } from './model';
+import type {
+  IAction,
+  ICharParamBonus,
+  IEffect,
+  ISkillBonus,
+  IStatBonus,
+} from '../index';
+import type { HydratedIItem } from './model';
 
 import { curateI18n } from '../../utils';
 

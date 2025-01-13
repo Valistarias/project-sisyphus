@@ -1,6 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type HydratedICyberFrameBranch, type IRuleBook } from '../index';
+import type { HydratedICyberFrameBranch, IRuleBook } from '../index';
 
 interface ICyberFrame {
   /** The title of the Character Param */

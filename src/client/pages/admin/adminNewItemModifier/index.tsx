@@ -43,7 +43,7 @@ const AdminNewItemModifier: FC = () => {
     setError,
     control,
     formState: { errors },
-  } = useForm<FieldValues>();
+  } = useForm();
 
   const onSaveItemModifier: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, modifierId }) => {
@@ -134,7 +134,7 @@ const AdminNewItemModifier: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewItemModifier.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminNewItemModifier__basics">

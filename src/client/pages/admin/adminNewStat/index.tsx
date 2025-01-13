@@ -42,7 +42,7 @@ const AdminNewStat: FC = () => {
     setError,
     control,
     formState: { errors },
-  } = useForm<FieldValues>();
+  } = useForm();
 
   const onSaveStat: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, short, shortFr, formulaId }) => {
@@ -114,7 +114,7 @@ const AdminNewStat: FC = () => {
     <div className="adminNewStat">
       <form className="adminNewStat__content" onSubmit={handleSubmit(onSaveStat)} noValidate>
         <Atitle level={1}>{t('adminNewStat.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminNewStat__basics">

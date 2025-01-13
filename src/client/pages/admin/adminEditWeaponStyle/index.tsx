@@ -11,7 +11,8 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, SmartSelect, type ISingleValueSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type ICuratedWeaponStyle } from '../../../types';
+
+import type { ICuratedWeaponStyle } from '../../../types';
 
 import { classTrim } from '../../../utils';
 
@@ -28,7 +29,7 @@ const AdminEditWeaponStyle: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { skills, reloadWeaponStyles } = useGlobalVars();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -90,7 +91,7 @@ const AdminEditWeaponStyle: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(weaponStyleData, skillSelect),
       [createDefaultData, skillSelect, weaponStyleData]
@@ -324,7 +325,7 @@ const AdminEditWeaponStyle: FC = () => {
           {t('adminEditWeaponStyle.return', { ns: 'pages' })}
         </Button>
         <Atitle level={2}>{t('adminEditWeaponStyle.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror className="adminEditWeaponStyle__error">{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminEditWeaponStyle__basics">

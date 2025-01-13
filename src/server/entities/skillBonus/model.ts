@@ -1,6 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type ISkill } from '../index';
+import type { ISkill } from '../index';
 
 interface ISkillBonus {
   /** The associated skill */

@@ -11,8 +11,9 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, SmartSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type ICuratedBasicNPC, type ICuratedProgram } from '../../../types';
 import { possibleStarterKitValues } from '../../../types/items';
+
+import type { ICuratedBasicNPC, ICuratedProgram } from '../../../types';
 
 import { classTrim, isThereDuplicate } from '../../../utils';
 
@@ -43,7 +44,7 @@ const AdminEditProgram: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -118,40 +119,32 @@ const AdminEditProgram: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(() => createDefaultData(programData), [createDefaultData, programData]),
   });
 
   // TODO: Internationalization
-  const programScopeList = useMemo(() => {
-    return programScopes.map(({ programScope }) => ({
+  const programScopeList = useMemo(() => programScopes.map(({ programScope }) => ({
       value: programScope._id,
       label: programScope.title,
-    }));
-  }, [programScopes]);
+    })), [programScopes]);
 
-  const damageTypeList = useMemo(() => {
-    return damageTypes.map(({ damageType }) => ({
+  const damageTypeList = useMemo(() => damageTypes.map(({ damageType }) => ({
       value: damageType._id,
       label: damageType.title,
-    }));
-  }, [damageTypes]);
+    })), [damageTypes]);
 
-  const rarityList = useMemo(() => {
-    return rarities.map(({ rarity }) => ({
+  const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
       value: rarity._id,
       label: rarity.title,
-    }));
-  }, [rarities]);
+    })), [rarities]);
 
-  const aiList = useMemo(() => {
-    return nPCs
+  const aiList = useMemo(() => nPCs
       .filter(({ nPC }) => nPC.virtual)
       .map(({ nPC }) => ({
         value: nPC._id,
         label: nPC.title,
-      }));
-  }, [nPCs]);
+      })), [nPCs]);
 
   const starterKitList = useMemo(
     () =>
@@ -294,7 +287,7 @@ const AdminEditProgram: FC = () => {
         title: t('adminEditProgram.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditProgram.confirmDeletion.text', {
           ns: 'pages',
-          elt: programData?.program.title,
+          elt: programData.program.title,
         }),
         confirmCta: t('adminEditProgram.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
@@ -419,7 +412,7 @@ const AdminEditProgram: FC = () => {
         <Button className="adminEditProgram__return-btn" href="/admin/programs" size="small">
           {t('adminEditProgram.return', { ns: 'pages' })}
         </Button>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminEditProgram__basics">

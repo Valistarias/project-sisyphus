@@ -41,7 +41,7 @@ const AdminNewChapters: FC = () => {
     setError,
     control,
     formState: { errors },
-  } = useForm<FieldValues>();
+  } = useForm();
 
   const onSaveChapter: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr }) => {
@@ -117,7 +117,7 @@ const AdminNewChapters: FC = () => {
     <div className="adminNewChapter">
       <form onSubmit={handleSubmit(onSaveChapter)} noValidate className="adminNewChapter__content">
         <Atitle level={1}>{t('adminNewChapter.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminNewChapter__basics">

@@ -8,7 +8,8 @@ import { useGlobalVars } from '../../providers';
 
 import { Aicon } from '../../atoms';
 import { Button } from '../../molecules';
-import { type ICuratedCyberFrame } from '../../types';
+
+import type { ICuratedCyberFrame } from '../../types';
 
 import { classTrim, getCyberFrameLevelsByNodes } from '../../utils';
 

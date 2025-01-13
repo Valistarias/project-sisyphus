@@ -11,7 +11,8 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, SmartSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type ICuratedNPC } from '../../../types';
+
+import type { ICuratedNPC } from '../../../types';
 
 import { classTrim } from '../../../utils';
 
@@ -48,7 +49,7 @@ const AdminEditNPC: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -114,7 +115,7 @@ const AdminEditNPC: FC = () => {
     }
     // Init Attacks
     const tempAttackId: number[] = [];
-    nPC.attacks?.forEach((attack) => {
+    nPC.attacks.forEach((attack) => {
       if (defaultData.attacks === undefined) {
         defaultData.attacks = {};
       }
@@ -126,8 +127,8 @@ const AdminEditNPC: FC = () => {
         dices: attack.dices,
         bonusToHit: attack.bonusToHit,
         summary: attack.summary,
-        titleFr: attack.i18n?.fr?.title,
-        summaryFr: attack.i18n?.fr?.summary,
+        titleFr: attack.i18n.fr.title,
+        summaryFr: attack.i18n.fr.summary,
       };
 
       tempAttackId.push(idIncrement.current);
@@ -145,7 +146,7 @@ const AdminEditNPC: FC = () => {
     control,
     reset,
     formState: { errors },
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(() => createDefaultData(nPCData), [createDefaultData, nPCData]),
   });
 
@@ -286,7 +287,7 @@ const AdminEditNPC: FC = () => {
         title: t('adminEditNPC.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditNPC.confirmDeletion.text', {
           ns: 'pages',
-          elt: nPCData?.nPC.title,
+          elt: nPCData.nPC.title,
         }),
         confirmCta: t('adminEditNPC.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
@@ -392,7 +393,7 @@ const AdminEditNPC: FC = () => {
             {t('adminEditNPC.delete', { ns: 'pages' })}
           </Button>
         </div>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminEditNPC__basics">

@@ -1,13 +1,13 @@
-import { type Request, type Response } from 'express';
-import { type ObjectId } from 'mongoose';
+import type { Request, Response } from 'express';
+import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { curateDamageIds } from '../damage/controller';
-import { type IDamage } from '../damage/model';
-import { type INPC } from '../index';
 
-import { type HydratedIProgram, type IProgram } from './model';
+import type { IDamage } from '../damage/model';
+import type { INPC } from '../index';
+import type { HydratedIProgram, IProgram } from './model';
 
 import { curateI18n } from '../../utils';
 

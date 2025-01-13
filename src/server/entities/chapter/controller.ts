@@ -1,12 +1,11 @@
-import { type Request, type Response } from 'express';
+import type { Request, Response } from 'express';
 
 import { isAdmin } from '../../middlewares';
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { deletePagesByChapterId } from '../page/controller';
 
-import { type HydratedIChapter } from './model';
-
+import type { HydratedIChapter } from './model';
 import type { IChapterType, IPage, IRuleBook } from '../index';
 
 import { curateI18n } from '../../utils';

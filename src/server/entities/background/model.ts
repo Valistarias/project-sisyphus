@@ -1,6 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type ICharParamBonus, type ISkillBonus, type IStatBonus } from '../index';
+import type { ICharParamBonus, ISkillBonus, IStatBonus } from '../index';
 
 interface IBackground {
   /** The title of the Background */

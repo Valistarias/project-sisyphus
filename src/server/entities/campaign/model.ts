@@ -1,7 +1,7 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type ICharacter } from '../character';
-import { type IUser } from '../user/model';
+import type { ICharacter } from '../character';
+import type { IUser } from '../user/model';
 
 interface ICampaign {
   /** The name of the campaign */

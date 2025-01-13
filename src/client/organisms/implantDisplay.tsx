@@ -7,14 +7,15 @@ import { useGlobalVars } from '../providers';
 import { Ali, Ap, Atitle, Aul } from '../atoms';
 import { PropDisplay } from '../molecules';
 import { Quark, type IQuarkProps } from '../quark';
-import {
-  type ICharParamBonus,
-  type ICuratedCharParam,
-  type ICuratedImplant,
-  type ICuratedItemModifier,
-  type ICuratedRarity,
+
+import type {
+  ICharParamBonus,
+  ICuratedCharParam,
+  ICuratedImplant,
+  ICuratedItemModifier,
+  ICuratedRarity,
 } from '../types';
-import { type IImplant } from '../types/items';
+import type { IImplant } from '../types/items';
 
 import { classTrim } from '../utils';
 
@@ -56,7 +57,7 @@ const ImplantDisplay: FC<IImplantDisplay> = ({ implant, mode = 'basic' }) => {
     return {
       implant: {
         ...implantObj,
-        bodyParts: implantObj.bodyParts?.map(
+        bodyParts: implantObj.bodyParts.map(
           (bodyPartId) =>
             sentBodyparts.find(({ bodyPart }) => bodyPart._id === bodyPartId)?.bodyPart.title ??
             sentBodyparts[0].bodyPart.title

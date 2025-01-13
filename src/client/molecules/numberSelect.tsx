@@ -4,9 +4,11 @@ import { Controller } from 'react-hook-form';
 
 import { Aerror, Ap } from '../atoms';
 import { Quark, type IQuarkProps } from '../quark';
-import { type IReactHookFormInputs } from '../types';
 
 import Button from './button';
+
+import type { IReactHookFormInputs } from '../types';
+
 
 import { classTrim } from '../utils';
 
@@ -32,8 +34,7 @@ const NumberSelect: FC<INumberSelect> = ({
   maximum,
   offset,
   maxed = false,
-}) => {
-  return (
+}) => (
     <Quark
       quarkType="div"
       className={classTrim(`
@@ -78,6 +79,5 @@ const NumberSelect: FC<INumberSelect> = ({
       />
     </Quark>
   );
-};
 
 export default NumberSelect;

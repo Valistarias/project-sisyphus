@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type ICuratedAction } from '../../types';
-
 import Entity from './entity';
+
+import type { ICuratedAction } from '../../types';
+
 
 interface IActionPayload {
   actionId: string;

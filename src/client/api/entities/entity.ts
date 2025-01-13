@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { type IUser } from '../../types';
+import type { IUser } from '../../types';
 
 type IBasicRequests = (payload: any) => Promise<Record<string, any>>;
 

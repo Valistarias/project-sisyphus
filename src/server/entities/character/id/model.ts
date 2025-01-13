@@ -1,10 +1,9 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type HydratedIBackground } from '../../background/model';
-import { type HydratedIBody } from '../../body';
-import { type HydratedINode } from '../../node/model';
-
+import type { HydratedIBackground } from '../../background/model';
+import type { HydratedIBody } from '../../body';
 import type { ICampaign } from '../../campaign/model';
+import type { HydratedINode } from '../../node/model';
 import type { IUser } from '../../user/model';
 
 interface ICharacter {

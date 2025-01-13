@@ -17,7 +17,8 @@ import holoBackground from '../../../assets/imgs/tvbg2.gif';
 import { Ali, Ap, Atitle, Aul, Avideo } from '../../../atoms';
 import { Button } from '../../../molecules';
 import { Alert } from '../../../organisms';
-import { type ICharacter } from '../../../types';
+
+import type { ICharacter } from '../../../types';
 
 import { classTrim } from '../../../utils';
 
@@ -67,7 +68,7 @@ const Characters: FC = () => {
     characters.forEach((character) => {
       // const cyberFramesByNodes = getCyberFrameLevelsByNodes(character.nodes, cyberFrames);
       // TODO: add all parameters to this
-      const isReady = character.isReady;
+      const {isReady} = character;
       let displayedName: string | undefined;
       if (character.nickName !== undefined || character.firstName !== undefined) {
         displayedName = character.nickName ?? `${character.firstName} ${character.lastName}`;

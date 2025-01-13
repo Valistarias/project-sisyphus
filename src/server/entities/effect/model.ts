@@ -1,6 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type IActionType } from '../index';
+import type { IActionType } from '../index';
 
 interface IEffect {
   /** The title of the effect */

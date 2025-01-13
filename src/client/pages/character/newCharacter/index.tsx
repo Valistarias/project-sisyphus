@@ -19,18 +19,20 @@ import {
   CharCreationStep6,
   CharCreationStep7,
 } from '../../../organisms/characterCreation';
-import {
-  type ICharacter,
-  type ICuratedArmor,
-  type ICuratedBackground,
-  type ICuratedBag,
-  type ICuratedImplant,
-  type ICuratedItem,
-  type ICuratedProgram,
-  type ICuratedWeapon,
-} from '../../../types';
 
 import { introSequence } from './introSequence';
+
+import type {
+  ICharacter,
+  ICuratedArmor,
+  ICuratedBackground,
+  ICuratedBag,
+  ICuratedImplant,
+  ICuratedItem,
+  ICuratedProgram,
+  ICuratedWeapon,
+} from '../../../types';
+
 
 import { classTrim } from '../../../utils';
 
@@ -75,7 +77,7 @@ const NewCharacter: FC = () => {
   const [introState, setIntroState] = useState(0);
   const calledApi = useRef(false);
 
-  const { handleSubmit: submitTips, control: toolTipControl } = useForm<FieldValues>();
+  const { handleSubmit: submitTips, control: toolTipControl } = useForm();
 
   const charCreationState = useMemo(() => {
     if (character !== null && character !== false) {
@@ -91,15 +93,15 @@ const NewCharacter: FC = () => {
         return 5;
       }
 
-      if (character.nodes !== undefined && character.nodes?.length > 1) {
+      if (character.nodes !== undefined && character.nodes.length > 1) {
         return 4;
       }
 
-      if (character.bodies !== undefined && character.bodies?.length > 0) {
+      if (character.bodies !== undefined && character.bodies.length > 0) {
         return 3;
       }
 
-      if (character.nodes !== undefined && character.nodes?.length === 1) {
+      if (character.nodes !== undefined && character.nodes.length === 1) {
         return 2;
       }
     }
@@ -361,7 +363,7 @@ const NewCharacter: FC = () => {
         character !== false &&
         character.bodies !== undefined
       ) {
-        const relevantBody = character.bodies?.find((body) => body.alive);
+        const relevantBody = character.bodies.find((body) => body.alive);
         if (relevantBody !== undefined) {
           setLoading(true);
           api.bodies
@@ -491,7 +493,7 @@ const NewCharacter: FC = () => {
     ) => {
       if (api !== undefined && user !== null && character !== null && character !== false) {
         if (character.bodies !== undefined && character.bodies.length !== 0) {
-          const relevantBody = character.bodies?.find((body) => body.alive);
+          const relevantBody = character.bodies.find((body) => body.alive);
           if (relevantBody !== undefined) {
             api.bodies
               .updateStats({

@@ -11,8 +11,9 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, SmartSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type ICuratedArmor } from '../../../types';
 import { possibleStarterKitValues } from '../../../types/items';
+
+import type { ICuratedArmor } from '../../../types';
 
 import { classTrim, isThereDuplicate } from '../../../utils';
 
@@ -85,7 +86,7 @@ const AdminEditArmor: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -166,19 +167,15 @@ const AdminEditArmor: FC = () => {
     [armorTypes]
   );
 
-  const rarityList = useMemo(() => {
-    return rarities.map(({ rarity }) => ({
+  const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
       value: rarity._id,
       label: rarity.title,
-    }));
-  }, [rarities]);
+    })), [rarities]);
 
-  const itemModifierList = useMemo(() => {
-    return itemModifiers.map(({ itemModifier }) => ({
+  const itemModifierList = useMemo(() => itemModifiers.map(({ itemModifier }) => ({
       value: itemModifier._id,
       label: itemModifier.title,
-    }));
-  }, [itemModifiers]);
+    })), [itemModifiers]);
 
   const starterKitList = useMemo(
     () =>
@@ -290,9 +287,9 @@ const AdminEditArmor: FC = () => {
         ...(action.karmicCost !== undefined ? { karmicCost: action.karmicCost } : {}),
         ...(action.time !== undefined ? { time: action.time } : {}),
         summary: action.summary,
-        titleFr: action.i18n?.fr?.title,
-        summaryFr: action.i18n?.fr?.summary,
-        timeFr: action.i18n?.fr?.time,
+        titleFr: action.i18n.fr.title,
+        summaryFr: action.i18n.fr.summary,
+        timeFr: action.i18n.fr.time,
       };
 
       tempActionId.push(idIncrement.current);
@@ -312,8 +309,8 @@ const AdminEditArmor: FC = () => {
         type: effect.type,
         formula: effect.formula,
         summary: effect.summary,
-        titleFr: effect.i18n?.fr?.title,
-        summaryFr: effect.i18n?.fr?.summary,
+        titleFr: effect.i18n.fr.title,
+        summaryFr: effect.i18n.fr.summary,
       };
 
       tempEffectId.push(idIncrement.current);
@@ -331,7 +328,7 @@ const AdminEditArmor: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(() => createDefaultData(armorData), [createDefaultData, armorData]),
   });
 
@@ -607,7 +604,7 @@ const AdminEditArmor: FC = () => {
         title: t('adminEditArmor.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditArmor.confirmDeletion.text', {
           ns: 'pages',
-          elt: armorData?.armor.title,
+          elt: armorData.armor.title,
         }),
         confirmCta: t('adminEditArmor.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
@@ -716,7 +713,7 @@ const AdminEditArmor: FC = () => {
         <Button className="adminEditArmor__return-btn" href="/admin/armors" size="small">
           {t('adminEditArmor.return', { ns: 'pages' })}
         </Button>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminEditArmor__basics">

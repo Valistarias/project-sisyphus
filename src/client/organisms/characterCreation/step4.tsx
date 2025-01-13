@@ -7,8 +7,9 @@ import { useGlobalVars } from '../../providers';
 
 import { Abutton, Aicon, Ali, Ap, Atitle, Aul } from '../../atoms';
 import { Button } from '../../molecules';
-import { type ICuratedBackground } from '../../types';
 import { RichTextElement } from '../richTextElement';
+
+import type { ICuratedBackground } from '../../types';
 
 import { classTrim } from '../../utils';
 
@@ -30,12 +31,10 @@ const CharacterCreationStep4: FC<ICharacterCreationStep4> = ({
   const [selectedBg, setSelectedBg] = useState<ICuratedBackground | null>(null);
 
   const bonuses = useMemo(() => {
-    const bonuses = selectedBg?.background.skillBonuses?.map((skillBonus) => {
-      return {
+    const bonuses = selectedBg?.background.skillBonuses?.map((skillBonus) => ({
         ...skillBonus,
         skill: skills.find((skill) => skill.skill._id === skillBonus.skill),
-      };
-    });
+      }));
     return (
       <Aul noPoints className="characterCreation-step4__view__chosen-background__bonuses">
         {bonuses?.map((bonus) => (
@@ -101,10 +100,10 @@ const CharacterCreationStep4: FC<ICharacterCreationStep4> = ({
           <Ali className="characterCreation-step4__view__list__title">Choose one</Ali>
           {backgrounds.map((background) => (
             <Ali
-              key={background?.background._id}
+              key={background.background._id}
               className={classTrim(`
                 characterCreation-step4__view__list__elt
-                ${selectedBg?.background._id === background?.background._id ? 'characterCreation-step4__view__list__elt--active' : ''}
+                ${selectedBg?.background._id === background.background._id ? 'characterCreation-step4__view__list__elt--active' : ''}
               `)}
             >
               <Abutton
@@ -113,7 +112,7 @@ const CharacterCreationStep4: FC<ICharacterCreationStep4> = ({
                   setSelectedBg(background);
                 }}
               >
-                {background?.background.title}
+                {background.background.title}
                 <Aicon
                   type="Arrow"
                   className="characterCreation-step4__view__list__elt__btn__arrow"

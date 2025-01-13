@@ -1,11 +1,13 @@
 import React, { useMemo, type FC } from 'react';
 
 import { Ap } from '../atoms';
-import { type ICuratedSkill, type ICuratedStat } from '../types';
-import { type IScoreStatSkill } from '../utils/character';
 
 import ClickableText from './clickableText';
 import DetailsBonuses from './detailsBonuses';
+
+import type { ICuratedSkill, ICuratedStat } from '../types';
+import type { IScoreStatSkill } from '../utils/character';
+
 
 import { addSymbol } from '../utils';
 
@@ -28,10 +30,10 @@ interface ISkillDisplay {
 
 const SkillDisplay: FC<ISkillDisplay> = ({ skill, onSkillClick }) => {
   // TODO: Deal with i18n
-  const texts = useMemo(() => {
+  const texts = useMemo(() => 
     // insert lang detection here
-    return skill.skill;
-  }, [skill]);
+     skill.skill
+  , [skill]);
   return (
     <div className="skill-display">
       <Ap className="skill-display__title">{texts.title}</Ap>

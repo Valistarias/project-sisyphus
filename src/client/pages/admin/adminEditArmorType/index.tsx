@@ -11,7 +11,8 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type ICuratedArmorType } from '../../../types';
+
+import type { ICuratedArmorType } from '../../../types';
 
 import { classTrim } from '../../../utils';
 
@@ -27,7 +28,7 @@ const AdminEditArmorType: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { reloadArmorTypes } = useGlobalVars();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -72,7 +73,7 @@ const AdminEditArmorType: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(armorTypeData),
       [createDefaultData, armorTypeData]
@@ -301,7 +302,7 @@ const AdminEditArmorType: FC = () => {
           {t('adminEditArmorType.return', { ns: 'pages' })}
         </Button>
         <Atitle level={2}>{t('adminEditArmorType.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror className="adminEditArmorType__error">{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminEditArmorType__basics">

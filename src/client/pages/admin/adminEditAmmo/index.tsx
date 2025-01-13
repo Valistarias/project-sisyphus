@@ -11,7 +11,8 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, SmartSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type ICuratedAmmo } from '../../../types';
+
+import type { ICuratedAmmo } from '../../../types';
 
 import { classTrim } from '../../../utils';
 
@@ -32,7 +33,7 @@ const AdminEditAmmo: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -83,31 +84,25 @@ const AdminEditAmmo: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(() => createDefaultData(ammoData), [createDefaultData, ammoData]),
   });
 
   // TODO: Internationalization
-  const itemModifierList = useMemo(() => {
-    return itemModifiers.map(({ itemModifier }) => ({
+  const itemModifierList = useMemo(() => itemModifiers.map(({ itemModifier }) => ({
       value: itemModifier._id,
       label: itemModifier.title,
-    }));
-  }, [itemModifiers]);
+    })), [itemModifiers]);
 
-  const rarityList = useMemo(() => {
-    return rarities.map(({ rarity }) => ({
+  const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
       value: rarity._id,
       label: rarity.title,
-    }));
-  }, [rarities]);
+    })), [rarities]);
 
-  const weaponList = useMemo(() => {
-    return weaponTypes.map(({ weaponType }) => ({
+  const weaponList = useMemo(() => weaponTypes.map(({ weaponType }) => ({
       value: weaponType._id,
       label: weaponType.title,
-    }));
-  }, [weaponTypes]);
+    })), [weaponTypes]);
 
   const onSaveAmmo: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, rarity, cost, weaponTypes, itemModifiers, offsetToHit, offsetDamage }) => {
@@ -194,7 +189,7 @@ const AdminEditAmmo: FC = () => {
         title: t('adminEditAmmo.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditAmmo.confirmDeletion.text', {
           ns: 'pages',
-          elt: ammoData?.ammo.title,
+          elt: ammoData.ammo.title,
         }),
         confirmCta: t('adminEditAmmo.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
@@ -300,7 +295,7 @@ const AdminEditAmmo: FC = () => {
             {t('adminEditAmmo.delete', { ns: 'pages' })}
           </Button>
         </div>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminEditAmmo__basics">

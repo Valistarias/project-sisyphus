@@ -11,13 +11,14 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Aa, Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, NodeIconSelect, SmartSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import {
-  type ICuratedCyberFrame,
-  type ICuratedCyberFrameBranch,
-  type ICuratedNode,
-  type ICuratedSkill,
-  type ICuratedSkillBranch,
-  type ISkillBranch,
+
+import type {
+  ICuratedCyberFrame,
+  ICuratedCyberFrameBranch,
+  ICuratedNode,
+  ICuratedSkill,
+  ICuratedSkillBranch,
+  ISkillBranch,
 } from '../../../types';
 
 import { classTrim, isThereDuplicate } from '../../../utils';
@@ -101,7 +102,7 @@ const AdminEditNode: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -291,9 +292,9 @@ const AdminEditNode: FC = () => {
         ...(action.karmicCost !== undefined ? { karmicCost: action.karmicCost } : {}),
         ...(action.time !== undefined ? { time: action.time } : {}),
         summary: action.summary,
-        titleFr: action.i18n?.fr?.title,
-        summaryFr: action.i18n?.fr?.summary,
-        timeFr: action.i18n?.fr?.time,
+        titleFr: action.i18n.fr.title,
+        summaryFr: action.i18n.fr.summary,
+        timeFr: action.i18n.fr.time,
       };
 
       tempActionId.push(idIncrement.current);
@@ -313,8 +314,8 @@ const AdminEditNode: FC = () => {
         type: effect.type,
         formula: effect.formula,
         summary: effect.summary,
-        titleFr: effect.i18n?.fr?.title,
-        summaryFr: effect.i18n?.fr?.summary,
+        titleFr: effect.i18n.fr.title,
+        summaryFr: effect.i18n.fr.summary,
       };
 
       tempEffectId.push(idIncrement.current);
@@ -333,7 +334,7 @@ const AdminEditNode: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(() => createDefaultData(nodeData), [createDefaultData, nodeData]),
   });
 
@@ -351,8 +352,7 @@ const AdminEditNode: FC = () => {
     [t]
   );
 
-  const branchSelect = useMemo(() => {
-    return branches.reduce(
+  const branchSelect = useMemo(() => branches.reduce(
       (
         result: Array<{
           value: string;
@@ -374,8 +374,7 @@ const AdminEditNode: FC = () => {
         return result;
       },
       []
-    );
-  }, [branches, t]);
+    ), [branches, t]);
 
   const onAddSkillBonus = useCallback(() => {
     setSkillBonusIds((prev) => {
@@ -471,7 +470,7 @@ const AdminEditNode: FC = () => {
         });
         return;
       }
-      const skillId = (nodeData?.node.skillBranch as ISkillBranch)?._id;
+      const skillId = (nodeData?.node.skillBranch as ISkillBranch)._id;
       const curatedSkillBonuses = skillBonuses.map(({ skill, value }) => ({
         skill,
         value: Number(value),
@@ -638,7 +637,7 @@ const AdminEditNode: FC = () => {
         title: t('adminEditNode.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditNode.confirmDeletion.text', {
           ns: 'pages',
-          elt: nodeData?.node.title,
+          elt: nodeData.node.title,
         }),
         confirmCta: t('adminEditNode.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
@@ -782,7 +781,7 @@ const AdminEditNode: FC = () => {
           }
           if (node.skillBranch !== undefined && typeof node.skillBranch !== 'string') {
             const foundSkill = skills.find(
-              ({ skill }) => skill._id === String((node.skillBranch as ISkillBranch)?.skill)
+              ({ skill }) => skill._id === String((node.skillBranch as ISkillBranch).skill)
             );
             if (foundSkill !== undefined) {
               setSkill(foundSkill);
@@ -835,7 +834,7 @@ const AdminEditNode: FC = () => {
             {skill !== null ? (
               <>
                 {`${t(`terms.skill.name`)}:`}
-                <Aa href={`/admin/skill/${skill?.skill._id}`}>{skill?.skill.title}</Aa>
+                <Aa href={`/admin/skill/${skill.skill._id}`}>{skill.skill.title}</Aa>
               </>
             ) : (
               <>
@@ -847,7 +846,7 @@ const AdminEditNode: FC = () => {
             )}
           </Ap>
         </div>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminEditNode__visual">

@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type ICuratedBodyPart } from '../../types';
-
 import Entity from './entity';
+
+import type { ICuratedBodyPart } from '../../types';
+
 
 interface IBodyPartPayload {
   bodyPartId: string;

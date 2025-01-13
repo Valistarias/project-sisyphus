@@ -1,12 +1,13 @@
-import { type Request, type Response } from 'express';
-import { type HydratedDocument } from 'mongoose';
+import type { Request, Response } from 'express';
+import type { HydratedDocument } from 'mongoose';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { findRuleBookById } from '../ruleBook/controller';
-import { type HydratedIRuleBook } from '../ruleBook/model';
 
-import { type HydratedNotion, type INotion } from './model';
+import type { HydratedNotion, INotion } from './model';
+import type { HydratedIRuleBook } from '../ruleBook/model';
+
 
 import { curateI18n } from '../../utils';
 
@@ -167,7 +168,7 @@ const findAllByRuleBook = (req: Request, res: Response): void => {
   findNotions()
     .then((notions) => {
       notions.forEach((notion) => {
-        if (notion.ruleBook.type?.name === 'core') {
+        if (notion.ruleBook.type.name === 'core') {
           aggregatedNotions.push(notion);
         }
       });

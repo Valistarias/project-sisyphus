@@ -5,7 +5,8 @@ import { useTranslation } from 'react-i18next';
 import Select, { components, type MultiValue, type OptionProps } from 'react-select';
 
 import { Aerror, Alabel, Ap } from '../atoms';
-import { type IReactHookFormInputs } from '../types/form';
+
+import type { IReactHookFormInputs } from '../types/form';
 
 import { classTrim } from '../utils';
 

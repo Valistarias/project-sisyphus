@@ -11,7 +11,8 @@ import tvBackground from '../../assets/imgs/tvbg2.gif';
 import { Aerror, Ap, Avideo } from '../../atoms';
 import { Button, Input } from '../../molecules';
 import { Alert } from '../../organisms';
-import { type IUser } from '../../types';
+
+import type { IUser } from '../../types';
 
 import { regexMail } from '../../utils';
 
@@ -37,7 +38,7 @@ const Login: FC = () => {
     handleSubmit,
     setError,
     formState: { errors },
-  } = useForm<FieldValues>();
+  } = useForm();
 
   const params = useMemo(() => new URLSearchParams(search), [search]);
 
@@ -98,7 +99,7 @@ const Login: FC = () => {
       <div className="login__main">
         <Avideo video="logo" className="login__main__video" />
         <form className="login__main__form" onSubmit={handleSubmit(onSubmit)} noValidate>
-          {errors.root?.serverError?.message !== undefined ? (
+          {errors.root?.serverError.message !== undefined ? (
             <Aerror>{errors.root.serverError.message}</Aerror>
           ) : null}
           <Input

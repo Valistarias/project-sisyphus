@@ -7,16 +7,18 @@ import { useGlobalVars } from '../providers';
 import { Ap } from '../atoms';
 import { PropDisplay } from '../molecules';
 import { Quark, type IQuarkProps } from '../quark';
-import {
-  type ICharParamBonus,
-  type ICuratedCharParam,
-  type ICuratedItem,
-  type ICuratedItemModifier,
-  type ICuratedRarity,
-} from '../types';
-import { type IItem } from '../types/items';
 
 import { RichTextElement } from './richTextElement';
+
+import type {
+  ICharParamBonus,
+  ICuratedCharParam,
+  ICuratedItem,
+  ICuratedItemModifier,
+  ICuratedRarity,
+} from '../types';
+import type { IItem } from '../types/items';
+
 
 import { classTrim } from '../utils';
 

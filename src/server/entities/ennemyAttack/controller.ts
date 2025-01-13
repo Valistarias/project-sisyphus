@@ -1,10 +1,9 @@
-import { type Request, type Response } from 'express';
+import type { Request, Response } from 'express';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
-import { type HydratedIEnnemyAttack } from './model';
-
+import type { HydratedIEnnemyAttack } from './model';
 import type { IDamageType } from '../index';
 
 import { curateI18n } from '../../utils';

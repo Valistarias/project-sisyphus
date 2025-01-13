@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type ICuratedNode } from '../../types';
-
 import Entity from './entity';
+
+import type { ICuratedNode } from '../../types';
+
 
 interface IBranchPayload {
   cyberFrameBranchId?: string;

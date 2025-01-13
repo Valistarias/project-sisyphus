@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type IStatBonus } from '../../types';
-
 import Entity from './entity';
+
+import type { IStatBonus } from '../../types';
+
 
 interface IStatBonusPayload {
   statBonusId: string;

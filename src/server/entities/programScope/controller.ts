@@ -1,4 +1,4 @@
-import { type Request, type Response } from 'express';
+import type { Request, Response } from 'express';
 
 import db from '../../models';
 import {
@@ -8,7 +8,7 @@ import {
   gemServerError,
 } from '../../utils/globalErrorMessage';
 
-import { type HydratedIProgramScope } from './model';
+import type { HydratedIProgramScope } from './model';
 
 import { curateI18n } from '../../utils';
 
@@ -46,7 +46,7 @@ const findProgramScopeById = async (id: string): Promise<HydratedIProgramScope> 
 
 const checkDuplicateProgramScopeScopeId = async (
   scopeId: string,
-  alreadyExistOnce: boolean = false
+  alreadyExistOnce = false
 ): Promise<string | boolean> =>
   await new Promise((resolve, reject) => {
     ProgramScope.find({ scopeId })

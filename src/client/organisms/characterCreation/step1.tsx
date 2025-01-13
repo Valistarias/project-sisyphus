@@ -7,8 +7,9 @@ import { useGlobalVars } from '../../providers';
 
 import { Ap, Atitle } from '../../atoms';
 import { Button, NodeTree } from '../../molecules';
-import { type ICuratedCyberFrame, type ICuratedNode, type ICyberFrameBranch } from '../../types';
 import { RichTextElement } from '../richTextElement';
+
+import type { ICuratedCyberFrame, ICuratedNode, ICyberFrameBranch } from '../../types';
 
 import { classTrim, getCyberFrameLevelsByNodes } from '../../utils';
 
@@ -55,7 +56,7 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
         nodes: ICuratedNode[];
       }
     > = {};
-    cyberFrame.branches?.forEach(({ cyberFrameBranch }) => {
+    cyberFrame.branches.forEach(({ cyberFrameBranch }) => {
       tempTree[cyberFrameBranch._id] = {
         branch: cyberFrameBranch,
         nodes: cyberFrameBranch.nodes,

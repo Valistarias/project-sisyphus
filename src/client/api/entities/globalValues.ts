@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type IGlobalValue } from '../../types';
-
 import Entity from './entity';
+
+import type { IGlobalValue } from '../../types';
+
 
 interface IGlobalValuesPayload {
   globalValueId: string;

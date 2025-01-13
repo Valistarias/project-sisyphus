@@ -48,29 +48,23 @@ const AdminNewAmmo: FC = () => {
     setError,
     control,
     formState: { errors },
-  } = useForm<FieldValues>();
+  } = useForm();
 
   // TODO: Internationalization
-  const itemModifierList = useMemo(() => {
-    return itemModifiers.map(({ itemModifier }) => ({
+  const itemModifierList = useMemo(() => itemModifiers.map(({ itemModifier }) => ({
       value: itemModifier._id,
       label: itemModifier.title,
-    }));
-  }, [itemModifiers]);
+    })), [itemModifiers]);
 
-  const rarityList = useMemo(() => {
-    return rarities.map(({ rarity }) => ({
+  const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
       value: rarity._id,
       label: rarity.title,
-    }));
-  }, [rarities]);
+    })), [rarities]);
 
-  const weaponList = useMemo(() => {
-    return weaponTypes.map(({ weaponType }) => ({
+  const weaponList = useMemo(() => weaponTypes.map(({ weaponType }) => ({
       value: weaponType._id,
       label: weaponType.title,
-    }));
-  }, [weaponTypes]);
+    })), [weaponTypes]);
 
   const onSaveAmmo: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, rarity, cost, weaponTypes, itemModifiers, offsetToHit, offsetDamage }) => {
@@ -149,7 +143,7 @@ const AdminNewAmmo: FC = () => {
     <div className="adminNewAmmo">
       <form className="adminNewAmmo__content" onSubmit={handleSubmit(onSaveAmmo)} noValidate>
         <Atitle level={1}>{t('adminNewAmmo.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminNewAmmo__basics">

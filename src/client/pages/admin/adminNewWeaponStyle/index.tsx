@@ -43,14 +43,12 @@ const AdminNewWeaponStyle: FC = () => {
     setError,
     control,
     formState: { errors },
-  } = useForm<FieldValues>();
+  } = useForm();
 
-  const skillList = useMemo(() => {
-    return skills.map(({ skill }) => ({
+  const skillList = useMemo(() => skills.map(({ skill }) => ({
       value: skill._id,
       label: skill.title,
-    }));
-  }, [skills]);
+    })), [skills]);
 
   const onSaveWeaponStyle: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, skill }) => {
@@ -132,7 +130,7 @@ const AdminNewWeaponStyle: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewWeaponStyle.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminNewWeaponStyle__basics">

@@ -1,5 +1,5 @@
-import { type Request, type Response } from 'express';
-import { type HydratedDocument } from 'mongoose';
+import type { Request, Response } from 'express';
+import type { HydratedDocument } from 'mongoose';
 
 import { getUserFromToken, type IVerifyTokenRequest } from '../../middlewares/authJwt';
 import db from '../../models';
@@ -9,14 +9,8 @@ import {
   gemServerError,
   gemUnauthorizedGlobal,
 } from '../../utils/globalErrorMessage';
-import { type HydratedIBackground } from '../background/model';
-import { type HydratedIBody } from '../body';
 import { deleteBodiesRecursive } from '../body/controller';
-import { type ICampaign } from '../campaign/model';
-import { type HydratedINode } from '../node/model';
-import { type IUser } from '../user/model';
 
-import { type LeanICharacter } from './id/model';
 import {
   createNodesByCharacter,
   deleteNodesByCharacter,
@@ -24,7 +18,13 @@ import {
   replaceCyberFrameNodeByCharacter,
 } from './node/controller';
 
-import { type HydratedICharacter } from './index';
+import type { HydratedIBackground } from '../background/model';
+import type { HydratedIBody } from '../body';
+import type { ICampaign } from '../campaign/model';
+import type { HydratedINode } from '../node/model';
+import type { IUser } from '../user/model';
+import type { LeanICharacter } from './id/model';
+import type { HydratedICharacter } from './index';
 
 const { Character } = db;
 
@@ -259,8 +259,8 @@ const findCharacterById = async (
                 char: res as HydratedICharacter,
                 canEdit:
                   String((res as HydratedICharacter).player?._id) === String(user._id) ||
-                  (res.player?._id === undefined &&
-                    String((res as HydratedICharacter).createdBy?._id) === String(user._id)),
+                  (res.player._id === undefined &&
+                    String((res as HydratedICharacter).createdBy._id) === String(user._id)),
               });
             }
           })

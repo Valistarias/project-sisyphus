@@ -16,7 +16,7 @@ interface FormValues {
 
 const AdminTestDiceComp: FC = () => {
   const { t } = useTranslation();
-  const { control, handleSubmit } = useForm<FieldValues>();
+  const { control, handleSubmit } = useForm();
 
   const [formula, setFormula] = useState<string | null>(null);
 

@@ -1,6 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type ICyberFrame, type INode } from '../index';
+import type { ICyberFrame, INode } from '../index';
 
 interface ICyberFrameBranch {
   /** The title of the cyberframe branch */

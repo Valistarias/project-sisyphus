@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import type React from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -7,10 +8,12 @@ import { useApi, useCampaignEventWindow, useSocket, useSystemAlerts } from '../p
 import holoBackground from '../assets/imgs/tvbg2.gif';
 import { Aicon, Ap, Avideo, type typeIcons } from '../atoms';
 import { Button } from '../molecules';
-import { type ICampaignEvent, type ICharacter, type TypeCampaignEvent } from '../types';
+
 
 import Alert from './alert';
 import CampaignEventLine from './campaignEventLine';
+
+import type { ICampaignEvent, ICharacter, TypeCampaignEvent } from '../types';
 
 import { classTrim, createBasicDiceRequest, type DiceRequest } from '../utils';
 
@@ -129,8 +132,7 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
     [changeDice, diceValues]
   );
 
-  const logCampaignEvents = useMemo(() => {
-    return dataPrevCampaignEvents.map(({ _id, character, createdAt, formula, result, type }) => {
+  const logCampaignEvents = useMemo(() => dataPrevCampaignEvents.map(({ _id, character, createdAt, formula, result, type }) => {
       let authorName = '';
       if (character !== null) {
         authorName = `${character.firstName !== undefined ? `${character.firstName} ` : ''}${character.nickName !== undefined ? `"${character.nickName}" ` : ''}${character.lastName ?? ''}`;
@@ -145,8 +147,7 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
           createdAt={new Date(createdAt)}
         />
       );
-    });
-  }, [dataPrevCampaignEvents]);
+    }), [dataPrevCampaignEvents]);
 
   const reloadCampaignEvents = useCallback(
     (campaignId: string) => {
@@ -232,9 +233,7 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
   }, [api, createAlert, getNewId, t, reloadCampaignEvents, campaignId]);
 
   useEffect(() => {
-    if (calledApi.current) {
-      calledApi.current = false;
-    }
+    calledApi.current &&= false;
   }, [campaignId]);
 
   useEffect(() => {
@@ -319,12 +318,12 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
 
     if (!initEvt.current && api !== undefined && socket !== null && campaignId !== undefined) {
       initEvt.current = true;
-      addCampaignEventListener?.('addCampaignEvent', addCampaignEvent);
+      addCampaignEventListener('addCampaignEvent', addCampaignEvent);
     }
 
     return () => {
       if (unMountEvt.current) {
-        removeCampaignEventListener?.('addCampaignEvent', addCampaignEvent);
+        removeCampaignEventListener('addCampaignEvent', addCampaignEvent);
       }
     };
   }, [

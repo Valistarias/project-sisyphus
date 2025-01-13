@@ -11,7 +11,8 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, SmartSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type ICuratedBackground } from '../../../types';
+
+import type { ICuratedBackground } from '../../../types';
 
 import { classTrim, isThereDuplicate } from '../../../utils';
 
@@ -47,7 +48,7 @@ const AdminEditBackground: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -176,7 +177,7 @@ const AdminEditBackground: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(backgroundData),
       [createDefaultData, backgroundData]
@@ -338,7 +339,7 @@ const AdminEditBackground: FC = () => {
         title: t('adminEditBackground.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditBackground.confirmDeletion.text', {
           ns: 'pages',
-          elt: backgroundData?.background.title,
+          elt: backgroundData.background.title,
         }),
         confirmCta: t('adminEditBackground.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
@@ -451,7 +452,7 @@ const AdminEditBackground: FC = () => {
         <Button className="adminEditBackground__return-btn" href="/admin/backgrounds" size="small">
           {t('adminEditBackground.return', { ns: 'pages' })}
         </Button>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminEditBackground__basics">

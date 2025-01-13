@@ -8,9 +8,10 @@ import { useGlobalVars } from '../../providers';
 
 import { Ap, Atitle } from '../../atoms';
 import { Button, Helper, NumberSelect } from '../../molecules';
-import { type ICharacter, type ICuratedStat } from '../../types';
 import { calculateStatMod, getActualBody } from '../../utils/character';
 import { RichTextElement } from '../richTextElement';
+
+import type { ICharacter, ICuratedStat } from '../../types';
 
 import {
   arrSum,
@@ -86,7 +87,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
     [onSubmitStats]
   );
 
-  const { handleSubmit, watch, control } = useForm<FieldValues>({
+  const { handleSubmit, watch, control } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(stats, character),
       [createDefaultData, stats, character]
@@ -144,7 +145,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
     return statBonuses;
   }, [character, cyberFrames]);
 
-  const pointSpent = arrSum(Object.values(watch('stats') as Record<string, number>) ?? []);
+  const pointSpent = arrSum(Object.values(watch('stats')!) ?? []);
   const pointsLeft = baseStatPoints - pointSpent;
 
   const statSelectList = (): ReactNode[] => {

@@ -1,10 +1,9 @@
-import { type Request, type Response } from 'express';
+import type { Request, Response } from 'express';
 
 import jwt, { type GetPublicKeyOrSecret, type Secret } from 'jsonwebtoken';
 import { pathToRegexp } from 'path-to-regexp';
 
 import config from '../config/db.config';
-import { type HydratedIUser } from '../entities';
 import { findUserById } from '../entities/user/controller';
 import {
   gemInvalidField,
@@ -13,6 +12,8 @@ import {
   gemServerError,
   gemUnauthorized,
 } from '../utils/globalErrorMessage';
+
+import type { HydratedIUser } from '../entities';
 
 interface IVerifyTokenRequest extends Request {
   userId: string;

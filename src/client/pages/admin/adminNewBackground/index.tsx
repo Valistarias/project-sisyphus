@@ -100,7 +100,7 @@ const AdminNewBackground: FC = () => {
     unregister,
     control,
     formState: { errors },
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: {
       icon: 'default',
     },
@@ -274,7 +274,7 @@ const AdminNewBackground: FC = () => {
         <Atitle className="adminNewBackground__head" level={1}>
           {t('adminNewBackground.title', { ns: 'pages' })}
         </Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminNewBackground__basics">

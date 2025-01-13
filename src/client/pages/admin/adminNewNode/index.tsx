@@ -11,11 +11,12 @@ import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 import { Aa, Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, NodeIconSelect, SmartSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import {
-  type ICuratedCyberFrame,
-  type ICuratedCyberFrameBranch,
-  type ICuratedSkill,
-  type ICuratedSkillBranch,
+
+import type {
+  ICuratedCyberFrame,
+  ICuratedCyberFrameBranch,
+  ICuratedSkill,
+  ICuratedSkillBranch,
 } from '../../../types';
 
 import { classTrim, isThereDuplicate } from '../../../utils';
@@ -201,7 +202,7 @@ const AdminNewNode: FC = () => {
     unregister,
     control,
     formState: { errors },
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: {
       icon: 'default',
     },
@@ -221,8 +222,7 @@ const AdminNewNode: FC = () => {
     [t]
   );
 
-  const branchSelect = useMemo(() => {
-    return branches.reduce(
+  const branchSelect = useMemo(() => branches.reduce(
       (
         result: Array<{
           value: string;
@@ -244,8 +244,7 @@ const AdminNewNode: FC = () => {
         return result;
       },
       []
-    );
-  }, [branches, t]);
+    ), [branches, t]);
 
   const onAddSkillBonus = useCallback(() => {
     setSkillBonusIds((prev) => {
@@ -586,7 +585,7 @@ const AdminNewNode: FC = () => {
             {skill !== null ? (
               <>
                 {`${t(`terms.skill.name`)}:`}
-                <Aa href={`/admin/skill/${skill?.skill._id}`}>{skill?.skill.title}</Aa>
+                <Aa href={`/admin/skill/${skill.skill._id}`}>{skill.skill.title}</Aa>
               </>
             ) : (
               <>
@@ -598,7 +597,7 @@ const AdminNewNode: FC = () => {
             )}
           </Ap>
         </div>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminNewNode__visual">

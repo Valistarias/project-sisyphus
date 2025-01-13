@@ -1,6 +1,6 @@
 import { model, Schema, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type HydratedIChapter } from '../chapter/model';
+import type { HydratedIChapter } from '../chapter/model';
 
 interface IPage {
   /** The title of the ruleBook */

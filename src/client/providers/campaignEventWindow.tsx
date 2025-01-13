@@ -13,7 +13,8 @@ import { useTranslation } from 'react-i18next';
 
 import { Ap } from '../atoms';
 import { Button, DiceCard } from '../molecules';
-import { type TypeCampaignEvent, type TypeDice } from '../types';
+
+import type { TypeCampaignEvent, TypeDice } from '../types';
 
 import {
   calculateDices,
@@ -109,7 +110,7 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
       return null;
     }
     return diceValues.map(({ id, type, value }) => (
-      <DiceCard key={id} type={type as TypeDice} value={value} size={cardMode} />
+      <DiceCard key={id} type={type} value={value} size={cardMode} />
     ));
   }, [diceValues, cardMode]);
 
@@ -155,12 +156,10 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
   );
 
   const affectDiceValueAtIndex = useCallback((curatedDices: DiceData[], index: number) => {
-    const newCuratedDices = curatedDices.map((curatedDice, indexTab) => {
-      return {
+    const newCuratedDices = curatedDices.map((curatedDice, indexTab) => ({
         ...curatedDice,
         value: indexTab <= tick.current ? curatedDice.def : null,
-      };
-    });
+      }));
     setDiceValues([...newCuratedDices]);
     tick.current += 1;
   }, []);
@@ -305,6 +304,4 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
   );
 };
 
-export const useCampaignEventWindow = (): ICampaignEventWindowContext => {
-  return useContext(CampaignEventWindowContext) as ICampaignEventWindowContext;
-};
+export const useCampaignEventWindow = (): ICampaignEventWindowContext => useContext(CampaignEventWindowContext) as ICampaignEventWindowContext;

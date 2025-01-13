@@ -1,6 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type IProgram } from '../../program/model';
+import type { IProgram } from '../../program/model';
 
 interface IBodyProgram {
   /** When the body was created */

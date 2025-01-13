@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type ICuratedChapter } from '../../types';
-
 import Entity from './entity';
+
+import type { ICuratedChapter } from '../../types';
+
 
 interface IChaptersPayload {
   ruleBookId: string;

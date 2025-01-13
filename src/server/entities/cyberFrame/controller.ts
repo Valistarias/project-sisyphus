@@ -1,5 +1,5 @@
-import { type Request, type Response } from 'express';
-import { type FlattenMaps, type HydratedDocument, type ObjectId } from 'mongoose';
+import type { Request, Response } from 'express';
+import type { FlattenMaps, HydratedDocument, ObjectId } from 'mongoose';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
@@ -8,9 +8,9 @@ import {
   deleteCyberFrameBranchesByCyberFrameId,
   type CuratedIntICyberFrameBranch,
 } from '../cyberFrameBranch/controller';
-import { type HydratedICyberFrameBranch, type IRuleBook } from '../index';
 
-import { type HydratedICyberFrame, type LeanICyberFrame } from './model';
+import type { HydratedICyberFrameBranch, IRuleBook } from '../index';
+import type { HydratedICyberFrame, LeanICyberFrame } from './model';
 
 import { curateI18n } from '../../utils';
 

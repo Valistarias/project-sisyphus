@@ -1,4 +1,5 @@
-import React, { type FC, type ReactNode, type RefObject } from 'react';
+import type React from 'react';
+import type { FC, ReactNode, RefObject } from 'react';
 
 import { Quark, type IQuarkProps } from '../quark';
 

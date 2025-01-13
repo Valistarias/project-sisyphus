@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type ICuratedSkillBranch } from '../../types';
-
 import Entity from './entity';
+
+import type { ICuratedSkillBranch } from '../../types';
+
 
 interface ISkillBranchesPayload {
   skillId: string;

@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type ICuratedBasicNPC, type ICuratedNPC } from '../../types';
-
 import Entity from './entity';
+
+import type { ICuratedBasicNPC, ICuratedNPC } from '../../types';
+
 
 interface INPCPayload {
   nPCId: string;

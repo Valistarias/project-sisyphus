@@ -1,6 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type ICharParam } from '../index';
+import type { ICharParam } from '../index';
 
 interface ICharParamBonus {
   /** The associated charParam */

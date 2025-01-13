@@ -11,7 +11,8 @@ import { useApi, useSystemAlerts } from '../../../providers';
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type ICuratedCyberFrame } from '../../../types';
+
+import type { ICuratedCyberFrame } from '../../../types';
 
 import './adminNewCyberFrameBranch.scss';
 
@@ -47,7 +48,7 @@ const AdminNewCyberFrameBranch: FC = () => {
     setError,
     control,
     formState: { errors },
-  } = useForm<FieldValues>();
+  } = useForm();
 
   const getCyberFrame = useCallback(() => {
     if (api !== undefined && params.get('cyberFrameId') !== undefined) {
@@ -165,7 +166,7 @@ const AdminNewCyberFrameBranch: FC = () => {
             {`${t(`terms.cyberFrame.name`)}: ${cyberFrame?.cyberFrame.title}`}
           </Ap>
         </div>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminNewCyberFrameBranch__basics">

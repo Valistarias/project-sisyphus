@@ -1,10 +1,11 @@
-import { type Request, type Response } from 'express';
+import type { Request, Response } from 'express';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
-import { type ISkill } from '../skill/model';
 
-import { type HydratedIWeaponStyle } from './model';
+import type { HydratedIWeaponStyle } from './model';
+import type { ISkill } from '../skill/model';
+
 
 import { curateI18n } from '../../utils';
 

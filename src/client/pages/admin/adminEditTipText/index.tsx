@@ -11,7 +11,8 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type ICuratedTipText } from '../../../types';
+
+import type { ICuratedTipText } from '../../../types';
 
 import { classTrim } from '../../../utils';
 
@@ -28,7 +29,7 @@ const AdminEditTipText: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { reloadTipTexts } = useGlobalVars();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -74,7 +75,7 @@ const AdminEditTipText: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(() => createDefaultData(tipTextData), [createDefaultData, tipTextData]),
   });
 
@@ -298,7 +299,7 @@ const AdminEditTipText: FC = () => {
           {t('adminEditTipText.return', { ns: 'pages' })}
         </Button>
         <Atitle level={2}>{t('adminEditTipText.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror className="adminEditTipText__error">{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminEditTipText__basics">

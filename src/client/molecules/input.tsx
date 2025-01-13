@@ -3,7 +3,8 @@ import React, { useState, type FC } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { Aerror, Ainput, Alabel, Atextarea } from '../atoms';
-import { type IReactHookFormInputs } from '../types/form';
+
+import type { IReactHookFormInputs } from '../types/form';
 
 import { classTrim } from '../utils';
 

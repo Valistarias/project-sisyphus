@@ -97,6 +97,4 @@ export const SystemAlertsProvider: FC<SystemAlertsProviderProps> = ({ children }
   );
 };
 
-export const useSystemAlerts = (): ISystemAlertsContext => {
-  return useContext(SystemAlertsContext) as ISystemAlertsContext;
-};
+export const useSystemAlerts = (): ISystemAlertsContext => useContext(SystemAlertsContext)!;

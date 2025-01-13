@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type ICuratedItem } from '../../types';
-
 import Entity from './entity';
+
+import type { ICuratedItem } from '../../types';
+
 
 interface IItemPayload {
   itemId: string;

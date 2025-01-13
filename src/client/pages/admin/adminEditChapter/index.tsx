@@ -34,7 +34,7 @@ const AdminEditChapters: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { id } = useParams();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -82,7 +82,7 @@ const AdminEditChapters: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(() => createDefaultData(chapterData), [createDefaultData, chapterData]),
   });
 
@@ -362,7 +362,7 @@ const AdminEditChapters: FC = () => {
       <div className="adminEditChapter__ariane">
         <Ap className="adminEditChapter__ariane__elt">
           {`${t(`terms.ruleBook.ruleBook`)}: `}
-          <Aa href={`/admin/rulebook/${ruleBook?._id}`}>{ruleBook?.title as string}</Aa>
+          <Aa href={`/admin/rulebook/${ruleBook?._id}`}>{ruleBook?.title!}</Aa>
         </Ap>
       </div>
       {autoSaved !== null ? <Ap className="adminEditChapter__autosave">{autoSaved}</Ap> : null}
@@ -372,7 +372,7 @@ const AdminEditChapters: FC = () => {
           noValidate
           className="adminEditChapter__content__left"
         >
-          {errors.root?.serverError?.message !== undefined ? (
+          {errors.root?.serverError.message !== undefined ? (
             <Aerror>{errors.root.serverError.message}</Aerror>
           ) : null}
           <div className="adminEditChapter__basics">

@@ -40,16 +40,14 @@ const AdminNewCyberFrame: FC = () => {
     setError,
     control,
     formState: { errors },
-  } = useForm<FieldValues>();
+  } = useForm();
 
-  const ruleBookSelect = useMemo(() => {
-    return ruleBooks.map(({ ruleBook }) => ({
+  const ruleBookSelect = useMemo(() => ruleBooks.map(({ ruleBook }) => ({
       value: ruleBook._id,
       // TODO : Handle Internationalization
       label: ruleBook.title,
       details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 }),
-    }));
-  }, [t, ruleBooks]);
+    })), [t, ruleBooks]);
 
   const onSaveCyberFrame: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, ruleBook }) => {
@@ -133,7 +131,7 @@ const AdminNewCyberFrame: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewCyberFrame.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminNewCyberFrame__basics">

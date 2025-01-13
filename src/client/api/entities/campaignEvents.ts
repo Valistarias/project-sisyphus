@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type ICampaignEvent } from '../../types';
-
 import Entity from './entity';
+
+import type { ICampaignEvent } from '../../types';
+
 
 interface ICampaignEventsPayload {
   campaignId: string;

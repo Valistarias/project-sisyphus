@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type ICuratedItemModifier } from '../../types';
-
 import Entity from './entity';
+
+import type { ICuratedItemModifier } from '../../types';
+
 
 interface IItemModifierPayload {
   itemModifierId: string;

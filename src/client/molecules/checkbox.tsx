@@ -3,7 +3,8 @@ import React, { type FC, type ReactNode } from 'react';
 import { Controller } from 'react-hook-form';
 
 import { Aerror, Aicon, Alabel } from '../atoms';
-import { type IReactHookFormInputs } from '../types/form';
+
+import type { IReactHookFormInputs } from '../types/form';
 
 import { classTrim } from '../utils';
 

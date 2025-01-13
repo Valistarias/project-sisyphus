@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type ICuratedCharParam } from '../../types';
-
 import Entity from './entity';
+
+import type { ICuratedCharParam } from '../../types';
+
 
 interface ICharParamPayload {
   charParamId: string;

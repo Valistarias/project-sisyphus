@@ -1,6 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type IRole } from '../index';
+import type { IRole } from '../index';
 
 interface IUser {
   /** The username of the user */

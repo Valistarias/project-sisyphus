@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useMemo, type FC } from 'react';
+import type React from 'react';
+import { useCallback, useEffect, useMemo, type FC } from 'react';
 
 import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -95,7 +96,7 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
     handleSubmit: handleSubmitHp,
     control: controlHp,
     reset: resetHp,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(() => ({ hp: hpValues.isLoading ? 0 : hpValues.hp }), [hpValues]),
   });
 
@@ -103,7 +104,7 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
     handleSubmit: handleSubmitKarma,
     control: controlKarma,
     reset: resetKarma,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(() => ({ karma: charKarma }), [charKarma]),
   });
 
@@ -163,7 +164,7 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
       }
       api.characters
         .update({
-          id: character?._id,
+          id: character._id,
           karma,
         })
         .then(() => {

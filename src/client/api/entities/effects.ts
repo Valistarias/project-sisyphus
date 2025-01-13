@@ -1,8 +1,9 @@
 import axios from 'axios';
 
-import { type ICuratedEffect } from '../../types';
-
 import Entity from './entity';
+
+import type { ICuratedEffect } from '../../types';
+
 
 interface IEffectPayload {
   effectId: string;

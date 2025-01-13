@@ -60,14 +60,12 @@ const AdminNewWeaponType: FC = () => {
     setError,
     control,
     formState: { errors },
-  } = useForm<FieldValues>();
+  } = useForm();
 
-  const weaponStyleList = useMemo(() => {
-    return weaponStyles.map(({ weaponStyle }) => ({
+  const weaponStyleList = useMemo(() => weaponStyles.map(({ weaponStyle }) => ({
       value: weaponStyle._id,
       label: weaponStyle.title,
-    }));
-  }, [weaponStyles]);
+    })), [weaponStyles]);
 
   const itemTypeList = useMemo(() => {
     const curatedList: Array<{
@@ -173,7 +171,7 @@ const AdminNewWeaponType: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewWeaponType.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminNewWeaponType__visual">

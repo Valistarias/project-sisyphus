@@ -11,8 +11,9 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input, SmartSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type ICuratedBag } from '../../../types';
 import { possibleStarterKitValues } from '../../../types/items';
+
+import type { ICuratedBag } from '../../../types';
 
 import { classTrim } from '../../../utils';
 
@@ -33,7 +34,7 @@ const AdminEditBag: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -84,24 +85,20 @@ const AdminEditBag: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(() => createDefaultData(bagData), [createDefaultData, bagData]),
   });
 
   // TODO: Internationalization
-  const itemModifierList = useMemo(() => {
-    return itemModifiers.map(({ itemModifier }) => ({
+  const itemModifierList = useMemo(() => itemModifiers.map(({ itemModifier }) => ({
       value: itemModifier._id,
       label: itemModifier.title,
-    }));
-  }, [itemModifiers]);
+    })), [itemModifiers]);
 
-  const rarityList = useMemo(() => {
-    return rarities.map(({ rarity }) => ({
+  const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
       value: rarity._id,
       label: rarity.title,
-    }));
-  }, [rarities]);
+    })), [rarities]);
 
   const itemTypeList = useMemo(
     () =>
@@ -197,7 +194,7 @@ const AdminEditBag: FC = () => {
         title: t('adminEditBag.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditBag.confirmDeletion.text', {
           ns: 'pages',
-          elt: bagData?.bag.title,
+          elt: bagData.bag.title,
         }),
         confirmCta: t('adminEditBag.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
@@ -306,7 +303,7 @@ const AdminEditBag: FC = () => {
         <Button className="adminEditBag__return-btn" href="/admin/bags" size="small">
           {t('adminEditBag.return', { ns: 'pages' })}
         </Button>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminEditBag__basics">

@@ -1,4 +1,5 @@
-import React, { type FC } from 'react';
+import type React from 'react';
+import type { FC } from 'react';
 
 import { useNavigate, type NavigateFunction } from 'react-router-dom';
 

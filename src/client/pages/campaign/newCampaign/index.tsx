@@ -28,7 +28,7 @@ const NewCampaign: FC = () => {
     handleSubmit,
     setError,
     formState: { errors },
-  } = useForm<FieldValues>();
+  } = useForm();
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
     ({ name }) => {
@@ -67,7 +67,7 @@ const NewCampaign: FC = () => {
     <div className="newcampaign">
       <Atitle level={1}>{t('newCampaign.title', { ns: 'pages' })}</Atitle>
       <form className="newcampaign__form" onSubmit={handleSubmit(onSubmit)} noValidate>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <Input

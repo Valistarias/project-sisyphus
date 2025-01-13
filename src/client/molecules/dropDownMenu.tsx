@@ -1,4 +1,5 @@
-import React, { useMemo, type FC } from 'react';
+import type React from 'react';
+import { useMemo, type FC } from 'react';
 
 import { Ali, Atitle, Aul } from '../atoms';
 

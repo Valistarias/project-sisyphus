@@ -1,4 +1,4 @@
-import { type Request, type Response } from 'express';
+import type { Request, Response } from 'express';
 
 import db from '../../models';
 import {
@@ -8,7 +8,7 @@ import {
   gemServerError,
 } from '../../utils/globalErrorMessage';
 
-import { type HydratedITipText } from './model';
+import type { HydratedITipText } from './model';
 
 import { curateI18n } from '../../utils';
 
@@ -46,7 +46,7 @@ const findTipTextById = async (id: string): Promise<HydratedITipText> =>
 
 const checkDuplicateTipTextTipId = async (
   tipId: string,
-  alreadyExistOnce: boolean = false
+  alreadyExistOnce = false
 ): Promise<string | boolean> =>
   await new Promise((resolve, reject) => {
     TipText.find({ tipId })

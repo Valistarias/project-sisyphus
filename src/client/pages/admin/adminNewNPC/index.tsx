@@ -87,7 +87,7 @@ const AdminNewNPC: FC = () => {
     unregister,
     control,
     formState: { errors },
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: {
       icon: 'default',
     },
@@ -221,7 +221,7 @@ const AdminNewNPC: FC = () => {
         <Atitle className="adminNewNPC__head" level={1}>
           {t('adminNewNPC.title', { ns: 'pages' })}
         </Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminNewNPC__basics">

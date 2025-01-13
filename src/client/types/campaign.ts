@@ -1,4 +1,4 @@
-import { type IUser } from './global';
+import type { IUser } from './global';
 
 // Campaign ------------------------------------
 export interface ICampaign {

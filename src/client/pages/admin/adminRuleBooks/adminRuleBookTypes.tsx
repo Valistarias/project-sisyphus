@@ -9,7 +9,8 @@ import { useApi, useSystemAlerts } from '../../../providers';
 import { Aerror, Ali, Ap, Atitle, Aul } from '../../../atoms';
 import { Button, Input } from '../../../molecules';
 import { Alert } from '../../../organisms';
-import { type IRuleBookType } from '../../../types';
+
+import type { IRuleBookType } from '../../../types';
 
 import './adminRuleBookTypes.scss';
 
@@ -34,7 +35,7 @@ const AdminRuleBookTypes: FC = () => {
     reset,
     setValue,
     formState: { errors },
-  } = useForm<FieldValues>();
+  } = useForm();
 
   const loadRuleBookTypes = useCallback(() => {
     if (api !== undefined) {
@@ -255,7 +256,7 @@ const AdminRuleBookTypes: FC = () => {
       <div className="adminRuleBooktypes__create">
         {createBookTypeMode || updateBookTypeMode !== '' ? (
           <form className="signup__form" onSubmit={handleSubmit(onSubmit)}>
-            {errors.root?.serverError?.message !== undefined ? (
+            {errors.root?.serverError.message !== undefined ? (
               <Aerror>{errors.root.serverError.message}</Aerror>
             ) : null}
             <Input

@@ -1,6 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type IImplant } from '../../implant/model';
+import type { IImplant } from '../../implant/model';
 
 interface IBodyImplant {
   /** When the body was created */

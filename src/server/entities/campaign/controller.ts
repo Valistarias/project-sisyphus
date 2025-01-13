@@ -1,15 +1,16 @@
-import { type Request, type Response } from 'express';
-import { type HydratedDocument, type ObjectId } from 'mongoose';
+import type { Request, Response } from 'express';
+import type { HydratedDocument, ObjectId } from 'mongoose';
 
 import { v4 as uuidv4 } from 'uuid';
 
 import { getUserFromToken, type IVerifyTokenRequest } from '../../middlewares/authJwt';
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
-import { type ICharacter } from '../character';
-import { type IUser } from '../user/model';
 
-import { type HydratedICompleteCampaign, type HydratedISimpleCampaign } from './model';
+import type { ICharacter } from '../character';
+import type { HydratedICompleteCampaign, HydratedISimpleCampaign } from './model';
+import type { IUser } from '../user/model';
+
 
 const { Campaign } = db;
 

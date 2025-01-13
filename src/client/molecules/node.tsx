@@ -7,11 +7,12 @@ import { useGlobalVars } from '../providers';
 import { Abutton, Ali, AnodeIcon, Ap, Atitle, Aul } from '../atoms';
 import { RichTextElement } from '../organisms';
 import { Quark } from '../quark';
-import {
-  type ICuratedCharParam,
-  type ICuratedNode,
-  type ICuratedSkill,
-  type ICuratedStat,
+
+import type {
+  ICuratedCharParam,
+  ICuratedNode,
+  ICuratedSkill,
+  ICuratedStat,
 } from '../types';
 
 import { classTrim, curateStringDamage, curateStringFormula } from '../utils';

@@ -7,7 +7,8 @@ import { useApi, useSystemAlerts } from '../../../providers';
 import { Ali, Ap, Atitle, Aul } from '../../../atoms';
 import { Button } from '../../../molecules';
 import { Alert } from '../../../organisms';
-import { type ICuratedImplant } from '../../../types';
+
+import type { ICuratedImplant } from '../../../types';
 
 import { classTrim } from '../../../utils';
 

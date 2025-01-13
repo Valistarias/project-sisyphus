@@ -1,4 +1,4 @@
-import { type Request, type Response } from 'express';
+import type { Request, Response } from 'express';
 
 import db from '../../models';
 import {
@@ -10,7 +10,7 @@ import {
 import { checkDuplicateSkillFormulaId } from '../skill/controller';
 import { checkDuplicateStatFormulaId } from '../stat/controller';
 
-import { type HydratedICharParam } from './model';
+import type { HydratedICharParam } from './model';
 
 import { curateI18n } from '../../utils';
 
@@ -48,7 +48,7 @@ const findCharParamById = async (id: string): Promise<HydratedICharParam> =>
 
 const checkDuplicateCharParamFormulaId = async (
   formulaId: string,
-  alreadyExistOnce: boolean = false
+  alreadyExistOnce = false
 ): Promise<string | boolean> =>
   await new Promise((resolve, reject) => {
     CharParam.find({ formulaId })

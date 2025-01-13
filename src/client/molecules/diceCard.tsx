@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import holoBackground from '../assets/imgs/tvbg2.gif';
 import { Aicon, Ap, type typeIcons } from '../atoms';
-import { type TypeDice } from '../types';
+
+import type { TypeDice } from '../types';
 
 import { classTrim } from '../utils';
 
@@ -97,16 +98,14 @@ const DiceCard: FC<IDiceCard> = ({ type, value, size = 'medium', skip = false })
     }
   }, [skip]);
 
-  useEffect(() => {
-    return () => {
+  useEffect(() => () => {
       if (intervalTick.current !== null) {
         clearTimeout(intervalTick.current);
         intervalTick.current = null;
       }
       tick.current = 0;
       storedThreshold.current = 0;
-    };
-  }, []);
+    }, []);
 
   return (
     <div

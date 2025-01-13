@@ -1,4 +1,5 @@
-import React, { useRef, useState, type FC, type ReactNode } from 'react';
+import type React from 'react';
+import { useRef, useState, type FC, type ReactNode } from 'react';
 
 import { useTranslation } from 'react-i18next';
 

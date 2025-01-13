@@ -1,6 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import { type HydratedISkillBranch, type IStat } from '../index';
+import type { HydratedISkillBranch, IStat } from '../index';
 
 interface ISkill {
   /** The title of the skill */

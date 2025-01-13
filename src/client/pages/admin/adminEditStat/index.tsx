@@ -11,7 +11,8 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type ICuratedStat } from '../../../types';
+
+import type { ICuratedStat } from '../../../types';
 
 import './adminEditStat.scss';
 
@@ -28,7 +29,7 @@ const AdminEditStat: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { reloadStats } = useGlobalVars();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -74,7 +75,7 @@ const AdminEditStat: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(() => createDefaultData(statData), [createDefaultData, statData]),
   });
 
@@ -291,7 +292,7 @@ const AdminEditStat: FC = () => {
             {t('adminEditStat.delete', { ns: 'pages' })}
           </Button>
         </div>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror className="adminEditStat__error">{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminEditStat__basics">

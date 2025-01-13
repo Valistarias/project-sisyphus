@@ -44,14 +44,12 @@ const AdminNewSkill: FC = () => {
     setError,
     control,
     formState: { errors },
-  } = useForm<FieldValues>();
+  } = useForm();
 
-  const statList = useMemo(() => {
-    return stats.map(({ stat }) => ({
+  const statList = useMemo(() => stats.map(({ stat }) => ({
       value: stat._id,
       label: stat.title,
-    }));
-  }, [stats]);
+    })), [stats]);
 
   const onSaveSkill: SubmitHandler<FormValues> = useCallback(
     ({ name, nameFr, stat, formulaId }) => {
@@ -129,7 +127,7 @@ const AdminNewSkill: FC = () => {
     <div className="adminNewSkill">
       <form className="adminNewSkill__content" onSubmit={handleSubmit(onSaveSkill)} noValidate>
         <Atitle level={1}>{t('adminNewSkill.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror>{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminNewSkill__basics">

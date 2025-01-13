@@ -11,7 +11,8 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type ICuratedBodyPart } from '../../../types';
+
+import type { ICuratedBodyPart } from '../../../types';
 
 import { classTrim } from '../../../utils';
 
@@ -29,7 +30,7 @@ const AdminEditBodyPart: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { reloadBodyParts } = useGlobalVars();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -76,7 +77,7 @@ const AdminEditBodyPart: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(bodyPartData),
       [createDefaultData, bodyPartData]
@@ -309,7 +310,7 @@ const AdminEditBodyPart: FC = () => {
           {t('adminEditBodyPart.return', { ns: 'pages' })}
         </Button>
         <Atitle level={2}>{t('adminEditBodyPart.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror className="adminEditBodyPart__error">{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminEditBodyPart__basics">

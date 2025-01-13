@@ -11,7 +11,8 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
-import { type ICuratedCharParam } from '../../../types';
+
+import type { ICuratedCharParam } from '../../../types';
 
 import './adminEditCharParam.scss';
 
@@ -28,7 +29,7 @@ const AdminEditCharParam: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { reloadCharParams } = useGlobalVars();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -74,7 +75,7 @@ const AdminEditCharParam: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(charParamData),
       [createDefaultData, charParamData]
@@ -301,7 +302,7 @@ const AdminEditCharParam: FC = () => {
         <Button className="adminEditCharParam__return-btn" href="/admin/charparams" size="small">
           {t('adminEditCharParam.return', { ns: 'pages' })}
         </Button>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror className="adminEditCharParam__error">{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminEditCharParam__basics">

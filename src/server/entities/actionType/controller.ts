@@ -1,5 +1,5 @@
-import { type Request, type Response } from 'express';
-import { type HydratedDocument } from 'mongoose';
+import type { Request, Response } from 'express';
+import type { HydratedDocument } from 'mongoose';
 
 import db from '../../models';
 import {
@@ -9,7 +9,7 @@ import {
   gemServerError,
 } from '../../utils/globalErrorMessage';
 
-import { type IActionType } from './model';
+import type { IActionType } from './model';
 
 const { ActionType } = db;
 

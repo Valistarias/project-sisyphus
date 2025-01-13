@@ -28,7 +28,7 @@ const AdminEditPages: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { id } = useParams();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -72,7 +72,7 @@ const AdminEditPages: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(() => createDefaultData(pageData), [createDefaultData, pageData]),
   });
 
@@ -277,11 +277,11 @@ const AdminEditPages: FC = () => {
       <div className="adminEditPage__ariane">
         <Ap className="adminEditPage__ariane__elt">
           {`${t(`terms.ruleBook.ruleBook`)}: `}
-          <Aa href={`/admin/rulebook/${ruleBook?._id}`}>{ruleBook?.title as string}</Aa>
+          <Aa href={`/admin/rulebook/${ruleBook?._id}`}>{ruleBook?.title!}</Aa>
         </Ap>
         <Ap className="adminEditPage__ariane__elt">
           {`${t(`terms.ruleBook.chapter`)}: `}
-          <Aa href={`/admin/chapter/${chapter?._id}`}>{chapter?.title as string}</Aa>
+          <Aa href={`/admin/chapter/${chapter?._id}`}>{chapter?.title!}</Aa>
         </Ap>
       </div>
       {autoSaved !== null ? <Ap className="adminEditPage__autosave">{autoSaved}</Ap> : null}
@@ -291,7 +291,7 @@ const AdminEditPages: FC = () => {
           noValidate
           className="adminEditPage__content__left"
         >
-          {errors.root?.serverError?.message !== undefined ? (
+          {errors.root?.serverError.message !== undefined ? (
             <Aerror>{errors.root.serverError.message}</Aerror>
           ) : null}
           <div className="adminEditPage__basics">

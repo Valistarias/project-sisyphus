@@ -1,12 +1,15 @@
-import React, { useMemo, type FC } from 'react';
+import type React from 'react';
+import { useMemo, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { Ap } from '../atoms';
 import { Quark, type IQuarkProps } from '../quark';
-import { type ICuratedNode, type ICyberFrameBranch, type ISkillBranch } from '../types';
 
 import { Button, Node } from './index';
+
+import type { ICuratedNode, ICyberFrameBranch, ISkillBranch } from '../types';
+
 
 import { classTrim, romanize } from '../utils';
 
@@ -43,12 +46,10 @@ const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {}, isAdmin = false
   const rankLinesSpec = useMemo(() => {
     const lines: React.JSX.Element[] = [];
     for (let i = ranks; i >= specBeginRank; i--) {
-      const relatedNodes = specializationBranches.map(({ branch, nodes }) => {
-        return {
+      const relatedNodes = specializationBranches.map(({ branch, nodes }) => ({
           branch,
           nodes: nodes.filter(({ node }) => node.rank === i),
-        };
-      });
+        }));
       const roman = romanize(i);
       lines.push(
         <div

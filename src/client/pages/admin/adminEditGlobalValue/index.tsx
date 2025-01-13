@@ -10,7 +10,8 @@ import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../..
 import { Aerror, Ap, Atitle } from '../../../atoms';
 import { Button, Input } from '../../../molecules';
 import { Alert } from '../../../organisms';
-import { type IGlobalValue } from '../../../types';
+
+import type { IGlobalValue } from '../../../types';
 
 import './adminEditGlobalValue.scss';
 
@@ -24,7 +25,7 @@ const AdminEditGlobalValue: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { reloadGlobalValues } = useGlobalVars();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage?.() ?? {
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
     setConfirmContent: () => {},
     ConfMessageEvent: {},
   };
@@ -51,7 +52,7 @@ const AdminEditGlobalValue: FC = () => {
     control,
     formState: { errors },
     reset,
-  } = useForm<FieldValues>({
+  } = useForm({
     defaultValues: useMemo(
       () => createDefaultData(globalValueData),
       [createDefaultData, globalValueData]
@@ -221,7 +222,7 @@ const AdminEditGlobalValue: FC = () => {
           {t('adminEditGlobalValue.return', { ns: 'pages' })}
         </Button>
         <Atitle level={2}>{t('adminEditGlobalValue.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError?.message !== undefined ? (
+        {errors.root?.serverError.message !== undefined ? (
           <Aerror className="adminEditGlobalValue__error">{errors.root.serverError.message}</Aerror>
         ) : null}
         <div className="adminEditGlobalValue__basics">

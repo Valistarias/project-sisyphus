@@ -7,15 +7,16 @@ import { useGlobalVars } from '../providers';
 import { Ali, Ap, Atitle, Aul } from '../atoms';
 import { PropDisplay } from '../molecules';
 import { Quark, type IQuarkProps } from '../quark';
-import {
-  type ICuratedItemModifier,
-  type ICuratedRarity,
-  type ICuratedWeapon,
-  type ICuratedWeaponScope,
-  type ICuratedWeaponType,
+
+import type {
+  ICuratedItemModifier,
+  ICuratedRarity,
+  ICuratedWeapon,
+  ICuratedWeaponScope,
+  ICuratedWeaponType,
 } from '../types';
-import { type ICuratedDamageType, type IDamage, type IWeapon } from '../types/items';
-import { type TypeNodeIcons } from '../types/rules';
+import type { ICuratedDamageType, IDamage, IWeapon } from '../types/items';
+import type { TypeNodeIcons } from '../types/rules';
 
 import { classTrim } from '../utils';
 
@@ -74,7 +75,7 @@ const WeaponDisplay: FC<IWeaponDisplay> = ({ weapon, mode = 'basic' }) => {
               (itemModifier) => itemModifier.itemModifier._id === itemModifierId
             ) ?? itemModifiers[0]
         ),
-        damages: weaponObj.damages?.map((weaponDamage) => ({
+        damages: weaponObj.damages.map((weaponDamage) => ({
           ...weaponDamage,
           damageType: damageTypes.find(
             (damageType) => damageType.damageType._id === weaponDamage.damageType
@@ -119,7 +120,7 @@ const WeaponDisplay: FC<IWeaponDisplay> = ({ weapon, mode = 'basic' }) => {
         className="weapon-display__block"
         rarity={rarity?.rarity.title ?? ''}
         rarityLevel={rarity?.rarity.position ?? 0}
-        icon={type?.weaponType.icon as TypeNodeIcons}
+        icon={type?.weaponType.icon}
         title={weapon.title}
         subTitle={scope?.weaponScope.title}
         type={type?.weaponType.title ?? ''}
