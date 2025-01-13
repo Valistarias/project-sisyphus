@@ -18,6 +18,7 @@ import type { ICuratedItem } from '../../../types';
 import { classTrim, isThereDuplicate } from '../../../utils';
 
 import './adminEditItem.scss';
+import type { ErrorResponseType } from '../../../types/global';
 
 interface FormValues {
   name: string
@@ -85,10 +86,7 @@ const AdminEditItem: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
-    setConfirmContent: () => {},
-    ConfMessageEvent: {}
-  };
+  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage();
   const { skills, stats, charParams, actionTypes, actionDurations, rarities, itemModifiers }
     = useGlobalVars();
   const { createAlert, getNewId } = useSystemAlerts();
@@ -581,10 +579,10 @@ const AdminEditItem: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || itemData === null) {
+    if (api === undefined || itemData === null || confMessageEvt === null) {
       return;
     }
-    setConfirmContent(
+    confMessageEvt.setConfirmContent(
       {
         title: t('adminEditItem.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditItem.confirmDeletion.text', {
@@ -611,7 +609,7 @@ const AdminEditItem: FC = () => {
                 void navigate('/admin/items');
               })
               .catch(({ response }) => {
-                const { data } = response;
+                const { data }: { data: ErrorResponseType } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
@@ -629,23 +627,12 @@ const AdminEditItem: FC = () => {
                 }
               });
           }
-          ConfMessageEvent.removeEventListener(evtId, confirmDelete);
+          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
         };
-        ConfMessageEvent.addEventListener(evtId, confirmDelete);
+        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [
-    api,
-    itemData,
-    setConfirmContent,
-    t,
-    ConfMessageEvent,
-    id,
-    getNewId,
-    createAlert,
-    navigate,
-    setError
-  ]);
+  }, [api, itemData, t, id, getNewId, createAlert, navigate, setError]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
@@ -686,7 +673,7 @@ const AdminEditItem: FC = () => {
         ${displayInt ? 'adminEditItem--int-visible' : ''}
       `)}
     >
-      <form className="adminEditItem__content" onSubmit={handleSubmit(onSaveItem)} noValidate>
+      <form className="adminEditItem__content" onSubmit={() => handleSubmit(onSaveItem)} noValidate>
         <div className="adminEditItem__head">
           <Atitle className="adminEditItem__head" level={1}>
             {t('adminEditItem.title', { ns: 'pages' })}

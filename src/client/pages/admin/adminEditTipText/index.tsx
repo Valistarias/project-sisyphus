@@ -29,10 +29,7 @@ const AdminEditTipText: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { reloadTipTexts } = useGlobalVars();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
-    setConfirmContent: () => {},
-    ConfMessageEvent: {}
-  };
+  const confMessageEvt = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -166,10 +163,10 @@ const AdminEditTipText: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined) {
+    if (api === undefined || confMessageEvt === null) {
       return;
     }
-    setConfirmContent(
+    confMessageEvt.setConfirmContent(
       {
         title: t('adminEditTipText.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditTipText.confirmDeletion.text', {
@@ -215,24 +212,12 @@ const AdminEditTipText: FC = () => {
                 }
               });
           }
-          ConfMessageEvent.removeEventListener(evtId, confirmDelete);
+          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
         };
-        ConfMessageEvent.addEventListener(evtId, confirmDelete);
+        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [
-    api,
-    setConfirmContent,
-    t,
-    tipTextData?.tipText.title,
-    ConfMessageEvent,
-    id,
-    getNewId,
-    createAlert,
-    reloadTipTexts,
-    navigate,
-    setError
-  ]);
+  }, [api, confMessageEvt, t, tipTextData?.tipText.title, id, getNewId, createAlert, reloadTipTexts, navigate, setError]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {

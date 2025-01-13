@@ -84,7 +84,7 @@ const Signup: FC = () => {
     <div className="signup">
       <div className="signup__main">
         <Atitle level={1}>{t('signup.title', { ns: 'pages' })}</Atitle>
-        <form className="signup__main__form" onSubmit={handleSubmit(onSubmit)} noValidate>
+        <form className="signup__main__form" onSubmit={() => handleSubmit(onSubmit)} noValidate>
           {errors.root?.serverError.message !== undefined
             ? (
                 <Aerror>{errors.root.serverError.message}</Aerror>

@@ -102,10 +102,7 @@ const AdminEditNode: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
-    setConfirmContent: () => {},
-    ConfMessageEvent: {}
-  };
+  const confMessageEvt = useConfirmMessage();
   const {
     skills,
     stats,
@@ -638,10 +635,10 @@ const AdminEditNode: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || nodeData === null) {
+    if (api === undefined || nodeData === null || confMessageEvt === null) {
       return;
     }
-    setConfirmContent(
+    confMessageEvt.setConfirmContent(
       {
         title: t('adminEditNode.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditNode.confirmDeletion.text', {
@@ -697,23 +694,12 @@ const AdminEditNode: FC = () => {
                 }
               });
           }
-          ConfMessageEvent.removeEventListener(evtId, confirmDelete);
+          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
         };
-        ConfMessageEvent.addEventListener(evtId, confirmDelete);
+        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [
-    api,
-    nodeData,
-    setConfirmContent,
-    t,
-    ConfMessageEvent,
-    id,
-    getNewId,
-    createAlert,
-    navigate,
-    setError
-  ]);
+  }, [api, nodeData, confMessageEvt, t, id, getNewId, createAlert, navigate, setError]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current && skills.length !== 0) {

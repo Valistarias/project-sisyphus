@@ -28,10 +28,7 @@ const AdminEditArmorType: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { reloadArmorTypes } = useGlobalVars();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
-    setConfirmContent: () => {},
-    ConfMessageEvent: {}
-  };
+  const confMessageEvt = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -165,10 +162,10 @@ const AdminEditArmorType: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined) {
+    if (api === undefined || confMessageEvt === null) {
       return;
     }
-    setConfirmContent(
+    confMessageEvt.setConfirmContent(
       {
         title: t('adminEditArmorType.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditArmorType.confirmDeletion.text', {
@@ -214,24 +211,12 @@ const AdminEditArmorType: FC = () => {
                 }
               });
           }
-          ConfMessageEvent.removeEventListener(evtId, confirmDelete);
+          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
         };
-        ConfMessageEvent.addEventListener(evtId, confirmDelete);
+        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [
-    api,
-    setConfirmContent,
-    t,
-    armorTypeData?.armorType.title,
-    ConfMessageEvent,
-    id,
-    getNewId,
-    createAlert,
-    reloadArmorTypes,
-    navigate,
-    setError
-  ]);
+  }, [api, confMessageEvt, t, armorTypeData?.armorType.title, id, getNewId, createAlert, reloadArmorTypes, navigate, setError]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
@@ -290,7 +275,7 @@ const AdminEditArmorType: FC = () => {
       `)}
     >
       <form
-        onSubmit={handleSubmit(onSaveArmorType)}
+        onSubmit={() => handleSubmit(onSaveArmorType)}
         noValidate
         className="adminEditArmorType__content"
       >

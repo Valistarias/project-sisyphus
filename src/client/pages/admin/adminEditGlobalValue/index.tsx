@@ -25,10 +25,7 @@ const AdminEditGlobalValue: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { reloadGlobalValues } = useGlobalVars();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
-    setConfirmContent: () => {},
-    ConfMessageEvent: {}
-  };
+  const confMessageEvt = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -107,10 +104,10 @@ const AdminEditGlobalValue: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined) {
+    if (api === undefined || confMessageEvt === null) {
       return;
     }
-    setConfirmContent(
+    confMessageEvt.setConfirmContent(
       {
         title: t('adminEditGlobalValue.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditGlobalValue.confirmDeletion.text', {
@@ -156,24 +153,12 @@ const AdminEditGlobalValue: FC = () => {
                 }
               });
           }
-          ConfMessageEvent.removeEventListener(evtId, confirmDelete);
+          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
         };
-        ConfMessageEvent.addEventListener(evtId, confirmDelete);
+        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [
-    api,
-    setConfirmContent,
-    t,
-    globalValueData,
-    ConfMessageEvent,
-    id,
-    getNewId,
-    createAlert,
-    reloadGlobalValues,
-    navigate,
-    setError
-  ]);
+  }, [api, confMessageEvt, t, globalValueData?.name, id, getNewId, createAlert, reloadGlobalValues, navigate, setError]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {

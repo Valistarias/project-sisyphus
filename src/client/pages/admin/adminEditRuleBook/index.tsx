@@ -36,10 +36,7 @@ const AdminEditRuleBook: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { id } = useParams();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
-    setConfirmContent: () => {},
-    ConfMessageEvent: {}
-  };
+  const confMessageEvt = useConfirmMessage();
   const navigate = useNavigate();
   const { reloadRuleBooks } = useGlobalVars();
 
@@ -289,10 +286,10 @@ const AdminEditRuleBook: FC = () => {
   }, [chaptersOrder, initialOrder, api, id, getNewId, createAlert, t, setError]);
 
   const onAskArchive = useCallback(() => {
-    if (api === undefined || id === undefined) {
+    if (api === undefined || id === undefined || confMessageEvt === null) {
       return;
     }
-    setConfirmContent(
+    confMessageEvt.setConfirmContent(
       {
         title: t(
           archived
@@ -358,25 +355,12 @@ const AdminEditRuleBook: FC = () => {
                 }
               });
           }
-          ConfMessageEvent.removeEventListener(evtId, confirmArchive);
+          confMessageEvt.removeConfirmEventListener(evtId, confirmArchive);
         };
-        ConfMessageEvent.addEventListener(evtId, confirmArchive);
+        confMessageEvt.addConfirmEventListener(evtId, confirmArchive);
       }
     );
-  }, [
-    api,
-    id,
-    setConfirmContent,
-    t,
-    archived,
-    rulebookData?.ruleBook.title,
-    ConfMessageEvent,
-    getNewId,
-    createAlert,
-    reloadRuleBooks,
-    navigate,
-    setError
-  ]);
+  }, [api, id, confMessageEvt, t, archived, rulebookData?.ruleBook.title, getNewId, createAlert, reloadRuleBooks, navigate, setError]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && calledApi.current !== id) {

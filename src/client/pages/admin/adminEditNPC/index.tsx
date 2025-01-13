@@ -49,10 +49,7 @@ const AdminEditNPC: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
-    setConfirmContent: () => {},
-    ConfMessageEvent: {}
-  };
+  const confMessageEvt = useConfirmMessage();
   const { damageTypes, weaponScopes } = useGlobalVars();
   const { createAlert, getNewId } = useSystemAlerts();
   const navigate = useNavigate();
@@ -280,10 +277,10 @@ const AdminEditNPC: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || nPCData === null) {
+    if (api === undefined || nPCData === null || confMessageEvt === null) {
       return;
     }
-    setConfirmContent(
+    confMessageEvt.setConfirmContent(
       {
         title: t('adminEditNPC.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditNPC.confirmDeletion.text', {
@@ -328,23 +325,12 @@ const AdminEditNPC: FC = () => {
                 }
               });
           }
-          ConfMessageEvent.removeEventListener(evtId, confirmDelete);
+          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
         };
-        ConfMessageEvent.addEventListener(evtId, confirmDelete);
+        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [
-    api,
-    nPCData,
-    setConfirmContent,
-    t,
-    ConfMessageEvent,
-    id,
-    getNewId,
-    createAlert,
-    navigate,
-    setError
-  ]);
+  }, [api, nPCData, confMessageEvt, t, id, getNewId, createAlert, navigate, setError]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {

@@ -30,10 +30,7 @@ const EditCharacter: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
-    setConfirmContent: () => {},
-    ConfMessageEvent: {}
-  };
+  const confMessageEvt = useConfirmMessage();
   const { user } = useGlobalVars();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -172,14 +169,14 @@ const EditCharacter: FC = () => {
   );
 
   const onDeleteCharacter = useCallback(() => {
-    if (api === undefined || character === null) {
+    if (api === undefined || character === null || confMessageEvt === null) {
       return;
     }
     let displayedName: string | undefined;
     if (character.nickName !== undefined || character.firstName !== undefined) {
       displayedName = character.nickName ?? `${character.firstName} ${character.lastName}`;
     }
-    setConfirmContent(
+    confMessageEvt.setConfirmContent(
       {
         title: t('characters.confirmDelete.title', { ns: 'pages' }),
         text: t('characters.confirmDelete.text', { ns: 'pages', elt: displayedName }),
@@ -216,12 +213,12 @@ const EditCharacter: FC = () => {
                 });
               });
           }
-          ConfMessageEvent.removeEventListener(evtId, confirmDelete);
+          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
         };
-        ConfMessageEvent.addEventListener(evtId, confirmDelete);
+        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [api, character, setConfirmContent, t, ConfMessageEvent, id, getNewId, createAlert, navigate]);
+  }, [api, character, confMessageEvt, t, id, getNewId, createAlert, navigate]);
 
   useEffect(() => {
     if (api !== undefined && !calledApi.current && id !== undefined) {
@@ -297,7 +294,7 @@ const EditCharacter: FC = () => {
       >
         {t('editCharacter.return', { ns: 'pages' })}
       </Button>
-      <form className="editcharacter__form" onSubmit={handleSubmit(onSubmit)} noValidate>
+      <form className="editcharacter__form" onSubmit={() => handleSubmit(onSubmit)} noValidate>
         {errors.root?.serverError.message !== undefined
           ? (
               <Aerror>{errors.root.serverError.message}</Aerror>

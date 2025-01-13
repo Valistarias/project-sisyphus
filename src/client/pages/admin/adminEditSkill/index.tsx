@@ -30,10 +30,7 @@ const AdminEditSkill: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { stats, reloadSkills } = useGlobalVars();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
-    setConfirmContent: () => {},
-    ConfMessageEvent: {}
-  };
+  const confMessageEvt = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -188,10 +185,10 @@ const AdminEditSkill: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined) {
+    if (api === undefined || confMessageEvt === null) {
       return;
     }
-    setConfirmContent(
+    confMessageEvt.setConfirmContent(
       {
         title: t('adminEditSkill.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditSkill.confirmDeletion.text', {
@@ -237,24 +234,12 @@ const AdminEditSkill: FC = () => {
                 }
               });
           }
-          ConfMessageEvent.removeEventListener(evtId, confirmDelete);
+          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
         };
-        ConfMessageEvent.addEventListener(evtId, confirmDelete);
+        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [
-    api,
-    setConfirmContent,
-    t,
-    skillData?.skill.title,
-    ConfMessageEvent,
-    id,
-    getNewId,
-    createAlert,
-    reloadSkills,
-    navigate,
-    setError
-  ]);
+  }, [api, confMessageEvt, t, skillData?.skill.title, id, getNewId, createAlert, reloadSkills, navigate, setError]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {

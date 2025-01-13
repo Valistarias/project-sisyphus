@@ -28,10 +28,7 @@ const AdminEditCyberFrame: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
-    setConfirmContent: () => {},
-    ConfMessageEvent: {}
-  };
+  const confMessageEvt = useConfirmMessage();
   const { id } = useParams();
   const { ruleBooks, reloadCyberFrames } = useGlobalVars();
   const navigate = useNavigate();
@@ -204,10 +201,10 @@ const AdminEditCyberFrame: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined) {
+    if (api === undefined || confMessageEvt === null) {
       return;
     }
-    setConfirmContent(
+    confMessageEvt.setConfirmContent(
       {
         title: t('adminEditCyberFrame.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditCyberFrame.confirmDeletion.text', {
@@ -253,24 +250,12 @@ const AdminEditCyberFrame: FC = () => {
                 }
               });
           }
-          ConfMessageEvent.removeEventListener(evtId, confirmDelete);
+          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
         };
-        ConfMessageEvent.addEventListener(evtId, confirmDelete);
+        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [
-    api,
-    setConfirmContent,
-    t,
-    cyberFrameData?.cyberFrame.title,
-    ConfMessageEvent,
-    id,
-    getNewId,
-    createAlert,
-    reloadCyberFrames,
-    navigate,
-    setError
-  ]);
+  }, [api, confMessageEvt, t, cyberFrameData?.cyberFrame.title, id, getNewId, createAlert, reloadCyberFrames, navigate, setError]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {

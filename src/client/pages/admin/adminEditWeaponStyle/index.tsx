@@ -29,10 +29,7 @@ const AdminEditWeaponStyle: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { skills, reloadWeaponStyles } = useGlobalVars();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
-    setConfirmContent: () => {},
-    ConfMessageEvent: {}
-  };
+  const confMessageEvt = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -184,10 +181,10 @@ const AdminEditWeaponStyle: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined) {
+    if (api === undefined || confMessageEvt === null) {
       return;
     }
-    setConfirmContent(
+    confMessageEvt.setConfirmContent(
       {
         title: t('adminEditWeaponStyle.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditWeaponStyle.confirmDeletion.text', {
@@ -233,24 +230,12 @@ const AdminEditWeaponStyle: FC = () => {
                 }
               });
           }
-          ConfMessageEvent.removeEventListener(evtId, confirmDelete);
+          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
         };
-        ConfMessageEvent.addEventListener(evtId, confirmDelete);
+        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [
-    api,
-    setConfirmContent,
-    t,
-    weaponStyleData,
-    ConfMessageEvent,
-    id,
-    getNewId,
-    createAlert,
-    reloadWeaponStyles,
-    navigate,
-    setError
-  ]);
+  }, [api, confMessageEvt, t, weaponStyleData?.weaponStyle.title, id, getNewId, createAlert, reloadWeaponStyles, navigate, setError]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {

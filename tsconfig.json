@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "Node16",
+    "module": "commonjs",
     "jsx": "react",
     "target": "esnext",
     "lib": ["ES2023", "dom", "dom.iterable"],

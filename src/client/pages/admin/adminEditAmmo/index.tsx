@@ -33,10 +33,7 @@ const AdminEditAmmo: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
-    setConfirmContent: () => {},
-    ConfMessageEvent: {}
-  };
+  const confMessageEvt = useConfirmMessage();
   const { itemModifiers, weaponTypes, rarities } = useGlobalVars();
   const { createAlert, getNewId } = useSystemAlerts();
   const navigate = useNavigate();
@@ -193,10 +190,10 @@ const AdminEditAmmo: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || ammoData === null) {
+    if (api === undefined || ammoData === null || confMessageEvt === null) {
       return;
     }
-    setConfirmContent(
+    confMessageEvt.setConfirmContent(
       {
         title: t('adminEditAmmo.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditAmmo.confirmDeletion.text', {
@@ -241,23 +238,12 @@ const AdminEditAmmo: FC = () => {
                 }
               });
           }
-          ConfMessageEvent.removeEventListener(evtId, confirmDelete);
+          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
         };
-        ConfMessageEvent.addEventListener(evtId, confirmDelete);
+        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [
-    api,
-    ammoData,
-    setConfirmContent,
-    t,
-    ConfMessageEvent,
-    id,
-    getNewId,
-    createAlert,
-    navigate,
-    setError
-  ]);
+  }, [api, ammoData, confMessageEvt, t, id, getNewId, createAlert, navigate, setError]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
@@ -298,7 +284,7 @@ const AdminEditAmmo: FC = () => {
         ${displayInt ? 'adminEditAmmo--int-visible' : ''}
       `)}
     >
-      <form className="adminEditAmmo__content" onSubmit={handleSubmit(onSaveAmmo)} noValidate>
+      <form className="adminEditAmmo__content" onSubmit={() => handleSubmit(onSaveAmmo)} noValidate>
         <div className="adminEditAmmo__head">
           <Atitle className="adminEditAmmo__head" level={1}>
             {ammoData?.ammo.title ?? ''}

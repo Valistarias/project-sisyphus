@@ -28,10 +28,7 @@ const AdminEditPages: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { id } = useParams();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
-    setConfirmContent: () => {},
-    ConfMessageEvent: {}
-  };
+  const confMessageEvt = useConfirmMessage();
   const navigate = useNavigate();
 
   const calledApi = useRef<string | null>(null);
@@ -155,10 +152,10 @@ const AdminEditPages: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || chapter == null) {
+    if (api === undefined || chapter == null || confMessageEvt === null) {
       return;
     }
-    setConfirmContent(
+    confMessageEvt.setConfirmContent(
       {
         title: t('adminEditPage.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditPage.confirmDeletion.text', { ns: 'pages', elt: chapter.title }),
@@ -200,23 +197,12 @@ const AdminEditPages: FC = () => {
                 }
               });
           }
-          ConfMessageEvent.removeEventListener(evtId, confirmDelete);
+          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
         };
-        ConfMessageEvent.addEventListener(evtId, confirmDelete);
+        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [
-    api,
-    chapter,
-    setConfirmContent,
-    t,
-    ConfMessageEvent,
-    id,
-    getNewId,
-    createAlert,
-    navigate,
-    setError
-  ]);
+  }, [api, chapter, confMessageEvt, t, id, getNewId, createAlert, navigate, setError]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && calledApi.current !== id) {

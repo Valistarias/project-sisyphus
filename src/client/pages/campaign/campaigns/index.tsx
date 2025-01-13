@@ -17,17 +17,14 @@ const Campaigns: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { user, campaigns, reloadCampaigns } = useGlobalVars();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
-    setConfirmContent: () => {},
-    ConfMessageEvent: {}
-  };
+  const confMessageEvt = useConfirmMessage();
 
   const onDeleteCampaign = useCallback(
     (id: string, name: string) => {
-      if (api === undefined) {
+      if (api === undefined || confMessageEvt === null) {
         return;
       }
-      setConfirmContent(
+      confMessageEvt.setConfirmContent(
         {
           title: t('campaigns.confirmDelete.title', { ns: 'pages' }),
           text: t('campaigns.confirmDelete.text', { ns: 'pages', elt: name }),
@@ -63,13 +60,13 @@ const Campaigns: FC = () => {
                   });
                 });
             }
-            ConfMessageEvent.removeEventListener(evtId, confirmDelete);
+            confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
           };
-          ConfMessageEvent.addEventListener(evtId, confirmDelete);
+          confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
         }
       );
     },
-    [api, setConfirmContent, t, ConfMessageEvent, getNewId, createAlert, reloadCampaigns]
+    [api, confMessageEvt, t, getNewId, createAlert, reloadCampaigns]
   );
 
   const campaignList = useMemo(() => {

@@ -29,10 +29,7 @@ const AdminEditProgramScope: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { reloadProgramScopes } = useGlobalVars();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
-    setConfirmContent: () => {},
-    ConfMessageEvent: {}
-  };
+  const confMessageEvt = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -169,10 +166,10 @@ const AdminEditProgramScope: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined) {
+    if (api === undefined || confMessageEvt === null) {
       return;
     }
-    setConfirmContent(
+    confMessageEvt.setConfirmContent(
       {
         title: t('adminEditProgramScope.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditProgramScope.confirmDeletion.text', {
@@ -218,24 +215,12 @@ const AdminEditProgramScope: FC = () => {
                 }
               });
           }
-          ConfMessageEvent.removeEventListener(evtId, confirmDelete);
+          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
         };
-        ConfMessageEvent.addEventListener(evtId, confirmDelete);
+        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [
-    api,
-    setConfirmContent,
-    t,
-    programScopeData?.programScope.title,
-    ConfMessageEvent,
-    id,
-    getNewId,
-    createAlert,
-    reloadProgramScopes,
-    navigate,
-    setError
-  ]);
+  }, [api, confMessageEvt, t, programScopeData?.programScope.title, id, getNewId, createAlert, reloadProgramScopes, navigate, setError]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {

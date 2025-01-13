@@ -259,7 +259,7 @@ const AdminRuleBookTypes: FC = () => {
       <div className="adminRuleBooktypes__create">
         {createBookTypeMode || updateBookTypeMode !== ''
           ? (
-              <form className="signup__form" onSubmit={handleSubmit(onSubmit)}>
+              <form className="signup__form" onSubmit={() => handleSubmit(onSubmit)}>
                 {errors.root?.serverError.message !== undefined
                   ? (
                       <Aerror>{errors.root.serverError.message}</Aerror>

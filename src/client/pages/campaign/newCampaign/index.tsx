@@ -66,7 +66,7 @@ const NewCampaign: FC = () => {
   return (
     <div className="newcampaign">
       <Atitle level={1}>{t('newCampaign.title', { ns: 'pages' })}</Atitle>
-      <form className="newcampaign__form" onSubmit={handleSubmit(onSubmit)} noValidate>
+      <form className="newcampaign__form" onSubmit={() => handleSubmit(onSubmit)} noValidate>
         {errors.root?.serverError.message !== undefined
           ? (
               <Aerror>{errors.root.serverError.message}</Aerror>

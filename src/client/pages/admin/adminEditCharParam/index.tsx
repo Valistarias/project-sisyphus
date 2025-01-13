@@ -29,10 +29,7 @@ const AdminEditCharParam: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { reloadCharParams } = useGlobalVars();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
-    setConfirmContent: () => {},
-    ConfMessageEvent: {}
-  };
+  const confMessageEvt = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -171,10 +168,10 @@ const AdminEditCharParam: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined) {
+    if (api === undefined || confMessageEvt === null) {
       return;
     }
-    setConfirmContent(
+    confMessageEvt.setConfirmContent(
       {
         title: t('adminEditCharParam.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditCharParam.confirmDeletion.text', {
@@ -220,24 +217,12 @@ const AdminEditCharParam: FC = () => {
                 }
               });
           }
-          ConfMessageEvent.removeEventListener(evtId, confirmDelete);
+          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
         };
-        ConfMessageEvent.addEventListener(evtId, confirmDelete);
+        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [
-    api,
-    setConfirmContent,
-    t,
-    charParamData?.charParam.title,
-    ConfMessageEvent,
-    id,
-    getNewId,
-    createAlert,
-    reloadCharParams,
-    navigate,
-    setError
-  ]);
+  }, [api, confMessageEvt, t, charParamData?.charParam.title, id, getNewId, createAlert, reloadCharParams, navigate, setError]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {

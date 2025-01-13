@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Ap } from '../atoms';
 import { Button, DiceCard } from '../molecules';
+import CustomEventEmitter from '../utils/eventEmitter';
 
 import type { TypeCampaignEvent, TypeDice } from '../types';
 
@@ -27,13 +28,19 @@ import {
 
 import './campaignEventWindow.scss';
 
+export interface CampaignEventDetailData {
+  result: number
+  formula?: string
+  mode: string
+}
+
 interface ICampaignEventWindowContext {
   /** The function to launch a roll */
   setToRoll: (dices: DiceRequest[], mode: TypeCampaignEvent) => void
   /** The event listener for when a new campaign event is called from dispatch */
-  addCampaignEventListener: (id: string, cb: (data: any) => void) => void
+  addCampaignEventListener: (cb: (res: { detail?: CampaignEventDetailData }) => void) => void
   /** The event listener remover for when a new campaign event is called from dispatch */
-  removeCampaignEventListener: (id: string, cb: (data: any) => void) => void
+  removeCampaignEventListener: (cb: (res: { detail?: CampaignEventDetailData }) => void) => void
   /** The event listener dispatch */
   dispatchCampaignEvent: (data: { result: number, formula?: string, mode: string }) => void
 }
@@ -54,27 +61,11 @@ interface DiceData {
   def: number
 }
 
-function Emitter(): void {
-  const eventTarget = document.createDocumentFragment();
-
-  function delegate(method: string): void {
-    this[method] = eventTarget[method].bind(eventTarget);
-  }
-
-  Emitter.methods.forEach(delegate, this);
-}
-
-function CampaignEventEmitter(): void {
-  Emitter.call(this);
-}
-
-Emitter.methods = ['addEventListener', 'dispatchEvent', 'removeEventListener'];
-
-const CampaignEventWindowContext = React.createContext<ICampaignEventWindowContext | string>('');
+const CampaignEventWindowContext = React.createContext<ICampaignEventWindowContext | null>(null);
 
 export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> = ({ children }) => {
   const { t } = useTranslation();
-  const CampaignEvent = useMemo(() => new CampaignEventEmitter(), []);
+  const CampaignEvent = useMemo(() => new CustomEventEmitter<CampaignEventDetailData>(), []);
 
   const [dicesToRoll, setDicesToRoll] = useState<DiceRequest[] | null>(null);
 
@@ -107,8 +98,8 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
   }, [dicesToRoll]);
 
   const diceCards = useMemo(() => {
-    if (diceValues === null) {
-      return null;
+    if (diceValues.length === 0) {
+      return [];
     }
 
     return diceValues.map(({ id, type, value }) => (
@@ -140,21 +131,20 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
     typeRoll.current = mode;
   }, []);
 
-  const dispatchEvent = useCallback(
-    (data: { result: number, formula?: string, mode: string }) => {
-      CampaignEvent.dispatchEvent(new CustomEvent('addCampaignEvent', { detail: data }));
-    },
-    [CampaignEvent]
-  );
-
   const providerValues = useMemo<ICampaignEventWindowContext>(
     () => ({
       setToRoll,
-      addCampaignEventListener: CampaignEvent.addEventListener,
-      removeCampaignEventListener: CampaignEvent.removeEventListener,
-      dispatchCampaignEvent: dispatchEvent
+      addCampaignEventListener: (func) => {
+        CampaignEvent.addEventListener('addCampaignEvent', func);
+      },
+      removeCampaignEventListener: (func) => {
+        CampaignEvent.removeEventListener('addCampaignEvent', func);
+      },
+      dispatchCampaignEvent: (data: CampaignEventDetailData) => {
+        CampaignEvent.dispatchEvent('addCampaignEvent', data);
+      }
     }),
-    [setToRoll, CampaignEvent.addEventListener, CampaignEvent.removeEventListener, dispatchEvent]
+    [setToRoll, CampaignEvent]
   );
 
   const affectDiceValueAtIndex = useCallback((curatedDices: DiceData[], index: number) => {
@@ -171,22 +161,21 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
       if (
         endRollEvt.current !== null
         && rollResults.current !== null
-        && dispatchEvent !== undefined
       ) {
         clearTimeout(endRollEvt.current);
         endRollEvt.current = null;
         setRollEventFinished(true);
-        dispatchEvent({
+        CampaignEvent.dispatchEvent('addCampaignEvent', {
           result: calculateDices(rollResults.current).total,
           formula: diceResultToStr(rollResults.current),
           mode: typeRoll.current
         });
       }
     }, 1000);
-  }, [dispatchEvent]);
+  }, [CampaignEvent]);
 
   const totalDom = useMemo(() => {
-    if (diceCards == null || diceCards.length === 1 || rollResults.current === null) {
+    if (diceCards.length <= 1 || rollResults.current === null) {
       return null;
     }
     const dataDices = calculateDices(rollResults.current);
@@ -308,4 +297,4 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
   );
 };
 
-export const useCampaignEventWindow = (): ICampaignEventWindowContext => useContext(CampaignEventWindowContext) as ICampaignEventWindowContext;
+export const useCampaignEventWindow = (): ICampaignEventWindowContext | null => useContext(CampaignEventWindowContext);

@@ -77,10 +77,7 @@ const AdminEditWeapon: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
-    setConfirmContent: () => {},
-    ConfMessageEvent: {}
-  };
+  const confMessageEvt = useConfirmMessage();
   const {
     weaponTypes,
     weaponScopes,
@@ -498,10 +495,10 @@ const AdminEditWeapon: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || weaponData === null) {
+    if (api === undefined || weaponData === null || confMessageEvt === null) {
       return;
     }
-    setConfirmContent(
+    confMessageEvt.setConfirmContent(
       {
         title: t('adminEditWeapon.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditWeapon.confirmDeletion.text', {
@@ -546,23 +543,12 @@ const AdminEditWeapon: FC = () => {
                 }
               });
           }
-          ConfMessageEvent.removeEventListener(evtId, confirmDelete);
+          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
         };
-        ConfMessageEvent.addEventListener(evtId, confirmDelete);
+        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [
-    api,
-    weaponData,
-    setConfirmContent,
-    t,
-    ConfMessageEvent,
-    id,
-    getNewId,
-    createAlert,
-    navigate,
-    setError
-  ]);
+  }, [api, weaponData, confMessageEvt, t, id, getNewId, createAlert, navigate, setError]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {

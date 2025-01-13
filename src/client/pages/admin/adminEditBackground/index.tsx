@@ -48,10 +48,7 @@ const AdminEditBackground: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
-    setConfirmContent: () => {},
-    ConfMessageEvent: {}
-  };
+  const confMessageEvt = useConfirmMessage();
   const { skills, stats, charParams } = useGlobalVars();
   const { createAlert, getNewId } = useSystemAlerts();
   const navigate = useNavigate();
@@ -337,10 +334,10 @@ const AdminEditBackground: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || backgroundData === null) {
+    if (api === undefined || backgroundData === null || confMessageEvt === null) {
       return;
     }
-    setConfirmContent(
+    confMessageEvt.setConfirmContent(
       {
         title: t('adminEditBackground.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditBackground.confirmDeletion.text', {
@@ -385,23 +382,12 @@ const AdminEditBackground: FC = () => {
                 }
               });
           }
-          ConfMessageEvent.removeEventListener(evtId, confirmDelete);
+          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
         };
-        ConfMessageEvent.addEventListener(evtId, confirmDelete);
+        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [
-    api,
-    backgroundData,
-    setConfirmContent,
-    t,
-    ConfMessageEvent,
-    id,
-    getNewId,
-    createAlert,
-    navigate,
-    setError
-  ]);
+  }, [api, backgroundData, confMessageEvt, t, id, getNewId, createAlert, navigate, setError]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
@@ -444,7 +430,7 @@ const AdminEditBackground: FC = () => {
     >
       <form
         className="adminEditBackground__content"
-        onSubmit={handleSubmit(onSaveBackground)}
+        onSubmit={() => handleSubmit(onSaveBackground)}
         noValidate
       >
         <div className="adminEditBackground__head">

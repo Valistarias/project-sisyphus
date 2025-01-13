@@ -86,10 +86,7 @@ const AdminEditArmor: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
-    setConfirmContent: () => {},
-    ConfMessageEvent: {}
-  };
+  const confMessageEvt = useConfirmMessage();
   const {
     skills,
     stats,
@@ -604,10 +601,10 @@ const AdminEditArmor: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || armorData === null) {
+    if (api === undefined || armorData === null || confMessageEvt === null) {
       return;
     }
-    setConfirmContent(
+    confMessageEvt.setConfirmContent(
       {
         title: t('adminEditArmor.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditArmor.confirmDeletion.text', {
@@ -652,23 +649,12 @@ const AdminEditArmor: FC = () => {
                 }
               });
           }
-          ConfMessageEvent.removeEventListener(evtId, confirmDelete);
+          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
         };
-        ConfMessageEvent.addEventListener(evtId, confirmDelete);
+        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [
-    api,
-    armorData,
-    setConfirmContent,
-    t,
-    ConfMessageEvent,
-    id,
-    getNewId,
-    createAlert,
-    navigate,
-    setError
-  ]);
+  }, [api, armorData, confMessageEvt, t, id, getNewId, createAlert, navigate, setError]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
@@ -709,7 +695,7 @@ const AdminEditArmor: FC = () => {
         ${displayInt ? 'adminEditArmor--int-visible' : ''}
       `)}
     >
-      <form className="adminEditArmor__content" onSubmit={handleSubmit(onSaveArmor)} noValidate>
+      <form className="adminEditArmor__content" onSubmit={() => handleSubmit(onSaveArmor)} noValidate>
         <div className="adminEditArmor__head">
           <Atitle className="adminEditArmor__head" level={1}>
             {t('adminEditArmor.title', { ns: 'pages' })}

@@ -8,7 +8,7 @@ interface IItemPayload {
   itemId: string
 }
 
-export default class Items extends Entity {
+export default class Items extends Entity<ICuratedItem> {
   get: (payload: IItemPayload) => Promise<ICuratedItem>;
   getStarters: () => Promise<ICuratedItem[]>;
 
@@ -19,10 +19,10 @@ export default class Items extends Entity {
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })
-          .then((res) => {
-            resolve(res.data as ICuratedItem);
+          .then((res: { data: ICuratedItem }) => {
+            resolve(res.data);
           })
-          .catch((err) => {
+          .catch((err: unknown) => {
             reject(err);
           });
       });
@@ -31,10 +31,10 @@ export default class Items extends Entity {
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/starter/`)
-          .then((res) => {
-            resolve(res.data as ICuratedItem[]);
+          .then((res: { data: ICuratedItem[] }) => {
+            resolve(res.data);
           })
-          .catch((err) => {
+          .catch((err: unknown) => {
             reject(err);
           });
       });

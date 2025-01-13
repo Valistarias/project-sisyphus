@@ -1,4 +1,4 @@
-import type React from 'react';
+import React from 'react';
 import { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
@@ -12,7 +12,8 @@ import { Button } from '../molecules';
 import Alert from './alert';
 import CampaignEventLine from './campaignEventLine';
 
-import type { ICampaignEvent, ICharacter, TypeCampaignEvent } from '../types';
+import type { CampaignEventDetailData } from '../providers/campaignEventWindow';
+import type { ICampaignEvent, ICharacter } from '../types';
 
 import { classTrim, createBasicDiceRequest, type DiceRequest } from '../utils';
 
@@ -42,7 +43,7 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { socket } = useSocket();
-  const { addCampaignEventListener, removeCampaignEventListener } = useCampaignEventWindow();
+  const campaignEvt = useCampaignEventWindow();
 
   // const [loading, setLoading] = useState(true);
   // const [isOpen, setOpen] = useState(false);
@@ -136,10 +137,7 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
   );
 
   const logCampaignEvents = useMemo(() => dataPrevCampaignEvents.map(({ _id, character, createdAt, formula, result, type }) => {
-    let authorName = '';
-    if (character !== null) {
-      authorName = `${character.firstName !== undefined ? `${character.firstName} ` : ''}${character.nickName !== undefined ? `"${character.nickName}" ` : ''}${character.lastName ?? ''}`;
-    }
+    const authorName = `${character.firstName !== undefined ? `${character.firstName} ` : ''}${character.nickName !== undefined ? `"${character.nickName}" ` : ''}${character.lastName ?? ''}`;
 
     return (
       <CampaignEventLine
@@ -147,7 +145,7 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
         authorName={authorName.trim()}
         result={result}
         formula={formula}
-        type={type as TypeCampaignEvent}
+        type={type}
         createdAt={new Date(createdAt)}
       />
     );
@@ -164,7 +162,7 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
           .then((sentCampaignEvents: ICampaignEvent[]) => {
             setDataPrevCampaignEvents(sentCampaignEvents);
           })
-          .catch((res) => {
+          .catch(() => {
             const newId = getNewId();
             createAlert({
               key: newId,
@@ -209,7 +207,7 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
                 }
               }, 0);
             })
-            .catch((res) => {
+            .catch(() => {
               const newId = getNewId();
               createAlert({
                 key: newId,
@@ -275,14 +273,12 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
   useEffect(() => {
     const addCampaignEvent = ({
       detail
-    }: CustomEvent<{
-      result: number
-      formula?: string
-      mode: TypeCampaignEvent
-    }>): void => {
+    }: {
+      detail?: CampaignEventDetailData
+    }): void => {
       if (
         api !== undefined
-        && detail.result !== null
+        && detail !== undefined
         && campaignId !== undefined
         && charRef.current !== undefined
         && socket !== null
@@ -297,7 +293,7 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
             type: mode
           })
           .then((data: ICampaignEvent) => {
-            if (charRef.current !== null && charRef.current !== undefined) {
+            if (charRef.current !== undefined) {
               const dataCampaignEvent = {
                 ...data,
                 character: charRef.current
@@ -309,7 +305,7 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
               addCampaignEventToTab(dataCampaignEvent);
             }
           })
-          .catch((res) => {
+          .catch(() => {
             const newId = getNewId();
             createAlert({
               key: newId,
@@ -323,24 +319,23 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
       }
     };
 
-    if (!initEvt.current && api !== undefined && socket !== null && campaignId !== undefined) {
+    if (!initEvt.current && api !== undefined && socket !== null && campaignId !== undefined && campaignEvt !== null) {
       initEvt.current = true;
-      addCampaignEventListener('addCampaignEvent', addCampaignEvent);
+      campaignEvt.addCampaignEventListener(addCampaignEvent);
     }
 
     return () => {
-      if (unMountEvt.current) {
-        removeCampaignEventListener('addCampaignEvent', addCampaignEvent);
+      if (unMountEvt.current && campaignEvt !== null) {
+        campaignEvt.removeCampaignEventListener(addCampaignEvent);
       }
     };
   }, [
-    addCampaignEventListener,
+    campaignEvt,
     addCampaignEventToTab,
     api,
     campaignId,
     createAlert,
     getNewId,
-    removeCampaignEventListener,
     socket,
     t
   ]);

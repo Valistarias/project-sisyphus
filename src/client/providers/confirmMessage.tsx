@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Ap, Atitle } from '../atoms';
 import { Button, Input } from '../molecules';
+import CustomEventEmitter from '../utils/eventEmitter';
 
 import { classTrim } from '../utils';
 
@@ -31,13 +32,17 @@ interface IConfirmContent {
   confirmWord?: string
 }
 
+export interface ConfirmMessageDetailData {
+  proceed: boolean
+}
+
 interface IConfirmMessageContext {
-  /** The event system linked to the confirm popup */
-  ConfMessageEvent: {
-    addEventListener: (id: string, cb: (data: any) => void) => void
-    removeEventListener: (id: string, cb: (data: any) => void) => void
-    dispatchEvent: (evt: Event) => void
-  }
+  /** The event listener for when a new campaign event is called from dispatch */
+  addConfirmEventListener: (id: string, cb: (res: { detail?: ConfirmMessageDetailData }) => void) => void
+  /** The event listener remover for when a new campaign event is called from dispatch */
+  removeConfirmEventListener: (id: string, cb: (res: { detail?: ConfirmMessageDetailData }) => void) => void
+  /** The event listener dispatch */
+  dispatchConfirmEvent: (id: string, data: ConfirmMessageDetailData) => void
   /** The function to send all the data to the confirm message element */
   setConfirmContent: (res: IConfirmContent, cb: (evtId: string) => void) => void
 }
@@ -53,25 +58,28 @@ interface FormValues {
 
 const ConfirmMessageContext = React.createContext<IConfirmMessageContext | null>(null);
 
-function Emitter(): void {
-  const eventTarget = document.createDocumentFragment();
+// function Emitter(): void {
+//   const eventTarget = document.createDocumentFragment();
 
-  function delegate(method: string): void {
-    this[method] = eventTarget[method].bind(eventTarget);
-  }
+//   function delegate(method: string): void {
+//     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- This is a class-like element
+//     this[method] = eventTarget[method].bind(eventTarget);
+//   }
 
-  Emitter.methods.forEach(delegate, this);
-}
+//   Emitter.methods.forEach(delegate, this);
+// }
 
-function ConfMessageEventEmitter(): void {
-  Emitter.call(this);
-}
+// function ConfMessageEventEmitter(): void {
+//   Emitter.call(this);
+// }
 
-Emitter.methods = ['addEventListener', 'dispatchEvent', 'removeEventListener'];
+// Emitter.methods = ['addEventListener', 'dispatchEvent', 'removeEventListener'];
+
+// const ConfMessageEvent = new ConfMessageEventEmitter();
 
 export const ConfirmMessageProvider: FC<ConfirmMessageProviderProps> = ({ children }) => {
   const { t } = useTranslation();
-  const ConfMessageEvent = useMemo(() => new ConfMessageEventEmitter(), []);
+  const ConfirmEvent = useMemo(() => new CustomEventEmitter<ConfirmMessageDetailData>(), []);
 
   const [idEvt, setIdEvt] = useState('');
 
@@ -86,31 +94,19 @@ export const ConfirmMessageProvider: FC<ConfirmMessageProviderProps> = ({ childr
   const onConfirmAction: SubmitHandler<FormValues> = useCallback(
     ({ confirm }) => {
       if (idEvt !== '') {
-        ConfMessageEvent.dispatchEvent(
-          new CustomEvent(idEvt, {
-            detail: {
-              proceed: true
-            }
-          })
-        );
+        ConfirmEvent.dispatchEvent(idEvt, { proceed: true });
         setWindowOpened(false);
       }
     },
-    [ConfMessageEvent, idEvt]
+    [ConfirmEvent, idEvt]
   );
 
   const onAbort = useCallback(() => {
     if (idEvt !== '') {
-      ConfMessageEvent.dispatchEvent(
-        new CustomEvent(idEvt, {
-          detail: {
-            proceed: false
-          }
-        })
-      );
+      ConfirmEvent.dispatchEvent(idEvt, { proceed: false });
       setWindowOpened(false);
     }
-  }, [ConfMessageEvent, idEvt]);
+  }, [ConfirmEvent, idEvt]);
 
   const setConfirmContent = useCallback((elts: IConfirmContent, cb: (evtId: string) => void) => {
     setConfirmData(elts);
@@ -121,12 +117,14 @@ export const ConfirmMessageProvider: FC<ConfirmMessageProviderProps> = ({ childr
 
   const { handleSubmit, control } = useForm<FormValues>();
 
-  const providerValues = useMemo(
+  const providerValues = useMemo<IConfirmMessageContext>(
     () => ({
       setConfirmContent,
-      ConfMessageEvent
+      addConfirmEventListener: ConfirmEvent.addEventListener,
+      removeConfirmEventListener: ConfirmEvent.removeEventListener,
+      dispatchConfirmEvent: ConfirmEvent.dispatchEvent
     }),
-    [setConfirmContent, ConfMessageEvent]
+    [setConfirmContent, ConfirmEvent]
   );
 
   useEffect(() => {
@@ -146,7 +144,7 @@ export const ConfirmMessageProvider: FC<ConfirmMessageProviderProps> = ({ childr
         <div className="confirm-message__shadow" onClick={onAbort} />
         <form
           className="confirm-message__window"
-          onSubmit={handleSubmit(onConfirmAction)}
+          onSubmit={() => handleSubmit(onConfirmAction)}
           noValidate
         >
           <Atitle>{confirmData?.title ?? ''}</Atitle>
@@ -182,4 +180,4 @@ export const ConfirmMessageProvider: FC<ConfirmMessageProviderProps> = ({ childr
   );
 };
 
-export const useConfirmMessage = (): IConfirmMessageContext => useContext(ConfirmMessageContext)!;
+export const useConfirmMessage = (): IConfirmMessageContext | null => useContext(ConfirmMessageContext);

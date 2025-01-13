@@ -34,10 +34,7 @@ const AdminEditBag: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
-    setConfirmContent: () => {},
-    ConfMessageEvent: {}
-  };
+  const confMessageEvt = useConfirmMessage();
   const { itemModifiers, itemTypes, rarities } = useGlobalVars();
   const { createAlert, getNewId } = useSystemAlerts();
   const navigate = useNavigate();
@@ -186,10 +183,10 @@ const AdminEditBag: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || bagData === null) {
+    if (api === undefined || bagData === null || confMessageEvt === null) {
       return;
     }
-    setConfirmContent(
+    confMessageEvt.setConfirmContent(
       {
         title: t('adminEditBag.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditBag.confirmDeletion.text', {
@@ -234,23 +231,12 @@ const AdminEditBag: FC = () => {
                 }
               });
           }
-          ConfMessageEvent.removeEventListener(evtId, confirmDelete);
+          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
         };
-        ConfMessageEvent.addEventListener(evtId, confirmDelete);
+        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [
-    api,
-    bagData,
-    setConfirmContent,
-    t,
-    ConfMessageEvent,
-    id,
-    getNewId,
-    createAlert,
-    navigate,
-    setError
-  ]);
+  }, [api, bagData, confMessageEvt, t, id, getNewId, createAlert, navigate, setError]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
@@ -291,7 +277,7 @@ const AdminEditBag: FC = () => {
         ${displayInt ? 'adminEditBag--int-visible' : ''}
       `)}
     >
-      <form className="adminEditBag__content" onSubmit={handleSubmit(onSaveBag)} noValidate>
+      <form className="adminEditBag__content" onSubmit={() => handleSubmit(onSaveBag)} noValidate>
         <div className="adminEditBag__head">
           <Atitle className="adminEditBag__head" level={1}>
             {bagData?.bag.title ?? ''}

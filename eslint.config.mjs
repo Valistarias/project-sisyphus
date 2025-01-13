@@ -2,6 +2,7 @@ import js from '@eslint/js';
 import stylistic from '@stylistic/eslint-plugin';
 import love from 'eslint-config-love';
 import pluginReact from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
@@ -16,6 +17,12 @@ export default tseslint.config(
   love,
   stylistic.configs['recommended-flat'],
   pluginReact.configs.flat?.recommended,
+  {
+    plugins: {
+      'react-hooks': reactHooks
+    },
+    rules: { ...reactHooks.configs.recommended.rules }
+  },
   {
     rules: {
       'no-console': ['error', { allow: ['warn', 'error'] }],
@@ -67,6 +74,8 @@ export default tseslint.config(
         }
       ],
       complexity: 'off',
+      'init-declarations': 'off',
+      '@typescript-eslint/init-declarations': 'off',
       'no-magic-numbers': 'off',
       '@typescript-eslint/prefer-promise-reject-errors': 'off',
       '@typescript-eslint/no-magic-numbers': 'off',
@@ -79,6 +88,7 @@ export default tseslint.config(
       }
       ],
       '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
       '@stylistic/padding-line-between-statements': [
         'error',
         { blankLine: 'always', prev: '*', next: 'return' }

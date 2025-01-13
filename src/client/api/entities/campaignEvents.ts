@@ -9,7 +9,7 @@ interface ICampaignEventsPayload {
   offset: number
 }
 
-export default class CampaignEvents extends Entity {
+export default class CampaignEvents extends Entity<ICampaignEvent> {
   getAllByCampaign: (payload: ICampaignEventsPayload) => Promise<ICampaignEvent[]>;
 
   constructor() {
@@ -19,10 +19,10 @@ export default class CampaignEvents extends Entity {
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/bycampaign/`, { params: payload })
-          .then((res) => {
-            resolve(res.data as ICampaignEvent[]);
+          .then((res: { data: ICampaignEvent[] }) => {
+            resolve(res.data);
           })
-          .catch((err) => {
+          .catch((err: unknown) => {
             reject(err);
           });
       });

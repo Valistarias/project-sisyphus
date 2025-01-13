@@ -1,16 +1,14 @@
 import axios from 'axios';
 
-import type { IUser } from '../../types';
+type IBasicRequests<T> = (payload: unknown) => Promise<T>;
 
-type IBasicRequests = (payload: unknown) => Promise<Record<string, unknown>>;
-
-export default class Entity {
+export default class Entity<T> {
   url: string;
-  getAll: () => Promise<Record<string, unknown>>;
-  create: IBasicRequests;
-  update: (payload: unknown) => Promise<IUser>;
-  delete: IBasicRequests;
-  basicPost: (target: string, payload: unknown) => Promise<Record<string, unknown>>;
+  getAll: () => Promise<T[]>;
+  create: IBasicRequests<T>;
+  update: (payload: unknown) => Promise<T>;
+  delete: IBasicRequests<T>;
+  basicPost: (target: string, payload: unknown) => Promise<T>;
 
   constructor(id: string) {
     this.url = `/api/${id}`;
@@ -19,10 +17,10 @@ export default class Entity {
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/`)
-          .then((res) => {
-            resolve(res.data as Record<string, unknown>);
+          .then((res: { data: T[] }) => {
+            resolve(res.data);
           })
-          .catch((err) => {
+          .catch((err: unknown) => {
             reject(err);
           });
       });
@@ -31,10 +29,10 @@ export default class Entity {
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/create/`, payload)
-          .then((res) => {
-            resolve(res.data as Record<string, unknown>);
+          .then((res: { data: T }) => {
+            resolve(res.data);
           })
-          .catch((err) => {
+          .catch((err: unknown) => {
             reject(err);
           });
       });
@@ -43,10 +41,10 @@ export default class Entity {
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/update/`, payload)
-          .then((res) => {
-            resolve(res.data as IUser);
+          .then((res: { data: T }) => {
+            resolve(res.data);
           })
-          .catch((err) => {
+          .catch((err: unknown) => {
             reject(err);
           });
       });
@@ -55,10 +53,10 @@ export default class Entity {
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/delete/`, payload)
-          .then((res) => {
-            resolve(res.data as Record<string, unknown>);
+          .then((res: { data: T }) => {
+            resolve(res.data);
           })
-          .catch((err) => {
+          .catch((err: unknown) => {
             reject(err);
           });
       });
@@ -67,10 +65,10 @@ export default class Entity {
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/${target}/`, payload)
-          .then((res) => {
-            resolve(res.data as Record<string, unknown>);
+          .then((res: { data: T }) => {
+            resolve(res.data);
           })
-          .catch((err) => {
+          .catch((err: unknown) => {
             reject(err);
           });
       });

@@ -2,7 +2,13 @@ import type { ICampaign } from './campaign';
 import type { ICharacter } from './character';
 
 // Global Types ------------------------------------
-export type InternationalizationType = Record<string, Record<string, string>>;
+export type InternationalizationType = Record<string, Record<string, string | undefined> | undefined>;
+export interface ErrorResponseType {
+  message: string
+  code: string
+  sent?: Record<string, unknown> | string | null
+  err?: unknown
+}
 
 // User ------------------------------------
 export interface IUser {
@@ -48,7 +54,7 @@ export interface ICampaignEvent {
   /** The ID of the roll */
   _id: string
   /** The type of the roll */
-  type: string
+  type: TypeCampaignEvent
   /** The result of the roll, as value */
   result: number
   /** The formula of the roll, as string */

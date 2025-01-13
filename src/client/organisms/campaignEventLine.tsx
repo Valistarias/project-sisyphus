@@ -45,7 +45,7 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
     }
     const dicesToUse: Array<{
       id: number
-      type: number
+      type: TypeDice
       value: number
     }> = [];
     let idDie = 0;
@@ -67,7 +67,7 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
     return (
       <>
         {dicesToUse.map(({ id, type, value }, index) => (
-          <DiceCard key={id} type={type as TypeDice} value={value} size="xsmall" skip />
+          <DiceCard key={id} type={type} value={value} size="xsmall" skip />
         ))}
         {totalOffset !== 0
           ? (

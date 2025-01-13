@@ -76,6 +76,7 @@
     "eslint-config-love": "^116.0.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-react": "^7.37.3",
+    "eslint-plugin-react-hooks": "^5.1.0",
     "globals": "^15.14.0",
     "jiti": "^2.4.2",
     "nodemon": "^3.1.9",

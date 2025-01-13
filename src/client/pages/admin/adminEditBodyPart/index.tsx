@@ -30,10 +30,7 @@ const AdminEditBodyPart: FC = () => {
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { reloadBodyParts } = useGlobalVars();
-  const { setConfirmContent, ConfMessageEvent } = useConfirmMessage() ?? {
-    setConfirmContent: () => {},
-    ConfMessageEvent: {}
-  };
+  const confMessageEvt = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -173,10 +170,10 @@ const AdminEditBodyPart: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined) {
+    if (api === undefined || confMessageEvt === null) {
       return;
     }
-    setConfirmContent(
+    confMessageEvt.setConfirmContent(
       {
         title: t('adminEditBodyPart.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditBodyPart.confirmDeletion.text', {
@@ -222,24 +219,12 @@ const AdminEditBodyPart: FC = () => {
                 }
               });
           }
-          ConfMessageEvent.removeEventListener(evtId, confirmDelete);
+          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
         };
-        ConfMessageEvent.addEventListener(evtId, confirmDelete);
+        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [
-    api,
-    setConfirmContent,
-    t,
-    bodyPartData?.bodyPart.title,
-    ConfMessageEvent,
-    id,
-    getNewId,
-    createAlert,
-    reloadBodyParts,
-    navigate,
-    setError
-  ]);
+  }, [api, confMessageEvt, t, bodyPartData?.bodyPart.title, id, getNewId, createAlert, reloadBodyParts, navigate, setError]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
