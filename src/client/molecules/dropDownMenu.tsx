@@ -1,7 +1,11 @@
 import type React from 'react';
-import { useMemo, type FC } from 'react';
+import {
+  useMemo, type FC
+} from 'react';
 
-import { Ali, Atitle, Aul } from '../atoms';
+import {
+  Ali, Atitle, Aul
+} from '../atoms';
 
 import Button from './button';
 
@@ -59,7 +63,9 @@ const DropDownMenu: FC<IDropDownMenu> = ({
           | ILinkElt
       ) => {
         if ((single as ILinkElt).text !== undefined) {
-          const { href, text, onClick } = single as ILinkElt;
+          const {
+            href, text, onClick
+          } = single as ILinkElt;
           sentElts.push(
             <Button
               key={`eltlist-${href ?? text}`}
@@ -77,7 +83,9 @@ const DropDownMenu: FC<IDropDownMenu> = ({
             </Button>
           );
         } else {
-          const { title, list } = single as {
+          const {
+            title, list
+          } = single as {
             title: string
             list: ILinkElt[]
           };
@@ -87,7 +95,9 @@ const DropDownMenu: FC<IDropDownMenu> = ({
                 {title}
               </Atitle>
               <Aul className="dropdown-menu__list__sublist__list">
-                {list.map(({ href, text, onClick }) => (
+                {list.map(({
+                  href, text, onClick
+                }) => (
                   <Ali
                     className="dropdown-menu__list__sublist__list__elt"
                     key={`eltsublist-${href ?? text}`}

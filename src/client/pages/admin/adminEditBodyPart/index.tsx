@@ -1,16 +1,30 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useNavigate, useParams
+} from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 
 import type { ICuratedBodyPart } from '../../../types';
 
@@ -28,7 +42,9 @@ interface FormValues {
 const AdminEditBodyPart: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const { reloadBodyParts } = useGlobalVars();
   const confMessageEvt = useConfirmMessage();
   const { id } = useParams();
@@ -45,19 +61,17 @@ const AdminEditBodyPart: FC = () => {
   const [bodyPartText, setBodyPartText] = useState('');
   const [bodyPartTextFr, setBodyPartTextFr] = useState('');
 
-  const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const createDefaultData = useCallback((bodyPartData: ICuratedBodyPart | null) => {
     if (bodyPartData == null) {
       return {};
     }
-    const { bodyPart, i18n } = bodyPartData;
+    const {
+      bodyPart, i18n
+    } = bodyPartData;
     const defaultData: Partial<FormValues> = {};
     defaultData.name = bodyPart.title;
     defaultData.partId = bodyPart.partId;
@@ -75,15 +89,15 @@ const AdminEditBodyPart: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({
-    defaultValues: useMemo(
-      () => createDefaultData(bodyPartData),
-      [createDefaultData, bodyPartData]
-    )
-  });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(bodyPartData),
+    [createDefaultData, bodyPartData]
+  ) });
 
   const onSaveBodyPart: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, partId, limit }) => {
+    ({
+      name, nameFr, partId, limit
+    }) => {
       if (
         bodyPartText === null
         || bodyPartTextFr === null
@@ -106,12 +120,10 @@ const AdminEditBodyPart: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            text: htmlTextFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          text: htmlTextFr
+        } };
       }
 
       api.bodyParts
@@ -140,16 +152,12 @@ const AdminEditBodyPart: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id'
-              })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
             });
           }
         });
@@ -205,16 +213,12 @@ const AdminEditBodyPart: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.bodyPart.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.bodyPart.name`), 'capitalize') })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.bodyPart.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.bodyPart.name`), 'capitalize') })
                   });
                 }
               });
@@ -224,7 +228,18 @@ const AdminEditBodyPart: FC = () => {
         confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [api, confMessageEvt, t, bodyPartData?.bodyPart.title, id, getNewId, createAlert, reloadBodyParts, navigate, setError]);
+  }, [
+    api,
+    confMessageEvt,
+    t,
+    bodyPartData?.bodyPart.title,
+    id,
+    getNewId,
+    createAlert,
+    reloadBodyParts,
+    navigate,
+    setError
+  ]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
@@ -232,7 +247,9 @@ const AdminEditBodyPart: FC = () => {
       api.bodyParts
         .get({ bodyPartId: id })
         .then((curatedBodyPart: ICuratedBodyPart) => {
-          const { bodyPart, i18n } = curatedBodyPart;
+          const {
+            bodyPart, i18n
+          } = curatedBodyPart;
           setBodyPartData(curatedBodyPart);
           setBodyPartText(bodyPart.summary);
           if (i18n.fr !== undefined) {
@@ -251,7 +268,13 @@ const AdminEditBodyPart: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, id, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    id,
+    t
+  ]);
 
   // The Autosave
   useEffect(() => {
@@ -273,7 +296,11 @@ const AdminEditBodyPart: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(bodyPartData));
-  }, [bodyPartData, reset, createDefaultData]);
+  }, [
+    bodyPartData,
+    reset,
+    createDefaultData
+  ]);
 
   return (
     <div
@@ -317,9 +344,7 @@ const AdminEditBodyPart: FC = () => {
               inputName="limit"
               type="number"
               label={t('bodyPartLimit.label', { ns: 'fields' })}
-              rules={{
-                required: t('bodyPartLimit.required', { ns: 'fields' })
-              }}
+              rules={{ required: t('bodyPartLimit.required', { ns: 'fields' }) }}
             />
           </div>
         </div>

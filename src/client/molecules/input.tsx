@@ -1,8 +1,12 @@
-import React, { useState, type FC } from 'react';
+import React, {
+  useState, type FC
+} from 'react';
 
 import { Controller } from 'react-hook-form';
 
-import { Aerror, Ainput, Alabel, Atextarea } from '../atoms';
+import {
+  Aerror, Ainput, Alabel, Atextarea
+} from '../atoms';
 
 import type { IReactHookFormInputs } from '../types/form';
 
@@ -63,7 +67,9 @@ const Input: FC<IInput> = ({
         name={inputName}
         rules={rules}
         render={({
-          field: { onChange, onBlur: onControllerBlur, value, name, ref },
+          field: {
+            onChange, onBlur: onControllerBlur, value, name, ref
+          },
           fieldState: { error }
         }) => (
           <>

@@ -1,6 +1,10 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
-import type { IChapterType, IPage, IRuleBook } from '../index';
+import type {
+  IChapterType, IPage, IRuleBook
+} from '../index';
 
 interface IChapter {
   /** The title of the ruleBook */
@@ -64,4 +68,6 @@ chapterSchema.virtual('pages', {
 
 const ChapterModel = (): Model<IChapter> => model('Chapter', chapterSchema);
 
-export { ChapterModel, type HydratedIChapter, type IChapter };
+export {
+  ChapterModel, type HydratedIChapter, type IChapter
+};

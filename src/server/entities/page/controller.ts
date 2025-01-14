@@ -1,9 +1,14 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemInvalidField, gemNotFound, gemServerError
+} from '../../utils/globalErrorMessage';
 
 import type { HydratedIPage } from './model';
+import type { InternationalizationType } from '../../utils/types';
 import type { HydratedIChapter } from '../index';
 
 import { curateI18n } from '../../utils';
@@ -17,14 +22,14 @@ const findPages = async (): Promise<HydratedIPage[]> =>
         path: 'chapter',
         populate: 'ruleBook'
       })
-      .then(async (res?: HydratedIPage[] | null) => {
+      .then((res?: HydratedIPage[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Pages'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -36,14 +41,14 @@ const findPagesByChapter = async (chapterId: string): Promise<HydratedIPage[]> =
         path: 'chapter',
         populate: 'ruleBook'
       })
-      .then(async (res?: HydratedIPage[] | null) => {
+      .then((res?: HydratedIPage[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Pages'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -55,20 +60,22 @@ const findPageById = async (id: string): Promise<HydratedIPage> =>
         path: 'chapter',
         populate: 'ruleBook'
       })
-      .then(async (res?: HydratedIPage | null) => {
+      .then((res?: HydratedIPage | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Page'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, content, chapter, i18n = null } = req.body;
+  const {
+    title, content, chapter, i18n = null
+  } = req.body;
   if (title === undefined || content === undefined || chapter === undefined) {
     res.status(400).send(gemInvalidField('Page'));
 
@@ -101,7 +108,9 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, title = null, content = null, i18n } = req.body;
+  const {
+    id, title = null, content = null, i18n
+  } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Page ID'));
 
@@ -117,13 +126,11 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl = {
-          ...(page.i18n !== null && page.i18n !== undefined && page.i18n !== ''
-            ? JSON.parse(page.i18n)
-            : {})
-        };
+        const newIntl: InternationalizationType = { ...(page.i18n !== null && page.i18n !== undefined && page.i18n !== ''
+          ? JSON.parse(page.i18n)
+          : {}) };
 
-        Object.keys(i18n as Record<string, any>).forEach((lang) => {
+        Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
         });
 
@@ -133,7 +140,9 @@ const update = (req: Request, res: Response): void => {
       page
         .save()
         .then(() => {
-          res.send({ message: 'Page was updated successfully!', page });
+          res.send({
+            message: 'Page was updated successfully!', page
+          });
         })
         .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
@@ -145,7 +154,7 @@ const update = (req: Request, res: Response): void => {
 };
 
 const deletePage = (req: Request, res: Response): void => {
-  const { id } = req.body;
+  const { id }: { id: string } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Page ID'));
 
@@ -177,7 +186,7 @@ const deletePagesByChapterId = async (chapterId: string): Promise<boolean> =>
   });
 
 interface CuratedIPage {
-  i18n: Record<string, unknown>
+  i18n?: InternationalizationType
   page: HydratedIPage
 }
 

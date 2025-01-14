@@ -1,7 +1,11 @@
 import type React from 'react';
-import type { FC, ReactNode, RefObject } from 'react';
+import type {
+  FC, ReactNode, RefObject
+} from 'react';
 
-import { Quark, type IQuarkProps } from '../quark';
+import {
+  Quark, type IQuarkProps
+} from '../quark';
 
 import { classTrim } from '../utils';
 
@@ -20,7 +24,9 @@ interface IAli extends IQuarkProps {
 }
 
 const Ali: FC<IAli> = (props) => {
-  const { className, children, innerRef } = props;
+  const {
+    className, children, innerRef
+  } = props;
 
   return (
     <Quark
@@ -29,9 +35,7 @@ const Ali: FC<IAli> = (props) => {
         ali
         ${className ?? ''}
       `)}
-      reactProps={{
-        ref: innerRef
-      }}
+      reactProps={{ ref: innerRef }}
     >
       {children}
     </Quark>

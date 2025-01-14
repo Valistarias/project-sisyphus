@@ -1,14 +1,26 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useNavigate, useParams
+} from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input } from '../../../molecules';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input
+} from '../../../molecules';
 import { Alert } from '../../../organisms';
 
 import type { IGlobalValue } from '../../../types';
@@ -23,7 +35,9 @@ interface FormValues {
 const AdminEditGlobalValue: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const { reloadGlobalValues } = useGlobalVars();
   const confMessageEvt = useConfirmMessage();
   const { id } = useParams();
@@ -50,15 +64,15 @@ const AdminEditGlobalValue: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({
-    defaultValues: useMemo(
-      () => createDefaultData(globalValueData),
-      [createDefaultData, globalValueData]
-    )
-  });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(globalValueData),
+    [createDefaultData, globalValueData]
+  ) });
 
   const onSaveGlobalValue: SubmitHandler<FormValues> = useCallback(
-    ({ name, value }) => {
+    ({
+      name, value
+    }) => {
       if (name === null || api === undefined) {
         return;
       }
@@ -86,21 +100,25 @@ const AdminEditGlobalValue: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id'
-              })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
             });
           }
         });
     },
-    [api, id, getNewId, createAlert, t, reloadGlobalValues, setError]
+    [
+      api,
+      id,
+      getNewId,
+      createAlert,
+      t,
+      reloadGlobalValues,
+      setError
+    ]
   );
 
   const onAskDelete = useCallback(() => {
@@ -139,16 +157,12 @@ const AdminEditGlobalValue: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.globalValue.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.globalValue.name`), 'capitalize') })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.globalValue.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.globalValue.name`), 'capitalize') })
                   });
                 }
               });
@@ -158,7 +172,18 @@ const AdminEditGlobalValue: FC = () => {
         confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [api, confMessageEvt, t, globalValueData?.name, id, getNewId, createAlert, reloadGlobalValues, navigate, setError]);
+  }, [
+    api,
+    confMessageEvt,
+    t,
+    globalValueData?.name,
+    id,
+    getNewId,
+    createAlert,
+    reloadGlobalValues,
+    navigate,
+    setError
+  ]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
@@ -180,12 +205,22 @@ const AdminEditGlobalValue: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, id, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    id,
+    t
+  ]);
 
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(globalValueData));
-  }, [globalValueData, reset, createDefaultData]);
+  }, [
+    globalValueData,
+    reset,
+    createDefaultData
+  ]);
 
   return (
     <div className="adminEditGlobalValue">
@@ -218,9 +253,7 @@ const AdminEditGlobalValue: FC = () => {
             control={control}
             inputName="name"
             type="text"
-            rules={{
-              required: t('nameGlobalValue.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('nameGlobalValue.required', { ns: 'fields' }) }}
             label={t('nameGlobalValue.label', { ns: 'fields' })}
             className="adminEditGlobalValue__basics__name"
           />
@@ -228,9 +261,7 @@ const AdminEditGlobalValue: FC = () => {
             control={control}
             inputName="value"
             type="text"
-            rules={{
-              required: t('nameGlobalValueValue.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('nameGlobalValueValue.required', { ns: 'fields' }) }}
             label={t('nameGlobalValueValue.label', { ns: 'fields' })}
             className="adminNewGlobalValue__basics__name"
           />

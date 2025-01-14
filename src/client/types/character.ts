@@ -1,6 +1,10 @@
 import type { ICampaign } from './campaign';
-import type { InternationalizationType, IUser } from './global';
-import type { IBackground, INode } from './rules';
+import type {
+  InternationalizationType, IUser
+} from './global';
+import type {
+  IBackground, INode
+} from './rules';
 
 // Body Stat ------------------------------------
 export interface IBodyStat {

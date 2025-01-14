@@ -1,11 +1,19 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useNavigate, useParams
+} from 'react-router-dom';
 
-import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Ap, Atitle } from '../../../atoms';
+import {
+  Ap, Atitle
+} from '../../../atoms';
 import { Button } from '../../../molecules';
 import { Alert } from '../../../organisms';
 import { ErrorPage } from '../../index';
@@ -17,7 +25,9 @@ import './joinCampaign.scss';
 const JoinCampaign: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const { id } = useParams();
   const { user } = useGlobalVars();
   const navigate = useNavigate();
@@ -33,9 +43,7 @@ const JoinCampaign: FC = () => {
       setLoading(true);
       calledApi.current = true;
       api.campaigns
-        .register({
-          campaignCode: id
-        })
+        .register({ campaignCode: id })
         .then(({ campaignId }) => {
           const newId = getNewId();
           createAlert({
@@ -60,7 +68,14 @@ const JoinCampaign: FC = () => {
           });
         });
     }
-  }, [api, id, getNewId, createAlert, t, navigate]);
+  }, [
+    api,
+    id,
+    getNewId,
+    createAlert,
+    t,
+    navigate
+  ]);
 
   const messageDom = useMemo(() => {
     if (campaign === null || user === null) {
@@ -94,16 +109,19 @@ const JoinCampaign: FC = () => {
         <Button onClick={onJoinCampaign}>{t('joinCampaign.joinCTA', { ns: 'pages' })}</Button>
       </>
     );
-  }, [campaign, onJoinCampaign, t, user]);
+  }, [
+    campaign,
+    onJoinCampaign,
+    t,
+    user
+  ]);
 
   useEffect(() => {
     if (api !== undefined && !calledApi.current && id !== undefined) {
       setLoading(true);
       calledApi.current = true;
       api.campaigns
-        .find({
-          campaignCode: id
-        })
+        .find({ campaignCode: id })
         .then((sentJoinCampaign: ICampaign) => {
           setLoading(false);
           if (sentJoinCampaign === undefined) {
@@ -129,7 +147,13 @@ const JoinCampaign: FC = () => {
           }
         });
     }
-  }, [api, createAlert, getNewId, t, id]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    t,
+    id
+  ]);
 
   if (loading) {
     return null;

@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
 import type {
   IAction,
@@ -123,4 +125,6 @@ const nodeSchema = new Schema<INode>({
 
 const NodeModel = (): Model<INode> => model('Node', nodeSchema);
 
-export { NodeModel, type HydratedINode, type INode };
+export {
+  NodeModel, type HydratedINode, type INode
+};

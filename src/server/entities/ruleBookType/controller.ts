@@ -1,4 +1,6 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 import type { HydratedDocument } from 'mongoose';
 
 import db from '../../models';
@@ -16,14 +18,14 @@ const { RuleBookType } = db;
 const findRuleBookTypes = async (): Promise<Array<HydratedDocument<IRuleBookType>>> =>
   await new Promise((resolve, reject) => {
     RuleBookType.find()
-      .then(async (res) => {
+      .then((res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('RuleBookTypes'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -31,14 +33,14 @@ const findRuleBookTypes = async (): Promise<Array<HydratedDocument<IRuleBookType
 const findRuleBookTypeById = async (id: string): Promise<HydratedDocument<IRuleBookType>> =>
   await new Promise((resolve, reject) => {
     RuleBookType.findById(id)
-      .then(async (res) => {
+      .then((res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('RuleBookType'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -53,9 +55,7 @@ const create = (req: Request, res: Response): void => {
   findRuleBookTypes()
     .then((ruleBooks) => {
       if (ruleBooks.find(ruleBook => ruleBook.name === name) === undefined) {
-        const ruleBookType = new RuleBookType({
-          name
-        });
+        const ruleBookType = new RuleBookType({ name });
 
         ruleBookType
           .save()
@@ -73,7 +73,9 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, name = null } = req.body;
+  const {
+    id, name = null
+  } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('RuleBookType ID'));
 
@@ -89,7 +91,9 @@ const update = (req: Request, res: Response): void => {
         actualRuleBookType
           .save()
           .then(() => {
-            res.send({ message: 'RuleBookType was updated successfully!', actualRuleBookType });
+            res.send({
+              message: 'RuleBookType was updated successfully!', actualRuleBookType
+            });
           })
           .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
@@ -102,7 +106,7 @@ const update = (req: Request, res: Response): void => {
 };
 
 const deleteRuleBookType = (req: Request, res: Response): void => {
-  const { id } = req.body;
+  const { id }: { id: string } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('RuleBookType ID'));
 
@@ -135,4 +139,6 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteRuleBookType, findAll, findSingle, update };
+export {
+  create, deleteRuleBookType, findAll, findSingle, update
+};

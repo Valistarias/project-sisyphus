@@ -1,21 +1,37 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useNavigate, useParams
+} from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input, SmartSelect } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input, SmartSelect
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 import { possibleStarterKitValues } from '../../../types/items';
 
 import type { ICuratedImplant } from '../../../types';
 
-import { classTrim, isThereDuplicate } from '../../../utils';
+import {
+  classTrim, isThereDuplicate
+} from '../../../utils';
 
 import './adminEditImplant.scss';
 
@@ -97,7 +113,9 @@ const AdminEditImplant: FC = () => {
     rarities,
     itemModifiers
   } = useGlobalVars();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const navigate = useNavigate();
 
   const [displayInt, setDisplayInt] = useState(false);
@@ -139,7 +157,9 @@ const AdminEditImplant: FC = () => {
 
   const actionTypeSelect = useMemo(
     () =>
-      actionTypes.map(({ name, _id }) => ({
+      actionTypes.map(({
+        name, _id
+      }) => ({
         value: _id,
         label: t(`terms.actionType.${name}`)
       })),
@@ -148,7 +168,9 @@ const AdminEditImplant: FC = () => {
 
   const actionDurationSelect = useMemo(
     () =>
-      actionDurations.map(({ name, _id }) => ({
+      actionDurations.map(({
+        name, _id
+      }) => ({
         value: _id,
         label: t(`terms.actionDuration.${name}`)
       })),
@@ -193,19 +215,17 @@ const AdminEditImplant: FC = () => {
   const [implantText, setImplantText] = useState('');
   const [implantTextFr, setImplantTextFr] = useState('');
 
-  const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const createDefaultData = useCallback((implantData: ICuratedImplant | null) => {
     if (implantData == null) {
       return {};
     }
-    const { implant, i18n } = implantData;
+    const {
+      implant, i18n
+    } = implantData;
     const defaultData: Partial<FormValues> = {};
     defaultData.name = implant.title;
     defaultData.cost = implant.cost;
@@ -325,9 +345,7 @@ const AdminEditImplant: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({
-    defaultValues: useMemo(() => createDefaultData(implantData), [createDefaultData, implantData])
-  });
+  } = useForm({ defaultValues: useMemo(() => createDefaultData(implantData), [createDefaultData, implantData]) });
 
   const boolRange = useMemo(
     () => [
@@ -456,37 +474,41 @@ const AdminEditImplant: FC = () => {
 
         return;
       }
-      const curatedSkillBonuses = skillBonuses.map(({ skill, value }) => ({
+      const curatedSkillBonuses = skillBonuses.map(({
+        skill, value
+      }) => ({
         skill,
         value: Number(value)
       }));
-      const curatedStatBonuses = statBonuses.map(({ stat, value }) => ({
+      const curatedStatBonuses = statBonuses.map(({
+        stat, value
+      }) => ({
         stat,
         value: Number(value)
       }));
-      const curatedCharParamBonuses = charParamBonuses.map(({ charParam, value }) => ({
+      const curatedCharParamBonuses = charParamBonuses.map(({
+        charParam, value
+      }) => ({
         charParam,
         value: Number(value)
       }));
 
       const effectsArr = effects !== undefined ? Object.values(effects) : [];
       const curatedEffects = effectsArr.map(
-        ({ id, formula, type, title, summary, titleFr, summaryFr }) => ({
+        ({
+          id, formula, type, title, summary, titleFr, summaryFr
+        }) => ({
           ...(id !== undefined ? { id } : {}),
           title,
           summary,
           formula,
           type,
-          i18n: {
-            ...(titleFr !== undefined || summaryFr !== undefined
-              ? {
-                  fr: {
-                    title: titleFr,
-                    summary: summaryFr
-                  }
-                }
-              : {})
-          }
+          i18n: { ...(titleFr !== undefined || summaryFr !== undefined
+            ? { fr: {
+                title: titleFr,
+                summary: summaryFr
+              } }
+            : {}) }
         })
       );
 
@@ -521,17 +543,13 @@ const AdminEditImplant: FC = () => {
           uses,
           time,
           type,
-          i18n: {
-            ...(titleFr !== undefined || summaryFr !== undefined || timeFr !== undefined
-              ? {
-                  fr: {
-                    title: titleFr,
-                    summary: summaryFr,
-                    time: timeFr
-                  }
-                }
-              : {})
-          }
+          i18n: { ...(titleFr !== undefined || summaryFr !== undefined || timeFr !== undefined
+            ? { fr: {
+                title: titleFr,
+                summary: summaryFr,
+                time: timeFr
+              } }
+            : {}) }
         })
       );
 
@@ -542,12 +560,10 @@ const AdminEditImplant: FC = () => {
       }
       let i18n: any | null = null;
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            summary: htmlFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          summary: htmlFr
+        } };
       }
       api.implants
         .update({
@@ -583,21 +599,27 @@ const AdminEditImplant: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize') })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize') })
             });
           }
         });
     },
-    [introEditor, introFrEditor, api, id, implantData, setError, t, getNewId, createAlert]
+    [
+      introEditor,
+      introFrEditor,
+      api,
+      id,
+      implantData,
+      setError,
+      t,
+      getNewId,
+      createAlert
+    ]
   );
 
   const onAskDelete = useCallback(() => {
@@ -635,16 +657,12 @@ const AdminEditImplant: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skillBranch.name`), 'capitalize') })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skillBranch.name`), 'capitalize') })
                   });
                 }
               });
@@ -654,7 +672,17 @@ const AdminEditImplant: FC = () => {
         confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [api, implantData, confMessageEvt, t, id, getNewId, createAlert, navigate, setError]);
+  }, [
+    api,
+    implantData,
+    confMessageEvt,
+    t,
+    id,
+    getNewId,
+    createAlert,
+    navigate,
+    setError
+  ]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
@@ -662,7 +690,9 @@ const AdminEditImplant: FC = () => {
       api.implants
         .get({ implantId: id })
         .then((curatedImplant: ICuratedImplant) => {
-          const { implant, i18n } = curatedImplant;
+          const {
+            implant, i18n
+          } = curatedImplant;
           setImplantData(curatedImplant);
           setImplantText(implant.summary);
           if (i18n.fr !== undefined) {
@@ -681,12 +711,22 @@ const AdminEditImplant: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, id, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    id,
+    t
+  ]);
 
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(implantData));
-  }, [implantData, reset, createDefaultData]);
+  }, [
+    implantData,
+    reset,
+    createDefaultData
+  ]);
 
   return (
     <div
@@ -717,9 +757,7 @@ const AdminEditImplant: FC = () => {
             control={control}
             inputName="name"
             type="text"
-            rules={{
-              required: t('nameImplant.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('nameImplant.required', { ns: 'fields' }) }}
             label={t('nameImplant.label', { ns: 'fields' })}
             className="adminEditImplant__basics__name"
           />
@@ -728,9 +766,7 @@ const AdminEditImplant: FC = () => {
               control={control}
               inputName="bodyParts"
               isMulti
-              rules={{
-                required: t('implantBodyPart.required', { ns: 'fields' })
-              }}
+              rules={{ required: t('implantBodyPart.required', { ns: 'fields' }) }}
               label={t('implantBodyPart.label', { ns: 'fields' })}
               options={bodyPartSelect}
               className="adminEditImplant__basics__type"
@@ -750,9 +786,7 @@ const AdminEditImplant: FC = () => {
               control={control}
               inputName="cost"
               type="number"
-              rules={{
-                required: t('implantCost.required', { ns: 'fields' })
-              }}
+              rules={{ required: t('implantCost.required', { ns: 'fields' }) }}
               label={t('implantCost.label', { ns: 'fields' })}
               className="adminEditImplant__details__fields__elt"
             />
@@ -795,9 +829,7 @@ const AdminEditImplant: FC = () => {
                   <SmartSelect
                     control={control}
                     inputName={`skillBonuses.skill-${skillBonusId}.skill`}
-                    rules={{
-                      required: t('skillBonusSkill.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('skillBonusSkill.required', { ns: 'fields' }) }}
                     label={t('skillBonusSkill.label', { ns: 'fields' })}
                     options={skillSelect}
                     className="adminEditImplant__bonus__select"
@@ -806,9 +838,7 @@ const AdminEditImplant: FC = () => {
                     control={control}
                     inputName={`skillBonuses.skill-${skillBonusId}.value`}
                     type="number"
-                    rules={{
-                      required: t('skillBonusValue.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('skillBonusValue.required', { ns: 'fields' }) }}
                     label={t('skillBonusValue.label', { ns: 'fields' })}
                     className="adminEditImplant__bonus__value"
                   />
@@ -841,9 +871,7 @@ const AdminEditImplant: FC = () => {
                   <SmartSelect
                     control={control}
                     inputName={`statBonuses.stat-${statBonusId}.stat`}
-                    rules={{
-                      required: t('statBonusStat.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('statBonusStat.required', { ns: 'fields' }) }}
                     label={t('statBonusStat.label', { ns: 'fields' })}
                     options={statSelect}
                     className="adminEditImplant__bonus__select"
@@ -852,9 +880,7 @@ const AdminEditImplant: FC = () => {
                     control={control}
                     inputName={`statBonuses.stat-${statBonusId}.value`}
                     type="number"
-                    rules={{
-                      required: t('statBonusValue.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('statBonusValue.required', { ns: 'fields' }) }}
                     label={t('statBonusValue.label', { ns: 'fields' })}
                     className="adminEditImplant__bonus__value"
                   />
@@ -887,9 +913,7 @@ const AdminEditImplant: FC = () => {
                   <SmartSelect
                     control={control}
                     inputName={`charParamBonuses.charParam-${charParamBonusId}.charParam`}
-                    rules={{
-                      required: t('charParamBonusStat.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('charParamBonusStat.required', { ns: 'fields' }) }}
                     label={t('charParamBonusStat.label', { ns: 'fields' })}
                     options={charParamSelect}
                     className="adminEditImplant__bonus__select"
@@ -898,9 +922,7 @@ const AdminEditImplant: FC = () => {
                     control={control}
                     inputName={`charParamBonuses.charParam-${charParamBonusId}.value`}
                     type="number"
-                    rules={{
-                      required: t('charParamBonusValue.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('charParamBonusValue.required', { ns: 'fields' }) }}
                     label={t('charParamBonusValue.label', { ns: 'fields' })}
                     className="adminEditImplant__bonus__value"
                   />
@@ -933,18 +955,14 @@ const AdminEditImplant: FC = () => {
                   <Input
                     control={control}
                     inputName={`effects.effect-${effectId}.title`}
-                    rules={{
-                      required: t('effectTitle.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('effectTitle.required', { ns: 'fields' }) }}
                     label={t('effectTitle.label', { ns: 'fields' })}
                     className="adminEditImplant__bonus__value adminEditImplant__bonus__value--s"
                   />
                   <SmartSelect
                     control={control}
                     inputName={`effects.effect-${effectId}.type`}
-                    rules={{
-                      required: t('effectType.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('effectType.required', { ns: 'fields' }) }}
                     label={t('effectType.label', { ns: 'fields' })}
                     options={actionTypeSelect}
                     className="adminEditImplant__bonus__select adminEditImplant__bonus__value--s"
@@ -953,9 +971,7 @@ const AdminEditImplant: FC = () => {
                     control={control}
                     type="textarea"
                     inputName={`effects.effect-${effectId}.summary`}
-                    rules={{
-                      required: t('effectSummary.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('effectSummary.required', { ns: 'fields' }) }}
                     label={t('effectSummary.label', { ns: 'fields' })}
                     className="adminEditImplant__bonus__value adminEditImplant__bonus__value--l"
                   />
@@ -1010,18 +1026,14 @@ const AdminEditImplant: FC = () => {
                   <Input
                     control={control}
                     inputName={`actions.action-${actionId}.title`}
-                    rules={{
-                      required: t('actionTitle.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('actionTitle.required', { ns: 'fields' }) }}
                     label={t('actionTitle.label', { ns: 'fields' })}
                     className="adminEditImplant__bonus__value adminEditImplant__bonus__value--l"
                   />
                   <SmartSelect
                     control={control}
                     inputName={`actions.action-${actionId}.type`}
-                    rules={{
-                      required: t('actionType.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('actionType.required', { ns: 'fields' }) }}
                     label={t('actionType.label', { ns: 'fields' })}
                     options={actionTypeSelect}
                     className="adminEditImplant__bonus__select adminEditImplant__bonus__value--s"
@@ -1029,9 +1041,7 @@ const AdminEditImplant: FC = () => {
                   <SmartSelect
                     control={control}
                     inputName={`actions.action-${actionId}.duration`}
-                    rules={{
-                      required: t('actionDuration.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('actionDuration.required', { ns: 'fields' }) }}
                     label={t('actionDuration.label', { ns: 'fields' })}
                     options={actionDurationSelect}
                     className="adminEditImplant__bonus__select adminEditImplant__bonus__value--s"
@@ -1040,9 +1050,7 @@ const AdminEditImplant: FC = () => {
                     control={control}
                     type="textarea"
                     inputName={`actions.action-${actionId}.summary`}
-                    rules={{
-                      required: t('actionSummary.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('actionSummary.required', { ns: 'fields' }) }}
                     label={t('actionSummary.label', { ns: 'fields' })}
                     className="adminEditImplant__bonus__value adminEditImplant__bonus__value--l"
                   />

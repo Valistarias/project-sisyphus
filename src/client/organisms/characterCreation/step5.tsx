@@ -1,13 +1,21 @@
-import React, { useCallback, useEffect, useMemo, type FC, type ReactNode } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, type FC, type ReactNode
+} from 'react';
 
 import { motion } from 'framer-motion';
-import { useForm, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../providers';
 
-import { Ap, Atitle } from '../../atoms';
-import { Button, Checkbox } from '../../molecules';
+import {
+  Ap, Atitle
+} from '../../atoms';
+import {
+  Button, Checkbox
+} from '../../molecules';
 import {
   ArmorDisplay,
   BagDisplay,
@@ -28,7 +36,9 @@ import type {
   ICuratedWeapon
 } from '../../types';
 
-import { classTrim, countTrueInArray, getValuesFromGlobalValues } from '../../utils';
+import {
+  classTrim, countTrueInArray, getValuesFromGlobalValues
+} from '../../utils';
 
 import './characterCreation.scss';
 
@@ -79,7 +89,9 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
   onSubmitItems
 }) => {
   const { t } = useTranslation();
-  const { globalValues, character } = useGlobalVars();
+  const {
+    globalValues, character
+  } = useGlobalVars();
 
   const createDefaultData = useCallback(
     (
@@ -173,12 +185,21 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
     []
   );
 
-  const { handleSubmit, watch, control, reset } = useForm<FormValues>({
-    defaultValues: useMemo(
-      () => createDefaultData(weapons, armors, bags, items, programs, implants, character),
-      [createDefaultData, weapons, armors, bags, items, programs, implants, character]
-    )
-  });
+  const {
+    handleSubmit, watch, control, reset
+  } = useForm<FormValues>({ defaultValues: useMemo(
+    () => createDefaultData(weapons, armors, bags, items, programs, implants, character),
+    [
+      createDefaultData,
+      weapons,
+      armors,
+      bags,
+      items,
+      programs,
+      implants,
+      character
+    ]
+  ) });
 
   const {
     nbOptionnalWeaponCharCreate,
@@ -220,7 +241,9 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
   }, [onSubmitItems, starterMoneyNoItem]);
 
   const onSaveItems: SubmitHandler<FormValues> = useCallback(
-    ({ weapons, armors, bags, items, programs, implants }) => {
+    ({
+      weapons, armors, bags, items, programs, implants
+    }) => {
       if (onSubmitItems !== undefined) {
         const weaponIds: string[] = [];
         Object.keys(weapons).forEach((weaponId) => {
@@ -603,26 +626,32 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
 
   useEffect(() => {
     reset(createDefaultData(weapons, armors, bags, items, programs, implants, character));
-  }, [character, reset, createDefaultData, weapons, armors, bags, items, programs, implants]);
+  }, [
+    character,
+    reset,
+    createDefaultData,
+    weapons,
+    armors,
+    bags,
+    items,
+    programs,
+    implants
+  ]);
 
   return (
     <motion.div
       className={classTrim(`
         characterCreation-step5
       `)}
-      initial={{
-        transform: 'skew(90deg, 0deg) scale3d(.2, .2, .2)'
-      }}
+      initial={{ transform: 'skew(90deg, 0deg) scale3d(.2, .2, .2)' }}
       animate={{
         transform: 'skew(0, 0) scale3d(1, 1, 1)',
-        transitionEnd: {
-          transform: 'none'
-        }
+        transitionEnd: { transform: 'none' }
       }}
-      exit={{
-        transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)'
+      exit={{ transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)' }}
+      transition={{
+        ease: 'easeInOut', duration: 0.2
       }}
-      transition={{ ease: 'easeInOut', duration: 0.2 }}
     >
       <Ap className="characterCreation-step5__text">
         {t('characterCreation.step5.text', { ns: 'components' })}
@@ -655,12 +684,12 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
                 disabled={!canSubmitList || loading}
                 theme={!canSubmitList || loading ? 'text-only' : 'afterglow'}
               >
-                {t('characterCreation.step5.next', { ns: 'components', money: starterMoney })}
+                {t('characterCreation.step5.next', {
+                  ns: 'components', money: starterMoney
+                })}
               </Button>
               <Ap className="characterCreation-step5__choices__main__btns__or">
-                {t('characterCreation.step5.or', {
-                  ns: 'components'
-                })}
+                {t('characterCreation.step5.or', { ns: 'components' })}
               </Ap>
               <Button
                 size="large"

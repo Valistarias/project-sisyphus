@@ -1,21 +1,39 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useNavigate, useParams
+} from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input, SmartSelect } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input, SmartSelect
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 import { possibleStarterKitValues } from '../../../types/items';
 
-import type { ICuratedBasicNPC, ICuratedProgram } from '../../../types';
+import type {
+  ICuratedBasicNPC, ICuratedProgram
+} from '../../../types';
 
-import { classTrim, isThereDuplicate } from '../../../utils';
+import {
+  classTrim, isThereDuplicate
+} from '../../../utils';
 
 import './adminEditProgram.scss';
 
@@ -45,8 +63,12 @@ const AdminEditProgram: FC = () => {
   const { api } = useApi();
   const { id } = useParams();
   const confMessageEvt = useConfirmMessage();
-  const { programScopes, rarities, damageTypes } = useGlobalVars();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    programScopes, rarities, damageTypes
+  } = useGlobalVars();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const navigate = useNavigate();
 
   const [displayInt, setDisplayInt] = useState(false);
@@ -62,19 +84,17 @@ const AdminEditProgram: FC = () => {
   const [programText, setProgramText] = useState('');
   const [programTextFr, setProgramTextFr] = useState('');
 
-  const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const createDefaultData = useCallback((programData: ICuratedProgram | null) => {
     if (programData == null) {
       return {};
     }
-    const { program, i18n } = programData;
+    const {
+      program, i18n
+    } = programData;
     const defaultData: Partial<FormValues> = {};
     defaultData.name = program.title;
     defaultData.programScope = program.programScope;
@@ -116,9 +136,7 @@ const AdminEditProgram: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({
-    defaultValues: useMemo(() => createDefaultData(programData), [createDefaultData, programData])
-  });
+  } = useForm({ defaultValues: useMemo(() => createDefaultData(programData), [createDefaultData, programData]) });
 
   // TODO: Internationalization
   const programScopeList = useMemo(() => programScopes.map(({ programScope }) => ({
@@ -203,7 +221,9 @@ const AdminEditProgram: FC = () => {
         return;
       }
 
-      const curatedDamages = sortedDamages.map(({ damageType, dices }) => ({
+      const curatedDamages = sortedDamages.map(({
+        damageType, dices
+      }) => ({
         damageType,
         dices
       }));
@@ -217,12 +237,10 @@ const AdminEditProgram: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            summary: htmlFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          summary: htmlFr
+        } };
       }
 
       api.programs
@@ -258,9 +276,7 @@ const AdminEditProgram: FC = () => {
           const { data } = response;
           setError('root.serverError', {
             type: 'server',
-            message: t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
-            })
+            message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
           });
         });
     },
@@ -312,16 +328,12 @@ const AdminEditProgram: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skillBranch.name`), 'capitalize') })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skillBranch.name`), 'capitalize') })
                   });
                 }
               });
@@ -331,7 +343,17 @@ const AdminEditProgram: FC = () => {
         confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [api, programData, confMessageEvt, t, id, getNewId, createAlert, navigate, setError]);
+  }, [
+    api,
+    programData,
+    confMessageEvt,
+    t,
+    id,
+    getNewId,
+    createAlert,
+    navigate,
+    setError
+  ]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
@@ -339,7 +361,9 @@ const AdminEditProgram: FC = () => {
       api.programs
         .get({ programId: id })
         .then((curatedProgram: ICuratedProgram) => {
-          const { program, i18n } = curatedProgram;
+          const {
+            program, i18n
+          } = curatedProgram;
           setProgramData(curatedProgram);
           setProgramText(program.summary);
           if (i18n.fr !== undefined) {
@@ -374,12 +398,22 @@ const AdminEditProgram: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, id, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    id,
+    t
+  ]);
 
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(programData));
-  }, [programData, reset, createDefaultData]);
+  }, [
+    programData,
+    reset,
+    createDefaultData
+  ]);
 
   return (
     <div
@@ -410,9 +444,7 @@ const AdminEditProgram: FC = () => {
             control={control}
             inputName="name"
             type="text"
-            rules={{
-              required: t('nameProgram.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('nameProgram.required', { ns: 'fields' }) }}
             label={t('nameProgram.label', { ns: 'fields' })}
             className="adminEditProgram__basics__name"
           />
@@ -452,9 +484,7 @@ const AdminEditProgram: FC = () => {
               control={control}
               inputName="cost"
               type="number"
-              rules={{
-                required: t('programCost.required', { ns: 'fields' })
-              }}
+              rules={{ required: t('programCost.required', { ns: 'fields' }) }}
               label={t('programCost.label', { ns: 'fields' })}
               className="adminEditProgram__details__fields__elt"
             />
@@ -510,9 +540,7 @@ const AdminEditProgram: FC = () => {
                   <SmartSelect
                     control={control}
                     inputName={`damages.damage-${damagesId}.damageType`}
-                    rules={{
-                      required: t('damagesType.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('damagesType.required', { ns: 'fields' }) }}
                     label={t('damagesType.label', { ns: 'fields' })}
                     options={damageTypeList}
                     className="adminEditProgram__bonus__select"
@@ -521,9 +549,7 @@ const AdminEditProgram: FC = () => {
                     control={control}
                     inputName={`damages.damage-${damagesId}.dices`}
                     type="text"
-                    rules={{
-                      required: t('damagesValue.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('damagesValue.required', { ns: 'fields' }) }}
                     label={t('damagesValue.label', { ns: 'fields' })}
                     className="adminEditProgram__bonus__value"
                   />

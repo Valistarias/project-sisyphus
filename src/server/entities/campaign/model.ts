@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
 import type { ICharacter } from '../character';
 import type { IUser } from '../user/model';
@@ -25,9 +27,7 @@ type HydratedICompleteCampaign = HydratedDocument<
 >;
 
 type HydratedISimpleCampaign = HydratedDocument<
-  Omit<ICampaign, 'owner' | 'characters'> & {
-    owner: HydratedDocument<IUser>
-  }
+  Omit<ICampaign, 'owner' | 'characters'> & { owner: HydratedDocument<IUser> }
 >;
 
 const campaignSchema = new Schema<ICampaign>(

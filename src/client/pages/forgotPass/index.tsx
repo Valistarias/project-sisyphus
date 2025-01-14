@@ -1,14 +1,24 @@
-import React, { useCallback, type FC } from 'react';
+import React, {
+  useCallback, type FC
+} from 'react';
 
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { useApi, useSystemAlerts } from '../../providers';
+import {
+  useApi, useSystemAlerts
+} from '../../providers';
 
-import { Aerror, Ap, Atitle } from '../../atoms';
-import { Button, Input } from '../../molecules';
+import {
+  Aerror, Ap, Atitle
+} from '../../atoms';
+import {
+  Button, Input
+} from '../../molecules';
 import { Alert } from '../../organisms';
 
 import { regexMail } from '../../utils';
@@ -22,7 +32,9 @@ interface FormValues {
 const ForgotPassword: FC = () => {
   const { api } = useApi();
   const { t } = useTranslation();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const navigate = useNavigate();
 
   const {
@@ -36,16 +48,18 @@ const ForgotPassword: FC = () => {
     ({ mail }) => {
       if (api !== undefined) {
         api.mailToken
-          .create({
-            mail
-          })
+          .create({ mail })
           .then(() => {
             const newId = getNewId();
             createAlert({
               key: newId,
               dom: (
                 <Alert key={newId} id={newId} timer={5}>
-                  <Ap>{t('forgotPass.successSent', { ns: 'pages', mail })}</Ap>
+                  <Ap>
+                    {t('forgotPass.successSent', {
+                      ns: 'pages', mail
+                    })}
+                  </Ap>
                 </Alert>
               )
             });
@@ -55,14 +69,19 @@ const ForgotPassword: FC = () => {
             const { data } = response;
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize') })
             });
           });
       }
     },
-    [api, createAlert, getNewId, navigate, setError, t]
+    [
+      api,
+      createAlert,
+      getNewId,
+      navigate,
+      setError,
+      t
+    ]
   );
 
   return (

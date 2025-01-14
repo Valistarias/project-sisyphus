@@ -2,12 +2,16 @@ import React, { type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { Ap, type IAButton } from '../atoms';
+import {
+  Ap, type IAButton
+} from '../atoms';
 
 import type { ICuratedStat } from '../types';
 import type { ISourcePoints } from '../utils/character';
 
-import { addSymbol, classTrim } from '../utils';
+import {
+  addSymbol, classTrim
+} from '../utils';
 
 import './detailsBonuses.scss';
 
@@ -18,7 +22,9 @@ interface IDetailsBonuses extends IAButton {
   stat?: ICuratedStat
 }
 
-const DetailsBonuses: FC<IDetailsBonuses> = ({ bonuses, stat }) => {
+const DetailsBonuses: FC<IDetailsBonuses> = ({
+  bonuses, stat
+}) => {
   const { t } = useTranslation();
 
   // TODO: Deal with i18n
@@ -87,7 +93,9 @@ const DetailsBonuses: FC<IDetailsBonuses> = ({ bonuses, stat }) => {
     >
       <Ap className="details-bonuses__title">{t('detailBonuses.title', { ns: 'components' })}</Ap>
       {lines !== undefined
-        ? Object.values(lines).map(({ id, total, text }) => (
+        ? Object.values(lines).map(({
+            id, total, text
+          }) => (
             <Ap key={id} className="details-bonuses__line">
               {`${text}:`}
               <span

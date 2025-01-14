@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model
+} from 'mongoose';
 
 interface ICharParam {
   /** The title of the Character Param */
@@ -31,4 +33,6 @@ const charParamSchema = new Schema<ICharParam>({
 
 const CharParamModel = (): Model<ICharParam> => model('CharParam', charParamSchema);
 
-export { CharParamModel, type HydratedICharParam, type ICharParam };
+export {
+  CharParamModel, type HydratedICharParam, type ICharParam
+};

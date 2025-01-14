@@ -1,8 +1,14 @@
-import type { Request, Response } from 'express';
-import type { Error, HydratedDocument } from 'mongoose';
+import type {
+  Request, Response
+} from 'express';
+import type {
+  Error, HydratedDocument
+} from 'mongoose';
 
 import bcrypt from 'bcryptjs';
-import jwt, { type JwtPayload, type Secret } from 'jsonwebtoken';
+import jwt, {
+  type JwtPayload, type Secret
+} from 'jsonwebtoken';
 
 import config from '../../config/db.config';
 import db from '../../models';
@@ -16,22 +22,22 @@ import {
 import { removeToken } from '../mailToken/controller';
 import { findUserById } from '../user/controller';
 
-import type { HydratedIUser, IRole, IUser } from '../index';
+import type {
+  HydratedIUser, IRole, IUser
+} from '../index';
 import type { IMailgunClient } from 'mailgun.js/Interfaces';
 
-const { User, Role } = db;
+const {
+  User, Role
+} = db;
 
 interface IVerifyTokenRequest extends Request {
   userId: string
-  session: {
-    token: string
-  }
+  session: { token: string }
 }
 
 interface ISigninRequest extends Request {
-  session: {
-    token: string
-  } | null
+  session: { token: string } | null
 }
 
 const signUp = (req: Request, res: Response, mg: IMailgunClient): void => {
@@ -56,9 +62,7 @@ const signUp = (req: Request, res: Response, mg: IMailgunClient): void => {
               const verifToken = jwt.sign(
                 { IdMail: user._id },
                 config.secret(process.env) as Secret,
-                {
-                  expiresIn: '7d'
-                }
+                { expiresIn: '7d' }
               );
               const url = `http://localhost:3000/verify/${verifToken}`;
               mg.messages
@@ -126,14 +130,11 @@ const signIn = (req: ISigninRequest, res: Response): void => {
         return;
       }
 
-      const token = jwt.sign({ id: user.id }, config.secret(process.env) as Secret, {
-        expiresIn: 86400 // 24 hours
+      const token = jwt.sign({ id: user.id }, config.secret(process.env) as Secret, { expiresIn: 86400 // 24 hours
       });
 
       if (req.session === null || req.session === undefined) {
-        req.session = {
-          token
-        };
+        req.session = { token };
       } else {
         req.session.token = token;
       }
@@ -162,9 +163,7 @@ const verifyTokenSingIn = async (token: string): Promise<boolean> =>
       if (payload === null || typeof payload === 'string') {
         reject(gemNotFound('Token'));
       } else {
-        User.findOne({
-          _id: payload.IdMail
-        })
+        User.findOne({ _id: payload.IdMail })
           .then((user) => {
             if (user === null) {
               reject(gemNotFound('User'));
@@ -202,7 +201,9 @@ const getLogged = (req: IVerifyTokenRequest, res: Response): void => {
 };
 
 const updatePassword = (req: Request, res: Response): void => {
-  const { userId, pass, confirmPass } = req.body;
+  const {
+    userId, pass, confirmPass
+  } = req.body;
   if (pass !== confirmPass || pass === undefined || confirmPass === undefined) {
     res.status(404).send(gemNotFound('Password'));
   } else {
@@ -217,7 +218,9 @@ const updatePassword = (req: Request, res: Response): void => {
               user
                 .save()
                 .then(() => {
-                  res.send({ message: 'User was updated successfully!', user });
+                  res.send({
+                    message: 'User was updated successfully!', user
+                  });
                 })
                 .catch((err: unknown) => {
                   res.status(500).send(gemServerError(err));
@@ -234,4 +237,6 @@ const updatePassword = (req: Request, res: Response): void => {
   }
 };
 
-export { getLogged, signIn, signOut, signUp, updatePassword, verifyTokenSingIn };
+export {
+  getLogged, signIn, signOut, signUp, updatePassword, verifyTokenSingIn
+};

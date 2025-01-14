@@ -1,8 +1,12 @@
 import type { Router } from 'express';
 
-import { adminNeeded, verifyToken } from '../../middlewares';
+import {
+  adminNeeded, verifyToken
+} from '../../middlewares';
 
-import { create, deleteTipText, findAll, findSingle, update } from './controller';
+import {
+  create, deleteTipText, findAll, findSingle, update
+} from './controller';
 
 export default (app: Router): void => {
   app.use((req, res, next) => {

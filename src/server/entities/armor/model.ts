@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
 import type {
   IAction,
@@ -117,4 +119,6 @@ const ArmorSchema = new Schema<IArmor>({
 
 const ArmorModel = (): Model<IArmor> => model('Armor', ArmorSchema);
 
-export { ArmorModel, type HydratedIArmor, type IArmor };
+export {
+  ArmorModel, type HydratedIArmor, type IArmor
+};

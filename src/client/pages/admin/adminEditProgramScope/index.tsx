@@ -1,16 +1,30 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useNavigate, useParams
+} from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 
 import type { ICuratedProgramScope } from '../../../types';
 
@@ -27,7 +41,9 @@ interface FormValues {
 const AdminEditProgramScope: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const { reloadProgramScopes } = useGlobalVars();
   const confMessageEvt = useConfirmMessage();
   const { id } = useParams();
@@ -44,19 +60,17 @@ const AdminEditProgramScope: FC = () => {
   const [programScopeText, setProgramScopeText] = useState('');
   const [programScopeTextFr, setProgramScopeTextFr] = useState('');
 
-  const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const createDefaultData = useCallback((programScopeData: ICuratedProgramScope | null) => {
     if (programScopeData == null) {
       return {};
     }
-    const { programScope, i18n } = programScopeData;
+    const {
+      programScope, i18n
+    } = programScopeData;
     const defaultData: Partial<FormValues> = {};
     defaultData.name = programScope.title;
     defaultData.scopeId = programScope.scopeId;
@@ -73,15 +87,15 @@ const AdminEditProgramScope: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({
-    defaultValues: useMemo(
-      () => createDefaultData(programScopeData),
-      [createDefaultData, programScopeData]
-    )
-  });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(programScopeData),
+    [createDefaultData, programScopeData]
+  ) });
 
   const onSaveProgramScope: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, scopeId }) => {
+    ({
+      name, nameFr, scopeId
+    }) => {
       if (
         programScopeText === null
         || programScopeTextFr === null
@@ -103,12 +117,10 @@ const AdminEditProgramScope: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            text: htmlTextFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          text: htmlTextFr
+        } };
       }
 
       api.programScopes
@@ -136,16 +148,12 @@ const AdminEditProgramScope: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id'
-              })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
             });
           }
         });
@@ -201,16 +209,12 @@ const AdminEditProgramScope: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.programScope.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.programScope.name`), 'capitalize') })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.programScope.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.programScope.name`), 'capitalize') })
                   });
                 }
               });
@@ -220,7 +224,18 @@ const AdminEditProgramScope: FC = () => {
         confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [api, confMessageEvt, t, programScopeData?.programScope.title, id, getNewId, createAlert, reloadProgramScopes, navigate, setError]);
+  }, [
+    api,
+    confMessageEvt,
+    t,
+    programScopeData?.programScope.title,
+    id,
+    getNewId,
+    createAlert,
+    reloadProgramScopes,
+    navigate,
+    setError
+  ]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
@@ -228,7 +243,9 @@ const AdminEditProgramScope: FC = () => {
       api.programScopes
         .get({ programScopeId: id })
         .then((curatedProgramScope: ICuratedProgramScope) => {
-          const { programScope, i18n } = curatedProgramScope;
+          const {
+            programScope, i18n
+          } = curatedProgramScope;
           setProgramScopeData(curatedProgramScope);
           setProgramScopeText(programScope.summary);
           if (i18n.fr !== undefined) {
@@ -247,7 +264,13 @@ const AdminEditProgramScope: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, id, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    id,
+    t
+  ]);
 
   // The Autosave
   useEffect(() => {
@@ -269,7 +292,11 @@ const AdminEditProgramScope: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(programScopeData));
-  }, [programScopeData, reset, createDefaultData]);
+  }, [
+    programScopeData,
+    reset,
+    createDefaultData
+  ]);
 
   return (
     <div

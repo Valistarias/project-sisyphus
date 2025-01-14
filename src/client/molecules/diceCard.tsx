@@ -1,7 +1,11 @@
-import React, { useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import holoBackground from '../assets/imgs/tvbg2.gif';
-import { Aicon, Ap, type typeIcons } from '../atoms';
+import {
+  Aicon, Ap, type typeIcons
+} from '../atoms';
 
 import type { TypeDice } from '../types';
 
@@ -34,7 +38,9 @@ const _singleStepAnim = _totalStepAnim / totalTicks;
 // Score to attain for new random number displayed
 const randNumberTreshold = _totalStepAnim / displayedRandNumber;
 
-const DiceCard: FC<IDiceCard> = ({ type, value, size = 'medium', skip = false }) => {
+const DiceCard: FC<IDiceCard> = ({
+  type, value, size = 'medium', skip = false
+}) => {
   const [displayedValue, setDisplayedValue] = useState(0);
   const [animEnded, setAnimEnded] = useState(false);
 
@@ -56,7 +62,13 @@ const DiceCard: FC<IDiceCard> = ({ type, value, size = 'medium', skip = false })
     }
 
     return displayedValue.toString();
-  }, [displayedValue, skip, type, value, animEnded]);
+  }, [
+    displayedValue,
+    skip,
+    type,
+    value,
+    animEnded
+  ]);
 
   useEffect(() => {
     if (value != null) {

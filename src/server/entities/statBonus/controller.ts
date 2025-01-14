@@ -1,26 +1,36 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 import type { HydratedDocument } from 'mongoose';
 
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemInvalidField, gemNotFound, gemServerError
+} from '../../utils/globalErrorMessage';
 
-import type { INode, IStat } from '../index';
-import type { HydratedIStatBonus, IStatBonus } from './model';
+import type {
+  INode, IStat
+} from '../index';
+import type {
+  HydratedIStatBonus, IStatBonus
+} from './model';
 
-const { StatBonus, Node } = db;
+const {
+  StatBonus, Node
+} = db;
 
 const findStatBonuses = async (): Promise<HydratedIStatBonus[]> =>
   await new Promise((resolve, reject) => {
     StatBonus.find()
       .populate<{ stat: IStat }>('stat')
-      .then(async (res?: HydratedIStatBonus[] | null) => {
+      .then((res?: HydratedIStatBonus[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('StatBonuses'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -29,14 +39,14 @@ const findStatBonusById = async (id: string): Promise<HydratedIStatBonus> =>
   await new Promise((resolve, reject) => {
     StatBonus.findById(id)
       .populate<{ stat: IStat }>('stat')
-      .then(async (res?: HydratedIStatBonus | null) => {
+      .then((res?: HydratedIStatBonus | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('StatBonus'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -146,7 +156,9 @@ const curateStatBonusIds = async ({
   });
 
 const create = (req: Request, res: Response): void => {
-  const { stat, value } = req.body;
+  const {
+    stat, value
+  } = req.body;
   if (stat === undefined || value === undefined) {
     res.status(400).send(gemInvalidField('StatBonus'));
 
@@ -169,7 +181,9 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, stat = null, value = null } = req.body;
+  const {
+    id, stat = null, value = null
+  } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('StatBonus ID'));
 
@@ -187,7 +201,9 @@ const update = (req: Request, res: Response): void => {
       statBonus
         .save()
         .then(() => {
-          res.send({ message: 'Stat bonus was updated successfully!', statBonus });
+          res.send({
+            message: 'Stat bonus was updated successfully!', statBonus
+          });
         })
         .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
@@ -198,7 +214,7 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteStatBonusById = async (id: string): Promise<boolean> =>
+const deleteStatBonusById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('StatBonus ID'));
@@ -215,8 +231,8 @@ const deleteStatBonusById = async (id: string): Promise<boolean> =>
   });
 
 const deleteStatBonus = (req: Request, res: Response): void => {
-  const { id } = req.body;
-  deleteStatBonusById(id as string)
+  const { id }: { id: string } = req.body;
+  deleteStatBonusById(id)
     .then(() => {
       res.send({ message: 'Stat bonus was deleted successfully!' });
     })

@@ -1,12 +1,18 @@
-import React, { useCallback, useMemo, useRef, useState, type FC, type ReactNode } from 'react';
+import React, {
+  useCallback, useMemo, useRef, useState, type FC, type ReactNode
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import { useTranslation } from 'react-i18next';
 
-import { useApi, useSystemAlerts } from '../providers';
+import {
+  useApi, useSystemAlerts
+} from '../providers';
 
 import { Ap } from '../atoms';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../organisms';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../organisms';
 
 import { classTrim } from '../utils';
 
@@ -21,10 +27,14 @@ interface IHighlight {
   children: ReactNode
 }
 
-const Highlight: FC<IHighlight> = ({ id, type, children }) => {
+const Highlight: FC<IHighlight> = ({
+  id, type, children
+}) => {
   const { api } = useApi();
   const { t } = useTranslation();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
 
   const [highlightContent, setHighlightContent] = useState<unknown>(null);
   const [isHighlightShown, setIsHighlightShown] = useState<boolean>(false);
@@ -77,7 +87,14 @@ const Highlight: FC<IHighlight> = ({ id, type, children }) => {
           });
         });
     }
-  }, [api, createAlert, getNewId, sentOptions, t, type]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    sentOptions,
+    t,
+    type
+  ]);
 
   const onOpenHighlight = useCallback(() => {
     if (!calledApi.current) {
@@ -101,7 +118,11 @@ const Highlight: FC<IHighlight> = ({ id, type, children }) => {
       <span className="highlight__text">{children}</span>
       <span
         className="highlight__info"
-        style={isHighlightShown ? { opacity: '1', pointerEvents: 'all' } : undefined}
+        style={isHighlightShown
+          ? {
+              opacity: '1', pointerEvents: 'all'
+            }
+          : undefined}
       >
         {contentHighlight === null
           ? (

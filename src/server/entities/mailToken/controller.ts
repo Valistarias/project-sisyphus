@@ -1,15 +1,23 @@
-import type { Request, Response } from 'express';
-import type { HydratedDocument, Error } from 'mongoose';
+import type {
+  Request, Response
+} from 'express';
+import type {
+  HydratedDocument, Error
+} from 'mongoose';
 
 import crypto from 'crypto';
 
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemInvalidField, gemNotFound, gemServerError
+} from '../../utils/globalErrorMessage';
 
 import type { IUser } from '../user/model';
 import type { IMailgunClient } from 'mailgun.js/Interfaces';
 
-const { User, MailToken } = db;
+const {
+  User, MailToken
+} = db;
 
 const createToken = (req: Request, res: Response, mg: IMailgunClient): void => {
   const { mail = null } = req.body;
@@ -58,7 +66,9 @@ const createToken = (req: Request, res: Response, mg: IMailgunClient): void => {
     });
 };
 
-const verifyMailToken = async ({ userId, token }): Promise<HydratedDocument<IUser> | null> =>
+const verifyMailToken = async ({
+  userId, token
+}): Promise<HydratedDocument<IUser> | null> =>
   await new Promise((resolve, reject) => {
     if (userId === undefined || token === undefined) {
       resolve(null);
@@ -89,8 +99,12 @@ const verifyMailToken = async ({ userId, token }): Promise<HydratedDocument<IUse
 
 const removeToken = async (req: Request): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    const { userId, token } = req.body;
-    verifyMailToken({ userId, token })
+    const {
+      userId, token
+    } = req.body;
+    verifyMailToken({
+      userId, token
+    })
       .then((user) => {
         if (user !== undefined && user !== null) {
           MailToken.deleteMany({ userId })
@@ -110,8 +124,12 @@ const removeToken = async (req: Request): Promise<boolean> =>
   });
 
 const getUserMailByRequest = (req: Request, res: Response): void => {
-  const { userId, token } = req.query;
-  verifyMailToken({ userId, token })
+  const {
+    userId, token
+  } = req.query;
+  verifyMailToken({
+    userId, token
+  })
     .then((user) => {
       if (user !== undefined && user !== null) {
         res.status(200).send(user.mail);
@@ -124,4 +142,6 @@ const getUserMailByRequest = (req: Request, res: Response): void => {
     });
 };
 
-export { createToken, verifyMailToken, removeToken, getUserMailByRequest };
+export {
+  createToken, verifyMailToken, removeToken, getUserMailByRequest
+};

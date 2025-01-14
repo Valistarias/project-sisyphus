@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
 import type { IRole } from '../index';
 
@@ -28,9 +30,7 @@ interface IUser {
 }
 
 type HydratedIUser = HydratedDocument<
-  Omit<IUser, 'roles'> & {
-    roles: IRole[]
-  }
+  Omit<IUser, 'roles'> & { roles: IRole[] }
 >;
 
 const userSchema = new Schema<IUser>({
@@ -63,4 +63,6 @@ const userSchema = new Schema<IUser>({
 
 const UserModel = (): Model<IUser> => model('User', userSchema);
 
-export { UserModel, type HydratedIUser, type IUser };
+export {
+  UserModel, type HydratedIUser, type IUser
+};

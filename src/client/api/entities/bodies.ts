@@ -6,7 +6,9 @@ import type { IBody } from '../../types';
 
 interface IUpdateStatsPayload {
   id: string
-  stats: Array<{ id: string, value: number }>
+  stats: Array<{
+    id: string, value: number
+  }>
 }
 interface IResetItemsPayload {
   id: string

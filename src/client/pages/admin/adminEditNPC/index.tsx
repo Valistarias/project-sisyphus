@@ -1,16 +1,30 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useNavigate, useParams
+} from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input, SmartSelect } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input, SmartSelect
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 
 import type { ICuratedNPC } from '../../../types';
 
@@ -50,8 +64,12 @@ const AdminEditNPC: FC = () => {
   const { api } = useApi();
   const { id } = useParams();
   const confMessageEvt = useConfirmMessage();
-  const { damageTypes, weaponScopes } = useGlobalVars();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    damageTypes, weaponScopes
+  } = useGlobalVars();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const navigate = useNavigate();
 
   const [displayInt, setDisplayInt] = useState(false);
@@ -85,19 +103,17 @@ const AdminEditNPC: FC = () => {
   const [nPCText, setNPCText] = useState('');
   const [nPCTextFr, setNPCTextFr] = useState('');
 
-  const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const createDefaultData = useCallback((nPCData: ICuratedNPC | null) => {
     if (nPCData == null) {
       return {};
     }
-    const { nPC, i18n } = nPCData;
+    const {
+      nPC, i18n
+    } = nPCData;
     const defaultData: Partial<FormValues> = {};
     defaultData.name = nPC.title;
     defaultData.virtual = nPC.virtual ? '1' : '0';
@@ -143,9 +159,7 @@ const AdminEditNPC: FC = () => {
     control,
     reset,
     formState: { errors }
-  } = useForm({
-    defaultValues: useMemo(() => createDefaultData(nPCData), [createDefaultData, nPCData])
-  });
+  } = useForm({ defaultValues: useMemo(() => createDefaultData(nPCData), [createDefaultData, nPCData]) });
 
   const boolRange = useMemo(
     () => [
@@ -172,7 +186,9 @@ const AdminEditNPC: FC = () => {
   }, []);
 
   const onSaveNPC: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, virtual, speed, flightSpeed, swimSpeed, hp, pr, ar, attacks }) => {
+    ({
+      name, nameFr, virtual, speed, flightSpeed, swimSpeed, hp, pr, ar, attacks
+    }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -198,16 +214,12 @@ const AdminEditNPC: FC = () => {
           weaponScope,
           dices,
           bonusToHit,
-          i18n: {
-            ...(titleFr !== undefined || summaryFr !== undefined
-              ? {
-                  fr: {
-                    title: titleFr,
-                    summary: summaryFr
-                  }
-                }
-              : {})
-          }
+          i18n: { ...(titleFr !== undefined || summaryFr !== undefined
+            ? { fr: {
+                title: titleFr,
+                summary: summaryFr
+              } }
+            : {}) }
         })
       );
 
@@ -220,12 +232,10 @@ const AdminEditNPC: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            summary: htmlFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          summary: htmlFr
+        } };
       }
 
       api.nPCs
@@ -259,21 +269,26 @@ const AdminEditNPC: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize') })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize') })
             });
           }
         });
     },
-    [introEditor, introFrEditor, api, id, getNewId, createAlert, t, setError]
+    [
+      introEditor,
+      introFrEditor,
+      api,
+      id,
+      getNewId,
+      createAlert,
+      t,
+      setError
+    ]
   );
 
   const onAskDelete = useCallback(() => {
@@ -311,16 +326,12 @@ const AdminEditNPC: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skillBranch.name`), 'capitalize') })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skillBranch.name`), 'capitalize') })
                   });
                 }
               });
@@ -330,7 +341,17 @@ const AdminEditNPC: FC = () => {
         confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [api, nPCData, confMessageEvt, t, id, getNewId, createAlert, navigate, setError]);
+  }, [
+    api,
+    nPCData,
+    confMessageEvt,
+    t,
+    id,
+    getNewId,
+    createAlert,
+    navigate,
+    setError
+  ]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
@@ -338,7 +359,9 @@ const AdminEditNPC: FC = () => {
       api.nPCs
         .get({ nPCId: id })
         .then((curatedNPC: ICuratedNPC) => {
-          const { nPC, i18n } = curatedNPC;
+          const {
+            nPC, i18n
+          } = curatedNPC;
           setNPCData(curatedNPC);
           setNPCText(nPC.summary);
           if (i18n.fr !== undefined) {
@@ -357,12 +380,22 @@ const AdminEditNPC: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, id, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    id,
+    t
+  ]);
 
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(nPCData));
-  }, [nPCData, reset, createDefaultData]);
+  }, [
+    nPCData,
+    reset,
+    createDefaultData
+  ]);
 
   return (
     <div
@@ -390,9 +423,7 @@ const AdminEditNPC: FC = () => {
             control={control}
             inputName="name"
             type="text"
-            rules={{
-              required: t('nameNPC.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('nameNPC.required', { ns: 'fields' }) }}
             label={t('nameNPC.label', { ns: 'fields' })}
             className="adminEditNPC__basics__name"
           />
@@ -402,9 +433,7 @@ const AdminEditNPC: FC = () => {
               inputName="hp"
               type="number"
               label={t('hpNPC.label', { ns: 'fields' })}
-              rules={{
-                required: t('hpNPC.required', { ns: 'fields' })
-              }}
+              rules={{ required: t('hpNPC.required', { ns: 'fields' }) }}
               className="adminEditNPC__details__hp"
             />
             <Input
@@ -412,9 +441,7 @@ const AdminEditNPC: FC = () => {
               inputName="ar"
               type="number"
               label={t('arNPC.label', { ns: 'fields' })}
-              rules={{
-                required: t('arNPC.required', { ns: 'fields' })
-              }}
+              rules={{ required: t('arNPC.required', { ns: 'fields' }) }}
               className="adminEditNPC__details__ar"
             />
             <Input
@@ -440,9 +467,7 @@ const AdminEditNPC: FC = () => {
               inputName="speed"
               type="number"
               label={t('speedNPC.label', { ns: 'fields' })}
-              rules={{
-                required: t('speedNPC.required', { ns: 'fields' })
-              }}
+              rules={{ required: t('speedNPC.required', { ns: 'fields' }) }}
               className="adminEditNPC__details__speed"
             />
             <Input
@@ -463,9 +488,7 @@ const AdminEditNPC: FC = () => {
               control={control}
               inputName="virtual"
               label={t('isVirtualNPC.label', { ns: 'fields' })}
-              rules={{
-                required: t('isVirtualNPC.required', { ns: 'fields' })
-              }}
+              rules={{ required: t('isVirtualNPC.required', { ns: 'fields' }) }}
               options={boolRange}
               className="adminEditNPC__details__isVirtual"
             />
@@ -482,18 +505,14 @@ const AdminEditNPC: FC = () => {
                   <Input
                     control={control}
                     inputName={`attacks.attack-${attackId}.title`}
-                    rules={{
-                      required: t('attackTitle.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('attackTitle.required', { ns: 'fields' }) }}
                     label={t('attackTitle.label', { ns: 'fields' })}
                     className="adminEditNPC__bonus__value adminEditNPC__bonus__value--l"
                   />
                   <SmartSelect
                     control={control}
                     inputName={`attacks.attack-${attackId}.damageType`}
-                    rules={{
-                      required: t('attackDamageType.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('attackDamageType.required', { ns: 'fields' }) }}
                     label={t('attackDamageType.label', { ns: 'fields' })}
                     options={damageTypeSelect}
                     className="adminEditNPC__bonus__select adminEditNPC__bonus__value--s"
@@ -501,9 +520,7 @@ const AdminEditNPC: FC = () => {
                   <SmartSelect
                     control={control}
                     inputName={`attacks.attack-${attackId}.weaponScope`}
-                    rules={{
-                      required: t('attackWeaponScope.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('attackWeaponScope.required', { ns: 'fields' }) }}
                     label={t('attackWeaponScope.label', { ns: 'fields' })}
                     options={weaponScopeSelect}
                     className="adminEditNPC__bonus__select adminEditNPC__bonus__value--s"
@@ -512,9 +529,7 @@ const AdminEditNPC: FC = () => {
                     control={control}
                     type="textarea"
                     inputName={`attacks.attack-${attackId}.summary`}
-                    rules={{
-                      required: t('attackSummary.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('attackSummary.required', { ns: 'fields' }) }}
                     label={t('attackSummary.label', { ns: 'fields' })}
                     className="adminEditNPC__bonus__value adminEditNPC__bonus__value--l"
                   />
@@ -522,9 +537,7 @@ const AdminEditNPC: FC = () => {
                     control={control}
                     inputName={`attacks.attack-${attackId}.dices`}
                     label={t('attackDices.label', { ns: 'fields' })}
-                    rules={{
-                      required: t('attackDices.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('attackDices.required', { ns: 'fields' }) }}
                     className="adminEditNPC__bonus__value adminEditNPC__bonus__value--s"
                   />
                   <Input

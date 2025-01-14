@@ -92,14 +92,20 @@ import {
   AdminWeaponTypesPage,
   AdminWeaponsPage
 } from './admin';
-import { CampaignPage, CampaignsPage, JoinCampaignPage, NewCampaignPage } from './campaign';
-import { CharacterEditPage, CharacterPage, CharactersPage, NewCharacterPage } from './character';
+import {
+  CampaignPage, CampaignsPage, JoinCampaignPage, NewCampaignPage
+} from './campaign';
+import {
+  CharacterEditPage, CharacterPage, CharactersPage, NewCharacterPage
+} from './character';
 import ErrorPage from './error';
 import ForgotPassPage from './forgotPass';
 import HomePage from './home';
 import LoginPage from './login';
 import NewPassPage from './newPass';
-import { ChapterPage, RuleBookPage, RuleBooksPage } from './ruleBook';
+import {
+  ChapterPage, RuleBookPage, RuleBooksPage
+} from './ruleBook';
 import SignupPage from './signup';
 
 export {

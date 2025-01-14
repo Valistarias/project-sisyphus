@@ -1,4 +1,6 @@
-import React, { useRef, useState, type FC, type ReactNode } from 'react';
+import React, {
+  useRef, useState, type FC, type ReactNode
+} from 'react';
 
 import { Quark } from '../quark';
 
@@ -10,10 +12,11 @@ import './hintButton.scss';
 
 export type IHintButton = IButton & {
   /** The content of the hint */
-  hint: ReactNode
-};
+  hint: ReactNode };
 
-const HintButton: FC<IHintButton> = ({ className, hint, ...rest }) => {
+const HintButton: FC<IHintButton> = ({
+  className, hint, ...rest
+}) => {
   const [delayHandler, setDelayHandler] = useState<NodeJS.Timeout | null>(null);
   const [isHintOpen, setHintOpen] = useState<boolean>(false);
   const [placement, setPlacement] = useState<string>('top-left');

@@ -1,11 +1,17 @@
-import React, { useCallback, useMemo, useState, type FC } from 'react';
+import React, {
+  useCallback, useMemo, useState, type FC
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { useApi, useSystemAlerts } from '../../providers';
+import {
+  useApi, useSystemAlerts
+} from '../../providers';
 
 import { Ap } from '../../atoms';
-import { Button, Input, SmartSelect, type IGroupedOption } from '../../molecules';
+import {
+  Button, Input, SmartSelect, type IGroupedOption
+} from '../../molecules';
 import { Alert } from '../index';
 
 import type { ICuratedNotion } from '../../types';
@@ -26,10 +32,14 @@ interface IMenuBar {
   ruleBookId?: string
 }
 
-export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId }) => {
+export const MenuBar: FC<IMenuBar> = ({
+  editor, complete, className, ruleBookId
+}) => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
 
   const [notions, setNotions] = useState<ICuratedNotion[]>([]);
 
@@ -95,7 +105,13 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId 
             resolve(false);
           });
       }),
-    [api, createAlert, getNewId, ruleBookId, t]
+    [
+      api,
+      createAlert,
+      getNewId,
+      ruleBookId,
+      t
+    ]
   );
 
   const onEmbed = useCallback(() => {
@@ -163,7 +179,12 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId 
       .run();
     highlightOpen(false);
     setSelectedHighlight(null);
-  }, [editor, selectedHighlight, textHighlight, highlightSelectChoices]);
+  }, [
+    editor,
+    selectedHighlight,
+    textHighlight,
+    highlightSelectChoices
+  ]);
 
   if (editor === undefined) {
     return null;
@@ -247,7 +268,9 @@ export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId 
           <Button
             size="small"
             onClick={() =>
-              editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
+              editor.chain().focus().insertTable({
+                rows: 3, cols: 3, withHeaderRow: true
+              }).run()}
           >
             {t('richTextElement.table.new', { ns: 'components' })}
           </Button>

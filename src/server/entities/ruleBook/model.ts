@@ -1,6 +1,10 @@
-import { model, Schema, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  model, Schema, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
-import type { HydratedIChapter, INotion, IRuleBookType } from '../index';
+import type {
+  HydratedIChapter, INotion, IRuleBookType
+} from '../index';
 
 interface IRuleBook {
   /** The title of the ruleBook */
@@ -20,9 +24,7 @@ interface IRuleBook {
 }
 
 type BasicHydratedIRuleBook = HydratedDocument<
-  Omit<IRuleBook, 'type'> & {
-    type: IRuleBookType
-  }
+  Omit<IRuleBook, 'type'> & { type: IRuleBookType }
 >;
 
 type HydratedIRuleBook = HydratedDocument<
@@ -79,4 +81,6 @@ ruleBookSchema.virtual('chapters', {
 
 const RuleBookModel = (): Model<IRuleBook> => model('RuleBook', ruleBookSchema);
 
-export { RuleBookModel, type BasicHydratedIRuleBook, type HydratedIRuleBook, type IRuleBook };
+export {
+  RuleBookModel, type BasicHydratedIRuleBook, type HydratedIRuleBook, type IRuleBook
+};

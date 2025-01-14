@@ -1,10 +1,14 @@
-import React, { useMemo, type FC } from 'react';
+import React, {
+  useMemo, type FC
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../providers';
 
-import { Abutton, Ali, AnodeIcon, Ap, Atitle, Aul } from '../atoms';
+import {
+  Abutton, Ali, AnodeIcon, Ap, Atitle, Aul
+} from '../atoms';
 import { RichTextElement } from '../organisms';
 import { Quark } from '../quark';
 
@@ -15,7 +19,9 @@ import type {
   ICuratedStat
 } from '../types';
 
-import { classTrim, curateStringDamage, curateStringFormula } from '../utils';
+import {
+  classTrim, curateStringDamage, curateStringFormula
+} from '../utils';
 
 import './node.scss';
 
@@ -41,13 +47,19 @@ const Node: FC<INode> = ({
 }) => {
   const { t } = useTranslation();
   const { character } = useGlobalVars();
-  const { node: nodeElt, i18n } = node;
-  const { skills, stats, charParams } = useGlobalVars();
+  const {
+    node: nodeElt, i18n
+  } = node;
+  const {
+    skills, stats, charParams
+  } = useGlobalVars();
 
   // TODO: Internationalization in ALL the file
   const content = nodeElt;
 
-  const { charParamBonuses, statBonuses, skillBonuses, bonusCount } = useMemo<{
+  const {
+    charParamBonuses, statBonuses, skillBonuses, bonusCount
+  } = useMemo<{
     charParamBonuses: Array<{
       value: number
       charParam: ICuratedCharParam | undefined
@@ -62,7 +74,9 @@ const Node: FC<INode> = ({
     }>
     bonusCount: number
   }>(() => {
-    const curatedCharParams = node.node.charParamBonuses?.map(({ value, charParam }) => ({
+    const curatedCharParams = node.node.charParamBonuses?.map(({
+      value, charParam
+    }) => ({
       value,
       charParam:
         charParams.length > 0
@@ -70,7 +84,9 @@ const Node: FC<INode> = ({
           : undefined
     }));
 
-    const curatedStats = node.node.statBonuses?.map(({ value, stat }) => ({
+    const curatedStats = node.node.statBonuses?.map(({
+      value, stat
+    }) => ({
       value,
       stat:
         stats.length > 0
@@ -78,7 +94,9 @@ const Node: FC<INode> = ({
           : undefined
     }));
 
-    const curatedSkills = node.node.skillBonuses?.map(({ value, skill }) => ({
+    const curatedSkills = node.node.skillBonuses?.map(({
+      value, skill
+    }) => ({
       value,
       skill:
         skills.length > 0
@@ -95,7 +113,12 @@ const Node: FC<INode> = ({
         + (curatedStats !== undefined ? curatedStats.length : 0)
         + (curatedCharParams !== undefined ? curatedCharParams.length : 0)
     };
-  }, [node, charParams, stats, skills]);
+  }, [
+    node,
+    charParams,
+    stats,
+    skills
+  ]);
 
   const noContent
     = (content.summary === null || content.summary === '<p class="ap"></p>')
@@ -177,7 +200,9 @@ const Node: FC<INode> = ({
                     {action.uses !== undefined
                       ? (
                           <Ap className="node__content__action__detail">
-                            {t(`terms.node.perDay`, { count: action.uses, field: action.uses })}
+                            {t(`terms.node.perDay`, {
+                              count: action.uses, field: action.uses
+                            })}
                           </Ap>
                         )
                       : null}
@@ -214,7 +239,9 @@ const Node: FC<INode> = ({
           ? (
               <div className="node__content__bonuses">
                 <Aul className="node__content__bonuses__list">
-                  {statBonuses.map(({ value, stat }) => (
+                  {statBonuses.map(({
+                    value, stat
+                  }) => (
                     <Ali
                       className="node__content__bonuses__elt"
                       key={`stat-${stat?.stat._id}`}
@@ -222,7 +249,9 @@ const Node: FC<INode> = ({
                       {`+${value} ${stat?.stat.title}`}
                     </Ali>
                   ))}
-                  {skillBonuses.map(({ value, skill }) => (
+                  {skillBonuses.map(({
+                    value, skill
+                  }) => (
                     <Ali
                       className="node__content__bonuses__elt"
                       key={`skill-${skill?.skill._id}`}
@@ -230,7 +259,9 @@ const Node: FC<INode> = ({
                       {`+${value} ${skill?.skill.title}`}
                     </Ali>
                   ))}
-                  {charParamBonuses.map(({ value, charParam }) => (
+                  {charParamBonuses.map(({
+                    value, charParam
+                  }) => (
                     <Ali
                       className="node__content__bonuses__elt"
                       key={`charparam-${charParam?.charParam._id}`}

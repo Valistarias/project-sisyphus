@@ -1,10 +1,14 @@
 import type React from 'react';
-import { useRef, useState, type FC, type ReactNode } from 'react';
+import {
+  useRef, useState, type FC, type ReactNode
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { Aicon } from '../atoms';
-import { Quark, type IQuarkProps } from '../quark';
+import {
+  Quark, type IQuarkProps
+} from '../quark';
 
 import { classTrim } from '../utils';
 
@@ -21,7 +25,9 @@ interface IHelper extends IQuarkProps {
   onClick?: (e: React.MouseEvent<HTMLElement>) => void
 }
 
-const Helper: FC<IHelper> = ({ children, size = 'medium', theme = 'solid', onClick }) => {
+const Helper: FC<IHelper> = ({
+  children, size = 'medium', theme = 'solid', onClick
+}) => {
   const { t } = useTranslation();
 
   const [delayHandler, setDelayHandler] = useState<NodeJS.Timeout | null>(null);

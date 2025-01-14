@@ -1,17 +1,29 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { AnimatePresence } from 'framer-motion';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { TypeAnimation } from 'react-type-animation';
 
-import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
 import tvBackground from '../../../assets/imgs/tvbg2.gif';
-import { Aicon, Ap, Atitle } from '../../../atoms';
-import { Ariane, Button, Checkbox, type IArianeElt } from '../../../molecules';
-import { Alert, CharCreationStep1, CharCreationStep2, RichTextElement } from '../../../organisms';
+import {
+  Aicon, Ap, Atitle
+} from '../../../atoms';
+import {
+  Ariane, Button, Checkbox, type IArianeElt
+} from '../../../molecules';
+import {
+  Alert, CharCreationStep1, CharCreationStep2, RichTextElement
+} from '../../../organisms';
 import {
   CharCreationStep3,
   CharCreationStep4,
@@ -44,7 +56,9 @@ interface ToolTipValues {
 const NewCharacter: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const {
     user,
     setUser,
@@ -76,7 +90,9 @@ const NewCharacter: FC = () => {
   const [introState, setIntroState] = useState(0);
   const calledApi = useRef(false);
 
-  const { handleSubmit: submitTips, control: toolTipControl } = useForm();
+  const {
+    handleSubmit: submitTips, control: toolTipControl
+  } = useForm();
 
   const charCreationState = useMemo(() => {
     if (character !== null && character !== false) {
@@ -127,7 +143,12 @@ const NewCharacter: FC = () => {
     return tipTexts.find(
       ({ tipText }) => tipText.tipId === `tutoChar${forcedCharState ?? charCreationState}`
     );
-  }, [charCreationState, forcedCharState, tipTexts, user]);
+  }, [
+    charCreationState,
+    forcedCharState,
+    tipTexts,
+    user
+  ]);
 
   const arianeData = useMemo<IArianeElt[]>(
     () =>
@@ -137,7 +158,11 @@ const NewCharacter: FC = () => {
         actual: i + 1 === (forcedCharState ?? charCreationState),
         disabled: i + 1 > charCreationState
       })),
-    [t, charCreationState, forcedCharState]
+    [
+      t,
+      charCreationState,
+      forcedCharState
+    ]
   );
 
   const getData = useCallback(() => {
@@ -256,7 +281,12 @@ const NewCharacter: FC = () => {
           });
         });
     }
-  }, [api, getNewId, createAlert, t]);
+  }, [
+    api,
+    getNewId,
+    createAlert,
+    t
+  ]);
 
   const onSubmitCyberFrame = useCallback(
     (cyberFrameId: string) => {
@@ -307,7 +337,16 @@ const NewCharacter: FC = () => {
         }
       }
     },
-    [api, user, cyberFrames, character, setCharacter, getNewId, createAlert, t]
+    [
+      api,
+      user,
+      cyberFrames,
+      character,
+      setCharacter,
+      getNewId,
+      createAlert,
+      t
+    ]
   );
 
   const onSubmitBackground = useCallback(
@@ -344,7 +383,15 @@ const NewCharacter: FC = () => {
           });
       }
     },
-    [api, character, createAlert, getNewId, setCharacterFromId, t, user]
+    [
+      api,
+      character,
+      createAlert,
+      getNewId,
+      setCharacterFromId,
+      t,
+      user
+    ]
   );
 
   const onSubmitItems = useCallback(
@@ -423,7 +470,15 @@ const NewCharacter: FC = () => {
         }
       }
     },
-    [api, character, createAlert, getNewId, setCharacterFromId, t, user]
+    [
+      api,
+      character,
+      createAlert,
+      getNewId,
+      setCharacterFromId,
+      t,
+      user
+    ]
   );
 
   const onSubmitSkills = useCallback(
@@ -482,7 +537,15 @@ const NewCharacter: FC = () => {
           });
       }
     },
-    [api, character, createAlert, getNewId, setCharacter, t, user]
+    [
+      api,
+      character,
+      createAlert,
+      getNewId,
+      setCharacter,
+      t,
+      user
+    ]
   );
 
   const onSubmitStats = useCallback(
@@ -561,11 +624,23 @@ const NewCharacter: FC = () => {
         }
       }
     },
-    [api, user, character, setCharacterFromId, getNewId, createAlert, t, globalValues, charParams]
+    [
+      api,
+      user,
+      character,
+      setCharacterFromId,
+      getNewId,
+      createAlert,
+      t,
+      globalValues,
+      charParams
+    ]
   );
 
   const onSubmitIdentification = useCallback(
-    ({ firstName, lastName, nickName, gender, pronouns, bio }) => {
+    ({
+      firstName, lastName, nickName, gender, pronouns, bio
+    }) => {
       if (api !== undefined && user !== null && character !== null && character !== false) {
         api.characters
           .update({
@@ -595,7 +670,14 @@ const NewCharacter: FC = () => {
           });
       }
     },
-    [api, user, character, getNewId, createAlert, setCharacterFromId]
+    [
+      api,
+      user,
+      character,
+      getNewId,
+      createAlert,
+      setCharacterFromId
+    ]
   );
 
   const onSubmitTooltip: SubmitHandler<ToolTipValues> = useCallback(
@@ -615,7 +697,11 @@ const NewCharacter: FC = () => {
         }
       }
     },
-    [api, setUser, user]
+    [
+      api,
+      setUser,
+      user
+    ]
   );
 
   const onArianeClick = useCallback(
@@ -713,7 +799,17 @@ const NewCharacter: FC = () => {
     return () => {
       resetCharacter();
     };
-  }, [api, user, createAlert, getNewId, getData, t, id, resetCharacter, setCharacterFromId]);
+  }, [
+    api,
+    user,
+    createAlert,
+    getNewId,
+    getData,
+    t,
+    id,
+    resetCharacter,
+    setCharacterFromId
+  ]);
 
   useEffect(() => {
     if (!loading && introState === 2 && id === undefined) {
@@ -724,7 +820,11 @@ const NewCharacter: FC = () => {
         }, 1100);
       }, 2000);
     }
-  }, [loading, introState, id]);
+  }, [
+    loading,
+    introState,
+    id
+  ]);
 
   useEffect(() => {
     if ((character === false || character === null) && id !== undefined) {

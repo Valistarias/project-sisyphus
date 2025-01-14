@@ -34,9 +34,13 @@ const createItemsByBody = async (req: {
   }>
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    const { bodyId, items } = req;
+    const {
+      bodyId, items
+    } = req;
     BodyItem.create(
-      items.map(({ id, qty }) => ({
+      items.map(({
+        id, qty
+      }) => ({
         body: bodyId,
         item: id,
         qty
@@ -57,7 +61,9 @@ const updateItemByBody = async (req: {
   bag?: string
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    const { bodyId, itemId, qty = null, bag = null } = req;
+    const {
+      bodyId, itemId, qty = null, bag = null
+    } = req;
     const updateObj: {
       bag?: string
       qty?: number
@@ -85,9 +91,7 @@ const updateItemByBody = async (req: {
 
 const deleteItemsByBody = async (bodyId: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    BodyItem.deleteMany({
-      body: bodyId
-    })
+    BodyItem.deleteMany({ body: bodyId })
       .then(() => {
         resolve(true);
       })
@@ -96,4 +100,6 @@ const deleteItemsByBody = async (bodyId: string): Promise<boolean> =>
       });
   });
 
-export { createItemsByBody, deleteItemsByBody, replaceItemByBody, updateItemByBody };
+export {
+  createItemsByBody, deleteItemsByBody, replaceItemByBody, updateItemByBody
+};

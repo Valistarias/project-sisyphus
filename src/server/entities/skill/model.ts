@@ -1,6 +1,10 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
-import type { HydratedISkillBranch, IStat } from '../index';
+import type {
+  HydratedISkillBranch, IStat
+} from '../index';
 
 interface ISkill {
   /** The title of the skill */
@@ -55,4 +59,6 @@ skillSchema.virtual('branches', {
 
 const SkillModel = (): Model<ISkill> => model('Skill', skillSchema);
 
-export { SkillModel, type HydratedISkill, type ISkill, type LeanISkill };
+export {
+  SkillModel, type HydratedISkill, type ISkill, type LeanISkill
+};

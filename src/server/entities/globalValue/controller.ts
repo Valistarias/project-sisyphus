@@ -1,4 +1,6 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 import type { HydratedDocument } from 'mongoose';
 
 import db from '../../models';
@@ -16,14 +18,14 @@ const { GlobalValue } = db;
 const findGlobalValues = async (): Promise<Array<HydratedDocument<IGlobalValue>>> =>
   await new Promise((resolve, reject) => {
     GlobalValue.find()
-      .then(async (res) => {
+      .then((res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('GlobalValues'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -31,20 +33,22 @@ const findGlobalValues = async (): Promise<Array<HydratedDocument<IGlobalValue>>
 const findGlobalValueById = async (id: string): Promise<HydratedDocument<IGlobalValue>> =>
   await new Promise((resolve, reject) => {
     GlobalValue.findById(id)
-      .then(async (res) => {
+      .then((res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('GlobalValue'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
 
 const create = (req: Request, res: Response): void => {
-  const { name, value } = req.body;
+  const {
+    name, value
+  } = req.body;
   if (name === undefined || value === undefined) {
     res.status(400).send(gemInvalidField('GlobalValue'));
 
@@ -74,7 +78,9 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, name = null, value = null } = req.body;
+  const {
+    id, name = null, value = null
+  } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('GlobalValue ID'));
 
@@ -93,7 +99,9 @@ const update = (req: Request, res: Response): void => {
         actualGlobalValue
           .save()
           .then(() => {
-            res.send({ message: 'GlobalValue was updated successfully!', actualGlobalValue });
+            res.send({
+              message: 'GlobalValue was updated successfully!', actualGlobalValue
+            });
           })
           .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
@@ -106,7 +114,7 @@ const update = (req: Request, res: Response): void => {
 };
 
 const deleteGlobalValue = (req: Request, res: Response): void => {
-  const { id } = req.body;
+  const { id }: { id: string } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('GlobalValue ID'));
 
@@ -139,4 +147,6 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteGlobalValue, findAll, findSingle, update };
+export {
+  create, deleteGlobalValue, findAll, findSingle, update
+};

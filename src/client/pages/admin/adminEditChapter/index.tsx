@@ -1,15 +1,27 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useNavigate, useParams
+} from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useConfirmMessage, useSystemAlerts
+} from '../../../providers';
 
-import { Aa, Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input } from '../../../molecules';
+import {
+  Aa, Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input
+} from '../../../molecules';
 import {
   Alert,
   DragList,
@@ -18,9 +30,13 @@ import {
   type IDragElt
 } from '../../../organisms';
 
-import type { ICuratedChapter, IPage } from '../../../types';
+import type {
+  ICuratedChapter, IPage
+} from '../../../types';
 
-import { arraysEqual, formatDate } from '../../../utils';
+import {
+  arraysEqual, formatDate
+} from '../../../utils';
 
 import './adminEditChapter.scss';
 
@@ -32,7 +48,9 @@ interface FormValues {
 const AdminEditChapters: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const { id } = useParams();
   const confMessageEvt = useConfirmMessage();
   const navigate = useNavigate();
@@ -52,19 +70,17 @@ const AdminEditChapters: FC = () => {
   const [initialOrder, setInitialOrder] = useState<string[]>([]);
   const [pagesOrder, setPagesOrder] = useState<string[]>([]);
 
-  const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const createDefaultData = useCallback((chapterData: ICuratedChapter | null) => {
     if (chapterData == null) {
       return {};
     }
-    const { chapter, i18n } = chapterData;
+    const {
+      chapter, i18n
+    } = chapterData;
     const defaultData: Partial<FormValues> = {};
     defaultData.name = chapter.title;
     if (i18n.fr !== undefined) {
@@ -80,9 +96,7 @@ const AdminEditChapters: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({
-    defaultValues: useMemo(() => createDefaultData(chapterData), [createDefaultData, chapterData])
-  });
+  } = useForm({ defaultValues: useMemo(() => createDefaultData(chapterData), [createDefaultData, chapterData]) });
 
   const pageDragData = useMemo(() => {
     if (pagesData === null || (pagesData.length === 0) === null) {
@@ -114,7 +128,9 @@ const AdminEditChapters: FC = () => {
   const ruleBook = useMemo(() => chapterData?.chapter.ruleBook, [chapterData]);
 
   const onSaveChapter: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr }) => {
+    ({
+      name, nameFr
+    }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -127,12 +143,10 @@ const AdminEditChapters: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            summary: htmlFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          summary: htmlFr
+        } };
       }
 
       api.chapters
@@ -170,21 +184,26 @@ const AdminEditChapters: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize') })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize') })
             });
           }
         });
     },
-    [introEditor, introFrEditor, api, id, getNewId, createAlert, t, setError]
+    [
+      introEditor,
+      introFrEditor,
+      api,
+      id,
+      getNewId,
+      createAlert,
+      t,
+      setError
+    ]
   );
 
   const onUpdateOrder = useCallback(() => {
@@ -217,20 +236,25 @@ const AdminEditChapters: FC = () => {
         if (data.code === 'CYPU-104') {
           setError('root.serverError', {
             type: 'server',
-            message: t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize')
-            })
+            message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize') })
           });
         } else {
           setError('root.serverError', {
             type: 'server',
-            message: t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize')
-            })
+            message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize') })
           });
         }
       });
-  }, [pagesOrder, initialOrder, api, id, getNewId, createAlert, t, setError]);
+  }, [
+    pagesOrder,
+    initialOrder,
+    api,
+    id,
+    getNewId,
+    createAlert,
+    t,
+    setError
+  ]);
 
   const onAskDelete = useCallback(() => {
     if (api === undefined || confMessageEvt === null) {
@@ -267,16 +291,12 @@ const AdminEditChapters: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize') })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize') })
                   });
                 }
               });
@@ -286,7 +306,18 @@ const AdminEditChapters: FC = () => {
         confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [api, confMessageEvt, t, chapterData?.chapter.title, id, getNewId, createAlert, navigate, ruleBook?._id, setError]);
+  }, [
+    api,
+    confMessageEvt,
+    t,
+    chapterData?.chapter.title,
+    id,
+    getNewId,
+    createAlert,
+    navigate,
+    ruleBook?._id,
+    setError
+  ]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && calledApi.current !== id) {
@@ -294,7 +325,9 @@ const AdminEditChapters: FC = () => {
       api.chapters
         .get({ chapterId: id })
         .then((curatedChapter: ICuratedChapter) => {
-          const { chapter, i18n } = curatedChapter;
+          const {
+            chapter, i18n
+          } = curatedChapter;
           setChapterData(curatedChapter);
           setChapterSummary(chapter.summary);
           setPagesData(chapter.pages ?? null);
@@ -314,7 +347,13 @@ const AdminEditChapters: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, id, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    id,
+    t
+  ]);
 
   // The Autosave
   useEffect(() => {
@@ -336,7 +375,11 @@ const AdminEditChapters: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(chapterData));
-  }, [chapterData, reset, createDefaultData]);
+  }, [
+    chapterData,
+    reset,
+    createDefaultData
+  ]);
 
   return (
     <div className="adminEditChapter">
@@ -368,9 +411,7 @@ const AdminEditChapters: FC = () => {
             <Input
               control={control}
               inputName="name"
-              rules={{
-                required: t('nameChapter.required', { ns: 'fields' })
-              }}
+              rules={{ required: t('nameChapter.required', { ns: 'fields' }) }}
               type="text"
               label={t('nameChapter.label', { ns: 'fields' })}
               className="adminEditChapter__basics__name"

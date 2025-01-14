@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
 import type { IBag } from '../../bag/model';
 
@@ -14,9 +16,7 @@ interface IBodyBag {
 }
 
 type HydratedIBodyBag = HydratedDocument<
-  Omit<IBodyBag, 'bag'> & {
-    bag: HydratedDocument<IBag>
-  }
+  Omit<IBodyBag, 'bag'> & { bag: HydratedDocument<IBag> }
 >;
 
 const BodyBagSchema = new Schema<IBodyBag>({
@@ -40,4 +40,6 @@ const BodyBagSchema = new Schema<IBodyBag>({
 
 const BodyBagModel = (): Model<IBodyBag> => model('BodyBag', BodyBagSchema);
 
-export { BodyBagModel, type HydratedIBodyBag, type IBodyBag };
+export {
+  BodyBagModel, type HydratedIBodyBag, type IBodyBag
+};

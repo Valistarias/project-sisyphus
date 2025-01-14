@@ -1,6 +1,10 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
-import type { INode, ISkill } from '../index';
+import type {
+  INode, ISkill
+} from '../index';
 
 interface ISkillBranch {
   /** The title of the skill branch */
@@ -52,4 +56,6 @@ skillBranchSchema.virtual('nodes', {
 
 const SkillBranchModel = (): Model<ISkillBranch> => model('SkillBranch', skillBranchSchema);
 
-export { SkillBranchModel, type HydratedISkillBranch, type ISkillBranch };
+export {
+  SkillBranchModel, type HydratedISkillBranch, type ISkillBranch
+};

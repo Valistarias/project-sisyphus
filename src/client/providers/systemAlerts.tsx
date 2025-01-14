@@ -21,7 +21,9 @@ interface ISystemAlertsContext {
   /** Delete an alert with the id "key" */
   deleteAlert: (req: { key: number }) => void
   /** Create an alert with the id "key" and the DOM */
-  createAlert: (req: { key: number, dom: React.JSX.Element }) => void
+  createAlert: (req: {
+    key: number, dom: React.JSX.Element
+  }) => void
   /** Get a fresh new ID */
   getNewId: () => number
 }
@@ -44,7 +46,9 @@ export const SystemAlertsProvider: FC<SystemAlertsProviderProps> = ({ children }
     return oldId;
   }, []);
 
-  const createAlert = useCallback(({ key, dom }) => {
+  const createAlert = useCallback(({
+    key, dom
+  }) => {
     setAlerts((prev) => {
       const next = [...prev];
 
@@ -89,7 +93,11 @@ export const SystemAlertsProvider: FC<SystemAlertsProviderProps> = ({ children }
       createAlert,
       getNewId
     }),
-    [deleteAlert, createAlert, getNewId]
+    [
+      deleteAlert,
+      createAlert,
+      getNewId
+    ]
   );
 
   return (

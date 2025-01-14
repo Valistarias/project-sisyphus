@@ -1,10 +1,16 @@
-import React, { useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { useApi, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useSystemAlerts
+} from '../../../providers';
 
-import { Ali, Ap, Atitle, Aul } from '../../../atoms';
+import {
+  Ali, Ap, Atitle, Aul
+} from '../../../atoms';
 import { Button } from '../../../molecules';
 import { Alert } from '../../../organisms';
 
@@ -17,7 +23,9 @@ import './adminAmmos.scss';
 const AdminAmmos: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
 
   const calledApi = useRef(false);
 
@@ -69,7 +77,12 @@ const AdminAmmos: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    t
+  ]);
 
   return (
     <div className="adminAmmos">

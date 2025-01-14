@@ -1,7 +1,11 @@
 import Aa from './aa';
-import { Abutton, type IAButton } from './abutton';
+import {
+  Abutton, type IAButton
+} from './abutton';
 import Aerror from './aerror';
-import { Aicon, type typeIcons } from './aicon';
+import {
+  Aicon, type typeIcons
+} from './aicon';
 import Aimg from './aimg';
 import Ainput from './ainput';
 import Alabel from './alabel';

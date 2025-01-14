@@ -1,6 +1,10 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
-import type { IActionDuration, IActionType, ISkill } from '../index';
+import type {
+  IActionDuration, IActionType, ISkill
+} from '../index';
 
 interface IAction {
   /** The title of the action */
@@ -69,4 +73,6 @@ const actionSchema = new Schema<IAction>({
 
 const ActionModel = (): Model<IAction> => model('Action', actionSchema);
 
-export { ActionModel, type HydratedIAction, type IAction };
+export {
+  ActionModel, type HydratedIAction, type IAction
+};

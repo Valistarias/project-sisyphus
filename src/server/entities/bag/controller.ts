@@ -1,9 +1,14 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemInvalidField, gemNotFound, gemServerError
+} from '../../utils/globalErrorMessage';
 
 import type { HydratedIBag } from './model';
+import type { InternationalizationType } from '../../utils/types';
 
 import { curateI18n } from '../../utils';
 
@@ -16,14 +21,14 @@ interface findAllPayload {
 const findBags = async (options?: findAllPayload): Promise<HydratedIBag[]> =>
   await new Promise((resolve, reject) => {
     Bag.find(options ?? {})
-      .then(async (res?: HydratedIBag[] | null) => {
+      .then((res?: HydratedIBag[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Bags'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err: unknown) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -31,14 +36,14 @@ const findBags = async (options?: findAllPayload): Promise<HydratedIBag[]> =>
 const findBagById = async (id: string): Promise<HydratedIBag> =>
   await new Promise((resolve, reject) => {
     Bag.findById(id)
-      .then(async (res?: HydratedIBag | null) => {
+      .then((res?: HydratedIBag | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Bag'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err: unknown) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -147,13 +152,11 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl = {
-          ...(bag.i18n !== null && bag.i18n !== undefined && bag.i18n !== ''
-            ? JSON.parse(bag.i18n)
-            : {})
-        };
+        const newIntl: InternationalizationType = { ...(bag.i18n !== null && bag.i18n !== undefined && bag.i18n !== ''
+          ? JSON.parse(bag.i18n)
+          : {}) };
 
-        Object.keys(i18n as Record<string, any>).forEach((lang) => {
+        Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
         });
 
@@ -163,7 +166,9 @@ const update = (req: Request, res: Response): void => {
       bag
         .save()
         .then(() => {
-          res.send({ message: 'Bag was updated successfully!', bag });
+          res.send({
+            message: 'Bag was updated successfully!', bag
+          });
         })
         .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
@@ -174,7 +179,7 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteBagById = async (id: string): Promise<boolean> =>
+const deleteBagById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Bag ID'));
@@ -191,11 +196,11 @@ const deleteBagById = async (id: string): Promise<boolean> =>
   });
 
 const deleteBag = (req: Request, res: Response): void => {
-  const { id } = req.body;
+  const { id }: { id: string } = req.body;
 
-  findBagById(id as string)
+  findBagById(id)
     .then(() => {
-      deleteBagById(id as string)
+      deleteBagById(id)
         .then(() => {
           res.send({ message: 'Bag was deleted successfully!' });
         })
@@ -209,7 +214,7 @@ const deleteBag = (req: Request, res: Response): void => {
 };
 
 interface CuratedIBag {
-  i18n: Record<string, unknown>
+  i18n?: InternationalizationType
   bag: any
 }
 
@@ -268,4 +273,6 @@ const findAllStarter = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteBag, findAll, findAllStarter, findBagById, findSingle, update };
+export {
+  create, deleteBag, findAll, findAllStarter, findBagById, findSingle, update
+};

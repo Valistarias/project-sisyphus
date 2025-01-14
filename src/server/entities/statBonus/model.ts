@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
 import type { IStat } from '../index';
 
@@ -12,9 +14,7 @@ interface IStatBonus {
 }
 
 type HydratedIStatBonus = HydratedDocument<
-  Omit<IStatBonus, 'stat'> & {
-    stat: IStat
-  }
+  Omit<IStatBonus, 'stat'> & { stat: IStat }
 >;
 
 const statBonusSchema = new Schema<IStatBonus>({
@@ -31,4 +31,6 @@ const statBonusSchema = new Schema<IStatBonus>({
 
 const StatBonusModel = (): Model<IStatBonus> => model('StatBonus', statBonusSchema);
 
-export { StatBonusModel, type HydratedIStatBonus, type IStatBonus };
+export {
+  StatBonusModel, type HydratedIStatBonus, type IStatBonus
+};

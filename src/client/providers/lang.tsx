@@ -1,7 +1,11 @@
-import React, { useContext, useMemo, useState, type FC, type ReactNode } from 'react';
+import React, {
+  useContext, useMemo, useState, type FC, type ReactNode
+} from 'react';
 
 import i18next from 'i18next';
-import { I18nextProvider, initReactI18next } from 'react-i18next';
+import {
+  I18nextProvider, initReactI18next
+} from 'react-i18next';
 
 import common_en from '../../i18n/en/common.json';
 import components_en from '../../i18n/en/components.json';
@@ -23,7 +27,12 @@ interface LangProviderProps {
 }
 
 void i18next.use(initReactI18next).init({
-  ns: ['common', 'fields', 'pages', 'components'],
+  ns: [
+    'common',
+    'fields',
+    'pages',
+    'components'
+  ],
   defaultNS: 'common',
   interpolation: {
     escapeValue: false,
@@ -58,9 +67,7 @@ export const LangProvider: FC<LangProviderProps> = ({ children }) => {
   const [loading] = useState<boolean>(false);
 
   const providerValues = useMemo(
-    () => ({
-      loading
-    }),
+    () => ({ loading }),
     [loading]
   );
 

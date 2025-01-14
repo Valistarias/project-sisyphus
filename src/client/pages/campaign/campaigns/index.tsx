@@ -1,10 +1,16 @@
-import React, { useCallback, useMemo, type FC } from 'react';
+import React, {
+  useCallback, useMemo, type FC
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Ali, Ap, Atitle, Aul } from '../../../atoms';
+import {
+  Ali, Ap, Atitle, Aul
+} from '../../../atoms';
 import { Button } from '../../../molecules';
 import { Alert } from '../../../organisms';
 
@@ -15,8 +21,12 @@ import './campaigns.scss';
 const Campaigns: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
-  const { user, campaigns, reloadCampaigns } = useGlobalVars();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
+  const {
+    user, campaigns, reloadCampaigns
+  } = useGlobalVars();
   const confMessageEvt = useConfirmMessage();
 
   const onDeleteCampaign = useCallback(
@@ -27,7 +37,9 @@ const Campaigns: FC = () => {
       confMessageEvt.setConfirmContent(
         {
           title: t('campaigns.confirmDelete.title', { ns: 'pages' }),
-          text: t('campaigns.confirmDelete.text', { ns: 'pages', elt: name }),
+          text: t('campaigns.confirmDelete.text', {
+            ns: 'pages', elt: name
+          }),
           confirmCta: t('campaigns.confirmDelete.confirmCta', { ns: 'pages' }),
           theme: 'error'
         },
@@ -66,7 +78,14 @@ const Campaigns: FC = () => {
         }
       );
     },
-    [api, confMessageEvt, t, getNewId, createAlert, reloadCampaigns]
+    [
+      api,
+      confMessageEvt,
+      t,
+      getNewId,
+      createAlert,
+      reloadCampaigns
+    ]
   );
 
   const campaignList = useMemo(() => {
@@ -92,9 +111,7 @@ const Campaigns: FC = () => {
             }`}
           </Ap>
           <Ap className="campaigns__campaign-list__elt__players">
-            {`${t('terms.general.player', {
-              count: campaign.players.length
-            })}: ${campaign.players.length}`}
+            {`${t('terms.general.player', { count: campaign.players.length })}: ${campaign.players.length}`}
           </Ap>
           <div className="campaigns__campaign-list__elt__buttons">
             <Button href={`/campaign/${campaign._id}`}>
@@ -123,7 +140,12 @@ const Campaigns: FC = () => {
         {campaignList}
       </Aul>
     );
-  }, [campaigns, onDeleteCampaign, t, user?._id]);
+  }, [
+    campaigns,
+    onDeleteCampaign,
+    t,
+    user?._id
+  ]);
 
   return (
     <div className="campaigns">

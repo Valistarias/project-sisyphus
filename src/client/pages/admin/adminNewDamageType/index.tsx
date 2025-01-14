@@ -1,16 +1,28 @@
-import React, { useCallback, useEffect, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 
 import './adminNewDamageType.scss';
 
@@ -23,19 +35,17 @@ const AdminNewDamageType: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const navigate = useNavigate();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const { reloadDamageTypes } = useGlobalVars();
 
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
 
-  const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const {
     handleSubmit,
@@ -45,7 +55,9 @@ const AdminNewDamageType: FC = () => {
   } = useForm();
 
   const onSaveDamageType: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr }) => {
+    ({
+      name, nameFr
+    }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -58,12 +70,10 @@ const AdminNewDamageType: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            summary: htmlFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          summary: htmlFr
+        } };
       }
 
       api.damageTypes
@@ -90,16 +100,12 @@ const AdminNewDamageType: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id'
-              })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
             });
           }
         });
@@ -122,7 +128,12 @@ const AdminNewDamageType: FC = () => {
       setLoading(true);
       calledApi.current = true;
     }
-  }, [api, createAlert, getNewId, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    t
+  ]);
 
   return (
     <div className="adminNewDamageType">
@@ -142,9 +153,7 @@ const AdminNewDamageType: FC = () => {
             control={control}
             inputName="name"
             type="text"
-            rules={{
-              required: t('nameDamageType.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('nameDamageType.required', { ns: 'fields' }) }}
             label={t('nameDamageType.label', { ns: 'fields' })}
             className="adminNewDamageType__basics__name"
           />

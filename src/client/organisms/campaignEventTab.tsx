@@ -1,21 +1,31 @@
 import React from 'react';
-import { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { useApi, useCampaignEventWindow, useSocket, useSystemAlerts } from '../providers';
+import {
+  useApi, useCampaignEventWindow, useSocket, useSystemAlerts
+} from '../providers';
 
 import holoBackground from '../assets/imgs/tvbg2.gif';
-import { Aicon, Ap, Avideo, type typeIcons } from '../atoms';
+import {
+  Aicon, Ap, Avideo, type typeIcons
+} from '../atoms';
 import { Button } from '../molecules';
 
 import Alert from './alert';
 import CampaignEventLine from './campaignEventLine';
 
 import type { CampaignEventDetailData } from '../providers/campaignEventWindow';
-import type { ICampaignEvent, ICharacter } from '../types';
+import type {
+  ICampaignEvent, ICharacter
+} from '../types';
 
-import { classTrim, createBasicDiceRequest, type DiceRequest } from '../utils';
+import {
+  classTrim, createBasicDiceRequest, type DiceRequest
+} from '../utils';
 
 import './campaignEventTab.scss';
 
@@ -41,7 +51,9 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
 }) => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const { socket } = useSocket();
   const campaignEvt = useCampaignEventWindow();
 
@@ -136,7 +148,9 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
     [changeDice, diceValues]
   );
 
-  const logCampaignEvents = useMemo(() => dataPrevCampaignEvents.map(({ _id, character, createdAt, formula, result, type }) => {
+  const logCampaignEvents = useMemo(() => dataPrevCampaignEvents.map(({
+    _id, character, createdAt, formula, result, type
+  }) => {
     const authorName = `${character.firstName !== undefined ? `${character.firstName} ` : ''}${character.nickName !== undefined ? `"${character.nickName}" ` : ''}${character.lastName ?? ''}`;
 
     return (
@@ -175,7 +189,12 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
           });
       }
     },
-    [api, createAlert, getNewId, t]
+    [
+      api,
+      createAlert,
+      getNewId,
+      t
+    ]
   );
 
   const onLogScroll = useCallback(() => {
@@ -221,7 +240,14 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
         }
       }
     }
-  }, [api, campaignId, createAlert, dataPrevCampaignEvents, getNewId, t]);
+  }, [
+    api,
+    campaignId,
+    createAlert,
+    dataPrevCampaignEvents,
+    getNewId,
+    t
+  ]);
 
   useEffect(() => {
     if (
@@ -233,7 +259,14 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
       calledApi.current = true;
       reloadCampaignEvents(campaignId);
     }
-  }, [api, createAlert, getNewId, t, reloadCampaignEvents, campaignId]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    t,
+    reloadCampaignEvents,
+    campaignId
+  ]);
 
   useEffect(() => {
     calledApi.current &&= false;
@@ -268,14 +301,14 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
         socket.emit('exitRoom', campaignId);
       }
     };
-  }, [addCampaignEventToTab, campaignId, socket]);
+  }, [
+    addCampaignEventToTab,
+    campaignId,
+    socket
+  ]);
 
   useEffect(() => {
-    const addCampaignEvent = ({
-      detail
-    }: {
-      detail?: CampaignEventDetailData
-    }): void => {
+    const addCampaignEvent = ({ detail }: { detail?: CampaignEventDetailData }): void => {
       if (
         api !== undefined
         && detail !== undefined
@@ -283,7 +316,9 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
         && charRef.current !== undefined
         && socket !== null
       ) {
-        const { result, formula, mode } = detail;
+        const {
+          result, formula, mode
+        } = detail;
         api.campaignEvents
           .create({
             result,

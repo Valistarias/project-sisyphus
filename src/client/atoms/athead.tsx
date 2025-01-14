@@ -1,6 +1,10 @@
-import React, { type FC, type ReactNode } from 'react';
+import React, {
+  type FC, type ReactNode
+} from 'react';
 
-import { Quark, type IQuarkProps } from '../quark';
+import {
+  Quark, type IQuarkProps
+} from '../quark';
 
 import { classTrim } from '../utils';
 
@@ -13,7 +17,9 @@ interface IAthead extends IQuarkProps {
   children: ReactNode
 }
 
-const AThead: FC<IAthead> = ({ className, children }) => (
+const AThead: FC<IAthead> = ({
+  className, children
+}) => (
   <Quark
     quarkType="thead"
     className={classTrim(`

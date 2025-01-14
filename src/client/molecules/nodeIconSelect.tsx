@@ -1,12 +1,20 @@
 import type React from 'react';
-import { useCallback, useEffect, useState, type FC } from 'react';
+import {
+  useCallback, useEffect, useState, type FC
+} from 'react';
 
 import { Controller } from 'react-hook-form';
 
 import holoBackground from '../assets/imgs/tvbg2.gif';
-import { Abutton, Aerror, Aicon, Alabel, AnodeIcon } from '../atoms';
-import { Quark, type IQuarkProps } from '../quark';
-import { possibleNodeIcons, type TypeNodeIcons } from '../types/rules';
+import {
+  Abutton, Aerror, Aicon, Alabel, AnodeIcon
+} from '../atoms';
+import {
+  Quark, type IQuarkProps
+} from '../quark';
+import {
+  possibleNodeIcons, type TypeNodeIcons
+} from '../types/rules';
 
 import type { IReactHookFormInputs } from '../types';
 
@@ -21,7 +29,9 @@ interface INodeIconSelect extends IQuarkProps, IReactHookFormInputs {
 
 const defaultNodeIcon: TypeNodeIcons = 'default';
 
-const NodeIconSelect: FC<INodeIconSelect> = ({ className, inputName, rules, control, label }) => {
+const NodeIconSelect: FC<INodeIconSelect> = ({
+  className, inputName, rules, control, label
+}) => {
   // const [selected, setSelected] = useState<TypeNodeIcons>(defaultNodeIcon);
   const [isOpen, setOpenMenu] = useState(false);
 
@@ -55,7 +65,11 @@ const NodeIconSelect: FC<INodeIconSelect> = ({ className, inputName, rules, cont
         control={control}
         name={inputName}
         rules={rules}
-        render={({ field: { onChange, value, name }, fieldState: { error } }) => (
+        render={({
+          field: {
+            onChange, value, name
+          }, fieldState: { error }
+        }) => (
           <>
             {label !== undefined
               ? (
@@ -109,4 +123,6 @@ const NodeIconSelect: FC<INodeIconSelect> = ({ className, inputName, rules, cont
   );
 };
 
-export { defaultNodeIcon, NodeIconSelect };
+export {
+  defaultNodeIcon, NodeIconSelect
+};

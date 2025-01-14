@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
 import type { ISkill } from '../skill/model';
 
@@ -16,9 +18,7 @@ interface IWeaponStyle {
 }
 
 type HydratedIWeaponStyle = HydratedDocument<
-  Omit<IWeaponStyle, 'skill'> & {
-    skill: ISkill
-  }
+  Omit<IWeaponStyle, 'skill'> & { skill: ISkill | ObjectId }
 >;
 
 const userSchema = new Schema<IWeaponStyle>({
@@ -35,6 +35,9 @@ const userSchema = new Schema<IWeaponStyle>({
   }
 });
 
-const WeaponStyleModel = (): Model<IWeaponStyle> => model('WeaponStyle', userSchema);
+const WeaponStyleModel = (): Model<IWeaponStyle> =>
+  model('WeaponStyle', userSchema);
 
-export { WeaponStyleModel, type HydratedIWeaponStyle, type IWeaponStyle };
+export {
+  WeaponStyleModel, type HydratedIWeaponStyle, type IWeaponStyle
+};

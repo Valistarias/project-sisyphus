@@ -1,12 +1,19 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemInvalidField, gemNotFound, gemServerError
+} from '../../utils/globalErrorMessage';
 import { smartUpdateAttacks } from '../ennemyAttack/controller';
 
+import type { InternationalizationType } from '../../utils/types';
 import type { IEnnemyAttack } from '../index';
-import type { BasicHydratedINPC, HydratedINPC } from './model';
+import type {
+  BasicHydratedINPC, HydratedINPC
+} from './model';
 
 import { curateI18n } from '../../utils';
 
@@ -16,14 +23,14 @@ const findNPCs = async (): Promise<HydratedINPC[]> =>
   await new Promise((resolve, reject) => {
     NPC.find()
       .populate<{ attacks: IEnnemyAttack[] }>('attacks')
-      .then(async (res?: HydratedINPC[] | null) => {
+      .then((res?: HydratedINPC[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('NPCs'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err: unknown) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -31,14 +38,14 @@ const findNPCs = async (): Promise<HydratedINPC[]> =>
 const basicListNPCs = async (): Promise<BasicHydratedINPC[]> =>
   await new Promise((resolve, reject) => {
     NPC.find()
-      .then(async (res?: BasicHydratedINPC[] | null) => {
+      .then((res?: BasicHydratedINPC[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('NPCs'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err: unknown) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -47,14 +54,14 @@ const findNPCById = async (id: string): Promise<HydratedINPC> =>
   await new Promise((resolve, reject) => {
     NPC.findById(id)
       .populate<{ attacks: IEnnemyAttack[] }>('attacks')
-      .then(async (res) => {
+      .then((res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('NPC'));
         } else {
           resolve(res as HydratedINPC);
         }
       })
-      .catch(async (err: unknown) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -189,13 +196,11 @@ const update = (req: Request, res: Response): void => {
       }, []);
 
       if (i18n !== null) {
-        const newIntl = {
-          ...(nPC.i18n !== null && nPC.i18n !== undefined && nPC.i18n !== ''
-            ? JSON.parse(nPC.i18n)
-            : {})
-        };
+        const newIntl: InternationalizationType = { ...(nPC.i18n !== null && nPC.i18n !== undefined && nPC.i18n !== ''
+          ? JSON.parse(nPC.i18n)
+          : {}) };
 
-        Object.keys(i18n as Record<string, any>).forEach((lang) => {
+        Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
         });
 
@@ -213,7 +218,9 @@ const update = (req: Request, res: Response): void => {
           nPC
             .save()
             .then(() => {
-              res.send({ message: 'NPC was updated successfully!', nPC });
+              res.send({
+                message: 'NPC was updated successfully!', nPC
+              });
             })
             .catch((err: unknown) => {
               res.status(500).send(gemServerError(err));
@@ -228,7 +235,7 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteNPCById = async (id: string): Promise<boolean> =>
+const deleteNPCById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('NPC ID'));
@@ -245,11 +252,11 @@ const deleteNPCById = async (id: string): Promise<boolean> =>
   });
 
 const deleteNPC = (req: Request, res: Response): void => {
-  const { id } = req.body;
+  const { id }: { id: string } = req.body;
 
-  findNPCById(id as string)
+  findNPCById(id)
     .then(() => {
-      deleteNPCById(id as string)
+      deleteNPCById(id)
         .then(() => {
           res.send({ message: 'NPC was deleted successfully!' });
         })
@@ -263,7 +270,7 @@ const deleteNPC = (req: Request, res: Response): void => {
 };
 
 interface CuratedINPC {
-  i18n: Record<string, unknown>
+  i18n?: InternationalizationType
   nPC: any
 }
 
@@ -347,4 +354,6 @@ const findAllBasic = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteNPC, findAll, findAllBasic, findNPCById, findSingle, update };
+export {
+  create, deleteNPC, findAll, findAllBasic, findNPCById, findSingle, update
+};

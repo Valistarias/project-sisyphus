@@ -1,16 +1,30 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useNavigate, useParams
+} from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useConfirmMessage, useSystemAlerts
+} from '../../../providers';
 
-import { Aa, Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aa, Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 
 import type { ICuratedPage } from '../../../types';
 
@@ -26,7 +40,9 @@ interface FormValues {
 const AdminEditPages: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const { id } = useParams();
   const confMessageEvt = useConfirmMessage();
   const navigate = useNavigate();
@@ -42,19 +58,17 @@ const AdminEditPages: FC = () => {
   const [pageContent, setPageContent] = useState('');
   const [pageContentFr, setPageContentFr] = useState('');
 
-  const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const createDefaultData = useCallback((pageData: ICuratedPage | null) => {
     if (pageData == null) {
       return {};
     }
-    const { page, i18n } = pageData;
+    const {
+      page, i18n
+    } = pageData;
     const defaultData: Partial<FormValues> = {};
     defaultData.name = page.title;
     if (i18n.fr !== undefined) {
@@ -70,15 +84,15 @@ const AdminEditPages: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({
-    defaultValues: useMemo(() => createDefaultData(pageData), [createDefaultData, pageData])
-  });
+  } = useForm({ defaultValues: useMemo(() => createDefaultData(pageData), [createDefaultData, pageData]) });
 
   const ruleBook = useMemo(() => pageData?.page.chapter.ruleBook, [pageData]);
   const chapter = useMemo(() => pageData?.page.chapter, [pageData]);
 
   const onSavePage: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr }) => {
+    ({
+      name, nameFr
+    }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -91,12 +105,10 @@ const AdminEditPages: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            content: htmlFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          content: htmlFr
+        } };
       }
 
       api.pages
@@ -134,21 +146,26 @@ const AdminEditPages: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize') })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize') })
             });
           }
         });
     },
-    [introEditor, introFrEditor, api, id, getNewId, createAlert, t, setError]
+    [
+      introEditor,
+      introFrEditor,
+      api,
+      id,
+      getNewId,
+      createAlert,
+      t,
+      setError
+    ]
   );
 
   const onAskDelete = useCallback(() => {
@@ -158,7 +175,9 @@ const AdminEditPages: FC = () => {
     confMessageEvt.setConfirmContent(
       {
         title: t('adminEditPage.confirmDeletion.title', { ns: 'pages' }),
-        text: t('adminEditPage.confirmDeletion.text', { ns: 'pages', elt: chapter.title }),
+        text: t('adminEditPage.confirmDeletion.text', {
+          ns: 'pages', elt: chapter.title
+        }),
         confirmCta: t('adminEditPage.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
@@ -183,16 +202,12 @@ const AdminEditPages: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize') })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize') })
                   });
                 }
               });
@@ -202,7 +217,17 @@ const AdminEditPages: FC = () => {
         confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [api, chapter, confMessageEvt, t, id, getNewId, createAlert, navigate, setError]);
+  }, [
+    api,
+    chapter,
+    confMessageEvt,
+    t,
+    id,
+    getNewId,
+    createAlert,
+    navigate,
+    setError
+  ]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && calledApi.current !== id) {
@@ -210,7 +235,9 @@ const AdminEditPages: FC = () => {
       api.pages
         .get({ pageId: id })
         .then((curatedPage: ICuratedPage) => {
-          const { page, i18n } = curatedPage;
+          const {
+            page, i18n
+          } = curatedPage;
           setPageData(curatedPage);
 
           setPageContent(page.content);
@@ -230,7 +257,13 @@ const AdminEditPages: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, id, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    id,
+    t
+  ]);
 
   // The Autosave
   useEffect(() => {
@@ -252,7 +285,11 @@ const AdminEditPages: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(pageData));
-  }, [pageData, reset, createDefaultData]);
+  }, [
+    pageData,
+    reset,
+    createDefaultData
+  ]);
 
   return (
     <div className="adminEditPage">
@@ -288,9 +325,7 @@ const AdminEditPages: FC = () => {
             <Input
               control={control}
               inputName="name"
-              rules={{
-                required: t('namePage.required', { ns: 'fields' })
-              }}
+              rules={{ required: t('namePage.required', { ns: 'fields' }) }}
               type="text"
               label={t('namePage.label', { ns: 'fields' })}
               className="adminEditPage__basics__name"

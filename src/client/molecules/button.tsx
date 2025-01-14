@@ -1,9 +1,13 @@
 import type React from 'react';
 import type { FC } from 'react';
 
-import { useNavigate, type NavigateFunction } from 'react-router-dom';
+import {
+  useNavigate, type NavigateFunction
+} from 'react-router-dom';
 
-import { Abutton, Aicon, type IAButton, type typeIcons } from '../atoms';
+import {
+  Abutton, Aicon, type IAButton, type typeIcons
+} from '../atoms';
 
 import { classTrim } from '../utils';
 

@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
 import type { ICharacter } from '../../character';
 import type { HydratedIBodyAmmo } from '../ammo/model';
@@ -103,4 +105,6 @@ bodySchema.virtual('weapons', {
 
 const BodyModel = (): Model<IBody> => model('Body', bodySchema);
 
-export { BodyModel, type HydratedIBody, type IBody };
+export {
+  BodyModel, type HydratedIBody, type IBody
+};

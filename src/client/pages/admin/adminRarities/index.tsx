@@ -1,12 +1,20 @@
-import React, { useCallback, useMemo, useState, type FC } from 'react';
+import React, {
+  useCallback, useMemo, useState, type FC
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Ap, Atitle } from '../../../atoms';
+import {
+  Ap, Atitle
+} from '../../../atoms';
 import { Button } from '../../../molecules';
-import { Alert, DragList, type IDragElt } from '../../../organisms';
+import {
+  Alert, DragList, type IDragElt
+} from '../../../organisms';
 
 import { arraysEqual } from '../../../utils';
 
@@ -15,7 +23,9 @@ import './adminRarities.scss';
 const AdminRarities: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const { rarities } = useGlobalVars();
 
   const [initialOrder, setInitialOrder] = useState<string[]>([]);
@@ -80,12 +90,10 @@ const AdminRarities: FC = () => {
     }
 
     api.rarities
-      .changeRaritiesOrder({
-        order: raritiesOrder.map((chapter, index) => ({
-          id: chapter,
-          position: index
-        }))
-      })
+      .changeRaritiesOrder({ order: raritiesOrder.map((chapter, index) => ({
+        id: chapter,
+        position: index
+      })) })
       .then(() => {
         const newId = getNewId();
         createAlert({
@@ -101,7 +109,14 @@ const AdminRarities: FC = () => {
       .catch(({ response }) => {
         console.error(response);
       });
-  }, [raritiesOrder, initialOrder, api, getNewId, createAlert, t]);
+  }, [
+    raritiesOrder,
+    initialOrder,
+    api,
+    getNewId,
+    createAlert,
+    t
+  ]);
 
   return (
     <div className="adminRarities">

@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
 import type {
   IAction,
@@ -111,4 +113,6 @@ const itemSchema = new Schema<IItem>({
 
 const ItemModel = (): Model<IItem> => model('Item', itemSchema);
 
-export { ItemModel, type HydratedIItem, type IItem };
+export {
+  ItemModel, type HydratedIItem, type IItem
+};

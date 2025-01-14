@@ -2,8 +2,12 @@ import React, { type FC } from 'react';
 
 import { Controller } from 'react-hook-form';
 
-import { Aerror, Ap } from '../atoms';
-import { Quark, type IQuarkProps } from '../quark';
+import {
+  Aerror, Ap
+} from '../atoms';
+import {
+  Quark, type IQuarkProps
+} from '../quark';
 
 import Button from './button';
 
@@ -45,7 +49,11 @@ const NumberSelect: FC<INumberSelect> = ({
       control={control}
       name={inputName}
       rules={rules}
-      render={({ field: { onChange, value, name }, fieldState: { error } }) => (
+      render={({
+        field: {
+          onChange, value, name
+        }, fieldState: { error }
+      }) => (
         <>
           <Button
             className={classTrim(`

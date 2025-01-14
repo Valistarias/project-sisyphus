@@ -1,17 +1,29 @@
-import React, { useCallback, useMemo, type FC, type ReactNode } from 'react';
+import React, {
+  useCallback, useMemo, type FC, type ReactNode
+} from 'react';
 
 import { motion } from 'framer-motion';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../providers';
 
-import { Ap, Atitle } from '../../atoms';
-import { Button, Helper, NumberSelect } from '../../molecules';
-import { calculateStatMod, getActualBody } from '../../utils/character';
+import {
+  Ap, Atitle
+} from '../../atoms';
+import {
+  Button, Helper, NumberSelect
+} from '../../molecules';
+import {
+  calculateStatMod, getActualBody
+} from '../../utils/character';
 import { RichTextElement } from '../richTextElement';
 
-import type { ICharacter, ICuratedStat } from '../../types';
+import type {
+  ICharacter, ICuratedStat
+} from '../../types';
 
 import {
   arrSum,
@@ -38,7 +50,9 @@ interface ICharacterCreationStep2 {
 
 const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) => {
   const { t } = useTranslation();
-  const { stats, globalValues, cyberFrames, character } = useGlobalVars();
+  const {
+    stats, globalValues, cyberFrames, character
+  } = useGlobalVars();
 
   const createDefaultData = useCallback(
     (stats: ICuratedStat[], character: ICharacter | null | false) => {
@@ -50,7 +64,9 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
         // const relevantBody = character.bodies?.find((body) => body.alive);
         const relevantBody = getActualBody(character);
         if (relevantBody.body !== undefined && !relevantBody.duplicate) {
-          relevantBody.body.stats.forEach(({ stat, value }) => {
+          relevantBody.body.stats.forEach(({
+            stat, value
+          }) => {
             if (defaultData.stats === undefined) {
               defaultData.stats = {};
             }
@@ -87,14 +103,20 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
     [onSubmitStats]
   );
 
-  const { handleSubmit, watch, control } = useForm({
-    defaultValues: useMemo(
-      () => createDefaultData(stats, character),
-      [createDefaultData, stats, character]
-    )
-  });
+  const {
+    handleSubmit, watch, control
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(stats, character),
+    [
+      createDefaultData,
+      stats,
+      character
+    ]
+  ) });
 
-  const { baseStatPoints, minStatAtCreation } = useMemo(
+  const {
+    baseStatPoints, minStatAtCreation
+  } = useMemo(
     () => getValuesFromGlobalValues(['baseStatPoints', 'minStatAtCreation'], globalValues),
     [globalValues]
   );
@@ -120,7 +142,9 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
 
     // If only one source for the list, we'll be precise
     // If multiple sources for bonuses, we are borad in the phrasing
-    nodesByCyberFrames.forEach(({ cyberFrame, chosenNodes }) => {
+    nodesByCyberFrames.forEach(({
+      cyberFrame, chosenNodes
+    }) => {
       chosenNodes.forEach((node) => {
         if (node.statBonuses !== undefined && node.statBonuses.length > 0) {
           node.statBonuses.forEach((statBonus) => {
@@ -251,19 +275,15 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
       className={classTrim(`
         characterCreation-step2
       `)}
-      initial={{
-        transform: 'skew(90deg, 0deg) scale3d(.2, .2, .2)'
-      }}
+      initial={{ transform: 'skew(90deg, 0deg) scale3d(.2, .2, .2)' }}
       animate={{
         transform: 'skew(0, 0) scale3d(1, 1, 1)',
-        transitionEnd: {
-          transform: 'none'
-        }
+        transitionEnd: { transform: 'none' }
       }}
-      exit={{
-        transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)'
+      exit={{ transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)' }}
+      transition={{
+        ease: 'easeInOut', duration: 0.2
       }}
-      transition={{ ease: 'easeInOut', duration: 0.2 }}
     >
       <Ap className="characterCreation-step2__text">
         {t('characterCreation.step2.text', { ns: 'components' })}

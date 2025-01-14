@@ -34,9 +34,13 @@ const createAmmosByBody = async (req: {
   }>
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    const { bodyId, ammos } = req;
+    const {
+      bodyId, ammos
+    } = req;
     BodyAmmo.create(
-      ammos.map(({ id, qty }) => ({
+      ammos.map(({
+        id, qty
+      }) => ({
         body: bodyId,
         ammo: id,
         qty
@@ -57,7 +61,9 @@ const updateAmmoByBody = async (req: {
   bag?: string
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    const { bodyId, ammoId, qty = null, bag = null } = req;
+    const {
+      bodyId, ammoId, qty = null, bag = null
+    } = req;
     const updateObj: {
       bag?: string
       qty?: number
@@ -85,9 +91,7 @@ const updateAmmoByBody = async (req: {
 
 const deleteAmmosByBody = async (bodyId: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    BodyAmmo.deleteMany({
-      body: bodyId
-    })
+    BodyAmmo.deleteMany({ body: bodyId })
       .then(() => {
         resolve(true);
       })
@@ -96,4 +100,6 @@ const deleteAmmosByBody = async (bodyId: string): Promise<boolean> =>
       });
   });
 
-export { createAmmosByBody, deleteAmmosByBody, replaceAmmoByBody, updateAmmoByBody };
+export {
+  createAmmosByBody, deleteAmmosByBody, replaceAmmoByBody, updateAmmoByBody
+};

@@ -1,5 +1,9 @@
-import type { Request, Response } from 'express';
-import type { FlattenMaps, ObjectId } from 'mongoose';
+import type {
+  Request, Response
+} from 'express';
+import type {
+  FlattenMaps, ObjectId
+} from 'mongoose';
 
 import db from '../../models';
 import {
@@ -16,8 +20,13 @@ import {
 } from '../skillBranch/controller';
 import { checkDuplicateStatFormulaId } from '../stat/controller';
 
-import type { HydratedISkillBranch, IStat } from '../index';
-import type { HydratedISkill, LeanISkill } from './model';
+import type { InternationalizationType } from '../../utils/types';
+import type {
+  HydratedISkillBranch, IStat
+} from '../index';
+import type {
+  HydratedISkill, LeanISkill
+} from './model';
 
 import { curateI18n } from '../../utils';
 
@@ -45,14 +54,14 @@ const findSkills = async (): Promise<LeanISkill[]> =>
           ]
         }
       })
-      .then(async (res?: LeanISkill[] | null) => {
+      .then((res?: LeanISkill[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Skills'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -78,14 +87,14 @@ const findSkillById = async (id: string): Promise<HydratedISkill> =>
           ]
         }
       })
-      .then(async (res?: HydratedISkill | null) => {
+      .then((res?: HydratedISkill | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Skill'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -96,14 +105,14 @@ const checkDuplicateSkillFormulaId = async (
 ): Promise<string | boolean> =>
   await new Promise((resolve, reject) => {
     Skill.find({ formulaId })
-      .then(async (res) => {
+      .then((res) => {
         if (res.length === 0 || (alreadyExistOnce && res.length === 1)) {
           resolve(false);
         } else {
           resolve(res[0].title);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -147,7 +156,9 @@ const checkDuplicateFormulaId = async (
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, summary, stat, i18n = null, formulaId } = req.body;
+  const {
+    title, summary, stat, i18n = null, formulaId
+  } = req.body;
   if (
     title === undefined
     || summary === undefined
@@ -197,7 +208,9 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, title = null, summary = null, stat = null, i18n, formulaId = null } = req.body;
+  const {
+    id, title = null, summary = null, stat = null, i18n, formulaId = null
+  } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Skill ID'));
 
@@ -223,13 +236,11 @@ const update = (req: Request, res: Response): void => {
             }
 
             if (i18n !== null) {
-              const newIntl = {
-                ...(skill.i18n !== null && skill.i18n !== undefined && skill.i18n !== ''
-                  ? JSON.parse(skill.i18n)
-                  : {})
-              };
+              const newIntl: InternationalizationType = { ...(skill.i18n !== null && skill.i18n !== undefined && skill.i18n !== ''
+                ? JSON.parse(skill.i18n)
+                : {}) };
 
-              Object.keys(i18n as Record<string, any>).forEach((lang) => {
+              Object.keys(i18n).forEach((lang) => {
                 newIntl[lang] = i18n[lang];
               });
 
@@ -239,7 +250,9 @@ const update = (req: Request, res: Response): void => {
             skill
               .save()
               .then(() => {
-                res.send({ message: 'Skill was updated successfully!', skill });
+                res.send({
+                  message: 'Skill was updated successfully!', skill
+                });
               })
               .catch((err: unknown) => {
                 res.status(500).send(gemServerError(err));
@@ -257,7 +270,7 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteSkillById = async (id: string): Promise<boolean> =>
+const deleteSkillById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Skill ID'));
@@ -280,8 +293,8 @@ const deleteSkillById = async (id: string): Promise<boolean> =>
   });
 
 const deleteSkill = (req: Request, res: Response): void => {
-  const { id } = req.body;
-  deleteSkillById(id as string)
+  const { id }: { id: string } = req.body;
+  deleteSkillById(id)
     .then(() => {
       res.send({ message: 'Skill was deleted successfully!' });
     })
@@ -295,7 +308,7 @@ interface CuratedISkill extends Omit<LeanISkill, 'branches'> {
 }
 
 interface CuratedIntISkill {
-  i18n: Record<string, unknown>
+  i18n?: InternationalizationType
   skill: CuratedISkill
 }
 

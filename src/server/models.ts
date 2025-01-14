@@ -118,7 +118,9 @@ import {
   type IWeaponStyle,
   type IWeaponType
 } from './entities';
-import { BodyItemModel, type IBodyItem } from './entities/body';
+import {
+  BodyItemModel, type IBodyItem
+} from './entities/body';
 
 mongoose.Promise = global.Promise;
 

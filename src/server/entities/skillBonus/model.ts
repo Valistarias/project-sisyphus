@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
 import type { ISkill } from '../index';
 
@@ -12,9 +14,7 @@ interface ISkillBonus {
 }
 
 type HydratedISkillBonus = HydratedDocument<
-  Omit<ISkillBonus, 'skill'> & {
-    skill: ISkill
-  }
+  Omit<ISkillBonus, 'skill'> & { skill: ISkill }
 >;
 
 const skillBonusSchema = new Schema<ISkillBonus>({
@@ -31,4 +31,6 @@ const skillBonusSchema = new Schema<ISkillBonus>({
 
 const SkillBonusModel = (): Model<ISkillBonus> => model('SkillBonus', skillBonusSchema);
 
-export { SkillBonusModel, type HydratedISkillBonus, type ISkillBonus };
+export {
+  SkillBonusModel, type HydratedISkillBonus, type ISkillBonus
+};

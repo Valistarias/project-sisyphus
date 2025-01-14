@@ -1,20 +1,36 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useNavigate, useParams
+} from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input, SmartSelect } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input, SmartSelect
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 
 import type { ICuratedBackground } from '../../../types';
 
-import { classTrim, isThereDuplicate } from '../../../utils';
+import {
+  classTrim, isThereDuplicate
+} from '../../../utils';
 
 import './adminEditBackground.scss';
 
@@ -49,8 +65,12 @@ const AdminEditBackground: FC = () => {
   const { api } = useApi();
   const { id } = useParams();
   const confMessageEvt = useConfirmMessage();
-  const { skills, stats, charParams } = useGlobalVars();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    skills, stats, charParams
+  } = useGlobalVars();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const navigate = useNavigate();
 
   const [displayInt, setDisplayInt] = useState(false);
@@ -97,19 +117,17 @@ const AdminEditBackground: FC = () => {
   const [backgroundText, setBackgroundText] = useState('');
   const [backgroundTextFr, setBackgroundTextFr] = useState('');
 
-  const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const createDefaultData = useCallback((backgroundData: ICuratedBackground | null) => {
     if (backgroundData == null) {
       return {};
     }
-    const { background, i18n } = backgroundData;
+    const {
+      background, i18n
+    } = backgroundData;
     const defaultData: Partial<FormValues> = {};
     defaultData.name = background.title;
     if (i18n.fr !== undefined) {
@@ -174,12 +192,10 @@ const AdminEditBackground: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({
-    defaultValues: useMemo(
-      () => createDefaultData(backgroundData),
-      [createDefaultData, backgroundData]
-    )
-  });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(backgroundData),
+    [createDefaultData, backgroundData]
+  ) });
 
   const onAddSkillBonus = useCallback(() => {
     setSkillBonusIds((prev) => {
@@ -212,7 +228,9 @@ const AdminEditBackground: FC = () => {
   }, []);
 
   const onSaveBackground: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, ...elts }) => {
+    ({
+      name, nameFr, ...elts
+    }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -263,15 +281,21 @@ const AdminEditBackground: FC = () => {
 
         return;
       }
-      const curatedSkillBonuses = skillBonuses.map(({ skill, value }) => ({
+      const curatedSkillBonuses = skillBonuses.map(({
+        skill, value
+      }) => ({
         skill,
         value: Number(value)
       }));
-      const curatedStatBonuses = statBonuses.map(({ stat, value }) => ({
+      const curatedStatBonuses = statBonuses.map(({
+        stat, value
+      }) => ({
         stat,
         value: Number(value)
       }));
-      const curatedCharParamBonuses = charParamBonuses.map(({ charParam, value }) => ({
+      const curatedCharParamBonuses = charParamBonuses.map(({
+        charParam, value
+      }) => ({
         charParam,
         value: Number(value)
       }));
@@ -283,12 +307,10 @@ const AdminEditBackground: FC = () => {
       }
       let i18n: any | null = null;
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            summary: htmlFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          summary: htmlFr
+        } };
       }
       api.backgrounds
         .update({
@@ -316,21 +338,26 @@ const AdminEditBackground: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize') })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize') })
             });
           }
         });
     },
-    [introEditor, introFrEditor, api, id, setError, t, getNewId, createAlert]
+    [
+      introEditor,
+      introFrEditor,
+      api,
+      id,
+      setError,
+      t,
+      getNewId,
+      createAlert
+    ]
   );
 
   const onAskDelete = useCallback(() => {
@@ -368,16 +395,12 @@ const AdminEditBackground: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skillBranch.name`), 'capitalize') })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skillBranch.name`), 'capitalize') })
                   });
                 }
               });
@@ -387,7 +410,17 @@ const AdminEditBackground: FC = () => {
         confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [api, backgroundData, confMessageEvt, t, id, getNewId, createAlert, navigate, setError]);
+  }, [
+    api,
+    backgroundData,
+    confMessageEvt,
+    t,
+    id,
+    getNewId,
+    createAlert,
+    navigate,
+    setError
+  ]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
@@ -395,7 +428,9 @@ const AdminEditBackground: FC = () => {
       api.backgrounds
         .get({ backgroundId: id })
         .then((curatedBackground: ICuratedBackground) => {
-          const { background, i18n } = curatedBackground;
+          const {
+            background, i18n
+          } = curatedBackground;
           setBackgroundData(curatedBackground);
           setBackgroundText(background.summary);
           if (i18n.fr !== undefined) {
@@ -414,12 +449,22 @@ const AdminEditBackground: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, id, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    id,
+    t
+  ]);
 
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(backgroundData));
-  }, [backgroundData, reset, createDefaultData]);
+  }, [
+    backgroundData,
+    reset,
+    createDefaultData
+  ]);
 
   return (
     <div
@@ -454,9 +499,7 @@ const AdminEditBackground: FC = () => {
             control={control}
             inputName="name"
             type="text"
-            rules={{
-              required: t('nameBackground.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('nameBackground.required', { ns: 'fields' }) }}
             label={t('nameBackground.label', { ns: 'fields' })}
             className="adminEditBackground__basics__name"
           />
@@ -484,9 +527,7 @@ const AdminEditBackground: FC = () => {
                   <SmartSelect
                     control={control}
                     inputName={`skillBonuses.skill-${skillBonusId}.skill`}
-                    rules={{
-                      required: t('skillBonusSkill.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('skillBonusSkill.required', { ns: 'fields' }) }}
                     label={t('skillBonusSkill.label', { ns: 'fields' })}
                     options={skillSelect}
                     className="adminEditBackground__bonus__select"
@@ -495,9 +536,7 @@ const AdminEditBackground: FC = () => {
                     control={control}
                     inputName={`skillBonuses.skill-${skillBonusId}.value`}
                     type="number"
-                    rules={{
-                      required: t('skillBonusValue.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('skillBonusValue.required', { ns: 'fields' }) }}
                     label={t('skillBonusValue.label', { ns: 'fields' })}
                     className="adminEditBackground__bonus__value"
                   />
@@ -530,9 +569,7 @@ const AdminEditBackground: FC = () => {
                   <SmartSelect
                     control={control}
                     inputName={`statBonuses.stat-${statBonusId}.stat`}
-                    rules={{
-                      required: t('statBonusStat.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('statBonusStat.required', { ns: 'fields' }) }}
                     label={t('statBonusStat.label', { ns: 'fields' })}
                     options={statSelect}
                     className="adminEditBackground__bonus__select"
@@ -541,9 +578,7 @@ const AdminEditBackground: FC = () => {
                     control={control}
                     inputName={`statBonuses.stat-${statBonusId}.value`}
                     type="number"
-                    rules={{
-                      required: t('statBonusValue.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('statBonusValue.required', { ns: 'fields' }) }}
                     label={t('statBonusValue.label', { ns: 'fields' })}
                     className="adminEditBackground__bonus__value"
                   />
@@ -576,9 +611,7 @@ const AdminEditBackground: FC = () => {
                   <SmartSelect
                     control={control}
                     inputName={`charParamBonuses.charParam-${charParamBonusId}.charParam`}
-                    rules={{
-                      required: t('charParamBonusStat.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('charParamBonusStat.required', { ns: 'fields' }) }}
                     label={t('charParamBonusStat.label', { ns: 'fields' })}
                     options={charParamSelect}
                     className="adminEditBackground__bonus__select"
@@ -587,9 +620,7 @@ const AdminEditBackground: FC = () => {
                     control={control}
                     inputName={`charParamBonuses.charParam-${charParamBonusId}.value`}
                     type="number"
-                    rules={{
-                      required: t('charParamBonusValue.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('charParamBonusValue.required', { ns: 'fields' }) }}
                     label={t('charParamBonusValue.label', { ns: 'fields' })}
                     className="adminEditBackground__bonus__value"
                   />

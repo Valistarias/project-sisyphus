@@ -1,8 +1,12 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemInvalidField, gemNotFound, gemServerError
+} from '../../utils/globalErrorMessage';
 import { smartUpdateActions } from '../action/controller';
 import { curateCharParamBonusIds } from '../charParamBonus/controller';
 import { findCyberFrameBranchesByFrame } from '../cyberFrameBranch/controller';
@@ -11,6 +15,7 @@ import { curateSkillBonusIds } from '../skillBonus/controller';
 import { findSkillBranchesBySkill } from '../skillBranch/controller';
 import { curateStatBonusIds } from '../statBonus/controller';
 
+import type { InternationalizationType } from '../../utils/types';
 import type {
   IAction,
   ICharParamBonus,
@@ -39,14 +44,14 @@ const findNodes = async (options?: findAllPayload): Promise<HydratedINode[]> =>
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
-      .then(async (res?: HydratedINode[] | null) => {
+      .then((res?: HydratedINode[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Nodes'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err: unknown) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -61,14 +66,14 @@ const findNodeById = async (id: string): Promise<HydratedINode> =>
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
       .populate<{ skillBranch: ISkillBranch }>('skillBranch')
       .populate<{ cyberFrameBranch: ICyberFrameBranch }>('cyberFrameBranch')
-      .then(async (res?: HydratedINode | null) => {
+      .then((res?: HydratedINode | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Node'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err: unknown) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -420,13 +425,11 @@ const update = (req: Request, res: Response): void => {
       }, []);
 
       if (i18n !== null) {
-        const newIntl = {
-          ...(node.i18n !== null && node.i18n !== undefined && node.i18n !== ''
-            ? JSON.parse(node.i18n)
-            : {})
-        };
+        const newIntl: InternationalizationType = { ...(node.i18n !== null && node.i18n !== undefined && node.i18n !== ''
+          ? JSON.parse(node.i18n)
+          : {}) };
 
-        Object.keys(i18n as Record<string, any>).forEach((lang) => {
+        Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
         });
 
@@ -483,7 +486,9 @@ const update = (req: Request, res: Response): void => {
                           node
                             .save()
                             .then(() => {
-                              res.send({ message: 'Node was updated successfully!', node });
+                              res.send({
+                                message: 'Node was updated successfully!', node
+                              });
                             })
                             .catch((err: unknown) => {
                               res.status(500).send(gemServerError(err));
@@ -514,7 +519,7 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteNodeById = async (id: string): Promise<boolean> =>
+const deleteNodeById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Node ID'));
@@ -531,9 +536,9 @@ const deleteNodeById = async (id: string): Promise<boolean> =>
   });
 
 const deleteNode = (req: Request, res: Response): void => {
-  const { id } = req.body;
+  const { id }: { id: string } = req.body;
 
-  findNodeById(id as string)
+  findNodeById(id)
     .then((node) => {
       const skillBonusesToRemove = node.skillBonuses.map(elt => elt._id);
       const statBonusesToRemove = node.statBonuses.map(elt => elt._id);
@@ -569,7 +574,7 @@ const deleteNode = (req: Request, res: Response): void => {
                         actionsToUpdate: []
                       })
                         .then(() => {
-                          deleteNodeById(id as string)
+                          deleteNodeById(id)
                             .then(() => {
                               res.send({ message: 'Node was deleted successfully!' });
                             })
@@ -603,7 +608,7 @@ const deleteNode = (req: Request, res: Response): void => {
 };
 
 interface CuratedINode {
-  i18n: Record<string, unknown>
+  i18n?: InternationalizationType
   node: any
 }
 
@@ -694,7 +699,9 @@ const findAll = (req: Request, res: Response): void => {
 };
 
 const findAllByBranch = (req: Request, res: Response): void => {
-  const { cyberFrameBranchId, skillBranchId } = req.query as {
+  const {
+    cyberFrameBranchId, skillBranchId
+  } = req.query as {
     cyberFrameBranchId?: string
     skillBranchId?: string
   };
@@ -703,7 +710,9 @@ const findAllByBranch = (req: Request, res: Response): void => {
 
     return;
   }
-  findNodes({ cyberFrameBranch: cyberFrameBranchId, skillBranch: skillBranchId })
+  findNodes({
+    cyberFrameBranch: cyberFrameBranchId, skillBranch: skillBranchId
+  })
     .then((nodes) => {
       const curatedNodes: CuratedINode[] = [];
 

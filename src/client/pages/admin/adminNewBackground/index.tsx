@@ -1,18 +1,32 @@
-import React, { useCallback, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input, SmartSelect } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input, SmartSelect
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 
-import { classTrim, isThereDuplicate } from '../../../utils';
+import {
+  classTrim, isThereDuplicate
+} from '../../../utils';
 
 import './adminNewBackground.scss';
 
@@ -46,8 +60,12 @@ const AdminNewBackground: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const navigate = useNavigate();
-  const { createAlert, getNewId } = useSystemAlerts();
-  const { skills, stats, charParams } = useGlobalVars();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
+  const {
+    skills, stats, charParams
+  } = useGlobalVars();
 
   const [displayInt, setDisplayInt] = useState(false);
 
@@ -86,13 +104,9 @@ const AdminNewBackground: FC = () => {
   );
   const [charParamBonusIds, setCharParamBonusIds] = useState<number[]>([]);
 
-  const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const {
     handleSubmit,
@@ -100,11 +114,7 @@ const AdminNewBackground: FC = () => {
     unregister,
     control,
     formState: { errors }
-  } = useForm({
-    defaultValues: {
-      icon: 'default'
-    }
-  });
+  } = useForm({ defaultValues: { icon: 'default' } });
 
   const onAddSkillBonus = useCallback(() => {
     setSkillBonusIds((prev) => {
@@ -137,7 +147,9 @@ const AdminNewBackground: FC = () => {
   }, []);
 
   const onSaveBackground: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, ...elts }) => {
+    ({
+      name, nameFr, ...elts
+    }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -192,15 +204,21 @@ const AdminNewBackground: FC = () => {
         return;
       }
 
-      const curatedSkillBonuses = skillBonuses.map(({ skill, value }) => ({
+      const curatedSkillBonuses = skillBonuses.map(({
+        skill, value
+      }) => ({
         skill,
         value: Number(value)
       }));
-      const curatedStatBonuses = statBonuses.map(({ stat, value }) => ({
+      const curatedStatBonuses = statBonuses.map(({
+        stat, value
+      }) => ({
         stat,
         value: Number(value)
       }));
-      const curatedCharParamBonuses = charParamBonuses.map(({ charParam, value }) => ({
+      const curatedCharParamBonuses = charParamBonuses.map(({
+        charParam, value
+      }) => ({
         charParam,
         value: Number(value)
       }));
@@ -214,12 +232,10 @@ const AdminNewBackground: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            summary: htmlFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          summary: htmlFr
+        } };
       }
 
       api.backgrounds
@@ -248,21 +264,26 @@ const AdminNewBackground: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize') })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize') })
             });
           }
         });
     },
-    [introEditor, introFrEditor, api, setError, t, getNewId, createAlert, navigate]
+    [
+      introEditor,
+      introFrEditor,
+      api,
+      setError,
+      t,
+      getNewId,
+      createAlert,
+      navigate
+    ]
   );
 
   return (
@@ -290,9 +311,7 @@ const AdminNewBackground: FC = () => {
             control={control}
             inputName="name"
             type="text"
-            rules={{
-              required: t('nameBackground.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('nameBackground.required', { ns: 'fields' }) }}
             label={t('nameBackground.label', { ns: 'fields' })}
             className="adminNewBackground__basics__name"
           />
@@ -320,9 +339,7 @@ const AdminNewBackground: FC = () => {
                   <SmartSelect
                     control={control}
                     inputName={`skillBonuses.skill-${skillBonusId}.skill`}
-                    rules={{
-                      required: t('skillBonusSkill.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('skillBonusSkill.required', { ns: 'fields' }) }}
                     label={t('skillBonusSkill.label', { ns: 'fields' })}
                     options={skillSelect}
                     className="adminNewBackground__bonus__select"
@@ -331,9 +348,7 @@ const AdminNewBackground: FC = () => {
                     control={control}
                     inputName={`skillBonuses.skill-${skillBonusId}.value`}
                     type="number"
-                    rules={{
-                      required: t('skillBonusValue.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('skillBonusValue.required', { ns: 'fields' }) }}
                     label={t('skillBonusValue.label', { ns: 'fields' })}
                     className="adminNewBackground__bonus__value"
                   />
@@ -366,9 +381,7 @@ const AdminNewBackground: FC = () => {
                   <SmartSelect
                     control={control}
                     inputName={`statBonuses.stat-${statBonusId}.stat`}
-                    rules={{
-                      required: t('statBonusStat.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('statBonusStat.required', { ns: 'fields' }) }}
                     label={t('statBonusStat.label', { ns: 'fields' })}
                     options={statSelect}
                     className="adminNewBackground__bonus__select"
@@ -377,9 +390,7 @@ const AdminNewBackground: FC = () => {
                     control={control}
                     inputName={`statBonuses.stat-${statBonusId}.value`}
                     type="number"
-                    rules={{
-                      required: t('statBonusValue.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('statBonusValue.required', { ns: 'fields' }) }}
                     label={t('statBonusValue.label', { ns: 'fields' })}
                     className="adminNewBackground__bonus__value"
                   />
@@ -412,9 +423,7 @@ const AdminNewBackground: FC = () => {
                   <SmartSelect
                     control={control}
                     inputName={`charParamBonuses.charParam-${charParamBonusId}.charParam`}
-                    rules={{
-                      required: t('charParamBonusStat.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('charParamBonusStat.required', { ns: 'fields' }) }}
                     label={t('charParamBonusStat.label', { ns: 'fields' })}
                     options={charParamSelect}
                     className="adminNewBackground__bonus__select"
@@ -423,9 +432,7 @@ const AdminNewBackground: FC = () => {
                     control={control}
                     inputName={`charParamBonuses.charParam-${charParamBonusId}.value`}
                     type="number"
-                    rules={{
-                      required: t('charParamBonusValue.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('charParamBonusValue.required', { ns: 'fields' }) }}
                     label={t('charParamBonusValue.label', { ns: 'fields' })}
                     className="adminNewBackground__bonus__value"
                   />

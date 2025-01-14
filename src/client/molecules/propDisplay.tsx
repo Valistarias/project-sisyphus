@@ -1,15 +1,25 @@
-import React, { forwardRef, type ReactNode } from 'react';
+import React, {
+  forwardRef, type ReactNode
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { Ali, AnodeIcon, Ap, Atitle, Aul } from '../atoms';
+import {
+  Ali, AnodeIcon, Ap, Atitle, Aul
+} from '../atoms';
 import { RichTextElement } from '../organisms';
-import { Quark, type IQuarkProps } from '../quark';
+import {
+  Quark, type IQuarkProps
+} from '../quark';
 
 import type { ICuratedItemModifier } from '../types';
-import type { ICuratedEffect, TypeNodeIcons } from '../types/rules';
+import type {
+  ICuratedEffect, TypeNodeIcons
+} from '../types/rules';
 
-import { classTrim, curateStringFormula } from '../utils';
+import {
+  classTrim, curateStringFormula
+} from '../utils';
 
 import './propDisplay.scss';
 

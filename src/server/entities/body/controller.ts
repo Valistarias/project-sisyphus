@@ -1,7 +1,11 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 import type { HydratedDocument } from 'mongoose';
 
-import { getUserFromToken, type IVerifyTokenRequest } from '../../middlewares/authJwt';
+import {
+  getUserFromToken, type IVerifyTokenRequest
+} from '../../middlewares/authJwt';
 import db from '../../models';
 import {
   gemInvalidField,
@@ -12,13 +16,27 @@ import {
 import { findCharacterById } from '../character/controller';
 
 import { deleteAmmosByBody } from './ammo/controller';
-import { deleteArmorsByBody, replaceArmorByBody } from './armor/controller';
-import { deleteBagsByBody, replaceBagByBody } from './bag/controller';
-import { deleteImplantsByBody, replaceImplantByBody } from './implant/controller';
-import { deleteItemsByBody, replaceItemByBody } from './item/controller';
-import { deleteProgramsByBody, replaceProgramByBody } from './program/controller';
-import { createStatsByBody, deleteStatsByBody, replaceStatByBody } from './stat/controller';
-import { deleteWeaponsByBody, replaceWeaponByBody } from './weapon/controller';
+import {
+  deleteArmorsByBody, replaceArmorByBody
+} from './armor/controller';
+import {
+  deleteBagsByBody, replaceBagByBody
+} from './bag/controller';
+import {
+  deleteImplantsByBody, replaceImplantByBody
+} from './implant/controller';
+import {
+  deleteItemsByBody, replaceItemByBody
+} from './item/controller';
+import {
+  deleteProgramsByBody, replaceProgramByBody
+} from './program/controller';
+import {
+  createStatsByBody, deleteStatsByBody, replaceStatByBody
+} from './stat/controller';
+import {
+  deleteWeaponsByBody, replaceWeaponByBody
+} from './weapon/controller';
 
 import type { ICharacter } from '../character';
 import type {
@@ -78,14 +96,14 @@ const findBodiesByCharacter = async (req: Request): Promise<HydratedIBody[]> =>
             path: 'weapons',
             select: '_id body weapon bag ammo bullets'
           })
-          .then(async (res) => {
+          .then((res) => {
             if (res === undefined || res === null) {
               reject(gemNotFound('Bodies'));
             } else {
               resolve(res as HydratedIBody[]);
             }
           })
-          .catch(async (err) => {
+          .catch((err) => {
             reject(err);
           });
       })
@@ -97,7 +115,9 @@ const findBodiesByCharacter = async (req: Request): Promise<HydratedIBody[]> =>
 const findBodyById = async (
   id: string,
   req: Request
-): Promise<{ body: HydratedIBody, canEdit: boolean }> =>
+): Promise<{
+  body: HydratedIBody, canEdit: boolean
+}> =>
   await new Promise((resolve, reject) => {
     getUserFromToken(req as IVerifyTokenRequest)
       .then((user) => {
@@ -140,7 +160,7 @@ const findBodyById = async (
             path: 'weapons',
             select: '_id body weapon bag ammo bullets'
           })
-          .then(async (res) => {
+          .then((res) => {
             if (res === undefined || res === null) {
               reject(gemNotFound('Body'));
             } else {
@@ -153,7 +173,7 @@ const findBodyById = async (
               });
             }
           })
-          .catch(async (err) => {
+          .catch((err) => {
             reject(err);
           });
       })
@@ -163,7 +183,9 @@ const findBodyById = async (
   });
 
 const create = (req: Request, res: Response): void => {
-  const { characterId, hp, stats } = req.body;
+  const {
+    characterId, hp, stats
+  } = req.body;
   getUserFromToken(req as IVerifyTokenRequest)
     .then((user) => {
       if (user === null) {
@@ -172,7 +194,9 @@ const create = (req: Request, res: Response): void => {
         return;
       }
       findCharacterById(characterId as string, req)
-        .then(({ char, canEdit }) => {
+        .then(({
+          char, canEdit
+        }) => {
           if (char !== undefined && canEdit) {
             const body = new Body({
               character: characterId,
@@ -182,9 +206,13 @@ const create = (req: Request, res: Response): void => {
             body
               .save()
               .then(() => {
-                createStatsByBody({ bodyId: body._id.toString(), stats })
+                createStatsByBody({
+                  bodyId: body._id.toString(), stats
+                })
                   .then(() => {
-                    res.send({ message: 'Body was created successfully!', bodyId: body._id });
+                    res.send({
+                      message: 'Body was created successfully!', bodyId: body._id
+                    });
                   })
                   .catch((err: unknown) => {
                     res.status(500).send(gemServerError(err));
@@ -205,14 +233,18 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, hp = null, alive = null } = req.body;
+  const {
+    id, hp = null, alive = null
+  } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Body ID'));
 
     return;
   }
   findBodyById(id as string, req)
-    .then(({ body, canEdit }) => {
+    .then(({
+      body, canEdit
+    }) => {
       if (body !== undefined && canEdit) {
         if (hp !== null && hp !== body.hp) {
           body.hp = hp;
@@ -223,7 +255,9 @@ const update = (req: Request, res: Response): void => {
         body
           .save()
           .then(() => {
-            res.send({ message: 'Body was updated successfully!', body });
+            res.send({
+              message: 'Body was updated successfully!', body
+            });
           })
           .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
@@ -236,18 +270,26 @@ const update = (req: Request, res: Response): void => {
 };
 
 const updateStats = (req: Request, res: Response): void => {
-  const { id, stats } = req.body;
+  const {
+    id, stats
+  } = req.body;
   if (id === undefined || stats === undefined) {
     res.status(400).send(gemInvalidField('Body ID'));
 
     return;
   }
   findBodyById(id as string, req)
-    .then(({ body, canEdit }) => {
+    .then(({
+      body, canEdit
+    }) => {
       if (body !== undefined && canEdit) {
-        replaceStatByBody({ bodyId: id, stats })
+        replaceStatByBody({
+          bodyId: id, stats
+        })
           .then(() => {
-            res.send({ message: 'Body was updated successfully!', body });
+            res.send({
+              message: 'Body was updated successfully!', body
+            });
           })
           .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
@@ -275,26 +317,42 @@ const resetItems = (req: Request, res: Response): void => {
     return;
   }
   findBodyById(id as string, req)
-    .then(({ body, canEdit }) => {
+    .then(({
+      body, canEdit
+    }) => {
       if (body !== undefined && canEdit) {
         deleteAmmosByBody(id as string)
           .then(() => {
-            replaceArmorByBody({ bodyId: id, armorIds: armors })
+            replaceArmorByBody({
+              bodyId: id, armorIds: armors
+            })
               .then(() => {
-                replaceBagByBody({ bodyId: id, bagIds: bags })
+                replaceBagByBody({
+                  bodyId: id, bagIds: bags
+                })
                   .then(() => {
-                    replaceImplantByBody({ bodyId: id, implantIds: implants })
+                    replaceImplantByBody({
+                      bodyId: id, implantIds: implants
+                    })
                       .then(() => {
                         replaceItemByBody({
                           bodyId: id,
-                          items: items.map((itemId: string) => ({ id: itemId, qty: 1 }))
+                          items: items.map((itemId: string) => ({
+                            id: itemId, qty: 1
+                          }))
                         })
                           .then(() => {
-                            replaceProgramByBody({ bodyId: id, programIds: programs })
+                            replaceProgramByBody({
+                              bodyId: id, programIds: programs
+                            })
                               .then(() => {
-                                replaceWeaponByBody({ bodyId: id, weaponIds: weapons })
+                                replaceWeaponByBody({
+                                  bodyId: id, weaponIds: weapons
+                                })
                                   .then(() => {
-                                    res.send({ message: 'Body was updated successfully!', body });
+                                    res.send({
+                                      message: 'Body was updated successfully!', body
+                                    });
                                   })
                                   .catch((err: unknown) => {
                                     res.status(500).send(gemServerError(err));
@@ -330,7 +388,7 @@ const resetItems = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-const deleteBodyById = async (id: string): Promise<boolean> =>
+const deleteBodyById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Body ID'));
@@ -395,13 +453,13 @@ const deleteBodyById = async (id: string): Promise<boolean> =>
   });
 
 const deleteBody = (req: Request, res: Response): void => {
-  const { id } = req.body;
+  const { id }: { id: string } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Body ID'));
 
     return;
   }
-  deleteBodyById(id as string)
+  deleteBodyById(id)
     .then(() => {
       res.send({ message: 'Body was deleted successfully!' });
     })

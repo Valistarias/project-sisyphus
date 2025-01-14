@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
 import type {
   IAction,
@@ -119,4 +121,6 @@ const implantSchema = new Schema<IImplant>({
 
 const ImplantModel = (): Model<IImplant> => model('Implant', implantSchema);
 
-export { ImplantModel, type HydratedIImplant, type IImplant };
+export {
+  ImplantModel, type HydratedIImplant, type IImplant
+};

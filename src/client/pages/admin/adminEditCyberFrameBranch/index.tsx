@@ -1,16 +1,30 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useNavigate, useParams
+} from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useConfirmMessage, useSystemAlerts
+} from '../../../providers';
 
-import { Aa, Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aa, Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 
 import type { ICuratedCyberFrameBranch } from '../../../types';
 
@@ -24,7 +38,9 @@ interface FormValues {
 const AdminEditCyberFrameBranch: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const confMessageEvt = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -43,19 +59,17 @@ const AdminEditCyberFrameBranch: FC = () => {
   const [cyberFrameBranchText, setCyberFrameBranchText] = useState('');
   const [cyberFrameBranchTextFr, setCyberFrameBranchTextFr] = useState('');
 
-  const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const createDefaultData = useCallback((cyberFrameBranchData: ICuratedCyberFrameBranch | null) => {
     if (cyberFrameBranchData == null) {
       return {};
     }
-    const { cyberFrameBranch, i18n } = cyberFrameBranchData;
+    const {
+      cyberFrameBranch, i18n
+    } = cyberFrameBranchData;
     const defaultData: Partial<FormValues> = {};
     defaultData.name = cyberFrameBranch.title;
     if (i18n.fr !== undefined) {
@@ -71,15 +85,15 @@ const AdminEditCyberFrameBranch: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({
-    defaultValues: useMemo(
-      () => createDefaultData(cyberFrameBranchData),
-      [createDefaultData, cyberFrameBranchData]
-    )
-  });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(cyberFrameBranchData),
+    [createDefaultData, cyberFrameBranchData]
+  ) });
 
   const onSaveCyberFrameBranch: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr }) => {
+    ({
+      name, nameFr
+    }) => {
       if (
         cyberFrameBranchText === null
         || cyberFrameBranchTextFr === null
@@ -100,12 +114,10 @@ const AdminEditCyberFrameBranch: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            text: htmlTextFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          text: htmlTextFr
+        } };
       }
 
       api.cyberFrameBranches
@@ -131,16 +143,12 @@ const AdminEditCyberFrameBranch: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.cyberFrameBranchType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.cyberFrameBranchType.${data.sent}`), 'capitalize') })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.cyberFrameBranchType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.cyberFrameBranchType.${data.sent}`), 'capitalize') })
             });
           }
         });
@@ -198,16 +206,12 @@ const AdminEditCyberFrameBranch: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.cyberFrameBranch.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.cyberFrameBranch.name`), 'capitalize') })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.cyberFrameBranch.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.cyberFrameBranch.name`), 'capitalize') })
                   });
                 }
               });
@@ -217,7 +221,18 @@ const AdminEditCyberFrameBranch: FC = () => {
         confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [api, confMessageEvt, t, cyberFrameBranchData?.cyberFrameBranch.title, cyberFrameBranchData?.cyberFrameBranch.cyberFrame, id, getNewId, createAlert, navigate, setError]);
+  }, [
+    api,
+    confMessageEvt,
+    t,
+    cyberFrameBranchData?.cyberFrameBranch.title,
+    cyberFrameBranchData?.cyberFrameBranch.cyberFrame,
+    id,
+    getNewId,
+    createAlert,
+    navigate,
+    setError
+  ]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
@@ -225,7 +240,9 @@ const AdminEditCyberFrameBranch: FC = () => {
       api.cyberFrameBranches
         .get({ cyberFrameBranchId: id })
         .then((curatedCyberFrameBranch: ICuratedCyberFrameBranch) => {
-          const { cyberFrameBranch, i18n } = curatedCyberFrameBranch;
+          const {
+            cyberFrameBranch, i18n
+          } = curatedCyberFrameBranch;
           setCyberFrameBranchData(curatedCyberFrameBranch);
           setCyberFrameBranchText(cyberFrameBranch.summary);
           if (i18n.fr !== undefined) {
@@ -244,7 +261,13 @@ const AdminEditCyberFrameBranch: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, id, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    id,
+    t
+  ]);
 
   // The Autosave
   useEffect(() => {
@@ -266,7 +289,11 @@ const AdminEditCyberFrameBranch: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(cyberFrameBranchData));
-  }, [cyberFrameBranchData, reset, createDefaultData]);
+  }, [
+    cyberFrameBranchData,
+    reset,
+    createDefaultData
+  ]);
 
   return (
     <div className="adminEditCyberFrameBranch">

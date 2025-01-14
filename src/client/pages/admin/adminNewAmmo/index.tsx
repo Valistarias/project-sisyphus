@@ -1,16 +1,28 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input, SmartSelect } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input, SmartSelect
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 
 import './adminNewAmmo.scss';
 
@@ -29,19 +41,19 @@ const AdminNewAmmo: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const navigate = useNavigate();
-  const { createAlert, getNewId } = useSystemAlerts();
-  const { itemModifiers, itemTypes, weaponTypes, rarities } = useGlobalVars();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
+  const {
+    itemModifiers, itemTypes, weaponTypes, rarities
+  } = useGlobalVars();
 
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
 
-  const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const {
     handleSubmit,
@@ -67,7 +79,9 @@ const AdminNewAmmo: FC = () => {
   })), [weaponTypes]);
 
   const onSaveAmmo: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, rarity, cost, weaponTypes, itemModifiers, offsetToHit, offsetDamage }) => {
+    ({
+      name, nameFr, rarity, cost, weaponTypes, itemModifiers, offsetToHit, offsetDamage
+    }) => {
       if (
         introEditor === null
         || introFrEditor === null
@@ -86,12 +100,10 @@ const AdminNewAmmo: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            summary: htmlFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          summary: htmlFr
+        } };
       }
 
       api.ammos
@@ -123,13 +135,21 @@ const AdminNewAmmo: FC = () => {
           const { data } = response;
           setError('root.serverError', {
             type: 'server',
-            message: t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
-            })
+            message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
           });
         });
     },
-    [introEditor, introFrEditor, api, itemTypes, getNewId, createAlert, t, navigate, setError]
+    [
+      introEditor,
+      introFrEditor,
+      api,
+      itemTypes,
+      getNewId,
+      createAlert,
+      t,
+      navigate,
+      setError
+    ]
   );
 
   useEffect(() => {
@@ -137,7 +157,12 @@ const AdminNewAmmo: FC = () => {
       setLoading(true);
       calledApi.current = true;
     }
-  }, [api, createAlert, getNewId, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    t
+  ]);
 
   return (
     <div className="adminNewAmmo">
@@ -153,9 +178,7 @@ const AdminNewAmmo: FC = () => {
             control={control}
             inputName="name"
             type="text"
-            rules={{
-              required: t('nameAmmo.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('nameAmmo.required', { ns: 'fields' }) }}
             label={t('nameAmmo.label', { ns: 'fields' })}
             className="adminNewAmmo__basics__name"
           />
@@ -164,18 +187,14 @@ const AdminNewAmmo: FC = () => {
               control={control}
               inputName="offsetToHit"
               type="number"
-              rules={{
-                required: t('ammoOffsetToHit.required', { ns: 'fields' })
-              }}
+              rules={{ required: t('ammoOffsetToHit.required', { ns: 'fields' }) }}
               label={t('ammoOffsetToHit.label', { ns: 'fields' })}
             />
             <Input
               control={control}
               inputName="offsetDamage"
               type="number"
-              rules={{
-                required: t('ammoOffsetDamage.required', { ns: 'fields' })
-              }}
+              rules={{ required: t('ammoOffsetDamage.required', { ns: 'fields' }) }}
               label={t('ammoOffsetDamage.label', { ns: 'fields' })}
             />
             <SmartSelect
@@ -183,9 +202,7 @@ const AdminNewAmmo: FC = () => {
               isMulti
               inputName="weaponTypes"
               label={t('ammoWeaponTypes.label', { ns: 'fields' })}
-              rules={{
-                required: t('ammoWeaponTypes.required', { ns: 'fields' })
-              }}
+              rules={{ required: t('ammoWeaponTypes.required', { ns: 'fields' }) }}
               options={weaponList}
               className="adminNewWeapon__details__fields__elt"
             />
@@ -212,9 +229,7 @@ const AdminNewAmmo: FC = () => {
               control={control}
               inputName="cost"
               type="number"
-              rules={{
-                required: t('ammoCost.required', { ns: 'fields' })
-              }}
+              rules={{ required: t('ammoCost.required', { ns: 'fields' }) }}
               label={t('ammoCost.label', { ns: 'fields' })}
               className="adminNewAmmo__details__fields__elt"
             />

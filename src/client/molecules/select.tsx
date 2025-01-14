@@ -2,9 +2,13 @@ import React, { type FC } from 'react';
 
 import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import Select, { components, type MultiValue, type OptionProps } from 'react-select';
+import Select, {
+  components, type MultiValue, type OptionProps
+} from 'react-select';
 
-import { Aerror, Alabel, Ap } from '../atoms';
+import {
+  Aerror, Alabel, Ap
+} from '../atoms';
 
 import type { IReactHookFormInputs } from '../types/form';
 
@@ -43,7 +47,9 @@ interface IAp extends IReactHookFormInputs {
   disabled?: boolean
 }
 
-const Option: FC<OptionProps<ISingleValueSelect, false>> = ({ children, ...props }) => {
+const Option: FC<OptionProps<ISingleValueSelect, false>> = ({
+  children, ...props
+}) => {
   if (props.data.details !== null) {
     return (
       <components.Option
@@ -97,7 +103,11 @@ const SmartSelect: FC<IAp> = ({
         control={control}
         name={inputName}
         rules={rules}
-        render={({ field: { onChange, onBlur, value, name, ref }, fieldState: { error } }) => (
+        render={({
+          field: {
+            onChange, onBlur, value, name, ref
+          }, fieldState: { error }
+        }) => (
           <>
             {label !== undefined
               ? (
@@ -143,4 +153,6 @@ const SmartSelect: FC<IAp> = ({
   );
 };
 
-export { SmartSelect, type IGroupedOption, type ISingleValueSelect };
+export {
+  SmartSelect, type IGroupedOption, type ISingleValueSelect
+};

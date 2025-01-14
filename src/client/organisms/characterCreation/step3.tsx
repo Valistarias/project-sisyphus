@@ -1,12 +1,18 @@
-import React, { useCallback, useEffect, useMemo, useState, type FC, type ReactNode } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useState, type FC, type ReactNode
+} from 'react';
 
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../providers';
 
-import { Ali, Ap, Atitle, Aul, type typeIcons } from '../../atoms';
-import { Button, Helper, NodeTree } from '../../molecules';
+import {
+  Ali, Ap, Atitle, Aul, type typeIcons
+} from '../../atoms';
+import {
+  Button, Helper, NodeTree
+} from '../../molecules';
 import {
   aggregateSkillsByStats,
   calculateStatMod,
@@ -16,9 +22,13 @@ import {
 } from '../../utils/character';
 import { RichTextElement } from '../richTextElement';
 
-import type { ICuratedNode, ICuratedSkill, ISkillBranch } from '../../types';
+import type {
+  ICuratedNode, ICuratedSkill, ISkillBranch
+} from '../../types';
 
-import { classTrim, getValuesFromGlobalValues } from '../../utils';
+import {
+  classTrim, getValuesFromGlobalValues
+} from '../../utils';
 
 import './characterCreation.scss';
 
@@ -29,7 +39,9 @@ interface ICharacterCreationStep2 {
 
 const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills }) => {
   const { t } = useTranslation();
-  const { skills, stats, globalValues, character, cyberFrames } = useGlobalVars();
+  const {
+    skills, stats, globalValues, character, cyberFrames
+  } = useGlobalVars();
 
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [openedSkill, setOpenedSkill] = useState<ICuratedSkill | null>(null);
@@ -51,7 +63,11 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
     } else {
       onSubmitSkills(nodeIdToSend);
     }
-  }, [skills, selectedSkills, onSubmitSkills]);
+  }, [
+    skills,
+    selectedSkills,
+    onSubmitSkills
+  ]);
 
   const aggregatedSkills = useMemo(() => aggregateSkillsByStats(skills, stats), [skills, stats]);
 
@@ -81,7 +97,9 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
 
     // If only one source for the list, we'll be precise
     // If multiple sources for bonuses, we are borad in the phrasing
-    nodesByCyberFrames.forEach(({ cyberFrame, chosenNodes }) => {
+    nodesByCyberFrames.forEach(({
+      cyberFrame, chosenNodes
+    }) => {
       chosenNodes.forEach((node) => {
         if (node.statBonuses !== undefined && node.statBonuses.length > 0) {
           node.statBonuses.forEach((statBonus) => {
@@ -181,7 +199,9 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
     }
     const statElts: ReactNode[] = [];
     const nbSkillSelected = nbBeginningSkills - selectedSkills.length;
-    aggregatedSkills.forEach(({ stat, skills }) => {
+    aggregatedSkills.forEach(({
+      stat, skills
+    }) => {
       if (relevantBody.body !== undefined) {
         const relevantCharacterData = relevantBody.body.stats.find(
           ({ stat: bodyStat }) => bodyStat === stat.stat._id
@@ -352,19 +372,15 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
         characterCreation-step3
         ${detailsOpened ? 'characterCreation-step3--details' : ''}
       `)}
-      initial={{
-        transform: 'skew(80deg, 0deg) scale3d(.2, .2, .2)'
-      }}
+      initial={{ transform: 'skew(80deg, 0deg) scale3d(.2, .2, .2)' }}
       animate={{
         transform: 'skew(0, 0) scale3d(1, 1, 1)',
-        transitionEnd: {
-          transform: 'none'
-        }
+        transitionEnd: { transform: 'none' }
       }}
-      exit={{
-        transform: 'skew(-80deg, 0deg) scale3d(.2, .2, .2)'
+      exit={{ transform: 'skew(-80deg, 0deg) scale3d(.2, .2, .2)' }}
+      transition={{
+        ease: 'easeInOut', duration: 0.2
       }}
-      transition={{ ease: 'easeInOut', duration: 0.2 }}
     >
       <div className="characterCreation-step3__details">{detailsBlock}</div>
       <Ap className="characterCreation-step3__text">

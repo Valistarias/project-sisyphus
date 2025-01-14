@@ -1,4 +1,6 @@
-import { model, type Model, Schema, type ObjectId, type Date } from 'mongoose';
+import {
+  model, type Model, Schema, type ObjectId, type Date
+} from 'mongoose';
 
 interface IMailToken {
   /** The user ID linked to this forgot password request */
@@ -24,4 +26,6 @@ const mailTokenSchema = new Schema<IMailToken>({
 
 const MailTokenModel = (): Model<IMailToken> => model('MailToken', mailTokenSchema);
 
-export { type IMailToken, MailTokenModel };
+export {
+  type IMailToken, MailTokenModel
+};

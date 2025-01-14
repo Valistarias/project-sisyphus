@@ -1,6 +1,10 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
-import type { IDamage, INPC } from '../index';
+import type {
+  IDamage, INPC
+} from '../index';
 
 interface IProgram {
   /** The title of the program */
@@ -86,4 +90,6 @@ const programSchema = new Schema<IProgram>({
 
 const ProgramModel = (): Model<IProgram> => model('Program', programSchema);
 
-export { ProgramModel, type HydratedIProgram, type IProgram };
+export {
+  ProgramModel, type HydratedIProgram, type IProgram
+};

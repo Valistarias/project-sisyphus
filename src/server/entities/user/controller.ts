@@ -1,9 +1,13 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 
 import bcrypt from 'bcryptjs';
 
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemInvalidField, gemNotFound, gemServerError
+} from '../../utils/globalErrorMessage';
 
 import type { HydratedIUser } from './model';
 import type { IRole } from '../role/model';
@@ -14,14 +18,14 @@ const findUserById = async (id: string): Promise<HydratedIUser> =>
   await new Promise((resolve, reject) => {
     User.findById(id)
       .populate<{ roles: IRole[] }>('roles')
-      .then(async (res?: HydratedIUser | null) => {
+      .then((res?: HydratedIUser | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('User'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -91,4 +95,6 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-export { findUserById, update };
+export {
+  findUserById, update
+};

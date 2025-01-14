@@ -1,6 +1,10 @@
-import React, { type RefObject, type FC, type ReactNode } from 'react';
+import React, {
+  type RefObject, type FC, type ReactNode
+} from 'react';
 
-import { Quark, type IQuarkProps } from '../quark';
+import {
+  Quark, type IQuarkProps
+} from '../quark';
 
 import { classTrim } from '../utils';
 
@@ -16,7 +20,9 @@ interface IAul extends IQuarkProps {
 }
 
 const Aul: FC<IAul> = (props) => {
-  const { className, children, noPoints = false, innerRef } = props;
+  const {
+    className, children, noPoints = false, innerRef
+  } = props;
 
   return (
     <Quark
@@ -26,9 +32,7 @@ const Aul: FC<IAul> = (props) => {
         ${className ?? ''}
         ${noPoints ? 'aul--nodecor' : ''}
       `)}
-      reactProps={{
-        ref: innerRef
-      }}
+      reactProps={{ ref: innerRef }}
     >
       {children}
     </Quark>

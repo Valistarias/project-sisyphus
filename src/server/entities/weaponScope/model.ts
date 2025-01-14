@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model
+} from 'mongoose';
 
 interface IWeaponScope {
   /** The title of the weapon scope */
@@ -26,6 +28,9 @@ const weaponScope = new Schema<IWeaponScope>({
   }
 });
 
-const WeaponScopeModel = (): Model<IWeaponScope> => model('WeaponScope', weaponScope);
+const WeaponScopeModel = (): Model<IWeaponScope> =>
+  model('WeaponScope', weaponScope);
 
-export { WeaponScopeModel, type HydratedIWeaponScope, type IWeaponScope };
+export {
+  WeaponScopeModel, type HydratedIWeaponScope, type IWeaponScope
+};

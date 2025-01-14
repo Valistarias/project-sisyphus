@@ -1,16 +1,28 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input, SmartSelect } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input, SmartSelect
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 import { possibleStarterKitValues } from '../../../types/items';
 
 import './adminNewBag.scss';
@@ -30,19 +42,19 @@ const AdminNewBag: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const navigate = useNavigate();
-  const { createAlert, getNewId } = useSystemAlerts();
-  const { itemModifiers, itemTypes, rarities } = useGlobalVars();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
+  const {
+    itemModifiers, itemTypes, rarities
+  } = useGlobalVars();
 
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
 
-  const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const {
     handleSubmit,
@@ -81,7 +93,9 @@ const AdminNewBag: FC = () => {
   );
 
   const onSaveBag: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, rarity, cost, storableItemTypes, itemModifiers, size, starterKit }) => {
+    ({
+      name, nameFr, rarity, cost, storableItemTypes, itemModifiers, size, starterKit
+    }) => {
       if (
         introEditor === null
         || introFrEditor === null
@@ -101,12 +115,10 @@ const AdminNewBag: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            summary: htmlFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          summary: htmlFr
+        } };
       }
 
       api.bags
@@ -138,13 +150,21 @@ const AdminNewBag: FC = () => {
           const { data } = response;
           setError('root.serverError', {
             type: 'server',
-            message: t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
-            })
+            message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
           });
         });
     },
-    [introEditor, introFrEditor, api, itemTypes, getNewId, createAlert, t, navigate, setError]
+    [
+      introEditor,
+      introFrEditor,
+      api,
+      itemTypes,
+      getNewId,
+      createAlert,
+      t,
+      navigate,
+      setError
+    ]
   );
 
   useEffect(() => {
@@ -152,7 +172,12 @@ const AdminNewBag: FC = () => {
       setLoading(true);
       calledApi.current = true;
     }
-  }, [api, createAlert, getNewId, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    t
+  ]);
 
   return (
     <div className="adminNewBag">
@@ -168,9 +193,7 @@ const AdminNewBag: FC = () => {
             control={control}
             inputName="name"
             type="text"
-            rules={{
-              required: t('nameBag.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('nameBag.required', { ns: 'fields' }) }}
             label={t('nameBag.label', { ns: 'fields' })}
             className="adminNewBag__basics__name"
           />
@@ -179,9 +202,7 @@ const AdminNewBag: FC = () => {
               control={control}
               inputName="size"
               type="number"
-              rules={{
-                required: t('bagSize.required', { ns: 'fields' })
-              }}
+              rules={{ required: t('bagSize.required', { ns: 'fields' }) }}
               label={t('bagSize.label', { ns: 'fields' })}
             />
             <SmartSelect
@@ -189,9 +210,7 @@ const AdminNewBag: FC = () => {
               isMulti
               inputName="storableItemTypes"
               label={t('bagStorableItemTypes.label', { ns: 'fields' })}
-              rules={{
-                required: t('bagStorableItemTypes.required', { ns: 'fields' })
-              }}
+              rules={{ required: t('bagStorableItemTypes.required', { ns: 'fields' }) }}
               options={itemTypeList}
               className="adminNewWeapon__details__fields__elt"
             />
@@ -218,9 +237,7 @@ const AdminNewBag: FC = () => {
               control={control}
               inputName="cost"
               type="number"
-              rules={{
-                required: t('bagCost.required', { ns: 'fields' })
-              }}
+              rules={{ required: t('bagCost.required', { ns: 'fields' }) }}
               label={t('bagCost.label', { ns: 'fields' })}
               className="adminNewBag__details__fields__elt"
             />

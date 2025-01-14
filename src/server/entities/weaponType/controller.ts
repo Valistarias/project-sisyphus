@@ -1,9 +1,15 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
+import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemInvalidField, gemNotFound, gemServerError
+} from '../../utils/globalErrorMessage';
 
 import type { HydratedIWeaponType } from './model';
+import type { InternationalizationType } from '../../utils/types';
 import type { IItemType } from '../itemType/model';
 import type { IWeaponStyle } from '../weaponStyle/model';
 
@@ -16,14 +22,14 @@ const findWeaponTypes = async (): Promise<HydratedIWeaponType[]> =>
     WeaponType.find()
       .populate<{ weaponStyle: IWeaponStyle }>('weaponStyle')
       .populate<{ itemType: IItemType }>('itemType')
-      .then(async (res?: HydratedIWeaponType[] | null) => {
+      .then((res?: HydratedIWeaponType[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('WeaponTypes'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -33,20 +39,22 @@ const findWeaponTypeById = async (id: string): Promise<HydratedIWeaponType> =>
     WeaponType.findById(id)
       .populate<{ weaponStyle: IWeaponStyle }>('weaponStyle')
       .populate<{ itemType: IItemType }>('itemType')
-      .then(async (res?: HydratedIWeaponType | null) => {
+      .then((res?: HydratedIWeaponType | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('WeaponType'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, summary, i18n = null, weaponStyle, icon, needTraining, itemType } = req.body;
+  const {
+    title, summary, i18n = null, weaponStyle, icon, needTraining, itemType
+  } = req.body;
   if (
     title === undefined
     || weaponStyle === undefined
@@ -91,13 +99,22 @@ const update = (req: Request, res: Response): void => {
     itemType = null,
     i18n,
     needTraining = null
+  }: {
+    id?: string
+    title: string | null
+    summary: string | null
+    icon: string | null
+    i18n: InternationalizationType | null
+    weaponStyle: ObjectId | null
+    itemType: ObjectId | null
+    needTraining: boolean | null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Weapon Type ID'));
 
     return;
   }
-  findWeaponTypeById(id as string)
+  findWeaponTypeById(id)
     .then((weaponType) => {
       if (title !== null) {
         weaponType.title = title;
@@ -119,13 +136,13 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl = {
-          ...(weaponType.i18n !== null && weaponType.i18n !== undefined && weaponType.i18n !== ''
+        const newIntl: InternationalizationType = { ...(
+          weaponType.i18n !== undefined && weaponType.i18n !== ''
             ? JSON.parse(weaponType.i18n)
-            : {})
-        };
+            : {}
+        ) };
 
-        Object.keys(i18n as Record<string, any>).forEach((lang) => {
+        Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
         });
 
@@ -135,7 +152,9 @@ const update = (req: Request, res: Response): void => {
       weaponType
         .save()
         .then(() => {
-          res.send({ message: 'Weapon Type was updated successfully!', weaponType });
+          res.send({
+            message: 'Weapon Type was updated successfully!', weaponType
+          });
         })
         .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
@@ -146,7 +165,7 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteWeaponTypeById = async (id: string): Promise<boolean> =>
+const deleteWeaponTypeById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Weapon Type ID'));
@@ -163,8 +182,8 @@ const deleteWeaponTypeById = async (id: string): Promise<boolean> =>
   });
 
 const deleteWeaponType = (req: Request, res: Response): void => {
-  const { id } = req.body;
-  deleteWeaponTypeById(id as string)
+  const { id }: { id: string } = req.body;
+  deleteWeaponTypeById(id)
     .then(() => {
       res.send({ message: 'Weapon Type was deleted successfully!' });
     })
@@ -174,7 +193,7 @@ const deleteWeaponType = (req: Request, res: Response): void => {
 };
 
 interface CuratedIWeaponType {
-  i18n: Record<string, unknown>
+  i18n?: InternationalizationType
   weaponType: HydratedIWeaponType
 }
 
@@ -215,4 +234,6 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteWeaponType, findAll, findSingle, findWeaponTypeById, update };
+export {
+  create, deleteWeaponType, findAll, findSingle, findWeaponTypeById, update
+};

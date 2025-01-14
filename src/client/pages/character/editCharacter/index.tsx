@@ -1,19 +1,35 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useNavigate, useParams
+} from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input, SmartSelect } from '../../../molecules';
-import { Alert, RichTextElement, basicRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input, SmartSelect
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, basicRichTextElementExtentions
+} from '../../../organisms';
 import { ErrorPage } from '../../index';
 
-import type { ICampaign, ICharacter } from '../../../types';
+import type {
+  ICampaign, ICharacter
+} from '../../../types';
 
 import './editCharacter.scss';
 
@@ -29,7 +45,9 @@ interface FormValues {
 const EditCharacter: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const confMessageEvt = useConfirmMessage();
   const { user } = useGlobalVars();
   const { id } = useParams();
@@ -43,9 +61,7 @@ const EditCharacter: FC = () => {
 
   const [bioText, setBioText] = useState('');
 
-  const bioEditor = useEditor({
-    extensions: basicRichTextElementExtentions
-  });
+  const bioEditor = useEditor({ extensions: basicRichTextElementExtentions });
 
   const calledApi = useRef(false);
 
@@ -92,20 +108,22 @@ const EditCharacter: FC = () => {
     setError,
     control,
     formState: { errors }
-  } = useForm({
-    defaultValues: useMemo(() => createDefaultData(character), [createDefaultData, character])
-  });
+  } = useForm({ defaultValues: useMemo(() => createDefaultData(character), [createDefaultData, character]) });
 
-  const campaignList = useMemo(() => campaigns.map(({ _id, name, owner }) => ({
+  const campaignList = useMemo(() => campaigns.map(({
+    _id, name, owner
+  }) => ({
     value: _id,
     label: name,
     details: i18next.format(
-      t('terms.general.createdByShort', {
-        owner: owner._id === user?._id ? t('terms.general.you') : owner.username
-      }),
+      t('terms.general.createdByShort', { owner: owner._id === user?._id ? t('terms.general.you') : owner.username }),
       'capitalize'
     )
-  })), [campaigns, t, user]);
+  })), [
+    campaigns,
+    t,
+    user
+  ]);
 
   const getCampaigns = useCallback(() => {
     if (api !== undefined) {
@@ -128,10 +146,17 @@ const EditCharacter: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    t
+  ]);
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
-    ({ firstName, lastName, nickName, gender, pronouns, campaign }) => {
+    ({
+      firstName, lastName, nickName, gender, pronouns, campaign
+    }) => {
       if (api !== undefined) {
         api.characters
           .update({
@@ -158,14 +183,19 @@ const EditCharacter: FC = () => {
             const { data } = response;
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize') })
             });
           });
       }
     },
-    [api, createAlert, getNewId, id, setError, t]
+    [
+      api,
+      createAlert,
+      getNewId,
+      id,
+      setError,
+      t
+    ]
   );
 
   const onDeleteCharacter = useCallback(() => {
@@ -179,7 +209,9 @@ const EditCharacter: FC = () => {
     confMessageEvt.setConfirmContent(
       {
         title: t('characters.confirmDelete.title', { ns: 'pages' }),
-        text: t('characters.confirmDelete.text', { ns: 'pages', elt: displayedName }),
+        text: t('characters.confirmDelete.text', {
+          ns: 'pages', elt: displayedName
+        }),
         confirmCta: t('characters.confirmDelete.confirmCta', { ns: 'pages' }),
         confirmWord: t('terms.general.delete'),
         theme: 'error'
@@ -218,7 +250,16 @@ const EditCharacter: FC = () => {
         confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [api, character, confMessageEvt, t, id, getNewId, createAlert, navigate]);
+  }, [
+    api,
+    character,
+    confMessageEvt,
+    t,
+    id,
+    getNewId,
+    createAlert,
+    navigate
+  ]);
 
   useEffect(() => {
     if (api !== undefined && !calledApi.current && id !== undefined) {
@@ -226,9 +267,7 @@ const EditCharacter: FC = () => {
       calledApi.current = true;
       getCampaigns();
       api.characters
-        .get({
-          characterId: id
-        })
+        .get({ characterId: id })
         .then((sentCharacter: ICharacter) => {
           if (sentCharacter === undefined) {
             setNotFound(true);
@@ -255,12 +294,23 @@ const EditCharacter: FC = () => {
           setLoading(false);
         });
     }
-  }, [api, createAlert, getNewId, t, id, getCampaigns]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    t,
+    id,
+    getCampaigns
+  ]);
 
   // Default data
   useEffect(() => {
     reset(createDefaultData(character));
-  }, [character, reset, createDefaultData]);
+  }, [
+    character,
+    reset,
+    createDefaultData
+  ]);
 
   // TODO: Add loading state
   if (loading) {
@@ -306,9 +356,7 @@ const EditCharacter: FC = () => {
             inputName="firstName"
             type="text"
             autoComplete="username"
-            rules={{
-              required: t('firstName.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('firstName.required', { ns: 'fields' }) }}
             label={t('firstName.label', { ns: 'fields' })}
             className="editcharacter__form__basics__elt"
           />
@@ -317,9 +365,7 @@ const EditCharacter: FC = () => {
             inputName="lastName"
             type="text"
             autoComplete="username"
-            rules={{
-              required: t('lastName.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('lastName.required', { ns: 'fields' }) }}
             label={t('lastName.label', { ns: 'fields' })}
             className="editcharacter__form__basics__elt"
           />
@@ -337,9 +383,7 @@ const EditCharacter: FC = () => {
             control={control}
             inputName="gender"
             label={t('gender.label', { ns: 'fields' })}
-            rules={{
-              required: t('gender.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('gender.required', { ns: 'fields' }) }}
             options={genderRange}
             className="editcharacter__form__core__elt"
           />

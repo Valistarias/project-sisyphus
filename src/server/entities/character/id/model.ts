@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
 import type { HydratedIBackground } from '../../background/model';
 import type { HydratedIBody } from '../../body';
@@ -109,4 +111,6 @@ characterSchema.virtual('bodies', {
 
 const CharacterModel = (): Model<ICharacter> => model('Character', characterSchema);
 
-export { CharacterModel, type HydratedICharacter, type ICharacter, type LeanICharacter };
+export {
+  CharacterModel, type HydratedICharacter, type ICharacter, type LeanICharacter
+};

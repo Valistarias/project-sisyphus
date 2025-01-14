@@ -1,12 +1,18 @@
-import React, { useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../providers';
 
-import { Ali, Ap, Atitle, Aul } from '../atoms';
+import {
+  Ali, Ap, Atitle, Aul
+} from '../atoms';
 import { PropDisplay } from '../molecules';
-import { Quark, type IQuarkProps } from '../quark';
+import {
+  Quark, type IQuarkProps
+} from '../quark';
 
 import type {
   ICharParamBonus,
@@ -42,9 +48,13 @@ interface ICuratedCompleteImplant extends Omit<ICuratedImplant, 'implant'> {
   implant: ICompleteImplant
 }
 
-const ImplantDisplay: FC<IImplantDisplay> = ({ implant, mode = 'basic' }) => {
+const ImplantDisplay: FC<IImplantDisplay> = ({
+  implant, mode = 'basic'
+}) => {
   const { t } = useTranslation();
-  const { bodyParts: sentBodyparts, itemModifiers, rarities, charParams } = useGlobalVars();
+  const {
+    bodyParts: sentBodyparts, itemModifiers, rarities, charParams
+  } = useGlobalVars();
 
   const [placement, setPlacement] = useState<string>('left');
   const domBlockContent = useRef<HTMLDivElement>(null);
@@ -53,7 +63,9 @@ const ImplantDisplay: FC<IImplantDisplay> = ({ implant, mode = 'basic' }) => {
     if (sentBodyparts.length === 0 || implant === undefined) {
       return null;
     }
-    const { implant: implantObj, i18n } = implant;
+    const {
+      implant: implantObj, i18n
+    } = implant;
 
     return {
       implant: {
@@ -80,7 +92,13 @@ const ImplantDisplay: FC<IImplantDisplay> = ({ implant, mode = 'basic' }) => {
       },
       i18n
     };
-  }, [sentBodyparts, implant, rarities, itemModifiers, charParams]);
+  }, [
+    sentBodyparts,
+    implant,
+    rarities,
+    itemModifiers,
+    charParams
+  ]);
 
   const handleMouseEnter = (): void => {
     if (mode === 'hover') {

@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
 import type { IActionType } from '../index';
 
@@ -18,9 +20,7 @@ interface IEffect {
 }
 
 type HydratedIEffect = HydratedDocument<
-  Omit<IEffect, 'type'> & {
-    type: IActionType | string
-  }
+  Omit<IEffect, 'type'> & { type: IActionType | string }
 >;
 
 const effectSchema = new Schema<IEffect>({
@@ -40,4 +40,6 @@ const effectSchema = new Schema<IEffect>({
 
 const EffectModel = (): Model<IEffect> => model('Effect', effectSchema);
 
-export { EffectModel, type HydratedIEffect, type IEffect };
+export {
+  EffectModel, type HydratedIEffect, type IEffect
+};

@@ -28,7 +28,9 @@ interface INumDisplay {
   bonuses?: ISourcePoints[]
 }
 
-const NumDisplay: FC<INumDisplay> = ({ text, stat, value, bonuses, onClick }) => (
+const NumDisplay: FC<INumDisplay> = ({
+  text, stat, value, bonuses, onClick
+}) => (
   <div className="num-display">
     <Ap className="num-display__title">{text.title.length < 12 ? text.title : text.short}</Ap>
     <ClickableText

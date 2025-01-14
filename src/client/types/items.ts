@@ -12,7 +12,11 @@ import type {
   TypeNodeIcons
 } from './rules';
 
-export const possibleStarterKitValues = ['always', 'never', 'option'];
+export const possibleStarterKitValues = [
+  'always',
+  'never',
+  'option'
+];
 export type TypeStarterKitValues = (typeof possibleStarterKitValues)[number];
 
 // DamageTypes ------------------------------------

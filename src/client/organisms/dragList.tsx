@@ -16,7 +16,9 @@ import {
 import { attachClosestEdge } from '@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge';
 import invariant from 'tiny-invariant';
 
-import { Ali, Atitle, Aul } from '../atoms';
+import {
+  Ali, Atitle, Aul
+} from '../atoms';
 import { Button } from '../molecules';
 
 import { classTrim } from '../utils';
@@ -51,7 +53,9 @@ interface IDragListCard {
   children: ReactNode
 }
 
-const DragListCard: FC<IDragListCard> = ({ children, index }) => {
+const DragListCard: FC<IDragListCard> = ({
+  children, index
+}) => {
   const cardRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -62,7 +66,9 @@ const DragListCard: FC<IDragListCard> = ({ children, index }) => {
     return combine(
       draggable({
         element: cardEl,
-        getInitialData: () => ({ type: 'card', cardId: index }),
+        getInitialData: () => ({
+          type: 'card', cardId: index
+        }),
         onDragStart: () => {
           setIsDragging(true);
         },
@@ -72,8 +78,12 @@ const DragListCard: FC<IDragListCard> = ({ children, index }) => {
       }),
       dropTargetForElements({
         element: cardEl,
-        getData: ({ input, element }) => {
-          const data = { type: 'card', cardId: index };
+        getData: ({
+          input, element
+        }) => {
+          const data = {
+            type: 'card', cardId: index
+          };
 
           return attachClosestEdge(data, {
             input,
@@ -100,13 +110,19 @@ const DragListCard: FC<IDragListCard> = ({ children, index }) => {
   );
 };
 
-const DragList: FC<IDragList> = ({ data, className, id, onChange }) => {
+const DragList: FC<IDragList> = ({
+  data, className, id, onChange
+}) => {
   const dragListRef = useRef(null);
   const [isDraggedOver, setIsDraggedOver] = useState(false);
   const [order, setOrder] = useState<string[]>([]);
 
   const reorderCard = useCallback(
-    ({ movedIndex, destinationIndex }: { movedIndex: string, destinationIndex: string }) => {
+    ({
+      movedIndex, destinationIndex
+    }: {
+      movedIndex: string, destinationIndex: string
+    }) => {
       setOrder((prev: string[]) => {
         const movedPos = prev.findIndex(id => id === movedIndex);
         const destinationPos = prev.findIndex(id => id === destinationIndex);
@@ -126,7 +142,9 @@ const DragList: FC<IDragList> = ({ data, className, id, onChange }) => {
 
   // Function to handle drop events
   const handleDrop = useCallback(
-    ({ source, location }) => {
+    ({
+      source, location
+    }) => {
       const destination = location.current.dropTargets.length;
       if (destination === undefined) {
         return;
@@ -207,4 +225,6 @@ const DragList: FC<IDragList> = ({ data, className, id, onChange }) => {
   );
 };
 
-export { DragList, type IDragElt };
+export {
+  DragList, type IDragElt
+};

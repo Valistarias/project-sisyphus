@@ -1,14 +1,24 @@
-import React, { useCallback, type FC } from 'react';
+import React, {
+  useCallback, type FC
+} from 'react';
 
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { useApi, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input } from '../../../molecules';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input
+} from '../../../molecules';
 import { Alert } from '../../../organisms';
 
 import './newCampaign.scss';
@@ -20,7 +30,9 @@ interface FormValues {
 const NewCampaign: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const navigate = useNavigate();
 
   const {
@@ -34,9 +46,7 @@ const NewCampaign: FC = () => {
     ({ name }) => {
       if (api !== undefined) {
         api.campaigns
-          .create({
-            name
-          })
+          .create({ name })
           .then(({ campaignId }) => {
             const newId = getNewId();
             createAlert({
@@ -53,14 +63,19 @@ const NewCampaign: FC = () => {
             const { data } = response;
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize') })
             });
           });
       }
     },
-    [api, createAlert, getNewId, navigate, setError, t]
+    [
+      api,
+      createAlert,
+      getNewId,
+      navigate,
+      setError,
+      t
+    ]
   );
 
   return (
@@ -76,9 +91,7 @@ const NewCampaign: FC = () => {
           control={control}
           inputName="campaignName"
           type="text"
-          rules={{
-            required: t('campaignName.required', { ns: 'fields' })
-          }}
+          rules={{ required: t('campaignName.required', { ns: 'fields' }) }}
           label={t('campaignName.label', { ns: 'fields' })}
         />
         <Button type="submit">{t('newCampaign.formCTA', { ns: 'pages' })}</Button>

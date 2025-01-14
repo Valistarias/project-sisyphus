@@ -1,11 +1,17 @@
-import React, { useEffect, useRef, useState, type FC } from 'react';
+import React, {
+  useEffect, useRef, useState, type FC
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import { useApi, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useSystemAlerts
+} from '../../../providers';
 
-import { Ap, Atitle } from '../../../atoms';
+import {
+  Ap, Atitle
+} from '../../../atoms';
 import { Alert } from '../../../organisms';
 import { ErrorPage } from '../../index';
 
@@ -16,7 +22,9 @@ import './campaign.scss';
 const Campaign: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const { id } = useParams();
 
   const [campaign, setCampaign] = useState<ICampaign | null>(null);
@@ -30,9 +38,7 @@ const Campaign: FC = () => {
       setLoading(true);
       calledApi.current = true;
       api.campaigns
-        .get({
-          campaignId: id
-        })
+        .get({ campaignId: id })
         .then((sentCampaign: ICampaign) => {
           setLoading(false);
           if (sentCampaign === undefined) {
@@ -58,7 +64,13 @@ const Campaign: FC = () => {
           }
         });
     }
-  }, [api, createAlert, getNewId, t, id]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    t,
+    id
+  ]);
 
   if (loading) {
     return null;

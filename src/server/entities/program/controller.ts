@@ -1,13 +1,20 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemInvalidField, gemNotFound, gemServerError
+} from '../../utils/globalErrorMessage';
 import { curateDamageIds } from '../damage/controller';
 
+import type { InternationalizationType } from '../../utils/types';
 import type { IDamage } from '../damage/model';
 import type { INPC } from '../index';
-import type { HydratedIProgram, IProgram } from './model';
+import type {
+  HydratedIProgram, IProgram
+} from './model';
 
 import { curateI18n } from '../../utils';
 
@@ -22,14 +29,14 @@ const findPrograms = async (options?: findAllPayload): Promise<HydratedIProgram[
     Program.find(options ?? {})
       .populate<{ damages: IDamage[] }>('damages')
       .populate<{ ai: INPC }>('ai')
-      .then(async (res?: HydratedIProgram[] | null) => {
+      .then((res?: HydratedIProgram[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Programs'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err: unknown) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -39,14 +46,14 @@ const findProgramById = async (id: string): Promise<HydratedIProgram> =>
     Program.findById(id)
       .populate<{ damages: IDamage[] }>('damages')
       .populate<{ ai: INPC }>('ai')
-      .then(async (res?: HydratedIProgram | null) => {
+      .then((res?: HydratedIProgram | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Program'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err: unknown) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -234,13 +241,11 @@ const update = (req: Request, res: Response): void => {
       );
 
       if (i18n !== null) {
-        const newIntl = {
-          ...(program.i18n !== null && program.i18n !== undefined && program.i18n !== ''
-            ? JSON.parse(program.i18n)
-            : {})
-        };
+        const newIntl: InternationalizationType = { ...(program.i18n !== null && program.i18n !== undefined && program.i18n !== ''
+          ? JSON.parse(program.i18n)
+          : {}) };
 
-        Object.keys(i18n as Record<string, any>).forEach((lang) => {
+        Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
         });
 
@@ -261,7 +266,9 @@ const update = (req: Request, res: Response): void => {
           program
             .save()
             .then(() => {
-              res.send({ message: 'Program was updated successfully!', program });
+              res.send({
+                message: 'Program was updated successfully!', program
+              });
             })
             .catch((err: unknown) => {
               res.status(500).send(gemServerError(err));
@@ -276,7 +283,7 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteProgramById = async (id: string): Promise<boolean> =>
+const deleteProgramById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Program ID'));
@@ -293,11 +300,11 @@ const deleteProgramById = async (id: string): Promise<boolean> =>
   });
 
 const deleteProgram = (req: Request, res: Response): void => {
-  const { id } = req.body;
+  const { id }: { id: string } = req.body;
 
-  findProgramById(id as string)
+  findProgramById(id)
     .then(() => {
-      deleteProgramById(id as string)
+      deleteProgramById(id)
         .then(() => {
           res.send({ message: 'Program was deleted successfully!' });
         })
@@ -312,13 +319,13 @@ const deleteProgram = (req: Request, res: Response): void => {
 
 interface InternationalizedProgram extends Omit<IProgram, 'ai'> {
   ai?: {
-    i18n: Record<string, unknown>
+    i18n?: InternationalizationType
     nPC: any
   }
 }
 
 interface CuratedIProgram {
-  i18n: Record<string, unknown>
+  i18n?: InternationalizationType
   program: InternationalizedProgram
 }
 
@@ -395,4 +402,6 @@ const findAllStarter = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteProgram, findAll, findAllStarter, findProgramById, findSingle, update };
+export {
+  create, deleteProgram, findAll, findAllStarter, findProgramById, findSingle, update
+};

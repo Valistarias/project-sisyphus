@@ -1,16 +1,28 @@
-import React, { useCallback, useMemo, type FC } from 'react';
+import React, {
+  useCallback, useMemo, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input, SmartSelect } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input, SmartSelect
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 
 import './adminNewCyberFrame.scss';
 
@@ -24,16 +36,16 @@ const AdminNewCyberFrame: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const navigate = useNavigate();
-  const { createAlert, getNewId } = useSystemAlerts();
-  const { ruleBooks, reloadCyberFrames } = useGlobalVars();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
+  const {
+    ruleBooks, reloadCyberFrames
+  } = useGlobalVars();
 
-  const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const {
     handleSubmit,
@@ -50,7 +62,9 @@ const AdminNewCyberFrame: FC = () => {
   })), [t, ruleBooks]);
 
   const onSaveCyberFrame: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, ruleBook }) => {
+    ({
+      name, nameFr, ruleBook
+    }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -63,12 +77,10 @@ const AdminNewCyberFrame: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            summary: htmlFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          summary: htmlFr
+        } };
       }
 
       api.cyberFrames
@@ -96,16 +108,12 @@ const AdminNewCyberFrame: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.cyberFrameType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.cyberFrameType.${data.sent}`), 'capitalize') })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.cyberFrameType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.cyberFrameType.${data.sent}`), 'capitalize') })
             });
           }
         });
@@ -141,18 +149,14 @@ const AdminNewCyberFrame: FC = () => {
             control={control}
             inputName="name"
             type="text"
-            rules={{
-              required: t('nameCyberFrame.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('nameCyberFrame.required', { ns: 'fields' }) }}
             label={t('nameCyberFrame.label', { ns: 'fields' })}
             className="adminNewCyberFrame__basics__name"
           />
           <SmartSelect
             control={control}
             inputName="ruleBook"
-            rules={{
-              required: t('linkedRuleBook.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('linkedRuleBook.required', { ns: 'fields' }) }}
             label={t('linkedRuleBook.label', { ns: 'fields' })}
             options={ruleBookSelect}
             className="adminNewCyberFrame__basics__type"

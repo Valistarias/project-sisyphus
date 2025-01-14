@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model
+} from 'mongoose';
 
 interface ITipText {
   /** The title of the tip text */
@@ -28,4 +30,6 @@ const tipTextSchema = new Schema<ITipText>({
 
 const TipTextModel = (): Model<ITipText> => model('TipText', tipTextSchema);
 
-export { TipTextModel, type HydratedITipText, type ITipText };
+export {
+  TipTextModel, type HydratedITipText, type ITipText
+};

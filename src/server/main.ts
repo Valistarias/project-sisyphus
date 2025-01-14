@@ -1,6 +1,8 @@
 /* eslint-disable no-console -- Consoles are necessary to displays clean messages */
 
-import express, { type Request, type Response } from 'express';
+import express, {
+  type Request, type Response
+} from 'express';
 import mongoose from 'mongoose';
 
 import http from 'http';
@@ -67,28 +69,34 @@ import WeaponRoutes from './entities/weapon/routes';
 import WeaponScopeRoutes from './entities/weaponScope/routes';
 import WeaponStyleRoutes from './entities/weaponStyle/routes';
 import WeaponTypeRoutes from './entities/weaponType/routes';
-import { checkRouteRights } from './middlewares/authJwt';
+import {
+  checkRouteRights,
+  type IVerifyTokenRequest
+} from './middlewares/authJwt';
 
 // Initialization -------------------------------------------------------------------
 dotenv.config();
 
 const app = express();
-const httpServer = http.createServer(app as (req: unknown, res: unknown) => void);
+const httpServer = http.createServer(
+  app as (req: unknown, res: unknown) => void
+);
 const io = new Server(httpServer);
 
 // Env vars
 const port = process.env.PORT ?? 3000;
 const mailgunApi = process.env.MAILGUN_API_KEY ?? '';
+const { COOKIE_SECRET: cookieSecret } = process.env;
 const {
-  env: { COOKIE_SECRET: cookieSecret }
-} = process;
+  DB_USER: user, DB_PASS: pass
+} = process.env;
 
 const mailgun = new Mailgun(formData);
-const mg = mailgun.client({ username: 'api', key: mailgunApi });
+const mg = mailgun.client({
+  username: 'api', key: mailgunApi
+});
 
-const corsOptions = {
-  origin: `http://localhost:${port}`
-};
+const corsOptions = { origin: `http://localhost:${port}` };
 
 app.use(cors(corsOptions));
 
@@ -109,12 +117,14 @@ app.use(
 // ----------------------------------------------------------------------------------------
 
 // Database Connection ---------------------------------------------------------------------
-const clientOptions: mongoose.ConnectOptions = {
-  serverApi: { version: '1', strict: true, deprecationErrors: true }
-};
+const clientOptions: mongoose.ConnectOptions = { serverApi: {
+  version: '1', strict: true, deprecationErrors: true
+} };
 
 mongoose
-  .connect(DBConfig.url(process.env), clientOptions)
+  .connect(DBConfig.url({
+    DB_USER: user ?? '', DB_PASS: pass ?? ''
+  }), clientOptions)
   .then(() => {
     console.log('Connected to the database!');
   })
@@ -198,9 +208,7 @@ app.use('/api/', apiRouter);
 // Automatic redirections ---------------------------------------------------------------------
 // (Need to be elsewhere)
 app.get('/verify/:id', (req: Request, res: Response) => {
-  const {
-    params: { id }
-  } = req;
+  const { params: { id } } = req;
   verifyTokenSingIn(id)
     .then(() => {
       res.redirect('/login?success=true');
@@ -210,11 +218,17 @@ app.get('/verify/:id', (req: Request, res: Response) => {
     });
 });
 
-app.get('/reset/password/:userId/:token', (req: Request, res: Response, next: () => void) => {
-  const {
-    params: { userId, token }
-  } = req;
-  verifyMailToken({ userId, token })
+app.get('/reset/password/:userId/:token', (
+  req: Request,
+  res: Response,
+  next: () => void
+) => {
+  const { params: {
+    userId, token
+  } } = req;
+  verifyMailToken({
+    userId, token
+  })
     .then(() => {
       next();
     })
@@ -225,7 +239,7 @@ app.get('/reset/password/:userId/:token', (req: Request, res: Response, next: ()
 // ----------------------------------------------------------------------------------------
 
 // Checking user rights to open specific routes -------------------------------------------
-app.get('/*', (req: Request, res: Response, next: () => void) => {
+app.get('/*', (req: IVerifyTokenRequest, res: Response, next: () => void) => {
   checkRouteRights(req, res, next);
 });
 // ----------------------------------------------------------------------------------------
@@ -242,7 +256,12 @@ io.on('connection', (socket) => {
 
   socket.on(
     'newCampaignEvent',
-    ({ room, data }: { room: string, data: Record<string, unknown> }) => {
+    ({
+      room, data
+    }: {
+      room: string
+      data: Record<string, unknown>
+    }) => {
       socket.to(room).emit('newCampaignEvent', data);
     }
   );

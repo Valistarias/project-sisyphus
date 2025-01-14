@@ -1,8 +1,12 @@
-import React, { type FC, type ReactNode } from 'react';
+import React, {
+  type FC, type ReactNode
+} from 'react';
 
 import { Controller } from 'react-hook-form';
 
-import { Aerror, Aicon, Alabel } from '../atoms';
+import {
+  Aerror, Aicon, Alabel
+} from '../atoms';
 
 import type { IReactHookFormInputs } from '../types/form';
 
@@ -45,7 +49,11 @@ const Checkbox: FC<ICheckbox> = ({
       control={control}
       name={inputName}
       rules={rules}
-      render={({ field: { onChange, onBlur, value, name, ref }, fieldState: { error } }) => (
+      render={({
+        field: {
+          onChange, onBlur, value, name, ref
+        }, fieldState: { error }
+      }) => (
         <>
           <Alabel className="checkbox__block">
             <div

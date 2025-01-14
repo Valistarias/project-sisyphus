@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
 import type { IItemType } from '../itemType/model';
 import type { IWeaponStyle } from '../weaponStyle/model';
@@ -24,8 +26,8 @@ interface IWeaponType {
 
 type HydratedIWeaponType = HydratedDocument<
   Omit<IWeaponType, 'weaponStyle' | 'itemType'> & {
-    weaponStyle: IWeaponStyle
-    itemType: IItemType
+    weaponStyle: IWeaponStyle | ObjectId
+    itemType: IItemType | ObjectId
   }
 >;
 
@@ -52,6 +54,9 @@ const userSchema = new Schema<IWeaponType>({
   }
 });
 
-const WeaponTypeModel = (): Model<IWeaponType> => model('WeaponType', userSchema);
+const WeaponTypeModel = (): Model<IWeaponType> =>
+  model('WeaponType', userSchema);
 
-export { WeaponTypeModel, type HydratedIWeaponType, type IWeaponType };
+export {
+  WeaponTypeModel, type HydratedIWeaponType, type IWeaponType
+};

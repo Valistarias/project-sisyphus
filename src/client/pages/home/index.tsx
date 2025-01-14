@@ -7,7 +7,9 @@ import { TypeAnimation } from 'react-type-animation';
 import { useGlobalVars } from '../../providers';
 
 import tvBackground from '../../assets/imgs/tvbg2.gif';
-import { Ap, Atitle, Avideo } from '../../atoms';
+import {
+  Ap, Atitle, Avideo
+} from '../../atoms';
 import { Button } from '../../molecules';
 
 import { classTrim } from '../../utils';

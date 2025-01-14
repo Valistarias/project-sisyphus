@@ -1,15 +1,23 @@
-import React, { useMemo, useState, type FC } from 'react';
+import React, {
+  useMemo, useState, type FC
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../providers';
 
-import { NumDisplay, SearchBar, SkillDisplay } from '../../molecules';
-import { calculateStatMod, calculateStatModToString, malusStatMod } from '../../utils/character';
+import {
+  NumDisplay, SearchBar, SkillDisplay
+} from '../../molecules';
+import {
+  calculateStatMod, calculateStatModToString, malusStatMod
+} from '../../utils/character';
 
 import type { TypeCampaignEvent } from '../../types';
 
-import { classTrim, removeDiacritics, type DiceRequest } from '../../utils';
+import {
+  classTrim, removeDiacritics, type DiceRequest
+} from '../../utils';
 
 import './characterSkills.scss';
 
@@ -20,7 +28,9 @@ interface ICharacterSkills {
   className?: string
 }
 
-const CharacterSkills: FC<ICharacterSkills> = ({ className, onRollDices }) => {
+const CharacterSkills: FC<ICharacterSkills> = ({
+  className, onRollDices
+}) => {
   const { t } = useTranslation();
   const { characterStatSkills } = useGlobalVars();
 
@@ -57,13 +67,17 @@ const CharacterSkills: FC<ICharacterSkills> = ({ className, onRollDices }) => {
     <div className="char-skills__stats">
       {characterStatSkills?.stats.map((stat) => {
         // TODO: Deal with i18n here
-        const { title, summary, short } = stat.stat;
+        const {
+          title, summary, short
+        } = stat.stat;
 
         return (
           <NumDisplay
             key={stat.stat._id}
             stat={stat}
-            text={{ title, summary, short }}
+            text={{
+              title, summary, short
+            }}
             value={calculateStatModToString(stat.score.total)}
             bonuses={[
               ...stat.score.sources,

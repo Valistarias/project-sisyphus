@@ -1,4 +1,6 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 import type { HydratedDocument } from 'mongoose';
 
 import db from '../../models';
@@ -16,14 +18,14 @@ const { ItemType } = db;
 const findItemTypes = async (): Promise<Array<HydratedDocument<IItemType>>> =>
   await new Promise((resolve, reject) => {
     ItemType.find()
-      .then(async (res) => {
+      .then((res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('ItemTypes'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -31,14 +33,14 @@ const findItemTypes = async (): Promise<Array<HydratedDocument<IItemType>>> =>
 const findItemTypeById = async (id: string): Promise<HydratedDocument<IItemType>> =>
   await new Promise((resolve, reject) => {
     ItemType.findById(id)
-      .then(async (res) => {
+      .then((res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('ItemType'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -53,9 +55,7 @@ const create = (req: Request, res: Response): void => {
   findItemTypes()
     .then((items) => {
       if (items.find(item => item.name === name) === undefined) {
-        const itemType = new ItemType({
-          name
-        });
+        const itemType = new ItemType({ name });
 
         itemType
           .save()
@@ -73,7 +73,9 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, name = null } = req.body;
+  const {
+    id, name = null
+  } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('ItemType ID'));
 
@@ -89,7 +91,9 @@ const update = (req: Request, res: Response): void => {
         actualItemType
           .save()
           .then(() => {
-            res.send({ message: 'ItemType was updated successfully!', actualItemType });
+            res.send({
+              message: 'ItemType was updated successfully!', actualItemType
+            });
           })
           .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
@@ -102,7 +106,7 @@ const update = (req: Request, res: Response): void => {
 };
 
 const deleteItemType = (req: Request, res: Response): void => {
-  const { id } = req.body;
+  const { id }: { id: string } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('ItemType ID'));
 
@@ -135,4 +139,6 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteItemType, findAll, findSingle, update };
+export {
+  create, deleteItemType, findAll, findSingle, update
+};

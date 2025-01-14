@@ -1,16 +1,28 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input, NodeIconSelect, SmartSelect } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input, NodeIconSelect, SmartSelect
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 
 import './adminNewWeaponType.scss';
 
@@ -27,19 +39,19 @@ const AdminNewWeaponType: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const navigate = useNavigate();
-  const { createAlert, getNewId } = useSystemAlerts();
-  const { weaponStyles, itemTypes, reloadWeaponTypes } = useGlobalVars();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
+  const {
+    weaponStyles, itemTypes, reloadWeaponTypes
+  } = useGlobalVars();
 
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
 
-  const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const boolRange = useMemo(
     () => [
@@ -85,7 +97,9 @@ const AdminNewWeaponType: FC = () => {
   }, [itemTypes, t]);
 
   const onSaveWeaponType: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, weaponStyle, icon, needTraining, itemType }) => {
+    ({
+      name, nameFr, weaponStyle, icon, needTraining, itemType
+    }) => {
       if (
         introEditor === null
         || introFrEditor === null
@@ -103,12 +117,10 @@ const AdminNewWeaponType: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            summary: htmlFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          summary: htmlFr
+        } };
       }
 
       api.weaponTypes
@@ -138,9 +150,7 @@ const AdminNewWeaponType: FC = () => {
           const { data } = response;
           setError('root.serverError', {
             type: 'server',
-            message: t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
-            })
+            message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
           });
         });
     },
@@ -162,7 +172,12 @@ const AdminNewWeaponType: FC = () => {
       setLoading(true);
       calledApi.current = true;
     }
-  }, [api, createAlert, getNewId, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    t
+  ]);
 
   return (
     <div className="adminNewWeaponType">
@@ -182,9 +197,7 @@ const AdminNewWeaponType: FC = () => {
             label={t('iconWeaponType.label', { ns: 'fields' })}
             control={control}
             inputName="icon"
-            rules={{
-              required: t('iconWeaponType.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('iconWeaponType.required', { ns: 'fields' }) }}
           />
         </div>
         <div className="adminNewWeaponType__basics">
@@ -192,9 +205,7 @@ const AdminNewWeaponType: FC = () => {
             control={control}
             inputName="name"
             type="text"
-            rules={{
-              required: t('nameWeaponType.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('nameWeaponType.required', { ns: 'fields' }) }}
             label={t('nameWeaponType.label', { ns: 'fields' })}
             className="adminNewWeaponType__basics__name"
           />

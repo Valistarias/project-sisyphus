@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
 import type { IProgram } from '../../program/model';
 
@@ -16,9 +18,7 @@ interface IBodyProgram {
 }
 
 type HydratedIBodyProgram = HydratedDocument<
-  Omit<IBodyProgram, 'program'> & {
-    program: HydratedDocument<IProgram>
-  }
+  Omit<IBodyProgram, 'program'> & { program: HydratedDocument<IProgram> }
 >;
 
 const BodyProgramSchema = new Schema<IBodyProgram>({
@@ -46,4 +46,6 @@ const BodyProgramSchema = new Schema<IBodyProgram>({
 
 const BodyProgramModel = (): Model<IBodyProgram> => model('BodyProgram', BodyProgramSchema);
 
-export { BodyProgramModel, type HydratedIBodyProgram, type IBodyProgram };
+export {
+  BodyProgramModel, type HydratedIBodyProgram, type IBodyProgram
+};

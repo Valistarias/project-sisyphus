@@ -1,14 +1,24 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useNavigate, useParams
+} from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
 import {
   Button,
   Input,
@@ -16,7 +26,9 @@ import {
   SmartSelect,
   type ISingleValueSelect
 } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 
 import type { ICuratedWeaponType } from '../../../types';
 
@@ -36,8 +48,12 @@ interface FormValues {
 const AdminEditWeaponType: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
-  const { weaponStyles, itemTypes, reloadWeaponTypes } = useGlobalVars();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
+  const {
+    weaponStyles, itemTypes, reloadWeaponTypes
+  } = useGlobalVars();
   const confMessageEvt = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -53,13 +69,9 @@ const AdminEditWeaponType: FC = () => {
   const [weaponTypeText, setWeaponTypeText] = useState('');
   const [weaponTypeTextFr, setWeaponTypeTextFr] = useState('');
 
-  const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const boolRange = useMemo(
     () => [
@@ -111,7 +123,9 @@ const AdminEditWeaponType: FC = () => {
       if (weaponTypeData == null) {
         return {};
       }
-      const { weaponType, i18n } = weaponTypeData;
+      const {
+        weaponType, i18n
+      } = weaponTypeData;
       const defaultData: Partial<FormValues> = {};
       defaultData.name = weaponType.title;
       defaultData.icon = weaponType.icon;
@@ -143,15 +157,20 @@ const AdminEditWeaponType: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({
-    defaultValues: useMemo(
-      () => createDefaultData(weaponTypeData, weaponStyleSelect, itemTypeList),
-      [createDefaultData, weaponStyleSelect, weaponTypeData, itemTypeList]
-    )
-  });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(weaponTypeData, weaponStyleSelect, itemTypeList),
+    [
+      createDefaultData,
+      weaponStyleSelect,
+      weaponTypeData,
+      itemTypeList
+    ]
+  ) });
 
   const onSaveWeaponType: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, weaponStyle, icon, needTraining, itemType }) => {
+    ({
+      name, nameFr, weaponStyle, icon, needTraining, itemType
+    }) => {
       if (
         weaponTypeText === null
         || weaponTypeTextFr === null
@@ -175,12 +194,10 @@ const AdminEditWeaponType: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            text: htmlTextFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          text: htmlTextFr
+        } };
       }
 
       api.weaponTypes
@@ -211,16 +228,12 @@ const AdminEditWeaponType: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id'
-              })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
             });
           }
         });
@@ -276,16 +289,12 @@ const AdminEditWeaponType: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.weaponType.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.weaponType.name`), 'capitalize') })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.weaponType.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.weaponType.name`), 'capitalize') })
                   });
                 }
               });
@@ -295,7 +304,18 @@ const AdminEditWeaponType: FC = () => {
         confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [api, confMessageEvt, t, weaponTypeData?.weaponType.title, id, getNewId, createAlert, reloadWeaponTypes, navigate, setError]);
+  }, [
+    api,
+    confMessageEvt,
+    t,
+    weaponTypeData?.weaponType.title,
+    id,
+    getNewId,
+    createAlert,
+    reloadWeaponTypes,
+    navigate,
+    setError
+  ]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
@@ -303,7 +323,9 @@ const AdminEditWeaponType: FC = () => {
       api.weaponTypes
         .get({ weaponTypeId: id })
         .then((curatedWeaponType: ICuratedWeaponType) => {
-          const { weaponType, i18n } = curatedWeaponType;
+          const {
+            weaponType, i18n
+          } = curatedWeaponType;
           setWeaponTypeData(curatedWeaponType);
           setWeaponTypeText(weaponType.summary);
           if (i18n.fr !== undefined) {
@@ -322,7 +344,13 @@ const AdminEditWeaponType: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, id, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    id,
+    t
+  ]);
 
   // The Autosave
   useEffect(() => {
@@ -344,7 +372,13 @@ const AdminEditWeaponType: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(weaponTypeData, weaponStyleSelect, itemTypeList));
-  }, [weaponTypeData, reset, createDefaultData, weaponStyleSelect, itemTypeList]);
+  }, [
+    weaponTypeData,
+    reset,
+    createDefaultData,
+    weaponStyleSelect,
+    itemTypeList
+  ]);
 
   return (
     <div
@@ -378,9 +412,7 @@ const AdminEditWeaponType: FC = () => {
             label={t('iconWeaponType.label', { ns: 'fields' })}
             control={control}
             inputName="icon"
-            rules={{
-              required: t('iconWeaponType.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('iconWeaponType.required', { ns: 'fields' }) }}
           />
         </div>
         <div className="adminEditWeaponType__basics">

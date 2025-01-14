@@ -1,16 +1,30 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  useLocation, useNavigate
+} from 'react-router-dom';
 
-import { useApi, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 
 import type { ICuratedCyberFrame } from '../../../types';
 
@@ -26,7 +40,9 @@ const AdminNewCyberFrameBranch: FC = () => {
   const { api } = useApi();
   const { search } = useLocation();
   const navigate = useNavigate();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
 
   const params = useMemo(() => new URLSearchParams(search), [search]);
 
@@ -35,13 +51,9 @@ const AdminNewCyberFrameBranch: FC = () => {
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
 
-  const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const {
     handleSubmit,
@@ -53,9 +65,7 @@ const AdminNewCyberFrameBranch: FC = () => {
   const getCyberFrame = useCallback(() => {
     if (api !== undefined && params.get('cyberFrameId') !== undefined) {
       api.cyberFrames
-        .get({
-          cyberFrameId: params.get('cyberFrameId') ?? ''
-        })
+        .get({ cyberFrameId: params.get('cyberFrameId') ?? '' })
         .then((sentCyberFrame: ICuratedCyberFrame) => {
           setLoading(false);
           setCyberFrame(sentCyberFrame);
@@ -73,10 +83,18 @@ const AdminNewCyberFrameBranch: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, params, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    params,
+    t
+  ]);
 
   const onSaveCyberFrameBranch: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr }) => {
+    ({
+      name, nameFr
+    }) => {
       if (
         introEditor === null
         || introFrEditor === null
@@ -94,12 +112,10 @@ const AdminNewCyberFrameBranch: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            summary: htmlFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          summary: htmlFr
+        } };
       }
 
       api.cyberFrameBranches
@@ -126,21 +142,27 @@ const AdminNewCyberFrameBranch: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.cyberFrameBranchType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.cyberFrameBranchType.${data.sent}`), 'capitalize') })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.cyberFrameBranchType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.cyberFrameBranchType.${data.sent}`), 'capitalize') })
             });
           }
         });
     },
-    [introEditor, introFrEditor, api, params, getNewId, createAlert, t, navigate, setError]
+    [
+      introEditor,
+      introFrEditor,
+      api,
+      params,
+      getNewId,
+      createAlert,
+      t,
+      navigate,
+      setError
+    ]
   );
 
   useEffect(() => {
@@ -149,7 +171,13 @@ const AdminNewCyberFrameBranch: FC = () => {
       calledApi.current = true;
       getCyberFrame();
     }
-  }, [api, createAlert, getNewId, getCyberFrame, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    getCyberFrame,
+    t
+  ]);
 
   return (
     <div className="adminNewCyberFrameBranch">
@@ -176,9 +204,7 @@ const AdminNewCyberFrameBranch: FC = () => {
             control={control}
             inputName="name"
             type="text"
-            rules={{
-              required: t('nameCyberFrameBranch.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('nameCyberFrameBranch.required', { ns: 'fields' }) }}
             label={t('nameCyberFrameBranch.label', { ns: 'fields' })}
             className="adminNewCyberFrameBranch__basics__name"
           />

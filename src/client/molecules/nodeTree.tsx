@@ -1,16 +1,26 @@
 import type React from 'react';
-import { useMemo, type FC } from 'react';
+import {
+  useMemo, type FC
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { Ap } from '../atoms';
-import { Quark, type IQuarkProps } from '../quark';
+import {
+  Quark, type IQuarkProps
+} from '../quark';
 
-import { Button, Node } from './index';
+import {
+  Button, Node
+} from './index';
 
-import type { ICuratedNode, ICyberFrameBranch, ISkillBranch } from '../types';
+import type {
+  ICuratedNode, ICyberFrameBranch, ISkillBranch
+} from '../types';
 
-import { classTrim, romanize } from '../utils';
+import {
+  classTrim, romanize
+} from '../utils';
 
 import './nodeTree.scss';
 
@@ -29,8 +39,12 @@ interface INodeTree extends IQuarkProps {
   onNodeClick?: (id: string) => void
 }
 
-const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {}, isAdmin = false, className }) => {
-  const { t, i18n: translationI18nData } = useTranslation();
+const NodeTree: FC<INodeTree> = ({
+  tree, onNodeClick = () => {}, isAdmin = false, className
+}) => {
+  const {
+    t, i18n: translationI18nData
+  } = useTranslation();
 
   const specializationBranches = useMemo(
     () => tree.filter(({ branch }) => branch.title !== '_general'),
@@ -45,7 +59,9 @@ const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {}, isAdmin = false
   const rankLinesSpec = useMemo(() => {
     const lines: React.JSX.Element[] = [];
     for (let i = ranks; i >= specBeginRank; i--) {
-      const relatedNodes = specializationBranches.map(({ branch, nodes }) => ({
+      const relatedNodes = specializationBranches.map(({
+        branch, nodes
+      }) => ({
         branch,
         nodes: nodes.filter(({ node }) => node.rank === i)
       }));
@@ -60,7 +76,9 @@ const NodeTree: FC<INodeTree> = ({ tree, onNodeClick = () => {}, isAdmin = false
           `)}
         >
           <div className="node-tree__rank node-tree__cell">{roman}</div>
-          {relatedNodes.map(({ branch, nodes }, indexNode) => (
+          {relatedNodes.map(({
+            branch, nodes
+          }, indexNode) => (
             <div className="node-tree__cell node-tree__cell--node" key={branch._id}>
               {nodes.map(node => (
                 <Node

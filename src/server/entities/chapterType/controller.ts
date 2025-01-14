@@ -1,4 +1,6 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 import type { HydratedDocument } from 'mongoose';
 
 import db from '../../models';
@@ -16,14 +18,14 @@ const { ChapterType } = db;
 const findChapterTypes = async (): Promise<Array<HydratedDocument<IChapterType>>> =>
   await new Promise((resolve, reject) => {
     ChapterType.find()
-      .then(async (res) => {
+      .then((res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('ChapterTypes'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -31,14 +33,14 @@ const findChapterTypes = async (): Promise<Array<HydratedDocument<IChapterType>>
 const findChapterTypeById = async (id: string): Promise<HydratedDocument<IChapterType>> =>
   await new Promise((resolve, reject) => {
     ChapterType.findById(id)
-      .then(async (res) => {
+      .then((res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('ChapterType'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -53,9 +55,7 @@ const create = (req: Request, res: Response): void => {
   findChapterTypes()
     .then((chapterTypes) => {
       if (chapterTypes.find(chapterType => chapterType.name === name) === undefined) {
-        const chapterTypeType = new ChapterType({
-          name
-        });
+        const chapterTypeType = new ChapterType({ name });
 
         chapterTypeType
           .save()
@@ -73,7 +73,9 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, name = null } = req.body;
+  const {
+    id, name = null
+  } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('ChapterType ID'));
 
@@ -89,7 +91,9 @@ const update = (req: Request, res: Response): void => {
         actualChapterType
           .save()
           .then(() => {
-            res.send({ message: 'ChapterType was updated successfully!', actualChapterType });
+            res.send({
+              message: 'ChapterType was updated successfully!', actualChapterType
+            });
           })
           .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
@@ -102,7 +106,7 @@ const update = (req: Request, res: Response): void => {
 };
 
 const deleteChapterType = (req: Request, res: Response): void => {
-  const { id } = req.body;
+  const { id }: { id: string } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('ChapterType ID'));
 
@@ -135,4 +139,6 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteChapterType, findAll, findSingle, update };
+export {
+  create, deleteChapterType, findAll, findSingle, update
+};

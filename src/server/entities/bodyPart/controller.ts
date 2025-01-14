@@ -1,4 +1,6 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 
 import db from '../../models';
 import {
@@ -17,14 +19,14 @@ const { BodyPart } = db;
 const findBodyParts = async (): Promise<HydratedIBodyPart[]> =>
   await new Promise((resolve, reject) => {
     BodyPart.find()
-      .then(async (res?: HydratedIBodyPart[] | null) => {
+      .then((res?: HydratedIBodyPart[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('BodyParts'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -32,14 +34,14 @@ const findBodyParts = async (): Promise<HydratedIBodyPart[]> =>
 const findBodyPartById = async (id: string): Promise<HydratedIBodyPart> =>
   await new Promise((resolve, reject) => {
     BodyPart.findById(id)
-      .then(async (res?: HydratedIBodyPart | null) => {
+      .then((res?: HydratedIBodyPart | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('BodyPart'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -50,14 +52,14 @@ const checkDuplicateBodyPartPartId = async (
 ): Promise<string | boolean> =>
   await new Promise((resolve, reject) => {
     BodyPart.find({ partId })
-      .then(async (res) => {
+      .then((res) => {
         if (res.length === 0 || (alreadyExistOnce && res.length === 1)) {
           resolve(false);
         } else {
           resolve(res[0].title);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -81,7 +83,9 @@ const checkDuplicatePartId = async (
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, summary, i18n = null, partId, limit } = req.body;
+  const {
+    title, summary, i18n = null, partId, limit
+  } = req.body;
   if (title === undefined || summary === undefined || partId === undefined || limit === undefined) {
     res.status(400).send(gemInvalidField('Body Part'));
 
@@ -120,7 +124,9 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, title = null, summary = null, i18n, partId = null, limit = null } = req.body;
+  const {
+    id, title = null, summary = null, i18n, partId = null, limit = null
+  } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Body Part ID'));
 
@@ -146,13 +152,11 @@ const update = (req: Request, res: Response): void => {
             }
 
             if (i18n !== null) {
-              const newIntl = {
-                ...(bodyPart.i18n !== null && bodyPart.i18n !== undefined && bodyPart.i18n !== ''
-                  ? JSON.parse(bodyPart.i18n)
-                  : {})
-              };
+              const newIntl: InternationalizationType = { ...(bodyPart.i18n !== null && bodyPart.i18n !== undefined && bodyPart.i18n !== ''
+                ? JSON.parse(bodyPart.i18n)
+                : {}) };
 
-              Object.keys(i18n as Record<string, any>).forEach((lang) => {
+              Object.keys(i18n).forEach((lang) => {
                 newIntl[lang] = i18n[lang];
               });
 
@@ -162,7 +166,9 @@ const update = (req: Request, res: Response): void => {
             bodyPart
               .save()
               .then(() => {
-                res.send({ message: 'Body Part was updated successfully!', bodyPart });
+                res.send({
+                  message: 'Body Part was updated successfully!', bodyPart
+                });
               })
               .catch((err: unknown) => {
                 res.status(500).send(gemServerError(err));
@@ -180,7 +186,7 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteBodyPartById = async (id: string): Promise<boolean> =>
+const deleteBodyPartById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Body Part ID'));
@@ -197,8 +203,8 @@ const deleteBodyPartById = async (id: string): Promise<boolean> =>
   });
 
 const deleteBodyPart = (req: Request, res: Response): void => {
-  const { id } = req.body;
-  deleteBodyPartById(id as string)
+  const { id }: { id: string } = req.body;
+  deleteBodyPartById(id)
     .then(() => {
       res.send({ message: 'Body Part was deleted successfully!' });
     })
@@ -208,7 +214,7 @@ const deleteBodyPart = (req: Request, res: Response): void => {
 };
 
 interface CuratedIBodyPart {
-  i18n: Record<string, unknown>
+  i18n?: InternationalizationType
   bodyPart: HydratedIBodyPart
 }
 

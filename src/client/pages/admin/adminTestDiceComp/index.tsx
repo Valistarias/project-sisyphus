@@ -1,10 +1,16 @@
-import React, { useCallback, useMemo, useState, type FC } from 'react';
+import React, {
+  useCallback, useMemo, useState, type FC
+} from 'react';
 
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { Atitle } from '../../../atoms';
-import { Button, Input } from '../../../molecules';
+import {
+  Button, Input
+} from '../../../molecules';
 
 import { regexDiceFormula } from '../../../utils';
 
@@ -16,7 +22,9 @@ interface FormValues {
 
 const AdminTestDiceComp: FC = () => {
   const { t } = useTranslation();
-  const { control, handleSubmit } = useForm();
+  const {
+    control, handleSubmit
+  } = useForm();
 
   const [formula, setFormula] = useState<string | null>(null);
 
@@ -56,8 +64,7 @@ const AdminTestDiceComp: FC = () => {
       } else {
         scores[total] = {
           // rolls: [diceVal],
-          count: 1
-        };
+          count: 1 };
       }
     }
     const possibleScores = Object.keys(scores);
@@ -78,7 +85,11 @@ const AdminTestDiceComp: FC = () => {
 
     return (
       <table className="adminTestDiceComp__table">
-        <caption>{t('adminTestDiceComp.caption', { ns: 'pages', formula, variations })}</caption>
+        <caption>
+          {t('adminTestDiceComp.caption', {
+            ns: 'pages', formula, variations
+          })}
+        </caption>
         <thead>
           <tr>
             <th scope="col">{t('adminTestDiceComp.score', { ns: 'pages' })}</th>
@@ -91,7 +102,9 @@ const AdminTestDiceComp: FC = () => {
         </thead>
         <tbody>
           {possibleScores.map((possibleScore, index) => {
-            const { count, thisP, orMoreP, orLessP } = scores[possibleScore];
+            const {
+              count, thisP, orMoreP, orLessP
+            } = scores[possibleScore];
 
             return (
               <tr key={index}>

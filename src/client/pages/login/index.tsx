@@ -1,15 +1,27 @@
-import React, { useCallback, useEffect, useMemo, useRef, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, type FC
+} from 'react';
 
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  useLocation, useNavigate
+} from 'react-router-dom';
 
-import { useApi, useGlobalVars, useSystemAlerts } from '../../providers';
+import {
+  useApi, useGlobalVars, useSystemAlerts
+} from '../../providers';
 
 import tvBackground from '../../assets/imgs/tvbg2.gif';
-import { Aerror, Ap, Avideo } from '../../atoms';
-import { Button, Input } from '../../molecules';
+import {
+  Aerror, Ap, Avideo
+} from '../../atoms';
+import {
+  Button, Input
+} from '../../molecules';
 import { Alert } from '../../organisms';
 
 import type { IUser } from '../../types';
@@ -26,10 +38,14 @@ interface FormValues {
 const Login: FC = () => {
   const { api } = useApi();
   const { t } = useTranslation();
-  const { setUser, reloadAll } = useGlobalVars();
+  const {
+    setUser, reloadAll
+  } = useGlobalVars();
   const navigate = useNavigate();
   const { search } = useLocation();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
 
   const alertSent = useRef(false);
 
@@ -55,10 +71,17 @@ const Login: FC = () => {
       });
       alertSent.current = true;
     }
-  }, [params, createAlert, getNewId, t]);
+  }, [
+    params,
+    createAlert,
+    getNewId,
+    t
+  ]);
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
-    ({ mail, password }) => {
+    ({
+      mail, password
+    }) => {
       if (api !== undefined) {
         api.auth
           .signin({
@@ -76,22 +99,25 @@ const Login: FC = () => {
             if (data.code === 'CYPU-102') {
               setError(data.sent as 'mail' | 'password', {
                 type: 'server',
-                message: t(`serverErrors.${data.code}`, {
-                  field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize')
-                })
+                message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize') })
               });
             } else {
               setError('root.serverError', {
                 type: 'server',
-                message: t(`serverErrors.${data.code}`, {
-                  field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize')
-                })
+                message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize') })
               });
             }
           });
       }
     },
-    [api, navigate, setError, setUser, t, reloadAll]
+    [
+      api,
+      navigate,
+      setError,
+      setUser,
+      t,
+      reloadAll
+    ]
   );
 
   return (
@@ -122,9 +148,7 @@ const Login: FC = () => {
             control={control}
             inputName="password"
             type="password"
-            rules={{
-              required: t('password.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('password.required', { ns: 'fields' }) }}
             label={t('password.label', { ns: 'fields' })}
             autoComplete="current-password"
           />

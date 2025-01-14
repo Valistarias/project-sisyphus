@@ -1,14 +1,26 @@
-import React, { useCallback, useEffect, type FC } from 'react';
+import React, {
+  useCallback, useEffect, type FC
+} from 'react';
 
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useNavigate, useParams
+} from 'react-router-dom';
 
-import { useApi, useSystemAlerts } from '../../providers';
+import {
+  useApi, useSystemAlerts
+} from '../../providers';
 
-import { Aerror, Ap, Atitle } from '../../atoms';
-import { Button, Input } from '../../molecules';
+import {
+  Aerror, Ap, Atitle
+} from '../../atoms';
+import {
+  Button, Input
+} from '../../molecules';
 import { Alert } from '../../organisms';
 
 import './newPass.scss';
@@ -22,8 +34,12 @@ interface FormValues {
 const NewPassword: FC = () => {
   const { api } = useApi();
   const { t } = useTranslation();
-  const { userId, token } = useParams();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    userId, token
+  } = useParams();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const navigate = useNavigate();
 
   const {
@@ -36,7 +52,9 @@ const NewPassword: FC = () => {
   } = useForm();
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
-    ({ password, confirmPassword }) => {
+    ({
+      password, confirmPassword
+    }) => {
       if (api !== undefined && userId !== undefined && token !== undefined) {
         api.auth
           .passUpdate({
@@ -61,14 +79,21 @@ const NewPassword: FC = () => {
             const { data } = response;
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize') })
             });
           });
       }
     },
-    [api, createAlert, getNewId, navigate, setError, t, token, userId]
+    [
+      api,
+      createAlert,
+      getNewId,
+      navigate,
+      setError,
+      t,
+      token,
+      userId
+    ]
   );
 
   useEffect(() => {
@@ -85,7 +110,13 @@ const NewPassword: FC = () => {
           void navigate('/');
         });
     }
-  }, [userId, token, api, setValue, navigate]);
+  }, [
+    userId,
+    token,
+    api,
+    setValue,
+    navigate
+  ]);
 
   return (
     <div className="new-pass">
@@ -108,9 +139,7 @@ const NewPassword: FC = () => {
           control={control}
           inputName="password"
           type="password"
-          rules={{
-            required: t('password.required', { ns: 'fields' })
-          }}
+          rules={{ required: t('password.required', { ns: 'fields' }) }}
           label={t('password.label', { ns: 'fields' })}
           autoComplete="new-password"
         />

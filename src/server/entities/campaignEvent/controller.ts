@@ -1,12 +1,18 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 import type { HydratedDocument } from 'mongoose';
 
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemInvalidField, gemNotFound, gemServerError
+} from '../../utils/globalErrorMessage';
 
 import type { ICampaign } from '../campaign/model';
 import type { ICharacter } from '../character';
-import type { ICampaignEvent, LeanICampaignEvent } from './model';
+import type {
+  ICampaignEvent, LeanICampaignEvent
+} from './model';
 
 const { CampaignEvent } = db;
 const perRequest = 10;
@@ -18,21 +24,19 @@ const findCampaignEventsByCampaignId = async (
   await new Promise((resolve, reject) => {
     CampaignEvent.find({ campaign: id })
       .lean()
-      .sort({
-        createdAt: 'desc'
-      })
+      .sort({ createdAt: 'desc' })
       .limit(perRequest)
       .skip(offset)
       .populate<{ character: HydratedDocument<ICharacter> }>('character')
       .populate<{ campaign: HydratedDocument<ICampaign> }>('campaign')
-      .then(async (res?: LeanICampaignEvent[] | null) => {
+      .then((res?: LeanICampaignEvent[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('CampaignEvents'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -47,13 +51,15 @@ const findCampaignEventById = async (id: string): Promise<HydratedDocument<ICamp
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
 
 const create = (req: Request, res: Response): void => {
-  const { result, formula, character, campaign, type } = req.body;
+  const {
+    result, formula, character, campaign, type
+  } = req.body;
   if (
     result === undefined
     || character === undefined
@@ -116,7 +122,9 @@ const update = (req: Request, res: Response): void => {
       campaignEvent
         .save()
         .then(() => {
-          res.send({ message: 'CampaignEvent was updated successfully!', campaignEvent });
+          res.send({
+            message: 'CampaignEvent was updated successfully!', campaignEvent
+          });
         })
         .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
@@ -144,7 +152,9 @@ const deleteCampaignEventByCampaignId = async (campaignId: string): Promise<bool
   });
 
 const findAllByCampaign = (req: Request, res: Response): void => {
-  const { campaignId, offset } = req.query;
+  const {
+    campaignId, offset
+  } = req.query;
   findCampaignEventsByCampaignId(campaignId as string, (offset ?? 0) as number)
     .then((campaignEvents) => {
       res.send(campaignEvents.reverse());
@@ -152,4 +162,6 @@ const findAllByCampaign = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteCampaignEventByCampaignId, findAllByCampaign, update };
+export {
+  create, deleteCampaignEventByCampaignId, findAllByCampaign, update
+};

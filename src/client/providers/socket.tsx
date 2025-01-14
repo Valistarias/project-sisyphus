@@ -1,6 +1,10 @@
-import React, { useContext, useEffect, useMemo, useState, type FC, type ReactNode } from 'react';
+import React, {
+  useContext, useEffect, useMemo, useState, type FC, type ReactNode
+} from 'react';
 
-import { io, type Socket } from 'socket.io-client';
+import {
+  io, type Socket
+} from 'socket.io-client';
 
 import type { DefaultEventsMap } from 'socket.io/dist/typed-events';
 

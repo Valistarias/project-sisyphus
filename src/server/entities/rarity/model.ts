@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model
+} from 'mongoose';
 
 interface IRarity {
   /** The title of the rarity */
@@ -28,4 +30,6 @@ const userSchema = new Schema<IRarity>({
 
 const RarityModel = (): Model<IRarity> => model('Rarity', userSchema);
 
-export { RarityModel, type HydratedIRarity, type IRarity };
+export {
+  RarityModel, type HydratedIRarity, type IRarity
+};

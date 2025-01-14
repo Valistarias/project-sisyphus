@@ -1,16 +1,30 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  useLocation, useNavigate
+} from 'react-router-dom';
 
-import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aa, Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input, NodeIconSelect, SmartSelect } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aa, Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input, NodeIconSelect, SmartSelect
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 
 import type {
   ICuratedCyberFrame,
@@ -19,7 +33,9 @@ import type {
   ICuratedSkillBranch
 } from '../../../types';
 
-import { classTrim, isThereDuplicate } from '../../../utils';
+import {
+  classTrim, isThereDuplicate
+} from '../../../utils';
 
 import './adminNewNode.scss';
 
@@ -99,7 +115,9 @@ const AdminNewNode: FC = () => {
   const { api } = useApi();
   const { search } = useLocation();
   const navigate = useNavigate();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const {
     skills,
     stats,
@@ -164,7 +182,9 @@ const AdminNewNode: FC = () => {
 
   const actionTypeSelect = useMemo(
     () =>
-      actionTypes.map(({ name, _id }) => ({
+      actionTypes.map(({
+        name, _id
+      }) => ({
         value: _id,
         label: t(`terms.actionType.${name}`)
       })),
@@ -173,7 +193,9 @@ const AdminNewNode: FC = () => {
 
   const actionDurationSelect = useMemo(
     () =>
-      actionDurations.map(({ name, _id }) => ({
+      actionDurations.map(({
+        name, _id
+      }) => ({
         value: _id,
         label: t(`terms.actionDuration.${name}`)
       })),
@@ -187,13 +209,9 @@ const AdminNewNode: FC = () => {
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
 
-  const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const {
     handleSubmit,
@@ -202,11 +220,7 @@ const AdminNewNode: FC = () => {
     unregister,
     control,
     formState: { errors }
-  } = useForm({
-    defaultValues: {
-      icon: 'default'
-    }
-  });
+  } = useForm({ defaultValues: { icon: 'default' } });
 
   const boolRange = useMemo(
     () => [
@@ -303,9 +317,7 @@ const AdminNewNode: FC = () => {
       const cyberFrameId = params.get('cyberFrameId');
       if (cyberFrameId !== null) {
         api.cyberFrames
-          .get({
-            cyberFrameId
-          })
+          .get({ cyberFrameId })
           .then((sentCyberFrame: ICuratedCyberFrame) => {
             setCyberFrame(sentCyberFrame);
             setBranches(sentCyberFrame.cyberFrame.branches ?? []);
@@ -324,9 +336,7 @@ const AdminNewNode: FC = () => {
           });
       } else if (skillId !== null) {
         api.skills
-          .get({
-            skillId
-          })
+          .get({ skillId })
           .then((curatedSkill: ICuratedSkill) => {
             setSkill(curatedSkill);
             setBranches(curatedSkill.skill.branches ?? []);
@@ -344,10 +354,18 @@ const AdminNewNode: FC = () => {
           });
       }
     }
-  }, [api, createAlert, getNewId, params, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    params,
+    t
+  ]);
 
   const onSaveNode: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, quote, quoteFr, rank, icon, branch, effects, actions, ...elts }) => {
+    ({
+      name, nameFr, quote, quoteFr, rank, icon, branch, effects, actions, ...elts
+    }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -403,36 +421,40 @@ const AdminNewNode: FC = () => {
       }
 
       const skillId = params.get('skillId');
-      const curatedSkillBonuses = skillBonuses.map(({ skill, value }) => ({
+      const curatedSkillBonuses = skillBonuses.map(({
+        skill, value
+      }) => ({
         skill,
         value: Number(value)
       }));
-      const curatedStatBonuses = statBonuses.map(({ stat, value }) => ({
+      const curatedStatBonuses = statBonuses.map(({
+        stat, value
+      }) => ({
         stat,
         value: Number(value)
       }));
-      const curatedCharParamBonuses = charParamBonuses.map(({ charParam, value }) => ({
+      const curatedCharParamBonuses = charParamBonuses.map(({
+        charParam, value
+      }) => ({
         charParam,
         value: Number(value)
       }));
 
       const effectsArr = effects !== undefined ? Object.values(effects) : [];
       const curatedEffects = effectsArr.map(
-        ({ formula, type, title, summary, titleFr, summaryFr }) => ({
+        ({
+          formula, type, title, summary, titleFr, summaryFr
+        }) => ({
           title,
           summary,
           formula,
           type,
-          i18n: {
-            ...(titleFr !== undefined || summaryFr !== undefined
-              ? {
-                  fr: {
-                    title: titleFr,
-                    summary: summaryFr
-                  }
-                }
-              : {})
-          }
+          i18n: { ...(titleFr !== undefined || summaryFr !== undefined
+            ? { fr: {
+                title: titleFr,
+                summary: summaryFr
+              } }
+            : {}) }
         })
       );
 
@@ -466,17 +488,13 @@ const AdminNewNode: FC = () => {
           uses,
           isKarmic: String(isKarmic) === '1',
           karmicCost,
-          i18n: {
-            ...(titleFr !== undefined || summaryFr !== undefined || timeFr !== undefined
-              ? {
-                  fr: {
-                    title: titleFr,
-                    summary: summaryFr,
-                    time: timeFr
-                  }
-                }
-              : {})
-          }
+          i18n: { ...(titleFr !== undefined || summaryFr !== undefined || timeFr !== undefined
+            ? { fr: {
+                title: titleFr,
+                summary: summaryFr,
+                time: timeFr
+              } }
+            : {}) }
         })
       );
 
@@ -489,13 +507,11 @@ const AdminNewNode: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>' || quoteFr !== '') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            summary: htmlFr,
-            quote: quoteFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          summary: htmlFr,
+          quote: quoteFr
+        } };
       }
 
       api.nodes
@@ -535,16 +551,12 @@ const AdminNewNode: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize') })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize') })
             });
           }
         });
@@ -570,7 +582,13 @@ const AdminNewNode: FC = () => {
       calledApi.current = true;
       getData();
     }
-  }, [api, createAlert, getNewId, getData, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    getData,
+    t
+  ]);
 
   useEffect(() => {
     if (rankSelect.length > 0) {
@@ -618,9 +636,7 @@ const AdminNewNode: FC = () => {
             label={t('iconNode.label', { ns: 'fields' })}
             control={control}
             inputName="icon"
-            rules={{
-              required: t('iconNode.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('iconNode.required', { ns: 'fields' }) }}
           />
         </div>
         <div className="adminNewNode__basics">
@@ -628,18 +644,14 @@ const AdminNewNode: FC = () => {
             control={control}
             inputName="name"
             type="text"
-            rules={{
-              required: t('nameNode.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('nameNode.required', { ns: 'fields' }) }}
             label={t('nameNode.label', { ns: 'fields' })}
             className="adminNewNode__basics__name"
           />
           <SmartSelect
             control={control}
             inputName="branch"
-            rules={{
-              required: t('branchNode.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('branchNode.required', { ns: 'fields' }) }}
             label={t('branchNode.label', { ns: 'fields' })}
             options={branchSelect}
             onChange={(e) => {
@@ -664,9 +676,7 @@ const AdminNewNode: FC = () => {
             control={control}
             placeholder="0"
             inputName="rank"
-            rules={{
-              required: t('rankNode.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('rankNode.required', { ns: 'fields' }) }}
             label={t('rankNode.label', { ns: 'fields' })}
             options={rankSelect}
             className="adminNewNode__basics__rank"
@@ -703,9 +713,7 @@ const AdminNewNode: FC = () => {
                   <SmartSelect
                     control={control}
                     inputName={`skillBonuses.skill-${skillBonusId}.skill`}
-                    rules={{
-                      required: t('skillBonusSkill.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('skillBonusSkill.required', { ns: 'fields' }) }}
                     label={t('skillBonusSkill.label', { ns: 'fields' })}
                     options={skillSelect}
                     className="adminNewNode__bonus__select"
@@ -714,9 +722,7 @@ const AdminNewNode: FC = () => {
                     control={control}
                     inputName={`skillBonuses.skill-${skillBonusId}.value`}
                     type="number"
-                    rules={{
-                      required: t('skillBonusValue.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('skillBonusValue.required', { ns: 'fields' }) }}
                     label={t('skillBonusValue.label', { ns: 'fields' })}
                     className="adminNewNode__bonus__value"
                   />
@@ -749,9 +755,7 @@ const AdminNewNode: FC = () => {
                   <SmartSelect
                     control={control}
                     inputName={`statBonuses.stat-${statBonusId}.stat`}
-                    rules={{
-                      required: t('statBonusStat.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('statBonusStat.required', { ns: 'fields' }) }}
                     label={t('statBonusStat.label', { ns: 'fields' })}
                     options={statSelect}
                     className="adminNewNode__bonus__select"
@@ -760,9 +764,7 @@ const AdminNewNode: FC = () => {
                     control={control}
                     inputName={`statBonuses.stat-${statBonusId}.value`}
                     type="number"
-                    rules={{
-                      required: t('statBonusValue.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('statBonusValue.required', { ns: 'fields' }) }}
                     label={t('statBonusValue.label', { ns: 'fields' })}
                     className="adminNewNode__bonus__value"
                   />
@@ -795,9 +797,7 @@ const AdminNewNode: FC = () => {
                   <SmartSelect
                     control={control}
                     inputName={`charParamBonuses.charParam-${charParamBonusId}.charParam`}
-                    rules={{
-                      required: t('charParamBonusStat.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('charParamBonusStat.required', { ns: 'fields' }) }}
                     label={t('charParamBonusStat.label', { ns: 'fields' })}
                     options={charParamSelect}
                     className="adminNewNode__bonus__select"
@@ -806,9 +806,7 @@ const AdminNewNode: FC = () => {
                     control={control}
                     inputName={`charParamBonuses.charParam-${charParamBonusId}.value`}
                     type="number"
-                    rules={{
-                      required: t('charParamBonusValue.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('charParamBonusValue.required', { ns: 'fields' }) }}
                     label={t('charParamBonusValue.label', { ns: 'fields' })}
                     className="adminNewNode__bonus__value"
                   />
@@ -841,18 +839,14 @@ const AdminNewNode: FC = () => {
                   <Input
                     control={control}
                     inputName={`effects.effect-${effectId}.title`}
-                    rules={{
-                      required: t('effectTitle.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('effectTitle.required', { ns: 'fields' }) }}
                     label={t('effectTitle.label', { ns: 'fields' })}
                     className="adminNewNode__bonus__value adminNewNode__bonus__value--s"
                   />
                   <SmartSelect
                     control={control}
                     inputName={`effects.effect-${effectId}.type`}
-                    rules={{
-                      required: t('effectType.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('effectType.required', { ns: 'fields' }) }}
                     label={t('effectType.label', { ns: 'fields' })}
                     options={actionTypeSelect}
                     className="adminNewNode__bonus__select adminNewNode__bonus__value--s"
@@ -861,9 +855,7 @@ const AdminNewNode: FC = () => {
                     control={control}
                     type="textarea"
                     inputName={`effects.effect-${effectId}.summary`}
-                    rules={{
-                      required: t('effectSummary.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('effectSummary.required', { ns: 'fields' }) }}
                     label={t('effectSummary.label', { ns: 'fields' })}
                     className="adminNewNode__bonus__value adminNewNode__bonus__value--l"
                   />
@@ -918,18 +910,14 @@ const AdminNewNode: FC = () => {
                   <Input
                     control={control}
                     inputName={`actions.action-${actionId}.title`}
-                    rules={{
-                      required: t('actionTitle.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('actionTitle.required', { ns: 'fields' }) }}
                     label={t('actionTitle.label', { ns: 'fields' })}
                     className="adminNewNode__bonus__value adminNewNode__bonus__value--l"
                   />
                   <SmartSelect
                     control={control}
                     inputName={`actions.action-${actionId}.type`}
-                    rules={{
-                      required: t('actionType.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('actionType.required', { ns: 'fields' }) }}
                     label={t('actionType.label', { ns: 'fields' })}
                     options={actionTypeSelect}
                     className="adminNewNode__bonus__select adminNewNode__bonus__value--s"
@@ -937,9 +925,7 @@ const AdminNewNode: FC = () => {
                   <SmartSelect
                     control={control}
                     inputName={`actions.action-${actionId}.duration`}
-                    rules={{
-                      required: t('actionDuration.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('actionDuration.required', { ns: 'fields' }) }}
                     label={t('actionDuration.label', { ns: 'fields' })}
                     options={actionDurationSelect}
                     className="adminNewNode__bonus__select adminNewNode__bonus__value--s"
@@ -948,9 +934,7 @@ const AdminNewNode: FC = () => {
                     control={control}
                     type="textarea"
                     inputName={`actions.action-${actionId}.summary`}
-                    rules={{
-                      required: t('actionSummary.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('actionSummary.required', { ns: 'fields' }) }}
                     label={t('actionSummary.label', { ns: 'fields' })}
                     className="adminNewNode__bonus__value adminNewNode__bonus__value--l"
                   />

@@ -1,15 +1,23 @@
-import React, { useCallback, useEffect, useMemo, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import { motion } from 'framer-motion';
-import { useForm, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../providers';
 
 import { Ap } from '../../atoms';
-import { Button, Input, SmartSelect } from '../../molecules';
-import { RichTextElement, basicRichTextElementExtentions } from '../richTextElement';
+import {
+  Button, Input, SmartSelect
+} from '../../molecules';
+import {
+  RichTextElement, basicRichTextElementExtentions
+} from '../richTextElement';
 
 import type { ICharacter } from '../../types';
 
@@ -41,9 +49,7 @@ const CharacterCreationStep6: FC<ICharacterCreationStep6> = ({ onSubmitIdentific
   const { t } = useTranslation();
   const { character } = useGlobalVars();
 
-  const bioEditor = useEditor({
-    extensions: basicRichTextElementExtentions
-  });
+  const bioEditor = useEditor({ extensions: basicRichTextElementExtentions });
 
   const createDefaultData = useCallback((character: false | ICharacter | null) => {
     if (character === false || character === null) {
@@ -54,9 +60,9 @@ const CharacterCreationStep6: FC<ICharacterCreationStep6> = ({ onSubmitIdentific
     return defaultData;
   }, []);
 
-  const { handleSubmit, control, reset } = useForm<FormValues>({
-    defaultValues: useMemo(() => createDefaultData(character), [createDefaultData, character])
-  });
+  const {
+    handleSubmit, control, reset
+  } = useForm<FormValues>({ defaultValues: useMemo(() => createDefaultData(character), [createDefaultData, character]) });
 
   const genderRange = useMemo(
     () => [
@@ -81,7 +87,9 @@ const CharacterCreationStep6: FC<ICharacterCreationStep6> = ({ onSubmitIdentific
   );
 
   const onSaveIdentification: SubmitHandler<FormValues> = useCallback(
-    ({ firstName, lastName, nickName, gender, pronouns }) => {
+    ({
+      firstName, lastName, nickName, gender, pronouns
+    }) => {
       if (bioEditor === null) {
         return;
       }
@@ -104,26 +112,26 @@ const CharacterCreationStep6: FC<ICharacterCreationStep6> = ({ onSubmitIdentific
 
   useEffect(() => {
     reset(createDefaultData(character));
-  }, [character, reset, createDefaultData]);
+  }, [
+    character,
+    reset,
+    createDefaultData
+  ]);
 
   return (
     <motion.div
       className={classTrim(`
         characterCreation-step6
       `)}
-      initial={{
-        transform: 'skew(90deg, 0deg) scale3d(.2, .2, .2)'
-      }}
+      initial={{ transform: 'skew(90deg, 0deg) scale3d(.2, .2, .2)' }}
       animate={{
         transform: 'skew(0, 0) scale3d(1, 1, 1)',
-        transitionEnd: {
-          transform: 'none'
-        }
+        transitionEnd: { transform: 'none' }
       }}
-      exit={{
-        transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)'
+      exit={{ transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)' }}
+      transition={{
+        ease: 'easeInOut', duration: 0.2
       }}
-      transition={{ ease: 'easeInOut', duration: 0.2 }}
     >
       <Ap className="characterCreation-step6__text">
         {t('characterCreation.step6.text', { ns: 'components' })}
@@ -142,9 +150,7 @@ const CharacterCreationStep6: FC<ICharacterCreationStep6> = ({ onSubmitIdentific
             inputName="firstName"
             type="text"
             autoComplete="username"
-            rules={{
-              required: t('firstName.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('firstName.required', { ns: 'fields' }) }}
             label={t('firstName.label', { ns: 'fields' })}
             className="characterCreation-step6__form__basics__elt"
           />
@@ -153,9 +159,7 @@ const CharacterCreationStep6: FC<ICharacterCreationStep6> = ({ onSubmitIdentific
             inputName="lastName"
             type="text"
             autoComplete="username"
-            rules={{
-              required: t('lastName.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('lastName.required', { ns: 'fields' }) }}
             label={t('lastName.label', { ns: 'fields' })}
             className="characterCreation-step6__form__basics__elt"
           />
@@ -173,9 +177,7 @@ const CharacterCreationStep6: FC<ICharacterCreationStep6> = ({ onSubmitIdentific
             control={control}
             inputName="gender"
             label={t('gender.label', { ns: 'fields' })}
-            rules={{
-              required: t('gender.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('gender.required', { ns: 'fields' }) }}
             options={genderRange}
             className="characterCreation-step6__form__core__elt"
           />

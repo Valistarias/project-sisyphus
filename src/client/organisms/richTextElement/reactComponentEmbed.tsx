@@ -1,7 +1,11 @@
 import React, { type FC } from 'react';
 
-import { mergeAttributes, Node } from '@tiptap/core';
-import { NodeViewWrapper, ReactNodeViewRenderer } from '@tiptap/react';
+import {
+  mergeAttributes, Node
+} from '@tiptap/core';
+import {
+  NodeViewWrapper, ReactNodeViewRenderer
+} from '@tiptap/react';
 
 import { EmbedNotion } from '../../molecules';
 
@@ -22,19 +26,11 @@ export default Node.create({
   atom: true,
 
   addAttributes() {
-    return {
-      notionId: {
-        default: ''
-      }
-    };
+    return { notionId: { default: '' } };
   },
 
   parseHTML() {
-    return [
-      {
-        tag: 'react-component-embed'
-      }
-    ];
+    return [{ tag: 'react-component-embed' }];
   },
 
   renderHTML({ HTMLAttributes }) {

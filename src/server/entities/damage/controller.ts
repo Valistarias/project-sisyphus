@@ -1,26 +1,36 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 import type { HydratedDocument } from 'mongoose';
 
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemInvalidField, gemNotFound, gemServerError
+} from '../../utils/globalErrorMessage';
 
-import type { IDamageType, IWeapon } from '../index';
-import type { HydratedIDamage, IDamage } from './model';
+import type {
+  IDamageType, IWeapon
+} from '../index';
+import type {
+  HydratedIDamage, IDamage
+} from './model';
 
-const { Damage, Weapon } = db;
+const {
+  Damage, Weapon
+} = db;
 
 const findDamages = async (): Promise<HydratedIDamage[]> =>
   await new Promise((resolve, reject) => {
     Damage.find()
       .populate<{ damageType: IDamageType }>('damageType')
-      .then(async (res?: HydratedIDamage[] | null) => {
+      .then((res?: HydratedIDamage[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Damages'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -29,14 +39,14 @@ const findDamageById = async (id: string): Promise<HydratedIDamage> =>
   await new Promise((resolve, reject) => {
     Damage.findById(id)
       .populate<{ damageType: IDamageType }>('damageType')
-      .then(async (res?: HydratedIDamage | null) => {
+      .then((res?: HydratedIDamage | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Damage'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -146,7 +156,9 @@ const curateDamageIds = async ({
   });
 
 const create = (req: Request, res: Response): void => {
-  const { damageType, dices } = req.body;
+  const {
+    damageType, dices
+  } = req.body;
   if (damageType === undefined || dices === undefined) {
     res.status(400).send(gemInvalidField('Damage'));
 
@@ -169,7 +181,9 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, damageType = null, dices = null } = req.body;
+  const {
+    id, damageType = null, dices = null
+  } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Damage ID'));
 
@@ -187,7 +201,9 @@ const update = (req: Request, res: Response): void => {
       damage
         .save()
         .then(() => {
-          res.send({ message: 'Damage was updated successfully!', damage });
+          res.send({
+            message: 'Damage was updated successfully!', damage
+          });
         })
         .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
@@ -198,7 +214,7 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteDamageById = async (id: string): Promise<boolean> =>
+const deleteDamageById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Damage ID'));
@@ -215,8 +231,8 @@ const deleteDamageById = async (id: string): Promise<boolean> =>
   });
 
 const deleteDamage = (req: Request, res: Response): void => {
-  const { id } = req.body;
-  deleteDamageById(id as string)
+  const { id }: { id: string } = req.body;
+  deleteDamageById(id)
     .then(() => {
       res.send({ message: 'Damage was deleted successfully!' });
     })
@@ -249,4 +265,6 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, curateDamageIds, deleteDamage, findAll, findDamageById, findSingle, update };
+export {
+  create, curateDamageIds, deleteDamage, findAll, findDamageById, findSingle, update
+};

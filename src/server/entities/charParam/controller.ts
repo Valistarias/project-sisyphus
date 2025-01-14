@@ -1,4 +1,6 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 
 import db from '../../models';
 import {
@@ -11,6 +13,7 @@ import { checkDuplicateSkillFormulaId } from '../skill/controller';
 import { checkDuplicateStatFormulaId } from '../stat/controller';
 
 import type { HydratedICharParam } from './model';
+import type { InternationalizationType } from '../../utils/types';
 
 import { curateI18n } from '../../utils';
 
@@ -19,14 +22,14 @@ const { CharParam } = db;
 const findCharParams = async (): Promise<HydratedICharParam[]> =>
   await new Promise((resolve, reject) => {
     CharParam.find()
-      .then(async (res?: HydratedICharParam[] | null) => {
+      .then((res?: HydratedICharParam[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('CharParams'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -34,14 +37,14 @@ const findCharParams = async (): Promise<HydratedICharParam[]> =>
 const findCharParamById = async (id: string): Promise<HydratedICharParam> =>
   await new Promise((resolve, reject) => {
     CharParam.findById(id)
-      .then(async (res?: HydratedICharParam | null) => {
+      .then((res?: HydratedICharParam | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('CharParam'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -52,14 +55,14 @@ const checkDuplicateCharParamFormulaId = async (
 ): Promise<string | boolean> =>
   await new Promise((resolve, reject) => {
     CharParam.find({ formulaId })
-      .then(async (res) => {
+      .then((res) => {
         if (res.length === 0 || (alreadyExistOnce && res.length === 1)) {
           resolve(false);
         } else {
           resolve(res[0].title);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -103,7 +106,9 @@ const checkDuplicateFormulaId = async (
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, summary, short, i18n = null, formulaId } = req.body;
+  const {
+    title, summary, short, i18n = null, formulaId
+  } = req.body;
   if (
     title === undefined
     || summary === undefined
@@ -146,7 +151,9 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, title = null, summary = null, i18n, short = null, formulaId = null } = req.body;
+  const {
+    id, title = null, summary = null, i18n, short = null, formulaId = null
+  } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('CharParam ID'));
 
@@ -172,13 +179,11 @@ const update = (req: Request, res: Response): void => {
             }
 
             if (i18n !== null) {
-              const newIntl = {
-                ...(charParam.i18n !== null && charParam.i18n !== undefined && charParam.i18n !== ''
-                  ? JSON.parse(charParam.i18n)
-                  : {})
-              };
+              const newIntl: InternationalizationType = { ...(charParam.i18n !== null && charParam.i18n !== undefined && charParam.i18n !== ''
+                ? JSON.parse(charParam.i18n)
+                : {}) };
 
-              Object.keys(i18n as Record<string, any>).forEach((lang) => {
+              Object.keys(i18n).forEach((lang) => {
                 newIntl[lang] = i18n[lang];
               });
 
@@ -188,7 +193,9 @@ const update = (req: Request, res: Response): void => {
             charParam
               .save()
               .then(() => {
-                res.send({ message: 'CharParam was updated successfully!', charParam });
+                res.send({
+                  message: 'CharParam was updated successfully!', charParam
+                });
               })
               .catch((err: unknown) => {
                 res.status(500).send(gemServerError(err));
@@ -206,7 +213,7 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteCharParamById = async (id: string): Promise<boolean> =>
+const deleteCharParamById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('CharParam ID'));
@@ -223,8 +230,8 @@ const deleteCharParamById = async (id: string): Promise<boolean> =>
   });
 
 const deleteCharParam = (req: Request, res: Response): void => {
-  const { id } = req.body;
-  deleteCharParamById(id as string)
+  const { id }: { id: string } = req.body;
+  deleteCharParamById(id)
     .then(() => {
       res.send({ message: 'CharParam was deleted successfully!' });
     })
@@ -234,7 +241,7 @@ const deleteCharParam = (req: Request, res: Response): void => {
 };
 
 interface CuratedICharParam {
-  i18n: Record<string, unknown>
+  i18n?: InternationalizationType
   charParam: HydratedICharParam
 }
 

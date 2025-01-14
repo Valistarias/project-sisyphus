@@ -1,7 +1,11 @@
 import React from 'react';
-import { useRef, useState, type FC, type ReactNode } from 'react';
+import {
+  useRef, useState, type FC, type ReactNode
+} from 'react';
 
-import { Abutton, type IAButton } from '../atoms';
+import {
+  Abutton, type IAButton
+} from '../atoms';
 
 import { classTrim } from '../utils';
 
@@ -16,7 +20,9 @@ interface IClickableText extends IAButton {
   hint?: ReactNode
 }
 
-const ClickableText: FC<IClickableText> = ({ text, onClick, className, hint }) => {
+const ClickableText: FC<IClickableText> = ({
+  text, onClick, className, hint
+}) => {
   const [delayHandler, setDelayHandler] = useState<NodeJS.Timeout | null>(null);
   const [isHintOpen, setHintOpen] = useState<boolean>(false);
   const [placement, setPlacement] = useState<string>('top-left');

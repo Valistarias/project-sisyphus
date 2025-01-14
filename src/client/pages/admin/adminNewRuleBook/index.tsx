@@ -1,16 +1,28 @@
-import React, { useCallback, useEffect, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input, SmartSelect, type ISingleValueSelect } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input, SmartSelect, type ISingleValueSelect
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 
 import type { IRuleBookType } from '../../../types';
 
@@ -26,18 +38,16 @@ const AdminNewRuleBooks: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const navigate = useNavigate();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const { reloadRuleBooks } = useGlobalVars();
 
   const [ruleBookTypes, setRuleBookTypes] = useState<ISingleValueSelect[]>([]);
 
-  const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const {
     handleSubmit,
@@ -47,7 +57,9 @@ const AdminNewRuleBooks: FC = () => {
   } = useForm();
 
   const onSaveRuleBook: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, type }) => {
+    ({
+      name, nameFr, type
+    }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -60,12 +72,10 @@ const AdminNewRuleBooks: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            summary: htmlFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          summary: htmlFr
+        } };
       }
 
       api.ruleBooks
@@ -93,21 +103,27 @@ const AdminNewRuleBooks: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize') })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize') })
             });
           }
         });
     },
-    [introEditor, introFrEditor, api, getNewId, createAlert, t, reloadRuleBooks, navigate, setError]
+    [
+      introEditor,
+      introFrEditor,
+      api,
+      getNewId,
+      createAlert,
+      t,
+      reloadRuleBooks,
+      navigate,
+      setError
+    ]
   );
 
   useEffect(() => {
@@ -135,7 +151,12 @@ const AdminNewRuleBooks: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    t
+  ]);
 
   return (
     <div className="adminNewRuleBook">
@@ -155,18 +176,14 @@ const AdminNewRuleBooks: FC = () => {
             control={control}
             inputName="name"
             type="text"
-            rules={{
-              required: t('nameRuleBook.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('nameRuleBook.required', { ns: 'fields' }) }}
             label={t('nameRuleBook.label', { ns: 'fields' })}
             className="adminNewRuleBook__basics__name"
           />
           <SmartSelect
             control={control}
             inputName="type"
-            rules={{
-              required: t('typeRuleBook.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('typeRuleBook.required', { ns: 'fields' }) }}
             label={t('typeRuleBook.select', { ns: 'fields' })}
             options={ruleBookTypes}
             className="adminNewRuleBook__basics__type"

@@ -1,6 +1,8 @@
 import { diacriticsMap } from './diacriticsMap';
 
-import type { ICharacter, IGlobalValue, TypeDice } from '../types';
+import type {
+  ICharacter, IGlobalValue, TypeDice
+} from '../types';
 
 export const degToRad = (degrees: number): number => degrees * (Math.PI / 180);
 
@@ -168,7 +170,9 @@ export const createBasicDiceRequest = (): DiceRequest[] => [
 export const throwDices = (dices: DiceRequest[]): DiceResult[] => {
   const resultsThrows: DiceResult[] = [];
 
-  dices.forEach(({ qty, type, offset }) => {
+  dices.forEach(({
+    qty, type, offset
+  }) => {
     let total = 0;
     let best = 0;
     let worst = 0;
@@ -276,7 +280,9 @@ export const calculateDices = (diceGroups: DiceResult[]): TotalResult => {
   let total = 0;
   let optionnalParams: Pick<DiceResult, 'best' | 'worst'> | null = null;
   let canUseOptionnal = false;
-  diceGroups.forEach(({ results, best, worst, total: totalDice }) => {
+  diceGroups.forEach(({
+    results, best, worst, total: totalDice
+  }) => {
     if (results.length > 0) {
       total += totalDice;
       if (optionnalParams === null) {
@@ -307,7 +313,11 @@ export const curateStringFormula = (
     return text;
   }
   if (char === false || char === null) {
-    return [splitted[0], 'X', [splitted[1]]].join(' ');
+    return [
+      splitted[0],
+      'X',
+      [splitted[1]]
+    ].join(' ');
   }
 
   return applyFormula(text, formula, char);
@@ -324,7 +334,11 @@ export const curateStringDamage = (
     return text;
   }
   if (char === false || char === null) {
-    return [splitted[0], 'X', [splitted[1]]].join(' ');
+    return [
+      splitted[0],
+      'X',
+      [splitted[1]]
+    ].join(' ');
   }
 
   return applyFormula(text, `${damages}+${formula}`, char);
@@ -351,4 +365,6 @@ export const getValuesFromGlobalValues = (
   return elt;
 };
 
-export { getCyberFrameLevelsByNodes, type ICyberFrameLevels } from './character';
+export {
+  getCyberFrameLevelsByNodes, type ICyberFrameLevels
+} from './character';

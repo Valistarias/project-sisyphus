@@ -1,15 +1,22 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemInvalidField, gemNotFound, gemServerError
+} from '../../utils/globalErrorMessage';
 import { smartUpdateActions } from '../action/controller';
 import { curateCharParamBonusIds } from '../charParamBonus/controller';
 import { smartUpdateEffects } from '../effect/controller';
 import { curateSkillBonusIds } from '../skillBonus/controller';
 import { curateStatBonusIds } from '../statBonus/controller';
 
-import type { IAction, ICharParamBonus, IEffect, ISkillBonus, IStatBonus } from '../index';
+import type { InternationalizationType } from '../../utils/types';
+import type {
+  IAction, ICharParamBonus, IEffect, ISkillBonus, IStatBonus
+} from '../index';
 import type { HydratedIItem } from './model';
 
 import { curateI18n } from '../../utils';
@@ -28,14 +35,14 @@ const findItems = async (options?: findAllPayload): Promise<HydratedIItem[]> =>
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
-      .then(async (res?: HydratedIItem[] | null) => {
+      .then((res?: HydratedIItem[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Items'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err: unknown) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -48,14 +55,14 @@ const findItemById = async (id: string): Promise<HydratedIItem> =>
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
-      .then(async (res?: HydratedIItem | null) => {
+      .then((res?: HydratedIItem | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Item'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err: unknown) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -402,13 +409,11 @@ const update = (req: Request, res: Response): void => {
       }, []);
 
       if (i18n !== null) {
-        const newIntl = {
-          ...(item.i18n !== null && item.i18n !== undefined && item.i18n !== ''
-            ? JSON.parse(item.i18n)
-            : {})
-        };
+        const newIntl: InternationalizationType = { ...(item.i18n !== null && item.i18n !== undefined && item.i18n !== ''
+          ? JSON.parse(item.i18n)
+          : {}) };
 
-        Object.keys(i18n as Record<string, any>).forEach((lang) => {
+        Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
         });
 
@@ -465,7 +470,9 @@ const update = (req: Request, res: Response): void => {
                           item
                             .save()
                             .then(() => {
-                              res.send({ message: 'Item was updated successfully!', item });
+                              res.send({
+                                message: 'Item was updated successfully!', item
+                              });
                             })
                             .catch((err: unknown) => {
                               res.status(500).send(gemServerError(err));
@@ -496,7 +503,7 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteItemById = async (id: string): Promise<boolean> =>
+const deleteItemById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Item ID'));
@@ -513,9 +520,9 @@ const deleteItemById = async (id: string): Promise<boolean> =>
   });
 
 const deleteItem = (req: Request, res: Response): void => {
-  const { id } = req.body;
+  const { id }: { id: string } = req.body;
 
-  findItemById(id as string)
+  findItemById(id)
     .then((item) => {
       const skillBonusesToRemove = item.skillBonuses.map(elt => elt._id);
       const statBonusesToRemove = item.statBonuses.map(elt => elt._id);
@@ -551,7 +558,7 @@ const deleteItem = (req: Request, res: Response): void => {
                         actionsToUpdate: []
                       })
                         .then(() => {
-                          deleteItemById(id as string)
+                          deleteItemById(id)
                             .then(() => {
                               res.send({ message: 'Item was deleted successfully!' });
                             })
@@ -585,7 +592,7 @@ const deleteItem = (req: Request, res: Response): void => {
 };
 
 interface CuratedIItem {
-  i18n: Record<string, unknown>
+  i18n?: InternationalizationType
   item: any
 }
 
@@ -716,4 +723,6 @@ const findAllStarter = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteItem, findAll, findAllStarter, findItemById, findSingle, update };
+export {
+  create, deleteItem, findAll, findAllStarter, findItemById, findSingle, update
+};

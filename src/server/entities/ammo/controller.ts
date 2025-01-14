@@ -1,10 +1,16 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemInvalidField, gemNotFound, gemServerError
+} from '../../utils/globalErrorMessage';
 
-import type { HydratedIAmmo, IAmmo } from './model';
+import type {
+  HydratedIAmmo, IAmmo
+} from './model';
 import type { InternationalizationType } from '../../utils/types';
 
 import { curateI18n } from '../../utils';
@@ -156,9 +162,7 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = {
-          ...(ammo.i18n !== undefined && ammo.i18n !== '' ? JSON.parse(ammo.i18n) : {})
-        };
+        const newIntl: InternationalizationType = { ...(ammo.i18n !== undefined && ammo.i18n !== '' ? JSON.parse(ammo.i18n) : {}) };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -170,7 +174,9 @@ const update = (req: Request, res: Response): void => {
       ammo
         .save()
         .then(() => {
-          res.send({ message: 'Ammo was updated successfully!', ammo });
+          res.send({
+            message: 'Ammo was updated successfully!', ammo
+          });
         })
         .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
@@ -198,9 +204,7 @@ const deleteAmmoById = async (id?: string): Promise<boolean> =>
   });
 
 const deleteAmmo = (req: Request, res: Response): void => {
-  const { id }: {
-    id: string
-  } = req.body;
+  const { id }: { id: string } = req.body;
 
   findAmmoById(id)
     .then(() => {
@@ -218,7 +222,7 @@ const deleteAmmo = (req: Request, res: Response): void => {
 };
 
 interface CuratedIAmmo {
-  i18n?: Record<string, unknown>
+  i18n?: InternationalizationType
   ammo: IAmmo
 }
 
@@ -260,4 +264,6 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteAmmo, findAll, findAmmoById, findSingle, update };
+export {
+  create, deleteAmmo, findAll, findAmmoById, findSingle, update
+};

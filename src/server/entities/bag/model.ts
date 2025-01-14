@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
 interface IBag {
   /** The title of the bag */
@@ -66,4 +68,6 @@ const bagSchema = new Schema<IBag>({
 
 const BagModel = (): Model<IBag> => model('Bag', bagSchema);
 
-export { BagModel, type HydratedIBag, type IBag };
+export {
+  BagModel, type HydratedIBag, type IBag
+};

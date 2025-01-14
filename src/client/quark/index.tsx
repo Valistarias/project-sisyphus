@@ -1,5 +1,7 @@
 import type React from 'react';
-import { forwardRef, type MouseEventHandler } from 'react';
+import {
+  forwardRef, type MouseEventHandler
+} from 'react';
 
 interface IQuarkProps {
   /** The class of the element */
@@ -26,7 +28,9 @@ interface IQuark extends IQuarkProps {
 }
 
 const Quark = forwardRef<HTMLElement, IQuark>(
-  ({ className, onMouseEnter, onMouseLeave, style, quarkType, reactProps, ...rest }, ref) => {
+  ({
+    className, onMouseEnter, onMouseLeave, style, quarkType, reactProps, ...rest
+  }, ref) => {
     const QuarkComponent = quarkType;
 
     return (
@@ -45,4 +49,6 @@ const Quark = forwardRef<HTMLElement, IQuark>(
 
 Quark.displayName = 'Quark';
 
-export { Quark, type IQuarkProps };
+export {
+  Quark, type IQuarkProps
+};

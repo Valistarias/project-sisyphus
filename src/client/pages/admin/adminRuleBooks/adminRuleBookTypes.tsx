@@ -1,13 +1,23 @@
-import React, { useCallback, useEffect, useMemo, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useState, type FC
+} from 'react';
 
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { useApi, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ali, Ap, Atitle, Aul } from '../../../atoms';
-import { Button, Input } from '../../../molecules';
+import {
+  Aerror, Ali, Ap, Atitle, Aul
+} from '../../../atoms';
+import {
+  Button, Input
+} from '../../../molecules';
 import { Alert } from '../../../organisms';
 
 import type { IRuleBookType } from '../../../types';
@@ -21,7 +31,9 @@ interface FormValues {
 const AdminRuleBookTypes: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
 
   const [ruleBookTypes, setRuleBookTypes] = useState<IRuleBookType[]>([]);
   const [createBookTypeMode, setCreateBookTypeMode] = useState(false);
@@ -56,7 +68,12 @@ const AdminRuleBookTypes: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    t
+  ]);
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
     ({ name }) => {
@@ -87,25 +104,19 @@ const AdminRuleBookTypes: FC = () => {
               if (data.code === 'CYPU-104') {
                 setError(data.sent as 'name', {
                   type: 'server',
-                  message: t(`serverErrors.${data.code}`, {
-                    field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize')
-                  })
+                  message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize') })
                 });
               } else {
                 setError('root.serverError', {
                   type: 'server',
-                  message: t(`serverErrors.${data.code}`, {
-                    field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize')
-                  })
+                  message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize') })
                 });
               }
             });
         } else {
           // Creating a Rulebook Type
           api.ruleBookTypes
-            .create({
-              name
-            })
+            .create({ name })
             .then(() => {
               const newId = getNewId();
               createAlert({
@@ -125,23 +136,28 @@ const AdminRuleBookTypes: FC = () => {
               if (data.code === 'CYPU-104') {
                 setError(data.sent as 'name', {
                   type: 'server',
-                  message: t(`serverErrors.${data.code}`, {
-                    field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize')
-                  })
+                  message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize') })
                 });
               } else {
                 setError('root.serverError', {
                   type: 'server',
-                  message: t(`serverErrors.${data.code}`, {
-                    field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize')
-                  })
+                  message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize') })
                 });
               }
             });
         }
       }
     },
-    [api, createAlert, getNewId, loadRuleBookTypes, reset, setError, t, updateBookTypeMode]
+    [
+      api,
+      createAlert,
+      getNewId,
+      loadRuleBookTypes,
+      reset,
+      setError,
+      t,
+      updateBookTypeMode
+    ]
   );
 
   const onClickUpdate = useCallback(
@@ -183,9 +199,7 @@ const AdminRuleBookTypes: FC = () => {
                 dom: (
                   <Alert key={newId} id={newId} timer={5}>
                     <Ap>
-                      {t(`serverErrors.${data.code}`, {
-                        field: data.sent
-                      })}
+                      {t(`serverErrors.${data.code}`, { field: data.sent })}
                     </Ap>
                   </Alert>
                 )
@@ -195,12 +209,21 @@ const AdminRuleBookTypes: FC = () => {
         }
       }
     },
-    [deleteBookTypeMode, api, getNewId, createAlert, t, loadRuleBookTypes]
+    [
+      deleteBookTypeMode,
+      api,
+      getNewId,
+      createAlert,
+      t,
+      loadRuleBookTypes
+    ]
   );
 
   const rulebookTypesDom = useMemo(
     () =>
-      ruleBookTypes.map(({ name, _id }) => (
+      ruleBookTypes.map(({
+        name, _id
+      }) => (
         <Ali key={_id} className="adminRuleBooktypes__list__elt">
           <Ap>
             {t(`ruleBookTypeNames.${name}`, { count: 1 })}
@@ -224,7 +247,12 @@ const AdminRuleBookTypes: FC = () => {
           </div>
         </Ali>
       )),
-    [ruleBookTypes, onClickUpdate, onClickDeletion, t]
+    [
+      ruleBookTypes,
+      onClickUpdate,
+      onClickDeletion,
+      t
+    ]
   );
 
   const createUpdateRuleBookTypesText = useMemo(() => {
@@ -235,7 +263,11 @@ const AdminRuleBookTypes: FC = () => {
     return createBookTypeMode
       ? t('adminRuleBooks.saveType', { ns: 'pages' })
       : t('adminRuleBooks.createType', { ns: 'pages' });
-  }, [createBookTypeMode, t, updateBookTypeMode]);
+  }, [
+    createBookTypeMode,
+    t,
+    updateBookTypeMode
+  ]);
 
   useEffect(() => {
     loadRuleBookTypes();
@@ -270,9 +302,7 @@ const AdminRuleBookTypes: FC = () => {
                   inputName="name"
                   type="text"
                   size="small"
-                  rules={{
-                    required: t('nameRuleBookType.required', { ns: 'fields' })
-                  }}
+                  rules={{ required: t('nameRuleBookType.required', { ns: 'fields' }) }}
                   label={t('nameRuleBookType.label', { ns: 'fields' })}
                 />
               </form>

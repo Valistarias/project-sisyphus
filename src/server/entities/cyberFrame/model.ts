@@ -1,6 +1,10 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
-import type { HydratedICyberFrameBranch, IRuleBook } from '../index';
+import type {
+  HydratedICyberFrameBranch, IRuleBook
+} from '../index';
 
 interface ICyberFrame {
   /** The title of the Character Param */
@@ -52,4 +56,6 @@ cyberFrameSchema.virtual('branches', {
 
 const CyberFrameModel = (): Model<ICyberFrame> => model('CyberFrame', cyberFrameSchema);
 
-export { CyberFrameModel, type HydratedICyberFrame, type ICyberFrame, type LeanICyberFrame };
+export {
+  CyberFrameModel, type HydratedICyberFrame, type ICyberFrame, type LeanICyberFrame
+};

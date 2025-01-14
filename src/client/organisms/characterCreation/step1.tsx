@@ -1,17 +1,27 @@
-import React, { useCallback, useMemo, useState, type FC, type ReactNode } from 'react';
+import React, {
+  useCallback, useMemo, useState, type FC, type ReactNode
+} from 'react';
 
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../providers';
 
-import { Ap, Atitle } from '../../atoms';
-import { Button, NodeTree } from '../../molecules';
+import {
+  Ap, Atitle
+} from '../../atoms';
+import {
+  Button, NodeTree
+} from '../../molecules';
 import { RichTextElement } from '../richTextElement';
 
-import type { ICuratedCyberFrame, ICuratedNode, ICyberFrameBranch } from '../../types';
+import type {
+  ICuratedCyberFrame, ICuratedNode, ICyberFrameBranch
+} from '../../types';
 
-import { classTrim, getCyberFrameLevelsByNodes } from '../../utils';
+import {
+  classTrim, getCyberFrameLevelsByNodes
+} from '../../utils';
 
 import './characterCreation.scss';
 
@@ -22,7 +32,9 @@ interface ICharacterCreationStep1 {
 
 const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFrame }) => {
   const { t } = useTranslation();
-  const { cyberFrames, character } = useGlobalVars();
+  const {
+    cyberFrames, character
+  } = useGlobalVars();
 
   const [openedCFrame, setOpenedCFrame] = useState<ICuratedCyberFrame | null>(null);
   const [detailsOpened, setDetailsOpened] = useState<boolean>(false);
@@ -109,7 +121,12 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
         </div>
       </div>
     );
-  }, [openedCFrame, t, chosenCyberFrame?.cyberFrame._id, onSubmitCyberFrame]);
+  }, [
+    openedCFrame,
+    t,
+    chosenCyberFrame?.cyberFrame._id,
+    onSubmitCyberFrame
+  ]);
 
   const cyberFrameList = useMemo(() => {
     const cFrameElts: ReactNode[] = [];
@@ -172,19 +189,15 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
         characterCreation-step1
         ${detailsOpened ? 'characterCreation-step1--details' : ''}
       `)}
-      initial={{
-        transform: 'skew(90deg, 0deg) scale3d(.2, .2, .2)'
-      }}
+      initial={{ transform: 'skew(90deg, 0deg) scale3d(.2, .2, .2)' }}
       animate={{
         transform: 'skew(0, 0) scale3d(1, 1, 1)',
-        transitionEnd: {
-          transform: 'none'
-        }
+        transitionEnd: { transform: 'none' }
       }}
-      exit={{
-        transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)'
+      exit={{ transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)' }}
+      transition={{
+        ease: 'easeInOut', duration: 0.2
       }}
-      transition={{ ease: 'easeInOut', duration: 0.2 }}
     >
       <div className="characterCreation-step1__details">{detailsBlock}</div>
       <Ap className="characterCreation-step1__text">

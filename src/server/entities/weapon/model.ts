@@ -1,7 +1,12 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
-import type { IDamage } from '../damage/model';
-import type { IAction, IEffect } from '../index';
+import type { HydratedIDamage } from '../damage/model';
+import type {
+  HydratedIAction,
+  HydratedIEffect
+} from '../index';
 
 interface IWeapon {
   /** The title of the weapon */
@@ -41,9 +46,9 @@ interface IWeapon {
 
 type HydratedIWeapon = HydratedDocument<
   Omit<IWeapon, 'effects' | 'actions' | 'damages'> & {
-    effects: IEffect[] | string[]
-    actions: IAction[] | string[]
-    damages: IDamage[] | string[]
+    effects: HydratedIEffect[] | string[]
+    actions: HydratedIAction[] | string[]
+    damages: HydratedIDamage[] | string[]
   }
 >;
 
@@ -103,4 +108,6 @@ const weaponSchema = new Schema<IWeapon>({
 
 const WeaponModel = (): Model<IWeapon> => model('Weapon', weaponSchema);
 
-export { WeaponModel, type HydratedIWeapon, type IWeapon };
+export {
+  WeaponModel, type HydratedIWeapon, type IWeapon
+};

@@ -1,12 +1,20 @@
-import React, { useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import { useApi, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useSystemAlerts
+} from '../../../providers';
 
-import { Aa, Ap, Atitle } from '../../../atoms';
-import { Alert, RichTextElement } from '../../../organisms';
+import {
+  Aa, Ap, Atitle
+} from '../../../atoms';
+import {
+  Alert, RichTextElement
+} from '../../../organisms';
 import { ErrorPage } from '../../index';
 
 import type { ICuratedRuleBook } from '../../../types';
@@ -17,7 +25,9 @@ const RuleBook: FC = () => {
   const { t } = useTranslation();
   const { id: ruleBookId } = useParams();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
 
   const calledApi = useRef<string | null>(null);
 
@@ -32,8 +42,12 @@ const RuleBook: FC = () => {
     }
     const { ruleBook: singleRuleBook } = ruleBook;
 
-    return singleRuleBook.chapters.map(({ _id: chapterId, title: chapterTitle, pages }) => {
-      const listPages = pages.map(({ _id: pageId, title: pageTitle }) => (
+    return singleRuleBook.chapters.map(({
+      _id: chapterId, title: chapterTitle, pages
+    }) => {
+      const listPages = pages.map(({
+        _id: pageId, title: pageTitle
+      }) => (
         <Aa key={pageId} href={`/rulebook/${ruleBookId}/${chapterId}#${pageId}`}>
           {pageTitle}
         </Aa>
@@ -79,7 +93,13 @@ const RuleBook: FC = () => {
           }
         });
     }
-  }, [api, createAlert, getNewId, ruleBookId, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    ruleBookId,
+    t
+  ]);
 
   if (loading) {
     return null;

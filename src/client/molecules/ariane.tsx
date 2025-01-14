@@ -1,6 +1,8 @@
 import React, { type FC } from 'react';
 
-import { Abutton, Ali, Aul } from '../atoms';
+import {
+  Abutton, Ali, Aul
+} from '../atoms';
 
 import type { IQuarkProps } from '../quark';
 
@@ -28,7 +30,9 @@ interface IAriane extends IQuarkProps {
   onArianeClick?: (id: string | number) => void
 }
 
-const Ariane: FC<IAriane> = ({ className, data, onArianeClick, isSteps = false }) => (
+const Ariane: FC<IAriane> = ({
+  className, data, onArianeClick, isSteps = false
+}) => (
   <Aul
     noPoints
     className={classTrim(`
@@ -37,7 +41,9 @@ const Ariane: FC<IAriane> = ({ className, data, onArianeClick, isSteps = false }
         ${onArianeClick !== undefined ? 'ariane--clickable' : ''}
       `)}
   >
-    {data.map(({ key, label, actual, disabled }, index) => (
+    {data.map(({
+      key, label, actual, disabled
+    }, index) => (
       <Ali
         key={key}
         className={classTrim(`
@@ -62,4 +68,6 @@ const Ariane: FC<IAriane> = ({ className, data, onArianeClick, isSteps = false }
   </Aul>
 );
 
-export { Ariane, type IArianeElt };
+export {
+  Ariane, type IArianeElt
+};

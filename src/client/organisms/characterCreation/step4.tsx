@@ -1,11 +1,15 @@
-import React, { useEffect, useMemo, useState, type FC } from 'react';
+import React, {
+  useEffect, useMemo, useState, type FC
+} from 'react';
 
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../providers';
 
-import { Abutton, Aicon, Ali, Ap, Atitle, Aul } from '../../atoms';
+import {
+  Abutton, Aicon, Ali, Ap, Atitle, Aul
+} from '../../atoms';
 import { Button } from '../../molecules';
 import { RichTextElement } from '../richTextElement';
 
@@ -27,7 +31,9 @@ const CharacterCreationStep4: FC<ICharacterCreationStep4> = ({
   onSubmitBackground
 }) => {
   const { t } = useTranslation();
-  const { skills, character } = useGlobalVars();
+  const {
+    skills, character
+  } = useGlobalVars();
   const [selectedBg, setSelectedBg] = useState<ICuratedBackground | null>(null);
 
   const bonuses = useMemo(() => {
@@ -69,26 +75,26 @@ const CharacterCreationStep4: FC<ICharacterCreationStep4> = ({
     } else if (backgrounds.length > 0 && selectedBg === null) {
       setSelectedBg(backgrounds[0]);
     }
-  }, [backgrounds, selectedBg, character]);
+  }, [
+    backgrounds,
+    selectedBg,
+    character
+  ]);
 
   return (
     <motion.div
       className={classTrim(`
         characterCreation-step4
       `)}
-      initial={{
-        transform: 'skew(90deg, 0deg) scale3d(.2, .2, .2)'
-      }}
+      initial={{ transform: 'skew(90deg, 0deg) scale3d(.2, .2, .2)' }}
       animate={{
         transform: 'skew(0, 0) scale3d(1, 1, 1)',
-        transitionEnd: {
-          transform: 'none'
-        }
+        transitionEnd: { transform: 'none' }
       }}
-      exit={{
-        transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)'
+      exit={{ transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)' }}
+      transition={{
+        ease: 'easeInOut', duration: 0.2
       }}
-      transition={{ ease: 'easeInOut', duration: 0.2 }}
     >
       <Ap className="characterCreation-step4__text">
         {t('characterCreation.step4.text', { ns: 'components' })}

@@ -1,16 +1,30 @@
-import React, { useCallback, useMemo, type FC } from 'react';
+import React, {
+  useCallback, useMemo, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  useLocation, useNavigate
+} from 'react-router-dom';
 
-import { useApi, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 
 import './adminNewPage.scss';
 
@@ -24,17 +38,15 @@ const AdminNewPage: FC = () => {
   const { api } = useApi();
   const { search } = useLocation();
   const navigate = useNavigate();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
 
   const params = useMemo(() => new URLSearchParams(search), [search]);
 
-  const contentEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const contentEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const contentFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const contentFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const {
     handleSubmit,
@@ -44,7 +56,9 @@ const AdminNewPage: FC = () => {
   } = useForm();
 
   const onSavePage: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr }) => {
+    ({
+      name, nameFr
+    }) => {
       if (
         contentEditor === null
         || contentFrEditor === null
@@ -63,12 +77,10 @@ const AdminNewPage: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            content: htmlFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          content: htmlFr
+        } };
       }
 
       api.pages
@@ -95,21 +107,27 @@ const AdminNewPage: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize') })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize') })
             });
           }
         });
     },
-    [contentEditor, contentFrEditor, api, params, getNewId, createAlert, t, navigate, setError]
+    [
+      contentEditor,
+      contentFrEditor,
+      api,
+      params,
+      getNewId,
+      createAlert,
+      t,
+      navigate,
+      setError
+    ]
   );
 
   return (
@@ -125,9 +143,7 @@ const AdminNewPage: FC = () => {
           <Input
             control={control}
             inputName="name"
-            rules={{
-              required: t('namePage.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('namePage.required', { ns: 'fields' }) }}
             type="text"
             label={t('namePage.label', { ns: 'fields' })}
             className="adminNewPage__basics__name"

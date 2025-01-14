@@ -1,8 +1,13 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemInvalidField, gemNotFound, gemServerError
+} from '../../utils/globalErrorMessage';
 
+import type { InternationalizationType } from '../../utils/types';
 import type { IActionType } from '../index';
 import type { HydratedIEffect } from './model';
 
@@ -14,14 +19,14 @@ const findEffects = async (): Promise<HydratedIEffect[]> =>
   await new Promise((resolve, reject) => {
     Effect.find()
       .populate<{ type: IActionType }>('type')
-      .then(async (res?: HydratedIEffect[] | null) => {
+      .then((res?: HydratedIEffect[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Effects'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -30,18 +35,18 @@ const findEffectById = async (id: string): Promise<HydratedIEffect> =>
   await new Promise((resolve, reject) => {
     Effect.findById(id)
       .populate<{ type: IActionType }>('type')
-      .then(async (res?: HydratedIEffect | null) => {
+      .then((res?: HydratedIEffect | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Effect'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
-interface ISentEffect {
+export interface ISentEffect {
   id?: string
   title: string
   summary: string
@@ -63,7 +68,9 @@ const updateEffects = (
 
     return;
   }
-  const { id, title, summary, type, i18n = null, formula } = elts[0];
+  const {
+    id, title, summary, type, i18n = null, formula
+  } = elts[0];
   if (id === undefined) {
     const effect = new Effect({
       title,
@@ -103,13 +110,11 @@ const updateEffects = (
         }
 
         if (i18n !== null) {
-          const newIntl = {
-            ...(effect.i18n !== null && effect.i18n !== undefined && effect.i18n !== ''
-              ? JSON.parse(effect.i18n)
-              : {})
-          };
+          const newIntl: InternationalizationType = { ...(effect.i18n !== null && effect.i18n !== undefined && effect.i18n !== ''
+            ? JSON.parse(effect.i18n)
+            : {}) };
 
-          Object.keys(i18n as Record<string, any>).forEach((lang) => {
+          Object.keys(i18n).forEach((lang) => {
             newIntl[lang] = i18n[lang];
           });
 
@@ -141,9 +146,7 @@ const smartUpdateEffects = async ({
   effectsToUpdate: ISentEffect[]
 }): Promise<string[]> =>
   await new Promise((resolve, reject) => {
-    Effect.deleteMany({
-      _id: { $in: effectsToRemove }
-    })
+    Effect.deleteMany({ _id: { $in: effectsToRemove } })
       .then(() => {
         updateEffects(effectsToUpdate, [], (err: unknown | null, ids?: string[]) => {
           if (err !== null) {
@@ -159,7 +162,9 @@ const smartUpdateEffects = async ({
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, summary, type, i18n = null, formula } = req.body;
+  const {
+    title, summary, type, i18n = null, formula
+  } = req.body;
   if (title === undefined || summary === undefined || type === undefined) {
     res.status(400).send(gemInvalidField('Effect'));
 
@@ -188,7 +193,9 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, title = null, summary = null, i18n, formula = null, type = null } = req.body;
+  const {
+    id, title = null, summary = null, i18n, formula = null, type = null
+  } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Effect ID'));
 
@@ -210,13 +217,11 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl = {
-          ...(effect.i18n !== null && effect.i18n !== undefined && effect.i18n !== ''
-            ? JSON.parse(effect.i18n)
-            : {})
-        };
+        const newIntl: InternationalizationType = { ...(effect.i18n !== null && effect.i18n !== undefined && effect.i18n !== ''
+          ? JSON.parse(effect.i18n)
+          : {}) };
 
-        Object.keys(i18n as Record<string, any>).forEach((lang) => {
+        Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
         });
 
@@ -226,7 +231,9 @@ const update = (req: Request, res: Response): void => {
       effect
         .save()
         .then(() => {
-          res.send({ message: 'Effect was updated successfully!', effect });
+          res.send({
+            message: 'Effect was updated successfully!', effect
+          });
         })
         .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
@@ -237,7 +244,7 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteEffectById = async (id: string): Promise<boolean> =>
+const deleteEffectById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Effect ID'));
@@ -254,8 +261,8 @@ const deleteEffectById = async (id: string): Promise<boolean> =>
   });
 
 const deleteEffect = (req: Request, res: Response): void => {
-  const { id } = req.body;
-  deleteEffectById(id as string)
+  const { id }: { id: string } = req.body;
+  deleteEffectById(id)
     .then(() => {
       res.send({ message: 'Effect was deleted successfully!' });
     })
@@ -265,7 +272,7 @@ const deleteEffect = (req: Request, res: Response): void => {
 };
 
 export interface CuratedIEffect {
-  i18n: Record<string, unknown>
+  i18n?: InternationalizationType
   effect: HydratedIEffect
 }
 
@@ -306,4 +313,6 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteEffect, findAll, findEffectById, findSingle, smartUpdateEffects, update };
+export {
+  create, deleteEffect, findAll, findEffectById, findSingle, smartUpdateEffects, update
+};

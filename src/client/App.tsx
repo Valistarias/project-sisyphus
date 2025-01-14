@@ -1,8 +1,14 @@
 import type React from 'react';
-import { useMemo, useState, type FC } from 'react';
+import {
+  useMemo, useState, type FC
+} from 'react';
 
-import { AnimatePresence, motion } from 'framer-motion';
-import { RouterProvider, createBrowserRouter, useLocation, useOutlet } from 'react-router-dom';
+import {
+  AnimatePresence, motion
+} from 'framer-motion';
+import {
+  RouterProvider, createBrowserRouter, useLocation, useOutlet
+} from 'react-router-dom';
 
 import { useGlobalVars } from './providers';
 
@@ -146,7 +152,9 @@ const RootContainer: FC = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ ease: 'ease', duration: 0.3 }}
+          transition={{
+            ease: 'ease', duration: 0.3
+          }}
 
           // className="app__content"
           // key={location.pathname}

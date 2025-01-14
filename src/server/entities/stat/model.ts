@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model
+} from 'mongoose';
 
 interface IStat {
   /** The title of the stat */
@@ -31,4 +33,6 @@ const statSchema = new Schema<IStat>({
 
 const StatModel = (): Model<IStat> => model('Stat', statSchema);
 
-export { StatModel, type HydratedIStat, type IStat };
+export {
+  StatModel, type HydratedIStat, type IStat
+};

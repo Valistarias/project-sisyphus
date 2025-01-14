@@ -1,7 +1,11 @@
 import React from 'react';
-import type { FC, MouseEvent, ReactNode } from 'react';
+import type {
+  FC, MouseEvent, ReactNode
+} from 'react';
 
-import { Quark, type IQuarkProps } from '../quark';
+import {
+  Quark, type IQuarkProps
+} from '../quark';
 
 import { classTrim } from '../utils';
 
@@ -47,4 +51,6 @@ const Abutton: FC<IAButton> = ({
   </Quark>
 );
 
-export { Abutton, type IAButton };
+export {
+  Abutton, type IAButton
+};

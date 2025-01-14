@@ -1,7 +1,11 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemInvalidField, gemNotFound, gemServerError
+} from '../../utils/globalErrorMessage';
 
 import type { HydratedIRarity } from './model';
 
@@ -12,17 +16,15 @@ const { Rarity } = db;
 const findRarities = async (): Promise<HydratedIRarity[]> =>
   await new Promise((resolve, reject) => {
     Rarity.find()
-      .sort({
-        position: 'asc'
-      })
-      .then(async (res?: HydratedIRarity[] | null) => {
+      .sort({ position: 'asc' })
+      .then((res?: HydratedIRarity[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Rarities'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -30,20 +32,22 @@ const findRarities = async (): Promise<HydratedIRarity[]> =>
 const findRarityById = async (id: string): Promise<HydratedIRarity> =>
   await new Promise((resolve, reject) => {
     Rarity.findById(id)
-      .then(async (res?: HydratedIRarity | null) => {
+      .then((res?: HydratedIRarity | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Rarity'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, summary, i18n = null } = req.body;
+  const {
+    title, summary, i18n = null
+  } = req.body;
   if (title === undefined || summary === undefined) {
     res.status(400).send(gemInvalidField('Item Modifier'));
 
@@ -75,7 +79,9 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, title = null, summary = null, i18n } = req.body;
+  const {
+    id, title = null, summary = null, i18n
+  } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Item Modifier ID'));
 
@@ -91,13 +97,11 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl = {
-          ...(rarity.i18n !== null && rarity.i18n !== undefined && rarity.i18n !== ''
-            ? JSON.parse(rarity.i18n)
-            : {})
-        };
+        const newIntl: InternationalizationType = { ...(rarity.i18n !== null && rarity.i18n !== undefined && rarity.i18n !== ''
+          ? JSON.parse(rarity.i18n)
+          : {}) };
 
-        Object.keys(i18n as Record<string, any>).forEach((lang) => {
+        Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
         });
 
@@ -107,7 +111,9 @@ const update = (req: Request, res: Response): void => {
       rarity
         .save()
         .then(() => {
-          res.send({ message: 'Item Modifier was updated successfully!', rarity });
+          res.send({
+            message: 'Item Modifier was updated successfully!', rarity
+          });
         })
         .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
@@ -149,7 +155,7 @@ const changeRaritiesOrder = (req: Request, res: Response): void => {
   });
 };
 
-const deleteRarityById = async (id: string): Promise<boolean> =>
+const deleteRarityById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Item Modifier ID'));
@@ -166,8 +172,8 @@ const deleteRarityById = async (id: string): Promise<boolean> =>
   });
 
 const deleteRarity = (req: Request, res: Response): void => {
-  const { id } = req.body;
-  deleteRarityById(id as string)
+  const { id }: { id: string } = req.body;
+  deleteRarityById(id)
     .then(() => {
       res.send({ message: 'Item Modifier was deleted successfully!' });
     })
@@ -177,7 +183,7 @@ const deleteRarity = (req: Request, res: Response): void => {
 };
 
 interface CuratedIRarity {
-  i18n: Record<string, unknown>
+  i18n?: InternationalizationType
   rarity: HydratedIRarity
 }
 
@@ -218,4 +224,6 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { changeRaritiesOrder, create, deleteRarity, findAll, findRarityById, findSingle, update };
+export {
+  changeRaritiesOrder, create, deleteRarity, findAll, findRarityById, findSingle, update
+};

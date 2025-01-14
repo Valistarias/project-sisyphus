@@ -1,16 +1,30 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useNavigate, useParams
+} from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 
 import type { ICuratedArmorType } from '../../../types';
 
@@ -26,7 +40,9 @@ interface FormValues {
 const AdminEditArmorType: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const { reloadArmorTypes } = useGlobalVars();
   const confMessageEvt = useConfirmMessage();
   const { id } = useParams();
@@ -43,19 +59,17 @@ const AdminEditArmorType: FC = () => {
   const [armorTypeText, setArmorTypeText] = useState('');
   const [armorTypeTextFr, setArmorTypeTextFr] = useState('');
 
-  const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const createDefaultData = useCallback((armorTypeData: ICuratedArmorType | null) => {
     if (armorTypeData == null) {
       return {};
     }
-    const { armorType, i18n } = armorTypeData;
+    const {
+      armorType, i18n
+    } = armorTypeData;
     const defaultData: Partial<FormValues> = {};
     defaultData.name = armorType.title;
     if (i18n.fr !== undefined) {
@@ -71,15 +85,15 @@ const AdminEditArmorType: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({
-    defaultValues: useMemo(
-      () => createDefaultData(armorTypeData),
-      [createDefaultData, armorTypeData]
-    )
-  });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(armorTypeData),
+    [createDefaultData, armorTypeData]
+  ) });
 
   const onSaveArmorType: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr }) => {
+    ({
+      name, nameFr
+    }) => {
       if (
         armorTypeText === null
         || armorTypeTextFr === null
@@ -100,12 +114,10 @@ const AdminEditArmorType: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            text: htmlTextFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          text: htmlTextFr
+        } };
       }
 
       api.armorTypes
@@ -132,16 +144,12 @@ const AdminEditArmorType: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id'
-              })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
             });
           }
         });
@@ -197,16 +205,12 @@ const AdminEditArmorType: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.armorType.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.armorType.name`), 'capitalize') })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.armorType.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.armorType.name`), 'capitalize') })
                   });
                 }
               });
@@ -216,7 +220,18 @@ const AdminEditArmorType: FC = () => {
         confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [api, confMessageEvt, t, armorTypeData?.armorType.title, id, getNewId, createAlert, reloadArmorTypes, navigate, setError]);
+  }, [
+    api,
+    confMessageEvt,
+    t,
+    armorTypeData?.armorType.title,
+    id,
+    getNewId,
+    createAlert,
+    reloadArmorTypes,
+    navigate,
+    setError
+  ]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
@@ -224,7 +239,9 @@ const AdminEditArmorType: FC = () => {
       api.armorTypes
         .get({ armorTypeId: id })
         .then((curatedArmorType: ICuratedArmorType) => {
-          const { armorType, i18n } = curatedArmorType;
+          const {
+            armorType, i18n
+          } = curatedArmorType;
           setArmorTypeData(curatedArmorType);
           setArmorTypeText(armorType.summary);
           if (i18n.fr !== undefined) {
@@ -243,7 +260,13 @@ const AdminEditArmorType: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, id, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    id,
+    t
+  ]);
 
   // The Autosave
   useEffect(() => {
@@ -265,7 +288,11 @@ const AdminEditArmorType: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(armorTypeData));
-  }, [armorTypeData, reset, createDefaultData]);
+  }, [
+    armorTypeData,
+    reset,
+    createDefaultData
+  ]);
 
   return (
     <div

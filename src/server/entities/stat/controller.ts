@@ -1,4 +1,6 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 
 import db from '../../models';
 import {
@@ -11,6 +13,7 @@ import { checkDuplicateCharParamFormulaId } from '../charParam/controller';
 import { checkDuplicateSkillFormulaId } from '../skill/controller';
 
 import type { HydratedIStat } from './model';
+import type { InternationalizationType } from '../../utils/types';
 
 import { curateI18n } from '../../utils';
 
@@ -19,14 +22,14 @@ const { Stat } = db;
 const findStats = async (): Promise<HydratedIStat[]> =>
   await new Promise((resolve, reject) => {
     Stat.find()
-      .then(async (res?: HydratedIStat[] | null) => {
+      .then((res?: HydratedIStat[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Stats'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -34,14 +37,14 @@ const findStats = async (): Promise<HydratedIStat[]> =>
 const findStatById = async (id: string): Promise<HydratedIStat> =>
   await new Promise((resolve, reject) => {
     Stat.findById(id)
-      .then(async (res?: HydratedIStat | null) => {
+      .then((res?: HydratedIStat | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Stat'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -52,14 +55,14 @@ const checkDuplicateStatFormulaId = async (
 ): Promise<string | boolean> =>
   await new Promise((resolve, reject) => {
     Stat.find({ formulaId })
-      .then(async (res) => {
+      .then((res) => {
         if (res.length === 0 || (alreadyExistOnce && res.length === 1)) {
           resolve(false);
         } else {
           resolve(res[0].title);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -103,7 +106,9 @@ const checkDuplicateFormulaId = async (
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, summary, short, i18n = null, formulaId } = req.body;
+  const {
+    title, summary, short, i18n = null, formulaId
+  } = req.body;
   if (
     title === undefined
     || summary === undefined
@@ -147,7 +152,9 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, title = null, summary = null, i18n, short = null, formulaId = null } = req.body;
+  const {
+    id, title = null, summary = null, i18n, short = null, formulaId = null
+  } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Stat ID'));
 
@@ -173,13 +180,11 @@ const update = (req: Request, res: Response): void => {
             }
 
             if (i18n !== null) {
-              const newIntl = {
-                ...(stat.i18n !== null && stat.i18n !== undefined && stat.i18n !== ''
-                  ? JSON.parse(stat.i18n)
-                  : {})
-              };
+              const newIntl: InternationalizationType = { ...(stat.i18n !== null && stat.i18n !== undefined && stat.i18n !== ''
+                ? JSON.parse(stat.i18n)
+                : {}) };
 
-              Object.keys(i18n as Record<string, any>).forEach((lang) => {
+              Object.keys(i18n).forEach((lang) => {
                 newIntl[lang] = i18n[lang];
               });
 
@@ -189,7 +194,9 @@ const update = (req: Request, res: Response): void => {
             stat
               .save()
               .then(() => {
-                res.send({ message: 'Stat was updated successfully!', stat });
+                res.send({
+                  message: 'Stat was updated successfully!', stat
+                });
               })
               .catch((err: unknown) => {
                 res.status(500).send(gemServerError(err));
@@ -207,7 +214,7 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteStatById = async (id: string): Promise<boolean> =>
+const deleteStatById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Stat ID'));
@@ -224,8 +231,8 @@ const deleteStatById = async (id: string): Promise<boolean> =>
   });
 
 const deleteStat = (req: Request, res: Response): void => {
-  const { id } = req.body;
-  deleteStatById(id as string)
+  const { id }: { id: string } = req.body;
+  deleteStatById(id)
     .then(() => {
       res.send({ message: 'Stat was deleted successfully!' });
     })
@@ -235,7 +242,7 @@ const deleteStat = (req: Request, res: Response): void => {
 };
 
 interface CuratedIStat {
-  i18n: Record<string, unknown>
+  i18n?: InternationalizationType
   stat: HydratedIStat
 }
 

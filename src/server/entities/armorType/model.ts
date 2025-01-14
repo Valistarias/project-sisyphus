@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model
+} from 'mongoose';
 
 interface IArmorType {
   /** The title of the armor type */
@@ -25,4 +27,6 @@ const armorTypeSchema = new Schema<IArmorType>({
 
 const ArmorTypeModel = (): Model<IArmorType> => model('ArmorType', armorTypeSchema);
 
-export { ArmorTypeModel, type HydratedIArmorType, type IArmorType };
+export {
+  ArmorTypeModel, type HydratedIArmorType, type IArmorType
+};

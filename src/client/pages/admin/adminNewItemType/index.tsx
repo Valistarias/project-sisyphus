@@ -1,14 +1,24 @@
-import React, { useCallback, useEffect, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useRef, useState, type FC
+} from 'react';
 
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input } from '../../../molecules';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input
+} from '../../../molecules';
 import { Alert } from '../../../organisms';
 
 import './adminNewItemType.scss';
@@ -21,7 +31,9 @@ const AdminNewItemType: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const navigate = useNavigate();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const { reloadItemTypes } = useGlobalVars();
 
   const [, setLoading] = useState(true);
@@ -41,9 +53,7 @@ const AdminNewItemType: FC = () => {
       }
 
       api.itemTypes
-        .create({
-          name
-        })
+        .create({ name })
         .then((itemType) => {
           const newId = getNewId();
           createAlert({
@@ -61,13 +71,19 @@ const AdminNewItemType: FC = () => {
           const { data } = response;
           setError('root.serverError', {
             type: 'server',
-            message: t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
-            })
+            message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
           });
         });
     },
-    [api, getNewId, createAlert, t, reloadItemTypes, navigate, setError]
+    [
+      api,
+      getNewId,
+      createAlert,
+      t,
+      reloadItemTypes,
+      navigate,
+      setError
+    ]
   );
 
   useEffect(() => {
@@ -75,7 +91,12 @@ const AdminNewItemType: FC = () => {
       setLoading(true);
       calledApi.current = true;
     }
-  }, [api, createAlert, getNewId, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    t
+  ]);
 
   return (
     <div className="adminNewItemType">

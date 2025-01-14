@@ -1,12 +1,18 @@
-import React, { useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../providers';
 
-import { Ali, Ap, Atitle, Aul } from '../atoms';
+import {
+  Ali, Ap, Atitle, Aul
+} from '../atoms';
 import { PropDisplay } from '../molecules';
-import { Quark, type IQuarkProps } from '../quark';
+import {
+  Quark, type IQuarkProps
+} from '../quark';
 
 import type {
   ICharParamBonus,
@@ -45,9 +51,13 @@ interface ICuratedCompleteArmor extends Omit<ICuratedArmor, 'armor'> {
   armor: ICompleteArmor
 }
 
-const ArmorDisplay: FC<IArmorDisplay> = ({ armor, mode = 'basic' }) => {
+const ArmorDisplay: FC<IArmorDisplay> = ({
+  armor, mode = 'basic'
+}) => {
   const { t } = useTranslation();
-  const { armorTypes, itemModifiers, rarities, charParams } = useGlobalVars();
+  const {
+    armorTypes, itemModifiers, rarities, charParams
+  } = useGlobalVars();
 
   const [placement, setPlacement] = useState<string>('left');
   const domBlockContent = useRef<HTMLDivElement>(null);
@@ -56,7 +66,9 @@ const ArmorDisplay: FC<IArmorDisplay> = ({ armor, mode = 'basic' }) => {
     if (armorTypes.length === 0 || armor === undefined) {
       return null;
     }
-    const { armor: armorObj, i18n } = armor;
+    const {
+      armor: armorObj, i18n
+    } = armor;
 
     return {
       armor: {
@@ -79,7 +91,13 @@ const ArmorDisplay: FC<IArmorDisplay> = ({ armor, mode = 'basic' }) => {
       },
       i18n
     };
-  }, [armorTypes, armor, rarities, itemModifiers, charParams]);
+  }, [
+    armorTypes,
+    armor,
+    rarities,
+    itemModifiers,
+    charParams
+  ]);
 
   const handleMouseEnter = (): void => {
     if (mode === 'hover') {

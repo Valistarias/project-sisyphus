@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model
+} from 'mongoose';
 
 interface IProgramScope {
   /** The title of the program scope */
@@ -28,4 +30,6 @@ const programScope = new Schema<IProgramScope>({
 
 const ProgramScopeModel = (): Model<IProgramScope> => model('ProgramScope', programScope);
 
-export { ProgramScopeModel, type HydratedIProgramScope, type IProgramScope };
+export {
+  ProgramScopeModel, type HydratedIProgramScope, type IProgramScope
+};

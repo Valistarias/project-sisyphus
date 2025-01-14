@@ -1,4 +1,6 @@
-import React, { useEffect, type FC } from 'react';
+import React, {
+  useEffect, type FC
+} from 'react';
 
 import Heading, { type Level } from '@tiptap/extension-heading';
 import Paragraph from '@tiptap/extension-paragraph';
@@ -6,7 +8,9 @@ import Table from '@tiptap/extension-table';
 import TableCell from '@tiptap/extension-table-cell';
 import TableHeader from '@tiptap/extension-table-header';
 import TableRow from '@tiptap/extension-table-row';
-import { EditorContent, mergeAttributes, useEditor, type Editor } from '@tiptap/react';
+import {
+  EditorContent, mergeAttributes, useEditor, type Editor
+} from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 
 import { Alabel } from '../../atoms';
@@ -28,66 +32,32 @@ const basicRichTextElementExtentions = [
     code: false,
 
     // Configure an included extension
-    bold: {
-      HTMLAttributes: {
-        class: 'richTextElt--bold'
-      }
-    },
-    italic: {
-      HTMLAttributes: {
-        class: 'richTextElt--italic'
-      }
-    },
-    bulletList: {
-      HTMLAttributes: {
-        class: 'aul'
-      }
-    },
-    listItem: {
-      HTMLAttributes: {
-        class: 'ali'
-      }
-    }
+    bold: { HTMLAttributes: { class: 'richTextElt--bold' } },
+    italic: { HTMLAttributes: { class: 'richTextElt--italic' } },
+    bulletList: { HTMLAttributes: { class: 'aul' } },
+    listItem: { HTMLAttributes: { class: 'ali' } }
   }),
-  Paragraph.configure({
-    HTMLAttributes: {
-      class: 'ap'
-    }
-  }),
-  Table.configure({
-    HTMLAttributes: {
-      class: 'atable'
-    }
-  }),
-  TableRow.configure({
-    HTMLAttributes: {
-      class: 'atr'
-    }
-  }),
-  TableHeader.configure({
-    HTMLAttributes: {
-      class: 'ath'
-    }
-  }),
-  TableCell.configure({
-    HTMLAttributes: {
-      class: 'atd'
-    }
-  }),
-  Heading.configure({ levels: [1, 2, 3] }).extend({
-    renderHTML({ node, HTMLAttributes }) {
-      const hasLevel = this.options.levels.includes(node.attrs.level as Level);
-      const level = hasLevel ? node.attrs.level : this.options.levels[0];
+  Paragraph.configure({ HTMLAttributes: { class: 'ap' } }),
+  Table.configure({ HTMLAttributes: { class: 'atable' } }),
+  TableRow.configure({ HTMLAttributes: { class: 'atr' } }),
+  TableHeader.configure({ HTMLAttributes: { class: 'ath' } }),
+  TableCell.configure({ HTMLAttributes: { class: 'atd' } }),
+  Heading.configure({ levels: [
+    1,
+    2,
+    3
+  ] }).extend({ renderHTML({
+    node, HTMLAttributes
+  }) {
+    const hasLevel = this.options.levels.includes(node.attrs.level as Level);
+    const level = hasLevel ? node.attrs.level : this.options.levels[0];
 
-      return [
-        `h${level}`,
-        mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
-          class: `atitle atitle--h${level}`
-        }),
-        0
-      ];
-    }
-  }),
+    return [
+      `h${level}`,
+      mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, { class: `atitle atitle--h${level}` }),
+      0
+    ];
+  } }),
   ReactHighlight
 ];
 
@@ -140,7 +110,11 @@ const RichTextElement: FC<IRichTextElement> = ({
         editor.commands.setContent(rawStringContent);
       }
     });
-  }, [editor, basicEditor, rawStringContent]);
+  }, [
+    editor,
+    basicEditor,
+    rawStringContent
+  ]);
 
   return (
     <div
@@ -174,4 +148,6 @@ const RichTextElement: FC<IRichTextElement> = ({
   );
 };
 
-export { basicRichTextElementExtentions, completeRichTextElementExtentions, RichTextElement };
+export {
+  basicRichTextElementExtentions, completeRichTextElementExtentions, RichTextElement
+};

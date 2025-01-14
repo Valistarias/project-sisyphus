@@ -1,16 +1,28 @@
-import React, { useCallback, useEffect, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 
 import './adminNewTipText.scss';
 
@@ -24,19 +36,17 @@ const AdminNewTipText: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const navigate = useNavigate();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const { reloadTipTexts } = useGlobalVars();
 
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
 
-  const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const {
     handleSubmit,
@@ -46,7 +56,9 @@ const AdminNewTipText: FC = () => {
   } = useForm();
 
   const onSaveTipText: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, tipId }) => {
+    ({
+      name, nameFr, tipId
+    }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -59,12 +71,10 @@ const AdminNewTipText: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            summary: htmlFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          summary: htmlFr
+        } };
       }
 
       api.tipTexts
@@ -92,21 +102,27 @@ const AdminNewTipText: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id'
-              })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
             });
           }
         });
     },
-    [introEditor, introFrEditor, api, getNewId, createAlert, t, reloadTipTexts, navigate, setError]
+    [
+      introEditor,
+      introFrEditor,
+      api,
+      getNewId,
+      createAlert,
+      t,
+      reloadTipTexts,
+      navigate,
+      setError
+    ]
   );
 
   useEffect(() => {
@@ -114,7 +130,12 @@ const AdminNewTipText: FC = () => {
       setLoading(true);
       calledApi.current = true;
     }
-  }, [api, createAlert, getNewId, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    t
+  ]);
 
   return (
     <div className="adminNewTipText">
@@ -130,9 +151,7 @@ const AdminNewTipText: FC = () => {
             control={control}
             inputName="name"
             type="text"
-            rules={{
-              required: t('nameTipText.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('nameTipText.required', { ns: 'fields' }) }}
             label={t('nameTipText.label', { ns: 'fields' })}
             className="adminNewTipText__basics__name"
           />
@@ -149,9 +168,7 @@ const AdminNewTipText: FC = () => {
             control={control}
             inputName="tipId"
             type="text"
-            rules={{
-              required: t('tipTextFormula.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('tipTextFormula.required', { ns: 'fields' }) }}
             label={t('tipTextFormula.label', { ns: 'fields' })}
           />
         </div>

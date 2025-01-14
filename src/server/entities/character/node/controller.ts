@@ -9,12 +9,12 @@ const replaceCyberFrameNodeByCharacter = async (req: {
   nodeIds: string[]
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    const { characterId, nodeIds } = req;
-    CharacterNode.find({
-      character: characterId
-    })
+    const {
+      characterId, nodeIds
+    } = req;
+    CharacterNode.find({ character: characterId })
       .populate<{ node: INode }>('node')
-      .then(async (res) => {
+      .then((res) => {
         const idToDel: string[] = [];
         res.forEach((charNode) => {
           if (charNode.node.cyberFrameBranch !== undefined) {
@@ -42,7 +42,7 @@ const replaceCyberFrameNodeByCharacter = async (req: {
             reject(err);
           });
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -52,7 +52,9 @@ const createNodesByCharacter = async (req: {
   nodeIds: string[]
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    const { characterId, nodeIds } = req;
+    const {
+      characterId, nodeIds
+    } = req;
     CharacterNode.create(
       nodeIds.map(nodeId => ({
         character: characterId,
@@ -74,7 +76,9 @@ const updateNodeByCharacter = async (req: {
   used: number
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    const { characterId, nodeId, used } = req;
+    const {
+      characterId, nodeId, used
+    } = req;
     CharacterNode.findOneAndUpdate(
       {
         character: characterId,
@@ -95,7 +99,9 @@ const deleteSpecificNodesByCharacter = async (req: {
   nodeIds: string[]
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    const { characterId, nodeIds } = req;
+    const {
+      characterId, nodeIds
+    } = req;
     CharacterNode.deleteMany({
       character: characterId,
       node: { $in: nodeIds }
@@ -110,9 +116,7 @@ const deleteSpecificNodesByCharacter = async (req: {
 
 const deleteNodesByCharacter = async (characterId: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    CharacterNode.deleteMany({
-      character: characterId
-    })
+    CharacterNode.deleteMany({ character: characterId })
       .then(() => {
         resolve(true);
       })

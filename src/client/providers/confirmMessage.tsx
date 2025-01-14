@@ -8,11 +8,17 @@ import React, {
   type ReactNode
 } from 'react';
 
-import { useForm, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { Ap, Atitle } from '../atoms';
-import { Button, Input } from '../molecules';
+import {
+  Ap, Atitle
+} from '../atoms';
+import {
+  Button, Input
+} from '../molecules';
 import CustomEventEmitter from '../utils/eventEmitter';
 
 import { classTrim } from '../utils';
@@ -115,7 +121,9 @@ export const ConfirmMessageProvider: FC<ConfirmMessageProviderProps> = ({ childr
     setIdEvt(String(eventId));
   }, []);
 
-  const { handleSubmit, control } = useForm<FormValues>();
+  const {
+    handleSubmit, control
+  } = useForm<FormValues>();
 
   const providerValues = useMemo<IConfirmMessageContext>(
     () => ({
@@ -156,11 +164,17 @@ export const ConfirmMessageProvider: FC<ConfirmMessageProviderProps> = ({ childr
                   inputName="confirm"
                   type="text"
                   rules={{
-                    required: t('confirm.required', { ns: 'fields', word: confirmWord }),
+                    required: t('confirm.required', {
+                      ns: 'fields', word: confirmWord
+                    }),
                     validate: (value: string) =>
-                      value === confirmWord || t('confirm.word', { ns: 'fields', word: confirmWord })
+                      value === confirmWord || t('confirm.word', {
+                        ns: 'fields', word: confirmWord
+                      })
                   }}
-                  label={t('confirm.label', { ns: 'fields', word: confirmWord })}
+                  label={t('confirm.label', {
+                    ns: 'fields', word: confirmWord
+                  })}
                   className="confirm-message__window__elt"
                 />
               )

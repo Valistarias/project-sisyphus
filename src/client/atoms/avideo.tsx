@@ -1,8 +1,12 @@
 import type React from 'react';
-import { useMemo, type FC } from 'react';
+import {
+  useMemo, type FC
+} from 'react';
 
 import LogoVideo from '../assets/videos/logo.webm';
-import { Quark, type IQuarkProps } from '../quark';
+import {
+  Quark, type IQuarkProps
+} from '../quark';
 
 import { classTrim } from '../utils';
 
@@ -17,7 +21,9 @@ interface IAvideo extends IQuarkProps {
   onClick?: (e: React.MouseEvent<HTMLElement>) => void
 }
 
-const Avideo: FC<IAvideo> = ({ video, className, onClick }) => {
+const Avideo: FC<IAvideo> = ({
+  video, className, onClick
+}) => {
   const classes = useMemo<string>(
     () =>
       classTrim(`
@@ -49,4 +55,6 @@ const Avideo: FC<IAvideo> = ({ video, className, onClick }) => {
   return icoDom;
 };
 
-export { Avideo, type IAvideo, type typeVideos };
+export {
+  Avideo, type IAvideo, type typeVideos
+};

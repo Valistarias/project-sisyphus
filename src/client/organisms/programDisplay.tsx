@@ -1,15 +1,25 @@
-import { useMemo, useRef, useState, type FC } from 'react';
+import {
+  useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../providers';
 
-import { Ali, Ap, Atitle, Aul } from '../atoms';
+import {
+  Ali, Ap, Atitle, Aul
+} from '../atoms';
 import { PropDisplay } from '../molecules';
-import { Quark, type IQuarkProps } from '../quark';
+import {
+  Quark, type IQuarkProps
+} from '../quark';
 
-import type { ICuratedProgram, ICuratedProgramScope, ICuratedRarity } from '../types';
-import type { ICuratedDamageType, IDamage, IProgram } from '../types/items';
+import type {
+  ICuratedProgram, ICuratedProgramScope, ICuratedRarity
+} from '../types';
+import type {
+  ICuratedDamageType, IDamage, IProgram
+} from '../types/items';
 
 import { classTrim } from '../utils';
 
@@ -36,9 +46,13 @@ interface ICuratedCompleteProgram extends Omit<ICuratedProgram, 'program'> {
   program: ICompleteProgram
 }
 
-const ProgramDisplay: FC<IProgramDisplay> = ({ program, mode = 'basic' }) => {
+const ProgramDisplay: FC<IProgramDisplay> = ({
+  program, mode = 'basic'
+}) => {
   const { t } = useTranslation();
-  const { programScopes, rarities, damageTypes } = useGlobalVars();
+  const {
+    programScopes, rarities, damageTypes
+  } = useGlobalVars();
 
   const [placement, setPlacement] = useState<string>('left');
   const domBlockContent = useRef<HTMLDivElement>(null);
@@ -47,7 +61,9 @@ const ProgramDisplay: FC<IProgramDisplay> = ({ program, mode = 'basic' }) => {
     if (programScopes.length === 0 || program === undefined) {
       return null;
     }
-    const { program: programObj, i18n } = program;
+    const {
+      program: programObj, i18n
+    } = program;
 
     return {
       program: {
@@ -66,7 +82,12 @@ const ProgramDisplay: FC<IProgramDisplay> = ({ program, mode = 'basic' }) => {
       },
       i18n
     };
-  }, [programScopes, program, rarities, damageTypes]);
+  }, [
+    programScopes,
+    program,
+    rarities,
+    damageTypes
+  ]);
 
   const handleMouseEnter = (): void => {
     if (mode === 'hover') {

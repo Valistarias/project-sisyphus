@@ -28,7 +28,9 @@ const createProgramsByBody = async (req: {
   programIds: string[]
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    const { bodyId, programIds } = req;
+    const {
+      bodyId, programIds
+    } = req;
     BodyProgram.create(
       programIds.map(programId => ({
         body: bodyId,
@@ -50,7 +52,9 @@ const updateProgramByBody = async (req: {
   bag?: string
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    const { bodyId, programId, uses = null, bag = null } = req;
+    const {
+      bodyId, programId, uses = null, bag = null
+    } = req;
     const updateObj: {
       uses?: number
       bag?: string
@@ -78,9 +82,7 @@ const updateProgramByBody = async (req: {
 
 const deleteProgramsByBody = async (bodyId: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    BodyProgram.deleteMany({
-      body: bodyId
-    })
+    BodyProgram.deleteMany({ body: bodyId })
       .then(() => {
         resolve(true);
       })
@@ -89,4 +91,6 @@ const deleteProgramsByBody = async (bodyId: string): Promise<boolean> =>
       });
   });
 
-export { createProgramsByBody, deleteProgramsByBody, replaceProgramByBody, updateProgramByBody };
+export {
+  createProgramsByBody, deleteProgramsByBody, replaceProgramByBody, updateProgramByBody
+};

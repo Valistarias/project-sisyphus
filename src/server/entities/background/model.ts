@@ -1,6 +1,10 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
-import type { ICharParamBonus, ISkillBonus, IStatBonus } from '../index';
+import type {
+  ICharParamBonus, ISkillBonus, IStatBonus
+} from '../index';
 
 interface IBackground {
   /** The title of the Background */
@@ -57,4 +61,6 @@ const backgroundSchema = new Schema<IBackground>({
 
 const BackgroundModel = (): Model<IBackground> => model('Background', backgroundSchema);
 
-export { BackgroundModel, type HydratedIBackground, type IBackground };
+export {
+  BackgroundModel, type HydratedIBackground, type IBackground
+};

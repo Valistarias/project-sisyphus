@@ -1,16 +1,30 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useNavigate, useParams
+} from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 
 import type { ICuratedDamageType } from '../../../types';
 
@@ -26,7 +40,9 @@ interface FormValues {
 const AdminEditDamageType: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const { reloadDamageTypes } = useGlobalVars();
   const confMessageEvt = useConfirmMessage();
   const { id } = useParams();
@@ -43,19 +59,17 @@ const AdminEditDamageType: FC = () => {
   const [damageTypeText, setDamageTypeText] = useState('');
   const [damageTypeTextFr, setDamageTypeTextFr] = useState('');
 
-  const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const createDefaultData = useCallback((damageTypeData: ICuratedDamageType | null) => {
     if (damageTypeData == null) {
       return {};
     }
-    const { damageType, i18n } = damageTypeData;
+    const {
+      damageType, i18n
+    } = damageTypeData;
     const defaultData: Partial<FormValues> = {};
     defaultData.name = damageType.title;
     if (i18n.fr !== undefined) {
@@ -71,15 +85,15 @@ const AdminEditDamageType: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({
-    defaultValues: useMemo(
-      () => createDefaultData(damageTypeData),
-      [createDefaultData, damageTypeData]
-    )
-  });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(damageTypeData),
+    [createDefaultData, damageTypeData]
+  ) });
 
   const onSaveDamageType: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr }) => {
+    ({
+      name, nameFr
+    }) => {
       if (
         damageTypeText === null
         || damageTypeTextFr === null
@@ -100,12 +114,10 @@ const AdminEditDamageType: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            text: htmlTextFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          text: htmlTextFr
+        } };
       }
 
       api.damageTypes
@@ -132,16 +144,12 @@ const AdminEditDamageType: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id'
-              })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
             });
           }
         });
@@ -197,16 +205,12 @@ const AdminEditDamageType: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.damageType.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.damageType.name`), 'capitalize') })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.damageType.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.damageType.name`), 'capitalize') })
                   });
                 }
               });
@@ -216,7 +220,18 @@ const AdminEditDamageType: FC = () => {
         confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [api, confMessageEvt, t, damageTypeData?.damageType.title, id, getNewId, createAlert, reloadDamageTypes, navigate, setError]);
+  }, [
+    api,
+    confMessageEvt,
+    t,
+    damageTypeData?.damageType.title,
+    id,
+    getNewId,
+    createAlert,
+    reloadDamageTypes,
+    navigate,
+    setError
+  ]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
@@ -224,7 +239,9 @@ const AdminEditDamageType: FC = () => {
       api.damageTypes
         .get({ damageTypeId: id })
         .then((curatedDamageType: ICuratedDamageType) => {
-          const { damageType, i18n } = curatedDamageType;
+          const {
+            damageType, i18n
+          } = curatedDamageType;
           setDamageTypeData(curatedDamageType);
           setDamageTypeText(damageType.summary);
           if (i18n.fr !== undefined) {
@@ -243,7 +260,13 @@ const AdminEditDamageType: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, id, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    id,
+    t
+  ]);
 
   // The Autosave
   useEffect(() => {
@@ -265,7 +288,11 @@ const AdminEditDamageType: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(damageTypeData));
-  }, [damageTypeData, reset, createDefaultData]);
+  }, [
+    damageTypeData,
+    reset,
+    createDefaultData
+  ]);
 
   return (
     <div

@@ -1,14 +1,24 @@
-import React, { useCallback, type FC } from 'react';
+import React, {
+  useCallback, type FC
+} from 'react';
 
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { useApi, useSystemAlerts } from '../../providers';
+import {
+  useApi, useSystemAlerts
+} from '../../providers';
 
-import { Aerror, Ap, Atitle } from '../../atoms';
-import { Button, Input } from '../../molecules';
+import {
+  Aerror, Ap, Atitle
+} from '../../atoms';
+import {
+  Button, Input
+} from '../../molecules';
 import { Alert } from '../../organisms';
 
 import { regexMail } from '../../utils';
@@ -26,7 +36,9 @@ const Signup: FC = () => {
   const { api } = useApi();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
 
   const {
     control,
@@ -37,7 +49,9 @@ const Signup: FC = () => {
   } = useForm();
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
-    ({ username, mail, password }) => {
+    ({
+      username, mail, password
+    }) => {
       if (api !== undefined) {
         api.auth
           .signup({
@@ -51,7 +65,11 @@ const Signup: FC = () => {
               key: newId,
               dom: (
                 <Alert key={newId} id={newId} timer={5}>
-                  <Ap>{t('signup.successSent', { ns: 'pages', mail })}</Ap>
+                  <Ap>
+                    {t('signup.successSent', {
+                      ns: 'pages', mail
+                    })}
+                  </Ap>
                 </Alert>
               )
             });
@@ -62,22 +80,25 @@ const Signup: FC = () => {
             if (data.code === 'CYPU-104') {
               setError(data.sent as string, {
                 type: 'server',
-                message: t(`serverErrors.${data.code}`, {
-                  field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize')
-                })
+                message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize') })
               });
             } else {
               setError('root.serverError', {
                 type: 'server',
-                message: t(`serverErrors.${data.code}`, {
-                  field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize')
-                })
+                message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize') })
               });
             }
           });
       }
     },
-    [api, createAlert, getNewId, navigate, setError, t]
+    [
+      api,
+      createAlert,
+      getNewId,
+      navigate,
+      setError,
+      t
+    ]
   );
 
   return (
@@ -93,9 +114,7 @@ const Signup: FC = () => {
           <Input
             control={control}
             inputName="username"
-            rules={{
-              required: t('username.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('username.required', { ns: 'fields' }) }}
             type="text"
             label={t('username.label', { ns: 'fields' })}
           />
@@ -117,9 +136,7 @@ const Signup: FC = () => {
             control={control}
             inputName="password"
             type="password"
-            rules={{
-              required: t('password.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('password.required', { ns: 'fields' }) }}
             label={t('password.label', { ns: 'fields' })}
             autoComplete="new-password"
           />

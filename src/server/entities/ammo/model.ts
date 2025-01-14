@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
 interface IAmmo {
   /** The title of the ammo */
@@ -62,4 +64,6 @@ const ammoSchema = new Schema<IAmmo>({
 
 const AmmoModel = (): Model<IAmmo> => model('Ammo', ammoSchema);
 
-export { AmmoModel, type HydratedIAmmo, type IAmmo };
+export {
+  AmmoModel, type HydratedIAmmo, type IAmmo
+};

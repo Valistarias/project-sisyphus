@@ -1,16 +1,30 @@
-import React, { useCallback, useEffect, useMemo, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  useLocation, useNavigate
+} from 'react-router-dom';
 
-import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input, SmartSelect, type ISingleValueSelect } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input, SmartSelect, type ISingleValueSelect
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 
 import './adminNewNotion.scss';
 
@@ -25,18 +39,16 @@ const AdminNewNotions: FC = () => {
   const { api } = useApi();
   const { search } = useLocation();
   const navigate = useNavigate();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const { ruleBooks } = useGlobalVars();
 
   const params = useMemo(() => new URLSearchParams(search), [search]);
 
-  const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const createDefaultData = useCallback(
     (params: URLSearchParams, ruleBooks: ISingleValueSelect[]) => {
@@ -68,15 +80,19 @@ const AdminNewNotions: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({
-    defaultValues: useMemo(
-      () => createDefaultData(params, ruleBookSelect),
-      [createDefaultData, params, ruleBookSelect]
-    )
-  });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(params, ruleBookSelect),
+    [
+      createDefaultData,
+      params,
+      ruleBookSelect
+    ]
+  ) });
 
   const onSaveNotion: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, type }) => {
+    ({
+      name, nameFr, type
+    }) => {
       if (textEditor === null || textFrEditor === null || api === undefined) {
         return;
       }
@@ -91,12 +107,10 @@ const AdminNewNotions: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            text: htmlTextFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          text: htmlTextFr
+        } };
       }
 
       api.notions
@@ -123,27 +137,37 @@ const AdminNewNotions: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.notionType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.notionType.${data.sent}`), 'capitalize') })
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.notionType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.notionType.${data.sent}`), 'capitalize') })
             });
           }
         });
     },
-    [textEditor, textFrEditor, api, getNewId, createAlert, t, navigate, setError]
+    [
+      textEditor,
+      textFrEditor,
+      api,
+      getNewId,
+      createAlert,
+      t,
+      navigate,
+      setError
+    ]
   );
 
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(params, ruleBookSelect));
-  }, [params, ruleBookSelect, reset, createDefaultData]);
+  }, [
+    params,
+    ruleBookSelect,
+    reset,
+    createDefaultData
+  ]);
 
   return (
     <div className="adminNewNotion">

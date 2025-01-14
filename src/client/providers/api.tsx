@@ -1,4 +1,6 @@
-import React, { useContext, useMemo, type FC, type ReactNode } from 'react';
+import React, {
+  useContext, useMemo, type FC, type ReactNode
+} from 'react';
 
 import Api from '../api';
 
@@ -16,9 +18,7 @@ const ApiContext = React.createContext<IApiContext | undefined>(undefined);
 
 export const ApiProvider: FC<IApiProvider> = ({ children }) => {
   const providerValues = useMemo(
-    () => ({
-      api: new Api()
-    }),
+    () => ({ api: new Api() }),
     []
   );
 

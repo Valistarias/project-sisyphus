@@ -1,16 +1,30 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useNavigate, useParams
+} from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 
 import type { ICuratedWeaponScope } from '../../../types';
 
@@ -27,7 +41,9 @@ interface FormValues {
 const AdminEditWeaponScope: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const { reloadWeaponScopes } = useGlobalVars();
   const confMessageEvt = useConfirmMessage();
   const { id } = useParams();
@@ -44,19 +60,17 @@ const AdminEditWeaponScope: FC = () => {
   const [weaponScopeText, setWeaponScopeText] = useState('');
   const [weaponScopeTextFr, setWeaponScopeTextFr] = useState('');
 
-  const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const createDefaultData = useCallback((weaponScopeData: ICuratedWeaponScope | null) => {
     if (weaponScopeData == null) {
       return {};
     }
-    const { weaponScope, i18n } = weaponScopeData;
+    const {
+      weaponScope, i18n
+    } = weaponScopeData;
     const defaultData: Partial<FormValues> = {};
     defaultData.name = weaponScope.title;
     defaultData.scopeId = weaponScope.scopeId;
@@ -73,15 +87,15 @@ const AdminEditWeaponScope: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({
-    defaultValues: useMemo(
-      () => createDefaultData(weaponScopeData),
-      [createDefaultData, weaponScopeData]
-    )
-  });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(weaponScopeData),
+    [createDefaultData, weaponScopeData]
+  ) });
 
   const onSaveWeaponScope: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, scopeId }) => {
+    ({
+      name, nameFr, scopeId
+    }) => {
       if (
         weaponScopeText === null
         || weaponScopeTextFr === null
@@ -103,12 +117,10 @@ const AdminEditWeaponScope: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            text: htmlTextFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          text: htmlTextFr
+        } };
       }
 
       api.weaponScopes
@@ -136,16 +148,12 @@ const AdminEditWeaponScope: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id'
-              })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
             });
           }
         });
@@ -201,16 +209,12 @@ const AdminEditWeaponScope: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.weaponScope.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.weaponScope.name`), 'capitalize') })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.weaponScope.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.weaponScope.name`), 'capitalize') })
                   });
                 }
               });
@@ -220,7 +224,18 @@ const AdminEditWeaponScope: FC = () => {
         confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [api, confMessageEvt, t, weaponScopeData?.weaponScope.title, id, getNewId, createAlert, reloadWeaponScopes, navigate, setError]);
+  }, [
+    api,
+    confMessageEvt,
+    t,
+    weaponScopeData?.weaponScope.title,
+    id,
+    getNewId,
+    createAlert,
+    reloadWeaponScopes,
+    navigate,
+    setError
+  ]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
@@ -228,7 +243,9 @@ const AdminEditWeaponScope: FC = () => {
       api.weaponScopes
         .get({ weaponScopeId: id })
         .then((curatedWeaponScope: ICuratedWeaponScope) => {
-          const { weaponScope, i18n } = curatedWeaponScope;
+          const {
+            weaponScope, i18n
+          } = curatedWeaponScope;
           setWeaponScopeData(curatedWeaponScope);
           setWeaponScopeText(weaponScope.summary);
           if (i18n.fr !== undefined) {
@@ -247,7 +264,13 @@ const AdminEditWeaponScope: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, id, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    id,
+    t
+  ]);
 
   // The Autosave
   useEffect(() => {
@@ -269,7 +292,11 @@ const AdminEditWeaponScope: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(weaponScopeData));
-  }, [weaponScopeData, reset, createDefaultData]);
+  }, [
+    weaponScopeData,
+    reset,
+    createDefaultData
+  ]);
 
   return (
     <div

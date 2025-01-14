@@ -12,10 +12,14 @@ import React, {
 import { useTranslation } from 'react-i18next';
 
 import { Ap } from '../atoms';
-import { Button, DiceCard } from '../molecules';
+import {
+  Button, DiceCard
+} from '../molecules';
 import CustomEventEmitter from '../utils/eventEmitter';
 
-import type { TypeCampaignEvent, TypeDice } from '../types';
+import type {
+  TypeCampaignEvent, TypeDice
+} from '../types';
 
 import {
   calculateDices,
@@ -42,7 +46,9 @@ interface ICampaignEventWindowContext {
   /** The event listener remover for when a new campaign event is called from dispatch */
   removeCampaignEventListener: (cb: (res: { detail?: CampaignEventDetailData }) => void) => void
   /** The event listener dispatch */
-  dispatchCampaignEvent: (data: { result: number, formula?: string, mode: string }) => void
+  dispatchCampaignEvent: (data: {
+    result: number, formula?: string, mode: string
+  }) => void
 }
 
 interface CampaignEventWindowProviderProps {
@@ -102,7 +108,9 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
       return [];
     }
 
-    return diceValues.map(({ id, type, value }) => (
+    return diceValues.map(({
+      id, type, value
+    }) => (
       <DiceCard key={id} type={type} value={value} size={cardMode} />
     ));
   }, [diceValues, cardMode]);
@@ -262,7 +270,11 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
         }
       }, 100);
     }
-  }, [dicesToRoll, affectDiceValueAtIndex, endRollTriggerEvent]);
+  }, [
+    dicesToRoll,
+    affectDiceValueAtIndex,
+    endRollTriggerEvent
+  ]);
 
   return (
     <CampaignEventWindowContext.Provider value={providerValues}>

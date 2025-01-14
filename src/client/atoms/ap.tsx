@@ -1,7 +1,11 @@
 import type React from 'react';
-import type { FC, ReactNode } from 'react';
+import type {
+  FC, ReactNode
+} from 'react';
 
-import { Quark, type IQuarkProps } from '../quark';
+import {
+  Quark, type IQuarkProps
+} from '../quark';
 
 import { classTrim } from '../utils';
 
@@ -20,12 +24,12 @@ interface IAp extends IQuarkProps {
   onClick?: (e: React.MouseEvent<HTMLElement>) => void
 }
 
-const AP: FC<IAp> = ({ className, title, children, lang, hyphens = false, onClick }) => (
+const AP: FC<IAp> = ({
+  className, title, children, lang, hyphens = false, onClick
+}) => (
   <Quark
     quarkType="p"
-    reactProps={{
-      ...(lang !== undefined ? { lang } : {})
-    }}
+    reactProps={{ ...(lang !== undefined ? { lang } : {}) }}
     onClick={onClick}
     title={title}
     className={classTrim(`

@@ -1,7 +1,11 @@
 import type React from 'react';
-import { useCallback, useEffect, useMemo, type FC } from 'react';
+import {
+  useCallback, useEffect, useMemo, type FC
+} from 'react';
 
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -12,9 +16,15 @@ import {
   useSystemAlerts
 } from '../../providers';
 
-import { Aicon, Aloadbar, Ap, Atitle } from '../../atoms';
-import { Button, HintButton, Input } from '../../molecules';
-import { getActualBody, getCharacterHpValues } from '../../utils/character';
+import {
+  Aicon, Aloadbar, Ap, Atitle
+} from '../../atoms';
+import {
+  Button, HintButton, Input
+} from '../../molecules';
+import {
+  getActualBody, getCharacterHpValues
+} from '../../utils/character';
 import Alert from '../alert';
 
 import {
@@ -41,13 +51,19 @@ interface ICharacterHeader {
   isEventTabOpen: boolean
 }
 
-const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen }) => {
+const CharacterHeader: FC<ICharacterHeader> = ({
+  onClickEventTab, isEventTabOpen
+}) => {
   const { t } = useTranslation();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const { api } = useApi();
   const { socket } = useSocket();
   const { dispatchCampaignEvent } = useCampaignEventWindow();
-  const { character, setCharacterFromId, cyberFrames, globalValues, charParams } = useGlobalVars();
+  const {
+    character, setCharacterFromId, cyberFrames, globalValues, charParams
+  } = useGlobalVars();
 
   const mainCyberFrame = useMemo(() => {
     if (character === null || character === false) {
@@ -85,7 +101,11 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
         Number(globalValues.find(({ name }) => name === 'baseHp')?.value ?? 0),
         charParams.find(({ charParam }) => charParam.short === 'HP')?.charParam._id ?? undefined
       ),
-    [character, globalValues, charParams]
+    [
+      character,
+      globalValues,
+      charParams
+    ]
   );
 
   const charKarma = useMemo(() => {
@@ -100,17 +120,13 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
     handleSubmit: handleSubmitHp,
     control: controlHp,
     reset: resetHp
-  } = useForm({
-    defaultValues: useMemo(() => ({ hp: hpValues.isLoading ? 0 : hpValues.hp }), [hpValues])
-  });
+  } = useForm({ defaultValues: useMemo(() => ({ hp: hpValues.isLoading ? 0 : hpValues.hp }), [hpValues]) });
 
   const {
     handleSubmit: handleSubmitKarma,
     control: controlKarma,
     reset: resetKarma
-  } = useForm({
-    defaultValues: useMemo(() => ({ karma: charKarma }), [charKarma])
-  });
+  } = useForm({ defaultValues: useMemo(() => ({ karma: charKarma }), [charKarma]) });
 
   const onSaveHp: SubmitHandler<FormHpValues> = useCallback(
     ({ hp }) => {
@@ -186,7 +202,14 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
           });
         });
     },
-    [api, character, createAlert, getNewId, setCharacterFromId, socket]
+    [
+      api,
+      character,
+      createAlert,
+      getNewId,
+      setCharacterFromId,
+      socket
+    ]
   );
 
   // To affect default data
@@ -224,27 +247,21 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
         </div>
         <div className="char-header__mid">
           <HintButton
-            hint={t('character.buttons.editChar', {
-              ns: 'pages'
-            })}
+            hint={t('character.buttons.editChar', { ns: 'pages' })}
             icon="Edit"
             size="small"
             theme="line"
             href={`/character/${character !== false ? character?._id ?? '' : ''}/edit`}
           />
           <HintButton
-            hint={t('character.buttons.editChar', {
-              ns: 'pages'
-            })}
+            hint={t('character.buttons.editChar', { ns: 'pages' })}
             icon="Edit"
             size="small"
             theme="line"
             href={`/character/${character !== false ? character?._id ?? '' : ''}/edit`}
           />
           <HintButton
-            hint={t('character.buttons.editChar', {
-              ns: 'pages'
-            })}
+            hint={t('character.buttons.editChar', { ns: 'pages' })}
             icon="Edit"
             size="small"
             theme="line"
@@ -266,9 +283,7 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
                   type="number"
                   size="small"
                   inline
-                  rules={{
-                    required: t('hp.required', { ns: 'fields' })
-                  }}
+                  rules={{ required: t('hp.required', { ns: 'fields' }) }}
                   className="char-header__health__field__input"
                   onBlur={handleSubmitHp(onSaveHp)}
                 />
@@ -299,9 +314,7 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
                   type="number"
                   size="small"
                   inline
-                  rules={{
-                    required: t('karma.required', { ns: 'fields' })
-                  }}
+                  rules={{ required: t('karma.required', { ns: 'fields' }) }}
                   className="char-header__karma__field__input"
                   onBlur={handleSubmitKarma(onSaveKarma)}
                 />

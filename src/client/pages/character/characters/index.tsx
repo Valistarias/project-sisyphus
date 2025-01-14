@@ -11,10 +11,14 @@ import React, {
 import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
 
-import { useApi, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useSystemAlerts
+} from '../../../providers';
 
 import holoBackground from '../../../assets/imgs/tvbg2.gif';
-import { Ali, Ap, Atitle, Aul, Avideo } from '../../../atoms';
+import {
+  Ali, Ap, Atitle, Aul, Avideo
+} from '../../../atoms';
 import { Button } from '../../../molecules';
 import { Alert } from '../../../organisms';
 
@@ -27,7 +31,9 @@ import './characters.scss';
 const Characters: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   // const { cyberFrames } = useGlobalVars();
 
   const [characters, setCharacters] = useState<ICharacter[]>([]);
@@ -56,7 +62,12 @@ const Characters: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    t
+  ]);
 
   const characterList = useMemo(() => {
     if (characters.length === 0) {
@@ -124,9 +135,7 @@ const Characters: FC = () => {
                 isReady ? `/character/${character._id}` : `/character/${character._id}/continue`
               }
             >
-              {t(isReady ? 'characters.openCharacter' : 'characters.continueCharacter', {
-                ns: 'pages'
-              })}
+              {t(isReady ? 'characters.openCharacter' : 'characters.continueCharacter', { ns: 'pages' })}
             </Button>
           </div>
         </Ali>
@@ -145,7 +154,13 @@ const Characters: FC = () => {
       calledApi.current = true;
       characterReload();
     }
-  }, [api, createAlert, getNewId, characterReload, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    characterReload,
+    t
+  ]);
 
   return (
     <div className="characters">

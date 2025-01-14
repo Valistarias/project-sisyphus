@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
 import type { INode } from '../../node/model';
 
@@ -14,9 +16,7 @@ interface ICharacterNode {
 }
 
 type HydratedICharacterNode = HydratedDocument<
-  Omit<ICharacterNode, 'node'> & {
-    node: HydratedDocument<INode>
-  }
+  Omit<ICharacterNode, 'node'> & { node: HydratedDocument<INode> }
 >;
 
 const CharacterNodeSchema = new Schema<ICharacterNode>({
@@ -37,4 +37,6 @@ const CharacterNodeSchema = new Schema<ICharacterNode>({
 
 const CharacterNodeModel = (): Model<ICharacterNode> => model('CharacterNode', CharacterNodeSchema);
 
-export { CharacterNodeModel, type HydratedICharacterNode, type ICharacterNode };
+export {
+  CharacterNodeModel, type HydratedICharacterNode, type ICharacterNode
+};

@@ -1,4 +1,6 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 
 import db from '../../models';
 import {
@@ -17,14 +19,14 @@ const { TipText } = db;
 const findTipTexts = async (): Promise<HydratedITipText[]> =>
   await new Promise((resolve, reject) => {
     TipText.find()
-      .then(async (res?: HydratedITipText[] | null) => {
+      .then((res?: HydratedITipText[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('TipTexts'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -32,14 +34,14 @@ const findTipTexts = async (): Promise<HydratedITipText[]> =>
 const findTipTextById = async (id: string): Promise<HydratedITipText> =>
   await new Promise((resolve, reject) => {
     TipText.findById(id)
-      .then(async (res?: HydratedITipText | null) => {
+      .then((res?: HydratedITipText | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('TipText'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -50,14 +52,14 @@ const checkDuplicateTipTextTipId = async (
 ): Promise<string | boolean> =>
   await new Promise((resolve, reject) => {
     TipText.find({ tipId })
-      .then(async (res) => {
+      .then((res) => {
         if (res.length === 0 || (alreadyExistOnce && res.length === 1)) {
           resolve(false);
         } else {
           resolve(res[0].title);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -81,7 +83,9 @@ const checkDuplicateTipId = async (
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, summary, i18n = null, tipId } = req.body;
+  const {
+    title, summary, i18n = null, tipId
+  } = req.body;
   if (title === undefined || summary === undefined || tipId === undefined) {
     res.status(400).send(gemInvalidField('Item Modifier'));
 
@@ -119,7 +123,9 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, title = null, summary = null, i18n, tipId = null } = req.body;
+  const {
+    id, title = null, summary = null, i18n, tipId = null
+  } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Item Modifier ID'));
 
@@ -142,13 +148,11 @@ const update = (req: Request, res: Response): void => {
             }
 
             if (i18n !== null) {
-              const newIntl = {
-                ...(tipText.i18n !== null && tipText.i18n !== undefined && tipText.i18n !== ''
-                  ? JSON.parse(tipText.i18n)
-                  : {})
-              };
+              const newIntl: InternationalizationType = { ...(tipText.i18n !== null && tipText.i18n !== undefined && tipText.i18n !== ''
+                ? JSON.parse(tipText.i18n)
+                : {}) };
 
-              Object.keys(i18n as Record<string, any>).forEach((lang) => {
+              Object.keys(i18n).forEach((lang) => {
                 newIntl[lang] = i18n[lang];
               });
 
@@ -158,7 +162,9 @@ const update = (req: Request, res: Response): void => {
             tipText
               .save()
               .then(() => {
-                res.send({ message: 'Item Modifier was updated successfully!', tipText });
+                res.send({
+                  message: 'Item Modifier was updated successfully!', tipText
+                });
               })
               .catch((err: unknown) => {
                 res.status(500).send(gemServerError(err));
@@ -176,7 +182,7 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteTipTextById = async (id: string): Promise<boolean> =>
+const deleteTipTextById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Item Modifier ID'));
@@ -193,8 +199,8 @@ const deleteTipTextById = async (id: string): Promise<boolean> =>
   });
 
 const deleteTipText = (req: Request, res: Response): void => {
-  const { id } = req.body;
-  deleteTipTextById(id as string)
+  const { id }: { id: string } = req.body;
+  deleteTipTextById(id)
     .then(() => {
       res.send({ message: 'Item Modifier was deleted successfully!' });
     })
@@ -204,7 +210,7 @@ const deleteTipText = (req: Request, res: Response): void => {
 };
 
 interface CuratedITipText {
-  i18n: Record<string, unknown>
+  i18n?: InternationalizationType
   tipText: HydratedITipText
 }
 

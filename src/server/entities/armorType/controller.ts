@@ -1,9 +1,14 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemInvalidField, gemNotFound, gemServerError
+} from '../../utils/globalErrorMessage';
 
 import type { HydratedIArmorType } from './model';
+import type { InternationalizationType } from '../../utils/types';
 
 import { curateI18n } from '../../utils';
 
@@ -12,14 +17,14 @@ const { ArmorType } = db;
 const findArmorTypes = async (): Promise<HydratedIArmorType[]> =>
   await new Promise((resolve, reject) => {
     ArmorType.find()
-      .then(async (res?: HydratedIArmorType[] | null) => {
+      .then((res?: HydratedIArmorType[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('ArmorTypes'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -27,20 +32,22 @@ const findArmorTypes = async (): Promise<HydratedIArmorType[]> =>
 const findArmorTypeById = async (id: string): Promise<HydratedIArmorType> =>
   await new Promise((resolve, reject) => {
     ArmorType.findById(id)
-      .then(async (res?: HydratedIArmorType | null) => {
+      .then((res?: HydratedIArmorType | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('ArmorType'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, summary, i18n = null } = req.body;
+  const {
+    title, summary, i18n = null
+  } = req.body;
   if (title === undefined || summary === undefined) {
     res.status(400).send(gemInvalidField('Armor Type'));
 
@@ -67,7 +74,9 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, title = null, summary = null, i18n } = req.body;
+  const {
+    id, title = null, summary = null, i18n
+  } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Armor Type ID'));
 
@@ -83,13 +92,11 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl = {
-          ...(armorType.i18n !== null && armorType.i18n !== undefined && armorType.i18n !== ''
-            ? JSON.parse(armorType.i18n)
-            : {})
-        };
+        const newIntl: InternationalizationType = { ...(armorType.i18n !== null && armorType.i18n !== undefined && armorType.i18n !== ''
+          ? JSON.parse(armorType.i18n)
+          : {}) };
 
-        Object.keys(i18n as Record<string, any>).forEach((lang) => {
+        Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
         });
 
@@ -99,7 +106,9 @@ const update = (req: Request, res: Response): void => {
       armorType
         .save()
         .then(() => {
-          res.send({ message: 'Armor Type was updated successfully!', armorType });
+          res.send({
+            message: 'Armor Type was updated successfully!', armorType
+          });
         })
         .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
@@ -110,7 +119,7 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteArmorTypeById = async (id: string): Promise<boolean> =>
+const deleteArmorTypeById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Armor Type ID'));
@@ -127,8 +136,8 @@ const deleteArmorTypeById = async (id: string): Promise<boolean> =>
   });
 
 const deleteArmorType = (req: Request, res: Response): void => {
-  const { id } = req.body;
-  deleteArmorTypeById(id as string)
+  const { id }: { id: string } = req.body;
+  deleteArmorTypeById(id)
     .then(() => {
       res.send({ message: 'Armor Type was deleted successfully!' });
     })
@@ -138,7 +147,7 @@ const deleteArmorType = (req: Request, res: Response): void => {
 };
 
 interface CuratedIArmorType {
-  i18n: Record<string, unknown>
+  i18n?: InternationalizationType
   armorType: HydratedIArmorType
 }
 
@@ -179,4 +188,6 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteArmorType, findAll, findArmorTypeById, findSingle, update };
+export {
+  create, deleteArmorType, findAll, findArmorTypeById, findSingle, update
+};

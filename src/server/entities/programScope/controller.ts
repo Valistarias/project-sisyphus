@@ -1,4 +1,6 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 
 import db from '../../models';
 import {
@@ -9,6 +11,7 @@ import {
 } from '../../utils/globalErrorMessage';
 
 import type { HydratedIProgramScope } from './model';
+import type { InternationalizationType } from '../../utils/types';
 
 import { curateI18n } from '../../utils';
 
@@ -17,14 +20,14 @@ const { ProgramScope } = db;
 const findProgramScopes = async (): Promise<HydratedIProgramScope[]> =>
   await new Promise((resolve, reject) => {
     ProgramScope.find()
-      .then(async (res?: HydratedIProgramScope[] | null) => {
+      .then((res?: HydratedIProgramScope[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('ProgramScopes'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -32,14 +35,14 @@ const findProgramScopes = async (): Promise<HydratedIProgramScope[]> =>
 const findProgramScopeById = async (id: string): Promise<HydratedIProgramScope> =>
   await new Promise((resolve, reject) => {
     ProgramScope.findById(id)
-      .then(async (res?: HydratedIProgramScope | null) => {
+      .then((res?: HydratedIProgramScope | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('ProgramScope'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -50,14 +53,14 @@ const checkDuplicateProgramScopeScopeId = async (
 ): Promise<string | boolean> =>
   await new Promise((resolve, reject) => {
     ProgramScope.find({ scopeId })
-      .then(async (res) => {
+      .then((res) => {
         if (res.length === 0 || (alreadyExistOnce && res.length === 1)) {
           resolve(false);
         } else {
           resolve(res[0].title);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -81,7 +84,9 @@ const checkDuplicateScopeId = async (
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, summary, i18n = null, scopeId } = req.body;
+  const {
+    title, summary, i18n = null, scopeId
+  } = req.body;
   if (title === undefined || summary === undefined || scopeId === undefined) {
     res.status(400).send(gemInvalidField('Program Scope'));
 
@@ -119,7 +124,9 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, title = null, summary = null, i18n, scopeId = null } = req.body;
+  const {
+    id, title = null, summary = null, i18n, scopeId = null
+  } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Program Scope ID'));
 
@@ -142,15 +149,13 @@ const update = (req: Request, res: Response): void => {
             }
 
             if (i18n !== null) {
-              const newIntl = {
-                ...(programScope.i18n !== null
-                  && programScope.i18n !== undefined
-                  && programScope.i18n !== ''
-                  ? JSON.parse(programScope.i18n)
-                  : {})
-              };
+              const newIntl: InternationalizationType = { ...(programScope.i18n !== null
+                && programScope.i18n !== undefined
+                && programScope.i18n !== ''
+                ? JSON.parse(programScope.i18n)
+                : {}) };
 
-              Object.keys(i18n as Record<string, any>).forEach((lang) => {
+              Object.keys(i18n).forEach((lang) => {
                 newIntl[lang] = i18n[lang];
               });
 
@@ -160,7 +165,9 @@ const update = (req: Request, res: Response): void => {
             programScope
               .save()
               .then(() => {
-                res.send({ message: 'Program Scope was updated successfully!', programScope });
+                res.send({
+                  message: 'Program Scope was updated successfully!', programScope
+                });
               })
               .catch((err: unknown) => {
                 res.status(500).send(gemServerError(err));
@@ -178,7 +185,7 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteProgramScopeById = async (id: string): Promise<boolean> =>
+const deleteProgramScopeById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Program Scope ID'));
@@ -195,8 +202,8 @@ const deleteProgramScopeById = async (id: string): Promise<boolean> =>
   });
 
 const deleteProgramScope = (req: Request, res: Response): void => {
-  const { id } = req.body;
-  deleteProgramScopeById(id as string)
+  const { id }: { id: string } = req.body;
+  deleteProgramScopeById(id)
     .then(() => {
       res.send({ message: 'Program Scope was deleted successfully!' });
     })
@@ -206,7 +213,7 @@ const deleteProgramScope = (req: Request, res: Response): void => {
 };
 
 interface CuratedIProgramScope {
-  i18n: Record<string, unknown>
+  i18n?: InternationalizationType
   programScope: HydratedIProgramScope
 }
 

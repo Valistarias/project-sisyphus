@@ -307,9 +307,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       }
       setLoading(true);
       api.characters
-        .get({
-          characterId: id
-        })
+        .get({ characterId: id })
         .then((character: ICharacter) => {
           setLoading(false);
           if (character === undefined) {
@@ -335,7 +333,12 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       setCharacterStatSkills(aggregatedSkills);
 
       // Aggregated Character Parameters
-      const charParamList = ['ini', 'msp', 'pyr', 'arr'];
+      const charParamList = [
+        'ini',
+        'msp',
+        'pyr',
+        'arr'
+      ];
       const aggregatedCharParams = curateCharacterParams(
         character,
         charParams,
@@ -347,7 +350,14 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       );
       setCharacterParams(aggregatedCharParams);
     }
-  }, [character, skills, stats, cyberFrames, charParams, globalValues]);
+  }, [
+    character,
+    skills,
+    stats,
+    cyberFrames,
+    charParams,
+    globalValues
+  ]);
 
   const resetCharacter = useCallback(() => {
     setCharacter(null);

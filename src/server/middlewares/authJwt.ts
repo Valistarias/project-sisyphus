@@ -1,6 +1,8 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 
-import jwt, { type GetPublicKeyOrSecret, type Secret } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { pathToRegexp } from 'path-to-regexp';
 
 import config from '../config/db.config';
@@ -8,7 +10,6 @@ import { findUserById } from '../entities/user/controller';
 import {
   gemInvalidField,
   gemNotAdmin,
-  gemNotFound,
   gemServerError,
   gemUnauthorized
 } from '../utils/globalErrorMessage';
@@ -17,9 +18,7 @@ import type { HydratedIUser } from '../entities';
 
 interface IVerifyTokenRequest extends Request {
   userId: string
-  session: {
-    token: string
-  }
+  session: { token: string } | null
 }
 
 const routes = [
@@ -79,9 +78,10 @@ const verifyToken = (
   next?: () => void,
   mute?: boolean
 ): void => {
-  const { token } = req.session;
+  const { session } = req;
+  const secret = config.secret(process.env);
 
-  if (token === undefined) {
+  if (session === null || secret === null) {
     res
       .status(mute !== undefined ? 200 : 403)
       .send(mute !== undefined ? {} : gemInvalidField('token'));
@@ -90,22 +90,18 @@ const verifyToken = (
   }
 
   jwt.verify(
-    token,
-    config.secret(process.env) as Secret | GetPublicKeyOrSecret,
-    (err, decoded: jwt.JwtPayload) => {
+    session.token,
+    secret,
+    (err, decoded?: jwt.JwtPayload & { id: string }) => {
       if (err !== null || decoded === undefined) {
-        if (err !== null) {
-          const isMute = mute !== undefined;
-          res.status(isMute ? 200 : 401).send(isMute ? {} : gemUnauthorized());
+        const isMute = mute !== undefined;
+        res.status(isMute ? 200 : 401).send(isMute ? {} : gemUnauthorized());
 
-          return;
-        }
+        return;
       }
       // Re-sign the token
-      jwt.sign({ id: decoded.id }, config.secret(process.env) as Secret, {
-        expiresIn: 86400 // 24 hours
-      });
-      req.userId = decoded.id as string;
+      jwt.sign({ id: decoded.id }, secret, { expiresIn: 86400 }); // 24 hours
+      req.userId = decoded.id;
       if (next !== undefined) {
         next();
       }
@@ -113,26 +109,24 @@ const verifyToken = (
   );
 };
 
-const getUserFromToken = async (req: IVerifyTokenRequest): Promise<HydratedIUser | null> =>
+const getUserFromToken = async (
+  req: IVerifyTokenRequest
+): Promise<HydratedIUser | null> =>
   await new Promise((resolve, reject) => {
-    const { token } = req.session;
-    if (token !== undefined) {
+    const { session } = req;
+    const secret = config.secret(process.env);
+    if (session?.token !== undefined && secret !== null) {
       jwt.verify(
-        token,
-        config.secret(process.env) as Secret | GetPublicKeyOrSecret,
-        (err, decoded: jwt.JwtPayload) => {
-          if (err !== null || decoded === undefined) {
+        session.token,
+        secret,
+        (err, decoded: jwt.JwtPayload & { id: string }) => {
+          if (err !== null) {
             reject(err);
           }
           // Re-sign the token
-          jwt.sign({ id: decoded.id }, config.secret(process.env) as Secret, {
-            expiresIn: 86400 // 24 hours
-          });
-          findUserById(decoded.id as string)
+          jwt.sign({ id: decoded.id }, secret, { expiresIn: 86400 }); // 24 hours
+          findUserById(decoded.id)
             .then((user) => {
-              if (user === undefined) {
-                reject(gemNotFound('User'));
-              }
               resolve(user);
             })
             .catch((errFindUser) => {
@@ -145,9 +139,9 @@ const getUserFromToken = async (req: IVerifyTokenRequest): Promise<HydratedIUser
     }
   });
 
-const isAdmin = async (req: Request): Promise<boolean> =>
+const isAdmin = async (req: IVerifyTokenRequest): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    getUserFromToken(req as IVerifyTokenRequest)
+    getUserFromToken(req)
       .then((user) => {
         if (
           user !== null
@@ -164,15 +158,24 @@ const isAdmin = async (req: Request): Promise<boolean> =>
       });
   });
 
-const generateVerificationMailToken = (userId: string): string => {
-  const verificationToken = jwt.sign({ IdMail: userId }, config.secret(process.env) as Secret, {
-    expiresIn: '7d'
-  });
+const generateVerificationMailToken = (userId: string): string | null => {
+  const secret = config.secret(process.env);
+  if (secret === null) {
+    return null;
+  }
+
+  const verificationToken = jwt.sign(
+    { IdMail: userId }, secret, { expiresIn: '7d' }
+  );
 
   return verificationToken;
 };
 
-const adminNeeded = (req: Request, res: Response, next: () => void): void => {
+const adminNeeded = (
+  req: IVerifyTokenRequest,
+  res: Response,
+  next: () => void
+): void => {
   isAdmin(req)
     .then((boolCheck) => {
       if (boolCheck) {
@@ -184,13 +187,19 @@ const adminNeeded = (req: Request, res: Response, next: () => void): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-const checkRouteRights = (req: Request, res: Response, next: () => void): void => {
-  const urlMatch = routes.find(route => pathToRegexp(route.url).regexp.exec(req.path) !== null);
+const checkRouteRights = (
+  req: IVerifyTokenRequest,
+  res: Response,
+  next: () => void
+): void => {
+  const urlMatch = routes.find(
+    route => pathToRegexp(route.url).regexp.exec(req.path) !== null
+  );
   let rights = ['unlogged'];
   if (urlMatch === undefined || urlMatch.role === 'all') {
     next();
   } else {
-    getUserFromToken(req as IVerifyTokenRequest)
+    getUserFromToken(req)
       .then((user) => {
         if (user !== null && user.roles.length > 0) {
           rights = ['logged'];
@@ -212,7 +221,7 @@ const checkRouteRights = (req: Request, res: Response, next: () => void): void =
           }
         }
       })
-      .catch((err: unknown) => {
+      .catch((err: jwt.VerifyErrors) => {
         if (err.name === 'TokenExpiredError') {
           req.session = null;
           res.redirect('/');

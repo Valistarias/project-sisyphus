@@ -1,7 +1,11 @@
-import React, { useMemo, type FC } from 'react';
+import React, {
+  useMemo, type FC
+} from 'react';
 
 import holoBackground from '../assets/imgs/tvbg2.gif';
-import { Quark, type IQuarkProps } from '../quark';
+import {
+  Quark, type IQuarkProps
+} from '../quark';
 
 import type { TypeNodeIcons } from '../types/rules';
 
@@ -41,7 +45,13 @@ const ANodeIcon: FC<IANodeIcon> = ({
     ${animated ? 'anodeicon--animated' : ''}
     ${rarity !== undefined ? `anodeicon--rarity anodeicon--rarity--${rarity}` : ''}
   `),
-    [animated, className, rarity, size, type]
+    [
+      animated,
+      className,
+      rarity,
+      size,
+      type
+    ]
   );
 
   return (

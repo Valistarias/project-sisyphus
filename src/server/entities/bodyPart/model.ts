@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model
+} from 'mongoose';
 
 interface IBodyPart {
   /** The title of the body part */
@@ -31,4 +33,6 @@ const bodyPart = new Schema<IBodyPart>({
 
 const BodyPartModel = (): Model<IBodyPart> => model('BodyPart', bodyPart);
 
-export { BodyPartModel, type HydratedIBodyPart, type IBodyPart };
+export {
+  BodyPartModel, type HydratedIBodyPart, type IBodyPart
+};

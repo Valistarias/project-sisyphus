@@ -1,4 +1,6 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 import type { HydratedDocument } from 'mongoose';
 
 import db from '../../models';
@@ -16,14 +18,14 @@ const { ActionType } = db;
 const findActionTypes = async (): Promise<Array<HydratedDocument<IActionType>>> =>
   await new Promise((resolve, reject) => {
     ActionType.find()
-      .then(async (res) => {
+      .then((res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('ActionTypes'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -31,14 +33,14 @@ const findActionTypes = async (): Promise<Array<HydratedDocument<IActionType>>> 
 const findActionTypeById = async (id: string): Promise<HydratedDocument<IActionType>> =>
   await new Promise((resolve, reject) => {
     ActionType.findById(id)
-      .then(async (res) => {
+      .then((res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('ActionType'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -53,9 +55,7 @@ const create = (req: Request, res: Response): void => {
   findActionTypes()
     .then((actionTypes) => {
       if (actionTypes.find(actionType => actionType.name === name) === undefined) {
-        const toSaveActionType = new ActionType({
-          name
-        });
+        const toSaveActionType = new ActionType({ name });
 
         toSaveActionType
           .save()
@@ -73,7 +73,9 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, name = null } = req.body;
+  const {
+    id, name = null
+  } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('ActionType ID'));
 
@@ -89,7 +91,9 @@ const update = (req: Request, res: Response): void => {
         actualActionType
           .save()
           .then(() => {
-            res.send({ message: 'ActionType was updated successfully!', actualActionType });
+            res.send({
+              message: 'ActionType was updated successfully!', actualActionType
+            });
           })
           .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
@@ -102,7 +106,7 @@ const update = (req: Request, res: Response): void => {
 };
 
 const deleteActionType = (req: Request, res: Response): void => {
-  const { id } = req.body;
+  const { id }: { id: string } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('ActionType ID'));
 
@@ -135,4 +139,6 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteActionType, findAll, findSingle, update };
+export {
+  create, deleteActionType, findAll, findSingle, update
+};

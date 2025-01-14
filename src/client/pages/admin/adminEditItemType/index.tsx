@@ -1,14 +1,26 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useNavigate, useParams
+} from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input } from '../../../molecules';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input
+} from '../../../molecules';
 import { Alert } from '../../../organisms';
 
 import type { IItemType } from '../../../types';
@@ -22,7 +34,9 @@ interface FormValues {
 const AdminEditItemType: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const { reloadItemTypes } = useGlobalVars();
   const confMessageEvt = useConfirmMessage();
   const { id } = useParams();
@@ -50,12 +64,10 @@ const AdminEditItemType: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({
-    defaultValues: useMemo(
-      () => createDefaultData(itemTypeData),
-      [createDefaultData, itemTypeData]
-    )
-  });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(itemTypeData),
+    [createDefaultData, itemTypeData]
+  ) });
 
   const onSaveItemType: SubmitHandler<FormValues> = useCallback(
     ({ name }) => {
@@ -85,21 +97,25 @@ const AdminEditItemType: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id'
-              })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
             });
           }
         });
     },
-    [api, id, getNewId, createAlert, t, reloadItemTypes, setError]
+    [
+      api,
+      id,
+      getNewId,
+      createAlert,
+      t,
+      reloadItemTypes,
+      setError
+    ]
   );
 
   const onAskDelete = useCallback(() => {
@@ -138,16 +154,12 @@ const AdminEditItemType: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.itemType.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.itemType.name`), 'capitalize') })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.itemType.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.itemType.name`), 'capitalize') })
                   });
                 }
               });
@@ -157,7 +169,18 @@ const AdminEditItemType: FC = () => {
         confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [api, confMessageEvt, t, itemTypeData?.name, id, getNewId, createAlert, reloadItemTypes, navigate, setError]);
+  }, [
+    api,
+    confMessageEvt,
+    t,
+    itemTypeData?.name,
+    id,
+    getNewId,
+    createAlert,
+    reloadItemTypes,
+    navigate,
+    setError
+  ]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
@@ -179,7 +202,13 @@ const AdminEditItemType: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, id, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    id,
+    t
+  ]);
 
   // The Autosave
   useEffect(() => {
@@ -201,7 +230,11 @@ const AdminEditItemType: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(itemTypeData));
-  }, [itemTypeData, reset, createDefaultData]);
+  }, [
+    itemTypeData,
+    reset,
+    createDefaultData
+  ]);
 
   return (
     <div className="adminEditItemType">

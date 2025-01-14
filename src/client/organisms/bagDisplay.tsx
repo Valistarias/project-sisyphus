@@ -1,4 +1,6 @@
-import React, { useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -6,9 +8,13 @@ import { useGlobalVars } from '../providers';
 
 import { Ap } from '../atoms';
 import { PropDisplay } from '../molecules';
-import { Quark, type IQuarkProps } from '../quark';
+import {
+  Quark, type IQuarkProps
+} from '../quark';
 
-import type { ICuratedBag, ICuratedItemModifier, ICuratedRarity } from '../types';
+import type {
+  ICuratedBag, ICuratedItemModifier, ICuratedRarity
+} from '../types';
 import type { IBag } from '../types/items';
 
 import { classTrim } from '../utils';
@@ -32,9 +38,13 @@ interface ICuratedCompleteBag extends Omit<ICuratedBag, 'bag'> {
   bag: ICompleteBag
 }
 
-const BagDisplay: FC<IBagDisplay> = ({ bag, mode = 'basic' }) => {
+const BagDisplay: FC<IBagDisplay> = ({
+  bag, mode = 'basic'
+}) => {
   const { t } = useTranslation();
-  const { itemModifiers, rarities, itemTypes } = useGlobalVars();
+  const {
+    itemModifiers, rarities, itemTypes
+  } = useGlobalVars();
 
   const [placement, setPlacement] = useState<string>('left');
   const domBlockContent = useRef<HTMLDivElement>(null);
@@ -43,7 +53,9 @@ const BagDisplay: FC<IBagDisplay> = ({ bag, mode = 'basic' }) => {
     if (bag === undefined) {
       return null;
     }
-    const { bag: bagObj, i18n } = bag;
+    const {
+      bag: bagObj, i18n
+    } = bag;
 
     return {
       bag: {
@@ -64,7 +76,13 @@ const BagDisplay: FC<IBagDisplay> = ({ bag, mode = 'basic' }) => {
       },
       i18n
     };
-  }, [bag, rarities, itemModifiers, itemTypes, t]);
+  }, [
+    bag,
+    rarities,
+    itemModifiers,
+    itemTypes,
+    t
+  ]);
 
   const handleMouseEnter = (): void => {
     if (mode === 'hover') {
@@ -109,16 +127,24 @@ const BagDisplay: FC<IBagDisplay> = ({ bag, mode = 'basic' }) => {
         mainNode={(
           <div className="bag-display__block__main">
             <Ap className="bag-display__block__main__text">
-              {t('display.bag.text', { ns: 'components', list: listItemTypes })}
+              {t('display.bag.text', {
+                ns: 'components', list: listItemTypes
+              })}
             </Ap>
             <Ap className="bag-display__block__main__sub">
-              {t('display.bag.qty', { ns: 'components', qty: bag.size })}
+              {t('display.bag.qty', {
+                ns: 'components', qty: bag.size
+              })}
             </Ap>
           </div>
         )}
       />
     );
-  }, [curateBag, itemTypes, t]);
+  }, [
+    curateBag,
+    itemTypes,
+    t
+  ]);
 
   if (mode === 'hover') {
     return (

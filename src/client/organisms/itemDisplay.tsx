@@ -1,4 +1,6 @@
-import React, { useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -6,7 +8,9 @@ import { useGlobalVars } from '../providers';
 
 import { Ap } from '../atoms';
 import { PropDisplay } from '../molecules';
-import { Quark, type IQuarkProps } from '../quark';
+import {
+  Quark, type IQuarkProps
+} from '../quark';
 
 import { RichTextElement } from './richTextElement';
 
@@ -45,9 +49,13 @@ interface ICuratedCompleteItem extends Omit<ICuratedItem, 'item'> {
   item: ICompleteItem
 }
 
-const ItemDisplay: FC<IItemDisplay> = ({ item, mode = 'basic' }) => {
+const ItemDisplay: FC<IItemDisplay> = ({
+  item, mode = 'basic'
+}) => {
   const { t } = useTranslation();
-  const { itemTypes, itemModifiers, rarities, charParams } = useGlobalVars();
+  const {
+    itemTypes, itemModifiers, rarities, charParams
+  } = useGlobalVars();
 
   const [placement, setPlacement] = useState<string>('left');
   const domBlockContent = useRef<HTMLDivElement>(null);
@@ -56,7 +64,9 @@ const ItemDisplay: FC<IItemDisplay> = ({ item, mode = 'basic' }) => {
     if (itemTypes.length === 0 || item === undefined) {
       return null;
     }
-    const { item: itemObj, i18n } = item;
+    const {
+      item: itemObj, i18n
+    } = item;
 
     return {
       item: {
@@ -78,7 +88,13 @@ const ItemDisplay: FC<IItemDisplay> = ({ item, mode = 'basic' }) => {
       },
       i18n
     };
-  }, [itemTypes, item, rarities, itemModifiers, charParams]);
+  }, [
+    itemTypes,
+    item,
+    rarities,
+    itemModifiers,
+    charParams
+  ]);
 
   const handleMouseEnter = (): void => {
     if (mode === 'hover') {

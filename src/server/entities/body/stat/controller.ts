@@ -4,7 +4,9 @@ const { BodyStat } = db;
 
 const replaceStatByBody = async (req: {
   bodyId: string
-  stats: Array<{ id: string, value: number }>
+  stats: Array<{
+    id: string, value: number
+  }>
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { bodyId } = req;
@@ -25,12 +27,18 @@ const replaceStatByBody = async (req: {
 
 const createStatsByBody = async (req: {
   bodyId: string
-  stats: Array<{ id: string, value: number }>
+  stats: Array<{
+    id: string, value: number
+  }>
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    const { bodyId, stats } = req;
+    const {
+      bodyId, stats
+    } = req;
     BodyStat.create(
-      stats.map(({ id, value }) => ({
+      stats.map(({
+        id, value
+      }) => ({
         body: bodyId,
         stat: id,
         value
@@ -50,7 +58,9 @@ const updateStatByBody = async (req: {
   value: number
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    const { bodyId, statId, value } = req;
+    const {
+      bodyId, statId, value
+    } = req;
     BodyStat.findOneAndUpdate(
       {
         body: bodyId,
@@ -68,9 +78,7 @@ const updateStatByBody = async (req: {
 
 const deleteStatsByBody = async (bodyId: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    BodyStat.deleteMany({
-      body: bodyId
-    })
+    BodyStat.deleteMany({ body: bodyId })
       .then(() => {
         resolve(true);
       })
@@ -79,4 +87,6 @@ const deleteStatsByBody = async (bodyId: string): Promise<boolean> =>
       });
   });
 
-export { createStatsByBody, deleteStatsByBody, replaceStatByBody, updateStatByBody };
+export {
+  createStatsByBody, deleteStatsByBody, replaceStatByBody, updateStatByBody
+};

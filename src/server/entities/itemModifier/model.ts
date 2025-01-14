@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model
+} from 'mongoose';
 
 interface IItemModifier {
   /** The title of the item modifier */
@@ -28,4 +30,6 @@ const userSchema = new Schema<IItemModifier>({
 
 const ItemModifierModel = (): Model<IItemModifier> => model('ItemModifier', userSchema);
 
-export { ItemModifierModel, type HydratedIItemModifier, type IItemModifier };
+export {
+  ItemModifierModel, type HydratedIItemModifier, type IItemModifier
+};

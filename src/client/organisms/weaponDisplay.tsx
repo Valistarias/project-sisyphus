@@ -1,12 +1,18 @@
-import React, { useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../providers';
 
-import { Ali, Ap, Atitle, Aul } from '../atoms';
+import {
+  Ali, Ap, Atitle, Aul
+} from '../atoms';
 import { PropDisplay } from '../molecules';
-import { Quark, type IQuarkProps } from '../quark';
+import {
+  Quark, type IQuarkProps
+} from '../quark';
 
 import type {
   ICuratedItemModifier,
@@ -15,7 +21,9 @@ import type {
   ICuratedWeaponScope,
   ICuratedWeaponType
 } from '../types';
-import type { ICuratedDamageType, IDamage, IWeapon } from '../types/items';
+import type {
+  ICuratedDamageType, IDamage, IWeapon
+} from '../types/items';
 import type { TypeNodeIcons } from '../types/rules';
 
 import { classTrim } from '../utils';
@@ -46,9 +54,13 @@ interface ICuratedCompleteWeapon extends Omit<ICuratedWeapon, 'weapon'> {
   weapon: ICompleteWeapon
 }
 
-const WeaponDisplay: FC<IWeaponDisplay> = ({ weapon, mode = 'basic' }) => {
+const WeaponDisplay: FC<IWeaponDisplay> = ({
+  weapon, mode = 'basic'
+}) => {
   const { t } = useTranslation();
-  const { weaponTypes, weaponScopes, itemModifiers, rarities, damageTypes } = useGlobalVars();
+  const {
+    weaponTypes, weaponScopes, itemModifiers, rarities, damageTypes
+  } = useGlobalVars();
 
   const [placement, setPlacement] = useState<string>('left');
   const domBlockContent = useRef<HTMLDivElement>(null);
@@ -57,7 +69,9 @@ const WeaponDisplay: FC<IWeaponDisplay> = ({ weapon, mode = 'basic' }) => {
     if (weaponTypes.length === 0 || weaponScopes.length === 0 || weapon === undefined) {
       return null;
     }
-    const { weapon: weaponObj, i18n } = weapon;
+    const {
+      weapon: weaponObj, i18n
+    } = weapon;
 
     return {
       weapon: {
@@ -85,7 +99,14 @@ const WeaponDisplay: FC<IWeaponDisplay> = ({ weapon, mode = 'basic' }) => {
       },
       i18n
     };
-  }, [weaponTypes, weaponScopes, weapon, rarities, itemModifiers, damageTypes]);
+  }, [
+    weaponTypes,
+    weaponScopes,
+    weapon,
+    rarities,
+    itemModifiers,
+    damageTypes
+  ]);
 
   const handleMouseEnter = (): void => {
     if (mode === 'hover') {

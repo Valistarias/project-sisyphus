@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model
+} from 'mongoose';
 
 interface IDamageType {
   /** The title of the damage type */
@@ -25,4 +27,6 @@ const damageTypeSchema = new Schema<IDamageType>({
 
 const DamageTypeModel = (): Model<IDamageType> => model('DamageType', damageTypeSchema);
 
-export { DamageTypeModel, type HydratedIDamageType, type IDamageType };
+export {
+  DamageTypeModel, type HydratedIDamageType, type IDamageType
+};

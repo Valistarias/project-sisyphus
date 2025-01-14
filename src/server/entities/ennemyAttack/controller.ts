@@ -1,7 +1,11 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemInvalidField, gemNotFound, gemServerError
+} from '../../utils/globalErrorMessage';
 
 import type { HydratedIEnnemyAttack } from './model';
 import type { IDamageType } from '../index';
@@ -14,14 +18,14 @@ const findEnnemyAttacks = async (): Promise<HydratedIEnnemyAttack[]> =>
   await new Promise((resolve, reject) => {
     EnnemyAttack.find()
       .populate<{ damageType: IDamageType }>('damageType')
-      .then(async (res?: HydratedIEnnemyAttack[] | null) => {
+      .then((res?: HydratedIEnnemyAttack[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('EnnemyAttacks'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -30,14 +34,14 @@ const findEnnemyAttackById = async (id: string): Promise<HydratedIEnnemyAttack> 
   await new Promise((resolve, reject) => {
     EnnemyAttack.findById(id)
       .populate<{ damageType: IDamageType }>('damageType')
-      .then(async (res?: HydratedIEnnemyAttack | null) => {
+      .then((res?: HydratedIEnnemyAttack | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('EnnemyAttack'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -124,15 +128,13 @@ const updateEnnemyAttacks = (
         }
 
         if (i18n !== null) {
-          const newIntl = {
-            ...(ennemyAttack.i18n !== null
-              && ennemyAttack.i18n !== undefined
-              && ennemyAttack.i18n !== ''
-              ? JSON.parse(ennemyAttack.i18n)
-              : {})
-          };
+          const newIntl: InternationalizationType = { ...(ennemyAttack.i18n !== null
+            && ennemyAttack.i18n !== undefined
+            && ennemyAttack.i18n !== ''
+            ? JSON.parse(ennemyAttack.i18n)
+            : {}) };
 
-          Object.keys(i18n as Record<string, any>).forEach((lang) => {
+          Object.keys(i18n).forEach((lang) => {
             newIntl[lang] = i18n[lang];
           });
 
@@ -164,9 +166,7 @@ const smartUpdateAttacks = async ({
   attacksToUpdate: ISentEnnemyAttack[]
 }): Promise<string[]> =>
   await new Promise((resolve, reject) => {
-    EnnemyAttack.deleteMany({
-      _id: { $in: attacksToRemove }
-    })
+    EnnemyAttack.deleteMany({ _id: { $in: attacksToRemove } })
       .then(() => {
         updateEnnemyAttacks(attacksToUpdate, [], (err: unknown | null, ids?: string[]) => {
           if (err !== null) {
@@ -182,7 +182,9 @@ const smartUpdateAttacks = async ({
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, summary, i18n = null, damageType, dices, weaponScope, bonusToHit } = req.body;
+  const {
+    title, summary, i18n = null, damageType, dices, weaponScope, bonusToHit
+  } = req.body;
   if (
     title === undefined
     || summary === undefined
@@ -256,15 +258,13 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl = {
-          ...(ennemyAttack.i18n !== null
-            && ennemyAttack.i18n !== undefined
-            && ennemyAttack.i18n !== ''
-            ? JSON.parse(ennemyAttack.i18n)
-            : {})
-        };
+        const newIntl: InternationalizationType = { ...(ennemyAttack.i18n !== null
+          && ennemyAttack.i18n !== undefined
+          && ennemyAttack.i18n !== ''
+          ? JSON.parse(ennemyAttack.i18n)
+          : {}) };
 
-        Object.keys(i18n as Record<string, any>).forEach((lang) => {
+        Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
         });
 
@@ -274,7 +274,9 @@ const update = (req: Request, res: Response): void => {
       ennemyAttack
         .save()
         .then(() => {
-          res.send({ message: 'EnnemyAttack was updated successfully!', ennemyAttack });
+          res.send({
+            message: 'EnnemyAttack was updated successfully!', ennemyAttack
+          });
         })
         .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
@@ -285,7 +287,7 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteEnnemyAttackById = async (id: string): Promise<boolean> =>
+const deleteEnnemyAttackById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('EnnemyAttack ID'));
@@ -302,8 +304,8 @@ const deleteEnnemyAttackById = async (id: string): Promise<boolean> =>
   });
 
 const deleteEnnemyAttack = (req: Request, res: Response): void => {
-  const { id } = req.body;
-  deleteEnnemyAttackById(id as string)
+  const { id }: { id: string } = req.body;
+  deleteEnnemyAttackById(id)
     .then(() => {
       res.send({ message: 'EnnemyAttack was deleted successfully!' });
     })
@@ -313,7 +315,7 @@ const deleteEnnemyAttack = (req: Request, res: Response): void => {
 };
 
 interface CuratedIEnnemyAttack {
-  i18n: Record<string, unknown>
+  i18n?: InternationalizationType
   ennemyAttack: HydratedIEnnemyAttack
 }
 

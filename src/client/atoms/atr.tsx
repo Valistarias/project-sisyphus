@@ -1,6 +1,10 @@
-import React, { type FC, type ReactNode } from 'react';
+import React, {
+  type FC, type ReactNode
+} from 'react';
 
-import { Quark, type IQuarkProps } from '../quark';
+import {
+  Quark, type IQuarkProps
+} from '../quark';
 
 import { classTrim } from '../utils';
 
@@ -11,7 +15,9 @@ interface IAtr extends IQuarkProps {
   children: ReactNode
 }
 
-const ATr: FC<IAtr> = ({ className, children }) => (
+const ATr: FC<IAtr> = ({
+  className, children
+}) => (
   <Quark
     quarkType="tr"
     className={classTrim(`

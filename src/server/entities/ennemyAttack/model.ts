@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
 import type { IDamageType } from '../index';
 
@@ -22,9 +24,7 @@ interface IEnnemyAttack {
 }
 
 type HydratedIEnnemyAttack = HydratedDocument<
-  Omit<IEnnemyAttack, 'damageType'> & {
-    damageType: IDamageType | string
-  }
+  Omit<IEnnemyAttack, 'damageType'> & { damageType: IDamageType | string }
 >;
 
 const ennemyAttackSchema = new Schema<IEnnemyAttack>({
@@ -49,4 +49,6 @@ const ennemyAttackSchema = new Schema<IEnnemyAttack>({
 
 const EnnemyAttackModel = (): Model<IEnnemyAttack> => model('EnnemyAttack', ennemyAttackSchema);
 
-export { EnnemyAttackModel, type HydratedIEnnemyAttack, type IEnnemyAttack };
+export {
+  EnnemyAttackModel, type HydratedIEnnemyAttack, type IEnnemyAttack
+};

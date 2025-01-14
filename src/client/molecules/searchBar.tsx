@@ -22,7 +22,9 @@ interface ISearchBar {
   onClean: (e: React.MouseEvent<HTMLElement>) => void
 }
 
-const SearchBar: FC<ISearchBar> = ({ search, placeholder, onClean, onChange, className }) => (
+const SearchBar: FC<ISearchBar> = ({
+  search, placeholder, onClean, onChange, className
+}) => (
   <div
     className={classTrim(`
       search-bar

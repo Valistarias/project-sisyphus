@@ -1,16 +1,30 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useNavigate, useParams
+} from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input, SmartSelect } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input, SmartSelect
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 
 import type { ICuratedAmmo } from '../../../types';
 
@@ -34,8 +48,12 @@ const AdminEditAmmo: FC = () => {
   const { api } = useApi();
   const { id } = useParams();
   const confMessageEvt = useConfirmMessage();
-  const { itemModifiers, weaponTypes, rarities } = useGlobalVars();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    itemModifiers, weaponTypes, rarities
+  } = useGlobalVars();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const navigate = useNavigate();
 
   const [displayInt, setDisplayInt] = useState(false);
@@ -47,19 +65,17 @@ const AdminEditAmmo: FC = () => {
   const [ammoText, setAmmoText] = useState('');
   const [ammoTextFr, setAmmoTextFr] = useState('');
 
-  const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const createDefaultData = useCallback((ammoData: ICuratedAmmo | null) => {
     if (ammoData == null) {
       return {};
     }
-    const { ammo, i18n } = ammoData;
+    const {
+      ammo, i18n
+    } = ammoData;
     const defaultData: Partial<FormValues> = {};
     defaultData.name = ammo.title;
     defaultData.cost = ammo.cost;
@@ -81,9 +97,7 @@ const AdminEditAmmo: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({
-    defaultValues: useMemo(() => createDefaultData(ammoData), [createDefaultData, ammoData])
-  });
+  } = useForm({ defaultValues: useMemo(() => createDefaultData(ammoData), [createDefaultData, ammoData]) });
 
   // TODO: Internationalization
   const itemModifierList = useMemo(
@@ -114,7 +128,9 @@ const AdminEditAmmo: FC = () => {
   );
 
   const onSaveAmmo: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, rarity, cost, weaponTypes, itemModifiers, offsetToHit, offsetDamage }) => {
+    ({
+      name, nameFr, rarity, cost, weaponTypes, itemModifiers, offsetToHit, offsetDamage
+    }) => {
       if (
         introEditor === null
         || introFrEditor === null
@@ -133,12 +149,10 @@ const AdminEditAmmo: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            summary: htmlFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          summary: htmlFr
+        } };
       }
 
       api.ammos
@@ -170,9 +184,7 @@ const AdminEditAmmo: FC = () => {
           const { data } = response;
           setError('root.serverError', {
             type: 'server',
-            message: t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
-            })
+            message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
           });
         });
     },
@@ -224,16 +236,12 @@ const AdminEditAmmo: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skillBranch.name`), 'capitalize') })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skillBranch.name`), 'capitalize') })
                   });
                 }
               });
@@ -243,7 +251,17 @@ const AdminEditAmmo: FC = () => {
         confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [api, ammoData, confMessageEvt, t, id, getNewId, createAlert, navigate, setError]);
+  }, [
+    api,
+    ammoData,
+    confMessageEvt,
+    t,
+    id,
+    getNewId,
+    createAlert,
+    navigate,
+    setError
+  ]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
@@ -251,7 +269,9 @@ const AdminEditAmmo: FC = () => {
       api.ammos
         .get({ ammoId: id })
         .then((curatedAmmo: ICuratedAmmo) => {
-          const { ammo, i18n } = curatedAmmo;
+          const {
+            ammo, i18n
+          } = curatedAmmo;
           setAmmoData(curatedAmmo);
           setAmmoText(ammo.summary);
           if (i18n.fr !== undefined) {
@@ -270,12 +290,22 @@ const AdminEditAmmo: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, id, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    id,
+    t
+  ]);
 
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(ammoData));
-  }, [ammoData, reset, createDefaultData]);
+  }, [
+    ammoData,
+    reset,
+    createDefaultData
+  ]);
 
   return (
     <div
@@ -303,9 +333,7 @@ const AdminEditAmmo: FC = () => {
             control={control}
             inputName="name"
             type="text"
-            rules={{
-              required: t('nameAmmo.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('nameAmmo.required', { ns: 'fields' }) }}
             label={t('nameAmmo.label', { ns: 'fields' })}
             className="adminEditAmmo__basics__name"
           />
@@ -314,18 +342,14 @@ const AdminEditAmmo: FC = () => {
               control={control}
               inputName="offsetToHit"
               type="number"
-              rules={{
-                required: t('ammoOffsetToHit.required', { ns: 'fields' })
-              }}
+              rules={{ required: t('ammoOffsetToHit.required', { ns: 'fields' }) }}
               label={t('ammoOffsetToHit.label', { ns: 'fields' })}
             />
             <Input
               control={control}
               inputName="offsetDamage"
               type="number"
-              rules={{
-                required: t('ammoOffsetDamage.required', { ns: 'fields' })
-              }}
+              rules={{ required: t('ammoOffsetDamage.required', { ns: 'fields' }) }}
               label={t('ammoOffsetDamage.label', { ns: 'fields' })}
             />
             <SmartSelect
@@ -333,9 +357,7 @@ const AdminEditAmmo: FC = () => {
               isMulti
               inputName="weaponTypes"
               label={t('ammoWeaponTypes.label', { ns: 'fields' })}
-              rules={{
-                required: t('ammoWeaponTypes.required', { ns: 'fields' })
-              }}
+              rules={{ required: t('ammoWeaponTypes.required', { ns: 'fields' }) }}
               options={weaponList}
               className="adminNewWeapon__details__fields__elt"
             />
@@ -362,9 +384,7 @@ const AdminEditAmmo: FC = () => {
               control={control}
               inputName="cost"
               type="number"
-              rules={{
-                required: t('ammoCost.required', { ns: 'fields' })
-              }}
+              rules={{ required: t('ammoCost.required', { ns: 'fields' }) }}
               label={t('ammoCost.label', { ns: 'fields' })}
               className="adminEditAmmo__details__fields__elt"
             />

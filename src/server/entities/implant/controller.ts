@@ -1,15 +1,22 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemInvalidField, gemNotFound, gemServerError
+} from '../../utils/globalErrorMessage';
 import { smartUpdateActions } from '../action/controller';
 import { curateCharParamBonusIds } from '../charParamBonus/controller';
 import { smartUpdateEffects } from '../effect/controller';
 import { curateSkillBonusIds } from '../skillBonus/controller';
 import { curateStatBonusIds } from '../statBonus/controller';
 
-import type { IAction, ICharParamBonus, IEffect, ISkillBonus, IStatBonus } from '../index';
+import type { InternationalizationType } from '../../utils/types';
+import type {
+  IAction, ICharParamBonus, IEffect, ISkillBonus, IStatBonus
+} from '../index';
 import type { HydratedIImplant } from './model';
 
 import { curateI18n } from '../../utils';
@@ -28,14 +35,14 @@ const findImplants = async (options?: findAllPayload): Promise<HydratedIImplant[
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
-      .then(async (res?: HydratedIImplant[] | null) => {
+      .then((res?: HydratedIImplant[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Implants'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err: unknown) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -48,14 +55,14 @@ const findImplantById = async (id: string): Promise<HydratedIImplant> =>
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
-      .then(async (res?: HydratedIImplant | null) => {
+      .then((res?: HydratedIImplant | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Implant'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err: unknown) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -409,13 +416,11 @@ const update = (req: Request, res: Response): void => {
       }, []);
 
       if (i18n !== null) {
-        const newIntl = {
-          ...(implant.i18n !== null && implant.i18n !== undefined && implant.i18n !== ''
-            ? JSON.parse(implant.i18n)
-            : {})
-        };
+        const newIntl: InternationalizationType = { ...(implant.i18n !== null && implant.i18n !== undefined && implant.i18n !== ''
+          ? JSON.parse(implant.i18n)
+          : {}) };
 
-        Object.keys(i18n as Record<string, any>).forEach((lang) => {
+        Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
         });
 
@@ -472,7 +477,9 @@ const update = (req: Request, res: Response): void => {
                           implant
                             .save()
                             .then(() => {
-                              res.send({ message: 'Implant was updated successfully!', implant });
+                              res.send({
+                                message: 'Implant was updated successfully!', implant
+                              });
                             })
                             .catch((err: unknown) => {
                               res.status(500).send(gemServerError(err));
@@ -503,7 +510,7 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteImplantById = async (id: string): Promise<boolean> =>
+const deleteImplantById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Implant ID'));
@@ -520,9 +527,9 @@ const deleteImplantById = async (id: string): Promise<boolean> =>
   });
 
 const deleteImplant = (req: Request, res: Response): void => {
-  const { id } = req.body;
+  const { id }: { id: string } = req.body;
 
-  findImplantById(id as string)
+  findImplantById(id)
     .then((implant) => {
       const skillBonusesToRemove = implant.skillBonuses.map(elt => elt._id);
       const statBonusesToRemove = implant.statBonuses.map(elt => elt._id);
@@ -558,7 +565,7 @@ const deleteImplant = (req: Request, res: Response): void => {
                         actionsToUpdate: []
                       })
                         .then(() => {
-                          deleteImplantById(id as string)
+                          deleteImplantById(id)
                             .then(() => {
                               res.send({ message: 'Implant was deleted successfully!' });
                             })
@@ -592,7 +599,7 @@ const deleteImplant = (req: Request, res: Response): void => {
 };
 
 interface CuratedIImplant {
-  i18n: Record<string, unknown>
+  i18n?: InternationalizationType
   implant: any
 }
 
@@ -723,4 +730,6 @@ const findAllStarter = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteImplant, findAll, findAllStarter, findImplantById, findSingle, update };
+export {
+  create, deleteImplant, findAll, findAllStarter, findImplantById, findSingle, update
+};

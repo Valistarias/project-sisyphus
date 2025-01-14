@@ -1,4 +1,6 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 
 import db from '../../models';
 import {
@@ -17,14 +19,14 @@ const { ItemModifier } = db;
 const findItemModifiers = async (): Promise<HydratedIItemModifier[]> =>
   await new Promise((resolve, reject) => {
     ItemModifier.find()
-      .then(async (res?: HydratedIItemModifier[] | null) => {
+      .then((res?: HydratedIItemModifier[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('ItemModifiers'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -32,14 +34,14 @@ const findItemModifiers = async (): Promise<HydratedIItemModifier[]> =>
 const findItemModifierById = async (id: string): Promise<HydratedIItemModifier> =>
   await new Promise((resolve, reject) => {
     ItemModifier.findById(id)
-      .then(async (res?: HydratedIItemModifier | null) => {
+      .then((res?: HydratedIItemModifier | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('ItemModifier'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -50,14 +52,14 @@ const checkDuplicateItemModifierModifierId = async (
 ): Promise<string | boolean> =>
   await new Promise((resolve, reject) => {
     ItemModifier.find({ modifierId })
-      .then(async (res) => {
+      .then((res) => {
         if (res.length === 0 || (alreadyExistOnce && res.length === 1)) {
           resolve(false);
         } else {
           resolve(res[0].title);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -81,7 +83,9 @@ const checkDuplicateModifierId = async (
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, summary, i18n = null, modifierId } = req.body;
+  const {
+    title, summary, i18n = null, modifierId
+  } = req.body;
   if (title === undefined || summary === undefined || modifierId === undefined) {
     res.status(400).send(gemInvalidField('Item Modifier'));
 
@@ -119,7 +123,9 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, title = null, summary = null, i18n, modifierId = null } = req.body;
+  const {
+    id, title = null, summary = null, i18n, modifierId = null
+  } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Item Modifier ID'));
 
@@ -143,15 +149,13 @@ const update = (req: Request, res: Response): void => {
             }
 
             if (i18n !== null) {
-              const newIntl = {
-                ...(itemModifier.i18n !== null
-                  && itemModifier.i18n !== undefined
-                  && itemModifier.i18n !== ''
-                  ? JSON.parse(itemModifier.i18n)
-                  : {})
-              };
+              const newIntl: InternationalizationType = { ...(itemModifier.i18n !== null
+                && itemModifier.i18n !== undefined
+                && itemModifier.i18n !== ''
+                ? JSON.parse(itemModifier.i18n)
+                : {}) };
 
-              Object.keys(i18n as Record<string, any>).forEach((lang) => {
+              Object.keys(i18n).forEach((lang) => {
                 newIntl[lang] = i18n[lang];
               });
 
@@ -161,7 +165,9 @@ const update = (req: Request, res: Response): void => {
             itemModifier
               .save()
               .then(() => {
-                res.send({ message: 'Item Modifier was updated successfully!', itemModifier });
+                res.send({
+                  message: 'Item Modifier was updated successfully!', itemModifier
+                });
               })
               .catch((err: unknown) => {
                 res.status(500).send(gemServerError(err));
@@ -179,7 +185,7 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteItemModifierById = async (id: string): Promise<boolean> =>
+const deleteItemModifierById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Item Modifier ID'));
@@ -196,8 +202,8 @@ const deleteItemModifierById = async (id: string): Promise<boolean> =>
   });
 
 const deleteItemModifier = (req: Request, res: Response): void => {
-  const { id } = req.body;
-  deleteItemModifierById(id as string)
+  const { id }: { id: string } = req.body;
+  deleteItemModifierById(id)
     .then(() => {
       res.send({ message: 'Item Modifier was deleted successfully!' });
     })
@@ -207,7 +213,7 @@ const deleteItemModifier = (req: Request, res: Response): void => {
 };
 
 interface CuratedIItemModifier {
-  i18n: Record<string, unknown>
+  i18n?: InternationalizationType
   itemModifier: HydratedIItemModifier
 }
 

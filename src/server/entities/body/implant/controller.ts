@@ -28,7 +28,9 @@ const createImplantsByBody = async (req: {
   implantIds: string[]
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    const { bodyId, implantIds } = req;
+    const {
+      bodyId, implantIds
+    } = req;
     BodyImplant.create(
       implantIds.map(implantId => ({
         body: bodyId,
@@ -50,7 +52,9 @@ const updateImplantByBody = async (req: {
   bag?: string
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    const { bodyId, implantId, equiped = null, bag = null } = req;
+    const {
+      bodyId, implantId, equiped = null, bag = null
+    } = req;
     const updateObj: {
       bag?: string
       equiped?: string
@@ -81,9 +85,7 @@ const updateImplantByBody = async (req: {
 
 const deleteImplantsByBody = async (bodyId: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    BodyImplant.deleteMany({
-      body: bodyId
-    })
+    BodyImplant.deleteMany({ body: bodyId })
       .then(() => {
         resolve(true);
       })
@@ -92,4 +94,6 @@ const deleteImplantsByBody = async (bodyId: string): Promise<boolean> =>
       });
   });
 
-export { createImplantsByBody, deleteImplantsByBody, replaceImplantByBody, updateImplantByBody };
+export {
+  createImplantsByBody, deleteImplantsByBody, replaceImplantByBody, updateImplantByBody
+};

@@ -1,16 +1,30 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useNavigate, useParams
+} from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 
 import type { ICuratedStat } from '../../../types';
 
@@ -27,7 +41,9 @@ interface FormValues {
 const AdminEditStat: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const { reloadStats } = useGlobalVars();
   const confMessageEvt = useConfirmMessage();
   const { id } = useParams();
@@ -42,19 +58,17 @@ const AdminEditStat: FC = () => {
   const [statText, setStatText] = useState('');
   const [statTextFr, setStatTextFr] = useState('');
 
-  const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const createDefaultData = useCallback((statData: ICuratedStat | null) => {
     if (statData == null) {
       return {};
     }
-    const { stat, i18n } = statData;
+    const {
+      stat, i18n
+    } = statData;
     const defaultData: Partial<FormValues> = {};
     defaultData.name = stat.title;
     defaultData.short = stat.short;
@@ -73,12 +87,12 @@ const AdminEditStat: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({
-    defaultValues: useMemo(() => createDefaultData(statData), [createDefaultData, statData])
-  });
+  } = useForm({ defaultValues: useMemo(() => createDefaultData(statData), [createDefaultData, statData]) });
 
   const onSaveStat: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, short, shortFr, formulaId }) => {
+    ({
+      name, nameFr, short, shortFr, formulaId
+    }) => {
       if (
         statText === null
         || statTextFr === null
@@ -100,13 +114,11 @@ const AdminEditStat: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            short: shortFr ?? '',
-            text: htmlTextFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          short: shortFr ?? '',
+          text: htmlTextFr
+        } };
       }
 
       api.stats
@@ -135,16 +147,12 @@ const AdminEditStat: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id'
-              })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
             });
           }
         });
@@ -200,16 +208,12 @@ const AdminEditStat: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.stat.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.stat.name`), 'capitalize') })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.stat.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.stat.name`), 'capitalize') })
                   });
                 }
               });
@@ -219,7 +223,18 @@ const AdminEditStat: FC = () => {
         confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [api, confMessageEvt, t, statData?.stat.title, id, getNewId, createAlert, reloadStats, navigate, setError]);
+  }, [
+    api,
+    confMessageEvt,
+    t,
+    statData?.stat.title,
+    id,
+    getNewId,
+    createAlert,
+    reloadStats,
+    navigate,
+    setError
+  ]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
@@ -227,7 +242,9 @@ const AdminEditStat: FC = () => {
       api.stats
         .get({ statId: id })
         .then((curatedStat: ICuratedStat) => {
-          const { stat, i18n } = curatedStat;
+          const {
+            stat, i18n
+          } = curatedStat;
           setStatData(curatedStat);
           setStatText(stat.summary);
           if (i18n.fr !== undefined) {
@@ -246,7 +263,13 @@ const AdminEditStat: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, id, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    id,
+    t
+  ]);
 
   // The Autosave
   useEffect(() => {
@@ -268,7 +291,11 @@ const AdminEditStat: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(statData));
-  }, [statData, reset, createDefaultData]);
+  }, [
+    statData,
+    reset,
+    createDefaultData
+  ]);
 
   return (
     <div className="adminEditStat">
@@ -297,9 +324,7 @@ const AdminEditStat: FC = () => {
             control={control}
             inputName="short"
             type="text"
-            rules={{
-              required: t('nameStatShort.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('nameStatShort.required', { ns: 'fields' }) }}
             label={t('nameStatShort.label', { ns: 'fields' })}
             className="adminNewStat__basics__name"
           />

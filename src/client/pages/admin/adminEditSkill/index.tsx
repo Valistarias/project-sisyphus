@@ -1,18 +1,34 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useNavigate, useParams
+} from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input, NodeTree, SmartSelect, type ISingleValueSelect } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input, NodeTree, SmartSelect, type ISingleValueSelect
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 
-import type { ICuratedNode, ICuratedSkill, ISkillBranch } from '../../../types';
+import type {
+  ICuratedNode, ICuratedSkill, ISkillBranch
+} from '../../../types';
 
 import { classTrim } from '../../../utils';
 
@@ -28,8 +44,12 @@ interface FormValues {
 const AdminEditSkill: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
-  const { stats, reloadSkills } = useGlobalVars();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
+  const {
+    stats, reloadSkills
+  } = useGlobalVars();
   const confMessageEvt = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -45,13 +65,9 @@ const AdminEditSkill: FC = () => {
   const [skillText, setSkillText] = useState('');
   const [skillTextFr, setSkillTextFr] = useState('');
 
-  const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const nodeTree = useMemo(() => {
     const branches = skillData?.skill.branches;
@@ -87,7 +103,9 @@ const AdminEditSkill: FC = () => {
       if (skillData == null) {
         return {};
       }
-      const { skill, i18n } = skillData;
+      const {
+        skill, i18n
+      } = skillData;
       const defaultData: Partial<FormValues> = {};
       defaultData.name = skill.title;
       defaultData.formulaId = skill.formulaId;
@@ -110,15 +128,19 @@ const AdminEditSkill: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({
-    defaultValues: useMemo(
-      () => createDefaultData(skillData, statSelect),
-      [createDefaultData, statSelect, skillData]
-    )
-  });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(skillData, statSelect),
+    [
+      createDefaultData,
+      statSelect,
+      skillData
+    ]
+  ) });
 
   const onSaveSkill: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, stat, formulaId }) => {
+    ({
+      name, nameFr, stat, formulaId
+    }) => {
       if (textEditor === null || textFrEditor === null || formulaId === null || api === undefined) {
         return;
       }
@@ -133,12 +155,10 @@ const AdminEditSkill: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            text: htmlTextFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          text: htmlTextFr
+        } };
       }
 
       api.skills
@@ -167,21 +187,27 @@ const AdminEditSkill: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id'
-              })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
             });
           }
         });
     },
-    [textEditor, textFrEditor, api, id, getNewId, createAlert, t, reloadSkills, setError]
+    [
+      textEditor,
+      textFrEditor,
+      api,
+      id,
+      getNewId,
+      createAlert,
+      t,
+      reloadSkills,
+      setError
+    ]
   );
 
   const onAskDelete = useCallback(() => {
@@ -220,16 +246,12 @@ const AdminEditSkill: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.skill.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skill.name`), 'capitalize') })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.skill.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skill.name`), 'capitalize') })
                   });
                 }
               });
@@ -239,7 +261,18 @@ const AdminEditSkill: FC = () => {
         confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [api, confMessageEvt, t, skillData?.skill.title, id, getNewId, createAlert, reloadSkills, navigate, setError]);
+  }, [
+    api,
+    confMessageEvt,
+    t,
+    skillData?.skill.title,
+    id,
+    getNewId,
+    createAlert,
+    reloadSkills,
+    navigate,
+    setError
+  ]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
@@ -247,7 +280,9 @@ const AdminEditSkill: FC = () => {
       api.skills
         .get({ skillId: id })
         .then((curatedSkill: ICuratedSkill) => {
-          const { skill, i18n } = curatedSkill;
+          const {
+            skill, i18n
+          } = curatedSkill;
           setSkillData(curatedSkill);
           setSkillText(skill.summary);
           if (i18n.fr !== undefined) {
@@ -266,7 +301,13 @@ const AdminEditSkill: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, id, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    id,
+    t
+  ]);
 
   // The Autosave
   useEffect(() => {
@@ -288,7 +329,12 @@ const AdminEditSkill: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(skillData, statSelect));
-  }, [skillData, reset, createDefaultData, statSelect]);
+  }, [
+    skillData,
+    reset,
+    createDefaultData,
+    statSelect
+  ]);
 
   return (
     <div

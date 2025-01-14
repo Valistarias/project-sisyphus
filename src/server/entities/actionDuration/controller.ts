@@ -1,4 +1,6 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 import type { HydratedDocument } from 'mongoose';
 
 import db from '../../models';
@@ -16,14 +18,14 @@ const { ActionDuration } = db;
 const findActionDurations = async (): Promise<Array<HydratedDocument<IActionDuration>>> =>
   await new Promise((resolve, reject) => {
     ActionDuration.find()
-      .then(async (res) => {
+      .then((res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('ActionDurations'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -31,14 +33,14 @@ const findActionDurations = async (): Promise<Array<HydratedDocument<IActionDura
 const findActionDurationById = async (id: string): Promise<HydratedDocument<IActionDuration>> =>
   await new Promise((resolve, reject) => {
     ActionDuration.findById(id)
-      .then(async (res) => {
+      .then((res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('ActionDuration'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -53,9 +55,7 @@ const create = (req: Request, res: Response): void => {
   findActionDurations()
     .then((actionDurations) => {
       if (actionDurations.find(actionDuration => actionDuration.name === name) === undefined) {
-        const toSaveActionDuration = new ActionDuration({
-          name
-        });
+        const toSaveActionDuration = new ActionDuration({ name });
 
         toSaveActionDuration
           .save()
@@ -73,7 +73,9 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, name = null } = req.body;
+  const {
+    id, name = null
+  } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('ActionDuration ID'));
 
@@ -91,7 +93,9 @@ const update = (req: Request, res: Response): void => {
         actualActionDuration
           .save()
           .then(() => {
-            res.send({ message: 'ActionDuration was updated successfully!', actualActionDuration });
+            res.send({
+              message: 'ActionDuration was updated successfully!', actualActionDuration
+            });
           })
           .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
@@ -104,7 +108,7 @@ const update = (req: Request, res: Response): void => {
 };
 
 const deleteActionDuration = (req: Request, res: Response): void => {
-  const { id } = req.body;
+  const { id }: { id: string } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('ActionDuration ID'));
 
@@ -137,4 +141,6 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteActionDuration, findAll, findSingle, update };
+export {
+  create, deleteActionDuration, findAll, findSingle, update
+};

@@ -1,4 +1,6 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import {
+  Schema, model, type HydratedDocument, type Model, type ObjectId
+} from 'mongoose';
 
 import type { IAmmo } from '../../ammo/model';
 import type { IWeapon } from '../../weapon/model';
@@ -54,4 +56,6 @@ const BodyWeaponSchema = new Schema<IBodyWeapon>({
 
 const BodyWeaponModel = (): Model<IBodyWeapon> => model('BodyWeapon', BodyWeaponSchema);
 
-export { BodyWeaponModel, type HydratedIBodyWeapon, type IBodyWeapon };
+export {
+  BodyWeaponModel, type HydratedIBodyWeapon, type IBodyWeapon
+};

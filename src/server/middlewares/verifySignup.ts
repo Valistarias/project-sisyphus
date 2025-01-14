@@ -1,20 +1,24 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 
 import db from '../models';
-import { gemDuplicate, gemNotFound } from '../utils/globalErrorMessage';
+import {
+  gemDuplicate, gemNotFound
+} from '../utils/globalErrorMessage';
 
-const { ROLES, User } = db;
+const {
+  ROLES, User
+} = db;
 
-const checkDuplicateMail = (req: Request, res: Response, next: () => void): void => {
-  const {
-    mail
-  }: {
-    mail: string
-  } = req.body;
+const checkDuplicateMail = (
+  req: Request,
+  res: Response,
+  next: () => void
+): void => {
+  const { mail }: { mail: string } = req.body;
 
-  User.findOne({
-    mail
-  })
+  User.findOne({ mail })
     .then((user) => {
       if (user !== null) {
         res.status(400).send(gemDuplicate('mail'));
@@ -29,12 +33,11 @@ const checkDuplicateMail = (req: Request, res: Response, next: () => void): void
     });
 };
 
-const checkRolesExisted = (req: Request, res: Response, next: () => void): void => {
-  const {
-    roles
-  }: {
-    roles: string[]
-  } = req.body;
+const checkRolesExisted = (
+  req: Request,
+  res: Response, next: () => void
+): void => {
+  const { roles }: { roles: string[] } = req.body;
 
   if (Array.isArray(roles)) {
     for (const role of roles) {

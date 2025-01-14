@@ -1,12 +1,20 @@
-import React, { useCallback, useMemo, useState, type FC } from 'react';
+import React, {
+  useCallback, useMemo, useState, type FC
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { useApi, useGlobalVars, useSystemAlerts } from '../providers';
+import {
+  useApi, useGlobalVars, useSystemAlerts
+} from '../providers';
 
-import { Aa, Ap } from '../atoms';
-import { Button, DropDownMenu } from '../molecules';
+import {
+  Aa, Ap
+} from '../atoms';
+import {
+  Button, DropDownMenu
+} from '../molecules';
 
 import Alert from './alert';
 
@@ -21,10 +29,14 @@ interface IHeaderBar {
 
 const HeaderBar: FC<IHeaderBar> = ({ className }) => {
   const { api } = useApi();
-  const { user, setUser } = useGlobalVars();
+  const {
+    user, setUser
+  } = useGlobalVars();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const { ruleBooks } = useGlobalVars();
 
   const [menuOpened, setMenuOpened] = useState<null | string>(null);
@@ -65,7 +77,14 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
           });
         });
     }
-  }, [api, createAlert, getNewId, navigate, setUser, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    navigate,
+    setUser,
+    t
+  ]);
 
   return (
     <div

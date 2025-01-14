@@ -14,7 +14,9 @@ import type {
   ICuratedBodyPart
 } from './character';
 import type { IReactHookFormInputs } from './form';
-import type { ICampaignEvent, IUser, TypeCampaignEvent, TypeDice } from './global';
+import type {
+  ICampaignEvent, IUser, TypeCampaignEvent, TypeDice
+} from './global';
 import type {
   ICuratedAmmo,
   ICuratedArmor,
@@ -40,7 +42,9 @@ import type {
   IWeaponType,
   TypeStarterKitValues
 } from './items';
-import type { ICuratedBasicNPC, ICuratedEnnemyAttack, ICuratedNPC } from './npc';
+import type {
+  ICuratedBasicNPC, ICuratedEnnemyAttack, ICuratedNPC
+} from './npc';
 import type {
   IChapter,
   IChapterType,

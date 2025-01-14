@@ -1,12 +1,20 @@
-import React, { useEffect, useRef, useState, type FC } from 'react';
+import React, {
+  useEffect, useRef, useState, type FC
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import { useApi, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useSystemAlerts
+} from '../../../providers';
 
-import { Ap, Atitle } from '../../../atoms';
-import { Alert, RichTextElement } from '../../../organisms';
+import {
+  Ap, Atitle
+} from '../../../atoms';
+import {
+  Alert, RichTextElement
+} from '../../../organisms';
 import { ErrorPage } from '../../index';
 
 import type { ICuratedChapter } from '../../../types';
@@ -15,9 +23,13 @@ import './chapter.scss';
 
 const Chapter: FC = () => {
   const { t } = useTranslation();
-  const { id: ruleBookId, chapterId } = useParams();
+  const {
+    id: ruleBookId, chapterId
+  } = useParams();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
 
   const calledApi = useRef<string | null>(null);
 
@@ -60,7 +72,14 @@ const Chapter: FC = () => {
           }
         });
     }
-  }, [api, createAlert, getNewId, ruleBookId, chapterId, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    ruleBookId,
+    chapterId,
+    t
+  ]);
 
   if (loading) {
     return null;
@@ -76,7 +95,9 @@ const Chapter: FC = () => {
         {chapter?.chapter.title ?? ''}
       </Atitle>
       {chapter?.chapter.pages !== undefined
-        ? chapter.chapter.pages.map(({ _id, title, content }) => (
+        ? chapter.chapter.pages.map(({
+            _id, title, content
+          }) => (
             <div key={_id} className="chapter__page">
               <Atitle className="chapter__page__title" level={2}>
                 {title}

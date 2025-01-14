@@ -1,4 +1,6 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 
 import db from '../../models';
 import {
@@ -8,8 +10,11 @@ import {
   gemServerError
 } from '../../utils/globalErrorMessage';
 
+import type { InternationalizationType } from '../../utils/types';
 import type { ISkill } from '../index';
-import type { HydratedISkillBranch, ISkillBranch } from './model';
+import type {
+  HydratedISkillBranch, ISkillBranch
+} from './model';
 import type { CuratedINode } from '../node/controller';
 
 import { curateI18n } from '../../utils';
@@ -20,14 +25,14 @@ const findSkillBranches = async (): Promise<HydratedISkillBranch[]> =>
   await new Promise((resolve, reject) => {
     SkillBranch.find()
       .populate<{ skill: ISkill }>('skill')
-      .then(async (res?: HydratedISkillBranch[] | null) => {
+      .then((res?: HydratedISkillBranch[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('SkillBranches'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -36,14 +41,14 @@ const findSkillBranchesBySkill = async (skillId: string): Promise<HydratedISkill
   await new Promise((resolve, reject) => {
     SkillBranch.find({ skill: skillId })
       .populate<{ skill: ISkill }>('skill')
-      .then(async (res?: HydratedISkillBranch[] | null) => {
+      .then((res?: HydratedISkillBranch[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('SkillBranches'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -52,20 +57,22 @@ const findSkillBranchById = async (id: string): Promise<HydratedISkillBranch> =>
   await new Promise((resolve, reject) => {
     SkillBranch.findById(id)
       .populate<{ skill: ISkill }>('skill')
-      .then(async (res?: HydratedISkillBranch | null) => {
+      .then((res?: HydratedISkillBranch | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('SkillBranch'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, summary, skill, i18n = null } = req.body;
+  const {
+    title, summary, skill, i18n = null
+  } = req.body;
   if (title === undefined || summary === undefined || skill === undefined) {
     res.status(400).send(gemInvalidField('SkillBranch'));
 
@@ -97,7 +104,7 @@ const create = (req: Request, res: Response): void => {
     });
 };
 
-const createGeneralForSkillId = async (id: string): Promise<boolean> =>
+const createGeneralForSkillId = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Skill ID'));
@@ -120,7 +127,9 @@ const createGeneralForSkillId = async (id: string): Promise<boolean> =>
   });
 
 const update = (req: Request, res: Response): void => {
-  const { id, title = null, summary = null, skill = null, i18n } = req.body;
+  const {
+    id, title = null, summary = null, skill = null, i18n
+  } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('SkillBranch ID'));
 
@@ -149,13 +158,11 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl = {
-          ...(skillBranch.i18n !== null && skillBranch.i18n !== undefined && skillBranch.i18n !== ''
-            ? JSON.parse(skillBranch.i18n)
-            : {})
-        };
+        const newIntl: InternationalizationType = { ...(skillBranch.i18n !== null && skillBranch.i18n !== undefined && skillBranch.i18n !== ''
+          ? JSON.parse(skillBranch.i18n)
+          : {}) };
 
-        Object.keys(i18n as Record<string, any>).forEach((lang) => {
+        Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
         });
 
@@ -165,7 +172,9 @@ const update = (req: Request, res: Response): void => {
       skillBranch
         .save()
         .then(() => {
-          res.send({ message: 'Skill branch was updated successfully!', skillBranch });
+          res.send({
+            message: 'Skill branch was updated successfully!', skillBranch
+          });
         })
         .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
@@ -176,7 +185,7 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteSkillBranchById = async (id: string): Promise<boolean> =>
+const deleteSkillBranchById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Skill ID'));
@@ -203,8 +212,8 @@ const deleteSkillBranchById = async (id: string): Promise<boolean> =>
   });
 
 const deleteSkillBranch = (req: Request, res: Response): void => {
-  const { id } = req.body;
-  deleteSkillBranchById(id as string)
+  const { id }: { id: string } = req.body;
+  deleteSkillBranchById(id)
     .then(() => {
       res.send({ message: 'Skill branch was deleted successfully!' });
     })
@@ -235,7 +244,7 @@ type CuratedISkillBranch = Omit<ISkillBranch, 'skill'> & {
 };
 
 interface CuratedIntISkillBranch {
-  i18n: Record<string, unknown>
+  i18n?: InternationalizationType
   skillBranch: CuratedISkillBranch
 }
 

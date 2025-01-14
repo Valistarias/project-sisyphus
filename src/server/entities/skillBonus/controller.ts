@@ -1,13 +1,23 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 import type { HydratedDocument } from 'mongoose';
 
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemInvalidField, gemNotFound, gemServerError
+} from '../../utils/globalErrorMessage';
 
-import type { INode, ISkill } from '../index';
-import type { HydratedISkillBonus, ISkillBonus } from './model';
+import type {
+  INode, ISkill
+} from '../index';
+import type {
+  HydratedISkillBonus, ISkillBonus
+} from './model';
 
-const { SkillBonus, Node } = db;
+const {
+  SkillBonus, Node
+} = db;
 
 const findSkillBonuses = async (): Promise<HydratedISkillBonus[]> =>
   await new Promise((resolve, reject) => {
@@ -20,7 +30,7 @@ const findSkillBonuses = async (): Promise<HydratedISkillBonus[]> =>
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -36,7 +46,7 @@ const findSkillBonusById = async (id: string): Promise<HydratedISkillBonus> =>
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -146,7 +156,9 @@ const curateSkillBonusIds = async ({
   });
 
 const create = (req: Request, res: Response): void => {
-  const { skill, value } = req.body;
+  const {
+    skill, value
+  } = req.body;
   if (skill === undefined || value === undefined) {
     res.status(400).send(gemInvalidField('SkillBonus'));
 
@@ -169,7 +181,9 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, skill = null, value = null } = req.body;
+  const {
+    id, skill = null, value = null
+  } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('SkillBonus ID'));
 
@@ -187,7 +201,9 @@ const update = (req: Request, res: Response): void => {
       skillBonus
         .save()
         .then(() => {
-          res.send({ message: 'Skill bonus was updated successfully!', skillBonus });
+          res.send({
+            message: 'Skill bonus was updated successfully!', skillBonus
+          });
         })
         .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
@@ -198,7 +214,7 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteSkillBonusById = async (id: string): Promise<boolean> =>
+const deleteSkillBonusById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('SkillBonus ID'));
@@ -215,8 +231,8 @@ const deleteSkillBonusById = async (id: string): Promise<boolean> =>
   });
 
 const deleteSkillBonus = (req: Request, res: Response): void => {
-  const { id } = req.body;
-  deleteSkillBonusById(id as string)
+  const { id }: { id: string } = req.body;
+  deleteSkillBonusById(id)
     .then(() => {
       res.send({ message: 'Skill bonus was deleted successfully!' });
     })

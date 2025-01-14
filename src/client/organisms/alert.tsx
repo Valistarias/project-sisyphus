@@ -29,7 +29,9 @@ interface IAlert {
   closable?: boolean
 }
 
-const Alert: FC<IAlert> = ({ id, children, timer, closable }) => {
+const Alert: FC<IAlert> = ({
+  id, children, timer, closable
+}) => {
   const { deleteAlert } = useSystemAlerts();
 
   const { t } = useTranslation();
@@ -59,7 +61,11 @@ const Alert: FC<IAlert> = ({ id, children, timer, closable }) => {
             </Button>
           )
         : null,
-    [closable, onCloseAlert, t]
+    [
+      closable,
+      onCloseAlert,
+      t
+    ]
   );
 
   useEffect(() => {
@@ -85,7 +91,11 @@ const Alert: FC<IAlert> = ({ id, children, timer, closable }) => {
         clearTimeout(timerCountdown.current);
       }
     };
-  }, [timer, deleteAlert, id]);
+  }, [
+    timer,
+    deleteAlert,
+    id
+  ]);
 
   return (
     <div

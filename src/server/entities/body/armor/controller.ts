@@ -2,7 +2,9 @@ import db from '../../../models';
 
 const { BodyArmor } = db;
 
-const replaceArmorByBody = async (req: { bodyId: string, armorIds: string[] }): Promise<boolean> =>
+const replaceArmorByBody = async (req: {
+  bodyId: string, armorIds: string[]
+}): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { bodyId } = req;
     BodyArmor.deleteMany({ body: bodyId })
@@ -20,9 +22,13 @@ const replaceArmorByBody = async (req: { bodyId: string, armorIds: string[] }): 
       });
   });
 
-const createArmorsByBody = async (req: { bodyId: string, armorIds: string[] }): Promise<boolean> =>
+const createArmorsByBody = async (req: {
+  bodyId: string, armorIds: string[]
+}): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    const { bodyId, armorIds } = req;
+    const {
+      bodyId, armorIds
+    } = req;
     BodyArmor.create(
       armorIds.map(armorId => ({
         body: bodyId,
@@ -44,7 +50,9 @@ const updateArmorByBody = async (req: {
   bag?: string
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    const { bodyId, armorId, equiped = null, bag = null } = req;
+    const {
+      bodyId, armorId, equiped = null, bag = null
+    } = req;
     const updateObj: {
       bag?: string
       equiped?: boolean
@@ -75,9 +83,7 @@ const updateArmorByBody = async (req: {
 
 const deleteArmorsByBody = async (bodyId: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    BodyArmor.deleteMany({
-      body: bodyId
-    })
+    BodyArmor.deleteMany({ body: bodyId })
       .then(() => {
         resolve(true);
       })
@@ -86,4 +92,6 @@ const deleteArmorsByBody = async (bodyId: string): Promise<boolean> =>
       });
   });
 
-export { createArmorsByBody, deleteArmorsByBody, replaceArmorByBody, updateArmorByBody };
+export {
+  createArmorsByBody, deleteArmorsByBody, replaceArmorByBody, updateArmorByBody
+};

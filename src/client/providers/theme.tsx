@@ -1,4 +1,6 @@
-import React, { useContext, useEffect, useMemo, useState, type FC, type ReactNode } from 'react';
+import React, {
+  useContext, useEffect, useMemo, useState, type FC, type ReactNode
+} from 'react';
 
 import { useGlobalVars } from './globalVars';
 
@@ -59,9 +61,7 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
   }, [chosenScale]);
 
   const providerValues = useMemo(
-    () => ({
-      colorMode
-    }),
+    () => ({ colorMode }),
     [colorMode]
   );
 

@@ -1,4 +1,6 @@
-import { addSymbol, capitalizeFirstLetter } from '.';
+import {
+  addSymbol, capitalizeFirstLetter
+} from '.';
 
 import type {
   IBody,
@@ -109,7 +111,9 @@ const aggregateSkillsByStats = (
     return [];
   }
   const tempAggregatedStats = {};
-  skills.forEach(({ skill, i18n }) => {
+  skills.forEach(({
+    skill, i18n
+  }) => {
     const relatedStat = stats.find(({ stat }) => stat._id === skill.stat._id);
     if (relatedStat !== undefined) {
       if (tempAggregatedStats[skill.stat._id] === undefined) {
@@ -118,7 +122,9 @@ const aggregateSkillsByStats = (
           skills: []
         };
       }
-      tempAggregatedStats[skill.stat._id].skills.push({ skill, i18n });
+      tempAggregatedStats[skill.stat._id].skills.push({
+        skill, i18n
+      });
     }
   });
 
@@ -156,9 +162,7 @@ export interface IScore {
   sources: ISourcePoints[]
 }
 
-export type ICuratedStatWithScore = ICuratedStat & {
-  score: IScore
-};
+export type ICuratedStatWithScore = ICuratedStat & { score: IScore };
 
 export type ICuratedSkillWithScore = ICuratedSkill & {
   score: IScore
@@ -180,17 +184,23 @@ const curateCharacterSkills = (
   skills: ICuratedSkillWithScore[]
 } => {
   if (character === false || character === null) {
-    return { stats: [], skills: [] };
+    return {
+      stats: [], skills: []
+    };
   }
   const { body } = getActualBody(character);
   if (body === undefined) {
-    return { stats: [], skills: [] };
+    return {
+      stats: [], skills: []
+    };
   }
 
   const skillNodesById: Record<string, IScore> = {};
   const statNodesById: Record<string, IScore> = {};
 
-  body.stats.forEach(({ stat, value }) => {
+  body.stats.forEach(({
+    stat, value
+  }) => {
     statNodesById[stat] = {
       total: value,
       sources: [
@@ -261,7 +271,9 @@ const curateCharacterSkills = (
   });
   const charStats: Record<string, ICuratedStatWithScore> = {};
   const charSkills: ICuratedSkillWithScore[] = [];
-  skills.forEach(({ skill, i18n }) => {
+  skills.forEach(({
+    skill, i18n
+  }) => {
     const relatedStat = stats.find(({ stat }) => stat._id === skill.stat._id);
     const relatedStatBonuses = statNodesById[skill.stat._id];
     const relatedSkillBonuses = skillNodesById[skill._id];
@@ -291,7 +303,9 @@ const curateCharacterSkills = (
     }
   });
 
-  return { stats: Object.values(charStats), skills: charSkills };
+  return {
+    stats: Object.values(charStats), skills: charSkills
+  };
 };
 
 const curateCharacterParams = (

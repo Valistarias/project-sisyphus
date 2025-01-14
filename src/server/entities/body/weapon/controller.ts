@@ -28,7 +28,9 @@ const createWeaponsByBody = async (req: {
   weaponIds: string[]
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    const { bodyId, weaponIds } = req;
+    const {
+      bodyId, weaponIds
+    } = req;
     BodyWeapon.create(
       weaponIds.map(weaponId => ({
         body: bodyId,
@@ -51,7 +53,9 @@ const updateWeaponByBody = async (req: {
   bag?: string
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    const { bodyId, weaponId, ammoId = null, bullets = null, bag = null } = req;
+    const {
+      bodyId, weaponId, ammoId = null, bullets = null, bag = null
+    } = req;
     const updateObj: {
       ammo?: string
       bag?: string
@@ -83,9 +87,7 @@ const updateWeaponByBody = async (req: {
 
 const deleteWeaponsByBody = async (bodyId: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    BodyWeapon.deleteMany({
-      body: bodyId
-    })
+    BodyWeapon.deleteMany({ body: bodyId })
       .then(() => {
         resolve(true);
       })
@@ -94,4 +96,6 @@ const deleteWeaponsByBody = async (bodyId: string): Promise<boolean> =>
       });
   });
 
-export { createWeaponsByBody, deleteWeaponsByBody, replaceWeaponByBody, updateWeaponByBody };
+export {
+  createWeaponsByBody, deleteWeaponsByBody, replaceWeaponByBody, updateWeaponByBody
+};

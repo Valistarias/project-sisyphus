@@ -1,16 +1,30 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useNavigate, useParams
+} from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 
 import type { ICuratedItemModifier } from '../../../types';
 
@@ -27,7 +41,9 @@ interface FormValues {
 const AdminEditItemModifier: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const { reloadItemModifiers } = useGlobalVars();
   const confMessageEvt = useConfirmMessage();
   const { id } = useParams();
@@ -44,19 +60,17 @@ const AdminEditItemModifier: FC = () => {
   const [itemModifierText, setItemModifierText] = useState('');
   const [itemModifierTextFr, setItemModifierTextFr] = useState('');
 
-  const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const createDefaultData = useCallback((itemModifierData: ICuratedItemModifier | null) => {
     if (itemModifierData == null) {
       return {};
     }
-    const { itemModifier, i18n } = itemModifierData;
+    const {
+      itemModifier, i18n
+    } = itemModifierData;
     const defaultData: Partial<FormValues> = {};
     defaultData.name = itemModifier.title;
     defaultData.modifierId = itemModifier.modifierId;
@@ -73,15 +87,15 @@ const AdminEditItemModifier: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({
-    defaultValues: useMemo(
-      () => createDefaultData(itemModifierData),
-      [createDefaultData, itemModifierData]
-    )
-  });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(itemModifierData),
+    [createDefaultData, itemModifierData]
+  ) });
 
   const onSaveItemModifier: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, modifierId }) => {
+    ({
+      name, nameFr, modifierId
+    }) => {
       if (
         itemModifierText === null
         || itemModifierTextFr === null
@@ -103,12 +117,10 @@ const AdminEditItemModifier: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            text: htmlTextFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          text: htmlTextFr
+        } };
       }
 
       api.itemModifiers
@@ -136,16 +148,12 @@ const AdminEditItemModifier: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id'
-              })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
             });
           }
         });
@@ -201,16 +209,12 @@ const AdminEditItemModifier: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.itemModifier.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.itemModifier.name`), 'capitalize') })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.itemModifier.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.itemModifier.name`), 'capitalize') })
                   });
                 }
               });
@@ -220,7 +224,18 @@ const AdminEditItemModifier: FC = () => {
         confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [api, confMessageEvt, t, itemModifierData?.itemModifier.title, id, getNewId, createAlert, reloadItemModifiers, navigate, setError]);
+  }, [
+    api,
+    confMessageEvt,
+    t,
+    itemModifierData?.itemModifier.title,
+    id,
+    getNewId,
+    createAlert,
+    reloadItemModifiers,
+    navigate,
+    setError
+  ]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
@@ -228,7 +243,9 @@ const AdminEditItemModifier: FC = () => {
       api.itemModifiers
         .get({ itemModifierId: id })
         .then((curatedItemModifier: ICuratedItemModifier) => {
-          const { itemModifier, i18n } = curatedItemModifier;
+          const {
+            itemModifier, i18n
+          } = curatedItemModifier;
           setItemModifierData(curatedItemModifier);
           setItemModifierText(itemModifier.summary);
           if (i18n.fr !== undefined) {
@@ -247,7 +264,13 @@ const AdminEditItemModifier: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, id, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    id,
+    t
+  ]);
 
   // The Autosave
   useEffect(() => {
@@ -269,7 +292,11 @@ const AdminEditItemModifier: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(itemModifierData));
-  }, [itemModifierData, reset, createDefaultData]);
+  }, [
+    itemModifierData,
+    reset,
+    createDefaultData
+  ]);
 
   return (
     <div

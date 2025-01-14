@@ -1,16 +1,30 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  useNavigate, useParams
+} from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input, SmartSelect, type ISingleValueSelect } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input, SmartSelect, type ISingleValueSelect
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 
 import type { ICuratedWeaponStyle } from '../../../types';
 
@@ -27,8 +41,12 @@ interface FormValues {
 const AdminEditWeaponStyle: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const { createAlert, getNewId } = useSystemAlerts();
-  const { skills, reloadWeaponStyles } = useGlobalVars();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
+  const {
+    skills, reloadWeaponStyles
+  } = useGlobalVars();
   const confMessageEvt = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -44,13 +62,9 @@ const AdminEditWeaponStyle: FC = () => {
   const [weaponStyleText, setWeaponStyleText] = useState('');
   const [weaponStyleTextFr, setWeaponStyleTextFr] = useState('');
 
-  const textEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const textFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const skillSelect = useMemo<ISingleValueSelect[]>(
     () =>
@@ -67,7 +81,9 @@ const AdminEditWeaponStyle: FC = () => {
       if (weaponStyleData == null) {
         return {};
       }
-      const { weaponStyle, i18n } = weaponStyleData;
+      const {
+        weaponStyle, i18n
+      } = weaponStyleData;
       const defaultData: Partial<FormValues> = {};
       defaultData.name = weaponStyle.title;
       const selectedfield = skills.find(skillType => skillType.value === weaponStyle.skill._id);
@@ -89,15 +105,19 @@ const AdminEditWeaponStyle: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({
-    defaultValues: useMemo(
-      () => createDefaultData(weaponStyleData, skillSelect),
-      [createDefaultData, skillSelect, weaponStyleData]
-    )
-  });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(weaponStyleData, skillSelect),
+    [
+      createDefaultData,
+      skillSelect,
+      weaponStyleData
+    ]
+  ) });
 
   const onSaveWeaponStyle: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, skill }) => {
+    ({
+      name, nameFr, skill
+    }) => {
       if (
         weaponStyleText === null
         || weaponStyleTextFr === null
@@ -118,12 +138,10 @@ const AdminEditWeaponStyle: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            text: htmlTextFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          text: htmlTextFr
+        } };
       }
 
       api.weaponStyles
@@ -151,16 +169,12 @@ const AdminEditWeaponStyle: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, {
-                field: 'Formula Id'
-              })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, {
-                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
-              })
+              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
             });
           }
         });
@@ -216,16 +230,12 @@ const AdminEditWeaponStyle: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.weaponStyle.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.weaponStyle.name`), 'capitalize') })
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.weaponStyle.name`), 'capitalize')
-                    })
+                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.weaponStyle.name`), 'capitalize') })
                   });
                 }
               });
@@ -235,7 +245,18 @@ const AdminEditWeaponStyle: FC = () => {
         confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
       }
     );
-  }, [api, confMessageEvt, t, weaponStyleData?.weaponStyle.title, id, getNewId, createAlert, reloadWeaponStyles, navigate, setError]);
+  }, [
+    api,
+    confMessageEvt,
+    t,
+    weaponStyleData?.weaponStyle.title,
+    id,
+    getNewId,
+    createAlert,
+    reloadWeaponStyles,
+    navigate,
+    setError
+  ]);
 
   useEffect(() => {
     if (api !== undefined && id !== undefined && !calledApi.current) {
@@ -243,7 +264,9 @@ const AdminEditWeaponStyle: FC = () => {
       api.weaponStyles
         .get({ weaponStyleId: id })
         .then((curatedWeaponStyle: ICuratedWeaponStyle) => {
-          const { weaponStyle, i18n } = curatedWeaponStyle;
+          const {
+            weaponStyle, i18n
+          } = curatedWeaponStyle;
           setWeaponStyleData(curatedWeaponStyle);
           setWeaponStyleText(weaponStyle.summary);
           if (i18n.fr !== undefined) {
@@ -262,7 +285,13 @@ const AdminEditWeaponStyle: FC = () => {
           });
         });
     }
-  }, [api, createAlert, getNewId, id, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    id,
+    t
+  ]);
 
   // The Autosave
   useEffect(() => {
@@ -284,7 +313,12 @@ const AdminEditWeaponStyle: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(weaponStyleData, skillSelect));
-  }, [weaponStyleData, reset, createDefaultData, skillSelect]);
+  }, [
+    weaponStyleData,
+    reset,
+    createDefaultData,
+    skillSelect
+  ]);
 
   return (
     <div

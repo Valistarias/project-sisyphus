@@ -1,6 +1,8 @@
 import React, { type FC } from 'react';
 
-import { Quark, type IQuarkProps } from '../quark';
+import {
+  Quark, type IQuarkProps
+} from '../quark';
 
 import { classTrim } from '../utils';
 
@@ -11,7 +13,9 @@ interface IAimg extends IQuarkProps {
   src: string
 }
 
-const Aimg: FC<IAimg> = ({ className, src }) => (
+const Aimg: FC<IAimg> = ({
+  className, src
+}) => (
   <Quark
     quarkType="img"
     className={classTrim(`

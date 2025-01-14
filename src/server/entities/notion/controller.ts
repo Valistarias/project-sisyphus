@@ -1,11 +1,17 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 import type { HydratedDocument } from 'mongoose';
 
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemInvalidField, gemNotFound, gemServerError
+} from '../../utils/globalErrorMessage';
 import { findRuleBookById } from '../ruleBook/controller';
 
-import type { HydratedNotion, INotion } from './model';
+import type {
+  HydratedNotion, INotion
+} from './model';
 import type { HydratedIRuleBook } from '../ruleBook/model';
 
 import { curateI18n } from '../../utils';
@@ -20,14 +26,14 @@ const findNotions = async (): Promise<HydratedNotion[]> =>
         select: '_id title type',
         populate: 'type'
       })
-      .then(async (res?: HydratedNotion[] | null) => {
+      .then((res?: HydratedNotion[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Notions'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -35,20 +41,22 @@ const findNotions = async (): Promise<HydratedNotion[]> =>
 const findNotionById = async (id: string): Promise<HydratedDocument<INotion>> =>
   await new Promise((resolve, reject) => {
     Notion.findById(id)
-      .then(async (res?: HydratedDocument<INotion> | null) => {
+      .then((res?: HydratedDocument<INotion> | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Notion'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, text, ruleBook, i18n = null } = req.body;
+  const {
+    title, text, ruleBook, i18n = null
+  } = req.body;
   if (title === undefined || text === undefined || ruleBook === undefined) {
     res.status(400).send(gemInvalidField('Notion'));
 
@@ -75,7 +83,9 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, title = null, text = null, ruleBook = null, i18n = null } = req.body;
+  const {
+    id, title = null, text = null, ruleBook = null, i18n = null
+  } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Notion ID'));
 
@@ -93,9 +103,9 @@ const update = (req: Request, res: Response): void => {
         notion.ruleBook = ruleBook;
       }
       if (i18n !== null) {
-        const newIntl = { ...(notion.i18n !== undefined ? JSON.parse(notion.i18n) : {}) };
+        const newIntl: InternationalizationType = { ...(notion.i18n !== undefined ? JSON.parse(notion.i18n) : {}) };
 
-        Object.keys(i18n as Record<string, any>).forEach((lang) => {
+        Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
         });
 
@@ -104,7 +114,9 @@ const update = (req: Request, res: Response): void => {
       notion
         .save()
         .then(() => {
-          res.send({ message: 'Notion was updated successfully!', notion });
+          res.send({
+            message: 'Notion was updated successfully!', notion
+          });
         })
         .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
@@ -116,7 +128,7 @@ const update = (req: Request, res: Response): void => {
 };
 
 const deleteNotion = (req: Request, res: Response): void => {
-  const { id } = req.body;
+  const { id }: { id: string } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Notion ID'));
 
@@ -194,4 +206,6 @@ const findAllByRuleBook = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteNotion, deleteNotionsByRuleBookId, findAllByRuleBook, findSingle, update };
+export {
+  create, deleteNotion, deleteNotionsByRuleBookId, findAllByRuleBook, findSingle, update
+};

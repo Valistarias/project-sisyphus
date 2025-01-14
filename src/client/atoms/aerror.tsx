@@ -1,6 +1,10 @@
-import React, { type FC, type ReactNode } from 'react';
+import React, {
+  type FC, type ReactNode
+} from 'react';
 
-import { Quark, type IQuarkProps } from '../quark';
+import {
+  Quark, type IQuarkProps
+} from '../quark';
 
 import { classTrim } from '../utils';
 
@@ -11,7 +15,9 @@ interface IAerror extends IQuarkProps {
   children: ReactNode
 }
 
-const Aerror: FC<IAerror> = ({ className, children }) => (
+const Aerror: FC<IAerror> = ({
+  className, children
+}) => (
   <Quark
     quarkType="p"
     className={classTrim(`

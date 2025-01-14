@@ -1,7 +1,11 @@
 import React, { type FC } from 'react';
 
-import { mergeAttributes, Node } from '@tiptap/core';
-import { NodeViewWrapper, ReactNodeViewRenderer } from '@tiptap/react';
+import {
+  mergeAttributes, Node
+} from '@tiptap/core';
+import {
+  NodeViewWrapper, ReactNodeViewRenderer
+} from '@tiptap/react';
 
 import { Highlight } from '../../molecules';
 
@@ -26,24 +30,14 @@ export default Node.create({
 
   addAttributes() {
     return {
-      idElt: {
-        default: ''
-      },
-      typeElt: {
-        default: 'notion'
-      },
-      textElt: {
-        default: 'Link'
-      }
+      idElt: { default: '' },
+      typeElt: { default: 'notion' },
+      textElt: { default: 'Link' }
     };
   },
 
   parseHTML() {
-    return [
-      {
-        tag: 'react-component-highlight'
-      }
-    ];
+    return [{ tag: 'react-component-highlight' }];
   },
 
   renderHTML({ HTMLAttributes }) {

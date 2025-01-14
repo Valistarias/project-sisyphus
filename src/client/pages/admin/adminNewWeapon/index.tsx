@@ -1,16 +1,28 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
+import React, {
+  useCallback, useEffect, useMemo, useRef, useState, type FC
+} from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import { useForm, type FieldValues, type SubmitHandler } from 'react-hook-form';
+import {
+  useForm, type FieldValues, type SubmitHandler
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi, useGlobalVars, useSystemAlerts
+} from '../../../providers';
 
-import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input, SmartSelect } from '../../../molecules';
-import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
+import {
+  Aerror, Ap, Atitle
+} from '../../../atoms';
+import {
+  Button, Input, SmartSelect
+} from '../../../molecules';
+import {
+  Alert, RichTextElement, completeRichTextElementExtentions
+} from '../../../organisms';
 import { possibleStarterKitValues } from '../../../types/items';
 
 import { isThereDuplicate } from '../../../utils';
@@ -73,7 +85,9 @@ const AdminNewWeapon: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const navigate = useNavigate();
-  const { createAlert, getNewId } = useSystemAlerts();
+  const {
+    createAlert, getNewId
+  } = useSystemAlerts();
   const {
     weaponTypes,
     weaponScopes,
@@ -93,13 +107,9 @@ const AdminNewWeapon: FC = () => {
   const [effectIds, setEffectIds] = useState<number[]>([]);
   const [actionIds, setActionIds] = useState<number[]>([]);
 
-  const introEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor({
-    extensions: completeRichTextElementExtentions
-  });
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const {
     handleSubmit,
@@ -137,7 +147,9 @@ const AdminNewWeapon: FC = () => {
 
   const actionTypeSelect = useMemo(
     () =>
-      actionTypes.map(({ name, _id }) => ({
+      actionTypes.map(({
+        name, _id
+      }) => ({
         value: _id,
         label: t(`terms.actionType.${name}`)
       })),
@@ -155,7 +167,9 @@ const AdminNewWeapon: FC = () => {
 
   const actionDurationSelect = useMemo(
     () =>
-      actionDurations.map(({ name, _id }) => ({
+      actionDurations.map(({
+        name, _id
+      }) => ({
         value: _id,
         label: t(`terms.actionDuration.${name}`)
       })),
@@ -259,28 +273,28 @@ const AdminNewWeapon: FC = () => {
         return;
       }
 
-      const curatedDamages = sortedDamages.map(({ damageType, dices }) => ({
+      const curatedDamages = sortedDamages.map(({
+        damageType, dices
+      }) => ({
         damageType,
         dices
       }));
 
       const effectsArr = effects !== undefined ? Object.values(effects) : [];
       const curatedEffects = effectsArr.map(
-        ({ formula, type, title, summary, titleFr, summaryFr }) => ({
+        ({
+          formula, type, title, summary, titleFr, summaryFr
+        }) => ({
           title,
           summary,
           formula,
           type,
-          i18n: {
-            ...(titleFr !== undefined || summaryFr !== undefined
-              ? {
-                  fr: {
-                    title: titleFr,
-                    summary: summaryFr
-                  }
-                }
-              : {})
-          }
+          i18n: { ...(titleFr !== undefined || summaryFr !== undefined
+            ? { fr: {
+                title: titleFr,
+                summary: summaryFr
+              } }
+            : {}) }
         })
       );
 
@@ -314,17 +328,13 @@ const AdminNewWeapon: FC = () => {
           uses,
           isKarmic: String(isKarmic) === '1',
           karmicCost,
-          i18n: {
-            ...(titleFr !== undefined || summaryFr !== undefined || timeFr !== undefined
-              ? {
-                  fr: {
-                    title: titleFr,
-                    summary: summaryFr,
-                    time: timeFr
-                  }
-                }
-              : {})
-          }
+          i18n: { ...(titleFr !== undefined || summaryFr !== undefined || timeFr !== undefined
+            ? { fr: {
+                title: titleFr,
+                summary: summaryFr,
+                time: timeFr
+              } }
+            : {}) }
         })
       );
 
@@ -337,13 +347,11 @@ const AdminNewWeapon: FC = () => {
       let i18n: any | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = {
-          fr: {
-            title: nameFr,
-            summary: htmlFr,
-            quote: quoteFr
-          }
-        };
+        i18n = { fr: {
+          title: nameFr,
+          summary: htmlFr,
+          quote: quoteFr
+        } };
       }
 
       api.weapons
@@ -380,13 +388,20 @@ const AdminNewWeapon: FC = () => {
           const { data } = response;
           setError('root.serverError', {
             type: 'server',
-            message: t(`serverErrors.${data.code}`, {
-              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize')
-            })
+            message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
           });
         });
     },
-    [introEditor, introFrEditor, api, getNewId, createAlert, t, navigate, setError]
+    [
+      introEditor,
+      introFrEditor,
+      api,
+      getNewId,
+      createAlert,
+      t,
+      navigate,
+      setError
+    ]
   );
 
   useEffect(() => {
@@ -394,7 +409,12 @@ const AdminNewWeapon: FC = () => {
       setLoading(true);
       calledApi.current = true;
     }
-  }, [api, createAlert, getNewId, t]);
+  }, [
+    api,
+    createAlert,
+    getNewId,
+    t
+  ]);
 
   return (
     <div className="adminNewWeapon">
@@ -410,9 +430,7 @@ const AdminNewWeapon: FC = () => {
             control={control}
             inputName="name"
             type="text"
-            rules={{
-              required: t('nameWeapon.required', { ns: 'fields' })
-            }}
+            rules={{ required: t('nameWeapon.required', { ns: 'fields' }) }}
             label={t('nameWeapon.label', { ns: 'fields' })}
             className="adminNewWeapon__basics__name"
           />
@@ -454,9 +472,7 @@ const AdminNewWeapon: FC = () => {
               control={control}
               inputName="cost"
               type="number"
-              rules={{
-                required: t('weaponCost.required', { ns: 'fields' })
-              }}
+              rules={{ required: t('weaponCost.required', { ns: 'fields' }) }}
               label={t('weaponCost.label', { ns: 'fields' })}
               className="adminNewWeapon__details__fields__elt"
             />
@@ -513,9 +529,7 @@ const AdminNewWeapon: FC = () => {
                   <SmartSelect
                     control={control}
                     inputName={`damages.damage-${damagesId}.damageType`}
-                    rules={{
-                      required: t('damagesType.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('damagesType.required', { ns: 'fields' }) }}
                     label={t('damagesType.label', { ns: 'fields' })}
                     options={damageTypeList}
                     className="adminNewWeapon__bonus__select"
@@ -524,9 +538,7 @@ const AdminNewWeapon: FC = () => {
                     control={control}
                     inputName={`damages.damage-${damagesId}.dices`}
                     type="text"
-                    rules={{
-                      required: t('damagesValue.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('damagesValue.required', { ns: 'fields' }) }}
                     label={t('damagesValue.label', { ns: 'fields' })}
                     className="adminNewWeapon__bonus__value"
                   />
@@ -559,18 +571,14 @@ const AdminNewWeapon: FC = () => {
                   <Input
                     control={control}
                     inputName={`effects.effect-${effectId}.title`}
-                    rules={{
-                      required: t('effectTitle.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('effectTitle.required', { ns: 'fields' }) }}
                     label={t('effectTitle.label', { ns: 'fields' })}
                     className="adminNewWeapon__bonus__value adminNewWeapon__bonus__value--s"
                   />
                   <SmartSelect
                     control={control}
                     inputName={`effects.effect-${effectId}.type`}
-                    rules={{
-                      required: t('effectType.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('effectType.required', { ns: 'fields' }) }}
                     label={t('effectType.label', { ns: 'fields' })}
                     options={actionTypeSelect}
                     className="adminNewWeapon__bonus__select adminNewWeapon__bonus__value--s"
@@ -579,9 +587,7 @@ const AdminNewWeapon: FC = () => {
                     control={control}
                     type="textarea"
                     inputName={`effects.effect-${effectId}.summary`}
-                    rules={{
-                      required: t('effectSummary.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('effectSummary.required', { ns: 'fields' }) }}
                     label={t('effectSummary.label', { ns: 'fields' })}
                     className="adminNewWeapon__bonus__value adminNewWeapon__bonus__value--l"
                   />
@@ -636,18 +642,14 @@ const AdminNewWeapon: FC = () => {
                   <Input
                     control={control}
                     inputName={`actions.action-${actionId}.title`}
-                    rules={{
-                      required: t('actionTitle.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('actionTitle.required', { ns: 'fields' }) }}
                     label={t('actionTitle.label', { ns: 'fields' })}
                     className="adminNewWeapon__bonus__value adminNewWeapon__bonus__value--l"
                   />
                   <SmartSelect
                     control={control}
                     inputName={`actions.action-${actionId}.type`}
-                    rules={{
-                      required: t('actionType.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('actionType.required', { ns: 'fields' }) }}
                     label={t('actionType.label', { ns: 'fields' })}
                     options={actionTypeSelect}
                     className="adminNewWeapon__bonus__select adminNewWeapon__bonus__value--s"
@@ -655,9 +657,7 @@ const AdminNewWeapon: FC = () => {
                   <SmartSelect
                     control={control}
                     inputName={`actions.action-${actionId}.duration`}
-                    rules={{
-                      required: t('actionDuration.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('actionDuration.required', { ns: 'fields' }) }}
                     label={t('actionDuration.label', { ns: 'fields' })}
                     options={actionDurationSelect}
                     className="adminNewWeapon__bonus__select adminNewWeapon__bonus__value--s"
@@ -666,9 +666,7 @@ const AdminNewWeapon: FC = () => {
                     control={control}
                     type="textarea"
                     inputName={`actions.action-${actionId}.summary`}
-                    rules={{
-                      required: t('actionSummary.required', { ns: 'fields' })
-                    }}
+                    rules={{ required: t('actionSummary.required', { ns: 'fields' }) }}
                     label={t('actionSummary.label', { ns: 'fields' })}
                     className="adminNewWeapon__bonus__value adminNewWeapon__bonus__value--l"
                   />

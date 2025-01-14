@@ -1,15 +1,22 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemInvalidField, gemNotFound, gemServerError
+} from '../../utils/globalErrorMessage';
 import { smartUpdateActions } from '../action/controller';
 import { curateCharParamBonusIds } from '../charParamBonus/controller';
 import { smartUpdateEffects } from '../effect/controller';
 import { curateSkillBonusIds } from '../skillBonus/controller';
 import { curateStatBonusIds } from '../statBonus/controller';
 
-import type { IAction, ICharParamBonus, IEffect, ISkillBonus, IStatBonus } from '../index';
+import type { InternationalizationType } from '../../utils/types';
+import type {
+  IAction, ICharParamBonus, IEffect, ISkillBonus, IStatBonus
+} from '../index';
 import type { HydratedIArmor } from './model';
 
 import { curateI18n } from '../../utils';
@@ -28,14 +35,14 @@ const findArmors = async (options?: findAllPayload): Promise<HydratedIArmor[]> =
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
-      .then(async (res?: HydratedIArmor[] | null) => {
+      .then((res?: HydratedIArmor[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Armors'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err: unknown) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -48,14 +55,14 @@ const findArmorById = async (id: string): Promise<HydratedIArmor> =>
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
-      .then(async (res?: HydratedIArmor | null) => {
+      .then((res?: HydratedIArmor | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Armor'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err: unknown) => {
+      .catch((err: unknown) => {
         reject(err);
       });
   });
@@ -409,13 +416,11 @@ const update = (req: Request, res: Response): void => {
       }, []);
 
       if (i18n !== null) {
-        const newIntl = {
-          ...(armor.i18n !== null && armor.i18n !== undefined && armor.i18n !== ''
-            ? JSON.parse(armor.i18n)
-            : {})
-        };
+        const newIntl: InternationalizationType = { ...(armor.i18n !== null && armor.i18n !== undefined && armor.i18n !== ''
+          ? JSON.parse(armor.i18n)
+          : {}) };
 
-        Object.keys(i18n as Record<string, any>).forEach((lang) => {
+        Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
         });
 
@@ -472,7 +477,9 @@ const update = (req: Request, res: Response): void => {
                           armor
                             .save()
                             .then(() => {
-                              res.send({ message: 'Armor was updated successfully!', armor });
+                              res.send({
+                                message: 'Armor was updated successfully!', armor
+                              });
                             })
                             .catch((err: unknown) => {
                               res.status(500).send(gemServerError(err));
@@ -503,7 +510,7 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteArmorById = async (id: string): Promise<boolean> =>
+const deleteArmorById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('Armor ID'));
@@ -520,9 +527,9 @@ const deleteArmorById = async (id: string): Promise<boolean> =>
   });
 
 const deleteArmor = (req: Request, res: Response): void => {
-  const { id } = req.body;
+  const { id }: { id: string } = req.body;
 
-  findArmorById(id as string)
+  findArmorById(id)
     .then((armor) => {
       const skillBonusesToRemove = armor.skillBonuses.map(elt => elt._id);
       const statBonusesToRemove = armor.statBonuses.map(elt => elt._id);
@@ -558,7 +565,7 @@ const deleteArmor = (req: Request, res: Response): void => {
                         actionsToUpdate: []
                       })
                         .then(() => {
-                          deleteArmorById(id as string)
+                          deleteArmorById(id)
                             .then(() => {
                               res.send({ message: 'Armor was deleted successfully!' });
                             })
@@ -592,7 +599,7 @@ const deleteArmor = (req: Request, res: Response): void => {
 };
 
 interface CuratedIArmor {
-  i18n: Record<string, unknown>
+  i18n?: InternationalizationType
   armor: any
 }
 
@@ -723,4 +730,6 @@ const findAllStarter = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteArmor, findAll, findAllStarter, findArmorById, findSingle, update };
+export {
+  create, deleteArmor, findAll, findAllStarter, findArmorById, findSingle, update
+};

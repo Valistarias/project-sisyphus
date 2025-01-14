@@ -1,9 +1,13 @@
 import type React from 'react';
-import type { FC, ReactNode } from 'react';
+import type {
+  FC, ReactNode
+} from 'react';
 
 import { Link } from 'react-router-dom';
 
-import { Quark, type IQuarkProps } from '../quark';
+import {
+  Quark, type IQuarkProps
+} from '../quark';
 
 import { classTrim } from '../utils';
 
@@ -20,7 +24,9 @@ interface IAA extends IQuarkProps {
   children: ReactNode
 }
 
-const AA: FC<IAA> = ({ className, children, href, target, onClick }) => (
+const AA: FC<IAA> = ({
+  className, children, href, target, onClick
+}) => (
   <Quark
     quarkType={Link}
     to={href}

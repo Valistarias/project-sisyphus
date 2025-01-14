@@ -1,7 +1,11 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 import type { HydratedDocument } from 'mongoose';
 
-import { getUserFromToken, type IVerifyTokenRequest } from '../../middlewares/authJwt';
+import {
+  getUserFromToken, type IVerifyTokenRequest
+} from '../../middlewares/authJwt';
 import db from '../../models';
 import {
   gemInvalidField,
@@ -90,14 +94,14 @@ const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[
             ]
           })
           .populate<{ background: HydratedIBackground }>('background')
-          .then(async (res?: HydratedICharacter[] | null) => {
+          .then((res?: HydratedICharacter[] | null) => {
             if (res === undefined || res === null) {
               reject(gemNotFound('Characters'));
             } else {
               resolve(res);
             }
           })
-          .catch(async (err) => {
+          .catch((err) => {
             reject(err);
           });
       })
@@ -109,7 +113,9 @@ const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[
 const findCompleteCharacterById = async (
   id: string,
   req: Request
-): Promise<{ char: LeanICharacter, canEdit: boolean }> =>
+): Promise<{
+  char: LeanICharacter, canEdit: boolean
+}> =>
   await new Promise((resolve, reject) => {
     getUserFromToken(req as IVerifyTokenRequest)
       .then((user) => {
@@ -130,7 +136,13 @@ const findCompleteCharacterById = async (
               path: 'node',
               select:
                 '_id title summary icon i18n rank quote cyberFrameBranch skillBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses',
-              populate: ['effects', 'actions', 'skillBonuses', 'statBonuses', 'charParamBonuses']
+              populate: [
+                'effects',
+                'actions',
+                'skillBonuses',
+                'statBonuses',
+                'charParamBonuses'
+              ]
             }
           })
           .populate<{ bodies: HydratedIBody[] }>({
@@ -174,9 +186,13 @@ const findCompleteCharacterById = async (
           .populate<{ background: HydratedIBackground }>({
             path: 'background',
             select: '_id title summary i18n skillBonuses statBonuses charParamBonuses createdAt',
-            populate: ['skillBonuses', 'statBonuses', 'charParamBonuses']
+            populate: [
+              'skillBonuses',
+              'statBonuses',
+              'charParamBonuses'
+            ]
           })
-          .then(async (res?: LeanICharacter | null) => {
+          .then((res?: LeanICharacter | null) => {
             if (res === undefined || res === null) {
               reject(gemNotFound('Character'));
             } else {
@@ -186,7 +202,7 @@ const findCompleteCharacterById = async (
               });
             }
           })
-          .catch(async (err) => {
+          .catch((err) => {
             reject(err);
           });
       })
@@ -198,7 +214,9 @@ const findCompleteCharacterById = async (
 const findCharacterById = async (
   id: string,
   req: Request
-): Promise<{ char: HydratedICharacter, canEdit: boolean }> =>
+): Promise<{
+  char: HydratedICharacter, canEdit: boolean
+}> =>
   await new Promise((resolve, reject) => {
     getUserFromToken(req as IVerifyTokenRequest)
       .then((user) => {
@@ -254,7 +272,7 @@ const findCharacterById = async (
             ]
           })
           .populate<{ background: HydratedIBackground }>('background')
-          .then(async (res) => {
+          .then((res) => {
             if (res === undefined || res === null) {
               reject(gemNotFound('Character'));
             } else {
@@ -267,7 +285,7 @@ const findCharacterById = async (
               });
             }
           })
-          .catch(async (err) => {
+          .catch((err) => {
             reject(err);
           });
       })
@@ -331,7 +349,9 @@ const addNode = (req: Request, res: Response): void => {
 };
 
 const updateNodes = (req: Request, res: Response): void => {
-  const { characterId, toAdd, toRemove } = req.body;
+  const {
+    characterId, toAdd, toRemove
+  } = req.body;
   if (characterId === undefined) {
     res.status(400).send(gemInvalidField('Character'));
 
@@ -389,7 +409,9 @@ const createOrFindCharacter = async (req: Request): Promise<string> =>
         });
     } else {
       findCharacterById(characterId as string, req)
-        .then(({ char, canEdit }) => {
+        .then(({
+          char, canEdit
+        }) => {
           if (char !== undefined && canEdit) {
             resolve(characterId as string);
           } else {
@@ -403,7 +425,9 @@ const createOrFindCharacter = async (req: Request): Promise<string> =>
   });
 
 const create = (req: Request, res: Response): void => {
-  const { campaignId = null, player = null } = req.body;
+  const {
+    campaignId = null, player = null
+  } = req.body;
   getUserFromToken(req as IVerifyTokenRequest)
     .then((user) => {
       if (user === null) {
@@ -411,9 +435,7 @@ const create = (req: Request, res: Response): void => {
 
         return;
       }
-      const character = new Character({
-        createdBy: user._id
-      });
+      const character = new Character({ createdBy: user._id });
 
       if (player !== null) {
         character.player = player;
@@ -426,7 +448,9 @@ const create = (req: Request, res: Response): void => {
       character
         .save()
         .then(() => {
-          res.send({ message: 'Character was created successfully!', characterId: character._id });
+          res.send({
+            message: 'Character was created successfully!', characterId: character._id
+          });
         })
         .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
@@ -456,7 +480,9 @@ const updateInfos = (req: Request, res: Response): void => {
     return;
   }
   findCharacterById(id as string, req)
-    .then(({ char, canEdit }) => {
+    .then(({
+      char, canEdit
+    }) => {
       if (char !== undefined && canEdit) {
         if (firstName !== null && firstName !== char.firstName) {
           char.firstName = firstName;
@@ -500,7 +526,9 @@ const updateInfos = (req: Request, res: Response): void => {
         char
           .save()
           .then(() => {
-            res.send({ message: 'Character was updated successfully!', char });
+            res.send({
+              message: 'Character was updated successfully!', char
+            });
           })
           .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
@@ -523,13 +551,17 @@ const quitCampaign = (req: Request, res: Response): void => {
   }
 
   findCharacterById(characterId as string, req)
-    .then(({ char, canEdit }) => {
+    .then(({
+      char, canEdit
+    }) => {
       if (char !== undefined && canEdit) {
         char.campaign = undefined;
         char
           .save()
           .then(() => {
-            res.send({ message: 'Character was unlinked of his campaign!', char });
+            res.send({
+              message: 'Character was unlinked of his campaign!', char
+            });
           })
           .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
@@ -542,14 +574,16 @@ const quitCampaign = (req: Request, res: Response): void => {
 };
 
 const deleteCharacter = (req: Request, res: Response): void => {
-  const { id } = req.body;
+  const { id }: { id: string } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Character ID'));
 
     return;
   }
-  findCharacterById(id as string, req)
-    .then(({ char, canEdit }) => {
+  findCharacterById(id, req)
+    .then(({
+      char, canEdit
+    }) => {
       if (char !== undefined && canEdit) {
         const bodyIds: string[] = [];
         char.bodies?.forEach((body) => {
@@ -557,7 +591,7 @@ const deleteCharacter = (req: Request, res: Response): void => {
         });
         deleteBodiesRecursive(bodyIds)
           .then(() => {
-            deleteNodesByCharacter(id as string)
+            deleteNodesByCharacter(id)
               .then(() => {
                 Character.findByIdAndDelete(id)
                   .then(() => {

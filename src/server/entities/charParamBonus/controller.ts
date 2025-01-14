@@ -1,26 +1,36 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 import type { HydratedDocument } from 'mongoose';
 
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemInvalidField, gemNotFound, gemServerError
+} from '../../utils/globalErrorMessage';
 
-import type { ICharParam, INode } from '../index';
-import type { HydratedICharParamBonus, ICharParamBonus } from './model';
+import type {
+  ICharParam, INode
+} from '../index';
+import type {
+  HydratedICharParamBonus, ICharParamBonus
+} from './model';
 
-const { CharParamBonus, Node } = db;
+const {
+  CharParamBonus, Node
+} = db;
 
 const findCharParamBonuses = async (): Promise<HydratedICharParamBonus[]> =>
   await new Promise((resolve, reject) => {
     CharParamBonus.find()
       .populate<{ charParam: ICharParam }>('charParam')
-      .then(async (res?: HydratedICharParamBonus[] | null) => {
+      .then((res?: HydratedICharParamBonus[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('CharParamBonuses'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -29,14 +39,14 @@ const findCharParamBonusById = async (id: string): Promise<HydratedICharParamBon
   await new Promise((resolve, reject) => {
     CharParamBonus.findById(id)
       .populate<{ charParam: ICharParam }>('charParam')
-      .then(async (res?: HydratedICharParamBonus | null) => {
+      .then((res?: HydratedICharParamBonus | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('CharParamBonus'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -150,7 +160,9 @@ const curateCharParamBonusIds = async ({
   });
 
 const create = (req: Request, res: Response): void => {
-  const { charParam, value } = req.body;
+  const {
+    charParam, value
+  } = req.body;
   if (charParam === undefined || value === undefined) {
     res.status(400).send(gemInvalidField('CharParamBonus'));
 
@@ -173,7 +185,9 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, charParam = null, value = null } = req.body;
+  const {
+    id, charParam = null, value = null
+  } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('CharParamBonus ID'));
 
@@ -191,7 +205,9 @@ const update = (req: Request, res: Response): void => {
       charParamBonus
         .save()
         .then(() => {
-          res.send({ message: 'CharParam bonus was updated successfully!', charParamBonus });
+          res.send({
+            message: 'CharParam bonus was updated successfully!', charParamBonus
+          });
         })
         .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
@@ -202,7 +218,7 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteCharParamBonusById = async (id: string): Promise<boolean> =>
+const deleteCharParamBonusById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('CharParamBonus ID'));
@@ -219,8 +235,8 @@ const deleteCharParamBonusById = async (id: string): Promise<boolean> =>
   });
 
 const deleteCharParamBonus = (req: Request, res: Response): void => {
-  const { id } = req.body;
-  deleteCharParamBonusById(id as string)
+  const { id }: { id: string } = req.body;
+  deleteCharParamBonusById(id)
     .then(() => {
       res.send({ message: 'CharParam bonus was deleted successfully!' });
     })

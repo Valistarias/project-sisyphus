@@ -1,4 +1,6 @@
-import type { Request, Response } from 'express';
+import type {
+  Request, Response
+} from 'express';
 
 import db from '../../models';
 import {
@@ -8,8 +10,11 @@ import {
   gemServerError
 } from '../../utils/globalErrorMessage';
 
+import type { InternationalizationType } from '../../utils/types';
 import type { ICyberFrame } from '../index';
-import type { HydratedICyberFrameBranch, ICyberFrameBranch } from './model';
+import type {
+  HydratedICyberFrameBranch, ICyberFrameBranch
+} from './model';
 import type { CuratedINode } from '../node/controller';
 
 import { curateI18n } from '../../utils';
@@ -20,14 +25,14 @@ const findCyberFrameBranches = async (): Promise<HydratedICyberFrameBranch[]> =>
   await new Promise((resolve, reject) => {
     CyberFrameBranch.find()
       .populate<{ cyberFrame: ICyberFrame }>('cyberFrame')
-      .then(async (res?: HydratedICyberFrameBranch[] | null) => {
+      .then((res?: HydratedICyberFrameBranch[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('CyberFrameBranches'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -38,14 +43,14 @@ const findCyberFrameBranchesByFrame = async (
   await new Promise((resolve, reject) => {
     CyberFrameBranch.find({ cyberFrame: cyberFrameId })
       .populate<{ cyberFrame: ICyberFrame }>('cyberFrame')
-      .then(async (res?: HydratedICyberFrameBranch[] | null) => {
+      .then((res?: HydratedICyberFrameBranch[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('CyberFrameBranches'));
         } else {
           resolve(res);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
@@ -54,20 +59,22 @@ const findCyberFrameBranchById = async (id: string): Promise<HydratedICyberFrame
   await new Promise((resolve, reject) => {
     CyberFrameBranch.findById(id)
       .populate<{ cyberFrame: ICyberFrame }>('cyberFrame')
-      .then(async (res) => {
+      .then((res) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('CyberFrameBranch'));
         } else {
           resolve(res as HydratedICyberFrameBranch);
         }
       })
-      .catch(async (err) => {
+      .catch((err) => {
         reject(err);
       });
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, summary, cyberFrame, i18n = null } = req.body;
+  const {
+    title, summary, cyberFrame, i18n = null
+  } = req.body;
   if (title === undefined || summary === undefined || cyberFrame === undefined) {
     res.status(400).send(gemInvalidField('CyberFrameBranch'));
 
@@ -99,7 +106,7 @@ const create = (req: Request, res: Response): void => {
     });
 };
 
-const createGeneralForCyberFrameId = async (id: string): Promise<boolean> =>
+const createGeneralForCyberFrameId = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('CyberFrame ID'));
@@ -122,7 +129,9 @@ const createGeneralForCyberFrameId = async (id: string): Promise<boolean> =>
   });
 
 const update = (req: Request, res: Response): void => {
-  const { id, title = null, summary = null, cyberFrame = null, i18n } = req.body;
+  const {
+    id, title = null, summary = null, cyberFrame = null, i18n
+  } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('CyberFrameBranch ID'));
 
@@ -151,15 +160,13 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl = {
-          ...(cyberFrameBranch.i18n !== null
-            && cyberFrameBranch.i18n !== undefined
-            && cyberFrameBranch.i18n !== ''
-            ? JSON.parse(cyberFrameBranch.i18n)
-            : {})
-        };
+        const newIntl: InternationalizationType = { ...(cyberFrameBranch.i18n !== null
+          && cyberFrameBranch.i18n !== undefined
+          && cyberFrameBranch.i18n !== ''
+          ? JSON.parse(cyberFrameBranch.i18n)
+          : {}) };
 
-        Object.keys(i18n as Record<string, any>).forEach((lang) => {
+        Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
         });
 
@@ -169,7 +176,9 @@ const update = (req: Request, res: Response): void => {
       cyberFrameBranch
         .save()
         .then(() => {
-          res.send({ message: 'CyberFrame branch was updated successfully!', cyberFrameBranch });
+          res.send({
+            message: 'CyberFrame branch was updated successfully!', cyberFrameBranch
+          });
         })
         .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
@@ -180,7 +189,7 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteCyberFrameBranchById = async (id: string): Promise<boolean> =>
+const deleteCyberFrameBranchById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
       reject(gemInvalidField('CyberFrameBranch ID'));
@@ -207,8 +216,8 @@ const deleteCyberFrameBranchById = async (id: string): Promise<boolean> =>
   });
 
 const deleteCyberFrameBranch = (req: Request, res: Response): void => {
-  const { id } = req.body;
-  deleteCyberFrameBranchById(id as string)
+  const { id }: { id: string } = req.body;
+  deleteCyberFrameBranchById(id)
     .then(() => {
       res.send({ message: 'CyberFrame branch was deleted successfully!' });
     })
@@ -239,7 +248,7 @@ type CuratedICyberFrameBranch = Omit<ICyberFrameBranch, 'cyberFrame'> & {
 };
 
 interface CuratedIntICyberFrameBranch {
-  i18n: Record<string, unknown>
+  i18n?: InternationalizationType
   cyberFrameBranch: CuratedICyberFrameBranch
 }
 

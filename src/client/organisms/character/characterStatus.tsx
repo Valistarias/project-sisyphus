@@ -1,4 +1,6 @@
-import React, { useCallback, useMemo, type FC } from 'react';
+import React, {
+  useCallback, useMemo, type FC
+} from 'react';
 
 import { useGlobalVars } from '../../providers';
 
@@ -6,7 +8,9 @@ import { NumDisplay } from '../../molecules';
 
 import type { TypeCampaignEvent } from '../../types';
 
-import { addSymbol, classTrim, type DiceRequest } from '../../utils';
+import {
+  addSymbol, classTrim, type DiceRequest
+} from '../../utils';
 
 import './characterStatus.scss';
 
@@ -17,7 +21,9 @@ interface ICharacterStatus {
   onRollDices: (diceValues: DiceRequest[], id: TypeCampaignEvent) => void
 }
 
-const CharacterStatus: FC<ICharacterStatus> = ({ className, onRollDices }) => {
+const CharacterStatus: FC<ICharacterStatus> = ({
+  className, onRollDices
+}) => {
   const { characterParams } = useGlobalVars();
 
   const onClickInit = useCallback(
@@ -40,13 +46,17 @@ const CharacterStatus: FC<ICharacterStatus> = ({ className, onRollDices }) => {
     <div className="char-status__char-params">
       {characterParams?.map((charParam) => {
         // TODO: Deal with i18n here
-        const { title, summary, short } = charParam.charParam;
+        const {
+          title, summary, short
+        } = charParam.charParam;
 
         return (
           <NumDisplay
             key={charParam.charParam._id}
             stat={charParam.stat}
-            text={{ title, summary, short }}
+            text={{
+              title, summary, short
+            }}
             value={
               charParam.charParam.formulaId === 'ini'
                 ? addSymbol(charParam.score.total)
