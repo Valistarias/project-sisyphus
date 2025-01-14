@@ -40,13 +40,22 @@ const update = (req: Request, res: Response): void => {
     theme = null,
     charCreationTips = null,
     scale = null
+  }: {
+    id?: string
+    username: string | null
+    lang: string | null
+    oldPass: string | null
+    newPass: string | null
+    theme: string | null
+    charCreationTips: boolean | null
+    scale: number | null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('User ID'));
 
     return;
   }
-  findUserById(id as string)
+  findUserById(id)
     .then((user) => {
       if (username !== null) {
         user.username = username;
@@ -54,14 +63,14 @@ const update = (req: Request, res: Response): void => {
       if (lang !== null) {
         user.lang = lang;
       }
-      if (newPass !== null) {
-        const passwordIsValid = bcrypt.compareSync(oldPass as string, user.password);
+      if (newPass !== null && oldPass !== null) {
+        const passwordIsValid = bcrypt.compareSync(oldPass, user.password);
         if (!passwordIsValid) {
           res.status(400).send(gemInvalidField('password'));
 
           return;
         }
-        user.password = bcrypt.hashSync(newPass as string, 8);
+        user.password = bcrypt.hashSync(newPass, 8);
       }
       if (theme !== null) {
         user.theme = theme;
@@ -78,9 +87,9 @@ const update = (req: Request, res: Response): void => {
         .then(() => {
           const authorities: string[] = [];
 
-          for (let i = 0; i < user.roles.length; i += 1) {
-            if (typeof user.roles[i] === 'object') {
-              authorities.push(`ROLE_${user.roles[i].name.toUpperCase()}`);
+          for (const role of user.roles) {
+            if (typeof role === 'object') {
+              authorities.push(`ROLE_${role.name.toUpperCase()}`);
             }
           }
 

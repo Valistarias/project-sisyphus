@@ -29,7 +29,8 @@ const statBonusSchema = new Schema<IStatBonus>({
   }
 });
 
-const StatBonusModel = (): Model<IStatBonus> => model('StatBonus', statBonusSchema);
+const StatBonusModel = (): Model<IStatBonus> =>
+  model('StatBonus', statBonusSchema);
 
 export {
   StatBonusModel, type HydratedIStatBonus, type IStatBonus
