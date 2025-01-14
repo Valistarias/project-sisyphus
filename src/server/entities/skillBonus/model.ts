@@ -14,7 +14,7 @@ interface ISkillBonus {
 }
 
 type HydratedISkillBonus = HydratedDocument<
-  Omit<ISkillBonus, 'skill'> & { skill: ISkill }
+  Omit<ISkillBonus, 'skill'> & { skill: ISkill | ObjectId }
 >;
 
 const skillBonusSchema = new Schema<ISkillBonus>({

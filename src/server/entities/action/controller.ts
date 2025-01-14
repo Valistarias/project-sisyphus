@@ -76,7 +76,7 @@ export interface ISentAction {
 const updateActions = (
   elts: ISentAction[],
   ids: string[],
-  cb: (err: unknown | null, res?: string[]) => void
+  cb: (err: unknown, res?: string[]) => void
 ): void => {
   if (elts.length === 0) {
     cb(null, ids);
@@ -203,7 +203,7 @@ const smartUpdateActions = async ({
   await new Promise((resolve, reject) => {
     Action.deleteMany({ _id: { $in: actionsToRemove } })
       .then(() => {
-        updateActions(actionsToUpdate, [], (err: unknown | null, ids?: string[]) => {
+        updateActions(actionsToUpdate, [], (err: unknown, ids?: string[]) => {
           if (err !== null) {
             reject(err);
           } else {

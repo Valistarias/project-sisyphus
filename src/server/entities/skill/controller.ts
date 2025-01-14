@@ -2,7 +2,7 @@ import type {
   Request, Response
 } from 'express';
 import type {
-  FlattenMaps, ObjectId
+  ObjectId
 } from 'mongoose';
 
 import db from '../../models';
@@ -12,11 +12,9 @@ import {
   gemNotFound,
   gemServerError
 } from '../../utils/globalErrorMessage';
-import { checkDuplicateCharParamFormulaId } from '../charParam/controller';
 import {
   createGeneralForSkillId,
-  deleteSkillBranchesBySkillId,
-  type CuratedIntISkillBranch
+  deleteSkillBranchesBySkillId
 } from '../skillBranch/controller';
 import { checkDuplicateStatFormulaId } from '../stat/controller';
 
@@ -118,46 +116,46 @@ const checkDuplicateSkillFormulaId = async (
   });
 
 const checkDuplicateFormulaId = async (
-  formulaId: string,
+  formulaId: string | null,
   alreadyExistOnce: boolean
 ): Promise<string | boolean> =>
   await new Promise((resolve, reject) => {
-    checkDuplicateCharParamFormulaId(formulaId, false)
-      .then((responseCharParam: string | boolean) => {
-        if (typeof responseCharParam === 'boolean') {
-          checkDuplicateSkillFormulaId(formulaId, alreadyExistOnce)
-            .then((responseSkill: string | boolean) => {
-              if (typeof responseSkill === 'boolean') {
-                checkDuplicateStatFormulaId(formulaId, false)
-                  .then((responseStat: string | boolean) => {
-                    if (typeof responseStat === 'boolean') {
-                      resolve(false);
-                    } else {
-                      resolve(responseStat);
-                    }
-                  })
-                  .catch((err: unknown) => {
-                    reject(err);
-                  });
-              } else {
-                resolve(responseSkill);
-              }
-            })
-            .catch((err: unknown) => {
-              reject(err);
-            });
-        } else {
-          resolve(responseCharParam);
-        }
-      })
-      .catch((err: unknown) => {
-        reject(err);
-      });
+    if (formulaId === null) {
+      resolve(false);
+    } else {
+      checkDuplicateSkillFormulaId(formulaId, alreadyExistOnce)
+        .then((responseSkill: string | boolean) => {
+          if (typeof responseSkill === 'boolean') {
+            checkDuplicateStatFormulaId(formulaId, false)
+              .then((responseStat: string | boolean) => {
+                if (typeof responseStat === 'boolean') {
+                  resolve(false);
+                } else {
+                  resolve(responseStat);
+                }
+              })
+              .catch((err: unknown) => {
+                reject(err);
+              });
+          } else {
+            resolve(responseSkill);
+          }
+        })
+        .catch((err: unknown) => {
+          reject(err);
+        });
+    }
   });
 
 const create = (req: Request, res: Response): void => {
   const {
     title, summary, stat, i18n = null, formulaId
+  }: {
+    title?: string
+    summary?: string
+    stat?: string
+    i18n?: InternationalizationType | null
+    formulaId?: string
   } = req.body;
   if (
     title === undefined
@@ -170,7 +168,7 @@ const create = (req: Request, res: Response): void => {
     return;
   }
 
-  checkDuplicateFormulaId(formulaId as string, false)
+  checkDuplicateFormulaId(formulaId, false)
     .then((response) => {
       if (typeof response === 'boolean') {
         const skill = new Skill({
@@ -210,16 +208,23 @@ const create = (req: Request, res: Response): void => {
 const update = (req: Request, res: Response): void => {
   const {
     id, title = null, summary = null, stat = null, i18n, formulaId = null
+  }: {
+    id?: string
+    title: string | null
+    summary: string | null
+    stat: ObjectId | null
+    i18n: InternationalizationType | null
+    formulaId: string | null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Skill ID'));
 
     return;
   }
-  findSkillById(id as string)
+  findSkillById(id)
     .then((skill) => {
       const alreadyExistOnce = typeof formulaId === 'string' && formulaId === skill.formulaId;
-      checkDuplicateFormulaId(formulaId as string, alreadyExistOnce)
+      checkDuplicateFormulaId(formulaId, alreadyExistOnce)
         .then((response) => {
           if (typeof response === 'boolean') {
             if (title !== null) {
@@ -236,9 +241,11 @@ const update = (req: Request, res: Response): void => {
             }
 
             if (i18n !== null) {
-              const newIntl: InternationalizationType = { ...(skill.i18n !== null && skill.i18n !== undefined && skill.i18n !== ''
-                ? JSON.parse(skill.i18n)
-                : {}) };
+              const newIntl: InternationalizationType = { ...(
+                skill.i18n !== undefined
+                && skill.i18n !== ''
+                  ? JSON.parse(skill.i18n)
+                  : {}) };
 
               Object.keys(i18n).forEach((lang) => {
                 newIntl[lang] = i18n[lang];
@@ -321,10 +328,10 @@ const findSingle = (req: Request, res: Response): void => {
   }
   findSkillById(skillId)
     .then((skillSent) => {
-      const skill: FlattenMaps<HydratedISkill & { _id: ObjectId }> = skillSent.toJSON();
+      const data = skillSent.toJSON();
       const cleanSkill = {
-        ...skill,
-        branches: skill.branches.map((skillBranch) => {
+        ...data,
+        branches: data.branches.map((skillBranch) => {
           const cleanSkillBranch = {
             ...skillBranch,
             nodes:
@@ -345,7 +352,7 @@ const findSingle = (req: Request, res: Response): void => {
 
       const sentObj = {
         skill: cleanSkill,
-        i18n: curateI18n(skill.i18n)
+        i18n: curateI18n(data.i18n)
       };
       res.send(sentObj);
     })

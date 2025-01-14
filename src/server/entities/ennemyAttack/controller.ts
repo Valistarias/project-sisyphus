@@ -64,7 +64,7 @@ interface ISentEnnemyAttack {
 const updateEnnemyAttacks = (
   elts: ISentEnnemyAttack[],
   ids: string[],
-  cb: (err: unknown | null, res?: string[]) => void
+  cb: (err: unknown, res?: string[]) => void
 ): void => {
   if (elts.length === 0) {
     cb(null, ids);
@@ -168,7 +168,7 @@ const smartUpdateAttacks = async ({
   await new Promise((resolve, reject) => {
     EnnemyAttack.deleteMany({ _id: { $in: attacksToRemove } })
       .then(() => {
-        updateEnnemyAttacks(attacksToUpdate, [], (err: unknown | null, ids?: string[]) => {
+        updateEnnemyAttacks(attacksToUpdate, [], (err: unknown, ids?: string[]) => {
           if (err !== null) {
             reject(err);
           } else {

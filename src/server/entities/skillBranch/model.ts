@@ -3,7 +3,8 @@ import {
 } from 'mongoose';
 
 import type {
-  INode, ISkill
+  HydratedINode,
+  HydratedISkill
 } from '../index';
 
 interface ISkillBranch {
@@ -21,8 +22,8 @@ interface ISkillBranch {
 
 type HydratedISkillBranch = HydratedDocument<
   Omit<ISkillBranch, 'skill'> & {
-    skill: ISkill
-    nodes?: INode[]
+    skill: HydratedISkill | ObjectId
+    nodes?: HydratedINode[]
   }
 >;
 

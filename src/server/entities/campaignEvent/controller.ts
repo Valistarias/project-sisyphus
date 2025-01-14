@@ -44,7 +44,7 @@ const findCampaignEventsByCampaignId = async (
 const findCampaignEventById = async (id: string): Promise<HydratedDocument<ICampaignEvent>> =>
   await new Promise((resolve, reject) => {
     CampaignEvent.findById(id)
-      .then(async (res: HydratedDocument<ICampaignEvent>) => {
+      .then((res: HydratedDocument<ICampaignEvent>) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('CampaignEvent'));
         } else {

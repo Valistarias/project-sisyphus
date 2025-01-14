@@ -68,46 +68,57 @@ const checkDuplicateStatFormulaId = async (
   });
 
 const checkDuplicateFormulaId = async (
-  formulaId: string,
+  formulaId: string | null,
   alreadyExistOnce: boolean
 ): Promise<string | boolean> =>
   await new Promise((resolve, reject) => {
-    checkDuplicateCharParamFormulaId(formulaId, false)
-      .then((responseCharParam: string | boolean) => {
-        if (typeof responseCharParam === 'boolean') {
-          checkDuplicateSkillFormulaId(formulaId, false)
-            .then((responseSkill: string | boolean) => {
-              if (typeof responseSkill === 'boolean') {
-                checkDuplicateStatFormulaId(formulaId, alreadyExistOnce)
-                  .then((responseStat: string | boolean) => {
-                    if (typeof responseStat === 'boolean') {
-                      resolve(false);
-                    } else {
-                      resolve(responseStat);
-                    }
-                  })
-                  .catch((err: unknown) => {
-                    reject(err);
-                  });
-              } else {
-                resolve(responseSkill);
-              }
-            })
-            .catch((err: unknown) => {
-              reject(err);
-            });
-        } else {
-          resolve(responseCharParam);
-        }
-      })
-      .catch((err: unknown) => {
-        reject(err);
-      });
+    if (formulaId === null) {
+      resolve(false);
+    } else {
+      checkDuplicateCharParamFormulaId(formulaId, false)
+        .then((responseCharParam: string | boolean) => {
+          if (typeof responseCharParam === 'boolean') {
+            checkDuplicateSkillFormulaId(formulaId, false)
+              .then((responseSkill: string | boolean) => {
+                if (typeof responseSkill === 'boolean') {
+                  checkDuplicateStatFormulaId(formulaId, alreadyExistOnce)
+                    .then((responseStat: string | boolean) => {
+                      if (typeof responseStat === 'boolean') {
+                        resolve(false);
+                      } else {
+                        resolve(responseStat);
+                      }
+                    })
+                    .catch((err: unknown) => {
+                      reject(err);
+                    });
+                } else {
+                  resolve(responseSkill);
+                }
+              })
+              .catch((err: unknown) => {
+                reject(err);
+              });
+          } else {
+            resolve(responseCharParam);
+          }
+        })
+        .catch((err: unknown) => {
+          reject(err);
+        });
+    }
   });
 
 const create = (req: Request, res: Response): void => {
   const {
     title, summary, short, i18n = null, formulaId
+  }: {
+    id?: string
+    title?: string
+    summary?: string
+    short?: string
+    i18n?: string | null
+    formulaId?: string
   } = req.body;
   if (
     title === undefined
@@ -120,7 +131,7 @@ const create = (req: Request, res: Response): void => {
     return;
   }
 
-  checkDuplicateFormulaId(formulaId as string, false)
+  checkDuplicateFormulaId(formulaId, false)
     .then((response) => {
       if (typeof response === 'boolean') {
         const stat = new Stat({
@@ -154,16 +165,25 @@ const create = (req: Request, res: Response): void => {
 const update = (req: Request, res: Response): void => {
   const {
     id, title = null, summary = null, i18n, short = null, formulaId = null
+  }: {
+    id?: string
+    title: string | null
+    summary: string | null
+    short: string | null
+    i18n: InternationalizationType | null
+    formulaId: string | null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Stat ID'));
 
     return;
   }
-  findStatById(id as string)
+  findStatById(id)
     .then((stat) => {
-      const alreadyExistOnce = typeof formulaId === 'string' && formulaId === stat.formulaId;
-      checkDuplicateFormulaId(formulaId as string, alreadyExistOnce)
+      const alreadyExistOnce
+      = typeof formulaId === 'string'
+        && formulaId === stat.formulaId;
+      checkDuplicateFormulaId(formulaId, alreadyExistOnce)
         .then((response) => {
           if (typeof response === 'boolean') {
             if (title !== null) {
@@ -180,9 +200,11 @@ const update = (req: Request, res: Response): void => {
             }
 
             if (i18n !== null) {
-              const newIntl: InternationalizationType = { ...(stat.i18n !== null && stat.i18n !== undefined && stat.i18n !== ''
-                ? JSON.parse(stat.i18n)
-                : {}) };
+              const newIntl: InternationalizationType = { ...(
+                stat.i18n !== undefined
+                && stat.i18n !== ''
+                  ? JSON.parse(stat.i18n)
+                  : {}) };
 
               Object.keys(i18n).forEach((lang) => {
                 newIntl[lang] = i18n[lang];

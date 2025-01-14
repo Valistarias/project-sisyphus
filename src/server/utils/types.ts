@@ -1,6 +1,6 @@
-import type { FlattenMaps, Types } from 'mongoose';
+import type { FlattenMaps, ObjectId, Types } from 'mongoose';
 
-import type { IActionDuration, IActionType, ISkill } from '../entities';
+import type { HydratedISkillBranch, IAction, IActionDuration, IActionType, ICharParamBonus, ICyberFrameBranch, IEffect, ISkill, ISkillBonus, ISkillBranch, IStat, IStatBonus } from '../entities';
 
 // Global Types ------------------------------------
 export type InternationalizationType = Record<string, Record<string, string>>;
@@ -31,5 +31,37 @@ export interface ICuratedEffectToSend {
   createdAt: Date
   formula?: string | undefined
   type: string | FlattenMaps<IActionType>
+  _id: Types.ObjectId
+}
+
+export interface ICuratedNodeToSend {
+  i18n?: string
+  title: string
+  summary: string
+  createdAt: Date
+  icon: string
+  quote?: string | undefined
+  rank: number
+  overrides?: string[] | ObjectId[]
+  effects: Array<FlattenMaps<IEffect>> | string[]
+  actions: Array<FlattenMaps<IAction>> | string[]
+  skillBonuses: Array<FlattenMaps<ISkillBonus>> | string[]
+  statBonuses: Array<FlattenMaps<IStatBonus>> | string[]
+  charParamBonuses: Array<FlattenMaps<ICharParamBonus>> | string[]
+  skillBranch?: ObjectId | FlattenMaps<ISkillBranch>
+  cyberFrameBranch?:
+    ObjectId
+    | FlattenMaps<ICyberFrameBranch>
+  _id: Types.ObjectId
+}
+
+export interface ICuratedSkillToSend {
+  i18n?: string
+  title: string
+  summary: string
+  createdAt: Date
+  formulaId: string
+  stat: FlattenMaps<IStat> | FlattenMaps<ObjectId>
+  branches: HydratedISkillBranch[]
   _id: Types.ObjectId
 }

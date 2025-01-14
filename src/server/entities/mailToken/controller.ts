@@ -27,7 +27,7 @@ const createToken = (req: Request, res: Response, mg: IMailgunClient): void => {
     return;
   }
   User.findOne({ mail })
-    .then(async (user) => {
+    .then((user) => {
       if (user === undefined || user === null) {
         res.send({ message: 'Mail sent' });
       } else {

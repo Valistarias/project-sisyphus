@@ -12,12 +12,10 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    files: ['**/*.{mjs,js,ts,jsx,tsx}'],
     ignores: [
-      'node_modules',
-      'dist',
-      'vite-env.d.ts',
-      'eslint.config.mjs'
+      '**/node_modules/**',
+      '**/dist/**',
+      'vite-env.d.ts'
     ]
   },
   { languageOptions: { globals: {
@@ -31,6 +29,13 @@ export default tseslint.config(
   {
     plugins: { 'react-hooks': reactHooks },
     rules: { ...reactHooks.configs.recommended.rules }
+  },
+  {
+    settings: {
+      react: {
+        version: 'detect'
+      }
+    }
   },
   { rules: {
     'no-console': ['error', { allow: ['warn', 'error'] }],
@@ -119,7 +124,7 @@ export default tseslint.config(
     '@stylistic/max-len': [
       'error',
       {
-        code: 80, ignoreComments: true
+        code: 80, ignoreComments: true, ignoreStrings: true
       }
     ],
     '@stylistic/array-element-newline': [

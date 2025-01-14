@@ -61,7 +61,7 @@ export interface ISentEffect {
 const updateEffects = (
   elts: ISentEffect[],
   ids: string[],
-  cb: (err: unknown | null, res?: string[]) => void
+  cb: (err: unknown, res?: string[]) => void
 ): void => {
   if (elts.length === 0) {
     cb(null, ids);
@@ -148,7 +148,7 @@ const smartUpdateEffects = async ({
   await new Promise((resolve, reject) => {
     Effect.deleteMany({ _id: { $in: effectsToRemove } })
       .then(() => {
-        updateEffects(effectsToUpdate, [], (err: unknown | null, ids?: string[]) => {
+        updateEffects(effectsToUpdate, [], (err: unknown, ids?: string[]) => {
           if (err !== null) {
             reject(err);
           } else {

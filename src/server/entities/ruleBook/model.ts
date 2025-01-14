@@ -82,5 +82,8 @@ ruleBookSchema.virtual('chapters', {
 const RuleBookModel = (): Model<IRuleBook> => model('RuleBook', ruleBookSchema);
 
 export {
-  RuleBookModel, type BasicHydratedIRuleBook, type HydratedIRuleBook, type IRuleBook
+  RuleBookModel,
+  type BasicHydratedIRuleBook,
+  type HydratedIRuleBook,
+  type IRuleBook
 };

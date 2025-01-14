@@ -89,7 +89,7 @@ const create = (req: Request, res: Response): void => {
     title?: string
     summary?: string
     quote?: string
-    i18n?: string | null
+    i18n?: InternationalizationType | null
     weaponType?: ObjectId
     rarity?: ObjectId
     weaponScope?: ObjectId
@@ -207,7 +207,7 @@ const update = (req: Request, res: Response): void => {
     title: string | null
     summary: string | null
     quote: string | null
-    i18n: string | null
+    i18n: InternationalizationType | null
     weaponType: ObjectId | null
     rarity: ObjectId | null
     weaponScope: ObjectId | null
@@ -618,8 +618,8 @@ const findAll = (req: Request, res: Response): void => {
           FlattenMaps<IWeapon>
           , 'effects' | 'actions' | 'damages'
         > & {
-          effects: typeof curatedEffects
-          actions: typeof curatedActions
+          effects: ICuratedEffectToSend[]
+          actions: ICuratedActionToSend[]
           damages: Array<FlattenMaps<HydratedIDamage>>
         } = weaponSent.toJSON();
         weapon.actions = curatedActions;

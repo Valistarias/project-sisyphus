@@ -1,7 +1,7 @@
 import type {
   Request, Response
 } from 'express';
-import type { HydratedDocument } from 'mongoose';
+import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
 import {
@@ -12,7 +12,7 @@ import type {
   INode, ISkill
 } from '../index';
 import type {
-  HydratedISkillBonus, ISkillBonus
+  HydratedISkillBonus
 } from './model';
 
 const {
@@ -23,8 +23,8 @@ const findSkillBonuses = async (): Promise<HydratedISkillBonus[]> =>
   await new Promise((resolve, reject) => {
     SkillBonus.find()
       .populate<{ skill: ISkill }>('skill')
-      .then(async (res: HydratedISkillBonus[]) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedISkillBonus[] | null) => {
+        if (res === null) {
           reject(gemNotFound('SkillBonuses'));
         } else {
           resolve(res);
@@ -39,8 +39,8 @@ const findSkillBonusById = async (id: string): Promise<HydratedISkillBonus> =>
   await new Promise((resolve, reject) => {
     SkillBonus.findById(id)
       .populate<{ skill: ISkill }>('skill')
-      .then(async (res: HydratedISkillBonus) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedISkillBonus | null) => {
+        if (res === null) {
           reject(gemNotFound('SkillBonus'));
         } else {
           resolve(res);
@@ -57,7 +57,7 @@ const createReadSkillBonus = (
     value: number
   }>,
   ids: string[],
-  cb: (err: unknown | null, res?: string[]) => void
+  cb: (err: unknown, res?: string[]) => void
 ): void => {
   if (elts.length === 0) {
     cb(null, ids);
@@ -66,8 +66,8 @@ const createReadSkillBonus = (
   }
   const actualElt = elts[0];
   SkillBonus.findOne(actualElt)
-    .then(async (sentSkillBonus: HydratedDocument<ISkillBonus>) => {
-      if (sentSkillBonus === undefined || sentSkillBonus === null) {
+    .then((sentSkillBonus) => {
+      if (sentSkillBonus === null) {
         // Need to create it
         const skillBonus = new SkillBonus(actualElt);
 
@@ -92,12 +92,14 @@ const createReadSkillBonus = (
         }
       }
     })
-    .catch(async () => {
+    .catch(() => {
       cb(new Error('Error reading or creating skill bonus'));
     });
 };
 
-const smartDeleteSkillBonus = (elts: string[], cb: (err: unknown | null) => void): void => {
+const smartDeleteSkillBonus = (
+  elts: string[],
+  cb: (err: unknown) => void): void => {
   if (elts.length === 0) {
     cb(null);
 
@@ -106,7 +108,7 @@ const smartDeleteSkillBonus = (elts: string[], cb: (err: unknown | null) => void
   const actualElt = elts[0];
   let counter = 0;
   Node.find({ skillBonuses: actualElt })
-    .then(async (sentNodes: INode[]) => {
+    .then((sentNodes: INode[]) => {
       counter += sentNodes.length;
       if (counter <= 1) {
         SkillBonus.findByIdAndDelete(actualElt)
@@ -122,7 +124,7 @@ const smartDeleteSkillBonus = (elts: string[], cb: (err: unknown | null) => void
         smartDeleteSkillBonus([...elts], cb);
       }
     })
-    .catch(async () => {
+    .catch(() => {
       cb(new Error('Error deleting skill bonus'));
     });
 };
@@ -140,17 +142,20 @@ const curateSkillBonusIds = async ({
   skillBonusesToStay: string[]
 }): Promise<string[]> =>
   await new Promise((resolve, reject) => {
-    smartDeleteSkillBonus(skillBonusesToRemove, (err: unknown | null) => {
+    smartDeleteSkillBonus(skillBonusesToRemove, (err: unknown) => {
       if (err !== null) {
         reject(err);
       } else {
-        createReadSkillBonus(skillBonusesToAdd, [], (err: unknown | null, res?: string[]) => {
-          if (err !== null) {
-            reject(err);
-          } else {
-            resolve([...skillBonusesToStay, ...(res ?? [])]);
-          }
-        });
+        createReadSkillBonus(
+          skillBonusesToAdd,
+          [],
+          (err: unknown, res?: string[]) => {
+            if (err !== null) {
+              reject(err);
+            } else {
+              resolve([...skillBonusesToStay, ...(res ?? [])]);
+            }
+          });
       }
     });
   });
@@ -183,13 +188,17 @@ const create = (req: Request, res: Response): void => {
 const update = (req: Request, res: Response): void => {
   const {
     id, skill = null, value = null
+  }: {
+    id?: string
+    skill: ObjectId | null
+    value: number | null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('SkillBonus ID'));
 
     return;
   }
-  findSkillBonusById(id as string)
+  findSkillBonusById(id)
     .then((skillBonus) => {
       if (skill !== null) {
         skillBonus.skill = skill;

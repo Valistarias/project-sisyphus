@@ -57,7 +57,7 @@ const createReadDamage = (
     dices: string
   }>,
   ids: string[],
-  cb: (err: unknown | null, res?: string[]) => void
+  cb: (err: unknown, res?: string[]) => void
 ): void => {
   if (elts.length === 0) {
     cb(null, ids);
@@ -66,7 +66,7 @@ const createReadDamage = (
   }
   const actualElt = elts[0];
   Damage.findOne(actualElt)
-    .then(async (sentDamage: HydratedDocument<IDamage>) => {
+    .then((sentDamage: HydratedDocument<IDamage>) => {
       if (sentDamage === undefined || sentDamage === null) {
         // Need to create it
         const damage = new Damage(actualElt);
@@ -92,12 +92,12 @@ const createReadDamage = (
         }
       }
     })
-    .catch(async () => {
+    .catch(() => {
       cb(new Error('Error reading or creating damage'));
     });
 };
 
-const smartDeleteDamage = (elts: string[], cb: (err: unknown | null) => void): void => {
+const smartDeleteDamage = (elts: string[], cb: (err: unknown) => void): void => {
   if (elts.length === 0) {
     cb(null);
 
@@ -106,7 +106,7 @@ const smartDeleteDamage = (elts: string[], cb: (err: unknown | null) => void): v
   const actualElt = elts[0];
   let counter = 0;
   Weapon.find({ damages: actualElt })
-    .then(async (sentWeapons: IWeapon[]) => {
+    .then((sentWeapons: IWeapon[]) => {
       counter += sentWeapons.length;
       if (counter <= 1) {
         Damage.findByIdAndDelete(actualElt)
@@ -122,7 +122,7 @@ const smartDeleteDamage = (elts: string[], cb: (err: unknown | null) => void): v
         smartDeleteDamage([...elts], cb);
       }
     })
-    .catch(async () => {
+    .catch(() => {
       cb(new Error('Error deleting damage'));
     });
 };
@@ -140,11 +140,11 @@ const curateDamageIds = async ({
   damagesToStay: string[]
 }): Promise<string[]> =>
   await new Promise((resolve, reject) => {
-    smartDeleteDamage(damagesToRemove, (err: unknown | null) => {
+    smartDeleteDamage(damagesToRemove, (err: unknown) => {
       if (err !== null) {
         reject(err);
       } else {
-        createReadDamage(damagesToAdd, [], (err: unknown | null, res?: string[]) => {
+        createReadDamage(damagesToAdd, [], (err: unknown, res?: string[]) => {
           if (err !== null) {
             reject(err);
           } else {

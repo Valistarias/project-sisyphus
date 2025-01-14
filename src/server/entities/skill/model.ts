@@ -22,7 +22,7 @@ interface ISkill {
 }
 
 type LeanISkill = Omit<ISkill, 'stat'> & {
-  stat: IStat
+  stat: IStat | ObjectId
   branches: HydratedISkillBranch[]
 };
 

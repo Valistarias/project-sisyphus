@@ -609,7 +609,7 @@ const deleteNode = (req: Request, res: Response): void => {
 
 interface CuratedINode {
   i18n?: InternationalizationType
-  node: any
+  node: HydratedINode
 }
 
 const findSingle = (req: Request, res: Response): void => {

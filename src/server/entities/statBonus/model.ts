@@ -14,7 +14,7 @@ interface IStatBonus {
 }
 
 type HydratedIStatBonus = HydratedDocument<
-  Omit<IStatBonus, 'stat'> & { stat: IStat }
+  Omit<IStatBonus, 'stat'> & { stat: IStat | ObjectId }
 >;
 
 const statBonusSchema = new Schema<IStatBonus>({

@@ -57,7 +57,7 @@ const createReadCharParamBonus = (
     value: number
   }>,
   ids: string[],
-  cb: (err: unknown | null, res?: string[]) => void
+  cb: (err: unknown, res?: string[]) => void
 ): void => {
   if (elts.length === 0) {
     cb(null, ids);
@@ -66,7 +66,7 @@ const createReadCharParamBonus = (
   }
   const actualElt = elts[0];
   CharParamBonus.findOne(actualElt)
-    .then(async (sentCharParamBonus: HydratedDocument<ICharParamBonus>) => {
+    .then((sentCharParamBonus: HydratedDocument<ICharParamBonus>) => {
       if (sentCharParamBonus === undefined || sentCharParamBonus === null) {
         // Need to create it
         const charParamBonus = new CharParamBonus(actualElt);
@@ -92,12 +92,12 @@ const createReadCharParamBonus = (
         }
       }
     })
-    .catch(async () => {
+    .catch(() => {
       cb(new Error('Error reading or creating charParam bonus'));
     });
 };
 
-const smartDeleteCharParamBonus = (elts: string[], cb: (err: unknown | null) => void): void => {
+const smartDeleteCharParamBonus = (elts: string[], cb: (err: unknown) => void): void => {
   if (elts.length === 0) {
     cb(null);
 
@@ -106,7 +106,7 @@ const smartDeleteCharParamBonus = (elts: string[], cb: (err: unknown | null) => 
   const actualElt = elts[0];
   let counter = 0;
   Node.find({ charParamBonuses: actualElt })
-    .then(async (sentNodes: INode[]) => {
+    .then((sentNodes: INode[]) => {
       counter += sentNodes.length;
       if (counter <= 1) {
         CharParamBonus.findByIdAndDelete(actualElt)
@@ -122,7 +122,7 @@ const smartDeleteCharParamBonus = (elts: string[], cb: (err: unknown | null) => 
         smartDeleteCharParamBonus([...elts], cb);
       }
     })
-    .catch(async () => {
+    .catch(() => {
       cb(new Error('Error deleting charParam bonus'));
     });
 };
@@ -140,14 +140,14 @@ const curateCharParamBonusIds = async ({
   charParamBonusesToStay: string[]
 }): Promise<string[]> =>
   await new Promise((resolve, reject) => {
-    smartDeleteCharParamBonus(charParamBonusesToRemove, (err: unknown | null) => {
+    smartDeleteCharParamBonus(charParamBonusesToRemove, (err: unknown) => {
       if (err !== null) {
         reject(err);
       } else {
         createReadCharParamBonus(
           charParamBonusesToAdd,
           [],
-          (err: unknown | null, res?: string[]) => {
+          (err: unknown, res?: string[]) => {
             if (err !== null) {
               reject(err);
             } else {
