@@ -19,8 +19,8 @@ const { BodyPart } = db;
 const findBodyParts = async (): Promise<HydratedIBodyPart[]> =>
   await new Promise((resolve, reject) => {
     BodyPart.find()
-      .then((res?: HydratedIBodyPart[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedIBodyPart[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('BodyParts'));
         } else {
           resolve(res);

@@ -40,8 +40,8 @@ const findCampaigns = async (req: Request): Promise<HydratedICompleteCampaign[]>
             path: 'characters',
             select: '_id name campaign'
           })
-          .then((res?: HydratedICompleteCampaign[] | null) => {
-            if (res === undefined || res === null) {
+          .then((res: HydratedICompleteCampaign[]) => {
+            if (res.length === 0) {
               reject(gemNotFound('Campaigns'));
             } else {
               resolve(res);

@@ -19,8 +19,8 @@ const findEffects = async (): Promise<HydratedIEffect[]> =>
   await new Promise((resolve, reject) => {
     Effect.find()
       .populate<{ type: IActionType }>('type')
-      .then((res?: HydratedIEffect[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedIEffect[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('Effects'));
         } else {
           resolve(res);

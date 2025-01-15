@@ -1,7 +1,7 @@
 import type {
   Request, Response
 } from 'express';
-import type { ObjectId } from 'mongoose';
+import type { FlattenMaps, HydratedDocument, ObjectId } from 'mongoose';
 
 import db from '../../models';
 import {
@@ -10,8 +10,7 @@ import {
 import { curateDamageIds } from '../damage/controller';
 
 import type { InternationalizationType } from '../../utils/types';
-import type { IDamage } from '../damage/model';
-import type { INPC } from '../index';
+import type { INPC, HydratedIDamage } from '../index';
 import type {
   HydratedIProgram, IProgram
 } from './model';
@@ -24,13 +23,15 @@ interface findAllPayload {
   starterKit?: string | Record<string, string[]>
 }
 
-const findPrograms = async (options?: findAllPayload): Promise<HydratedIProgram[]> =>
+const findPrograms = async (
+  options?: findAllPayload
+): Promise<HydratedIProgram[]> =>
   await new Promise((resolve, reject) => {
     Program.find(options ?? {})
-      .populate<{ damages: IDamage[] }>('damages')
+      .populate<{ damages: HydratedIDamage[] }>('damages')
       .populate<{ ai: INPC }>('ai')
-      .then((res?: HydratedIProgram[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedIProgram[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('Programs'));
         } else {
           resolve(res);
@@ -44,7 +45,7 @@ const findPrograms = async (options?: findAllPayload): Promise<HydratedIProgram[
 const findProgramById = async (id: string): Promise<HydratedIProgram> =>
   await new Promise((resolve, reject) => {
     Program.findById(id)
-      .populate<{ damages: IDamage[] }>('damages')
+      .populate<{ damages: HydratedIDamage[] }>('damages')
       .populate<{ ai: INPC }>('ai')
       .then((res?: HydratedIProgram | null) => {
         if (res === undefined || res === null) {
@@ -74,6 +75,24 @@ const create = (req: Request, res: Response): void => {
     uses,
     radius,
     damages
+  }: {
+    title?: string
+    summary?: string
+    i18n?: InternationalizationType | null
+    ram?: number
+    rarity?: ObjectId
+    programScope?: ObjectId
+    itemType?: ObjectId
+    starterKit?: string
+    cost?: number
+    ai?: ObjectId
+    aiSummoned?: number
+    uses?: number
+    radius?: number
+    damages?: Array<{
+      damageType: string
+      dices: string
+    }>
   } = req.body;
   if (
     title === undefined
@@ -111,10 +130,7 @@ const create = (req: Request, res: Response): void => {
   curateDamageIds({
     damagesToRemove: [],
     damagesToStay: [],
-    damagesToAdd: damages as Array<{
-      damageType: string
-      dices: string
-    }>
+    damagesToAdd: damages
   })
     .then((damageIds) => {
       if (damageIds.length > 0) {
@@ -151,6 +167,25 @@ const update = (req: Request, res: Response): void => {
     radius = null,
     damages = null,
     itemType = null
+  }: {
+    id?: string
+    title: string | null
+    summary: string | null
+    i18n: InternationalizationType | null
+    ram: number | null
+    rarity: ObjectId | null
+    programScope: ObjectId | null
+    itemType: ObjectId | null
+    starterKit?: 'always' | 'never' | 'option' | null
+    cost: number | null
+    ai?: ObjectId | null
+    aiSummoned?: number | null
+    uses: number | null
+    radius: number | null
+    damages?: Array<{
+      damageType: string
+      dices: string
+    }> | null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Program ID'));
@@ -158,7 +193,7 @@ const update = (req: Request, res: Response): void => {
     return;
   }
 
-  findProgramById(id as string)
+  findProgramById(id)
     .then((program) => {
       if (title !== null) {
         program.title = title;
@@ -198,52 +233,61 @@ const update = (req: Request, res: Response): void => {
       }
 
       const damagesToStay: string[] = [];
-      interface IDamageElt extends IDamage {
-        _id: ObjectId
-      }
-      const damagesToRemove = program.damages.reduce((result: string[], elt: IDamageElt) => {
-        const foundDamage = damages.find(
-          damage => damage.damageType === String(elt.damageType) && damage.dices === elt.dices
+      let damagesToRemove: string[] = [];
+      let damagesToAdd: Array<{
+        damageType: string
+        dices: string
+      }> = [];
+
+      if (damages !== null) {
+        damagesToRemove = program.damages.reduce(
+          (result: string[], elt: HydratedIDamage) => {
+            const foundDamage = damages.find(
+              damage => damage.damageType === String(elt.damageType)
+                && damage.dices === elt.dices
+            );
+            if (foundDamage === undefined) {
+              result.push(String(elt._id));
+            } else {
+              damagesToStay.push(String(elt._id));
+            }
+
+            return result;
+          }, []);
+
+        damagesToAdd = damages.reduce(
+          (
+            result: Array<{
+              damageType: string
+              dices: string
+            }>,
+            elt: {
+              damageType: string
+              dices: string
+            }
+          ) => {
+            const foundDamage = program.damages.find(
+              damage =>
+                typeof damage !== 'string'
+                && String(damage.damageType) === elt.damageType
+                && damage.dices === elt.dices
+            );
+            if (foundDamage === undefined) {
+              result.push(elt);
+            }
+
+            return result;
+          },
+          []
         );
-        if (foundDamage === undefined) {
-          result.push(String(elt._id));
-        } else {
-          damagesToStay.push(String(elt._id));
-        }
-
-        return result;
-      }, []);
-
-      const damagesToAdd = damages.reduce(
-        (
-          result: Array<{
-            damageType: string
-            dices: string
-          }>,
-          elt: {
-            damageType: string
-            dices: string
-          }
-        ) => {
-          const foundDamage = program.damages.find(
-            damage =>
-              typeof damage !== 'string'
-              && String(damage.damageType) === elt.damageType
-              && damage.dices === elt.dices
-          );
-          if (foundDamage === undefined) {
-            result.push(elt);
-          }
-
-          return result;
-        },
-        []
-      );
+      }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(program.i18n !== null && program.i18n !== undefined && program.i18n !== ''
-          ? JSON.parse(program.i18n)
-          : {}) };
+        const newIntl: InternationalizationType = { ...(
+          program.i18n !== undefined
+          && program.i18n !== ''
+            ? JSON.parse(program.i18n)
+            : {}) };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -259,8 +303,10 @@ const update = (req: Request, res: Response): void => {
       })
         .then((damageIds) => {
           if (damageIds.length > 0) {
-            program.damages = damageIds.map(skillBonusId => String(skillBonusId));
-          } else if (damageIds !== null && damageIds.length === 0) {
+            program.damages = damageIds.map(
+              skillBonusId => String(skillBonusId)
+            );
+          } else if (damageIds.length === 0) {
             program.damages = [];
           }
           program
@@ -317,18 +363,6 @@ const deleteProgram = (req: Request, res: Response): void => {
     });
 };
 
-interface InternationalizedProgram extends Omit<IProgram, 'ai'> {
-  ai?: {
-    i18n?: InternationalizationType
-    nPC: any
-  }
-}
-
-interface CuratedIProgram {
-  i18n?: InternationalizationType
-  program: InternationalizedProgram
-}
-
 const findSingle = (req: Request, res: Response): void => {
   const { programId } = req.query;
   if (programId === undefined || typeof programId !== 'string') {
@@ -337,14 +371,35 @@ const findSingle = (req: Request, res: Response): void => {
     return;
   }
   findProgramById(programId)
-    .then((programSent) => {
-      const program: InternationalizedProgram = programSent.toJSON();
+    .then((programSent: HydratedDocument<
+      Omit<IProgram, 'damages' | 'ai'> & {
+        damages: HydratedIDamage[]
+        ai?: INPC
+      }
+    >) => {
+      // const program: InternationalizedProgram = programSent.toJSON();
+      let curatedAI: {
+        nPC: INPC
+        i18n?: InternationalizationType
+      } | undefined;
       if (programSent.ai !== undefined) {
-        program.ai = {
-          nPC: program.ai,
-          i18n: programSent.ai.i18n !== undefined ? JSON.parse(programSent.ai.i18n) : {}
+        curatedAI = {
+          nPC: programSent.ai,
+          i18n: programSent.ai.i18n !== undefined
+            ? JSON.parse(programSent.ai.i18n)
+            : {}
         };
       }
+      const program: Omit<
+        FlattenMaps<IProgram>
+        , 'damages' | 'ai'
+      > & {
+        damages: Array<FlattenMaps<HydratedIDamage>>
+        ai?: {
+          nPC: INPC
+          i18n?: InternationalizationType
+        }
+      } = { ...programSent.toJSON(), ai: curatedAI };
       const sentObj = {
         program,
         i18n: curateI18n(programSent.i18n)
@@ -358,16 +413,49 @@ const findSingle = (req: Request, res: Response): void => {
 
 const findAll = (req: Request, res: Response): void => {
   findPrograms()
-    .then((programs) => {
-      const curatedPrograms: CuratedIProgram[] = [];
+    .then((programs: Array<HydratedDocument<
+      Omit<IProgram, 'damages' | 'ai'> & {
+        damages: HydratedIDamage[]
+        ai?: INPC
+      }
+    >>) => {
+      const curatedPrograms: Array<{
+        program: Omit<
+          FlattenMaps<IProgram>
+          , 'damages' | 'ai'
+        > & {
+          damages: Array<FlattenMaps<HydratedIDamage>>
+          ai?: {
+            nPC: INPC
+            i18n?: InternationalizationType
+          }
+        }
+        i18n?: InternationalizationType
+      }> = [];
+
       programs.forEach((programSent) => {
-        const program: InternationalizedProgram = programSent.toJSON();
+        let curatedAI: {
+          nPC: INPC
+          i18n?: InternationalizationType
+        } | undefined;
         if (programSent.ai !== undefined) {
-          program.ai = {
-            nPC: program.ai,
-            i18n: programSent.ai.i18n !== undefined ? JSON.parse(programSent.ai.i18n) : {}
+          curatedAI = {
+            nPC: programSent.ai,
+            i18n: programSent.ai.i18n !== undefined
+              ? JSON.parse(programSent.ai.i18n)
+              : {}
           };
         }
+        const program: Omit<
+          FlattenMaps<IProgram>
+          , 'damages' | 'ai'
+        > & {
+          damages: Array<FlattenMaps<HydratedIDamage>>
+          ai?: {
+            nPC: INPC
+            i18n?: InternationalizationType
+          }
+        } = { ...programSent.toJSON(), ai: curatedAI };
         curatedPrograms.push({
           program,
           i18n: curateI18n(programSent.i18n)
@@ -381,16 +469,48 @@ const findAll = (req: Request, res: Response): void => {
 
 const findAllStarter = (req: Request, res: Response): void => {
   findPrograms({ starterKit: { $in: ['always', 'option'] } })
-    .then((programs) => {
-      const curatedPrograms: CuratedIProgram[] = [];
+    .then((programs: Array<HydratedDocument<
+      Omit<IProgram, 'damages' | 'ai'> & {
+        damages: HydratedIDamage[]
+        ai?: INPC
+      }
+    >>) => {
+      const curatedPrograms: Array<{
+        program: Omit<
+          FlattenMaps<IProgram>
+          , 'damages' | 'ai'
+        > & {
+          damages: Array<FlattenMaps<HydratedIDamage>>
+          ai?: {
+            nPC: INPC
+            i18n?: InternationalizationType
+          }
+        }
+        i18n?: InternationalizationType
+      }> = [];
       programs.forEach((programSent) => {
-        const program: InternationalizedProgram = programSent.toJSON();
+        let curatedAI: {
+          nPC: INPC
+          i18n?: InternationalizationType
+        } | undefined;
         if (programSent.ai !== undefined) {
-          program.ai = {
-            nPC: program.ai,
-            i18n: programSent.ai.i18n !== undefined ? JSON.parse(programSent.ai.i18n) : {}
+          curatedAI = {
+            nPC: programSent.ai,
+            i18n: programSent.ai.i18n !== undefined
+              ? JSON.parse(programSent.ai.i18n)
+              : {}
           };
         }
+        const program: Omit<
+          FlattenMaps<IProgram>
+          , 'damages' | 'ai'
+        > & {
+          damages: Array<FlattenMaps<HydratedIDamage>>
+          ai?: {
+            nPC: INPC
+            i18n?: InternationalizationType
+          }
+        } = { ...programSent.toJSON(), ai: curatedAI };
         curatedPrograms.push({
           program,
           i18n: curateI18n(programSent.i18n)
@@ -403,5 +523,11 @@ const findAllStarter = (req: Request, res: Response): void => {
 };
 
 export {
-  create, deleteProgram, findAll, findAllStarter, findProgramById, findSingle, update
+  create,
+  deleteProgram,
+  findAll,
+  findAllStarter,
+  findProgramById,
+  findSingle,
+  update
 };

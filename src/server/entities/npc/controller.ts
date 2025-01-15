@@ -1,18 +1,19 @@
 import type {
   Request, Response
 } from 'express';
-import type { ObjectId } from 'mongoose';
+import type { FlattenMaps, HydratedDocument } from 'mongoose';
 
 import db from '../../models';
 import {
   gemInvalidField, gemNotFound, gemServerError
 } from '../../utils/globalErrorMessage';
-import { smartUpdateAttacks } from '../ennemyAttack/controller';
+import { type ISentEnnemyAttack, smartUpdateAttacks } from '../ennemyAttack/controller';
 
-import type { InternationalizationType } from '../../utils/types';
-import type { IEnnemyAttack } from '../index';
+import type { ICuratedEnnemyAttackToSend, InternationalizationType } from '../../utils/types';
+import type { HydratedIEnnemyAttack } from '../index';
 import type {
-  BasicHydratedINPC, HydratedINPC
+  BasicHydratedINPC, HydratedINPC,
+  INPC
 } from './model';
 
 import { curateI18n } from '../../utils';
@@ -22,9 +23,9 @@ const { NPC } = db;
 const findNPCs = async (): Promise<HydratedINPC[]> =>
   await new Promise((resolve, reject) => {
     NPC.find()
-      .populate<{ attacks: IEnnemyAttack[] }>('attacks')
-      .then((res?: HydratedINPC[] | null) => {
-        if (res === undefined || res === null) {
+      .populate<{ attacks: HydratedIEnnemyAttack[] }>('attacks')
+      .then((res: HydratedINPC[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('NPCs'));
         } else {
           resolve(res);
@@ -53,9 +54,9 @@ const basicListNPCs = async (): Promise<BasicHydratedINPC[]> =>
 const findNPCById = async (id: string): Promise<HydratedINPC> =>
   await new Promise((resolve, reject) => {
     NPC.findById(id)
-      .populate<{ attacks: IEnnemyAttack[] }>('attacks')
+      .populate<{ attacks: HydratedIEnnemyAttack[] }>('attacks')
       .then((res) => {
-        if (res === undefined || res === null) {
+        if (res === null) {
           reject(gemNotFound('NPC'));
         } else {
           resolve(res as HydratedINPC);
@@ -144,6 +145,19 @@ const update = (req: Request, res: Response): void => {
     swimSpeed = null,
     title = null,
     virtual = null
+  }: {
+    id?: string
+    title: string | null
+    summary: string | null
+    i18n: InternationalizationType | null
+    ar: number | null
+    pr: number | null
+    attacks: ISentEnnemyAttack[] | null
+    speed: number | null
+    swimSpeed: number | null
+    flightSpeed: number | null
+    hp: number | null
+    virtual: boolean | null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('NPC ID'));
@@ -151,7 +165,7 @@ const update = (req: Request, res: Response): void => {
     return;
   }
 
-  findNPCById(id as string)
+  findNPCById(id)
     .then((nPC) => {
       if (title !== null) {
         nPC.title = title;
@@ -181,35 +195,40 @@ const update = (req: Request, res: Response): void => {
         nPC.pr = pr;
       }
 
-      interface IEnnemyAttackElt extends IEnnemyAttack {
-        _id: ObjectId
-      }
-      const attacksToRemove = nPC.attacks.reduce((result: string[], elt: IEnnemyAttackElt) => {
-        const foundAttack = attacks.find(
-          attack => attack.id !== undefined && String(attack.id) === String(elt._id)
-        );
-        if (foundAttack === undefined) {
-          result.push(String(elt._id));
+      let attacksToRemove: string[] = [];
+
+      if (attacks !== null) {
+        attacksToRemove = nPC.attacks.reduce(
+          (result: string[], elt: HydratedIEnnemyAttack) => {
+            const foundAttack = attacks.find(
+              attack => attack.id !== undefined
+                && String(attack.id) === String(elt._id)
+            );
+            if (foundAttack === undefined) {
+              result.push(String(elt._id));
+            }
+
+            return result;
+          }, []);
+
+        if (i18n !== null) {
+          const newIntl: InternationalizationType = { ...(
+            nPC.i18n !== undefined
+            && nPC.i18n !== ''
+              ? JSON.parse(nPC.i18n)
+              : {}) };
+
+          Object.keys(i18n).forEach((lang) => {
+            newIntl[lang] = i18n[lang];
+          });
+
+          nPC.i18n = JSON.stringify(newIntl);
         }
-
-        return result;
-      }, []);
-
-      if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(nPC.i18n !== null && nPC.i18n !== undefined && nPC.i18n !== ''
-          ? JSON.parse(nPC.i18n)
-          : {}) };
-
-        Object.keys(i18n).forEach((lang) => {
-          newIntl[lang] = i18n[lang];
-        });
-
-        nPC.i18n = JSON.stringify(newIntl);
       }
 
       smartUpdateAttacks({
         attacksToRemove,
-        attacksToUpdate: attacks
+        attacksToUpdate: attacks ?? []
       })
         .then((attackIds) => {
           if (attackIds.length > 0) {
@@ -269,11 +288,6 @@ const deleteNPC = (req: Request, res: Response): void => {
     });
 };
 
-interface CuratedINPC {
-  i18n?: InternationalizationType
-  nPC: any
-}
-
 const findSingle = (req: Request, res: Response): void => {
   const { nPCId } = req.query;
   if (nPCId === undefined || typeof nPCId !== 'string') {
@@ -282,22 +296,29 @@ const findSingle = (req: Request, res: Response): void => {
     return;
   }
   findNPCById(nPCId)
-    .then((nPCSent) => {
-      const curatedActions
+    .then((nPCSent: HydratedDocument<
+      Omit<INPC, 'attacks'> & { attacks: HydratedIEnnemyAttack[] }
+    >) => {
+      const curatedAttacks
         = nPCSent.attacks.length > 0
-          ? nPCSent.attacks.map((action) => {
-              const data = action.toJSON();
+          ? nPCSent.attacks.map((attack) => {
+              const data = attack.toJSON();
 
               return {
                 ...data,
-                ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {})
+                ...(
+                  data.i18n !== undefined
+                    ? { i18n: JSON.parse(data.i18n) }
+                    : {}
+                )
               };
             })
           : [];
-      const nPC = nPCSent.toJSON();
-      nPC.attacks = curatedActions;
       res.send({
-        nPC,
+        nPC: {
+          ...nPCSent.toJSON(),
+          attacks: curatedAttacks
+        },
         i18n: curateI18n(nPCSent.i18n)
       });
     })
@@ -308,25 +329,45 @@ const findSingle = (req: Request, res: Response): void => {
 
 const findAll = (req: Request, res: Response): void => {
   findNPCs()
-    .then((nPCs) => {
-      const curatedNPCs: CuratedINPC[] = [];
+    .then((nPCs: Array<
+      HydratedDocument<
+        Omit<FlattenMaps<INPC>, 'attacks'>
+        & {
+          attacks: HydratedIEnnemyAttack[]
+        }
+      >
+    >) => {
+      const curatedNPCs: Array<{
+        nPC: Omit<
+          FlattenMaps<INPC>
+          , 'attacks'
+        > & {
+          attacks: ICuratedEnnemyAttackToSend[]
+        }
+        i18n?: InternationalizationType
+      }> = [];
 
       nPCs.forEach((nPCSent) => {
-        const curatedActions
-          = nPCSent.attacks.length > 0
-            ? nPCSent.attacks.map((action) => {
-                const data = action.toJSON();
+        const curatedAttacks
+        = nPCSent.attacks.length > 0
+          ? nPCSent.attacks.map((attack) => {
+              const data = attack.toJSON();
 
-                return {
-                  ...data,
-                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {})
-                };
-              })
-            : [];
-        const nPC = nPCSent.toJSON();
-        nPC.attacks = curatedActions;
+              return {
+                ...data,
+                ...(
+                  data.i18n !== undefined
+                    ? { i18n: JSON.parse(data.i18n) }
+                    : {}
+                )
+              };
+            })
+          : [];
         curatedNPCs.push({
-          nPC,
+          nPC: {
+            ...nPCSent.toJSON(),
+            attacks: curatedAttacks
+          },
           i18n: curateI18n(nPCSent.i18n)
         });
       });
@@ -339,17 +380,12 @@ const findAll = (req: Request, res: Response): void => {
 const findAllBasic = (req: Request, res: Response): void => {
   basicListNPCs()
     .then((nPCs) => {
-      const curatedNPCs: CuratedINPC[] = [];
-
-      nPCs.forEach((nPCSent) => {
-        const nPC = nPCSent.toJSON();
-        curatedNPCs.push({
-          nPC,
+      res.send(
+        nPCs.map(nPCSent => ({
+          nPC: nPCSent.toJSON(),
           i18n: curateI18n(nPCSent.i18n)
-        });
-      });
-
-      res.send(curatedNPCs);
+        }))
+      );
     })
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };

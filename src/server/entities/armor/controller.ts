@@ -35,8 +35,8 @@ const findArmors = async (options?: findAllPayload): Promise<HydratedIArmor[]> =
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
-      .then((res?: HydratedIArmor[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedIArmor[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('Armors'));
         } else {
           resolve(res);

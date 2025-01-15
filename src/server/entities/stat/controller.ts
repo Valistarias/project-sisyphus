@@ -22,8 +22,8 @@ const { Stat } = db;
 const findStats = async (): Promise<HydratedIStat[]> =>
   await new Promise((resolve, reject) => {
     Stat.find()
-      .then((res?: HydratedIStat[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedIStat[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('Stats'));
         } else {
           resolve(res);

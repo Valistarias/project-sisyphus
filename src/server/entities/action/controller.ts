@@ -23,8 +23,8 @@ const findActions = async (): Promise<HydratedIAction[]> =>
       .populate<{ type: IActionType }>('type')
       .populate<{ duration: IActionDuration }>('duration')
       .populate<{ skill: ISkill }>('skill')
-      .then((res?: HydratedIAction[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedIAction[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('Actions'));
         } else {
           resolve(res);

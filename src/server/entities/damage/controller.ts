@@ -23,8 +23,8 @@ const findDamages = async (): Promise<HydratedIDamage[]> =>
   await new Promise((resolve, reject) => {
     Damage.find()
       .populate<{ damageType: IDamageType }>('damageType')
-      .then((res?: HydratedIDamage[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedIDamage[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('Damages'));
         } else {
           resolve(res);
@@ -133,7 +133,7 @@ const curateDamageIds = async ({
   damagesToStay
 }: {
   damagesToRemove: string[]
-  damagesToAdd: Array<{
+  damagesToAdd?: Array<{
     damageType: string
     dices: string
   }>
@@ -144,13 +144,17 @@ const curateDamageIds = async ({
       if (err !== null) {
         reject(err);
       } else {
-        createReadDamage(damagesToAdd, [], (err: unknown, res?: string[]) => {
-          if (err !== null) {
-            reject(err);
-          } else {
-            resolve([...damagesToStay, ...(res ?? [])]);
-          }
-        });
+        if (damagesToAdd !== undefined) {
+          createReadDamage(damagesToAdd, [], (err: unknown, res?: string[]) => {
+            if (err !== null) {
+              reject(err);
+            } else {
+              resolve([...damagesToStay, ...(res ?? [])]);
+            }
+          });
+        } else {
+          resolve(damagesToStay);
+        }
       }
     });
   });

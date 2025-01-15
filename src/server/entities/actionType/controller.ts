@@ -19,7 +19,7 @@ const findActionTypes = async (): Promise<Array<HydratedDocument<IActionType>>> 
   await new Promise((resolve, reject) => {
     ActionType.find()
       .then((res) => {
-        if (res === undefined || res === null) {
+        if (res.length === 0) {
           reject(gemNotFound('ActionTypes'));
         } else {
           resolve(res);
@@ -34,7 +34,7 @@ const findActionTypeById = async (id: string): Promise<HydratedDocument<IActionT
   await new Promise((resolve, reject) => {
     ActionType.findById(id)
       .then((res) => {
-        if (res === undefined || res === null) {
+        if (res === null) {
           reject(gemNotFound('ActionType'));
         } else {
           resolve(res);

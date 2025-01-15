@@ -29,8 +29,8 @@ const findCampaignEventsByCampaignId = async (
       .skip(offset)
       .populate<{ character: HydratedDocument<ICharacter> }>('character')
       .populate<{ campaign: HydratedDocument<ICampaign> }>('campaign')
-      .then((res?: LeanICampaignEvent[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: LeanICampaignEvent[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('CampaignEvents'));
         } else {
           resolve(res);

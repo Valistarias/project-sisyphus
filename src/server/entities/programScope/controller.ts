@@ -20,8 +20,8 @@ const { ProgramScope } = db;
 const findProgramScopes = async (): Promise<HydratedIProgramScope[]> =>
   await new Promise((resolve, reject) => {
     ProgramScope.find()
-      .then((res?: HydratedIProgramScope[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedIProgramScope[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('ProgramScopes'));
         } else {
           resolve(res);
@@ -32,7 +32,9 @@ const findProgramScopes = async (): Promise<HydratedIProgramScope[]> =>
       });
   });
 
-const findProgramScopeById = async (id: string): Promise<HydratedIProgramScope> =>
+const findProgramScopeById = async (
+  id: string
+): Promise<HydratedIProgramScope> =>
   await new Promise((resolve, reject) => {
     ProgramScope.findById(id)
       .then((res?: HydratedIProgramScope | null) => {
@@ -66,26 +68,35 @@ const checkDuplicateProgramScopeScopeId = async (
   });
 
 const checkDuplicateScopeId = async (
-  scopeId: string,
+  scopeId: string | null,
   alreadyExistOnce: boolean
 ): Promise<string | boolean> =>
   await new Promise((resolve, reject) => {
-    checkDuplicateProgramScopeScopeId(scopeId, alreadyExistOnce)
-      .then((responseProgramScope: string | boolean) => {
-        if (typeof responseProgramScope === 'boolean') {
-          resolve(false);
-        } else {
-          resolve(responseProgramScope);
-        }
-      })
-      .catch((err: unknown) => {
-        reject(err);
-      });
+    if (scopeId === null) {
+      resolve(false);
+    } else {
+      checkDuplicateProgramScopeScopeId(scopeId, alreadyExistOnce)
+        .then((responseProgramScope: string | boolean) => {
+          if (typeof responseProgramScope === 'boolean') {
+            resolve(false);
+          } else {
+            resolve(responseProgramScope);
+          }
+        })
+        .catch((err: unknown) => {
+          reject(err);
+        });
+    }
   });
 
 const create = (req: Request, res: Response): void => {
   const {
     title, summary, i18n = null, scopeId
+  }: {
+    title?: string
+    summary?: string
+    i18n?: InternationalizationType | null
+    scopeId?: string
   } = req.body;
   if (title === undefined || summary === undefined || scopeId === undefined) {
     res.status(400).send(gemInvalidField('Program Scope'));
@@ -93,7 +104,7 @@ const create = (req: Request, res: Response): void => {
     return;
   }
 
-  checkDuplicateScopeId(scopeId as string, false)
+  checkDuplicateScopeId(scopeId, false)
     .then((response) => {
       if (typeof response === 'boolean') {
         const programScope = new ProgramScope({
@@ -126,16 +137,22 @@ const create = (req: Request, res: Response): void => {
 const update = (req: Request, res: Response): void => {
   const {
     id, title = null, summary = null, i18n, scopeId = null
+  }: {
+    id?: string
+    title: string | null
+    summary: string | null
+    i18n: InternationalizationType | null
+    scopeId: string | null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Program Scope ID'));
 
     return;
   }
-  findProgramScopeById(id as string)
+  findProgramScopeById(id)
     .then((programScope) => {
       const alreadyExistOnce = typeof scopeId === 'string' && scopeId === programScope.scopeId;
-      checkDuplicateScopeId(scopeId as string, alreadyExistOnce)
+      checkDuplicateScopeId(scopeId, alreadyExistOnce)
         .then((response) => {
           if (typeof response === 'boolean') {
             if (title !== null) {
@@ -149,11 +166,11 @@ const update = (req: Request, res: Response): void => {
             }
 
             if (i18n !== null) {
-              const newIntl: InternationalizationType = { ...(programScope.i18n !== null
-                && programScope.i18n !== undefined
+              const newIntl: InternationalizationType = { ...(
+                programScope.i18n !== undefined
                 && programScope.i18n !== ''
-                ? JSON.parse(programScope.i18n)
-                : {}) };
+                  ? JSON.parse(programScope.i18n)
+                  : {}) };
 
               Object.keys(i18n).forEach((lang) => {
                 newIntl[lang] = i18n[lang];

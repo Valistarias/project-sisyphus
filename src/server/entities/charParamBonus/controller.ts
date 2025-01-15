@@ -39,8 +39,8 @@ const findCharParamBonusById = async (id: string): Promise<HydratedICharParamBon
   await new Promise((resolve, reject) => {
     CharParamBonus.findById(id)
       .populate<{ charParam: ICharParam }>('charParam')
-      .then((res?: HydratedICharParamBonus | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedICharParamBonus) => {
+        if (res.length === 0) {
           reject(gemNotFound('CharParamBonus'));
         } else {
           resolve(res);

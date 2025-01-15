@@ -17,8 +17,8 @@ const { ArmorType } = db;
 const findArmorTypes = async (): Promise<HydratedIArmorType[]> =>
   await new Promise((resolve, reject) => {
     ArmorType.find()
-      .then((res?: HydratedIArmorType[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedIArmorType[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('ArmorTypes'));
         } else {
           resolve(res);

@@ -2,7 +2,7 @@ import {
   Schema, model, type HydratedDocument, type Model, type ObjectId
 } from 'mongoose';
 
-import type { IEnnemyAttack } from '../index';
+import type { HydratedIEnnemyAttack } from '../index';
 
 interface INPC {
   /** The title of the NPC */
@@ -34,7 +34,7 @@ interface INPC {
 type BasicHydratedINPC = HydratedDocument<INPC>;
 
 type HydratedINPC = HydratedDocument<
-  Omit<INPC, 'attacks'> & { attacks: IEnnemyAttack[] | string[] }
+  Omit<INPC, 'attacks'> & { attacks: HydratedIEnnemyAttack[] | string[] }
 >;
 
 const nPCSchema = new Schema<INPC>({

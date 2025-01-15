@@ -25,8 +25,8 @@ const findCyberFrameBranches = async (): Promise<HydratedICyberFrameBranch[]> =>
   await new Promise((resolve, reject) => {
     CyberFrameBranch.find()
       .populate<{ cyberFrame: ICyberFrame }>('cyberFrame')
-      .then((res?: HydratedICyberFrameBranch[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedICyberFrameBranch[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('CyberFrameBranches'));
         } else {
           resolve(res);

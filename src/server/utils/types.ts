@@ -1,6 +1,6 @@
 import type { FlattenMaps, ObjectId, Types } from 'mongoose';
 
-import type { HydratedISkillBranch, IAction, IActionDuration, IActionType, ICharParamBonus, ICyberFrameBranch, IEffect, ISkill, ISkillBonus, ISkillBranch, IStat, IStatBonus } from '../entities';
+import type { IAction, IActionDuration, IActionType, ICharParamBonus, ICyberFrameBranch, IDamageType, IEffect, IEnnemyAttack, ISkill, ISkillBonus, ISkillBranch, IStat, IStatBonus } from '../entities';
 
 // Global Types ------------------------------------
 export type InternationalizationType = Record<string, Record<string, string>>;
@@ -62,6 +62,12 @@ export interface ICuratedSkillToSend {
   createdAt: Date
   formulaId: string
   stat: FlattenMaps<IStat> | FlattenMaps<ObjectId>
-  branches: HydratedISkillBranch[]
+  branches: Array<FlattenMaps<ISkillBranch>>
   _id: Types.ObjectId
 }
+
+export type ICuratedEnnemyAttackToSend = FlattenMaps<Omit<IEnnemyAttack, 'damageType'> & {
+  damageType: IDamageType | string
+} & {
+  _id: Types.ObjectId
+}>;

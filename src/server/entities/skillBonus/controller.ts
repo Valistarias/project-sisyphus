@@ -23,8 +23,8 @@ const findSkillBonuses = async (): Promise<HydratedISkillBonus[]> =>
   await new Promise((resolve, reject) => {
     SkillBonus.find()
       .populate<{ skill: ISkill }>('skill')
-      .then((res: HydratedISkillBonus[] | null) => {
-        if (res === null) {
+      .then((res: HydratedISkillBonus[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('SkillBonuses'));
         } else {
           resolve(res);

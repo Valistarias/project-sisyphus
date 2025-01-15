@@ -19,7 +19,7 @@ const findGlobalValues = async (): Promise<Array<HydratedDocument<IGlobalValue>>
   await new Promise((resolve, reject) => {
     GlobalValue.find()
       .then((res) => {
-        if (res === undefined || res === null) {
+        if (res.length === 0) {
           reject(gemNotFound('GlobalValues'));
         } else {
           resolve(res);
@@ -34,7 +34,7 @@ const findGlobalValueById = async (id: string): Promise<HydratedDocument<IGlobal
   await new Promise((resolve, reject) => {
     GlobalValue.findById(id)
       .then((res) => {
-        if (res === undefined || res === null) {
+        if (res === null) {
           reject(gemNotFound('GlobalValue'));
         } else {
           resolve(res);

@@ -19,8 +19,8 @@ const { ItemModifier } = db;
 const findItemModifiers = async (): Promise<HydratedIItemModifier[]> =>
   await new Promise((resolve, reject) => {
     ItemModifier.find()
-      .then((res?: HydratedIItemModifier[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedIItemModifier[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('ItemModifiers'));
         } else {
           resolve(res);

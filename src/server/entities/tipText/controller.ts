@@ -20,8 +20,8 @@ const { TipText } = db;
 const findTipTexts = async (): Promise<HydratedITipText[]> =>
   await new Promise((resolve, reject) => {
     TipText.find()
-      .then((res?: HydratedITipText[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedITipText[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('TipTexts'));
         } else {
           resolve(res);

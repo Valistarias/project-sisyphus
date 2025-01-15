@@ -31,8 +31,8 @@ const findChapters = async (): Promise<HydratedIChapter[]> =>
         select: '_id title chapter position',
         options: { sort: { position: 'asc' } }
       })
-      .then((res?: HydratedIChapter[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedIChapter[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('Chapters'));
         } else {
           resolve(res);

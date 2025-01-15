@@ -23,8 +23,8 @@ const findStatBonuses = async (): Promise<HydratedIStatBonus[]> =>
   await new Promise((resolve, reject) => {
     StatBonus.find()
       .populate<{ stat: IStat }>('stat')
-      .then((res?: HydratedIStatBonus[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedIStatBonus[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('StatBonuses'));
         } else {
           resolve(res);

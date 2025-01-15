@@ -20,8 +20,8 @@ const { WeaponScope } = db;
 const findWeaponScopes = async (): Promise<HydratedIWeaponScope[]> =>
   await new Promise((resolve, reject) => {
     WeaponScope.find()
-      .then((res?: HydratedIWeaponScope[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedIWeaponScope[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('WeaponScopes'));
         } else {
           resolve(res);
@@ -91,7 +91,6 @@ const create = (req: Request, res: Response): void => {
   const {
     title, summary, i18n = null, scopeId
   }: {
-    id?: string
     title?: string
     summary?: string
     i18n?: InternationalizationType | null

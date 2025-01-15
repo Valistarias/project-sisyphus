@@ -49,8 +49,8 @@ const findCyberFrames = async (): Promise<LeanICyberFrame[]> =>
           ]
         }
       })
-      .then((res?: LeanICyberFrame[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: LeanICyberFrame[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('CyberFrames'));
         } else {
           resolve(res);

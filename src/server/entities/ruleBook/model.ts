@@ -29,7 +29,7 @@ type BasicHydratedIRuleBook = HydratedDocument<
 
 type HydratedIRuleBook = HydratedDocument<
   Omit<IRuleBook, 'type'> & {
-    type: IRuleBookType
+    type: IRuleBookType | ObjectId
     notions: INotion[]
     chapters: HydratedIChapter[]
   }

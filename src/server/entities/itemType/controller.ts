@@ -19,7 +19,7 @@ const findItemTypes = async (): Promise<Array<HydratedDocument<IItemType>>> =>
   await new Promise((resolve, reject) => {
     ItemType.find()
       .then((res) => {
-        if (res === undefined || res === null) {
+        if (res.length === 0) {
           reject(gemNotFound('ItemTypes'));
         } else {
           resolve(res);
@@ -34,7 +34,7 @@ const findItemTypeById = async (id: string): Promise<HydratedDocument<IItemType>
   await new Promise((resolve, reject) => {
     ItemType.findById(id)
       .then((res) => {
-        if (res === undefined || res === null) {
+        if (res === null) {
           reject(gemNotFound('ItemType'));
         } else {
           resolve(res);

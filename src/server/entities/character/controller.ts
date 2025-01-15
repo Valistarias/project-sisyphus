@@ -94,8 +94,8 @@ const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[
             ]
           })
           .populate<{ background: HydratedIBackground }>('background')
-          .then((res?: HydratedICharacter[] | null) => {
-            if (res === undefined || res === null) {
+          .then((res: HydratedICharacter[]) => {
+            if (res.length === 0) {
               reject(gemNotFound('Characters'));
             } else {
               resolve(res);

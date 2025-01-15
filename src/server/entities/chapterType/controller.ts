@@ -19,7 +19,7 @@ const findChapterTypes = async (): Promise<Array<HydratedDocument<IChapterType>>
   await new Promise((resolve, reject) => {
     ChapterType.find()
       .then((res) => {
-        if (res === undefined || res === null) {
+        if (res.length === 0) {
           reject(gemNotFound('ChapterTypes'));
         } else {
           resolve(res);
@@ -34,7 +34,7 @@ const findChapterTypeById = async (id: string): Promise<HydratedDocument<IChapte
   await new Promise((resolve, reject) => {
     ChapterType.findById(id)
       .then((res) => {
-        if (res === undefined || res === null) {
+        if (res === null) {
           reject(gemNotFound('ChapterType'));
         } else {
           resolve(res);

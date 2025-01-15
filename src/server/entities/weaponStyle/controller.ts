@@ -20,8 +20,8 @@ const findWeaponStyles = async (): Promise<HydratedIWeaponStyle[]> =>
   await new Promise((resolve, reject) => {
     WeaponStyle.find()
       .populate<{ skill: ISkill }>('skill')
-      .then((res?: HydratedIWeaponStyle[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedIWeaponStyle[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('WeaponStyles'));
         } else {
           resolve(res);

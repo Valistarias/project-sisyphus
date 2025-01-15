@@ -16,8 +16,8 @@ const { DamageType } = db;
 const findDamageTypes = async (): Promise<HydratedIDamageType[]> =>
   await new Promise((resolve, reject) => {
     DamageType.find()
-      .then((res?: HydratedIDamageType[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedIDamageType[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('DamageTypes'));
         } else {
           resolve(res);

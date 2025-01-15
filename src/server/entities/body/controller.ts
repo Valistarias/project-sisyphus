@@ -97,7 +97,7 @@ const findBodiesByCharacter = async (req: Request): Promise<HydratedIBody[]> =>
             select: '_id body weapon bag ammo bullets'
           })
           .then((res) => {
-            if (res === undefined || res === null) {
+            if (res.length === 0) {
               reject(gemNotFound('Bodies'));
             } else {
               resolve(res as HydratedIBody[]);
@@ -161,7 +161,7 @@ const findBodyById = async (
             select: '_id body weapon bag ammo bullets'
           })
           .then((res) => {
-            if (res === undefined || res === null) {
+            if (res === null) {
               reject(gemNotFound('Body'));
             } else {
               resolve({

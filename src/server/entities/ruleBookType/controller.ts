@@ -11,15 +11,16 @@ import {
   gemServerError
 } from '../../utils/globalErrorMessage';
 
-import type { IRuleBookType } from './model';
+import type { HydratedIRuleBookType, IRuleBookType } from './model';
 
 const { RuleBookType } = db;
 
-const findRuleBookTypes = async (): Promise<Array<HydratedDocument<IRuleBookType>>> =>
+const findRuleBookTypes
+= async (): Promise<HydratedIRuleBookType[]> =>
   await new Promise((resolve, reject) => {
     RuleBookType.find()
-      .then((res) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedIRuleBookType[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('RuleBookTypes'));
         } else {
           resolve(res);
@@ -30,11 +31,13 @@ const findRuleBookTypes = async (): Promise<Array<HydratedDocument<IRuleBookType
       });
   });
 
-const findRuleBookTypeById = async (id: string): Promise<HydratedDocument<IRuleBookType>> =>
+const findRuleBookTypeById = async (
+  id: string
+): Promise<HydratedDocument<IRuleBookType>> =>
   await new Promise((resolve, reject) => {
     RuleBookType.findById(id)
       .then((res) => {
-        if (res === undefined || res === null) {
+        if (res === null) {
           reject(gemNotFound('RuleBookType'));
         } else {
           resolve(res);
@@ -83,7 +86,9 @@ const update = (req: Request, res: Response): void => {
   }
   findRuleBookTypes()
     .then((ruleBooks) => {
-      const actualRuleBookType = ruleBooks.find(ruleBook => String(ruleBook._id) === id);
+      const actualRuleBookType = ruleBooks.find(
+        ruleBook => String(ruleBook._id) === id
+      );
       if (actualRuleBookType !== undefined) {
         if (name !== null && name !== actualRuleBookType.name) {
           actualRuleBookType.name = name;
@@ -106,7 +111,7 @@ const update = (req: Request, res: Response): void => {
 };
 
 const deleteRuleBookType = (req: Request, res: Response): void => {
-  const { id }: { id: string } = req.body;
+  const { id }: { id?: string } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('RuleBookType ID'));
 

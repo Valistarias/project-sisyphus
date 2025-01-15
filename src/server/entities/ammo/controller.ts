@@ -20,8 +20,8 @@ const { Ammo } = db;
 const findAmmos = async (): Promise<HydratedIAmmo[]> =>
   await new Promise((resolve, reject) => {
     Ammo.find()
-      .then((res?: HydratedIAmmo[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedIAmmo[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('Ammos'));
         } else {
           resolve(res);

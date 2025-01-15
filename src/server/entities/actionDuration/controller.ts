@@ -19,7 +19,7 @@ const findActionDurations = async (): Promise<Array<HydratedDocument<IActionDura
   await new Promise((resolve, reject) => {
     ActionDuration.find()
       .then((res) => {
-        if (res === undefined || res === null) {
+        if (res.length === 0) {
           reject(gemNotFound('ActionDurations'));
         } else {
           resolve(res);
@@ -34,7 +34,7 @@ const findActionDurationById = async (id: string): Promise<HydratedDocument<IAct
   await new Promise((resolve, reject) => {
     ActionDuration.findById(id)
       .then((res) => {
-        if (res === undefined || res === null) {
+        if (res === null) {
           reject(gemNotFound('ActionDuration'));
         } else {
           resolve(res);

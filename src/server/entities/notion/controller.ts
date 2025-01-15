@@ -1,7 +1,7 @@
 import type {
   Request, Response
 } from 'express';
-import type { HydratedDocument } from 'mongoose';
+import type { HydratedDocument, ObjectId } from 'mongoose';
 
 import db from '../../models';
 import {
@@ -12,7 +12,8 @@ import { findRuleBookById } from '../ruleBook/controller';
 import type {
   HydratedNotion, INotion
 } from './model';
-import type { HydratedIRuleBook } from '../ruleBook/model';
+import type { InternationalizationType } from '../../utils/types';
+import type { HydratedIRuleBook, IRuleBookType } from '../index';
 
 import { curateI18n } from '../../utils';
 
@@ -26,8 +27,8 @@ const findNotions = async (): Promise<HydratedNotion[]> =>
         select: '_id title type',
         populate: 'type'
       })
-      .then((res?: HydratedNotion[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedNotion[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('Notions'));
         } else {
           resolve(res);
@@ -85,13 +86,19 @@ const create = (req: Request, res: Response): void => {
 const update = (req: Request, res: Response): void => {
   const {
     id, title = null, text = null, ruleBook = null, i18n = null
+  }: {
+    id?: string
+    title: string | null
+    text: string | null
+    i18n: InternationalizationType | null
+    ruleBook: ObjectId | null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Notion ID'));
 
     return;
   }
-  findNotionById(id as string)
+  findNotionById(id)
     .then((notion) => {
       if (title !== null) {
         notion.title = title;
@@ -103,7 +110,11 @@ const update = (req: Request, res: Response): void => {
         notion.ruleBook = ruleBook;
       }
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(notion.i18n !== undefined ? JSON.parse(notion.i18n) : {}) };
+        const newIntl: InternationalizationType = { ...(
+          notion.i18n !== undefined
+            ? JSON.parse(notion.i18n)
+            : {}
+        ) };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -128,7 +139,7 @@ const update = (req: Request, res: Response): void => {
 };
 
 const deleteNotion = (req: Request, res: Response): void => {
-  const { id }: { id: string } = req.body;
+  const { id }: { id?: string } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Notion ID'));
 
@@ -143,7 +154,9 @@ const deleteNotion = (req: Request, res: Response): void => {
     });
 };
 
-const deleteNotionsByRuleBookId = async (ruleBookId: string): Promise<boolean> =>
+const deleteNotionsByRuleBookId = async (
+  ruleBookId?: string
+): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (ruleBookId === undefined) {
       reject(gemInvalidField('Rulebook ID'));
@@ -178,20 +191,22 @@ const findSingle = (req: Request, res: Response): void => {
 };
 
 const findAllByRuleBook = (req: Request, res: Response): void => {
-  const { ruleBookId } = req.query;
+  const { ruleBookId }: {
+    ruleBookId?: string
+  } = req.query;
   const aggregatedNotions: Array<HydratedNotion | INotion> = [];
 
   findNotions()
     .then((notions) => {
       notions.forEach((notion) => {
-        if (notion.ruleBook.type.name === 'core') {
+        if ((notion.ruleBook.type as IRuleBookType).name === 'core') {
           aggregatedNotions.push(notion);
         }
       });
       if (ruleBookId !== undefined) {
-        findRuleBookById(ruleBookId as string)
+        findRuleBookById(ruleBookId)
           .then((ruleBook) => {
-            if (ruleBook.type.name !== 'core' && ruleBook.notions.length > 0) {
+            if ((ruleBook.type as IRuleBookType).name !== 'core' && ruleBook.notions.length > 0) {
               aggregatedNotions.concat(ruleBook.notions);
             }
             res.send(aggregatedNotions);
@@ -207,5 +222,10 @@ const findAllByRuleBook = (req: Request, res: Response): void => {
 };
 
 export {
-  create, deleteNotion, deleteNotionsByRuleBookId, findAllByRuleBook, findSingle, update
+  create,
+  deleteNotion,
+  deleteNotionsByRuleBookId,
+  findAllByRuleBook,
+  findSingle,
+  update
 };

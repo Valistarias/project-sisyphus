@@ -1,8 +1,9 @@
 import type {
   Request, Response
 } from 'express';
+import type { ObjectId } from 'mongoose';
 
-import { isAdmin } from '../../middlewares';
+import { isAdmin, type IVerifyTokenRequest } from '../../middlewares';
 import db from '../../models';
 import {
   gemInvalidField, gemNotFound, gemServerError
@@ -34,8 +35,8 @@ const findRuleBooks = async (): Promise<BasicHydratedIRuleBook[]> =>
   await new Promise((resolve, reject) => {
     RuleBook.find()
       .populate<{ type: IRuleBookType }>('type')
-      .then((res?: BasicHydratedIRuleBook[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: BasicHydratedIRuleBook[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('RuleBooks'));
         } else {
           resolve(res);
@@ -111,13 +112,20 @@ const create = (req: Request, res: Response): void => {
 const update = (req: Request, res: Response): void => {
   const {
     id, title = null, type = null, summary = null, draft = null, i18n
+  }: {
+    id?: string
+    title: string | null
+    summary: string | null
+    type: ObjectId | null
+    i18n: InternationalizationType | null
+    draft: boolean | null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('RuleBook ID'));
 
     return;
   }
-  findRuleBookById(id as string)
+  findRuleBookById(id)
     .then((ruleBook) => {
       if (title !== null) {
         ruleBook.title = title;
@@ -133,7 +141,12 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(ruleBook.i18n != null && ruleBook.i18n !== '' ? JSON.parse(ruleBook.i18n) : {}) };
+        const newIntl: InternationalizationType = { ...(
+          ruleBook.i18n != null
+          && ruleBook.i18n !== ''
+            ? JSON.parse(ruleBook.i18n)
+            : {}
+        ) };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -161,13 +174,16 @@ const update = (req: Request, res: Response): void => {
 const archive = (req: Request, res: Response): void => {
   const {
     id, archived = null
+  }: {
+    id?: string
+    archived: boolean | null
   } = req.body;
   if (id === undefined || archived === null) {
     res.status(400).send(gemInvalidField('RuleBook ID'));
 
     return;
   }
-  findRuleBookById(id as string)
+  findRuleBookById(id)
     .then((ruleBook) => {
       ruleBook.archived = archived;
 
@@ -187,8 +203,16 @@ const archive = (req: Request, res: Response): void => {
     });
 };
 
-const updateMultipleChaptersPosition = (order: any, cb: (res: Error | null) => void): void => {
-  Chapter.findOneAndUpdate({ _id: order[0].id }, { position: order[0].position })
+const updateMultipleChaptersPosition = (
+  order: Array<{
+    id: string
+    position: number
+  }>,
+  cb: (res: Error | null) => void): void => {
+  Chapter.findOneAndUpdate(
+    { _id: order[0].id },
+    { position: order[0].position }
+  )
     .then(() => {
       if (order.length > 1) {
         order.shift();
@@ -205,6 +229,12 @@ const updateMultipleChaptersPosition = (order: any, cb: (res: Error | null) => v
 const changeChaptersOrder = (req: Request, res: Response): void => {
   const {
     id, order
+  }: {
+    id?: string
+    order?: Array<{
+      id: string
+      position: number
+    }>
   } = req.body;
   if (id === undefined || order === undefined) {
     res.status(400).send(gemInvalidField('RuleBook Reordering'));
@@ -221,7 +251,7 @@ const changeChaptersOrder = (req: Request, res: Response): void => {
 };
 
 const deleteRuleBook = (req: Request, res: Response): void => {
-  const { id }: { id: string } = req.body;
+  const { id }: { id?: string } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('RuleBook ID'));
 
@@ -231,7 +261,9 @@ const deleteRuleBook = (req: Request, res: Response): void => {
     .then((ruleBook) => {
       deleteNotionsByRuleBookId(id)
         .then(() => {
-          deleteChaptersRecursive(ruleBook.chapters.map(chapter => String(chapter._id)))
+          deleteChaptersRecursive(ruleBook.chapters.map(
+            chapter => String(chapter._id)
+          ))
             .then(() => {
               RuleBook.findByIdAndDelete(id)
                 .then(() => {
@@ -259,7 +291,7 @@ interface CuratedIRuleBook {
   ruleBook: BasicHydratedIRuleBook
 }
 
-const findSingle = (req: Request, res: Response): void => {
+const findSingle = (req: IVerifyTokenRequest, res: Response): void => {
   const { ruleBookId } = req.query;
   if (ruleBookId === undefined || typeof ruleBookId !== 'string') {
     res.status(400).send(gemInvalidField('RuleBook ID'));
@@ -287,7 +319,7 @@ const findSingle = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-const findAll = (req: Request, res: Response): void => {
+const findAll = (req: IVerifyTokenRequest, res: Response): void => {
   isAdmin(req)
     .then((isUserAdmin) => {
       findRuleBooks()
@@ -295,7 +327,9 @@ const findAll = (req: Request, res: Response): void => {
           const curatedRuleBooks: CuratedIRuleBook[] = [];
 
           if (!isUserAdmin) {
-            ruleBooks = ruleBooks.filter(ruleBook => !ruleBook.archived && !ruleBook.draft);
+            ruleBooks = ruleBooks.filter(
+              ruleBook => !ruleBook.archived && !ruleBook.draft
+            );
           }
 
           // Sorting by state first (draft, archived)

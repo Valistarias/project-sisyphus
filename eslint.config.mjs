@@ -99,6 +99,7 @@ export default tseslint.config(
     'init-declarations': 'off',
     '@typescript-eslint/init-declarations': 'off',
     '@typescript-eslint/no-base-to-string': 'off',
+    '@typescript-eslint/no-unsafe-type-assertion': 'off',
     'no-magic-numbers': 'off',
     '@typescript-eslint/prefer-promise-reject-errors': 'off',
     '@typescript-eslint/no-magic-numbers': 'off',

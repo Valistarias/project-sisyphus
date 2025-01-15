@@ -8,6 +8,7 @@ import {
 } from '../../utils/globalErrorMessage';
 
 import type { HydratedIRarity } from './model';
+import type { InternationalizationType } from '../../utils/types';
 
 import { curateI18n } from '../../utils';
 
@@ -17,8 +18,8 @@ const findRarities = async (): Promise<HydratedIRarity[]> =>
   await new Promise((resolve, reject) => {
     Rarity.find()
       .sort({ position: 'asc' })
-      .then((res?: HydratedIRarity[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedIRarity[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('Rarities'));
         } else {
           resolve(res);
@@ -81,13 +82,18 @@ const create = (req: Request, res: Response): void => {
 const update = (req: Request, res: Response): void => {
   const {
     id, title = null, summary = null, i18n
+  }: {
+    id?: string
+    title: string | null
+    summary: string | null
+    i18n: InternationalizationType | null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Item Modifier ID'));
 
     return;
   }
-  findRarityById(id as string)
+  findRarityById(id)
     .then((rarity) => {
       if (title !== null) {
         rarity.title = title;
@@ -97,9 +103,11 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(rarity.i18n !== null && rarity.i18n !== undefined && rarity.i18n !== ''
-          ? JSON.parse(rarity.i18n)
-          : {}) };
+        const newIntl: InternationalizationType = { ...(
+          rarity.i18n !== undefined
+          && rarity.i18n !== ''
+            ? JSON.parse(rarity.i18n)
+            : {}) };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -124,7 +132,13 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const updateMultipleRaritiesPosition = (order: any, cb: (res: Error | null) => void): void => {
+const updateMultipleRaritiesPosition = (
+  order: Array<{
+    id: string
+    position: number
+  }>,
+  cb: (res: Error | null) => void
+): void => {
   Rarity.findOneAndUpdate({ _id: order[0].id }, { position: order[0].position })
     .then(() => {
       if (order.length > 1) {
@@ -140,7 +154,12 @@ const updateMultipleRaritiesPosition = (order: any, cb: (res: Error | null) => v
 };
 
 const changeRaritiesOrder = (req: Request, res: Response): void => {
-  const { order } = req.body;
+  const { order }: {
+    order?: Array<{
+      id: string
+      position: number
+    }>
+  } = req.body;
   if (order === undefined) {
     res.status(400).send(gemInvalidField('Rarity Reordering'));
 
@@ -225,5 +244,11 @@ const findAll = (req: Request, res: Response): void => {
 };
 
 export {
-  changeRaritiesOrder, create, deleteRarity, findAll, findRarityById, findSingle, update
+  changeRaritiesOrder,
+  create,
+  deleteRarity,
+  findAll,
+  findRarityById,
+  findSingle,
+  update
 };

@@ -26,8 +26,8 @@ const findBackgrounds = async (): Promise<HydratedIBackground[]> =>
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
-      .then((res?: HydratedIBackground[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedIBackground[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('Backgrounds'));
         } else {
           resolve(res);

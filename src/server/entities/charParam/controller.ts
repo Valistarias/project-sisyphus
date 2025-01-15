@@ -22,8 +22,8 @@ const { CharParam } = db;
 const findCharParams = async (): Promise<HydratedICharParam[]> =>
   await new Promise((resolve, reject) => {
     CharParam.find()
-      .then((res?: HydratedICharParam[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedICharParam[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('CharParams'));
         } else {
           resolve(res);

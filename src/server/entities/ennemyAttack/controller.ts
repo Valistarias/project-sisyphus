@@ -18,8 +18,8 @@ const findEnnemyAttacks = async (): Promise<HydratedIEnnemyAttack[]> =>
   await new Promise((resolve, reject) => {
     EnnemyAttack.find()
       .populate<{ damageType: IDamageType }>('damageType')
-      .then((res?: HydratedIEnnemyAttack[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedIEnnemyAttack[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('EnnemyAttacks'));
         } else {
           resolve(res);
@@ -46,7 +46,7 @@ const findEnnemyAttackById = async (id: string): Promise<HydratedIEnnemyAttack> 
       });
   });
 
-interface ISentEnnemyAttack {
+export interface ISentEnnemyAttack {
   id?: string
   title: string
   summary: string

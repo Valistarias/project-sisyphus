@@ -3,7 +3,8 @@ import {
 } from 'mongoose';
 
 import type {
-  IDamage, INPC
+  HydratedIDamage,
+  INPC
 } from '../index';
 
 interface IProgram {
@@ -42,8 +43,8 @@ interface IProgram {
 
 type HydratedIProgram = HydratedDocument<
   Omit<IProgram, 'damages' | 'ai'> & {
-    damages: IDamage[] | string[]
-    ai: INPC
+    damages: HydratedIDamage[] | string[]
+    ai?: INPC | ObjectId
   }
 >;
 

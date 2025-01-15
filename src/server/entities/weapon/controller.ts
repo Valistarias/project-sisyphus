@@ -38,8 +38,8 @@ const findWeapons
         .populate<{ effects: HydratedIEffect[] }>('effects')
         .populate<{ actions: HydratedIAction[] }>('actions')
         .populate<{ damages: HydratedIDamage[] }>('damages')
-        .then((res?: HydratedIWeapon[] | null) => {
-          if (res === undefined || res === null) {
+        .then((res: HydratedIWeapon[]) => {
+          if (res.length === 0) {
             reject(gemNotFound('Weapons'));
           } else {
             resolve(res);
@@ -266,7 +266,6 @@ const update = (req: Request, res: Response): void => {
       }
 
       const damagesToStay: string[] = [];
-
       let damagesToRemove: string[] = [];
       let damagesToAdd: Array<{
         damageType: string
@@ -542,18 +541,12 @@ const findSingle = (req: Request, res: Response): void => {
               };
             })
           : [];
-      const weapon: Omit<
-        FlattenMaps<IWeapon>
-        , 'effects' | 'actions' | 'damages'
-      > & {
-        effects: ICuratedEffectToSend[]
-        actions: ICuratedActionToSend[]
-        damages: Array<FlattenMaps<HydratedIDamage>>
-      } = weaponSent.toJSON();
-      weapon.actions = curatedActions;
-      weapon.effects = curatedEffects;
       const sentObj = {
-        weapon,
+        weapon: {
+          ...weaponSent.toJSON(),
+          actions: curatedActions,
+          effects: curatedEffects
+        },
         i18n: curateI18n(weaponSent.i18n)
       };
       res.send(sentObj);
@@ -614,18 +607,12 @@ const findAll = (req: Request, res: Response): void => {
                 };
               })
             : [];
-        const weapon: Omit<
-          FlattenMaps<IWeapon>
-          , 'effects' | 'actions' | 'damages'
-        > & {
-          effects: ICuratedEffectToSend[]
-          actions: ICuratedActionToSend[]
-          damages: Array<FlattenMaps<HydratedIDamage>>
-        } = weaponSent.toJSON();
-        weapon.actions = curatedActions;
-        weapon.effects = curatedEffects;
         curatedWeapons.push({
-          weapon,
+          weapon: {
+            ...weaponSent.toJSON(),
+            actions: curatedActions,
+            effects: curatedEffects
+          },
           i18n: curateI18n(weaponSent.i18n)
         });
       });
@@ -686,18 +673,12 @@ const findAllStarter = (req: Request, res: Response): void => {
                 };
               })
             : [];
-        const weapon: Omit<
-          FlattenMaps<IWeapon>
-          , 'effects' | 'actions' | 'damages'
-        > & {
-          effects: typeof curatedEffects
-          actions: typeof curatedActions
-          damages: Array<FlattenMaps<HydratedIDamage>>
-        } = weaponSent.toJSON();
-        weapon.actions = curatedActions;
-        weapon.effects = curatedEffects;
         curatedWeapons.push({
-          weapon,
+          weapon: {
+            ...weaponSent.toJSON(),
+            actions: curatedActions,
+            effects: curatedEffects
+          },
           i18n: curateI18n(weaponSent.i18n)
         });
       });

@@ -44,8 +44,8 @@ const findNodes = async (options?: findAllPayload): Promise<HydratedINode[]> =>
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
-      .then((res?: HydratedINode[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedINode[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('Nodes'));
         } else {
           resolve(res);

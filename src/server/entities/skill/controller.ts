@@ -2,6 +2,7 @@ import type {
   Request, Response
 } from 'express';
 import type {
+  FlattenMaps,
   ObjectId
 } from 'mongoose';
 
@@ -20,7 +21,8 @@ import { checkDuplicateStatFormulaId } from '../stat/controller';
 
 import type { InternationalizationType } from '../../utils/types';
 import type {
-  HydratedISkillBranch, IStat
+  HydratedINode,
+  HydratedIStat, ISkillBranch, IStat
 } from '../index';
 import type {
   HydratedISkill, LeanISkill
@@ -35,7 +37,9 @@ const findSkills = async (): Promise<LeanISkill[]> =>
     Skill.find()
       .lean()
       .populate<{ stat: IStat }>('stat')
-      .populate<{ branches: HydratedISkillBranch[] }>({
+      .populate<{ branches: Array<ISkillBranch & {
+        nodes: HydratedINode[]
+      }> }>({
         path: 'branches',
         select: '_id title skill summary i18n',
         populate: {
@@ -52,8 +56,8 @@ const findSkills = async (): Promise<LeanISkill[]> =>
           ]
         }
       })
-      .then((res?: LeanISkill[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res) => {
+        if (res.length === 0) {
           reject(gemNotFound('Skills'));
         } else {
           resolve(res);
@@ -67,8 +71,10 @@ const findSkills = async (): Promise<LeanISkill[]> =>
 const findSkillById = async (id: string): Promise<HydratedISkill> =>
   await new Promise((resolve, reject) => {
     Skill.findById(id)
-      .populate<{ stat: IStat }>('stat')
-      .populate<{ branches: HydratedISkillBranch[] }>({
+      .populate<{ stat: HydratedIStat }>('stat')
+      .populate<{ branches: Array<ISkillBranch & {
+        nodes: HydratedINode[]
+      }> }>({
         path: 'branches',
         select: '_id title skill summary i18n',
         populate: {
@@ -85,8 +91,8 @@ const findSkillById = async (id: string): Promise<HydratedISkill> =>
           ]
         }
       })
-      .then((res?: HydratedISkill | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedISkill | null) => {
+        if (res === null) {
           reject(gemNotFound('Skill'));
         } else {
           resolve(res);
@@ -311,12 +317,16 @@ const deleteSkill = (req: Request, res: Response): void => {
 };
 
 interface CuratedISkill extends Omit<LeanISkill, 'branches'> {
-  branches: CuratedIntISkillBranch[]
-}
-
-interface CuratedIntISkill {
-  i18n?: InternationalizationType
-  skill: CuratedISkill
+  branches: Array<{
+    skillBranch:
+      Omit<
+        FlattenMaps<ISkillBranch>
+        , 'skill'
+      > & {
+        skill: ObjectId
+      }
+    i18n?: InternationalizationType
+  }>
 }
 
 const findSingle = (req: Request, res: Response): void => {
@@ -332,20 +342,27 @@ const findSingle = (req: Request, res: Response): void => {
       const cleanSkill = {
         ...data,
         branches: data.branches.map((skillBranch) => {
-          const cleanSkillBranch = {
-            ...skillBranch,
-            nodes:
-              skillBranch.nodes !== undefined
-                ? skillBranch.nodes.map(node => ({
-                    node,
-                    i18n: curateI18n(node.i18n)
-                  }))
-                : []
-          };
+          const curatedNodes = skillBranch.nodes.length > 0
+            ? skillBranch.nodes.map((node) => {
+                const data = node.toJSON();
+
+                return {
+                  ...data,
+                  ...(
+                    data.i18n !== undefined
+                      ? { i18n: JSON.parse(data.i18n) }
+                      : {}
+                  )
+                };
+              })
+            : [];
 
           return {
-            skillBranch: cleanSkillBranch,
-            i18n: curateI18n(cleanSkillBranch.i18n)
+            skillBranch: {
+              ...skillBranch,
+              nodes: curatedNodes
+            },
+            i18n: curateI18n(skillBranch.i18n)
           };
         })
       };
@@ -364,26 +381,36 @@ const findSingle = (req: Request, res: Response): void => {
 const findAll = (req: Request, res: Response): void => {
   findSkills()
     .then((skills) => {
-      const curatedSkills: CuratedIntISkill[] = [];
+      const curatedSkills: Array<{
+        i18n?: InternationalizationType
+        skill: CuratedISkill
+      }> = [];
 
       skills.forEach((skill) => {
-        const cleanSkill = {
+        const cleanSkill: CuratedISkill = {
           ...skill,
           branches: skill.branches.map((skillBranch) => {
-            const cleanSkillBranch = {
-              ...skillBranch,
-              nodes:
-                skillBranch.nodes !== undefined
-                  ? skillBranch.nodes.map(node => ({
-                      node,
-                      i18n: curateI18n(node.i18n)
-                    }))
-                  : []
-            };
+            const curatedNodes = skillBranch.nodes.length > 0
+              ? skillBranch.nodes.map((node) => {
+                  const data = node;
+
+                  return {
+                    ...data,
+                    ...(
+                      data.i18n !== undefined
+                        ? { i18n: JSON.parse(data.i18n) }
+                        : {}
+                    )
+                  };
+                })
+              : [];
 
             return {
-              skillBranch: cleanSkillBranch,
-              i18n: curateI18n(cleanSkillBranch.i18n)
+              skillBranch: {
+                ...skillBranch,
+                nodes: curatedNodes
+              },
+              i18n: curateI18n(skillBranch.i18n)
             };
           })
         };
