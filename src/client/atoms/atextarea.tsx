@@ -1,4 +1,4 @@
-import type React from 'react';
+import React from 'react';
 import type { FC } from 'react';
 
 import {
@@ -9,7 +9,7 @@ import { classTrim } from '../utils';
 
 import './atextarea.scss';
 
-interface IAtextarea extends IQuarkProps {
+interface IAtextarea {
   /** The type of input */
   type?: 'text' | 'password' | 'email' | 'number' | 'textarea'
   /** The size of the input */
@@ -28,7 +28,7 @@ interface IAtextarea extends IQuarkProps {
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
 }
 
-const Atextarea: FC<IAtextarea> = ({
+const Atextarea: FC<IQuarkProps<IAtextarea>> = ({
   hidden,
   size = 'medium',
   type = 'text',

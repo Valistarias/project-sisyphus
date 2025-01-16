@@ -1,4 +1,4 @@
-import type React from 'react';
+import React from 'react';
 import {
   useMemo, type FC
 } from 'react';
@@ -14,14 +14,14 @@ import './avideo.scss';
 
 type typeVideos = 'logo';
 
-interface IAvideo extends IQuarkProps {
+interface IAvideo {
   /** The type of icon */
   video: typeVideos
   /** When the icon is clicked */
   onClick?: (e: React.MouseEvent<HTMLElement>) => void
 }
 
-const Avideo: FC<IAvideo> = ({
+const Avideo: FC<IQuarkProps<IAvideo>> = ({
   video, className, onClick
 }) => {
   const classes = useMemo<string>(

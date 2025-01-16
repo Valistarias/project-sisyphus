@@ -27,7 +27,7 @@ import { classTrim } from '../utils';
 
 import './implantDisplay.scss';
 
-interface IImplantDisplay extends IQuarkProps {
+interface IImplantDisplay {
   /** The implant to be displayed */
   implant: ICuratedImplant
   /** The display mode */
@@ -48,7 +48,7 @@ interface ICuratedCompleteImplant extends Omit<ICuratedImplant, 'implant'> {
   implant: ICompleteImplant
 }
 
-const ImplantDisplay: FC<IImplantDisplay> = ({
+const ImplantDisplay: FC<IQuarkProps<IImplantDisplay>> = ({
   implant, mode = 'basic'
 }) => {
   const { t } = useTranslation();

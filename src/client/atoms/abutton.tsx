@@ -11,7 +11,7 @@ import { classTrim } from '../utils';
 
 import './abutton.scss';
 
-interface IAButton extends IQuarkProps {
+interface IAButton {
   /** When the button is clicked */
   onClick?: (e: MouseEvent<HTMLElement>) => void
   /** The childrens of the button element */
@@ -24,7 +24,7 @@ interface IAButton extends IQuarkProps {
   onContextMenu?: (e: MouseEvent<HTMLElement>) => void
 }
 
-const Abutton: FC<IAButton> = ({
+const Abutton: FC<IQuarkProps<IAButton>> = ({
   className,
   children,
   onClick,

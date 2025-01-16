@@ -1,3 +1,4 @@
+/* eslint-disable @stylistic/max-len -- To avoid any problems on the strings of the config */
 const url = (env: {
   DB_USER: string
   DB_PASS: string

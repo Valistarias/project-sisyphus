@@ -10,12 +10,12 @@ import { classTrim } from '../utils';
 
 import './aerror.scss';
 
-interface IAerror extends IQuarkProps {
+interface IAerror {
   /** The childrens of the P element */
   children: ReactNode
 }
 
-const Aerror: FC<IAerror> = ({
+const Aerror: FC<IQuarkProps<IAerror>> = ({
   className, children
 }) => (
   <Quark

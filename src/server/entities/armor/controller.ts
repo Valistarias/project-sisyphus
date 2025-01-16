@@ -1,23 +1,27 @@
 import type {
   Request, Response
 } from 'express';
-import type { ObjectId } from 'mongoose';
+import type { FlattenMaps, HydratedDocument, ObjectId } from 'mongoose';
 
 import db from '../../models';
 import {
   gemInvalidField, gemNotFound, gemServerError
 } from '../../utils/globalErrorMessage';
-import { smartUpdateActions } from '../action/controller';
+import { type ISentAction, smartUpdateActions } from '../action/controller';
 import { curateCharParamBonusIds } from '../charParamBonus/controller';
-import { smartUpdateEffects } from '../effect/controller';
+import { type ISentEffect, smartUpdateEffects } from '../effect/controller';
 import { curateSkillBonusIds } from '../skillBonus/controller';
 import { curateStatBonusIds } from '../statBonus/controller';
 
-import type { InternationalizationType } from '../../utils/types';
+import type { ICuratedActionToSend, ICuratedEffectToSend, InternationalizationType } from '../../utils/types';
 import type {
-  IAction, ICharParamBonus, IEffect, ISkillBonus, IStatBonus
+  HydratedIAction,
+  HydratedICharParamBonus,
+  HydratedIEffect,
+  HydratedISkillBonus,
+  HydratedIStatBonus
 } from '../index';
-import type { HydratedIArmor } from './model';
+import type { HydratedIArmor, IArmor } from './model';
 
 import { curateI18n } from '../../utils';
 
@@ -27,14 +31,16 @@ interface findAllPayload {
   starterKit?: string | Record<string, string[]>
 }
 
-const findArmors = async (options?: findAllPayload): Promise<HydratedIArmor[]> =>
+const findArmors = async (
+  options?: findAllPayload
+): Promise<HydratedIArmor[]> =>
   await new Promise((resolve, reject) => {
     Armor.find(options ?? {})
-      .populate<{ effects: IEffect[] }>('effects')
-      .populate<{ actions: IAction[] }>('actions')
-      .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
-      .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
-      .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
+      .populate<{ effects: HydratedIEffect[] }>('effects')
+      .populate<{ actions: HydratedIAction[] }>('actions')
+      .populate<{ skillBonuses: HydratedISkillBonus[] }>('skillBonuses')
+      .populate<{ statBonuses: HydratedIStatBonus[] }>('statBonuses')
+      .populate<{ charParamBonuses: HydratedICharParamBonus[] }>('charParamBonuses')
       .then((res: HydratedIArmor[]) => {
         if (res.length === 0) {
           reject(gemNotFound('Armors'));
@@ -50,11 +56,11 @@ const findArmors = async (options?: findAllPayload): Promise<HydratedIArmor[]> =
 const findArmorById = async (id: string): Promise<HydratedIArmor> =>
   await new Promise((resolve, reject) => {
     Armor.findById(id)
-      .populate<{ effects: IEffect[] }>('effects')
-      .populate<{ actions: IAction[] }>('actions')
-      .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
-      .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
-      .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
+      .populate<{ effects: HydratedIEffect[] }>('effects')
+      .populate<{ actions: HydratedIAction[] }>('actions')
+      .populate<{ skillBonuses: HydratedISkillBonus[] }>('skillBonuses')
+      .populate<{ statBonuses: HydratedIStatBonus[] }>('statBonuses')
+      .populate<{ charParamBonuses: HydratedICharParamBonus[] }>('charParamBonuses')
       .then((res?: HydratedIArmor | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Armor'));
@@ -122,7 +128,9 @@ const create = (req: Request, res: Response): void => {
   })
     .then((skillBonusIds) => {
       if (skillBonusIds.length > 0) {
-        armor.skillBonuses = skillBonusIds.map(skillBonusId => String(skillBonusId));
+        armor.skillBonuses = skillBonusIds.map(
+          skillBonusId => String(skillBonusId)
+        );
       }
       curateStatBonusIds({
         statBonusesToRemove: [],
@@ -134,7 +142,9 @@ const create = (req: Request, res: Response): void => {
       })
         .then((statBonusIds) => {
           if (statBonusIds.length > 0) {
-            armor.statBonuses = statBonusIds.map(statBonusId => String(statBonusId));
+            armor.statBonuses = statBonusIds.map(
+              statBonusId => String(statBonusId)
+            );
           }
           curateCharParamBonusIds({
             charParamBonusesToRemove: [],
@@ -146,8 +156,9 @@ const create = (req: Request, res: Response): void => {
           })
             .then((charParamBonusIds) => {
               if (charParamBonusIds.length > 0) {
-                armor.charParamBonuses = charParamBonusIds.map(charParamBonusId =>
-                  String(charParamBonusId)
+                armor.charParamBonuses = charParamBonusIds.map(
+                  charParamBonusId =>
+                    String(charParamBonusId)
                 );
               }
               smartUpdateEffects({
@@ -156,7 +167,8 @@ const create = (req: Request, res: Response): void => {
               })
                 .then((effectsIds) => {
                   if (effectsIds.length > 0) {
-                    armor.effects = effectsIds.map(effectsId => String(effectsId));
+                    armor.effects = effectsIds.map(
+                      effectsId => String(effectsId));
                   }
                   smartUpdateActions({
                     actionsToRemove: [],
@@ -164,7 +176,9 @@ const create = (req: Request, res: Response): void => {
                   })
                     .then((actionsIds) => {
                       if (actionsIds.length > 0) {
-                        armor.actions = actionsIds.map(actionsId => String(actionsId));
+                        armor.actions = actionsIds.map(
+                          actionsId => String(actionsId)
+                        );
                       }
                       armor
                         .save()
@@ -213,6 +227,32 @@ const update = (req: Request, res: Response): void => {
     skillBonuses = null,
     statBonuses = null,
     charParamBonuses = null
+  }: {
+    id?: string
+    title: string | null
+    summary: string | null
+    i18n: InternationalizationType | null
+    rarity: ObjectId | null
+    starterKit: 'always' | 'never' | 'option' | null
+    cost: number | null
+    itemType: ObjectId | null
+    itemModifiers: ObjectId[] | null
+    armorType: ObjectId | null
+    effects: ISentEffect[] | null
+    actions: ISentAction[] | null
+    skillBonuses: Array<{
+      skill: string
+      value: number
+    }> | null
+    statBonuses: Array<{
+      stat: string
+      value: number
+    }> | null
+    charParamBonuses: Array<{
+      charParam: string
+      value: number
+    }> | null
+    overrides: ObjectId[] | null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Armor ID'));
@@ -220,7 +260,7 @@ const update = (req: Request, res: Response): void => {
     return;
   }
 
-  findArmorById(id as string)
+  findArmorById(id)
     .then((armor) => {
       if (title !== null) {
         armor.title = title;
@@ -248,177 +288,204 @@ const update = (req: Request, res: Response): void => {
       }
 
       const skillBonusesToStay: string[] = [];
-      interface ISkillBonusElt extends ISkillBonus {
-        _id: ObjectId
+      let skillBonusesToRemove: string[] = [];
+      let skillBonusesToAdd: Array<{
+        skill: string
+        value: number
+      }> = [];
+
+      if (skillBonuses !== null) {
+        skillBonusesToRemove = armor.skillBonuses.reduce(
+          (result: string[], elt: HydratedISkillBonus) => {
+            const foundSkillBonus = skillBonuses.find(
+              skillBonus => skillBonus.skill === String(elt.skill)
+                && skillBonus.value === elt.value
+            );
+            if (foundSkillBonus === undefined) {
+              result.push(String(elt._id));
+            } else {
+              skillBonusesToStay.push(String(elt._id));
+            }
+
+            return result;
+          },
+          []
+        );
+
+        skillBonusesToAdd = skillBonuses.reduce(
+          (
+            result: Array<{
+              skill: string
+              value: number
+            }>,
+            elt: {
+              skill: string
+              value: number
+            }
+          ) => {
+            const foundSkillBonus = armor.skillBonuses.find(
+              skillBonus =>
+                typeof skillBonus !== 'string'
+                && String(skillBonus.skill) === elt.skill
+                && skillBonus.value === elt.value
+            );
+            if (foundSkillBonus === undefined) {
+              result.push(elt);
+            }
+
+            return result;
+          },
+          []
+        );
       }
-      const skillBonusesToRemove = armor.skillBonuses.reduce(
-        (result: string[], elt: ISkillBonusElt) => {
-          const foundSkillBonus = skillBonuses.find(
-            skillBonus => skillBonus.skill === String(elt.skill) && skillBonus.value === elt.value
-          );
-          if (foundSkillBonus === undefined) {
-            result.push(String(elt._id));
-          } else {
-            skillBonusesToStay.push(String(elt._id));
-          }
-
-          return result;
-        },
-        []
-      );
-
-      const skillBonusesToAdd = skillBonuses.reduce(
-        (
-          result: Array<{
-            skill: string
-            value: number
-          }>,
-          elt: {
-            skill: string
-            value: number
-          }
-        ) => {
-          const foundSkillBonus = armor.skillBonuses.find(
-            skillBonus =>
-              typeof skillBonus !== 'string'
-              && String(skillBonus.skill) === elt.skill
-              && skillBonus.value === elt.value
-          );
-          if (foundSkillBonus === undefined) {
-            result.push(elt);
-          }
-
-          return result;
-        },
-        []
-      );
 
       const statBonusesToStay: string[] = [];
-      interface IStatBonusElt extends IStatBonus {
-        _id: ObjectId
+      let statBonusesToRemove: string[] = [];
+      let statBonusesToAdd: Array<{
+        stat: string
+        value: number
+      }> = [];
+
+      if (statBonuses !== null) {
+        statBonusesToRemove = armor.statBonuses.reduce(
+          (result: string[], elt: HydratedIStatBonus) => {
+            const foundStatBonus = statBonuses.find(
+              statBonus => statBonus.stat === String(elt.stat)
+                && statBonus.value === elt.value
+            );
+            if (foundStatBonus === undefined) {
+              result.push(String(elt._id));
+            } else {
+              statBonusesToStay.push(String(elt._id));
+            }
+
+            return result;
+          },
+          []
+        );
+
+        statBonusesToAdd = statBonuses.reduce(
+          (
+            result: Array<{
+              stat: string
+              value: number
+            }>,
+            elt: {
+              stat: string
+              value: number
+            }
+          ) => {
+            const foundStatBonus = armor.statBonuses.find(
+              statBonus =>
+                typeof statBonus !== 'string'
+                && String(statBonus.stat) === elt.stat
+                && statBonus.value === elt.value
+            );
+            if (foundStatBonus === undefined) {
+              result.push(elt);
+            }
+
+            return result;
+          },
+          []
+        );
       }
-      const statBonusesToRemove = armor.statBonuses.reduce(
-        (result: string[], elt: IStatBonusElt) => {
-          const foundStatBonus = statBonuses.find(
-            statBonus => statBonus.stat === String(elt.stat) && statBonus.value === elt.value
-          );
-          if (foundStatBonus === undefined) {
-            result.push(String(elt._id));
-          } else {
-            statBonusesToStay.push(String(elt._id));
-          }
-
-          return result;
-        },
-        []
-      );
-
-      const statBonusesToAdd = statBonuses.reduce(
-        (
-          result: Array<{
-            stat: string
-            value: number
-          }>,
-          elt: {
-            stat: string
-            value: number
-          }
-        ) => {
-          const foundStatBonus = armor.statBonuses.find(
-            statBonus =>
-              typeof statBonus !== 'string'
-              && String(statBonus.stat) === elt.stat
-              && statBonus.value === elt.value
-          );
-          if (foundStatBonus === undefined) {
-            result.push(elt);
-          }
-
-          return result;
-        },
-        []
-      );
 
       const charParamBonusesToStay: string[] = [];
-      interface ICharParamBonusElt extends ICharParamBonus {
-        _id: ObjectId
-      }
-      const charParamBonusesToRemove = armor.charParamBonuses.reduce(
-        (result: string[], elt: ICharParamBonusElt) => {
-          const foundCharParamBonus = charParamBonuses.find(
-            charParamBonus =>
-              charParamBonus.charParam === String(elt.charParam)
-              && charParamBonus.value === elt.value
-          );
-          if (foundCharParamBonus === undefined) {
-            result.push(String(elt._id));
-          } else {
-            charParamBonusesToStay.push(String(elt._id));
-          }
+      let charParamBonusesToRemove: string[] = [];
+      let charParamBonusesToAdd: Array<{
+        charParam: string
+        value: number
+      }> = [];
+      if (charParamBonuses !== null) {
+        charParamBonusesToRemove = armor.charParamBonuses.reduce(
+          (result: string[], elt: HydratedICharParamBonus) => {
+            const foundCharParamBonus = charParamBonuses.find(
+              charParamBonus =>
+                charParamBonus.charParam === String(elt.charParam)
+                && charParamBonus.value === elt.value
+            );
+            if (foundCharParamBonus === undefined) {
+              result.push(String(elt._id));
+            } else {
+              charParamBonusesToStay.push(String(elt._id));
+            }
 
-          return result;
-        },
-        []
-      );
-
-      const charParamBonusesToAdd = charParamBonuses.reduce(
-        (
-          result: Array<{
-            charParam: string
-            value: number
-          }>,
-          elt: {
-            charParam: string
-            value: number
-          }
-        ) => {
-          const foundCharParamBonus = armor.charParamBonuses.find(
-            charParamBonus =>
-              typeof charParamBonus !== 'string'
-              && String(charParamBonus.charParam) === elt.charParam
-              && charParamBonus.value === elt.value
-          );
-          if (foundCharParamBonus === undefined) {
-            result.push(elt);
-          }
-
-          return result;
-        },
-        []
-      );
-
-      interface IEffectElt extends IEffect {
-        _id: ObjectId
-      }
-      const effectsToRemove = armor.effects.reduce((result: string[], elt: IEffectElt) => {
-        const foundEffect = effects.find(
-          effect => effect.id !== undefined && String(effect.id) === String(elt._id)
+            return result;
+          },
+          []
         );
-        if (foundEffect === undefined) {
-          result.push(String(elt._id));
-        }
 
-        return result;
-      }, []);
+        charParamBonusesToAdd = charParamBonuses.reduce(
+          (
+            result: Array<{
+              charParam: string
+              value: number
+            }>,
+            elt: {
+              charParam: string
+              value: number
+            }
+          ) => {
+            const foundCharParamBonus = armor.charParamBonuses.find(
+              charParamBonus =>
+                typeof charParamBonus !== 'string'
+                && String(charParamBonus.charParam) === elt.charParam
+                && charParamBonus.value === elt.value
+            );
+            if (foundCharParamBonus === undefined) {
+              result.push(elt);
+            }
 
-      interface IActionElt extends IAction {
-        _id: ObjectId
-      }
-      const actionsToRemove = armor.actions.reduce((result: string[], elt: IActionElt) => {
-        const foundAction = actions.find(
-          action => action.id !== undefined && String(action.id) === String(elt._id)
+            return result;
+          },
+          []
         );
-        if (foundAction === undefined) {
-          result.push(String(elt._id));
-        }
+      }
 
-        return result;
-      }, []);
+      let effectsToRemove: string[] = [];
+
+      if (effects !== null) {
+        effectsToRemove = armor.effects.reduce(
+          (result: string[], elt: HydratedIEffect) => {
+            const foundEffect = effects.find(
+              effect => effect.id !== undefined
+                && String(effect.id) === String(elt._id)
+            );
+            if (foundEffect === undefined) {
+              result.push(String(elt._id));
+            }
+
+            return result;
+          }, []
+        );
+      }
+
+      let actionsToRemove: string[] = [];
+
+      if (actions !== null) {
+        actionsToRemove = armor.actions.reduce(
+          (result: string[], elt: HydratedIAction) => {
+            const foundAction = actions.find(
+              action => action.id !== undefined
+                && String(action.id) === String(elt._id)
+            );
+            if (foundAction === undefined) {
+              result.push(String(elt._id));
+            }
+
+            return result;
+          }, []
+        );
+      }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(armor.i18n !== null && armor.i18n !== undefined && armor.i18n !== ''
-          ? JSON.parse(armor.i18n)
-          : {}) };
+        const newIntl: InternationalizationType = { ...(
+          armor.i18n !== undefined
+          && armor.i18n !== ''
+            ? JSON.parse(armor.i18n)
+            : {}
+        ) };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -434,7 +501,9 @@ const update = (req: Request, res: Response): void => {
       })
         .then((skillBonusIds) => {
           if (skillBonusIds.length > 0) {
-            armor.skillBonuses = skillBonusIds.map(skillBonusId => String(skillBonusId));
+            armor.skillBonuses = skillBonusIds.map(
+              skillBonusId => String(skillBonusId)
+            );
           } else if (skillBonuses !== null && skillBonuses.length === 0) {
             armor.skillBonuses = [];
           }
@@ -445,7 +514,9 @@ const update = (req: Request, res: Response): void => {
           })
             .then((statBonusIds) => {
               if (statBonusIds.length > 0) {
-                armor.statBonuses = statBonusIds.map(statBonusId => String(statBonusId));
+                armor.statBonuses = statBonusIds.map(
+                  statBonusId => String(statBonusId)
+                );
               }
               curateCharParamBonusIds({
                 charParamBonusesToRemove,
@@ -454,25 +525,30 @@ const update = (req: Request, res: Response): void => {
               })
                 .then((charParamBonusIds) => {
                   if (charParamBonusIds.length > 0) {
-                    armor.charParamBonuses = charParamBonusIds.map(charParamBonusId =>
-                      String(charParamBonusId)
+                    armor.charParamBonuses = charParamBonusIds.map(
+                      charParamBonusId =>
+                        String(charParamBonusId)
                     );
                   }
                   smartUpdateEffects({
                     effectsToRemove,
-                    effectsToUpdate: effects
+                    effectsToUpdate: effects ?? []
                   })
                     .then((effectsIds) => {
                       if (effectsIds.length > 0) {
-                        armor.effects = effectsIds.map(effectsId => String(effectsId));
+                        armor.effects = effectsIds.map(
+                          effectsId => String(effectsId)
+                        );
                       }
                       smartUpdateActions({
                         actionsToRemove,
-                        actionsToUpdate: actions
+                        actionsToUpdate: actions ?? []
                       })
                         .then((actionsIds) => {
                           if (actionsIds.length > 0) {
-                            armor.actions = actionsIds.map(actionsId => String(actionsId));
+                            armor.actions = actionsIds.map(
+                              actionsId => String(actionsId)
+                            );
                           }
                           armor
                             .save()
@@ -530,12 +606,34 @@ const deleteArmor = (req: Request, res: Response): void => {
   const { id }: { id: string } = req.body;
 
   findArmorById(id)
-    .then((armor) => {
-      const skillBonusesToRemove = armor.skillBonuses.map(elt => elt._id);
-      const statBonusesToRemove = armor.statBonuses.map(elt => elt._id);
-      const charParamBonusesToRemove = armor.charParamBonuses.map(elt => elt._id);
-      const effectsToRemove = armor.effects.map(elt => elt._id);
-      const actionsToRemove = armor.actions.map(elt => elt._id);
+    .then((armor: HydratedDocument<
+      Omit<IArmor,
+      | 'effects'
+      | 'actions'
+      | 'skillBonuses'
+      | 'statBonuses'
+      | 'charParamBonuses'
+      | 'skillBranch'
+      | 'cyberFrameBranch'
+      > & {
+        effects: HydratedIEffect[]
+        actions: HydratedIAction[]
+        skillBonuses: HydratedISkillBonus[]
+        statBonuses: HydratedIStatBonus[]
+        charParamBonuses: HydratedICharParamBonus[]
+      }
+    >) => {
+      const skillBonusesToRemove = armor.skillBonuses.map(
+        elt => String(elt._id)
+      );
+      const statBonusesToRemove = armor.statBonuses.map(
+        elt => String(elt._id)
+      );
+      const charParamBonusesToRemove = armor.charParamBonuses.map(
+        elt => String(elt._id)
+      );
+      const effectsToRemove = armor.effects.map(elt => String(elt._id));
+      const actionsToRemove = armor.actions.map(elt => String(elt._id));
 
       curateSkillBonusIds({
         skillBonusesToRemove,
@@ -598,10 +696,75 @@ const deleteArmor = (req: Request, res: Response): void => {
     });
 };
 
-interface CuratedIArmor {
+type IArmorSent = HydratedDocument<
+  Omit<
+    IArmor,
+    | 'effects'
+    | 'actions'
+  > & {
+    effects: HydratedIEffect[]
+    actions: HydratedIAction[]
+    skillBonuses: HydratedISkillBonus[]
+    statBonuses: HydratedIStatBonus[]
+    charParamBonuses: HydratedICharParamBonus[]
+  }
+>;
+
+interface CuratedIArmorToSend {
+  armor: Omit<
+    FlattenMaps<IArmor>,
+    | 'effects'
+    | 'actions'
+  > & {
+    effects: ICuratedEffectToSend[]
+    actions: ICuratedActionToSend[]
+  }
   i18n?: InternationalizationType
-  armor: any
 }
+
+const curateSingleArmor = (
+  armorSent: IArmorSent
+): CuratedIArmorToSend => {
+  const curatedActions
+  = armorSent.actions.length > 0
+    ? armorSent.actions.map((action) => {
+        const data = action.toJSON();
+
+        return {
+          ...data,
+          ...(
+            data.i18n !== undefined
+              ? { i18n: JSON.parse(data.i18n) }
+              : {}
+          )
+        };
+      })
+    : [];
+  const curatedEffects
+  = armorSent.effects.length > 0
+    ? armorSent.effects.map((effect) => {
+        const data = effect.toJSON();
+
+        return {
+          ...data,
+          ...(
+            data.i18n !== undefined
+              ? { i18n: JSON.parse(data.i18n) }
+              : {}
+          )
+        };
+      })
+    : [];
+
+  return {
+    armor: {
+      ...armorSent.toJSON(),
+      actions: curatedActions,
+      effects: curatedEffects
+    },
+    i18n: curateI18n(armorSent.i18n)
+  };
+};
 
 const findSingle = (req: Request, res: Response): void => {
   const { armorId } = req.query;
@@ -611,37 +774,8 @@ const findSingle = (req: Request, res: Response): void => {
     return;
   }
   findArmorById(armorId)
-    .then((armorSent) => {
-      const curatedActions
-        = armorSent.actions.length > 0
-          ? armorSent.actions.map((action) => {
-              const data = action.toJSON();
-
-              return {
-                ...data,
-                ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {})
-              };
-            })
-          : [];
-      const curatedEffects
-        = armorSent.effects.length > 0
-          ? armorSent.effects.map((effect) => {
-              const data = effect.toJSON();
-
-              return {
-                ...data,
-                ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {})
-              };
-            })
-          : [];
-      const armor = armorSent.toJSON();
-      armor.actions = curatedActions;
-      armor.effects = curatedEffects;
-      const sentObj = {
-        armor,
-        i18n: curateI18n(armorSent.i18n)
-      };
-      res.send(sentObj);
+    .then((armorSent: IArmorSent) => {
+      res.send(curateSingleArmor(armorSent));
     })
     .catch((err: unknown) => {
       res.status(404).send(err);
@@ -650,38 +784,10 @@ const findSingle = (req: Request, res: Response): void => {
 
 const findAll = (req: Request, res: Response): void => {
   findArmors()
-    .then((armors) => {
-      const curatedArmors: CuratedIArmor[] = [];
-      armors.forEach((armorSent) => {
-        const curatedActions
-          = armorSent.actions.length > 0
-            ? armorSent.actions.map((action) => {
-                const data = action.toJSON();
-
-                return {
-                  ...data,
-                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {})
-                };
-              })
-            : [];
-        const curatedEffects
-          = armorSent.effects.length > 0
-            ? armorSent.effects.map((effect) => {
-                const data = effect.toJSON();
-
-                return {
-                  ...data,
-                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {})
-                };
-              })
-            : [];
-        const armor = armorSent.toJSON();
-        armor.actions = curatedActions;
-        armor.effects = curatedEffects;
-        curatedArmors.push({
-          armor,
-          i18n: curateI18n(armorSent.i18n)
-        });
+    .then((implants: IArmorSent[]) => {
+      const curatedArmors: CuratedIArmorToSend[] = [];
+      implants.forEach((armorSent) => {
+        curatedArmors.push(curateSingleArmor(armorSent));
       });
 
       res.send(curatedArmors);
@@ -691,38 +797,10 @@ const findAll = (req: Request, res: Response): void => {
 
 const findAllStarter = (req: Request, res: Response): void => {
   findArmors({ starterKit: { $in: ['always', 'option'] } })
-    .then((armors) => {
-      const curatedArmors: CuratedIArmor[] = [];
-      armors.forEach((armorSent) => {
-        const curatedActions
-          = armorSent.actions.length > 0
-            ? armorSent.actions.map((action) => {
-                const data = action.toJSON();
-
-                return {
-                  ...data,
-                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {})
-                };
-              })
-            : [];
-        const curatedEffects
-          = armorSent.effects.length > 0
-            ? armorSent.effects.map((effect) => {
-                const data = effect.toJSON();
-
-                return {
-                  ...data,
-                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {})
-                };
-              })
-            : [];
-        const armor = armorSent.toJSON();
-        armor.actions = curatedActions;
-        armor.effects = curatedEffects;
-        curatedArmors.push({
-          armor,
-          i18n: curateI18n(armorSent.i18n)
-        });
+    .then((implants: IArmorSent[]) => {
+      const curatedArmors: CuratedIArmorToSend[] = [];
+      implants.forEach((armorSent) => {
+        curatedArmors.push(curateSingleArmor(armorSent));
       });
 
       res.send(curatedArmors);
@@ -731,5 +809,11 @@ const findAllStarter = (req: Request, res: Response): void => {
 };
 
 export {
-  create, deleteArmor, findAll, findAllStarter, findArmorById, findSingle, update
+  create,
+  deleteArmor,
+  findAll,
+  findAllStarter,
+  findArmorById,
+  findSingle,
+  update
 };

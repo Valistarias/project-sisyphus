@@ -11,6 +11,7 @@ import {
 } from '../../utils/globalErrorMessage';
 
 import type { HydratedIBodyPart } from './model';
+import type { InternationalizationType } from '../../utils/types';
 
 import { curateI18n } from '../../utils';
 
@@ -65,28 +66,37 @@ const checkDuplicateBodyPartPartId = async (
   });
 
 const checkDuplicatePartId = async (
-  partId: string,
+  partId: string | null,
   alreadyExistOnce: boolean
 ): Promise<string | boolean> =>
   await new Promise((resolve, reject) => {
-    checkDuplicateBodyPartPartId(partId, alreadyExistOnce)
-      .then((responseBodyPart: string | boolean) => {
-        if (typeof responseBodyPart === 'boolean') {
-          resolve(false);
-        } else {
-          resolve(responseBodyPart);
-        }
-      })
-      .catch((err: unknown) => {
-        reject(err);
-      });
+    if (partId === null) {
+      resolve(false);
+    } else {
+      checkDuplicateBodyPartPartId(partId, alreadyExistOnce)
+        .then((responseBodyPart: string | boolean) => {
+          if (typeof responseBodyPart === 'boolean') {
+            resolve(false);
+          } else {
+            resolve(responseBodyPart);
+          }
+        })
+        .catch((err: unknown) => {
+          reject(err);
+        });
+    }
   });
 
 const create = (req: Request, res: Response): void => {
   const {
     title, summary, i18n = null, partId, limit
   } = req.body;
-  if (title === undefined || summary === undefined || partId === undefined || limit === undefined) {
+  if (
+    title === undefined
+    || summary === undefined
+    || partId === undefined
+    || limit === undefined
+  ) {
     res.status(400).send(gemInvalidField('Body Part'));
 
     return;
@@ -126,16 +136,23 @@ const create = (req: Request, res: Response): void => {
 const update = (req: Request, res: Response): void => {
   const {
     id, title = null, summary = null, i18n, partId = null, limit = null
+  }: {
+    id?: string
+    title: string | null
+    summary: string | null
+    i18n: InternationalizationType | null
+    partId: string | null
+    limit: number | null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Body Part ID'));
 
     return;
   }
-  findBodyPartById(id as string)
+  findBodyPartById(id)
     .then((bodyPart) => {
       const alreadyExistOnce = typeof partId === 'string' && partId === bodyPart.partId;
-      checkDuplicatePartId(partId as string, alreadyExistOnce)
+      checkDuplicatePartId(partId, alreadyExistOnce)
         .then((response) => {
           if (typeof response === 'boolean') {
             if (title !== null) {
@@ -152,9 +169,12 @@ const update = (req: Request, res: Response): void => {
             }
 
             if (i18n !== null) {
-              const newIntl: InternationalizationType = { ...(bodyPart.i18n !== null && bodyPart.i18n !== undefined && bodyPart.i18n !== ''
-                ? JSON.parse(bodyPart.i18n)
-                : {}) };
+              const newIntl: InternationalizationType = { ...(
+                bodyPart.i18n !== undefined
+                && bodyPart.i18n !== ''
+                  ? JSON.parse(bodyPart.i18n)
+                  : {}
+              ) };
 
               Object.keys(i18n).forEach((lang) => {
                 newIntl[lang] = i18n[lang];

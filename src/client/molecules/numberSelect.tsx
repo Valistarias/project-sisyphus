@@ -17,7 +17,7 @@ import { classTrim } from '../utils';
 
 import './numberSelect.scss';
 
-interface INumberSelect extends IQuarkProps, IReactHookFormInputs {
+interface INumberSelect extends IReactHookFormInputs {
   /** The minimim value the stat can go */
   minimum?: number
   /** The maximum value the stat can go */
@@ -28,7 +28,7 @@ interface INumberSelect extends IQuarkProps, IReactHookFormInputs {
   offset?: number
 }
 
-const NumberSelect: FC<INumberSelect> = ({
+const NumberSelect: FC<IQuarkProps<INumberSelect>> = ({
   className,
   inputName,
   rules,

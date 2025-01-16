@@ -1,4 +1,4 @@
-import type React from 'react';
+import React from 'react';
 import type {
   FC, ReactNode, RefObject
 } from 'react';
@@ -11,7 +11,7 @@ import { classTrim } from '../utils';
 
 import './ali.scss';
 
-interface IAli extends IQuarkProps {
+interface IAli {
   /** The childrens of the LI element */
   children: ReactNode
   /** The innerRef, if there is any */
@@ -23,7 +23,7 @@ interface IAli extends IQuarkProps {
   localStyle?: React.CSSProperties
 }
 
-const Ali: FC<IAli> = (props) => {
+const Ali: FC<IQuarkProps<IAli>> = (props) => {
   const {
     className, children, innerRef
   } = props;

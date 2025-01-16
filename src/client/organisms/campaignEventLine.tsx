@@ -15,7 +15,7 @@ import type {
 } from '../types';
 
 import {
-  addSymbol, classTrim, strTodiceResult
+  addSymbol, classTrim, strToDiceResult
 } from '../utils';
 
 import './campaignEventLine.scss';
@@ -58,7 +58,7 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
     }> = [];
     let idDie = 0;
     let totalOffset = 0;
-    strTodiceResult(formula).forEach((diceCat) => {
+    strToDiceResult(formula).forEach((diceCat) => {
       if (diceCat.results.length > 0) {
         diceCat.results.forEach((result) => {
           dicesToUse.push({

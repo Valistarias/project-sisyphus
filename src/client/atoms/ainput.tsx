@@ -1,4 +1,4 @@
-import type React from 'react';
+import React from 'react';
 import type { FC } from 'react';
 
 import {
@@ -9,7 +9,7 @@ import { classTrim } from '../utils';
 
 import './ainput.scss';
 
-interface IAinput extends IQuarkProps {
+interface IAinput {
   /** The type of input */
   type?: 'text' | 'password' | 'email' | 'number' | 'textarea'
   /** The size of the input */
@@ -30,7 +30,7 @@ interface IAinput extends IQuarkProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-const Ainput: FC<IAinput> = ({
+const Ainput: FC<IQuarkProps<IAinput>> = ({
   className,
   hidden,
   inline = false,

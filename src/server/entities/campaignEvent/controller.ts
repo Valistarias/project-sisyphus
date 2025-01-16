@@ -41,11 +41,13 @@ const findCampaignEventsByCampaignId = async (
       });
   });
 
-const findCampaignEventById = async (id: string): Promise<HydratedDocument<ICampaignEvent>> =>
+const findCampaignEventById = async (
+  id: string
+): Promise<HydratedDocument<ICampaignEvent>> =>
   await new Promise((resolve, reject) => {
     CampaignEvent.findById(id)
-      .then((res: HydratedDocument<ICampaignEvent>) => {
-        if (res === undefined || res === null) {
+      .then((res) => {
+        if (res === null) {
           reject(gemNotFound('CampaignEvent'));
         } else {
           resolve(res);
@@ -135,7 +137,9 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const deleteCampaignEventByCampaignId = async (campaignId: string): Promise<boolean> =>
+const deleteCampaignEventByCampaignId = async (
+  campaignId?: string
+): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (campaignId === undefined) {
       reject(gemInvalidField('Campaign ID'));

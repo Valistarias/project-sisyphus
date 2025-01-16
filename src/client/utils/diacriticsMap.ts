@@ -319,10 +319,10 @@ const defaultDiacriticsRemovalMap = [
   }
 ];
 
-export const diacriticsMap = {};
-for (let i = 0; i < defaultDiacriticsRemovalMap.length; i++) {
-  const { letters } = defaultDiacriticsRemovalMap[i];
-  for (let j = 0; j < letters.length; j++) {
-    diacriticsMap[letters[j]] = defaultDiacriticsRemovalMap[i].base;
+export const diacriticsMap: Record<string, string | undefined> = {};
+for (const defaultDiacriticRemovalMap of defaultDiacriticsRemovalMap) {
+  const { letters } = defaultDiacriticRemovalMap;
+  for (const letter of letters) {
+    diacriticsMap[letter] = defaultDiacriticRemovalMap.base;
   }
 }

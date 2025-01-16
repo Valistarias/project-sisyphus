@@ -1,4 +1,4 @@
-import type React from 'react';
+import React from 'react';
 import type {
   FC, ReactNode
 } from 'react';
@@ -11,7 +11,7 @@ import { classTrim } from '../utils';
 
 import './ap.scss';
 
-interface IAp extends IQuarkProps {
+interface IAp {
   /** The title, when the mouse over */
   title?: string
   /** The childrens of the P element */
@@ -24,7 +24,7 @@ interface IAp extends IQuarkProps {
   onClick?: (e: React.MouseEvent<HTMLElement>) => void
 }
 
-const AP: FC<IAp> = ({
+const AP: FC<IQuarkProps<IAp>> = ({
   className, title, children, lang, hyphens = false, onClick
 }) => (
   <Quark

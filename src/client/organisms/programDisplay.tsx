@@ -25,7 +25,7 @@ import { classTrim } from '../utils';
 
 import './programDisplay.scss';
 
-interface IProgramDisplay extends IQuarkProps {
+interface IProgramDisplay {
   /** The program to be displayed */
   program: ICuratedProgram
   /** The display mode */
@@ -46,7 +46,7 @@ interface ICuratedCompleteProgram extends Omit<ICuratedProgram, 'program'> {
   program: ICompleteProgram
 }
 
-const ProgramDisplay: FC<IProgramDisplay> = ({
+const ProgramDisplay: FC<IQuarkProps<IProgramDisplay>> = ({
   program, mode = 'basic'
 }) => {
   const { t } = useTranslation();

@@ -2,7 +2,10 @@ import type { ICampaign } from './campaign';
 import type { ICharacter } from './character';
 
 // Global Types ------------------------------------
-export type InternationalizationType = Record<string, Record<string, string | undefined> | undefined>;
+export type InternationalizationType = Record<
+  string,
+  Record<string, string | undefined
+  > | undefined>;
 export interface ErrorResponseType {
   message: string
   code: string

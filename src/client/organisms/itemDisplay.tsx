@@ -27,7 +27,7 @@ import { classTrim } from '../utils';
 
 import './itemDisplay.scss';
 
-interface IItemDisplay extends IQuarkProps {
+interface IItemDisplay {
   /** The item to be displayed */
   item: ICuratedItem
   /** The display mode */
@@ -49,7 +49,7 @@ interface ICuratedCompleteItem extends Omit<ICuratedItem, 'item'> {
   item: ICompleteItem
 }
 
-const ItemDisplay: FC<IItemDisplay> = ({
+const ItemDisplay: FC<IQuarkProps<IItemDisplay>> = ({
   item, mode = 'basic'
 }) => {
   const { t } = useTranslation();

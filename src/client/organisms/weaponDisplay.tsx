@@ -30,7 +30,7 @@ import { classTrim } from '../utils';
 
 import './weaponDisplay.scss';
 
-interface IWeaponDisplay extends IQuarkProps {
+interface IWeaponDisplay {
   /** The weapon to be displayed */
   weapon: ICuratedWeapon
   /** The display mode */
@@ -54,7 +54,7 @@ interface ICuratedCompleteWeapon extends Omit<ICuratedWeapon, 'weapon'> {
   weapon: ICompleteWeapon
 }
 
-const WeaponDisplay: FC<IWeaponDisplay> = ({
+const WeaponDisplay: FC<IQuarkProps<IWeaponDisplay>> = ({
   weapon, mode = 'basic'
 }) => {
   const { t } = useTranslation();

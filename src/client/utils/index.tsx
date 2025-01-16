@@ -11,9 +11,9 @@ export const fullTrim = (elt: string): string => elt.replace(/\s+/g, ' ').trim()
 export const classTrim = (elt: string): string => fullTrim(elt.replace(/\n {2,}/g, ' '));
 
 export const removeDiacritics = (str: string): string =>
-  // eslint-disable-next-line no-control-regex
+  // eslint-disable-next-line no-control-regex -- Elements neccessary in regex
   str.replace(/[^\u0000-\u007E]/g, function (a) {
-    return diacriticsMap[a] !== undefined ? diacriticsMap[a] : a;
+    return diacriticsMap[a] ?? a;
   });
 
 export const arrSum = (elt: number[]): number =>
@@ -21,7 +21,8 @@ export const arrSum = (elt: number[]): number =>
     return prev + cur;
   });
 
-export const capitalizeFirstLetter = (string: string): string => string.charAt(0).toUpperCase() + string.slice(1);
+export const capitalizeFirstLetter = (string: string): string =>
+  string.charAt(0).toUpperCase() + string.slice(1);
 
 export const regexMail = /([A-z0-9._%-])+@([A-z0-9.-])+\.([A-z0-9]{2,})/g;
 
@@ -35,7 +36,10 @@ export const addSymbol = (val: number): string => {
   return String(val);
 };
 
-export const arraysEqual = (a: string[], b: string[]): boolean => {
+export const arraysEqual = (
+  a: string[] | null,
+  b: string[] | null
+): boolean => {
   if (a === b) return true;
   if (a == null || b == null) return false;
   if (a.length !== b.length) return false;
@@ -63,12 +67,13 @@ export const romanize = (num: number): string | boolean => {
     I: 1
   };
   let roman = '';
-  for (const i in lookup) {
-    while (num >= lookup[i]) {
-      roman += i;
-      num -= lookup[i];
+  Object.keys(lookup).forEach((lookupKey) => {
+    const actualLookup = lookup[lookupKey];
+    while (num >= actualLookup) {
+      roman += lookupKey;
+      num -= actualLookup;
     }
-  }
+  });
 
   return roman;
 };
@@ -200,7 +205,7 @@ export const throwDices = (dices: DiceRequest[]): DiceResult[] => {
       best,
       worst,
       offset,
-      average: Math.floor((total / (qty ?? 1)) * 10) / 10
+      average: Math.floor((total / qty) * 10) / 10
     });
   });
 
@@ -235,9 +240,12 @@ export const diceResultToStr = (diceCats: DiceResult[] | null): string => {
   return stringified;
 };
 
-export const strTodiceResult = (text: string): DiceResult[] => {
+export const strToDiceResult = (text: string): DiceResult[] => {
   const basicMold = createBasicDiceRequest();
-  const catRollObj = {};
+  const catRollObj: Partial<Record<string, {
+    dices: number[]
+    offset: string
+  }>> = {};
   text.split(';').forEach((catText) => {
     const [type, dicesText] = catText.split(':');
     const [dices, offset] = dicesText.split('+');
@@ -271,33 +279,35 @@ export const strTodiceResult = (text: string): DiceResult[] => {
       best,
       worst,
       offset: data?.offset !== undefined ? Number(data.offset) : 0,
-      average: Math.floor((total / (data !== undefined ? data.length : 1)) * 10) / 10
+      average: Math.floor(
+        (total / (data !== undefined ? data.dices.length : 1)) * 10) / 10
     };
   });
 };
 
 export const calculateDices = (diceGroups: DiceResult[]): TotalResult => {
   let total = 0;
-  let optionnalParams: Pick<DiceResult, 'best' | 'worst'> | null = null;
-  let canUseOptionnal = false;
+  const optionnalParams: Pick<DiceResult, 'best' | 'worst'> = {
+    best: diceGroups[0].best,
+    worst: diceGroups[0].worst
+  };
   diceGroups.forEach(({
     results, best, worst, total: totalDice
   }) => {
     if (results.length > 0) {
       total += totalDice;
-      if (optionnalParams === null) {
-        optionnalParams = {
-          best,
-          worst
-        };
-        canUseOptionnal = true;
-      } else canUseOptionnal &&= false;
+      if (optionnalParams.best < best) {
+        optionnalParams.best = best;
+      }
+      if (optionnalParams.worst > worst) {
+        optionnalParams.worst = worst;
+      }
     }
   });
 
   return {
     total,
-    ...(optionnalParams != null && canUseOptionnal ? optionnalParams : {})
+    ...optionnalParams
   };
 };
 
@@ -359,7 +369,9 @@ export const getValuesFromGlobalValues = (
 ): Record<string, number> => {
   const elt: Record<string, number> = {};
   namesSent.forEach((nameSent) => {
-    elt[nameSent] = Number(globalValues.find(({ name }) => name === nameSent)?.value ?? 0);
+    elt[nameSent] = Number(
+      globalValues.find(({ name }) => name === nameSent)?.value ?? 0
+    );
   });
 
   return elt;

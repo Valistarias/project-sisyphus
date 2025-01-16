@@ -10,14 +10,14 @@ import { classTrim } from '../utils';
 
 import './atbody.scss';
 
-interface IAtbody extends IQuarkProps {
+interface IAtbody {
   /** The class of the Table Head element */
   className?: string
   /** The childrens of the Table Head element */
   children: ReactNode
 }
 
-const ATbody: FC<IAtbody> = ({
+const ATbody: FC<IQuarkProps<IAtbody>> = ({
   className, children
 }) => (
   <Quark

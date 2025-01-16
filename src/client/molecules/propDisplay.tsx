@@ -23,7 +23,7 @@ import {
 
 import './propDisplay.scss';
 
-interface IPropDisplay extends IQuarkProps {
+interface IPropDisplay {
   /** The rarity text */
   rarity: string
   /** The rarity level */
@@ -46,7 +46,7 @@ interface IPropDisplay extends IQuarkProps {
   effects?: ICuratedEffect[]
 }
 
-const PropDisplay = forwardRef<HTMLDivElement, IPropDisplay>(
+const PropDisplay = forwardRef<HTMLDivElement, IQuarkProps<IPropDisplay>>(
   (
     {
       className,

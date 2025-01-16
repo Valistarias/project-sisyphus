@@ -1,13 +1,14 @@
 import type {
   Request, Response
 } from 'express';
+import type { FlattenMaps, ObjectId } from 'mongoose';
 
 import db from '../../models';
 import {
   gemInvalidField, gemNotFound, gemServerError
 } from '../../utils/globalErrorMessage';
 
-import type { HydratedIBag } from './model';
+import type { HydratedIBag, IBag } from './model';
 import type { InternationalizationType } from '../../utils/types';
 
 import { curateI18n } from '../../utils';
@@ -114,6 +115,18 @@ const update = (req: Request, res: Response): void => {
     cost = null,
     itemType = null,
     size = null
+  }: {
+    id?: string
+    title: string | null
+    summary: string | null
+    i18n: InternationalizationType | null
+    storableItemTypes: ObjectId[] | null
+    rarity: ObjectId | null
+    itemType: ObjectId | null
+    starterKit?: 'always' | 'never' | 'option' | null
+    cost: number | null
+    itemModifiers?: ObjectId[] | null
+    size: number | null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Bag ID'));
@@ -121,7 +134,7 @@ const update = (req: Request, res: Response): void => {
     return;
   }
 
-  findBagById(id as string)
+  findBagById(id)
     .then((bag) => {
       if (title !== null) {
         bag.title = title;
@@ -152,9 +165,11 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(bag.i18n !== null && bag.i18n !== undefined && bag.i18n !== ''
-          ? JSON.parse(bag.i18n)
-          : {}) };
+        const newIntl: InternationalizationType = { ...(
+          bag.i18n !== undefined && bag.i18n !== ''
+            ? JSON.parse(bag.i18n)
+            : {}
+        ) };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -215,7 +230,7 @@ const deleteBag = (req: Request, res: Response): void => {
 
 interface CuratedIBag {
   i18n?: InternationalizationType
-  bag: any
+  bag: FlattenMaps<IBag>
 }
 
 const findSingle = (req: Request, res: Response): void => {

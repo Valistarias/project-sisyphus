@@ -15,7 +15,8 @@ import type { IActionDuration } from './model';
 
 const { ActionDuration } = db;
 
-const findActionDurations = async (): Promise<Array<HydratedDocument<IActionDuration>>> =>
+const findActionDurations = async ():
+Promise<Array<HydratedDocument<IActionDuration>>> =>
   await new Promise((resolve, reject) => {
     ActionDuration.find()
       .then((res) => {
@@ -30,7 +31,8 @@ const findActionDurations = async (): Promise<Array<HydratedDocument<IActionDura
       });
   });
 
-const findActionDurationById = async (id: string): Promise<HydratedDocument<IActionDuration>> =>
+const findActionDurationById = async (id: string):
+Promise<HydratedDocument<IActionDuration>> =>
   await new Promise((resolve, reject) => {
     ActionDuration.findById(id)
       .then((res) => {
@@ -54,7 +56,9 @@ const create = (req: Request, res: Response): void => {
   }
   findActionDurations()
     .then((actionDurations) => {
-      if (actionDurations.find(actionDuration => actionDuration.name === name) === undefined) {
+      if (actionDurations.find(
+        actionDuration => actionDuration.name === name
+      ) === undefined) {
         const toSaveActionDuration = new ActionDuration({ name });
 
         toSaveActionDuration
@@ -108,7 +112,7 @@ const update = (req: Request, res: Response): void => {
 };
 
 const deleteActionDuration = (req: Request, res: Response): void => {
-  const { id }: { id: string } = req.body;
+  const { id }: { id?: string } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('ActionDuration ID'));
 

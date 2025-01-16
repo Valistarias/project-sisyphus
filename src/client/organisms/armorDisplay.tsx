@@ -28,7 +28,7 @@ import { classTrim } from '../utils';
 
 import './armorDisplay.scss';
 
-interface IArmorDisplay extends IQuarkProps {
+interface IArmorDisplay {
   /** The armor to be displayed */
   armor: ICuratedArmor
   /** The display mode */
@@ -51,7 +51,7 @@ interface ICuratedCompleteArmor extends Omit<ICuratedArmor, 'armor'> {
   armor: ICompleteArmor
 }
 
-const ArmorDisplay: FC<IArmorDisplay> = ({
+const ArmorDisplay: FC<IQuarkProps<IArmorDisplay>> = ({
   armor, mode = 'basic'
 }) => {
   const { t } = useTranslation();

@@ -72,4 +72,4 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
   );
 };
 
-export const useTheme = (): IThemeContext => useContext(ThemeContext)!;
+export const useTheme = (): IThemeContext | null => useContext(ThemeContext);

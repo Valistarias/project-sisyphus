@@ -62,7 +62,9 @@ const findBodiesByCharacter = async (req: Request): Promise<HydratedIBody[]> =>
 
           return;
         }
-        Body.find({ character: req.body.characterId })
+        const { characterId }: { characterId: string } = req.body;
+
+        Body.find({ character: characterId })
           .populate<{ character: HydratedDocument<ICharacter> }>('character')
           .populate<{ stats: HydratedIBodyStat[] }>({
             path: 'stats',
@@ -116,7 +118,8 @@ const findBodyById = async (
   id: string,
   req: Request
 ): Promise<{
-  body: HydratedIBody, canEdit: boolean
+  body: HydratedIBody
+  canEdit: boolean
 }> =>
   await new Promise((resolve, reject) => {
     getUserFromToken(req as IVerifyTokenRequest)
@@ -185,19 +188,26 @@ const findBodyById = async (
 const create = (req: Request, res: Response): void => {
   const {
     characterId, hp, stats
+  }: {
+    characterId?: string
+    hp?: number
+    stats: Array<{
+      id: string
+      value: number
+    }>
   } = req.body;
   getUserFromToken(req as IVerifyTokenRequest)
     .then((user) => {
-      if (user === null) {
+      if (user === null || characterId === undefined) {
         res.status(404).send(gemNotFound('User'));
 
         return;
       }
-      findCharacterById(characterId as string, req)
+      findCharacterById(characterId, req)
         .then(({
           char, canEdit
         }) => {
-          if (char !== undefined && canEdit) {
+          if (canEdit) {
             const body = new Body({
               character: characterId,
               hp
@@ -245,7 +255,7 @@ const update = (req: Request, res: Response): void => {
     .then(({
       body, canEdit
     }) => {
-      if (body !== undefined && canEdit) {
+      if (canEdit) {
         if (hp !== null && hp !== body.hp) {
           body.hp = hp;
         }
@@ -282,7 +292,7 @@ const updateStats = (req: Request, res: Response): void => {
     .then(({
       body, canEdit
     }) => {
-      if (body !== undefined && canEdit) {
+      if (canEdit) {
         replaceStatByBody({
           bodyId: id, stats
         })
@@ -310,18 +320,26 @@ const resetItems = (req: Request, res: Response): void => {
     items = [],
     programs = [],
     implants = []
+  }: {
+    id?: string
+    weapons: string[]
+    armors: string[]
+    bags: string[]
+    items: string[]
+    programs: string[]
+    implants: string[]
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Body ID'));
 
     return;
   }
-  findBodyById(id as string, req)
+  findBodyById(id, req)
     .then(({
       body, canEdit
     }) => {
-      if (body !== undefined && canEdit) {
-        deleteAmmosByBody(id as string)
+      if (canEdit) {
+        deleteAmmosByBody(id)
           .then(() => {
             replaceArmorByBody({
               bodyId: id, armorIds: armors
@@ -453,7 +471,7 @@ const deleteBodyById = async (id?: string): Promise<boolean> =>
   });
 
 const deleteBody = (req: Request, res: Response): void => {
-  const { id }: { id: string } = req.body;
+  const { id }: { id?: string } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Body ID'));
 
@@ -468,7 +486,9 @@ const deleteBody = (req: Request, res: Response): void => {
     });
 };
 
-const deleteBodiesAndItemsByBodyId = (bodies: string[], cb: (res: Error | null) => void): void => {
+const deleteBodiesAndItemsByBodyId = (
+  bodies: string[],
+  cb: (res: Error | null) => void): void => {
   deleteBodyById(bodies[0])
     .then(() => {
       if (bodies.length > 1) {

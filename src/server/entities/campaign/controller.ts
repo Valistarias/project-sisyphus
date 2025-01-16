@@ -23,7 +23,9 @@ import type { IUser } from '../user/model';
 
 const { Campaign } = db;
 
-const findCampaigns = async (req: Request): Promise<HydratedICompleteCampaign[]> =>
+const findCampaigns = async (
+  req: Request
+): Promise<HydratedICompleteCampaign[]> =>
   await new Promise((resolve, reject) => {
     getUserFromToken(req as IVerifyTokenRequest)
       .then((user) => {
@@ -56,7 +58,9 @@ const findCampaigns = async (req: Request): Promise<HydratedICompleteCampaign[]>
       });
   });
 
-const findCampaignById = async (id: string, req: Request): Promise<HydratedICompleteCampaign> =>
+const findCampaignById = async (
+  id: string, req: Request
+): Promise<HydratedICompleteCampaign> =>
   await new Promise((resolve, reject) => {
     getUserFromToken(req as IVerifyTokenRequest)
       .then((user) => {
@@ -89,7 +93,9 @@ const findCampaignById = async (id: string, req: Request): Promise<HydratedIComp
       });
   });
 
-const findCampaignByCode = async (id: string, req: Request): Promise<HydratedISimpleCampaign> =>
+const findCampaignByCode = async (
+  id: string, req: Request
+): Promise<HydratedISimpleCampaign> =>
   await new Promise((resolve, reject) => {
     getUserFromToken(req as IVerifyTokenRequest)
       .then((user) => {
@@ -161,23 +167,19 @@ const update = (req: Request, res: Response): void => {
   }
   findCampaignById(id as string, req)
     .then((campaign) => {
-      if (campaign !== undefined) {
-        if (name !== null && name !== campaign.name) {
-          campaign.name = name;
-        }
-        campaign
-          .save()
-          .then(() => {
-            res.send({
-              message: 'Campaign was updated successfully!', campaign
-            });
-          })
-          .catch((err: unknown) => {
-            res.status(500).send(gemServerError(err));
-          });
-      } else {
-        res.status(404).send(gemNotFound('Campaign'));
+      if (name !== null && name !== campaign.name) {
+        campaign.name = name;
       }
+      campaign
+        .save()
+        .then(() => {
+          res.send({
+            message: 'Campaign was updated successfully!', campaign
+          });
+        })
+        .catch((err: unknown) => {
+          res.status(500).send(gemServerError(err));
+        });
     })
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
@@ -194,8 +196,7 @@ const generateCode = (req: Request, res: Response): void => {
       findCampaignById(campaignId as string, req)
         .then((campaign) => {
           if (
-            campaign !== undefined
-            && user !== null
+            user !== null
             && String(campaign.owner._id) === String(user._id)
           ) {
             campaign.code = uuidv4();
@@ -236,9 +237,13 @@ const register = (req: Request, res: Response): void => {
         .then((campaign: ICampaignPayload) => {
           const foundPlayer
             = user !== null
-              ? Boolean(campaign.players.find(player => String(player) === String(user._id)))
+              ? Boolean(
+                  campaign.players.find(
+                    player => String(player) === String(user._id)
+                  )
+                )
               : false;
-          if (campaign !== undefined && user !== null && !foundPlayer) {
+          if (user !== null && !foundPlayer) {
             const newArray = campaign.players.map(player => String(player));
             newArray.push(String(user._id));
             campaign.players = newArray;
@@ -280,9 +285,13 @@ const unregister = (req: Request, res: Response): void => {
         .then((campaign: ICampaignPayload) => {
           const foundPlayer
             = user !== null
-              ? Boolean(campaign.players.find(player => String(player) === String(user._id)))
+              ? Boolean(
+                  campaign.players.find(
+                    player => String(player) === String(user._id)
+                  )
+                )
               : false;
-          if (campaign !== undefined && user !== null && foundPlayer) {
+          if (user !== null && foundPlayer) {
             const newArray: string[] = [];
             campaign.players.forEach((player) => {
               const playerStr = String(player);
@@ -309,7 +318,7 @@ const unregister = (req: Request, res: Response): void => {
 };
 
 const deleteCampaign = (req: Request, res: Response): void => {
-  const { id }: { id: string } = req.body;
+  const { id }: { id?: string } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Campaign ID'));
 

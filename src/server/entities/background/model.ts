@@ -3,7 +3,9 @@ import {
 } from 'mongoose';
 
 import type {
-  ICharParamBonus, ISkillBonus, IStatBonus
+  HydratedICharParamBonus,
+  HydratedISkillBonus,
+  HydratedIStatBonus
 } from '../index';
 
 interface IBackground {
@@ -25,9 +27,9 @@ interface IBackground {
 
 type HydratedIBackground = HydratedDocument<
   Omit<IBackground, 'skillBonuses' | 'statBonuses' | 'charParamBonuses'> & {
-    skillBonuses: ISkillBonus[] | string[]
-    statBonuses: IStatBonus[] | string[]
-    charParamBonuses: ICharParamBonus[] | string[]
+    skillBonuses: HydratedISkillBonus[] | string[]
+    statBonuses: HydratedIStatBonus[] | string[]
+    charParamBonuses: HydratedICharParamBonus[] | string[]
   }
 >;
 

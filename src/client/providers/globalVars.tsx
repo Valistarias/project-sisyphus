@@ -329,7 +329,12 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
   useEffect(() => {
     if (character !== false && character !== null) {
       // Aggregated Skills
-      const aggregatedSkills = curateCharacterSkills(character, skills, stats, cyberFrames);
+      const aggregatedSkills = curateCharacterSkills(
+        character,
+        skills,
+        stats,
+        cyberFrames
+      );
       setCharacterStatSkills(aggregatedSkills);
 
       // Aggregated Character Parameters
@@ -339,15 +344,15 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
         'pyr',
         'arr'
       ];
-      const aggregatedCharParams = curateCharacterParams(
+      const aggregatedCharParams = curateCharacterParams({
         character,
         charParams,
         charParamList,
-        aggregatedSkills.skills,
-        aggregatedSkills.stats,
+        skills: aggregatedSkills.skills,
+        stats: aggregatedSkills.stats,
         cyberFrames,
         globalValues
-      );
+      });
       setCharacterParams(aggregatedCharParams);
     }
   }, [

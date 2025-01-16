@@ -1,7 +1,13 @@
 export default class CustomEventEmitter<EvtRes> {
   evtTarget: DocumentFragment;
-  addEventListener: (id: string, cb: (res: CustomEventInit<EvtRes>) => void) => void;
-  removeEventListener: (id: string, cb: (res: CustomEventInit<EvtRes>) => void) => void;
+  addEventListener: (
+    id: string, cb: (res: CustomEventInit<EvtRes>) => void
+  ) => void;
+
+  removeEventListener: (
+    id: string, cb: (res: CustomEventInit<EvtRes>) => void
+  ) => void;
+
   dispatchEvent: (id: string, data: EvtRes) => void;
 
   constructor() {

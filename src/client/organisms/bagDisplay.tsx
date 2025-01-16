@@ -21,7 +21,7 @@ import { classTrim } from '../utils';
 
 import './bagDisplay.scss';
 
-interface IBagDisplay extends IQuarkProps {
+interface IBagDisplay {
   /** The bag to be displayed */
   bag: ICuratedBag
   /** The display mode */
@@ -38,7 +38,7 @@ interface ICuratedCompleteBag extends Omit<ICuratedBag, 'bag'> {
   bag: ICompleteBag
 }
 
-const BagDisplay: FC<IBagDisplay> = ({
+const BagDisplay: FC<IQuarkProps<IBagDisplay>> = ({
   bag, mode = 'basic'
 }) => {
   const { t } = useTranslation();

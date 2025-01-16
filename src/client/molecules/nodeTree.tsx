@@ -1,4 +1,4 @@
-import type React from 'react';
+import React from 'react';
 import {
   useMemo, type FC
 } from 'react';
@@ -27,7 +27,7 @@ import './nodeTree.scss';
 const ranks = 10;
 const specBeginRank = 3;
 
-interface INodeTree extends IQuarkProps {
+interface INodeTree {
   /** Is the Tree in admin mode ? */
   isAdmin?: boolean
   /** The tree to be displayed */
@@ -39,7 +39,7 @@ interface INodeTree extends IQuarkProps {
   onNodeClick?: (id: string) => void
 }
 
-const NodeTree: FC<INodeTree> = ({
+const NodeTree: FC<IQuarkProps<INodeTree>> = ({
   tree, onNodeClick = () => {}, isAdmin = false, className
 }) => {
   const {

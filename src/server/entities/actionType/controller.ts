@@ -15,7 +15,8 @@ import type { IActionType } from './model';
 
 const { ActionType } = db;
 
-const findActionTypes = async (): Promise<Array<HydratedDocument<IActionType>>> =>
+const findActionTypes = async ():
+Promise<Array<HydratedDocument<IActionType>>> =>
   await new Promise((resolve, reject) => {
     ActionType.find()
       .then((res) => {
@@ -30,7 +31,8 @@ const findActionTypes = async (): Promise<Array<HydratedDocument<IActionType>>> 
       });
   });
 
-const findActionTypeById = async (id: string): Promise<HydratedDocument<IActionType>> =>
+const findActionTypeById = async (id: string):
+Promise<HydratedDocument<IActionType>> =>
   await new Promise((resolve, reject) => {
     ActionType.findById(id)
       .then((res) => {
@@ -54,7 +56,9 @@ const create = (req: Request, res: Response): void => {
   }
   findActionTypes()
     .then((actionTypes) => {
-      if (actionTypes.find(actionType => actionType.name === name) === undefined) {
+      if (
+        actionTypes.find(actionType => actionType.name === name) === undefined
+      ) {
         const toSaveActionType = new ActionType({ name });
 
         toSaveActionType
@@ -83,7 +87,9 @@ const update = (req: Request, res: Response): void => {
   }
   findActionTypes()
     .then((actionTypes) => {
-      const actualActionType = actionTypes.find(actionType => String(actionType._id) === id);
+      const actualActionType = actionTypes.find(
+        actionType => String(actionType._id) === id
+      );
       if (actualActionType !== undefined) {
         if (name !== null && name !== actualActionType.name) {
           actualActionType.name = name;
@@ -106,7 +112,7 @@ const update = (req: Request, res: Response): void => {
 };
 
 const deleteActionType = (req: Request, res: Response): void => {
-  const { id }: { id: string } = req.body;
+  const { id }: { id?: string } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('ActionType ID'));
 

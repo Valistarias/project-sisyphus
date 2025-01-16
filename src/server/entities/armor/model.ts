@@ -3,11 +3,11 @@ import {
 } from 'mongoose';
 
 import type {
-  IAction,
-  ICharParamBonus,
-  IEffect,
-  ISkillBonus,
-  IStatBonus
+  HydratedIAction,
+  HydratedICharParamBonus,
+  HydratedIEffect,
+  HydratedISkillBonus,
+  HydratedIStatBonus
 } from '../index';
 
 interface IArmor {
@@ -46,11 +46,11 @@ interface IArmor {
 
 type HydratedIArmor = HydratedDocument<
   Omit<IArmor, 'effects' | 'actions' | 'skillBonuses' | 'statBonuses' | 'charParamBonuses'> & {
-    effects: IEffect[] | string[]
-    actions: IAction[] | string[]
-    skillBonuses: ISkillBonus[] | string[]
-    statBonuses: IStatBonus[] | string[]
-    charParamBonuses: ICharParamBonus[] | string[]
+    effects: HydratedIEffect[] | string[]
+    actions: HydratedIAction[] | string[]
+    skillBonuses: HydratedISkillBonus[] | string[]
+    statBonuses: HydratedIStatBonus[] | string[]
+    charParamBonuses: HydratedICharParamBonus[] | string[]
   }
 >;
 

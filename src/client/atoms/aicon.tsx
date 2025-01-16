@@ -1,4 +1,4 @@
-import type React from 'react';
+import React from 'react';
 import {
   useMemo, type FC
 } from 'react';
@@ -52,7 +52,7 @@ const icons = {
 
 type typeIcons = keyof typeof icons;
 
-interface IAicon extends IQuarkProps {
+interface IAicon {
   /** The size of the icon */
   size?: 'small' | 'medium' | 'large' | 'unsized'
   /** The type of icon */
@@ -61,7 +61,7 @@ interface IAicon extends IQuarkProps {
   onClick?: (e: React.MouseEvent<HTMLElement>) => void
 }
 
-const Aicon: FC<IAicon> = ({
+const Aicon: FC<IQuarkProps<IAicon>> = ({
   type,
   size = 'medium',
   className,

@@ -97,5 +97,8 @@ const deleteWeaponsByBody = async (bodyId: string): Promise<boolean> =>
   });
 
 export {
-  createWeaponsByBody, deleteWeaponsByBody, replaceWeaponByBody, updateWeaponByBody
+  createWeaponsByBody,
+  deleteWeaponsByBody,
+  replaceWeaponByBody,
+  updateWeaponByBody
 };

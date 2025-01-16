@@ -10,12 +10,12 @@ import { classTrim } from '../utils';
 
 import './atr.scss';
 
-interface IAtr extends IQuarkProps {
+interface IAtr {
   /** The childrens of the Table Row element */
   children: ReactNode
 }
 
-const ATr: FC<IAtr> = ({
+const ATr: FC<IQuarkProps<IAtr>> = ({
   className, children
 }) => (
   <Quark

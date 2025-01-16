@@ -1,4 +1,4 @@
-import type React from 'react';
+import React from 'react';
 import type {
   FC, ReactNode
 } from 'react';
@@ -13,7 +13,7 @@ import { classTrim } from '../utils';
 
 import './aa.scss';
 
-interface IAA extends IQuarkProps {
+interface IAA {
   /** The link to another page */
   href: string
   /** When the link is clicked */
@@ -24,7 +24,7 @@ interface IAA extends IQuarkProps {
   children: ReactNode
 }
 
-const AA: FC<IAA> = ({
+const AA: FC<IQuarkProps<IAA>> = ({
   className, children, href, target, onClick
 }) => (
   <Quark

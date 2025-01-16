@@ -13,7 +13,7 @@ import { classTrim } from '../utils';
 
 import './anodeIcon.scss';
 
-interface IANodeIcon extends IQuarkProps {
+interface IANodeIcon {
   /** The size of the node icon */
   size?: 'small' | 'medium' | 'large'
   /** The type of node icon */
@@ -27,7 +27,7 @@ interface IANodeIcon extends IQuarkProps {
 // When adding a new icon, dont forget to add it in the scss file, as before content
 // AND in the TypeNodeIcons type
 
-const ANodeIcon: FC<IANodeIcon> = ({
+const ANodeIcon: FC<IQuarkProps<IANodeIcon>> = ({
   type,
   size = 'medium',
   className,

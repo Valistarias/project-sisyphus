@@ -10,12 +10,12 @@ import { classTrim } from '../utils';
 
 import './ath.scss';
 
-interface IAth extends IQuarkProps {
+interface IAth {
   /** The childrens of the Table Head Cell element */
   children: ReactNode
 }
 
-const ATh: FC<IAth> = ({
+const ATh: FC<IQuarkProps<IAth>> = ({
   className, children
 }) => (
   <Quark

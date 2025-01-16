@@ -1,4 +1,4 @@
-import type React from 'react';
+import React from 'react';
 import {
   useCallback, useEffect, useState, type FC
 } from 'react';
@@ -22,14 +22,14 @@ import { classTrim } from '../utils';
 
 import './nodeIconSelect.scss';
 
-interface INodeIconSelect extends IQuarkProps, IReactHookFormInputs {
+interface INodeIconSelect , IReactHookFormInputs {
   /** The label, if any */
   label?: string
 }
 
 const defaultNodeIcon: TypeNodeIcons = 'default';
 
-const NodeIconSelect: FC<INodeIconSelect> = ({
+const NodeIconSelect: FC<IQuarkProps<INodeIconSelect>> = ({
   className, inputName, rules, control, label
 }) => {
   // const [selected, setSelected] = useState<TypeNodeIcons>(defaultNodeIcon);

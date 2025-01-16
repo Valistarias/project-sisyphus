@@ -8,12 +8,12 @@ import { classTrim } from '../utils';
 
 import './aimg.scss';
 
-interface IAimg extends IQuarkProps {
+interface IAimg {
   /** The url of the image */
   src: string
 }
 
-const Aimg: FC<IAimg> = ({
+const Aimg: FC<IQuarkProps<IAimg>> = ({
   className, src
 }) => (
   <Quark

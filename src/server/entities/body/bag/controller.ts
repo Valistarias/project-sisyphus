@@ -3,7 +3,8 @@ import db from '../../../models';
 const { BodyBag } = db;
 
 const replaceBagByBody = async (req: {
-  bodyId: string, bagIds: string[]
+  bodyId: string
+  bagIds: string[]
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { bodyId } = req;
@@ -23,7 +24,8 @@ const replaceBagByBody = async (req: {
   });
 
 const createBagsByBody = async (req: {
-  bodyId: string, bagIds: string[]
+  bodyId: string
+  bagIds: string[]
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const {

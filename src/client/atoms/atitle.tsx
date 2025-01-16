@@ -10,14 +10,14 @@ import { classTrim } from '../utils';
 
 import './atitle.scss';
 
-interface IAtitle extends IQuarkProps {
+interface IAtitle {
   /** The class of the title */
   level?: 1 | 2 | 3 | 4
   /** The childrens of the P element */
   children?: ReactNode
 }
 
-const Atitle: FC<IAtitle> = ({
+const Atitle: FC<IQuarkProps<IAtitle>> = ({
   className, children, level = 1
 }) => (
   <Quark

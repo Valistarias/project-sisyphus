@@ -8,7 +8,7 @@ import { classTrim } from '../utils';
 
 import './aloadbar.scss';
 
-interface IAloadbar extends IQuarkProps {
+interface IAloadbar {
   /** The main color of the Aloadbar */
   color?: 'primary' | 'secondary' | 'tertiary' | 'error'
   /** Value from 0 to 1 that determine how much the bar had progressed */
@@ -17,7 +17,7 @@ interface IAloadbar extends IQuarkProps {
   withDangerZone?: boolean
 }
 
-const Aloadbar: FC<IAloadbar> = ({
+const Aloadbar: FC<IQuarkProps<IAloadbar>> = ({
   className,
   withDangerZone = false,
   progress,

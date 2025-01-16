@@ -76,13 +76,18 @@ const create = (req: Request, res: Response): void => {
 const update = (req: Request, res: Response): void => {
   const {
     id, title = null, summary = null, i18n
+  }: {
+    id?: string
+    title: string | null
+    summary: string | null
+    i18n: InternationalizationType | null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Armor Type ID'));
 
     return;
   }
-  findArmorTypeById(id as string)
+  findArmorTypeById(id)
     .then((armorType) => {
       if (title !== null) {
         armorType.title = title;
@@ -92,9 +97,10 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(armorType.i18n !== null && armorType.i18n !== undefined && armorType.i18n !== ''
-          ? JSON.parse(armorType.i18n)
-          : {}) };
+        const newIntl: InternationalizationType = { ...(
+          armorType.i18n !== undefined && armorType.i18n !== ''
+            ? JSON.parse(armorType.i18n)
+            : {}) };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];

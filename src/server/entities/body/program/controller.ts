@@ -92,5 +92,8 @@ const deleteProgramsByBody = async (bodyId: string): Promise<boolean> =>
   });
 
 export {
-  createProgramsByBody, deleteProgramsByBody, replaceProgramByBody, updateProgramByBody
+  createProgramsByBody,
+  deleteProgramsByBody,
+  replaceProgramByBody,
+  updateProgramByBody
 };

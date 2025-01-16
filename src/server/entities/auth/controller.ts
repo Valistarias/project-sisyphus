@@ -1,9 +1,7 @@
 import type {
   Request, Response
 } from 'express';
-import type {
-  Error, HydratedDocument
-} from 'mongoose';
+import type { HydratedDocument } from 'mongoose';
 
 import bcrypt from 'bcryptjs';
 import jwt, {
@@ -41,10 +39,19 @@ interface ISigninRequest extends Request {
 }
 
 const signUp = (req: Request, res: Response, mg: IMailgunClient): void => {
+  const {
+    username,
+    mail,
+    password
+  }: {
+    username: string
+    mail: string
+    password: string
+  } = req.body;
   const user = new User({
-    username: req.body.username,
-    mail: req.body.mail,
-    password: bcrypt.hashSync(req.body.password as string, 8),
+    username,
+    mail,
+    password: bcrypt.hashSync(password, 8),
     lang: 'en',
     theme: 'dark',
     scale: 1
@@ -71,7 +78,8 @@ const signUp = (req: Request, res: Response, mg: IMailgunClient): void => {
                   to: ['mallet.victor.france@gmail.com'],
                   subject: 'Project Sisyphus - Registration',
                   text: 'Click to confirm your email!',
-                  html: `Click <a href = '${url}'>here</a> to confirm your email.`
+                  html:
+                    `Click <a href = '${url}'>here</a> to confirm your email.`
                 })
                 .then(() => {
                   res.send({ message: 'User was registered successfully!' });
@@ -107,16 +115,23 @@ const registerRoleByName = async (): Promise<string[]> =>
   });
 
 const signIn = (req: ISigninRequest, res: Response): void => {
-  User.findOne({ mail: req.body.mail })
+  const {
+    mail,
+    password
+  }: {
+    mail: string
+    password: string
+  } = req.body;
+  User.findOne({ mail })
     .populate<{ roles: IRole[] }>('roles', '-__v')
-    .then((user: HydratedIUser) => {
-      if (user === null) {
+    .then((user?: HydratedIUser | null) => {
+      if (user === null || user === undefined) {
         res.status(404).send(gemNotFound('User'));
 
         return;
       }
 
-      const passwordIsValid = bcrypt.compareSync(req.body.password as string, user.password);
+      const passwordIsValid = bcrypt.compareSync(password, user.password);
 
       if (!passwordIsValid) {
         res.status(400).send(gemInvalidField('password'));
@@ -130,10 +145,13 @@ const signIn = (req: ISigninRequest, res: Response): void => {
         return;
       }
 
-      const token = jwt.sign({ id: user.id }, config.secret(process.env) as Secret, { expiresIn: 86400 // 24 hours
-      });
+      const token = jwt.sign(
+        { id: user.id },
+        config.secret(process.env) as Secret,
+        { expiresIn: 86400 } // 24 hours
+      );
 
-      if (req.session === null || req.session === undefined) {
+      if (req.session === null) {
         req.session = { token };
       } else {
         req.session.token = token;

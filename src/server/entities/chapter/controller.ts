@@ -2,7 +2,7 @@ import type {
   Request, Response
 } from 'express';
 
-import { isAdmin } from '../../middlewares';
+import { isAdmin, type IVerifyTokenRequest } from '../../middlewares';
 import db from '../../models';
 import {
   gemInvalidField, gemNotFound, gemServerError
@@ -128,13 +128,18 @@ const create = (req: Request, res: Response): void => {
 const update = (req: Request, res: Response): void => {
   const {
     id, title = null, summary = null, i18n
+  }: {
+    id?: string
+    title: string | null
+    summary: string | null
+    i18n: InternationalizationType | null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Chapter ID'));
 
     return;
   }
-  findChapterById(id as string)
+  findChapterById(id)
     .then((chapter) => {
       if (title !== null) {
         chapter.title = title;
@@ -173,7 +178,12 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-const updateMultiplePagesPosition = (order: any, cb: (res: Error | null) => void): void => {
+const updateMultiplePagesPosition = (
+  order: Array<{
+    id: string
+    position: number
+  }>,
+  cb: (res: Error | null) => void): void => {
   Page.findOneAndUpdate({ _id: order[0].id }, { position: order[0].position })
     .then(() => {
       if (order.length > 1) {
@@ -191,6 +201,12 @@ const updateMultiplePagesPosition = (order: any, cb: (res: Error | null) => void
 const changePagesOrder = (req: Request, res: Response): void => {
   const {
     id, order
+  }: {
+    id?: string
+    order?: Array<{
+      id: string
+      position: number
+    }>
   } = req.body;
   if (id === undefined || order === undefined) {
     res.status(400).send(gemInvalidField('Chapter Reordering'));
@@ -278,7 +294,7 @@ interface CuratedIChapter {
   chapter: HydratedIChapter
 }
 
-const findSingle = (req: Request, res: Response): void => {
+const findSingle = (req: IVerifyTokenRequest, res: Response): void => {
   const { chapterId } = req.query;
   if (chapterId === undefined || typeof chapterId !== 'string') {
     res.status(400).send(gemInvalidField('Chapter ID'));
@@ -289,7 +305,10 @@ const findSingle = (req: Request, res: Response): void => {
     .then((isUserAdmin) => {
       findChapterById(chapterId)
         .then((chapter) => {
-          if ((chapter.ruleBook.archived || chapter.ruleBook.draft) && !isUserAdmin) {
+          if (
+            (chapter.ruleBook.archived || chapter.ruleBook.draft)
+            && !isUserAdmin
+          ) {
             res.status(404).send();
           } else {
             const sentObj = {

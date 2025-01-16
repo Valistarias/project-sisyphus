@@ -5,7 +5,8 @@ const { BodyStat } = db;
 const replaceStatByBody = async (req: {
   bodyId: string
   stats: Array<{
-    id: string, value: number
+    id: string
+    value: number
   }>
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
@@ -28,7 +29,8 @@ const replaceStatByBody = async (req: {
 const createStatsByBody = async (req: {
   bodyId: string
   stats: Array<{
-    id: string, value: number
+    id: string
+    value: number
   }>
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {

@@ -37,9 +37,9 @@ interface IAction {
 
 type HydratedIAction = HydratedDocument<
   Omit<IAction, 'type' | 'skill' | 'duration'> & {
-    type: IActionType | string
-    duration: IActionDuration | string
-    skill: ISkill | string
+    type: IActionType | ObjectId
+    duration: IActionDuration | ObjectId
+    skill: ISkill | ObjectId
   }
 >;
 

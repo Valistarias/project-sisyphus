@@ -1,6 +1,7 @@
 import type {
   Request, Response
 } from 'express';
+import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
 import {
@@ -57,20 +58,16 @@ export interface ISentAction {
   id?: string
   title: string
   summary: string
-  type: string
-  skill: string
-  duration: string
+  type: ObjectId
+  skill: ObjectId
+  duration: ObjectId
   time?: string
   damages?: string
   offsetSkill?: string
   uses?: number
   isKarmic?: boolean
   karmicCost?: number
-  i18n?: {
-    title: string
-    summary: string
-    time: string
-  }
+  i18n?: InternationalizationType
 }
 
 const updateActions = (
@@ -98,6 +95,7 @@ const updateActions = (
     isKarmic = null,
     karmicCost = null
   } = elts[0];
+
   if (id === undefined) {
     const action = new Action({
       title,
@@ -165,11 +163,13 @@ const updateActions = (
         }
 
         if (i18n !== null) {
-          const newIntl: InternationalizationType = { ...(action.i18n !== null && action.i18n !== undefined && action.i18n !== ''
-            ? JSON.parse(action.i18n)
-            : {}) };
+          const newIntl: InternationalizationType = { ...(
+            action.i18n !== undefined && action.i18n !== ''
+              ? JSON.parse(action.i18n)
+              : {}
+          ) };
 
-          Object.keys(i18n as InternationalizationType).forEach((lang) => {
+          Object.keys(i18n).forEach((lang) => {
             newIntl[lang] = i18n[lang];
           });
 
@@ -285,13 +285,27 @@ const update = (req: Request, res: Response): void => {
     damages = null,
     isKarmic = null,
     karmicCost = null
+  }: {
+    id?: string
+    title: string | null
+    summary: string | null
+    i18n: InternationalizationType | null
+    type: ObjectId | null
+    duration: ObjectId | null
+    time: string | null
+    skill: ObjectId | null
+    offsetSkill: string | null
+    uses: number | null
+    damages: string | null
+    isKarmic: boolean | null
+    karmicCost: number | null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Action ID'));
 
     return;
   }
-  findActionById(id as string)
+  findActionById(id)
     .then((action) => {
       if (title !== null) {
         action.title = title;
@@ -328,11 +342,13 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(action.i18n !== null && action.i18n !== undefined && action.i18n !== ''
-          ? JSON.parse(action.i18n)
-          : {}) };
+        const newIntl: InternationalizationType = { ...(
+          action.i18n !== undefined && action.i18n !== ''
+            ? JSON.parse(action.i18n)
+            : {}
+        ) };
 
-        Object.keys(i18n as InternationalizationType).forEach((lang) => {
+        Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
         });
 
@@ -425,5 +441,11 @@ const findAll = (req: Request, res: Response): void => {
 };
 
 export {
-  create, deleteAction, findActionById, findAll, findSingle, smartUpdateActions, update
+  create,
+  deleteAction,
+  findActionById,
+  findAll,
+  findSingle,
+  smartUpdateActions,
+  update
 };

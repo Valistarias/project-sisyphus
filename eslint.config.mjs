@@ -110,6 +110,7 @@ export default tseslint.config(
       { object: true },
       { enforceForRenamedProperties: false }
     ],
+    '@typescript-eslint/triple-slash-reference': 'off',
     '@typescript-eslint/no-unsafe-assignment': 'off',
     '@typescript-eslint/no-unsafe-call': 'off',
     '@stylistic/padding-line-between-statements': [

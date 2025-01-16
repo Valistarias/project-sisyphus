@@ -10,7 +10,7 @@ import { classTrim } from '../utils';
 
 import './aul.scss';
 
-interface IAul extends IQuarkProps {
+interface IAul {
   /** The childrens of the UL element */
   children: ReactNode | null
   /** Is the decoration to be removed ? */
@@ -19,7 +19,7 @@ interface IAul extends IQuarkProps {
   innerRef?: RefObject<null | ReactNode>
 }
 
-const Aul: FC<IAul> = (props) => {
+const Aul: FC<IQuarkProps<IAul>> = (props) => {
   const {
     className, children, noPoints = false, innerRef
   } = props;

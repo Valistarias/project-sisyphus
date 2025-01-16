@@ -10,14 +10,14 @@ import { classTrim } from '../utils';
 
 import './alabel.scss';
 
-interface IALabel extends IQuarkProps {
+interface IALabel {
   /** Is the label connected to any field */
   htmlFor?: string
   /** The childrens of the P element */
   children: ReactNode
 }
 
-const ALabel: FC<IALabel> = ({
+const ALabel: FC<IQuarkProps<IALabel>> = ({
   className, children, htmlFor
 }) => (
   <Quark

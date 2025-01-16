@@ -1,4 +1,4 @@
-import type React from 'react';
+import React from 'react';
 import {
   useRef, useState, type FC, type ReactNode
 } from 'react';
@@ -14,7 +14,7 @@ import { classTrim } from '../utils';
 
 import './helper.scss';
 
-interface IHelper extends IQuarkProps {
+interface IHelper {
   /** The content of the helper */
   children: ReactNode
   /** The size of the helper */
@@ -25,7 +25,7 @@ interface IHelper extends IQuarkProps {
   onClick?: (e: React.MouseEvent<HTMLElement>) => void
 }
 
-const Helper: FC<IHelper> = ({
+const Helper: FC<IQuarkProps<IHelper>> = ({
   children, size = 'medium', theme = 'solid', onClick
 }) => {
   const { t } = useTranslation();

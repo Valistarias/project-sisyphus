@@ -10,14 +10,14 @@ import { classTrim } from '../utils';
 
 import './athead.scss';
 
-interface IAthead extends IQuarkProps {
+interface IAthead {
   /** The class of the Table Head element */
   className?: string
   /** The childrens of the Table Head element */
   children: ReactNode
 }
 
-const AThead: FC<IAthead> = ({
+const AThead: FC<IQuarkProps<IAthead>> = ({
   className, children
 }) => (
   <Quark

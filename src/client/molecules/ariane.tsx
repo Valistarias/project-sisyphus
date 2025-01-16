@@ -21,7 +21,7 @@ interface IArianeElt {
   disabled: boolean
 }
 
-interface IAriane extends IQuarkProps {
+interface IAriane  {
   /** The data to display in the ariane thread */
   data: IArianeElt[]
   /** Is the ariane split into steps */

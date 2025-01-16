@@ -10,12 +10,12 @@ import { classTrim } from '../utils';
 
 import './atable.scss';
 
-interface IAtable extends IQuarkProps {
+interface IAtable {
   /** The childrens of the Table element */
   children: ReactNode
 }
 
-const ATable: FC<IAtable> = ({
+const ATable: FC<IQuarkProps<IAtable>> = ({
   className, children
 }) => (
   <Quark
