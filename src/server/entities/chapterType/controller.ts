@@ -15,7 +15,8 @@ import type { IChapterType } from './model';
 
 const { ChapterType } = db;
 
-const findChapterTypes = async (): Promise<Array<HydratedDocument<IChapterType>>> =>
+const findChapterTypes = async ():
+Promise<Array<HydratedDocument<IChapterType>>> =>
   await new Promise((resolve, reject) => {
     ChapterType.find()
       .then((res) => {
@@ -30,7 +31,8 @@ const findChapterTypes = async (): Promise<Array<HydratedDocument<IChapterType>>
       });
   });
 
-const findChapterTypeById = async (id: string): Promise<HydratedDocument<IChapterType>> =>
+const findChapterTypeById = async (id: string):
+Promise<HydratedDocument<IChapterType>> =>
   await new Promise((resolve, reject) => {
     ChapterType.findById(id)
       .then((res) => {
@@ -54,7 +56,9 @@ const create = (req: Request, res: Response): void => {
   }
   findChapterTypes()
     .then((chapterTypes) => {
-      if (chapterTypes.find(chapterType => chapterType.name === name) === undefined) {
+      if (chapterTypes.find(
+        chapterType => chapterType.name === name) === undefined
+      ) {
         const chapterTypeType = new ChapterType({ name });
 
         chapterTypeType
@@ -83,7 +87,9 @@ const update = (req: Request, res: Response): void => {
   }
   findChapterTypes()
     .then((chapterTypes) => {
-      const actualChapterType = chapterTypes.find(chapterType => String(chapterType._id) === id);
+      const actualChapterType = chapterTypes.find(
+        chapterType => String(chapterType._id) === id
+      );
       if (actualChapterType !== undefined) {
         if (name !== null && name !== actualChapterType.name) {
           actualChapterType.name = name;
@@ -106,7 +112,7 @@ const update = (req: Request, res: Response): void => {
 };
 
 const deleteChapterType = (req: Request, res: Response): void => {
-  const { id }: { id: string } = req.body;
+  const { id }: { id?: string } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('ChapterType ID'));
 

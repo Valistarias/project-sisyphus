@@ -11,13 +11,12 @@ import {
 } from '../../utils/globalErrorMessage';
 import {
   createGeneralForCyberFrameId,
-  deleteCyberFrameBranchesByCyberFrameId,
-  type CuratedIntICyberFrameBranch
+  deleteCyberFrameBranchesByCyberFrameId
 } from '../cyberFrameBranch/controller';
 
 import type { InternationalizationType } from '../../utils/types';
 import type {
-  HydratedICyberFrameBranch, IRuleBook
+  HydratedINode, ICyberFrameBranch, IRuleBook
 } from '../index';
 import type {
   HydratedICyberFrame, LeanICyberFrame
@@ -32,7 +31,11 @@ const findCyberFrames = async (): Promise<LeanICyberFrame[]> =>
     CyberFrame.find()
       .lean()
       .populate<{ ruleBook: HydratedDocument<IRuleBook> }>('ruleBook')
-      .populate<{ branches: HydratedICyberFrameBranch[] }>({
+      .populate<{
+      branches: Array<ICyberFrameBranch & {
+        nodes: HydratedINode[]
+      }>
+    }>({
         path: 'branches',
         select: '_id title cyberFrame summary i18n',
         populate: {
@@ -65,7 +68,11 @@ const findCyberFrameById = async (id: string): Promise<HydratedICyberFrame> =>
   await new Promise((resolve, reject) => {
     CyberFrame.findById(id)
       .populate<{ ruleBook: IRuleBook }>('ruleBook')
-      .populate<{ branches: HydratedICyberFrameBranch[] }>({
+      .populate<{
+      branches: Array<ICyberFrameBranch & {
+        nodes: HydratedINode[]
+      }>
+    }>({
         path: 'branches',
         select: '_id title cyberFrame summary i18n',
         populate: {
@@ -133,13 +140,19 @@ const create = (req: Request, res: Response): void => {
 const update = (req: Request, res: Response): void => {
   const {
     id, title = null, summary = null, ruleBook = null, i18n
+  }: {
+    id?: string
+    title: string | null
+    summary: string | null
+    ruleBook: ObjectId | null
+    i18n: InternationalizationType | null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('CyberFrame ID'));
 
     return;
   }
-  findCyberFrameById(id as string)
+  findCyberFrameById(id)
     .then((cyberFrame) => {
       if (title !== null) {
         cyberFrame.title = title;
@@ -152,9 +165,12 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(cyberFrame.i18n !== null && cyberFrame.i18n !== undefined && cyberFrame.i18n !== ''
-          ? JSON.parse(cyberFrame.i18n)
-          : {}) };
+        const newIntl: InternationalizationType = { ...(
+          cyberFrame.i18n !== undefined
+          && cyberFrame.i18n !== ''
+            ? JSON.parse(cyberFrame.i18n)
+            : {}
+        ) };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -213,12 +229,16 @@ const deleteCyberFrame = (req: Request, res: Response): void => {
 };
 
 interface CuratedICyberFrame extends Omit<LeanICyberFrame, 'branches'> {
-  branches: CuratedIntICyberFrameBranch[]
-}
-
-interface CuratedIntICyberFrame {
-  i18n?: InternationalizationType
-  cyberFrame: CuratedICyberFrame
+  branches: Array<{
+    cyberFrameBranch:
+      Omit<
+        FlattenMaps<ICyberFrameBranch>
+        , 'cyberFrame'
+      > & {
+        cyberFrame: ObjectId
+      }
+    i18n?: InternationalizationType
+  }>
 }
 
 const findSingle = (req: Request, res: Response): void => {
@@ -230,32 +250,38 @@ const findSingle = (req: Request, res: Response): void => {
   }
   findCyberFrameById(cyberFrameId)
     .then((cyberFrameSent) => {
-      const cyberFrame: FlattenMaps<HydratedICyberFrame & { _id: ObjectId }>
-        = cyberFrameSent.toJSON();
+      const data = cyberFrameSent.toJSON();
       const cleanCyberFrame = {
-        ...cyberFrame,
-        branches: cyberFrame.branches.map((cyberFrameBranch) => {
-          const cleanCyberFrameBranch = {
-            ...cyberFrameBranch,
-            nodes:
-              cyberFrameBranch.nodes !== undefined
-                ? cyberFrameBranch.nodes.map(node => ({
-                    node,
-                    i18n: curateI18n(node.i18n)
-                  }))
-                : []
-          };
+        ...data,
+        branches: data.branches.map((cyberFrameBranch) => {
+          const curatedNodes = cyberFrameBranch.nodes.length > 0
+            ? cyberFrameBranch.nodes.map((node) => {
+                const data = node.toJSON();
+
+                return {
+                  ...data,
+                  ...(
+                    data.i18n !== undefined
+                      ? { i18n: JSON.parse(data.i18n) }
+                      : {}
+                  )
+                };
+              })
+            : [];
 
           return {
-            cyberFrameBranch: cleanCyberFrameBranch,
-            i18n: curateI18n(cleanCyberFrameBranch.i18n)
+            cyberFrameBranch: {
+              ...cyberFrameBranch,
+              nodes: curatedNodes
+            },
+            i18n: curateI18n(cyberFrameBranch.i18n)
           };
         })
       };
 
       const sentObj = {
         cyberFrame: cleanCyberFrame,
-        i18n: curateI18n(cyberFrame.i18n)
+        i18n: curateI18n(data.i18n)
       };
       res.send(sentObj);
     })
@@ -267,26 +293,36 @@ const findSingle = (req: Request, res: Response): void => {
 const findAll = (req: Request, res: Response): void => {
   findCyberFrames()
     .then((cyberFrames) => {
-      const curatedCyberFrames: CuratedIntICyberFrame[] = [];
+      const curatedCyberFrames: Array<{
+        i18n?: InternationalizationType
+        cyberFrame: CuratedICyberFrame
+      }> = [];
 
       cyberFrames.forEach((cyberFrame) => {
-        const cleanCyberFrame = {
+        const cleanCyberFrame: CuratedICyberFrame = {
           ...cyberFrame,
           branches: cyberFrame.branches.map((cyberFrameBranch) => {
-            const cleanCyberFrameBranch = {
-              ...cyberFrameBranch,
-              nodes:
-                cyberFrameBranch.nodes !== undefined
-                  ? cyberFrameBranch.nodes.map(node => ({
-                      node,
-                      i18n: curateI18n(node.i18n)
-                    }))
-                  : []
-            };
+            const curatedNodes = cyberFrameBranch.nodes.length > 0
+              ? cyberFrameBranch.nodes.map((node) => {
+                  const data = node;
+
+                  return {
+                    ...data,
+                    ...(
+                      data.i18n !== undefined
+                        ? { i18n: JSON.parse(data.i18n) }
+                        : {}
+                    )
+                  };
+                })
+              : [];
 
             return {
-              cyberFrameBranch: cleanCyberFrameBranch,
-              i18n: curateI18n(cleanCyberFrameBranch.i18n)
+              cyberFrameBranch: {
+                ...cyberFrameBranch,
+                nodes: curatedNodes
+              },
+              i18n: curateI18n(cyberFrameBranch.i18n)
             };
           })
         };

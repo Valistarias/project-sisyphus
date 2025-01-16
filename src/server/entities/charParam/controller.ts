@@ -68,41 +68,45 @@ const checkDuplicateCharParamFormulaId = async (
   });
 
 const checkDuplicateFormulaId = async (
-  formulaId: string,
+  formulaId: string | null,
   alreadyExistOnce: boolean
 ): Promise<string | boolean> =>
   await new Promise((resolve, reject) => {
-    checkDuplicateCharParamFormulaId(formulaId, alreadyExistOnce)
-      .then((responseCharParam: string | boolean) => {
-        if (typeof responseCharParam === 'boolean') {
-          checkDuplicateSkillFormulaId(formulaId, false)
-            .then((responseSkill: string | boolean) => {
-              if (typeof responseSkill === 'boolean') {
-                checkDuplicateStatFormulaId(formulaId, false)
-                  .then((responseStat: string | boolean) => {
-                    if (typeof responseStat === 'boolean') {
-                      resolve(false);
-                    } else {
-                      resolve(responseStat);
-                    }
-                  })
-                  .catch((err: unknown) => {
-                    reject(err);
-                  });
-              } else {
-                resolve(responseSkill);
-              }
-            })
-            .catch((err: unknown) => {
-              reject(err);
-            });
-        } else {
-          resolve(responseCharParam);
-        }
-      })
-      .catch((err: unknown) => {
-        reject(err);
-      });
+    if (formulaId === null) {
+      resolve(false);
+    } else {
+      checkDuplicateCharParamFormulaId(formulaId, alreadyExistOnce)
+        .then((responseCharParam: string | boolean) => {
+          if (typeof responseCharParam === 'boolean') {
+            checkDuplicateSkillFormulaId(formulaId, false)
+              .then((responseSkill: string | boolean) => {
+                if (typeof responseSkill === 'boolean') {
+                  checkDuplicateStatFormulaId(formulaId, false)
+                    .then((responseStat: string | boolean) => {
+                      if (typeof responseStat === 'boolean') {
+                        resolve(false);
+                      } else {
+                        resolve(responseStat);
+                      }
+                    })
+                    .catch((err: unknown) => {
+                      reject(err);
+                    });
+                } else {
+                  resolve(responseSkill);
+                }
+              })
+              .catch((err: unknown) => {
+                reject(err);
+              });
+          } else {
+            resolve(responseCharParam);
+          }
+        })
+        .catch((err: unknown) => {
+          reject(err);
+        });
+    }
   });
 
 const create = (req: Request, res: Response): void => {
@@ -153,16 +157,23 @@ const create = (req: Request, res: Response): void => {
 const update = (req: Request, res: Response): void => {
   const {
     id, title = null, summary = null, i18n, short = null, formulaId = null
+  }: {
+    id?: string
+    title: string | null
+    summary: string | null
+    short: string | null
+    i18n: InternationalizationType | null
+    formulaId: string | null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('CharParam ID'));
 
     return;
   }
-  findCharParamById(id as string)
+  findCharParamById(id)
     .then((charParam) => {
       const alreadyExistOnce = typeof formulaId === 'string' && formulaId === charParam.formulaId;
-      checkDuplicateFormulaId(formulaId as string, alreadyExistOnce)
+      checkDuplicateFormulaId(formulaId, alreadyExistOnce)
         .then((response) => {
           if (typeof response === 'boolean') {
             if (title !== null) {
@@ -179,9 +190,11 @@ const update = (req: Request, res: Response): void => {
             }
 
             if (i18n !== null) {
-              const newIntl: InternationalizationType = { ...(charParam.i18n !== null && charParam.i18n !== undefined && charParam.i18n !== ''
-                ? JSON.parse(charParam.i18n)
-                : {}) };
+              const newIntl: InternationalizationType = { ...(
+                charParam.i18n !== undefined && charParam.i18n !== ''
+                  ? JSON.parse(charParam.i18n)
+                  : {}
+              ) };
 
               Object.keys(i18n).forEach((lang) => {
                 newIntl[lang] = i18n[lang];

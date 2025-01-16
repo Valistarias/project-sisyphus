@@ -43,7 +43,9 @@ const findChapters = async (): Promise<HydratedIChapter[]> =>
       });
   });
 
-const findChaptersByRuleBook = async (ruleBookId: string): Promise<HydratedIChapter[]> =>
+const findChaptersByRuleBook = async (
+  ruleBookId: string
+): Promise<HydratedIChapter[]> =>
   await new Promise((resolve, reject) => {
     Chapter.find({ ruleBook: ruleBookId })
       .populate<{ type: IChapterType }>('type')
@@ -142,9 +144,11 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(chapter.i18n !== null && chapter.i18n !== undefined && chapter.i18n !== ''
-          ? JSON.parse(chapter.i18n)
-          : {}) };
+        const newIntl: InternationalizationType = { ...(
+          chapter.i18n !== undefined
+          && chapter.i18n !== ''
+            ? JSON.parse(chapter.i18n)
+            : {}) };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];

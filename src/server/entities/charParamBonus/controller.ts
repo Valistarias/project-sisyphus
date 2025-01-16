@@ -1,7 +1,6 @@
 import type {
   Request, Response
 } from 'express';
-import type { HydratedDocument } from 'mongoose';
 
 import db from '../../models';
 import {
@@ -12,7 +11,7 @@ import type {
   ICharParam, INode
 } from '../index';
 import type {
-  HydratedICharParamBonus, ICharParamBonus
+  HydratedICharParamBonus
 } from './model';
 
 const {
@@ -23,8 +22,8 @@ const findCharParamBonuses = async (): Promise<HydratedICharParamBonus[]> =>
   await new Promise((resolve, reject) => {
     CharParamBonus.find()
       .populate<{ charParam: ICharParam }>('charParam')
-      .then((res?: HydratedICharParamBonus[] | null) => {
-        if (res === undefined || res === null) {
+      .then((res: HydratedICharParamBonus[]) => {
+        if (res.length === 0) {
           reject(gemNotFound('CharParamBonuses'));
         } else {
           resolve(res);
@@ -35,12 +34,14 @@ const findCharParamBonuses = async (): Promise<HydratedICharParamBonus[]> =>
       });
   });
 
-const findCharParamBonusById = async (id: string): Promise<HydratedICharParamBonus> =>
+const findCharParamBonusById = async (
+  id: string
+): Promise<HydratedICharParamBonus> =>
   await new Promise((resolve, reject) => {
     CharParamBonus.findById(id)
       .populate<{ charParam: ICharParam }>('charParam')
-      .then((res: HydratedICharParamBonus) => {
-        if (res.length === 0) {
+      .then((res: HydratedICharParamBonus | null) => {
+        if (res === null) {
           reject(gemNotFound('CharParamBonus'));
         } else {
           resolve(res);
@@ -66,8 +67,8 @@ const createReadCharParamBonus = (
   }
   const actualElt = elts[0];
   CharParamBonus.findOne(actualElt)
-    .then((sentCharParamBonus: HydratedDocument<ICharParamBonus>) => {
-      if (sentCharParamBonus === undefined || sentCharParamBonus === null) {
+    .then((sentCharParamBonus) => {
+      if (sentCharParamBonus === null) {
         // Need to create it
         const charParamBonus = new CharParamBonus(actualElt);
 
@@ -97,7 +98,9 @@ const createReadCharParamBonus = (
     });
 };
 
-const smartDeleteCharParamBonus = (elts: string[], cb: (err: unknown) => void): void => {
+const smartDeleteCharParamBonus = (
+  elts: string[],
+  cb: (err: unknown) => void): void => {
   if (elts.length === 0) {
     cb(null);
 

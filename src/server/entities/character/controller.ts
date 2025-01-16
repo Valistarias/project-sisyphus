@@ -32,7 +32,9 @@ import type { HydratedICharacter } from './index';
 
 const { Character } = db;
 
-const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[]> =>
+const findCharactersByPlayer = async (
+  req: Request
+): Promise<HydratedICharacter[]> =>
   await new Promise((resolve, reject) => {
     getUserFromToken(req as IVerifyTokenRequest)
       .then((user) => {
@@ -114,7 +116,8 @@ const findCompleteCharacterById = async (
   id: string,
   req: Request
 ): Promise<{
-  char: LeanICharacter, canEdit: boolean
+  char: LeanICharacter
+  canEdit: boolean
 }> =>
   await new Promise((resolve, reject) => {
     getUserFromToken(req as IVerifyTokenRequest)
@@ -215,7 +218,8 @@ const findCharacterById = async (
   id: string,
   req: Request
 ): Promise<{
-  char: HydratedICharacter, canEdit: boolean
+  char: HydratedICharacter
+  canEdit: boolean
 }> =>
   await new Promise((resolve, reject) => {
     getUserFromToken(req as IVerifyTokenRequest)
@@ -273,15 +277,19 @@ const findCharacterById = async (
           })
           .populate<{ background: HydratedIBackground }>('background')
           .then((res) => {
-            if (res === undefined || res === null) {
+            if (res === null) {
               reject(gemNotFound('Character'));
             } else {
+              const canEdit: boolean
+                = String(
+                  (res as HydratedICharacter).player?._id
+                ) === String(user._id)
+                || String(
+                  (res as HydratedICharacter).createdBy._id
+                ) === String(user._id);
               resolve({
                 char: res as HydratedICharacter,
-                canEdit:
-                  String((res as HydratedICharacter).player?._id) === String(user._id)
-                  || (res.player._id === undefined
-                    && String((res as HydratedICharacter).createdBy._id) === String(user._id))
+                canEdit
               });
             }
           })
@@ -412,7 +420,7 @@ const createOrFindCharacter = async (req: Request): Promise<string> =>
         .then(({
           char, canEdit
         }) => {
-          if (char !== undefined && canEdit) {
+          if (canEdit) {
             resolve(characterId as string);
           } else {
             reject(gemUnauthorizedGlobal());
@@ -483,7 +491,7 @@ const updateInfos = (req: Request, res: Response): void => {
     .then(({
       char, canEdit
     }) => {
-      if (char !== undefined && canEdit) {
+      if (canEdit) {
         if (firstName !== null && firstName !== char.firstName) {
           char.firstName = firstName;
         }
@@ -554,7 +562,7 @@ const quitCampaign = (req: Request, res: Response): void => {
     .then(({
       char, canEdit
     }) => {
-      if (char !== undefined && canEdit) {
+      if (canEdit) {
         char.campaign = undefined;
         char
           .save()
@@ -574,7 +582,7 @@ const quitCampaign = (req: Request, res: Response): void => {
 };
 
 const deleteCharacter = (req: Request, res: Response): void => {
-  const { id }: { id: string } = req.body;
+  const { id }: { id?: string } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Character ID'));
 
@@ -584,7 +592,7 @@ const deleteCharacter = (req: Request, res: Response): void => {
     .then(({
       char, canEdit
     }) => {
-      if (char !== undefined && canEdit) {
+      if (canEdit) {
         const bodyIds: string[] = [];
         char.bodies?.forEach((body) => {
           bodyIds.push(body._id.toString());
