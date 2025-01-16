@@ -3,7 +3,8 @@ import {
 } from 'mongoose';
 
 import type {
-  ICyberFrame, INode
+  HydratedICyberFrame,
+  HydratedINode
 } from '../index';
 
 interface ICyberFrameBranch {
@@ -21,8 +22,8 @@ interface ICyberFrameBranch {
 
 type HydratedICyberFrameBranch = HydratedDocument<
   Omit<ICyberFrameBranch, 'cyberFrame'> & {
-    cyberFrame: ICyberFrame
-    nodes?: INode[]
+    cyberFrame: HydratedICyberFrame | ObjectId
+    nodes?: HydratedINode[]
   }
 >;
 

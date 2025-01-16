@@ -15,7 +15,8 @@ import type { IGlobalValue } from './model';
 
 const { GlobalValue } = db;
 
-const findGlobalValues = async (): Promise<Array<HydratedDocument<IGlobalValue>>> =>
+const findGlobalValues = async ():
+Promise<Array<HydratedDocument<IGlobalValue>>> =>
   await new Promise((resolve, reject) => {
     GlobalValue.find()
       .then((res) => {
@@ -30,7 +31,8 @@ const findGlobalValues = async (): Promise<Array<HydratedDocument<IGlobalValue>>
       });
   });
 
-const findGlobalValueById = async (id: string): Promise<HydratedDocument<IGlobalValue>> =>
+const findGlobalValueById = async (id: string):
+Promise<HydratedDocument<IGlobalValue>> =>
   await new Promise((resolve, reject) => {
     GlobalValue.findById(id)
       .then((res) => {
@@ -114,7 +116,7 @@ const update = (req: Request, res: Response): void => {
 };
 
 const deleteGlobalValue = (req: Request, res: Response): void => {
-  const { id }: { id: string } = req.body;
+  const { id }: { id?: string } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('GlobalValue ID'));
 

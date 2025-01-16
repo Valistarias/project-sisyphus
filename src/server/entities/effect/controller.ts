@@ -48,14 +48,11 @@ const findEffectById = async (id: string): Promise<HydratedIEffect> =>
   });
 export interface ISentEffect {
   id?: string
-  title: string
-  summary: string
-  formula?: string
-  type: string
-  i18n?: {
-    title: string
-    summary: string
-  }
+  title: string | null
+  summary: string | null
+  formula?: string | null
+  type: string | null
+  i18n: InternationalizationType | null
 }
 
 const updateEffects = (
@@ -69,8 +66,13 @@ const updateEffects = (
     return;
   }
   const {
-    id, title, summary, type, i18n = null, formula
-  } = elts[0];
+    id,
+    title = null,
+    summary = null,
+    type,
+    i18n = null,
+    formula = null
+  }: ISentEffect = elts[0];
   if (id === undefined) {
     const effect = new Effect({
       title,
@@ -110,9 +112,12 @@ const updateEffects = (
         }
 
         if (i18n !== null) {
-          const newIntl: InternationalizationType = { ...(effect.i18n !== null && effect.i18n !== undefined && effect.i18n !== ''
-            ? JSON.parse(effect.i18n)
-            : {}) };
+          const newIntl: InternationalizationType = { ...(
+            effect.i18n !== undefined
+            && effect.i18n !== ''
+              ? JSON.parse(effect.i18n)
+              : {}
+          ) };
 
           Object.keys(i18n).forEach((lang) => {
             newIntl[lang] = i18n[lang];
@@ -195,13 +200,13 @@ const create = (req: Request, res: Response): void => {
 const update = (req: Request, res: Response): void => {
   const {
     id, title = null, summary = null, i18n, formula = null, type = null
-  } = req.body;
+  }: ISentEffect = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Effect ID'));
 
     return;
   }
-  findEffectById(id as string)
+  findEffectById(id)
     .then((effect) => {
       if (title !== null) {
         effect.title = title;
@@ -217,9 +222,12 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(effect.i18n !== null && effect.i18n !== undefined && effect.i18n !== ''
-          ? JSON.parse(effect.i18n)
-          : {}) };
+        const newIntl: InternationalizationType = { ...(
+          effect.i18n !== undefined
+          && effect.i18n !== ''
+            ? JSON.parse(effect.i18n)
+            : {}
+        ) };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -314,5 +322,11 @@ const findAll = (req: Request, res: Response): void => {
 };
 
 export {
-  create, deleteEffect, findAll, findEffectById, findSingle, smartUpdateEffects, update
+  create,
+  deleteEffect,
+  findAll,
+  findEffectById,
+  findSingle,
+  smartUpdateEffects,
+  update
 };

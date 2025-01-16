@@ -24,7 +24,7 @@ interface IEnnemyAttack {
 }
 
 type HydratedIEnnemyAttack = HydratedDocument<
-  Omit<IEnnemyAttack, 'damageType'> & { damageType: IDamageType | string }
+  Omit<IEnnemyAttack, 'damageType'> & { damageType: IDamageType | ObjectId }
 >;
 
 const ennemyAttackSchema = new Schema<IEnnemyAttack>({

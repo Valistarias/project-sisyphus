@@ -24,7 +24,7 @@ interface IUser {
   /** Is the user verified */
   verified: boolean
   /** The user roles */
-  roles: string[] | ObjectId[]
+  roles: ObjectId[]
   /** When the user was created */
   createdAt: Date
 }

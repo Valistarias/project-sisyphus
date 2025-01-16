@@ -2,7 +2,7 @@ import type {
   Request, Response
 } from 'express';
 import type {
-  HydratedDocument, Error
+  HydratedDocument
 } from 'mongoose';
 
 import crypto from 'crypto';
@@ -28,7 +28,7 @@ const createToken = (req: Request, res: Response, mg: IMailgunClient): void => {
   }
   User.findOne({ mail })
     .then((user) => {
-      if (user === undefined || user === null) {
+      if (user === null) {
         res.send({ message: 'Mail sent' });
       } else {
         const mailToken = new MailToken({
@@ -38,7 +38,8 @@ const createToken = (req: Request, res: Response, mg: IMailgunClient): void => {
         mailToken
           .save()
           .then(() => {
-            const url = `http://localhost:3000/reset/password/${String(user._id)}/${
+            const url
+            = `http://localhost:3000/reset/password/${String(user._id)}/${
               mailToken.token
             }`;
             mg.messages
@@ -47,7 +48,8 @@ const createToken = (req: Request, res: Response, mg: IMailgunClient): void => {
                 to: ['mallet.victor.france@gmail.com'],
                 subject: 'Project Sisyphus - Forgotten Password',
                 text: 'Click to change your password!',
-                html: `Click <a href = '${url}'>here</a> to change your password.`
+                html:
+                `Click <a href = '${url}'>here</a> to change your password.`
               })
               .then((msg) => {
                 res.send({ message: 'Mail sent' });
@@ -77,7 +79,7 @@ const verifyMailToken = async ({
     }
     User.findById(userId)
       .then((user) => {
-        if (user === undefined || user === null) {
+        if (user === null) {
           resolve(null);
         } else {
           MailToken.findOne({
@@ -106,7 +108,7 @@ const removeToken = async (req: Request): Promise<boolean> =>
       userId, token
     })
       .then((user) => {
-        if (user !== undefined && user !== null) {
+        if (user !== null) {
           MailToken.deleteMany({ userId })
             .then(() => {
               resolve(true);
@@ -131,7 +133,7 @@ const getUserMailByRequest = (req: Request, res: Response): void => {
     userId, token
   })
     .then((user) => {
-      if (user !== undefined && user !== null) {
+      if (user !== null) {
         res.status(200).send(user.mail);
       } else {
         res.status(404).send(gemNotFound('Token'));

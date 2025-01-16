@@ -14,7 +14,7 @@ interface ICharParamBonus {
 }
 
 type HydratedICharParamBonus = HydratedDocument<
-  Omit<ICharParamBonus, 'charParam'> & { charParam: ICharParam }
+  Omit<ICharParamBonus, 'charParam'> & { charParam: ICharParam | ObjectId }
 >;
 
 const charParamBonusSchema = new Schema<ICharParamBonus>({

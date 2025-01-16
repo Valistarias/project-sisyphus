@@ -3,7 +3,7 @@ import {
 } from 'mongoose';
 
 import type {
-  HydratedICyberFrameBranch, IRuleBook
+  HydratedINode, ICyberFrameBranch, IRuleBook
 } from '../index';
 
 interface ICyberFrame {
@@ -20,8 +20,10 @@ interface ICyberFrame {
 }
 
 type LeanICyberFrame = Omit<ICyberFrame, 'ruleBook'> & {
-  ruleBook: IRuleBook
-  branches: HydratedICyberFrameBranch[]
+  ruleBook: IRuleBook | ObjectId
+  branches: Array<ICyberFrameBranch & {
+    nodes: HydratedINode[]
+  }>
 };
 
 type HydratedICyberFrame = HydratedDocument<LeanICyberFrame>;
@@ -57,5 +59,8 @@ cyberFrameSchema.virtual('branches', {
 const CyberFrameModel = (): Model<ICyberFrame> => model('CyberFrame', cyberFrameSchema);
 
 export {
-  CyberFrameModel, type HydratedICyberFrame, type ICyberFrame, type LeanICyberFrame
+  CyberFrameModel,
+  type HydratedICyberFrame,
+  type ICyberFrame,
+  type LeanICyberFrame
 };

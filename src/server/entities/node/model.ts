@@ -3,13 +3,13 @@ import {
 } from 'mongoose';
 
 import type {
-  IAction,
-  ICharParamBonus,
+  HydratedIAction,
+  HydratedICharParamBonus,
+  HydratedIEffect,
+  HydratedISkillBonus,
+  HydratedIStatBonus,
   ICyberFrameBranch,
-  IEffect,
-  ISkillBonus,
-  ISkillBranch,
-  IStatBonus
+  ISkillBranch
 } from '../index';
 
 interface INode {
@@ -56,11 +56,11 @@ type HydratedINode = HydratedDocument<
     | 'skillBranch'
     | 'cyberFrameBranch'
   > & {
-    effects: IEffect[] | string[]
-    actions: IAction[] | string[]
-    skillBonuses: ISkillBonus[] | string[]
-    statBonuses: IStatBonus[] | string[]
-    charParamBonuses: ICharParamBonus[] | string[]
+    effects: HydratedIEffect[] | string[]
+    actions: HydratedIAction[] | string[]
+    skillBonuses: HydratedISkillBonus[] | string[]
+    statBonuses: HydratedIStatBonus[] | string[]
+    charParamBonuses: HydratedICharParamBonus[] | string[]
     skillBranch?: ISkillBranch | ObjectId
     cyberFrameBranch?: ICyberFrameBranch | ObjectId
   }

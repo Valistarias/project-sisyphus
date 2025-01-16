@@ -1,6 +1,7 @@
 import type {
   Request, Response
 } from 'express';
+import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
 import {
@@ -8,6 +9,7 @@ import {
 } from '../../utils/globalErrorMessage';
 
 import type { HydratedIEnnemyAttack } from './model';
+import type { InternationalizationType } from '../../utils/types';
 import type { IDamageType } from '../index';
 
 import { curateI18n } from '../../utils';
@@ -30,7 +32,9 @@ const findEnnemyAttacks = async (): Promise<HydratedIEnnemyAttack[]> =>
       });
   });
 
-const findEnnemyAttackById = async (id: string): Promise<HydratedIEnnemyAttack> =>
+const findEnnemyAttackById = async (
+  id: string
+): Promise<HydratedIEnnemyAttack> =>
   await new Promise((resolve, reject) => {
     EnnemyAttack.findById(id)
       .populate<{ damageType: IDamageType }>('damageType')
@@ -48,17 +52,13 @@ const findEnnemyAttackById = async (id: string): Promise<HydratedIEnnemyAttack> 
 
 export interface ISentEnnemyAttack {
   id?: string
-  title: string
-  summary: string
-  damageType: string
-  weaponScope: string
-  dices: string
-  bonusToHit: number
-  i18n?: {
-    title: string
-    summary: string
-    time: string
-  }
+  title: string | null
+  summary: string | null
+  i18n: InternationalizationType | null
+  damageType: ObjectId | null
+  weaponScope: ObjectId | null
+  dices: string | null
+  bonusToHit: number | null
 }
 
 const updateEnnemyAttacks = (
@@ -128,11 +128,12 @@ const updateEnnemyAttacks = (
         }
 
         if (i18n !== null) {
-          const newIntl: InternationalizationType = { ...(ennemyAttack.i18n !== null
-            && ennemyAttack.i18n !== undefined
+          const newIntl: InternationalizationType = { ...(
+            ennemyAttack.i18n !== undefined
             && ennemyAttack.i18n !== ''
-            ? JSON.parse(ennemyAttack.i18n)
-            : {}) };
+              ? JSON.parse(ennemyAttack.i18n)
+              : {}
+          ) };
 
           Object.keys(i18n).forEach((lang) => {
             newIntl[lang] = i18n[lang];
@@ -168,13 +169,17 @@ const smartUpdateAttacks = async ({
   await new Promise((resolve, reject) => {
     EnnemyAttack.deleteMany({ _id: { $in: attacksToRemove } })
       .then(() => {
-        updateEnnemyAttacks(attacksToUpdate, [], (err: unknown, ids?: string[]) => {
-          if (err !== null) {
-            reject(err);
-          } else {
-            resolve(ids ?? []);
+        updateEnnemyAttacks(
+          attacksToUpdate,
+          [],
+          (err: unknown, ids?: string[]) => {
+            if (err !== null) {
+              reject(err);
+            } else {
+              resolve(ids ?? []);
+            }
           }
-        });
+        );
       })
       .catch((err: unknown) => {
         reject(err);
@@ -230,13 +235,13 @@ const update = (req: Request, res: Response): void => {
     dices = null,
     weaponScope = null,
     bonusToHit = null
-  } = req.body;
+  }: ISentEnnemyAttack = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('EnnemyAttack ID'));
 
     return;
   }
-  findEnnemyAttackById(id as string)
+  findEnnemyAttackById(id)
     .then((ennemyAttack) => {
       if (title !== null) {
         ennemyAttack.title = title;
@@ -258,11 +263,11 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(ennemyAttack.i18n !== null
-          && ennemyAttack.i18n !== undefined
+        const newIntl: InternationalizationType = { ...(
+          ennemyAttack.i18n !== undefined
           && ennemyAttack.i18n !== ''
-          ? JSON.parse(ennemyAttack.i18n)
-          : {}) };
+            ? JSON.parse(ennemyAttack.i18n)
+            : {}) };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];

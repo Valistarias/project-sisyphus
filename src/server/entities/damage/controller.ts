@@ -66,7 +66,7 @@ const createReadDamage = (
   }
   const actualElt = elts[0];
   Damage.findOne(actualElt)
-    .then((sentDamage: HydratedDocument<IDamage>) => {
+    .then((sentDamage?: HydratedDocument<IDamage> | null) => {
       if (sentDamage === undefined || sentDamage === null) {
         // Need to create it
         const damage = new Damage(actualElt);
@@ -97,7 +97,9 @@ const createReadDamage = (
     });
 };
 
-const smartDeleteDamage = (elts: string[], cb: (err: unknown) => void): void => {
+const smartDeleteDamage = (
+  elts: string[],
+  cb: (err: unknown) => void): void => {
   if (elts.length === 0) {
     cb(null);
 
@@ -270,5 +272,11 @@ const findAll = (req: Request, res: Response): void => {
 };
 
 export {
-  create, curateDamageIds, deleteDamage, findAll, findDamageById, findSingle, update
+  create,
+  curateDamageIds,
+  deleteDamage,
+  findAll,
+  findDamageById,
+  findSingle,
+  update
 };

@@ -30,7 +30,9 @@ const findItemTypes = async (): Promise<Array<HydratedDocument<IItemType>>> =>
       });
   });
 
-const findItemTypeById = async (id: string): Promise<HydratedDocument<IItemType>> =>
+const findItemTypeById = async (
+  id: string
+): Promise<HydratedDocument<IItemType>> =>
   await new Promise((resolve, reject) => {
     ItemType.findById(id)
       .then((res) => {
@@ -106,7 +108,7 @@ const update = (req: Request, res: Response): void => {
 };
 
 const deleteItemType = (req: Request, res: Response): void => {
-  const { id }: { id: string } = req.body;
+  const { id }: { id?: string } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('ItemType ID'));
 

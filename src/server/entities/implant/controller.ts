@@ -1,23 +1,27 @@
 import type {
   Request, Response
 } from 'express';
-import type { ObjectId } from 'mongoose';
+import type { FlattenMaps, HydratedDocument, ObjectId } from 'mongoose';
 
 import db from '../../models';
 import {
   gemInvalidField, gemNotFound, gemServerError
 } from '../../utils/globalErrorMessage';
-import { smartUpdateActions } from '../action/controller';
+import { type ISentAction, smartUpdateActions } from '../action/controller';
 import { curateCharParamBonusIds } from '../charParamBonus/controller';
-import { smartUpdateEffects } from '../effect/controller';
+import { type ISentEffect, smartUpdateEffects } from '../effect/controller';
 import { curateSkillBonusIds } from '../skillBonus/controller';
 import { curateStatBonusIds } from '../statBonus/controller';
 
-import type { InternationalizationType } from '../../utils/types';
+import type { ICuratedActionToSend, ICuratedEffectToSend, InternationalizationType } from '../../utils/types';
 import type {
-  IAction, ICharParamBonus, IEffect, ISkillBonus, IStatBonus
+  HydratedIAction,
+  HydratedICharParamBonus,
+  HydratedIEffect,
+  HydratedISkillBonus,
+  HydratedIStatBonus
 } from '../index';
-import type { HydratedIImplant } from './model';
+import type { HydratedIImplant, IImplant } from './model';
 
 import { curateI18n } from '../../utils';
 
@@ -27,14 +31,16 @@ interface findAllPayload {
   starterKit?: string | Record<string, string[]>
 }
 
-const findImplants = async (options?: findAllPayload): Promise<HydratedIImplant[]> =>
+const findImplants = async (
+  options?: findAllPayload
+): Promise<HydratedIImplant[]> =>
   await new Promise((resolve, reject) => {
     Implant.find(options ?? {})
-      .populate<{ effects: IEffect[] }>('effects')
-      .populate<{ actions: IAction[] }>('actions')
-      .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
-      .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
-      .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
+      .populate<{ effects: HydratedIEffect[] }>('effects')
+      .populate<{ actions: HydratedIAction[] }>('actions')
+      .populate<{ skillBonuses: HydratedISkillBonus[] }>('skillBonuses')
+      .populate<{ statBonuses: HydratedIStatBonus[] }>('statBonuses')
+      .populate<{ charParamBonuses: HydratedICharParamBonus[] }>('charParamBonuses')
       .then((res: HydratedIImplant[]) => {
         if (res.length === 0) {
           reject(gemNotFound('Implants'));
@@ -50,11 +56,11 @@ const findImplants = async (options?: findAllPayload): Promise<HydratedIImplant[
 const findImplantById = async (id: string): Promise<HydratedIImplant> =>
   await new Promise((resolve, reject) => {
     Implant.findById(id)
-      .populate<{ effects: IEffect[] }>('effects')
-      .populate<{ actions: IAction[] }>('actions')
-      .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
-      .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
-      .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
+      .populate<{ effects: HydratedIEffect[] }>('effects')
+      .populate<{ actions: HydratedIAction[] }>('actions')
+      .populate<{ skillBonuses: HydratedISkillBonus[] }>('skillBonuses')
+      .populate<{ statBonuses: HydratedIStatBonus[] }>('statBonuses')
+      .populate<{ charParamBonuses: HydratedICharParamBonus[] }>('charParamBonuses')
       .then((res?: HydratedIImplant | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Implant'));
@@ -122,7 +128,9 @@ const create = (req: Request, res: Response): void => {
   })
     .then((skillBonusIds) => {
       if (skillBonusIds.length > 0) {
-        implant.skillBonuses = skillBonusIds.map(skillBonusId => String(skillBonusId));
+        implant.skillBonuses = skillBonusIds.map(
+          skillBonusId => String(skillBonusId)
+        );
       }
       curateStatBonusIds({
         statBonusesToRemove: [],
@@ -134,7 +142,9 @@ const create = (req: Request, res: Response): void => {
       })
         .then((statBonusIds) => {
           if (statBonusIds.length > 0) {
-            implant.statBonuses = statBonusIds.map(statBonusId => String(statBonusId));
+            implant.statBonuses = statBonusIds.map(
+              statBonusId => String(statBonusId)
+            );
           }
           curateCharParamBonusIds({
             charParamBonusesToRemove: [],
@@ -146,8 +156,9 @@ const create = (req: Request, res: Response): void => {
           })
             .then((charParamBonusIds) => {
               if (charParamBonusIds.length > 0) {
-                implant.charParamBonuses = charParamBonusIds.map(charParamBonusId =>
-                  String(charParamBonusId)
+                implant.charParamBonuses = charParamBonusIds.map(
+                  charParamBonusId =>
+                    String(charParamBonusId)
                 );
               }
               smartUpdateEffects({
@@ -156,7 +167,9 @@ const create = (req: Request, res: Response): void => {
               })
                 .then((effectsIds) => {
                   if (effectsIds.length > 0) {
-                    implant.effects = effectsIds.map(effectsId => String(effectsId));
+                    implant.effects = effectsIds.map(
+                      effectsId => String(effectsId)
+                    );
                   }
                   smartUpdateActions({
                     actionsToRemove: [],
@@ -164,7 +177,9 @@ const create = (req: Request, res: Response): void => {
                   })
                     .then((actionsIds) => {
                       if (actionsIds.length > 0) {
-                        implant.actions = actionsIds.map(actionsId => String(actionsId));
+                        implant.actions = actionsIds.map(
+                          actionsId => String(actionsId)
+                        );
                       }
                       implant
                         .save()
@@ -213,6 +228,32 @@ const update = (req: Request, res: Response): void => {
     skillBonuses = null,
     statBonuses = null,
     charParamBonuses = null
+  }: {
+    id?: string
+    title: string | null
+    summary: string | null
+    i18n: InternationalizationType | null
+    rarity: ObjectId | null
+    starterKit: 'always' | 'never' | 'option' | null
+    cost: number | null
+    itemType: ObjectId | null
+    itemModifiers: ObjectId[] | null
+    bodyParts: ObjectId[] | null
+    effects: ISentEffect[] | null
+    actions: ISentAction[] | null
+    skillBonuses: Array<{
+      skill: string
+      value: number
+    }> | null
+    statBonuses: Array<{
+      stat: string
+      value: number
+    }> | null
+    charParamBonuses: Array<{
+      charParam: string
+      value: number
+    }> | null
+    overrides: ObjectId[] | null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Implant ID'));
@@ -220,7 +261,7 @@ const update = (req: Request, res: Response): void => {
     return;
   }
 
-  findImplantById(id as string)
+  findImplantById(id)
     .then((implant) => {
       if (title !== null) {
         implant.title = title;
@@ -248,177 +289,204 @@ const update = (req: Request, res: Response): void => {
       }
 
       const skillBonusesToStay: string[] = [];
-      interface ISkillBonusElt extends ISkillBonus {
-        _id: ObjectId
+      let skillBonusesToRemove: string[] = [];
+      let skillBonusesToAdd: Array<{
+        skill: string
+        value: number
+      }> = [];
+
+      if (skillBonuses !== null) {
+        skillBonusesToRemove = implant.skillBonuses.reduce(
+          (result: string[], elt: HydratedISkillBonus) => {
+            const foundSkillBonus = skillBonuses.find(
+              skillBonus => skillBonus.skill === String(elt.skill)
+                && skillBonus.value === elt.value
+            );
+            if (foundSkillBonus === undefined) {
+              result.push(String(elt._id));
+            } else {
+              skillBonusesToStay.push(String(elt._id));
+            }
+
+            return result;
+          },
+          []
+        );
+
+        skillBonusesToAdd = skillBonuses.reduce(
+          (
+            result: Array<{
+              skill: string
+              value: number
+            }>,
+            elt: {
+              skill: string
+              value: number
+            }
+          ) => {
+            const foundSkillBonus = implant.skillBonuses.find(
+              skillBonus =>
+                typeof skillBonus !== 'string'
+                && String(skillBonus.skill) === elt.skill
+                && skillBonus.value === elt.value
+            );
+            if (foundSkillBonus === undefined) {
+              result.push(elt);
+            }
+
+            return result;
+          },
+          []
+        );
       }
-      const skillBonusesToRemove = implant.skillBonuses.reduce(
-        (result: string[], elt: ISkillBonusElt) => {
-          const foundSkillBonus = skillBonuses.find(
-            skillBonus => skillBonus.skill === String(elt.skill) && skillBonus.value === elt.value
-          );
-          if (foundSkillBonus === undefined) {
-            result.push(String(elt._id));
-          } else {
-            skillBonusesToStay.push(String(elt._id));
-          }
-
-          return result;
-        },
-        []
-      );
-
-      const skillBonusesToAdd = skillBonuses.reduce(
-        (
-          result: Array<{
-            skill: string
-            value: number
-          }>,
-          elt: {
-            skill: string
-            value: number
-          }
-        ) => {
-          const foundSkillBonus = implant.skillBonuses.find(
-            skillBonus =>
-              typeof skillBonus !== 'string'
-              && String(skillBonus.skill) === elt.skill
-              && skillBonus.value === elt.value
-          );
-          if (foundSkillBonus === undefined) {
-            result.push(elt);
-          }
-
-          return result;
-        },
-        []
-      );
 
       const statBonusesToStay: string[] = [];
-      interface IStatBonusElt extends IStatBonus {
-        _id: ObjectId
+      let statBonusesToRemove: string[] = [];
+      let statBonusesToAdd: Array<{
+        stat: string
+        value: number
+      }> = [];
+
+      if (statBonuses !== null) {
+        statBonusesToRemove = implant.statBonuses.reduce(
+          (result: string[], elt: HydratedIStatBonus) => {
+            const foundStatBonus = statBonuses.find(
+              statBonus => statBonus.stat === String(elt.stat)
+                && statBonus.value === elt.value
+            );
+            if (foundStatBonus === undefined) {
+              result.push(String(elt._id));
+            } else {
+              statBonusesToStay.push(String(elt._id));
+            }
+
+            return result;
+          },
+          []
+        );
+
+        statBonusesToAdd = statBonuses.reduce(
+          (
+            result: Array<{
+              stat: string
+              value: number
+            }>,
+            elt: {
+              stat: string
+              value: number
+            }
+          ) => {
+            const foundStatBonus = implant.statBonuses.find(
+              statBonus =>
+                typeof statBonus !== 'string'
+                && String(statBonus.stat) === elt.stat
+                && statBonus.value === elt.value
+            );
+            if (foundStatBonus === undefined) {
+              result.push(elt);
+            }
+
+            return result;
+          },
+          []
+        );
       }
-      const statBonusesToRemove = implant.statBonuses.reduce(
-        (result: string[], elt: IStatBonusElt) => {
-          const foundStatBonus = statBonuses.find(
-            statBonus => statBonus.stat === String(elt.stat) && statBonus.value === elt.value
-          );
-          if (foundStatBonus === undefined) {
-            result.push(String(elt._id));
-          } else {
-            statBonusesToStay.push(String(elt._id));
-          }
-
-          return result;
-        },
-        []
-      );
-
-      const statBonusesToAdd = statBonuses.reduce(
-        (
-          result: Array<{
-            stat: string
-            value: number
-          }>,
-          elt: {
-            stat: string
-            value: number
-          }
-        ) => {
-          const foundStatBonus = implant.statBonuses.find(
-            statBonus =>
-              typeof statBonus !== 'string'
-              && String(statBonus.stat) === elt.stat
-              && statBonus.value === elt.value
-          );
-          if (foundStatBonus === undefined) {
-            result.push(elt);
-          }
-
-          return result;
-        },
-        []
-      );
 
       const charParamBonusesToStay: string[] = [];
-      interface ICharParamBonusElt extends ICharParamBonus {
-        _id: ObjectId
-      }
-      const charParamBonusesToRemove = implant.charParamBonuses.reduce(
-        (result: string[], elt: ICharParamBonusElt) => {
-          const foundCharParamBonus = charParamBonuses.find(
-            charParamBonus =>
-              charParamBonus.charParam === String(elt.charParam)
-              && charParamBonus.value === elt.value
-          );
-          if (foundCharParamBonus === undefined) {
-            result.push(String(elt._id));
-          } else {
-            charParamBonusesToStay.push(String(elt._id));
-          }
+      let charParamBonusesToRemove: string[] = [];
+      let charParamBonusesToAdd: Array<{
+        charParam: string
+        value: number
+      }> = [];
+      if (charParamBonuses !== null) {
+        charParamBonusesToRemove = implant.charParamBonuses.reduce(
+          (result: string[], elt: HydratedICharParamBonus) => {
+            const foundCharParamBonus = charParamBonuses.find(
+              charParamBonus =>
+                charParamBonus.charParam === String(elt.charParam)
+                && charParamBonus.value === elt.value
+            );
+            if (foundCharParamBonus === undefined) {
+              result.push(String(elt._id));
+            } else {
+              charParamBonusesToStay.push(String(elt._id));
+            }
 
-          return result;
-        },
-        []
-      );
-
-      const charParamBonusesToAdd = charParamBonuses.reduce(
-        (
-          result: Array<{
-            charParam: string
-            value: number
-          }>,
-          elt: {
-            charParam: string
-            value: number
-          }
-        ) => {
-          const foundCharParamBonus = implant.charParamBonuses.find(
-            charParamBonus =>
-              typeof charParamBonus !== 'string'
-              && String(charParamBonus.charParam) === elt.charParam
-              && charParamBonus.value === elt.value
-          );
-          if (foundCharParamBonus === undefined) {
-            result.push(elt);
-          }
-
-          return result;
-        },
-        []
-      );
-
-      interface IEffectElt extends IEffect {
-        _id: ObjectId
-      }
-      const effectsToRemove = implant.effects.reduce((result: string[], elt: IEffectElt) => {
-        const foundEffect = effects.find(
-          effect => effect.id !== undefined && String(effect.id) === String(elt._id)
+            return result;
+          },
+          []
         );
-        if (foundEffect === undefined) {
-          result.push(String(elt._id));
-        }
 
-        return result;
-      }, []);
+        charParamBonusesToAdd = charParamBonuses.reduce(
+          (
+            result: Array<{
+              charParam: string
+              value: number
+            }>,
+            elt: {
+              charParam: string
+              value: number
+            }
+          ) => {
+            const foundCharParamBonus = implant.charParamBonuses.find(
+              charParamBonus =>
+                typeof charParamBonus !== 'string'
+                && String(charParamBonus.charParam) === elt.charParam
+                && charParamBonus.value === elt.value
+            );
+            if (foundCharParamBonus === undefined) {
+              result.push(elt);
+            }
 
-      interface IActionElt extends IAction {
-        _id: ObjectId
-      }
-      const actionsToRemove = implant.actions.reduce((result: string[], elt: IActionElt) => {
-        const foundAction = actions.find(
-          action => action.id !== undefined && String(action.id) === String(elt._id)
+            return result;
+          },
+          []
         );
-        if (foundAction === undefined) {
-          result.push(String(elt._id));
-        }
+      }
 
-        return result;
-      }, []);
+      let effectsToRemove: string[] = [];
+
+      if (effects !== null) {
+        effectsToRemove = implant.effects.reduce(
+          (result: string[], elt: HydratedIEffect) => {
+            const foundEffect = effects.find(
+              effect => effect.id !== undefined
+                && String(effect.id) === String(elt._id)
+            );
+            if (foundEffect === undefined) {
+              result.push(String(elt._id));
+            }
+
+            return result;
+          }, []
+        );
+      }
+
+      let actionsToRemove: string[] = [];
+
+      if (actions !== null) {
+        actionsToRemove = implant.actions.reduce(
+          (result: string[], elt: HydratedIAction) => {
+            const foundAction = actions.find(
+              action => action.id !== undefined
+                && String(action.id) === String(elt._id)
+            );
+            if (foundAction === undefined) {
+              result.push(String(elt._id));
+            }
+
+            return result;
+          }, []
+        );
+      }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(implant.i18n !== null && implant.i18n !== undefined && implant.i18n !== ''
-          ? JSON.parse(implant.i18n)
-          : {}) };
+        const newIntl: InternationalizationType = { ...(
+          implant.i18n !== undefined
+          && implant.i18n !== ''
+            ? JSON.parse(implant.i18n)
+            : {}
+        ) };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -434,7 +502,9 @@ const update = (req: Request, res: Response): void => {
       })
         .then((skillBonusIds) => {
           if (skillBonusIds.length > 0) {
-            implant.skillBonuses = skillBonusIds.map(skillBonusId => String(skillBonusId));
+            implant.skillBonuses = skillBonusIds.map(
+              skillBonusId => String(skillBonusId)
+            );
           } else if (skillBonuses !== null && skillBonuses.length === 0) {
             implant.skillBonuses = [];
           }
@@ -445,7 +515,9 @@ const update = (req: Request, res: Response): void => {
           })
             .then((statBonusIds) => {
               if (statBonusIds.length > 0) {
-                implant.statBonuses = statBonusIds.map(statBonusId => String(statBonusId));
+                implant.statBonuses = statBonusIds.map(
+                  statBonusId => String(statBonusId)
+                );
               }
               curateCharParamBonusIds({
                 charParamBonusesToRemove,
@@ -454,25 +526,30 @@ const update = (req: Request, res: Response): void => {
               })
                 .then((charParamBonusIds) => {
                   if (charParamBonusIds.length > 0) {
-                    implant.charParamBonuses = charParamBonusIds.map(charParamBonusId =>
-                      String(charParamBonusId)
+                    implant.charParamBonuses = charParamBonusIds.map(
+                      charParamBonusId =>
+                        String(charParamBonusId)
                     );
                   }
                   smartUpdateEffects({
                     effectsToRemove,
-                    effectsToUpdate: effects
+                    effectsToUpdate: effects ?? []
                   })
                     .then((effectsIds) => {
                       if (effectsIds.length > 0) {
-                        implant.effects = effectsIds.map(effectsId => String(effectsId));
+                        implant.effects = effectsIds.map(
+                          effectsId => String(effectsId)
+                        );
                       }
                       smartUpdateActions({
                         actionsToRemove,
-                        actionsToUpdate: actions
+                        actionsToUpdate: actions ?? []
                       })
                         .then((actionsIds) => {
                           if (actionsIds.length > 0) {
-                            implant.actions = actionsIds.map(actionsId => String(actionsId));
+                            implant.actions = actionsIds.map(
+                              actionsId => String(actionsId)
+                            );
                           }
                           implant
                             .save()
@@ -530,12 +607,34 @@ const deleteImplant = (req: Request, res: Response): void => {
   const { id }: { id: string } = req.body;
 
   findImplantById(id)
-    .then((implant) => {
-      const skillBonusesToRemove = implant.skillBonuses.map(elt => elt._id);
-      const statBonusesToRemove = implant.statBonuses.map(elt => elt._id);
-      const charParamBonusesToRemove = implant.charParamBonuses.map(elt => elt._id);
-      const effectsToRemove = implant.effects.map(elt => elt._id);
-      const actionsToRemove = implant.actions.map(elt => elt._id);
+    .then((implant: HydratedDocument<
+      Omit<IImplant,
+      | 'effects'
+      | 'actions'
+      | 'skillBonuses'
+      | 'statBonuses'
+      | 'charParamBonuses'
+      | 'skillBranch'
+      | 'cyberFrameBranch'
+      > & {
+        effects: HydratedIEffect[]
+        actions: HydratedIAction[]
+        skillBonuses: HydratedISkillBonus[]
+        statBonuses: HydratedIStatBonus[]
+        charParamBonuses: HydratedICharParamBonus[]
+      }
+    >) => {
+      const skillBonusesToRemove = implant.skillBonuses.map(
+        elt => String(elt._id)
+      );
+      const statBonusesToRemove = implant.statBonuses.map(
+        elt => String(elt._id)
+      );
+      const charParamBonusesToRemove = implant.charParamBonuses.map(
+        elt => String(elt._id)
+      );
+      const effectsToRemove = implant.effects.map(elt => String(elt._id));
+      const actionsToRemove = implant.actions.map(elt => String(elt._id));
 
       curateSkillBonusIds({
         skillBonusesToRemove,
@@ -598,10 +697,75 @@ const deleteImplant = (req: Request, res: Response): void => {
     });
 };
 
-interface CuratedIImplant {
+type IImplantSent = HydratedDocument<
+  Omit<
+    IImplant,
+    | 'effects'
+    | 'actions'
+  > & {
+    effects: HydratedIEffect[]
+    actions: HydratedIAction[]
+    skillBonuses: HydratedISkillBonus[]
+    statBonuses: HydratedIStatBonus[]
+    charParamBonuses: HydratedICharParamBonus[]
+  }
+>;
+
+interface CuratedIImplantToSend {
+  implant: Omit<
+    FlattenMaps<IImplant>,
+    | 'effects'
+    | 'actions'
+  > & {
+    effects: ICuratedEffectToSend[]
+    actions: ICuratedActionToSend[]
+  }
   i18n?: InternationalizationType
-  implant: any
 }
+
+const curateSingleImplant = (
+  implantSent: IImplantSent
+): CuratedIImplantToSend => {
+  const curatedActions
+  = implantSent.actions.length > 0
+    ? implantSent.actions.map((action) => {
+        const data = action.toJSON();
+
+        return {
+          ...data,
+          ...(
+            data.i18n !== undefined
+              ? { i18n: JSON.parse(data.i18n) }
+              : {}
+          )
+        };
+      })
+    : [];
+  const curatedEffects
+  = implantSent.effects.length > 0
+    ? implantSent.effects.map((effect) => {
+        const data = effect.toJSON();
+
+        return {
+          ...data,
+          ...(
+            data.i18n !== undefined
+              ? { i18n: JSON.parse(data.i18n) }
+              : {}
+          )
+        };
+      })
+    : [];
+
+  return {
+    implant: {
+      ...implantSent.toJSON(),
+      actions: curatedActions,
+      effects: curatedEffects
+    },
+    i18n: curateI18n(implantSent.i18n)
+  };
+};
 
 const findSingle = (req: Request, res: Response): void => {
   const { implantId } = req.query;
@@ -611,37 +775,8 @@ const findSingle = (req: Request, res: Response): void => {
     return;
   }
   findImplantById(implantId)
-    .then((implantSent) => {
-      const curatedActions
-        = implantSent.actions.length > 0
-          ? implantSent.actions.map((action) => {
-              const data = action.toJSON();
-
-              return {
-                action: data,
-                i18n: JSON.parse(data.i18n as string)
-              };
-            })
-          : [];
-      const curatedEffects
-        = implantSent.effects.length > 0
-          ? implantSent.effects.map((effect) => {
-              const data = effect.toJSON();
-
-              return {
-                effect: data,
-                i18n: JSON.parse(data.i18n as string)
-              };
-            })
-          : [];
-      const implant: any = implantSent.toJSON();
-      implant.actions = curatedActions;
-      implant.effects = curatedEffects;
-      const sentObj = {
-        implant,
-        i18n: curateI18n(implantSent.i18n)
-      };
-      res.send(sentObj);
+    .then((implantSent: IImplantSent) => {
+      res.send(curateSingleImplant(implantSent));
     })
     .catch((err: unknown) => {
       res.status(404).send(err);
@@ -650,38 +785,10 @@ const findSingle = (req: Request, res: Response): void => {
 
 const findAll = (req: Request, res: Response): void => {
   findImplants()
-    .then((implants) => {
-      const curatedImplants: CuratedIImplant[] = [];
+    .then((implants: IImplantSent[]) => {
+      const curatedImplants: CuratedIImplantToSend[] = [];
       implants.forEach((implantSent) => {
-        const curatedActions
-          = implantSent.actions.length > 0
-            ? implantSent.actions.map((action) => {
-                const data = action.toJSON();
-
-                return {
-                  action: data,
-                  i18n: JSON.parse(data.i18n as string)
-                };
-              })
-            : [];
-        const curatedEffects
-          = implantSent.effects.length > 0
-            ? implantSent.effects.map((effect) => {
-                const data = effect.toJSON();
-
-                return {
-                  effect: data,
-                  i18n: JSON.parse(data.i18n as string)
-                };
-              })
-            : [];
-        const implant: any = implantSent.toJSON();
-        implant.actions = curatedActions;
-        implant.effects = curatedEffects;
-        curatedImplants.push({
-          implant,
-          i18n: curateI18n(implantSent.i18n)
-        });
+        curatedImplants.push(curateSingleImplant(implantSent));
       });
 
       res.send(curatedImplants);
@@ -691,38 +798,10 @@ const findAll = (req: Request, res: Response): void => {
 
 const findAllStarter = (req: Request, res: Response): void => {
   findImplants({ starterKit: { $in: ['always', 'option'] } })
-    .then((implants) => {
-      const curatedImplants: CuratedIImplant[] = [];
+    .then((implants: IImplantSent[]) => {
+      const curatedImplants: CuratedIImplantToSend[] = [];
       implants.forEach((implantSent) => {
-        const curatedActions
-          = implantSent.actions.length > 0
-            ? implantSent.actions.map((action) => {
-                const data = action.toJSON();
-
-                return {
-                  action: data,
-                  i18n: JSON.parse(data.i18n as string)
-                };
-              })
-            : [];
-        const curatedEffects
-          = implantSent.effects.length > 0
-            ? implantSent.effects.map((effect) => {
-                const data = effect.toJSON();
-
-                return {
-                  effect: data,
-                  i18n: JSON.parse(data.i18n as string)
-                };
-              })
-            : [];
-        const implant: any = implantSent.toJSON();
-        implant.actions = curatedActions;
-        implant.effects = curatedEffects;
-        curatedImplants.push({
-          implant,
-          i18n: curateI18n(implantSent.i18n)
-        });
+        curatedImplants.push(curateSingleImplant(implantSent));
       });
 
       res.send(curatedImplants);
@@ -731,5 +810,11 @@ const findAllStarter = (req: Request, res: Response): void => {
 };
 
 export {
-  create, deleteImplant, findAll, findAllStarter, findImplantById, findSingle, update
+  create,
+  deleteImplant,
+  findAll,
+  findAllStarter,
+  findImplantById,
+  findSingle,
+  update
 };

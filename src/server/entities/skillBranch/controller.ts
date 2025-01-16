@@ -16,6 +16,7 @@ import type { HydratedINode, HydratedISkill } from '../index';
 import type {
   HydratedISkillBranch, ISkillBranch
 } from './model';
+import type { INodeSent } from '../node/controller';
 
 import { curateI18n } from '../../utils';
 
@@ -27,7 +28,11 @@ const findSkillBranches = async (): Promise<HydratedISkillBranch[]> =>
       .populate<{ skill: HydratedISkill }>('skill')
       .populate<{ nodes: HydratedINode[] }>({
         path: 'nodes',
-        select: '_id title summarry icon'
+        select: '_id title summary icon',
+        populate: [
+          'effects',
+          'actions'
+        ]
       })
       .then((res: HydratedISkillBranch[]) => {
         if (res.length === 0) {
@@ -49,7 +54,11 @@ const findSkillBranchesBySkill = async (
       .populate<{ skill: HydratedISkill }>('skill')
       .populate<{ nodes: HydratedINode[] }>({
         path: 'nodes',
-        select: '_id title summarry icon'
+        select: '_id title summary icon',
+        populate: [
+          'effects',
+          'actions'
+        ]
       })
       .then((res?: HydratedISkillBranch[] | null) => {
         if (res === undefined || res === null) {
@@ -69,7 +78,7 @@ const findSkillBranchById = async (id: string): Promise<HydratedISkillBranch> =>
       .populate<{ skill: HydratedISkill }>('skill')
       .populate<{ nodes: HydratedINode[] }>({
         path: 'nodes',
-        select: '_id title summarry icon'
+        select: '_id title summary icon'
       })
       .then((res?: HydratedISkillBranch | null) => {
         if (res === undefined || res === null) {
@@ -302,7 +311,7 @@ const findAll = (req: Request, res: Response): void => {
         , 'skill'
       > & {
         skill: HydratedISkill
-        nodes?: HydratedINode[]
+        nodes?: INodeSent[]
       }
     >>) => {
       const curatedSkillBranches: ICuratedSkillBranch[] = [];
@@ -332,17 +341,12 @@ const findAll = (req: Request, res: Response): void => {
               : {}
           )
         };
-        const skillBranch: Omit<
-          FlattenMaps<ISkillBranch>
-          , 'skill'
-        > & {
-          skill: ICuratedSkillToSend
-          nodes?: ICuratedNodeToSend[]
-        } = skillBranchSent.toJSON();
-        skillBranch.nodes = curatedNodes;
-        skillBranch.skill = curatedSkill;
         curatedSkillBranches.push({
-          skillBranch,
+          skillBranch: {
+            ...skillBranchSent.toJSON(),
+            nodes: curatedNodes,
+            skill: curatedSkill
+          },
           i18n: curateI18n(skillBranchSent.i18n)
         });
       });
@@ -366,7 +370,7 @@ const findAllBySkill = (req: Request, res: Response): void => {
         , 'skill'
       > & {
         skill: HydratedISkill
-        nodes?: HydratedINode[]
+        nodes?: INodeSent[]
       }
     >>) => {
       const curatedSkillBranches: ICuratedSkillBranch[] = [];
@@ -396,17 +400,12 @@ const findAllBySkill = (req: Request, res: Response): void => {
               : {}
           )
         };
-        const skillBranch: Omit<
-          FlattenMaps<ISkillBranch>
-          , 'skill'
-        > & {
-          skill: ICuratedSkillToSend
-          nodes?: ICuratedNodeToSend[]
-        } = skillBranchSent.toJSON();
-        skillBranch.nodes = curatedNodes;
-        skillBranch.skill = curatedSkill;
         curatedSkillBranches.push({
-          skillBranch,
+          skillBranch: {
+            ...skillBranchSent.toJSON(),
+            nodes: curatedNodes,
+            skill: curatedSkill
+          },
           i18n: curateI18n(skillBranchSent.i18n)
         });
       });

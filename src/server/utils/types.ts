@@ -1,6 +1,6 @@
 import type { FlattenMaps, ObjectId, Types } from 'mongoose';
 
-import type { IAction, IActionDuration, IActionType, ICharParamBonus, ICyberFrameBranch, IDamageType, IEffect, IEnnemyAttack, ISkill, ISkillBonus, ISkillBranch, IStat, IStatBonus } from '../entities';
+import type { IActionDuration, IActionType, ICharParam, ICharParamBonus, ICyberFrameBranch, IDamageType, IEnnemyAttack, IRuleBook, ISkill, ISkillBonus, ISkillBranch, IStat, IStatBonus } from '../entities';
 
 // Global Types ------------------------------------
 export type InternationalizationType = Record<string, Record<string, string>>;
@@ -42,12 +42,18 @@ export interface ICuratedNodeToSend {
   icon: string
   quote?: string | undefined
   rank: number
-  overrides?: string[] | ObjectId[]
-  effects: Array<FlattenMaps<IEffect>> | string[]
-  actions: Array<FlattenMaps<IAction>> | string[]
-  skillBonuses: Array<FlattenMaps<ISkillBonus>> | string[]
-  statBonuses: Array<FlattenMaps<IStatBonus>> | string[]
-  charParamBonuses: Array<FlattenMaps<ICharParamBonus>> | string[]
+  overrides?: Array<FlattenMaps<ObjectId>> | string[]
+  effects: ICuratedEffectToSend[]
+  actions: ICuratedActionToSend[]
+  skillBonuses: Array<FlattenMaps<Omit<ISkillBonus, 'skill'>> & {
+    skill: FlattenMaps<ISkill> | FlattenMaps<ObjectId>
+  }>
+  statBonuses: Array<FlattenMaps<Omit<IStatBonus, 'stat'>> & {
+    stat: FlattenMaps<IStat> | FlattenMaps<ObjectId>
+  }>
+  charParamBonuses: Array<FlattenMaps<Omit<ICharParamBonus, 'charParam'>> & {
+    charParam: FlattenMaps<ICharParam> | FlattenMaps<ObjectId>
+  }>
   skillBranch?: ObjectId | FlattenMaps<ISkillBranch>
   cyberFrameBranch?:
     ObjectId
@@ -66,8 +72,18 @@ export interface ICuratedSkillToSend {
   _id: Types.ObjectId
 }
 
+export interface ICuratedCyberFrameToSend {
+  i18n?: string
+  title: string
+  summary: string
+  createdAt: Date
+  ruleBook: FlattenMaps<IRuleBook> | FlattenMaps<ObjectId>
+  branches: Array<FlattenMaps<ICyberFrameBranch>>
+  _id: Types.ObjectId
+}
+
 export type ICuratedEnnemyAttackToSend = FlattenMaps<Omit<IEnnemyAttack, 'damageType'> & {
-  damageType: IDamageType | string
+  damageType: FlattenMaps<ObjectId> | FlattenMaps<IDamageType>
 } & {
   _id: Types.ObjectId
 }>;

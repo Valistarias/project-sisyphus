@@ -1,31 +1,31 @@
 import type {
   Request, Response
 } from 'express';
-import type { ObjectId } from 'mongoose';
+import type { FlattenMaps, HydratedDocument, ObjectId } from 'mongoose';
 
 import db from '../../models';
 import {
   gemInvalidField, gemNotFound, gemServerError
 } from '../../utils/globalErrorMessage';
-import { smartUpdateActions } from '../action/controller';
+import { type ISentAction, smartUpdateActions } from '../action/controller';
 import { curateCharParamBonusIds } from '../charParamBonus/controller';
 import { findCyberFrameBranchesByFrame } from '../cyberFrameBranch/controller';
-import { smartUpdateEffects } from '../effect/controller';
+import { type ISentEffect, smartUpdateEffects } from '../effect/controller';
 import { curateSkillBonusIds } from '../skillBonus/controller';
 import { findSkillBranchesBySkill } from '../skillBranch/controller';
 import { curateStatBonusIds } from '../statBonus/controller';
 
-import type { InternationalizationType } from '../../utils/types';
+import type { ICuratedActionToSend, ICuratedEffectToSend, InternationalizationType } from '../../utils/types';
 import type {
-  IAction,
-  ICharParamBonus,
+  HydratedIAction,
+  HydratedICharParamBonus,
+  HydratedIEffect,
+  HydratedISkillBonus,
+  HydratedIStatBonus,
   ICyberFrameBranch,
-  IEffect,
-  ISkillBonus,
-  ISkillBranch,
-  IStatBonus
+  ISkillBranch
 } from '../index';
-import type { HydratedINode } from './model';
+import type { HydratedINode, INode } from './model';
 
 import { curateI18n } from '../../utils';
 
@@ -39,11 +39,11 @@ interface findAllPayload {
 const findNodes = async (options?: findAllPayload): Promise<HydratedINode[]> =>
   await new Promise((resolve, reject) => {
     Node.find(options ?? {})
-      .populate<{ effects: IEffect[] }>('effects')
-      .populate<{ actions: IAction[] }>('actions')
-      .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
-      .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
-      .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
+      .populate<{ effects: HydratedIEffect[] }>('effects')
+      .populate<{ actions: HydratedIAction[] }>('actions')
+      .populate<{ skillBonuses: HydratedISkillBonus[] }>('skillBonuses')
+      .populate<{ statBonuses: HydratedIStatBonus[] }>('statBonuses')
+      .populate<{ charParamBonuses: HydratedICharParamBonus[] }>('charParamBonuses')
       .then((res: HydratedINode[]) => {
         if (res.length === 0) {
           reject(gemNotFound('Nodes'));
@@ -59,11 +59,11 @@ const findNodes = async (options?: findAllPayload): Promise<HydratedINode[]> =>
 const findNodeById = async (id: string): Promise<HydratedINode> =>
   await new Promise((resolve, reject) => {
     Node.findById(id)
-      .populate<{ effects: IEffect[] }>('effects')
-      .populate<{ actions: IAction[] }>('actions')
-      .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
-      .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
-      .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
+      .populate<{ effects: HydratedIEffect[] }>('effects')
+      .populate<{ actions: HydratedIAction[] }>('actions')
+      .populate<{ skillBonuses: HydratedISkillBonus[] }>('skillBonuses')
+      .populate<{ statBonuses: HydratedIStatBonus[] }>('statBonuses')
+      .populate<{ charParamBonuses: HydratedICharParamBonus[] }>('charParamBonuses')
       .populate<{ skillBranch: ISkillBranch }>('skillBranch')
       .populate<{ cyberFrameBranch: ICyberFrameBranch }>('cyberFrameBranch')
       .then((res?: HydratedINode | null) => {
@@ -131,7 +131,9 @@ const create = (req: Request, res: Response): void => {
   })
     .then((skillBonusIds) => {
       if (skillBonusIds.length > 0) {
-        node.skillBonuses = skillBonusIds.map(skillBonusId => String(skillBonusId));
+        node.skillBonuses = skillBonusIds.map(
+          skillBonusId => String(skillBonusId)
+        );
       }
       curateStatBonusIds({
         statBonusesToRemove: [],
@@ -143,7 +145,9 @@ const create = (req: Request, res: Response): void => {
       })
         .then((statBonusIds) => {
           if (statBonusIds.length > 0) {
-            node.statBonuses = statBonusIds.map(statBonusId => String(statBonusId));
+            node.statBonuses = statBonusIds.map(
+              statBonusId => String(statBonusId)
+            );
           }
           curateCharParamBonusIds({
             charParamBonusesToRemove: [],
@@ -155,8 +159,9 @@ const create = (req: Request, res: Response): void => {
           })
             .then((charParamBonusIds) => {
               if (charParamBonusIds.length > 0) {
-                node.charParamBonuses = charParamBonusIds.map(charParamBonusId =>
-                  String(charParamBonusId)
+                node.charParamBonuses = charParamBonusIds.map(
+                  charParamBonusId =>
+                    String(charParamBonusId)
                 );
               }
               smartUpdateEffects({
@@ -165,7 +170,9 @@ const create = (req: Request, res: Response): void => {
               })
                 .then((effectsIds) => {
                   if (effectsIds.length > 0) {
-                    node.effects = effectsIds.map(effectsId => String(effectsId));
+                    node.effects = effectsIds.map(
+                      effectsId => String(effectsId)
+                    );
                   }
                   smartUpdateActions({
                     actionsToRemove: [],
@@ -173,7 +180,9 @@ const create = (req: Request, res: Response): void => {
                   })
                     .then((actionsIds) => {
                       if (actionsIds.length > 0) {
-                        node.actions = actionsIds.map(actionsId => String(actionsId));
+                        node.actions = actionsIds.map(
+                          actionsId => String(actionsId)
+                        );
                       }
                       node
                         .save()
@@ -222,6 +231,31 @@ const update = (req: Request, res: Response): void => {
     statBonuses = null,
     charParamBonuses = null,
     overrides = null
+  }: {
+    id?: string
+    title: string | null
+    summary: string | null
+    icon: string | null
+    quote: string | null
+    i18n: InternationalizationType | null
+    skillBranch: ObjectId | null
+    cyberFrameBranch: ObjectId | null
+    rank: number | null
+    effects: ISentEffect[] | null
+    actions: ISentAction[] | null
+    skillBonuses: Array<{
+      skill: string
+      value: number
+    }> | null
+    statBonuses: Array<{
+      stat: string
+      value: number
+    }> | null
+    charParamBonuses: Array<{
+      charParam: string
+      value: number
+    }> | null
+    overrides: ObjectId[] | null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Node ID'));
@@ -229,7 +263,7 @@ const update = (req: Request, res: Response): void => {
     return;
   }
 
-  findNodeById(id as string)
+  findNodeById(id)
     .then((node) => {
       if (title !== null) {
         node.title = title;
@@ -257,177 +291,204 @@ const update = (req: Request, res: Response): void => {
       }
 
       const skillBonusesToStay: string[] = [];
-      interface ISkillBonusElt extends ISkillBonus {
-        _id: ObjectId
+      let skillBonusesToRemove: string[] = [];
+      let skillBonusesToAdd: Array<{
+        skill: string
+        value: number
+      }> = [];
+
+      if (skillBonuses !== null) {
+        skillBonusesToRemove = node.skillBonuses.reduce(
+          (result: string[], elt: HydratedISkillBonus) => {
+            const foundSkillBonus = skillBonuses.find(
+              skillBonus => skillBonus.skill === String(elt.skill)
+                && skillBonus.value === elt.value
+            );
+            if (foundSkillBonus === undefined) {
+              result.push(String(elt._id));
+            } else {
+              skillBonusesToStay.push(String(elt._id));
+            }
+
+            return result;
+          },
+          []
+        );
+
+        skillBonusesToAdd = skillBonuses.reduce(
+          (
+            result: Array<{
+              skill: string
+              value: number
+            }>,
+            elt: {
+              skill: string
+              value: number
+            }
+          ) => {
+            const foundSkillBonus = node.skillBonuses.find(
+              skillBonus =>
+                typeof skillBonus !== 'string'
+                && String(skillBonus.skill) === elt.skill
+                && skillBonus.value === elt.value
+            );
+            if (foundSkillBonus === undefined) {
+              result.push(elt);
+            }
+
+            return result;
+          },
+          []
+        );
       }
-      const skillBonusesToRemove = node.skillBonuses.reduce(
-        (result: string[], elt: ISkillBonusElt) => {
-          const foundSkillBonus = skillBonuses.find(
-            skillBonus => skillBonus.skill === String(elt.skill) && skillBonus.value === elt.value
-          );
-          if (foundSkillBonus === undefined) {
-            result.push(String(elt._id));
-          } else {
-            skillBonusesToStay.push(String(elt._id));
-          }
-
-          return result;
-        },
-        []
-      );
-
-      const skillBonusesToAdd = skillBonuses.reduce(
-        (
-          result: Array<{
-            skill: string
-            value: number
-          }>,
-          elt: {
-            skill: string
-            value: number
-          }
-        ) => {
-          const foundSkillBonus = node.skillBonuses.find(
-            skillBonus =>
-              typeof skillBonus !== 'string'
-              && String(skillBonus.skill) === elt.skill
-              && skillBonus.value === elt.value
-          );
-          if (foundSkillBonus === undefined) {
-            result.push(elt);
-          }
-
-          return result;
-        },
-        []
-      );
 
       const statBonusesToStay: string[] = [];
-      interface IStatBonusElt extends IStatBonus {
-        _id: ObjectId
+      let statBonusesToRemove: string[] = [];
+      let statBonusesToAdd: Array<{
+        stat: string
+        value: number
+      }> = [];
+
+      if (statBonuses !== null) {
+        statBonusesToRemove = node.statBonuses.reduce(
+          (result: string[], elt: HydratedIStatBonus) => {
+            const foundStatBonus = statBonuses.find(
+              statBonus => statBonus.stat === String(elt.stat)
+                && statBonus.value === elt.value
+            );
+            if (foundStatBonus === undefined) {
+              result.push(String(elt._id));
+            } else {
+              statBonusesToStay.push(String(elt._id));
+            }
+
+            return result;
+          },
+          []
+        );
+
+        statBonusesToAdd = statBonuses.reduce(
+          (
+            result: Array<{
+              stat: string
+              value: number
+            }>,
+            elt: {
+              stat: string
+              value: number
+            }
+          ) => {
+            const foundStatBonus = node.statBonuses.find(
+              statBonus =>
+                typeof statBonus !== 'string'
+                && String(statBonus.stat) === elt.stat
+                && statBonus.value === elt.value
+            );
+            if (foundStatBonus === undefined) {
+              result.push(elt);
+            }
+
+            return result;
+          },
+          []
+        );
       }
-      const statBonusesToRemove = node.statBonuses.reduce(
-        (result: string[], elt: IStatBonusElt) => {
-          const foundStatBonus = statBonuses.find(
-            statBonus => statBonus.stat === String(elt.stat) && statBonus.value === elt.value
-          );
-          if (foundStatBonus === undefined) {
-            result.push(String(elt._id));
-          } else {
-            statBonusesToStay.push(String(elt._id));
-          }
-
-          return result;
-        },
-        []
-      );
-
-      const statBonusesToAdd = statBonuses.reduce(
-        (
-          result: Array<{
-            stat: string
-            value: number
-          }>,
-          elt: {
-            stat: string
-            value: number
-          }
-        ) => {
-          const foundStatBonus = node.statBonuses.find(
-            statBonus =>
-              typeof statBonus !== 'string'
-              && String(statBonus.stat) === elt.stat
-              && statBonus.value === elt.value
-          );
-          if (foundStatBonus === undefined) {
-            result.push(elt);
-          }
-
-          return result;
-        },
-        []
-      );
 
       const charParamBonusesToStay: string[] = [];
-      interface ICharParamBonusElt extends ICharParamBonus {
-        _id: ObjectId
-      }
-      const charParamBonusesToRemove = node.charParamBonuses.reduce(
-        (result: string[], elt: ICharParamBonusElt) => {
-          const foundCharParamBonus = charParamBonuses.find(
-            charParamBonus =>
-              charParamBonus.charParam === String(elt.charParam)
-              && charParamBonus.value === elt.value
-          );
-          if (foundCharParamBonus === undefined) {
-            result.push(String(elt._id));
-          } else {
-            charParamBonusesToStay.push(String(elt._id));
-          }
+      let charParamBonusesToRemove: string[] = [];
+      let charParamBonusesToAdd: Array<{
+        charParam: string
+        value: number
+      }> = [];
+      if (charParamBonuses !== null) {
+        charParamBonusesToRemove = node.charParamBonuses.reduce(
+          (result: string[], elt: HydratedICharParamBonus) => {
+            const foundCharParamBonus = charParamBonuses.find(
+              charParamBonus =>
+                charParamBonus.charParam === String(elt.charParam)
+                && charParamBonus.value === elt.value
+            );
+            if (foundCharParamBonus === undefined) {
+              result.push(String(elt._id));
+            } else {
+              charParamBonusesToStay.push(String(elt._id));
+            }
 
-          return result;
-        },
-        []
-      );
-
-      const charParamBonusesToAdd = charParamBonuses.reduce(
-        (
-          result: Array<{
-            charParam: string
-            value: number
-          }>,
-          elt: {
-            charParam: string
-            value: number
-          }
-        ) => {
-          const foundCharParamBonus = node.charParamBonuses.find(
-            charParamBonus =>
-              typeof charParamBonus !== 'string'
-              && String(charParamBonus.charParam) === elt.charParam
-              && charParamBonus.value === elt.value
-          );
-          if (foundCharParamBonus === undefined) {
-            result.push(elt);
-          }
-
-          return result;
-        },
-        []
-      );
-
-      interface IEffectElt extends IEffect {
-        _id: ObjectId
-      }
-      const effectsToRemove = node.effects.reduce((result: string[], elt: IEffectElt) => {
-        const foundEffect = effects.find(
-          effect => effect.id !== undefined && String(effect.id) === String(elt._id)
+            return result;
+          },
+          []
         );
-        if (foundEffect === undefined) {
-          result.push(String(elt._id));
-        }
 
-        return result;
-      }, []);
+        charParamBonusesToAdd = charParamBonuses.reduce(
+          (
+            result: Array<{
+              charParam: string
+              value: number
+            }>,
+            elt: {
+              charParam: string
+              value: number
+            }
+          ) => {
+            const foundCharParamBonus = node.charParamBonuses.find(
+              charParamBonus =>
+                typeof charParamBonus !== 'string'
+                && String(charParamBonus.charParam) === elt.charParam
+                && charParamBonus.value === elt.value
+            );
+            if (foundCharParamBonus === undefined) {
+              result.push(elt);
+            }
 
-      interface IActionElt extends IAction {
-        _id: ObjectId
-      }
-      const actionsToRemove = node.actions.reduce((result: string[], elt: IActionElt) => {
-        const foundAction = actions.find(
-          action => action.id !== undefined && String(action.id) === String(elt._id)
+            return result;
+          },
+          []
         );
-        if (foundAction === undefined) {
-          result.push(String(elt._id));
-        }
+      }
 
-        return result;
-      }, []);
+      let effectsToRemove: string[] = [];
+
+      if (effects !== null) {
+        effectsToRemove = node.effects.reduce(
+          (result: string[], elt: HydratedIEffect) => {
+            const foundEffect = effects.find(
+              effect => effect.id !== undefined
+                && String(effect.id) === String(elt._id)
+            );
+            if (foundEffect === undefined) {
+              result.push(String(elt._id));
+            }
+
+            return result;
+          }, []
+        );
+      }
+
+      let actionsToRemove: string[] = [];
+
+      if (actions !== null) {
+        actionsToRemove = node.actions.reduce(
+          (result: string[], elt: HydratedIAction) => {
+            const foundAction = actions.find(
+              action => action.id !== undefined
+                && String(action.id) === String(elt._id)
+            );
+            if (foundAction === undefined) {
+              result.push(String(elt._id));
+            }
+
+            return result;
+          }, []
+        );
+      }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(node.i18n !== null && node.i18n !== undefined && node.i18n !== ''
-          ? JSON.parse(node.i18n)
-          : {}) };
+        const newIntl: InternationalizationType = { ...(
+          node.i18n !== undefined
+          && node.i18n !== ''
+            ? JSON.parse(node.i18n)
+            : {}
+        ) };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -443,7 +504,9 @@ const update = (req: Request, res: Response): void => {
       })
         .then((skillBonusIds) => {
           if (skillBonusIds.length > 0) {
-            node.skillBonuses = skillBonusIds.map(skillBonusId => String(skillBonusId));
+            node.skillBonuses = skillBonusIds.map(
+              skillBonusId => String(skillBonusId)
+            );
           } else if (skillBonuses !== null && skillBonuses.length === 0) {
             node.skillBonuses = [];
           }
@@ -454,7 +517,9 @@ const update = (req: Request, res: Response): void => {
           })
             .then((statBonusIds) => {
               if (statBonusIds.length > 0) {
-                node.statBonuses = statBonusIds.map(statBonusId => String(statBonusId));
+                node.statBonuses = statBonusIds.map(
+                  statBonusId => String(statBonusId)
+                );
               }
               curateCharParamBonusIds({
                 charParamBonusesToRemove,
@@ -463,25 +528,28 @@ const update = (req: Request, res: Response): void => {
               })
                 .then((charParamBonusIds) => {
                   if (charParamBonusIds.length > 0) {
-                    node.charParamBonuses = charParamBonusIds.map(charParamBonusId =>
-                      String(charParamBonusId)
+                    node.charParamBonuses = charParamBonusIds.map(
+                      charParamBonusId =>
+                        String(charParamBonusId)
                     );
                   }
                   smartUpdateEffects({
                     effectsToRemove,
-                    effectsToUpdate: effects
+                    effectsToUpdate: effects ?? []
                   })
                     .then((effectsIds) => {
                       if (effectsIds.length > 0) {
-                        node.effects = effectsIds.map(effectsId => String(effectsId));
+                        node.effects = effectsIds.map(
+                          effectsId => String(effectsId));
                       }
                       smartUpdateActions({
                         actionsToRemove,
-                        actionsToUpdate: actions
+                        actionsToUpdate: actions ?? []
                       })
                         .then((actionsIds) => {
                           if (actionsIds.length > 0) {
-                            node.actions = actionsIds.map(actionsId => String(actionsId));
+                            node.actions = actionsIds.map(
+                              actionsId => String(actionsId));
                           }
                           node
                             .save()
@@ -535,16 +603,41 @@ const deleteNodeById = async (id?: string): Promise<boolean> =>
       });
   });
 
+export type INodeSent = HydratedDocument<
+  Omit<
+    INode,
+    | 'effects'
+    | 'actions'
+    | 'skillBonuses'
+    | 'statBonuses'
+    | 'charParamBonuses'
+    | 'skillBranch'
+    | 'cyberFrameBranch'
+  > & {
+    effects: HydratedIEffect[]
+    actions: HydratedIAction[]
+    skillBonuses: HydratedISkillBonus[]
+    statBonuses: HydratedIStatBonus[]
+    charParamBonuses: HydratedICharParamBonus[]
+    skillBranch?: ISkillBranch
+    cyberFrameBranch?: ICyberFrameBranch
+  }
+>;
+
 const deleteNode = (req: Request, res: Response): void => {
   const { id }: { id: string } = req.body;
 
   findNodeById(id)
-    .then((node) => {
-      const skillBonusesToRemove = node.skillBonuses.map(elt => elt._id);
-      const statBonusesToRemove = node.statBonuses.map(elt => elt._id);
-      const charParamBonusesToRemove = node.charParamBonuses.map(elt => elt._id);
-      const effectsToRemove = node.effects.map(elt => elt._id);
-      const actionsToRemove = node.actions.map(elt => elt._id);
+    .then((node: INodeSent) => {
+      const skillBonusesToRemove = node.skillBonuses.map(
+        elt => String(elt._id)
+      );
+      const statBonusesToRemove = node.statBonuses.map(elt => String(elt._id));
+      const charParamBonusesToRemove = node.charParamBonuses.map(
+        elt => String(elt._id)
+      );
+      const effectsToRemove = node.effects.map(elt => String(elt._id));
+      const actionsToRemove = node.actions.map(elt => String(elt._id));
 
       curateSkillBonusIds({
         skillBonusesToRemove,
@@ -612,6 +705,70 @@ interface CuratedINode {
   node: HydratedINode
 }
 
+export interface CuratedINodeToSend {
+  node: Omit<
+    FlattenMaps<INode>,
+    | 'effects'
+    | 'actions'
+    | 'skillBonuses'
+    | 'statBonuses'
+    | 'charParamBonuses'
+    | 'skillBranch'
+    | 'cyberFrameBranch'
+  > & {
+    effects: ICuratedEffectToSend[]
+    actions: ICuratedActionToSend[]
+    skillBonuses: HydratedISkillBonus[]
+    statBonuses: HydratedIStatBonus[]
+    charParamBonuses: HydratedICharParamBonus[]
+    skillBranch?: ISkillBranch
+    cyberFrameBranch?: ICyberFrameBranch
+  }
+  i18n?: InternationalizationType
+}
+
+const curateSingleNode = (nodeSent: INodeSent): CuratedINodeToSend => {
+  const curatedActions
+  = nodeSent.actions.length > 0
+    ? nodeSent.actions.map((action) => {
+        const data = action.toJSON();
+
+        return {
+          ...data,
+          ...(
+            data.i18n !== undefined
+              ? { i18n: JSON.parse(data.i18n) }
+              : {}
+          )
+        };
+      })
+    : [];
+  const curatedEffects
+  = nodeSent.effects.length > 0
+    ? nodeSent.effects.map((effect) => {
+        const data = effect.toJSON();
+
+        return {
+          ...data,
+          ...(
+            data.i18n !== undefined
+              ? { i18n: JSON.parse(data.i18n) }
+              : {}
+          )
+        };
+      })
+    : [];
+
+  return {
+    node: {
+      ...nodeSent.toJSON(),
+      actions: curatedActions,
+      effects: curatedEffects
+    },
+    i18n: curateI18n(nodeSent.i18n)
+  };
+};
+
 const findSingle = (req: Request, res: Response): void => {
   const { nodeId } = req.query;
   if (nodeId === undefined || typeof nodeId !== 'string') {
@@ -620,37 +777,8 @@ const findSingle = (req: Request, res: Response): void => {
     return;
   }
   findNodeById(nodeId)
-    .then((nodeSent) => {
-      const curatedActions
-        = nodeSent.actions.length > 0
-          ? nodeSent.actions.map((action) => {
-              const data = action.toJSON();
-
-              return {
-                ...data,
-                ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {})
-              };
-            })
-          : [];
-      const curatedEffects
-        = nodeSent.effects.length > 0
-          ? nodeSent.effects.map((effect) => {
-              const data = effect.toJSON();
-
-              return {
-                ...data,
-                ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {})
-              };
-            })
-          : [];
-      const node = nodeSent.toJSON();
-      node.actions = curatedActions;
-      node.effects = curatedEffects;
-      const sentObj = {
-        node,
-        i18n: curateI18n(nodeSent.i18n)
-      };
-      res.send(sentObj);
+    .then((nodeSent: INodeSent) => {
+      res.send(curateSingleNode(nodeSent));
     })
     .catch((err: unknown) => {
       res.status(404).send(err);
@@ -659,38 +787,10 @@ const findSingle = (req: Request, res: Response): void => {
 
 const findAll = (req: Request, res: Response): void => {
   findNodes()
-    .then((nodes) => {
-      const curatedNodes: CuratedINode[] = [];
+    .then((nodes: INodeSent[]) => {
+      const curatedNodes: CuratedINodeToSend[] = [];
       nodes.forEach((nodeSent) => {
-        const curatedActions
-          = nodeSent.actions.length > 0
-            ? nodeSent.actions.map((action) => {
-                const data = action.toJSON();
-
-                return {
-                  ...data,
-                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {})
-                };
-              })
-            : [];
-        const curatedEffects
-          = nodeSent.effects.length > 0
-            ? nodeSent.effects.map((effect) => {
-                const data = effect.toJSON();
-
-                return {
-                  ...data,
-                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {})
-                };
-              })
-            : [];
-        const node = nodeSent.toJSON();
-        node.actions = curatedActions;
-        node.effects = curatedEffects;
-        curatedNodes.push({
-          node,
-          i18n: curateI18n(nodeSent.i18n)
-        });
+        curatedNodes.push(curateSingleNode(nodeSent));
       });
 
       res.send(curatedNodes);
@@ -713,39 +813,11 @@ const findAllByBranch = (req: Request, res: Response): void => {
   findNodes({
     cyberFrameBranch: cyberFrameBranchId, skillBranch: skillBranchId
   })
-    .then((nodes) => {
-      const curatedNodes: CuratedINode[] = [];
+    .then((nodes: INodeSent[]) => {
+      const curatedNodes: CuratedINodeToSend[] = [];
 
       nodes.forEach((nodeSent) => {
-        const curatedActions
-          = nodeSent.actions.length > 0
-            ? nodeSent.actions.map((action) => {
-                const data = action.toJSON();
-
-                return {
-                  ...data,
-                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {})
-                };
-              })
-            : [];
-        const curatedEffects
-          = nodeSent.effects.length > 0
-            ? nodeSent.effects.map((effect) => {
-                const data = effect.toJSON();
-
-                return {
-                  ...data,
-                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {})
-                };
-              })
-            : [];
-        const node = nodeSent.toJSON();
-        node.actions = curatedActions;
-        node.effects = curatedEffects;
-        curatedNodes.push({
-          node,
-          i18n: curateI18n(nodeSent.i18n)
-        });
+        curatedNodes.push(curateSingleNode(nodeSent));
       });
 
       res.send(curatedNodes);
@@ -759,7 +831,7 @@ const findAndCurateNodesByParent = async ({
 }: {
   cyberFrameBranchIds?: string[]
   skillBranchIds?: string[]
-}): Promise<CuratedINode[]> =>
+}): Promise<CuratedINodeToSend[]> =>
   await new Promise((resolve, reject) => {
     const opts: findAllPayload = {};
     if (skillBranchIds !== undefined) {
@@ -769,39 +841,11 @@ const findAndCurateNodesByParent = async ({
       opts.cyberFrameBranch = { $in: cyberFrameBranchIds };
     }
     findNodes(opts)
-      .then((nodes) => {
-        const curatedNodes: CuratedINode[] = [];
+      .then((nodes: INodeSent[]) => {
+        const curatedNodes: CuratedINodeToSend[] = [];
 
         nodes.forEach((nodeSent) => {
-          const curatedActions
-            = nodeSent.actions.length > 0
-              ? nodeSent.actions.map((action) => {
-                  const data = action.toJSON();
-
-                  return {
-                    ...data,
-                    ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {})
-                  };
-                })
-              : [];
-          const curatedEffects
-            = nodeSent.effects.length > 0
-              ? nodeSent.effects.map((effect) => {
-                  const data = effect.toJSON();
-
-                  return {
-                    ...data,
-                    ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n as string) } : {})
-                  };
-                })
-              : [];
-          const node = nodeSent.toJSON();
-          node.actions = curatedActions;
-          node.effects = curatedEffects;
-          curatedNodes.push({
-            node,
-            i18n: curateI18n(nodeSent.i18n)
-          });
+          curatedNodes.push(curateSingleNode(nodeSent));
         });
         resolve(curatedNodes);
       })
@@ -819,7 +863,9 @@ const findAllBySkill = (req: Request, res: Response): void => {
   }
   findSkillBranchesBySkill(skillId as string)
     .then((skillBranches) => {
-      const skillBranchIds = skillBranches.map(skillBranch => String(skillBranch._id));
+      const skillBranchIds = skillBranches.map(
+        skillBranch => String(skillBranch._id)
+      );
       findAndCurateNodesByParent({ skillBranchIds })
         .then((nodes) => {
           res.send(nodes);
