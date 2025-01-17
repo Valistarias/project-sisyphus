@@ -30,7 +30,7 @@ const findPages = async (): Promise<HydratedIPage[]> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -51,7 +51,7 @@ const findPagesByChapter = async (
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -70,7 +70,7 @@ const findPageById = async (id: string): Promise<HydratedIPage> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

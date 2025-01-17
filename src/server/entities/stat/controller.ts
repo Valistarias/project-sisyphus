@@ -30,7 +30,7 @@ const findStats = async (): Promise<HydratedIStat[]> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -45,7 +45,7 @@ const findStatById = async (id: string): Promise<HydratedIStat> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -63,7 +63,7 @@ const checkDuplicateStatFormulaId = async (
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

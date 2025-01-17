@@ -30,7 +30,7 @@ const findCharParamBonuses = async (): Promise<HydratedICharParamBonus[]> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -48,7 +48,7 @@ const findCharParamBonusById = async (
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

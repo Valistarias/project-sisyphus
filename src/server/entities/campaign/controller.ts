@@ -54,7 +54,7 @@ const findCampaigns = async (
           });
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -89,7 +89,7 @@ const findCampaignById = async (
           });
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -118,7 +118,7 @@ const findCampaignByCode = async (
           });
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

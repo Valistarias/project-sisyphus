@@ -19,7 +19,7 @@ const replaceImplantByBody = async (req: {
           });
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -41,7 +41,7 @@ const createImplantsByBody = async (req: {
         resolve(true);
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -77,7 +77,7 @@ const updateImplantByBody = async (req: {
         resolve(true);
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -88,7 +88,7 @@ const deleteImplantsByBody = async (bodyId: string): Promise<boolean> =>
         resolve(true);
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

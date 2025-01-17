@@ -28,7 +28,7 @@ const findTipTexts = async (): Promise<HydratedITipText[]> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -43,7 +43,7 @@ const findTipTextById = async (id: string): Promise<HydratedITipText> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -61,7 +61,7 @@ const checkDuplicateTipTextTipId = async (
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

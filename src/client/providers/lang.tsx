@@ -36,7 +36,7 @@ void i18next.use(initReactI18next).init({
   defaultNS: 'common',
   interpolation: {
     escapeValue: false,
-    format: function (value, format, lng) {
+    format: function (value: string, format, lng): string {
       if (format === 'uppercase') return value.toUpperCase();
       if (format === 'lowercase') return value.toLowerCase();
       if (format === 'capitalize') return `${value.charAt(0).toUpperCase()}${value.slice(1)}`;
@@ -61,7 +61,8 @@ void i18next.use(initReactI18next).init({
   }
 });
 
-const LangContext = React.createContext<ILangContext | null>(null);
+// eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- To avoid null values
+const LangContext = React.createContext<ILangContext>({} as ILangContext);
 
 export const LangProvider: FC<LangProviderProps> = ({ children }) => {
   const [loading] = useState<boolean>(false);
@@ -78,4 +79,4 @@ export const LangProvider: FC<LangProviderProps> = ({ children }) => {
   );
 };
 
-export const useLang = (): ILangContext => useContext(LangContext)!;
+export const useLang = (): ILangContext | null => useContext(LangContext);

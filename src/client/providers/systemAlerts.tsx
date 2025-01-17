@@ -22,7 +22,8 @@ interface ISystemAlertsContext {
   deleteAlert: (req: { key: number }) => void
   /** Create an alert with the id "key" and the DOM */
   createAlert: (req: {
-    key: number, dom: React.JSX.Element
+    key: number
+    dom: React.JSX.Element
   }) => void
   /** Get a fresh new ID */
   getNewId: () => number
@@ -33,9 +34,14 @@ interface SystemAlertsProviderProps {
   children: ReactNode
 }
 
-const SystemAlertsContext = React.createContext<ISystemAlertsContext | null>(null);
+const SystemAlertsContext = React.createContext< ISystemAlertsContext>(
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- To avoid null values
+  {} as ISystemAlertsContext
+);
 
-export const SystemAlertsProvider: FC<SystemAlertsProviderProps> = ({ children }) => {
+export const SystemAlertsProvider: FC<SystemAlertsProviderProps> = (
+  { children }
+) => {
   const [alertsElts, setAlerts] = useState<IAlert[]>([]);
   const idToGive = useRef(0);
 
@@ -108,4 +114,5 @@ export const SystemAlertsProvider: FC<SystemAlertsProviderProps> = ({ children }
   );
 };
 
-export const useSystemAlerts = (): ISystemAlertsContext => useContext(SystemAlertsContext)!;
+export const useSystemAlerts = (): ISystemAlertsContext =>
+  useContext(SystemAlertsContext);

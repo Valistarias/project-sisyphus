@@ -30,7 +30,7 @@ const findWeaponTypes = async (): Promise<HydratedIWeaponType[]> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -47,7 +47,7 @@ const findWeaponTypeById = async (id: string): Promise<HydratedIWeaponType> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

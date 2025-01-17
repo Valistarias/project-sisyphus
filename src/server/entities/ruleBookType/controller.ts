@@ -27,7 +27,7 @@ const findRuleBookTypes
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -44,7 +44,7 @@ const findRuleBookTypeById = async (
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

@@ -28,7 +28,7 @@ const findProgramScopes = async (): Promise<HydratedIProgramScope[]> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -45,7 +45,7 @@ const findProgramScopeById = async (
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -63,7 +63,7 @@ const checkDuplicateProgramScopeScopeId = async (
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

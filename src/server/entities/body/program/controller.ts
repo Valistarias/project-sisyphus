@@ -19,7 +19,7 @@ const replaceProgramByBody = async (req: {
           });
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -41,7 +41,7 @@ const createProgramsByBody = async (req: {
         resolve(true);
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -76,7 +76,7 @@ const updateProgramByBody = async (req: {
         resolve(true);
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -87,7 +87,7 @@ const deleteProgramsByBody = async (bodyId: string): Promise<boolean> =>
         resolve(true);
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

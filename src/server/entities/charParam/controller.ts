@@ -30,7 +30,7 @@ const findCharParams = async (): Promise<HydratedICharParam[]> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -45,7 +45,7 @@ const findCharParamById = async (id: string): Promise<HydratedICharParam> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -63,7 +63,7 @@ const checkDuplicateCharParamFormulaId = async (
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

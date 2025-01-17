@@ -14,7 +14,8 @@ interface IApiProvider {
   children: ReactNode
 }
 
-const ApiContext = React.createContext<IApiContext | undefined>(undefined);
+// eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- To avoid null values
+const ApiContext = React.createContext<IApiContext>({} as IApiContext);
 
 export const ApiProvider: FC<IApiProvider> = ({ children }) => {
   const providerValues = useMemo(
@@ -22,7 +23,11 @@ export const ApiProvider: FC<IApiProvider> = ({ children }) => {
     []
   );
 
-  return <ApiContext.Provider value={providerValues}>{children}</ApiContext.Provider>;
+  return (
+    <ApiContext.Provider value={providerValues}>
+      {children}
+    </ApiContext.Provider>
+  );
 };
 
-export const useApi = (): IApiContext => useContext(ApiContext)!;
+export const useApi = (): IApiContext => useContext(ApiContext);

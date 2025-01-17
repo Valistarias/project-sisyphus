@@ -42,7 +42,7 @@ const findSkillBranches = async (): Promise<HydratedISkillBranch[]> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -68,7 +68,7 @@ const findSkillBranchesBySkill = async (
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -88,7 +88,7 @@ const findSkillBranchById = async (id: string): Promise<HydratedISkillBranch> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

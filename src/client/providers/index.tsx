@@ -40,7 +40,9 @@ const Providers: FC<ProviderProps> = ({ children }) => (
           <SocketProvider>
             <SystemAlertsProvider>
               <ConfirmMessageProvider>
-                <CampaignEventWindowProvider>{children}</CampaignEventWindowProvider>
+                <CampaignEventWindowProvider>
+                  {children}
+                </CampaignEventWindowProvider>
               </ConfirmMessageProvider>
             </SystemAlertsProvider>
           </SocketProvider>

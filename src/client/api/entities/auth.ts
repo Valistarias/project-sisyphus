@@ -3,6 +3,7 @@ import axios from 'axios';
 import Entity from './entity';
 
 import type { IUser } from '../../types';
+import type { ErrorResponseType } from '../../types/global';
 
 interface ISignInUserPayload {
   mail: string
@@ -20,7 +21,7 @@ interface INewPassPayload {
   confirmPass: string
 }
 
-export default class Auth extends Entity {
+export default class Auth extends Entity<IUser> {
   signup: (payload: ISignUpUserPayload) => Promise<boolean>;
   signin: (payload: ISignInUserPayload) => Promise<IUser>;
   signout: () => Promise<boolean>;
@@ -41,7 +42,7 @@ export default class Auth extends Entity {
           .then(() => {
             resolve(true);
           })
-          .catch((err) => {
+          .catch((err: ErrorResponseType) => {
             reject(err);
           });
       });
@@ -56,7 +57,7 @@ export default class Auth extends Entity {
           .then((res) => {
             resolve(res.data as IUser);
           })
-          .catch((err) => {
+          .catch((err: ErrorResponseType) => {
             reject(err);
           });
       });
@@ -68,7 +69,7 @@ export default class Auth extends Entity {
           .then(() => {
             resolve(true);
           })
-          .catch((err) => {
+          .catch((err: ErrorResponseType) => {
             reject(err);
           });
       });
@@ -80,7 +81,7 @@ export default class Auth extends Entity {
           .then((res) => {
             resolve(res.data as IUser);
           })
-          .catch((err) => {
+          .catch((err: ErrorResponseType) => {
             reject(err);
           });
       });

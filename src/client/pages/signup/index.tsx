@@ -4,7 +4,7 @@ import React, {
 
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -20,6 +20,8 @@ import {
   Button, Input
 } from '../../molecules';
 import { Alert } from '../../organisms';
+
+import type { ErrorResponseType } from '../../types/global';
 
 import { regexMail } from '../../utils';
 
@@ -75,10 +77,10 @@ const Signup: FC = () => {
             });
             void navigate('/');
           })
-          .catch(({ response }) => {
+          .catch(({ response }: { response: { data: ErrorResponseType } }) => {
             const { data } = response;
             if (data.code === 'CYPU-104') {
-              setError(data.sent as string, {
+              setError(data.sent ?? '', {
                 type: 'server',
                 message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize') })
               });

@@ -25,7 +25,7 @@ const findDamageTypes = async (): Promise<HydratedIDamageType[]> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -40,7 +40,7 @@ const findDamageTypeById = async (id: string): Promise<HydratedIDamageType> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

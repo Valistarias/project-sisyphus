@@ -9,7 +9,7 @@ export type InternationalizationType = Record<
 export interface ErrorResponseType {
   message: string
   code: string
-  sent?: Record<string, unknown> | string | null
+  sent?: string | null
   err?: unknown
 }
 

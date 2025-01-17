@@ -64,7 +64,7 @@ const findSkills = async (): Promise<LeanISkill[]> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -99,7 +99,7 @@ const findSkillById = async (id: string): Promise<HydratedISkill> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -117,7 +117,7 @@ const checkDuplicateSkillFormulaId = async (
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

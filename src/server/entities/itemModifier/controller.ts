@@ -28,7 +28,7 @@ const findItemModifiers = async (): Promise<HydratedIItemModifier[]> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -45,7 +45,7 @@ const findItemModifierById = async (
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -63,7 +63,7 @@ const checkDuplicateItemModifierModifierId = async (
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

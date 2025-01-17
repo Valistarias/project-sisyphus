@@ -21,6 +21,7 @@ import {
 
 import { useApi } from './api';
 
+import type Entity from '../api/entities/entity';
 import type {
   IActionDuration,
   IActionType,
@@ -153,9 +154,14 @@ interface GlobalVarsProviderProps {
   children: ReactNode
 }
 
-const GlobalVarsContext = React.createContext<IGlobalVarsContext | null>(null);
+const GlobalVarsContext = React.createContext<IGlobalVarsContext>(
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- To avoid null values
+  {} as IGlobalVarsContext
+);
 
-export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) => {
+export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = (
+  { children }
+) => {
   const { api } = useApi();
   const { i18n } = useTranslation();
 
@@ -173,7 +179,8 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
     }
     | undefined
   >(undefined);
-  const [characterParams, setCharacterParams] = useState<ICuratedCharParamWithScore[] | undefined>(
+  const [characterParams, setCharacterParams]
+  = useState<ICuratedCharParamWithScore[] | undefined>(
     undefined
   );
   const [campaigns, setCampaigns] = useState<ICampaign[]>([]);
@@ -195,27 +202,31 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
   // Items
   const [damageTypes, setDamageTypes] = useState<ICuratedDamageType[]>([]);
   const [itemTypes, setItemTypes] = useState<IItemType[]>([]);
-  const [itemModifiers, setItemModifiers] = useState<ICuratedItemModifier[]>([]);
+  const [itemModifiers, setItemModifiers]
+  = useState<ICuratedItemModifier[]>([]);
   const [rarities, setRarities] = useState<ICuratedRarity[]>([]);
   const [weaponScopes, setWeaponScopes] = useState<ICuratedWeaponScope[]>([]);
   const [weaponStyles, setWeaponStyles] = useState<ICuratedWeaponStyle[]>([]);
   const [weaponTypes, setWeaponTypes] = useState<ICuratedWeaponType[]>([]);
-  const [programScopes, setProgramScopes] = useState<ICuratedProgramScope[]>([]);
+  const [programScopes, setProgramScopes]
+  = useState<ICuratedProgramScope[]>([]);
   const [armorTypes, setArmorTypes] = useState<ICuratedArmorType[]>([]);
 
   const getAllFromApi = useCallback(
-    (request: string, setState: React.Dispatch<React.SetStateAction<any>>) => {
-      if (api === undefined) {
-        return;
+    (
+      request: string,
+      setState: React.Dispatch<React.SetStateAction<unknown>>
+    ) => {
+      if (api !== undefined) {
+        (api[request] as Entity<unknown>)
+          .getAll()
+          .then((data) => {
+            setState(data);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
       }
-      api[request]
-        .getAll()
-        .then((data) => {
-          setState(data);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
     },
     [api]
   );
@@ -302,25 +313,20 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
 
   const setCharacterFromId = useCallback(
     (id: string) => {
-      if (api === undefined || id === undefined) {
-        return;
-      }
-      setLoading(true);
-      api.characters
-        .get({ characterId: id })
-        .then((character: ICharacter) => {
-          setLoading(false);
-          if (character === undefined) {
-            setCharacter(false);
-          } else {
+      if (api !== undefined) {
+        setLoading(true);
+        api.characters
+          .get({ characterId: id })
+          .then((character: ICharacter) => {
+            setLoading(false);
             setCharacter(character);
-          }
-        })
-        .catch((err) => {
-          setLoading(false);
-          setCharacter(false);
-          console.error(err);
-        });
+          })
+          .catch((err) => {
+            setLoading(false);
+            setCharacter(false);
+            console.error(err);
+          });
+      }
     },
     [api]
   );
@@ -374,29 +380,27 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       api.auth
         .check()
         .then((data: IUser) => {
-          if (data.mail !== undefined) {
-            setUser(data);
-            loadActionDurations();
-            loadActionTypes();
-            loadArmorTypes();
-            loadBodyParts();
-            loadCampaigns();
-            loadCharParams();
-            loadCyberFrames();
-            loadDamageTypes();
-            loadGlobalValues();
-            loadItemModifiers();
-            loadItemTypes();
-            loadProgramScopes();
-            loadRarities();
-            loadRuleBooks();
-            loadSkills();
-            loadStats();
-            loadTipTexts();
-            loadWeaponScopes();
-            loadWeaponStyles();
-            loadWeaponTypes();
-          }
+          setUser(data);
+          loadActionDurations();
+          loadActionTypes();
+          loadArmorTypes();
+          loadBodyParts();
+          loadCampaigns();
+          loadCharParams();
+          loadCyberFrames();
+          loadDamageTypes();
+          loadGlobalValues();
+          loadItemModifiers();
+          loadItemTypes();
+          loadProgramScopes();
+          loadRarities();
+          loadRuleBooks();
+          loadSkills();
+          loadStats();
+          loadTipTexts();
+          loadWeaponScopes();
+          loadWeaponStyles();
+          loadWeaponTypes();
           setLoading(false);
         })
         .catch((err) => {
@@ -558,7 +562,12 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
     ]
   );
 
-  return <GlobalVarsContext.Provider value={providerValues}>{children}</GlobalVarsContext.Provider>;
+  return (
+    <GlobalVarsContext.Provider value={providerValues}>
+      {children}
+    </GlobalVarsContext.Provider>
+  );
 };
 
-export const useGlobalVars = (): IGlobalVarsContext => useContext(GlobalVarsContext)!;
+export const useGlobalVars = (): IGlobalVarsContext =>
+  useContext(GlobalVarsContext);

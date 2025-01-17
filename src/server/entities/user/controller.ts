@@ -26,7 +26,7 @@ const findUserById = async (id: string): Promise<HydratedIUser> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

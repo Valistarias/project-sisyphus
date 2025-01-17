@@ -9,11 +9,13 @@ import {
   Abutton, Aicon, type IAButton, type typeIcons
 } from '../atoms';
 
+import type { IQuarkProps } from '../quark';
+
 import { classTrim } from '../utils';
 
 import './button.scss';
 
-export type IButton = IAButton & {
+export type IButton = IQuarkProps<IAButton> & {
   /** The theme of the button */
   theme?: 'solid' | 'line' | 'afterglow' | 'text-only' | 'bland'
   /** The main color of the button */
@@ -58,10 +60,7 @@ const Button: FC<IButton> = ({
   onMouseEnter,
   onMouseLeave
 }) => {
-  let navigate: NavigateFunction | null = null;
-  if (href !== null) {
-    navigate = useNavigate();
-  }
+  const navigate = useNavigate();
 
   return (
     <Abutton
@@ -79,7 +78,7 @@ const Button: FC<IButton> = ({
       `)}
       onClick={(e: React.MouseEvent<HTMLElement>) => {
         e.stopPropagation();
-        if (href !== null && navigate !== null) {
+        if (href !== null) {
           navigate(href);
         }
         if (onClick !== undefined) {

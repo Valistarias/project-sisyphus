@@ -19,7 +19,7 @@ const replaceWeaponByBody = async (req: {
           });
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -41,7 +41,7 @@ const createWeaponsByBody = async (req: {
         resolve(true);
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -81,7 +81,7 @@ const updateWeaponByBody = async (req: {
         resolve(true);
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -92,7 +92,7 @@ const deleteWeaponsByBody = async (bodyId: string): Promise<boolean> =>
         resolve(true);
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

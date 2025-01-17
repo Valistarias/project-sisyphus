@@ -39,7 +39,7 @@ const findChapters = async (): Promise<HydratedIChapter[]> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -63,7 +63,7 @@ const findChaptersByRuleBook = async (
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -85,7 +85,7 @@ const findChapterById = async (id: string): Promise<HydratedIChapter> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

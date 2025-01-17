@@ -35,7 +35,7 @@ const findNotions = async (): Promise<HydratedNotion[]> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -50,7 +50,7 @@ const findNotionById = async (id: string): Promise<HydratedDocument<INotion>> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

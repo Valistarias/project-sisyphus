@@ -1,8 +1,6 @@
 import React, { type MouseEventHandler } from 'react';
 
 type IQuarkProps<T> = {
-  /** The type of the element */
-  quarkType: React.ElementType
   /** The class of the element */
   className?: string
   /** When the component is hovered in */
@@ -19,9 +17,14 @@ type IQuarkProps<T> = {
   reactProps?: Record<string, unknown>
 } & T;
 
+interface IQuarkInherit {
+  /** The type of the element */
+  quarkType: React.ElementType
+}
+
 function Quark<InheritedProps>({
   className, onMouseEnter, onMouseLeave, style, quarkType, reactProps, ...rest
-}: IQuarkProps<InheritedProps>): React.ReactNode {
+}: IQuarkProps<InheritedProps> & IQuarkInherit): React.ReactNode {
   const QuarkComponent = quarkType;
 
   return (

@@ -14,7 +14,8 @@ interface ThemeProviderProps {
   children: ReactNode
 }
 
-const ThemeContext = React.createContext<IThemeContext | null>(null);
+// eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- To avoid null values
+const ThemeContext = React.createContext<IThemeContext>({} as IThemeContext);
 
 export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
   const [colorMode] = useState('dark');
@@ -72,4 +73,4 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
   );
 };
 
-export const useTheme = (): IThemeContext | null => useContext(ThemeContext);
+export const useTheme = (): IThemeContext => useContext(ThemeContext);

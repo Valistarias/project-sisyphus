@@ -27,7 +27,7 @@ Promise<Array<HydratedDocument<IChapterType>>> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -43,7 +43,7 @@ Promise<HydratedDocument<IChapterType>> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

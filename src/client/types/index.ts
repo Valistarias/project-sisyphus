@@ -15,7 +15,11 @@ import type {
 } from './character';
 import type { IReactHookFormInputs } from './form';
 import type {
-  ICampaignEvent, IUser, TypeCampaignEvent, TypeDice
+  ICampaignEvent,
+  IUser,
+  TypeCampaignEvent,
+  TypeDice,
+  ErrorResponseType
 } from './global';
 import type {
   ICuratedAmmo,
@@ -87,6 +91,7 @@ import type {
 } from './rules';
 
 export type {
+  ErrorResponseType,
   IAction,
   IActionDuration,
   IActionType,

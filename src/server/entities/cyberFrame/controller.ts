@@ -60,7 +60,7 @@ const findCyberFrames = async (): Promise<LeanICyberFrame[]> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -97,7 +97,7 @@ const findCyberFrameById = async (id: string): Promise<HydratedICyberFrame> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

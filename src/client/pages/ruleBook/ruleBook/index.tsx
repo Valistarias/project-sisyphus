@@ -17,7 +17,7 @@ import {
 } from '../../../organisms';
 import { ErrorPage } from '../../index';
 
-import type { ICuratedRuleBook } from '../../../types';
+import type { ICuratedRuleBook, ErrorResponseType } from '../../../types';
 
 import './ruleBook.scss';
 
@@ -48,7 +48,10 @@ const RuleBook: FC = () => {
       const listPages = pages.map(({
         _id: pageId, title: pageTitle
       }) => (
-        <Aa key={pageId} href={`/rulebook/${ruleBookId}/${chapterId}#${pageId}`}>
+        <Aa
+          key={pageId}
+          href={`/rulebook/${ruleBookId}/${chapterId}#${pageId}`}
+        >
           {pageTitle}
         </Aa>
       ));
@@ -63,22 +66,22 @@ const RuleBook: FC = () => {
   }, [ruleBook, ruleBookId]);
 
   useEffect(() => {
-    if (api !== undefined && ruleBookId !== undefined && calledApi.current !== ruleBookId) {
+    if (
+      api !== undefined
+      && ruleBookId !== undefined
+      && calledApi.current !== ruleBookId
+    ) {
       setLoading(true);
       calledApi.current = ruleBookId;
       api.ruleBooks
         .get({ ruleBookId })
         .then((ruleBook: ICuratedRuleBook) => {
           setLoading(false);
-          if (ruleBook.ruleBook === undefined) {
-            setNotFound(true);
-          } else {
-            setRuleBook(ruleBook ?? null);
-          }
+          setRuleBook(ruleBook);
         })
-        .catch((res) => {
+        .catch(({ response }: { response: { data: ErrorResponseType } }) => {
           setLoading(false);
-          if (res.response.status === 404) {
+          if (response.data.code === 'CYPU-202') {
             setNotFound(true);
           } else {
             const newId = getNewId();

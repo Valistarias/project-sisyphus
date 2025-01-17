@@ -28,7 +28,7 @@ const findBodyParts = async (): Promise<HydratedIBodyPart[]> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -43,7 +43,7 @@ const findBodyPartById = async (id: string): Promise<HydratedIBodyPart> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -61,7 +61,7 @@ const checkDuplicateBodyPartPartId = async (
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

@@ -19,7 +19,7 @@ const replaceArmorByBody = async (req: {
           });
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -41,7 +41,7 @@ const createArmorsByBody = async (req: {
         resolve(true);
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -79,7 +79,7 @@ const updateArmorByBody = async (req: {
         resolve(true);
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -90,7 +90,7 @@ const deleteArmorsByBody = async (bodyId: string): Promise<boolean> =>
         resolve(true);
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

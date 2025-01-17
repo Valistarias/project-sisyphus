@@ -26,7 +26,7 @@ const findRarities = async (): Promise<HydratedIRarity[]> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -41,7 +41,7 @@ const findRarityById = async (id: string): Promise<HydratedIRarity> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

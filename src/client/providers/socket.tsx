@@ -20,10 +20,13 @@ interface SocketProviderProps {
   children: ReactNode
 }
 
-const SocketContext = React.createContext<ISocketContext | null>(null);
+// eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- To avoid null values
+const SocketContext = React.createContext<ISocketContext>({} as ISocketContext);
 
 export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
-  const [socket, setSocket] = useState<Socket<DefaultEventsMap, DefaultEventsMap> | null>(null);
+  const [socket, setSocket] = useState<
+    Socket<DefaultEventsMap, DefaultEventsMap> | null
+  >(null);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -40,7 +43,12 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
     [socket, loading]
   );
 
-  return <SocketContext.Provider value={providerValues}>{children}</SocketContext.Provider>;
+  return (
+    <SocketContext.Provider value={providerValues}>
+      {children}
+    </SocketContext.Provider>
+  );
 };
 
-export const useSocket = (): ISocketContext => useContext(SocketContext)!;
+export const useSocket = (): ISocketContext | null =>
+  useContext(SocketContext);

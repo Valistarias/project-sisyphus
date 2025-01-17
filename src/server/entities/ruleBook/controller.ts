@@ -43,7 +43,7 @@ const findRuleBooks = async (): Promise<BasicHydratedIRuleBook[]> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -76,7 +76,7 @@ const findRuleBookById = async (id: string): Promise<HydratedIRuleBook> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

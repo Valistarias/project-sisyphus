@@ -28,7 +28,7 @@ const findEnnemyAttacks = async (): Promise<HydratedIEnnemyAttack[]> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -46,7 +46,7 @@ const findEnnemyAttackById = async (
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

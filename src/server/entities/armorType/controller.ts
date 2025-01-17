@@ -25,7 +25,7 @@ const findArmorTypes = async (): Promise<HydratedIArmorType[]> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -40,7 +40,7 @@ const findArmorTypeById = async (id: string): Promise<HydratedIArmorType> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

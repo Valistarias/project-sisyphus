@@ -42,12 +42,18 @@ interface ICampaignEventWindowContext {
   /** The function to launch a roll */
   setToRoll: (dices: DiceRequest[], mode: TypeCampaignEvent) => void
   /** The event listener for when a new campaign event is called from dispatch */
-  addCampaignEventListener: (cb: (res: { detail?: CampaignEventDetailData }) => void) => void
+  addCampaignEventListener: (
+    cb: (res: { detail?: CampaignEventDetailData }) => void
+  ) => void
   /** The event listener remover for when a new campaign event is called from dispatch */
-  removeCampaignEventListener: (cb: (res: { detail?: CampaignEventDetailData }) => void) => void
+  removeCampaignEventListener: (
+    cb: (res: { detail?: CampaignEventDetailData }) => void
+  ) => void
   /** The event listener dispatch */
   dispatchCampaignEvent: (data: {
-    result: number, formula?: string, mode: string
+    result: number
+    formula?: string
+    mode: string
   }) => void
 }
 
@@ -67,16 +73,25 @@ interface DiceData {
   def: number
 }
 
-const CampaignEventWindowContext = React.createContext<ICampaignEventWindowContext | null>(null);
+const CampaignEventWindowContext
+  = React.createContext<ICampaignEventWindowContext>(
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- To avoid null values
+    {} as ICampaignEventWindowContext
+  );
 
-export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> = ({ children }) => {
+export const CampaignEventWindowProvider:
+FC<CampaignEventWindowProviderProps> = (
+  { children }
+) => {
   const { t } = useTranslation();
-  const CampaignEvent = useMemo(() => new CustomEventEmitter<CampaignEventDetailData>(), []);
+  const CampaignEvent = useMemo(() =>
+    new CustomEventEmitter<CampaignEventDetailData>(), []);
 
   const [dicesToRoll, setDicesToRoll] = useState<DiceRequest[] | null>(null);
 
   const [isWindowOpened, setWindowOpened] = useState<boolean>(false);
-  const [isCampaignEventFinished, setRollEventFinished] = useState<boolean>(false);
+  const [isCampaignEventFinished, setRollEventFinished]
+    = useState<boolean>(false);
   const [diceValues, setDiceValues] = useState<DiceData[]>([]);
   const typeRoll = useRef<string>('free');
 
@@ -134,10 +149,11 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
     }
   }, [isCampaignEventFinished]);
 
-  const setToRoll = useCallback((dices: DiceRequest[], mode: TypeCampaignEvent) => {
-    setDicesToRoll(dices);
-    typeRoll.current = mode;
-  }, []);
+  const setToRoll = useCallback(
+    (dices: DiceRequest[], mode: TypeCampaignEvent) => {
+      setDicesToRoll(dices);
+      typeRoll.current = mode;
+    }, []);
 
   const providerValues = useMemo<ICampaignEventWindowContext>(
     () => ({
@@ -155,14 +171,15 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
     [setToRoll, CampaignEvent]
   );
 
-  const affectDiceValueAtIndex = useCallback((curatedDices: DiceData[], index: number) => {
-    const newCuratedDices = curatedDices.map((curatedDice, indexTab) => ({
-      ...curatedDice,
-      value: indexTab <= tick.current ? curatedDice.def : null
-    }));
-    setDiceValues([...newCuratedDices]);
-    tick.current += 1;
-  }, []);
+  const affectDiceValueAtIndex = useCallback(
+    (curatedDices: DiceData[], index: number) => {
+      const newCuratedDices = curatedDices.map((curatedDice, indexTab) => ({
+        ...curatedDice,
+        value: indexTab <= tick.current ? curatedDice.def : null
+      }));
+      setDiceValues([...newCuratedDices]);
+      tick.current += 1;
+    }, []);
 
   const endRollTriggerEvent = useCallback(() => {
     endRollEvt.current = setTimeout(() => {
@@ -255,7 +272,10 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
           intervalEvt.current = setInterval(
             () => {
               affectDiceValueAtIndex(curatedDices, tick.current);
-              if (curatedDices.length <= tick.current && intervalEvt.current !== null) {
+              if (
+                curatedDices.length <= tick.current
+                && intervalEvt.current !== null
+              ) {
                 clearTimeout(intervalEvt.current);
                 tick.current = 0;
                 // Last timeout based on animation duration on css
@@ -309,4 +329,5 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
   );
 };
 
-export const useCampaignEventWindow = (): ICampaignEventWindowContext | null => useContext(CampaignEventWindowContext);
+export const useCampaignEventWindow = (): ICampaignEventWindowContext =>
+  useContext(CampaignEventWindowContext);

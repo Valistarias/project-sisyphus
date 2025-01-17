@@ -31,7 +31,7 @@ const findStatBonuses = async (): Promise<HydratedIStatBonus[]> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -47,7 +47,7 @@ const findStatBonusById = async (id: string): Promise<HydratedIStatBonus> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

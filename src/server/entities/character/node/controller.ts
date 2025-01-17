@@ -43,7 +43,7 @@ const replaceCyberFrameNodeByCharacter = async (req: {
           });
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -66,7 +66,7 @@ const createNodesByCharacter = async (req: {
         resolve(true);
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -90,7 +90,7 @@ const updateNodeByCharacter = async (req: {
         resolve(true);
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -110,7 +110,7 @@ const deleteSpecificNodesByCharacter = async (req: {
         resolve(true);
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -121,7 +121,7 @@ const deleteNodesByCharacter = async (characterId: string): Promise<boolean> =>
         resolve(true);
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

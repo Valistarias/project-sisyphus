@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+import type { ErrorResponseType } from '../../types/global';
+
 type IBasicRequests<T> = (payload: unknown) => Promise<T>;
 
 export default class Entity<T> {
@@ -20,7 +22,7 @@ export default class Entity<T> {
           .then((res: { data: T[] }) => {
             resolve(res.data);
           })
-          .catch((err: unknown) => {
+          .catch((err: ErrorResponseType) => {
             reject(err);
           });
       });
@@ -32,7 +34,7 @@ export default class Entity<T> {
           .then((res: { data: T }) => {
             resolve(res.data);
           })
-          .catch((err: unknown) => {
+          .catch((err: ErrorResponseType) => {
             reject(err);
           });
       });
@@ -44,7 +46,7 @@ export default class Entity<T> {
           .then((res: { data: T }) => {
             resolve(res.data);
           })
-          .catch((err: unknown) => {
+          .catch((err: ErrorResponseType) => {
             reject(err);
           });
       });
@@ -56,7 +58,7 @@ export default class Entity<T> {
           .then((res: { data: T }) => {
             resolve(res.data);
           })
-          .catch((err: unknown) => {
+          .catch((err: ErrorResponseType) => {
             reject(err);
           });
       });
@@ -68,7 +70,7 @@ export default class Entity<T> {
           .then((res: { data: T }) => {
             resolve(res.data);
           })
-          .catch((err: unknown) => {
+          .catch((err: ErrorResponseType) => {
             reject(err);
           });
       });

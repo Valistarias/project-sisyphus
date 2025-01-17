@@ -44,9 +44,15 @@ export interface ConfirmMessageDetailData {
 
 interface IConfirmMessageContext {
   /** The event listener for when a new campaign event is called from dispatch */
-  addConfirmEventListener: (id: string, cb: (res: { detail?: ConfirmMessageDetailData }) => void) => void
+  addConfirmEventListener: (
+    id: string,
+    cb: (res: { detail?: ConfirmMessageDetailData }) => void
+  ) => void
   /** The event listener remover for when a new campaign event is called from dispatch */
-  removeConfirmEventListener: (id: string, cb: (res: { detail?: ConfirmMessageDetailData }) => void) => void
+  removeConfirmEventListener: (
+    id: string,
+    cb: (res: { detail?: ConfirmMessageDetailData }) => void
+  ) => void
   /** The event listener dispatch */
   dispatchConfirmEvent: (id: string, data: ConfirmMessageDetailData) => void
   /** The function to send all the data to the confirm message element */
@@ -62,30 +68,17 @@ interface FormValues {
   confirm: string
 }
 
-const ConfirmMessageContext = React.createContext<IConfirmMessageContext | null>(null);
+const ConfirmMessageContext = React.createContext<IConfirmMessageContext>(
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- To avoid null values
+  {} as IConfirmMessageContext
+);
 
-// function Emitter(): void {
-//   const eventTarget = document.createDocumentFragment();
-
-//   function delegate(method: string): void {
-//     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- This is a class-like element
-//     this[method] = eventTarget[method].bind(eventTarget);
-//   }
-
-//   Emitter.methods.forEach(delegate, this);
-// }
-
-// function ConfMessageEventEmitter(): void {
-//   Emitter.call(this);
-// }
-
-// Emitter.methods = ['addEventListener', 'dispatchEvent', 'removeEventListener'];
-
-// const ConfMessageEvent = new ConfMessageEventEmitter();
-
-export const ConfirmMessageProvider: FC<ConfirmMessageProviderProps> = ({ children }) => {
+export const ConfirmMessageProvider: FC<ConfirmMessageProviderProps> = (
+  { children }
+) => {
   const { t } = useTranslation();
-  const ConfirmEvent = useMemo(() => new CustomEventEmitter<ConfirmMessageDetailData>(), []);
+  const ConfirmEvent = useMemo(() =>
+    new CustomEventEmitter<ConfirmMessageDetailData>(), []);
 
   const [idEvt, setIdEvt] = useState('');
 
@@ -114,12 +107,14 @@ export const ConfirmMessageProvider: FC<ConfirmMessageProviderProps> = ({ childr
     }
   }, [ConfirmEvent, idEvt]);
 
-  const setConfirmContent = useCallback((elts: IConfirmContent, cb: (evtId: string) => void) => {
-    setConfirmData(elts);
-    const eventId = Date.now();
-    cb(String(eventId));
-    setIdEvt(String(eventId));
-  }, []);
+  const setConfirmContent = useCallback(
+    (elts: IConfirmContent, cb: (evtId: string) => void
+    ) => {
+      setConfirmData(elts);
+      const eventId = Date.now();
+      cb(String(eventId));
+      setIdEvt(String(eventId));
+    }, []);
 
   const {
     handleSubmit, control
@@ -194,4 +189,5 @@ export const ConfirmMessageProvider: FC<ConfirmMessageProviderProps> = ({ childr
   );
 };
 
-export const useConfirmMessage = (): IConfirmMessageContext | null => useContext(ConfirmMessageContext);
+export const useConfirmMessage = (): IConfirmMessageContext =>
+  useContext(ConfirmMessageContext);

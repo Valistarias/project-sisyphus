@@ -26,7 +26,7 @@ const findItemTypes = async (): Promise<Array<HydratedDocument<IItemType>>> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -43,7 +43,7 @@ const findItemTypeById = async (
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

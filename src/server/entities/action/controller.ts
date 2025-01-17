@@ -32,7 +32,7 @@ const findActions = async (): Promise<HydratedIAction[]> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -50,7 +50,7 @@ const findActionById = async (id: string): Promise<HydratedIAction> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

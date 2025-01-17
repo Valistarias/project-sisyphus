@@ -27,7 +27,7 @@ const findEffects = async (): Promise<HydratedIEffect[]> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -43,7 +43,7 @@ const findEffectById = async (id: string): Promise<HydratedIEffect> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 export interface ISentEffect {

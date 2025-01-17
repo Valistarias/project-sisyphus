@@ -95,7 +95,7 @@ const verifyMailToken = async ({
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -121,7 +121,7 @@ const removeToken = async (req: Request): Promise<boolean> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

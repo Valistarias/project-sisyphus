@@ -31,7 +31,7 @@ const findSkillBonuses = async (): Promise<HydratedISkillBonus[]> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -47,7 +47,7 @@ const findSkillBonusById = async (id: string): Promise<HydratedISkillBonus> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

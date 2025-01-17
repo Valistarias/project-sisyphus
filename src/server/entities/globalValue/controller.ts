@@ -27,7 +27,7 @@ Promise<Array<HydratedDocument<IGlobalValue>>> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -43,7 +43,7 @@ Promise<HydratedDocument<IGlobalValue>> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

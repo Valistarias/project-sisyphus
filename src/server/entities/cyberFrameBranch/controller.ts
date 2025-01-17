@@ -42,7 +42,7 @@ const findCyberFrameBranches = async (): Promise<HydratedICyberFrameBranch[]> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -64,7 +64,7 @@ const findCyberFrameBranchesByFrame = async (
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -86,7 +86,7 @@ const findCyberFrameBranchById = async (
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 

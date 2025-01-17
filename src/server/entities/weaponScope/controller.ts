@@ -28,7 +28,7 @@ const findWeaponScopes = async (): Promise<HydratedIWeaponScope[]> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -43,7 +43,7 @@ const findWeaponScopeById = async (id: string): Promise<HydratedIWeaponScope> =>
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
@@ -61,7 +61,7 @@ const checkDuplicateWeaponScopeScopeId = async (
         }
       })
       .catch((err) => {
-        reject(err);
+        reject(gemServerError(err));
       });
   });
 
