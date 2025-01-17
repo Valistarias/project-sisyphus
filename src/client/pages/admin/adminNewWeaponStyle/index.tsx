@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -25,6 +25,7 @@ import {
 } from '../../../organisms';
 
 import './adminNewWeaponStyle.scss';
+import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
 interface FormValues {
   name: string
@@ -46,9 +47,13 @@ const AdminNewWeaponStyle: FC = () => {
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const {
     handleSubmit,
@@ -75,7 +80,7 @@ const AdminNewWeaponStyle: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -104,7 +109,7 @@ const AdminNewWeaponStyle: FC = () => {
           reloadWeaponStyles();
           void navigate(`/admin/weaponstyle/${skill._id}`);
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           setError('root.serverError', {
             type: 'server',
@@ -141,7 +146,7 @@ const AdminNewWeaponStyle: FC = () => {
     <div className="adminNewWeaponStyle">
       <form
         className="adminNewWeaponStyle__content"
-        onSubmit={handleSubmit(onSaveWeaponStyle)}
+        onSubmit={() => handleSubmit(onSaveWeaponStyle)}
         noValidate
       >
         <Atitle level={1}>{t('adminNewWeaponStyle.title', { ns: 'pages' })}</Atitle>

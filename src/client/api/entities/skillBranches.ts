@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { ICuratedSkillBranch } from '../../types';
+import type { ICuratedSkillBranch, ISkillBranch } from '../../types';
 
 interface ISkillBranchesPayload {
   skillId: string
@@ -12,8 +12,10 @@ interface ISkillBranchPayload {
   skillBranchId: string
 }
 
-export default class SkillBranches extends Entity {
-  getAllBySkill: (payload: ISkillBranchesPayload) => Promise<ICuratedSkillBranch[]>;
+export default class SkillBranches extends Entity<ISkillBranch> {
+  getAllBySkill: (payload: ISkillBranchesPayload) =>
+  Promise<ICuratedSkillBranch[]>;
+
   get: (payload: ISkillBranchPayload) => Promise<ICuratedSkillBranch>;
 
   constructor() {

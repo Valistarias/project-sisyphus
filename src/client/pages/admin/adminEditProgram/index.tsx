@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -84,9 +84,13 @@ const AdminEditProgram: FC = () => {
   const [programText, setProgramText] = useState('');
   const [programTextFr, setProgramTextFr] = useState('');
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const createDefaultData = useCallback((programData: ICuratedProgram | null) => {
     if (programData == null) {
@@ -234,7 +238,7 @@ const AdminEditProgram: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -272,7 +276,7 @@ const AdminEditProgram: FC = () => {
             )
           });
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           setError('root.serverError', {
             type: 'server',
@@ -307,8 +311,10 @@ const AdminEditProgram: FC = () => {
         confirmCta: t('adminEditProgram.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.programs
               .delete({ id })
               .then(() => {
@@ -323,7 +329,7 @@ const AdminEditProgram: FC = () => {
                 });
                 void navigate(`/admin/programs`);
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -360,7 +366,7 @@ const AdminEditProgram: FC = () => {
       calledApi.current = true;
       api.programs
         .get({ programId: id })
-        .then((curatedProgram: ICuratedProgram) => {
+        .then((curatedProgram) => {
           const {
             program, i18n
           } = curatedProgram;
@@ -383,7 +389,7 @@ const AdminEditProgram: FC = () => {
         });
       api.nPCs
         .getAllBasic()
-        .then((curatedNPCs: ICuratedBasicNPC[]) => {
+        .then((curatedNPCs) => {
           setNPCs(curatedNPCs);
         })
         .catch(() => {
@@ -422,7 +428,7 @@ const AdminEditProgram: FC = () => {
         ${displayInt ? 'adminEditProgram--int-visible' : ''}
       `)}
     >
-      <form className="adminEditProgram__content" onSubmit={handleSubmit(onSaveProgram)} noValidate>
+      <form className="adminEditProgram__content" onSubmit={() => handleSubmit(onSaveProgram)} noValidate>
         <div className="adminEditProgram__head">
           <Atitle className="adminEditProgram__head" level={1}>
             {programData?.program.title ?? ''}

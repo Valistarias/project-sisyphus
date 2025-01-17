@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -25,6 +25,7 @@ import {
 } from '../../../organisms';
 
 import './adminNewWeaponScope.scss';
+import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
 interface FormValues {
   name: string
@@ -44,9 +45,13 @@ const AdminNewWeaponScope: FC = () => {
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const {
     handleSubmit,
@@ -63,7 +68,6 @@ const AdminNewWeaponScope: FC = () => {
         introEditor === null
         || introFrEditor === null
         || api === undefined
-        || scopeId === undefined
       ) {
         return;
       }
@@ -73,7 +77,7 @@ const AdminNewWeaponScope: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -102,7 +106,7 @@ const AdminNewWeaponScope: FC = () => {
           reloadWeaponScopes();
           void navigate(`/admin/weaponscope/${weaponScope._id}`);
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -146,7 +150,7 @@ const AdminNewWeaponScope: FC = () => {
     <div className="adminNewWeaponScope">
       <form
         className="adminNewWeaponScope__content"
-        onSubmit={handleSubmit(onSaveWeaponScope)}
+        onSubmit={() => handleSubmit(onSaveWeaponScope)}
         noValidate
       >
         <Atitle level={1}>{t('adminNewWeaponScope.title', { ns: 'pages' })}</Atitle>

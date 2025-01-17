@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -25,6 +25,7 @@ import {
 } from '../../../organisms';
 
 import './adminNewCyberFrame.scss';
+import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
 interface FormValues {
   name: string
@@ -43,9 +44,13 @@ const AdminNewCyberFrame: FC = () => {
     ruleBooks, reloadCyberFrames
   } = useGlobalVars();
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const {
     handleSubmit,
@@ -74,7 +79,7 @@ const AdminNewCyberFrame: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -103,7 +108,7 @@ const AdminNewCyberFrame: FC = () => {
           reloadCyberFrames();
           void navigate(`/admin/cyberframe/${cyberFrame._id}`);
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -135,7 +140,7 @@ const AdminNewCyberFrame: FC = () => {
     <div className="adminNewCyberFrame">
       <form
         className="adminNewCyberFrame__content"
-        onSubmit={handleSubmit(onSaveCyberFrame)}
+        onSubmit={() => handleSubmit(onSaveCyberFrame)}
         noValidate
       >
         <Atitle level={1}>{t('adminNewCyberFrame.title', { ns: 'pages' })}</Atitle>

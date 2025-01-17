@@ -317,7 +317,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = (
         setLoading(true);
         api.characters
           .get({ characterId: id })
-          .then((character: ICharacter) => {
+          .then((character) => {
             setLoading(false);
             setCharacter(character);
           })

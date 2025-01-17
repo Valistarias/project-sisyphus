@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { ICuratedRuleBook } from '../../types';
+import type { ICuratedRuleBook, IRuleBook } from '../../types';
 
 interface IRuleBooksPayload {
   ruleBookId: string
@@ -21,10 +21,11 @@ interface IArchivedPayload {
   archived: boolean
 }
 
-export default class RuleBooks extends Entity {
+export default class RuleBooks extends Entity<IRuleBook> {
   get: (payload: IRuleBooksPayload) => Promise<ICuratedRuleBook>;
   archive: (payload: IArchivedPayload) => Promise<boolean>;
-  changeChaptersOrder: (payload: IRuleBooksChapterOrder) => Promise<ICuratedRuleBook>;
+  changeChaptersOrder: (payload: IRuleBooksChapterOrder) =>
+  Promise<ICuratedRuleBook>;
 
   constructor() {
     super('rulebooks');
@@ -34,7 +35,9 @@ export default class RuleBooks extends Entity {
         axios
           .get(`${this.url}/single/`, { params: payload })
           .then((res) => {
-            resolve(res.data as ICuratedRuleBook | PromiseLike<ICuratedRuleBook>);
+            resolve(
+              res.data as ICuratedRuleBook | PromiseLike<ICuratedRuleBook>
+            );
           })
           .catch((err) => {
             reject(err);
@@ -46,7 +49,9 @@ export default class RuleBooks extends Entity {
         axios
           .post(`${this.url}/changechaptersorder/`, payload)
           .then((res) => {
-            resolve(res.data as ICuratedRuleBook | PromiseLike<ICuratedRuleBook>);
+            resolve(
+              res.data as ICuratedRuleBook | PromiseLike<ICuratedRuleBook>
+            );
           })
           .catch((err) => {
             reject(err);

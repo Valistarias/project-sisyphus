@@ -4,7 +4,7 @@ import React, {
 
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -24,7 +24,7 @@ import {
 } from '../../molecules';
 import { Alert } from '../../organisms';
 
-import type { IUser } from '../../types';
+import type { ErrorResponseType } from '../../types';
 
 import { regexMail } from '../../utils';
 
@@ -88,13 +88,13 @@ const Login: FC = () => {
             mail,
             password
           })
-          .then((data: IUser) => {
+          .then((data) => {
             setUser(data);
             reloadAll();
             // triggerRuleBookReload();
             void navigate('/campaigns');
           })
-          .catch(({ response }) => {
+          .catch(({ response }: ErrorResponseType) => {
             const { data } = response;
             if (data.code === 'CYPU-102') {
               setError(data.sent as 'mail' | 'password', {

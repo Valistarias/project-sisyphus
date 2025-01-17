@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -25,6 +25,8 @@ import {
 } from '../../../organisms';
 
 import './adminNewCharParam.scss';
+import type { ErrorResponseType } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 interface FormValues {
   name: string
@@ -43,9 +45,13 @@ const AdminNewCharParam: FC = () => {
   } = useSystemAlerts();
   const { reloadCharParams } = useGlobalVars();
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const {
     handleSubmit,
@@ -67,12 +73,12 @@ const AdminNewCharParam: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
           title: nameFr,
-          short: shortFr ?? '',
+          short: shortFr,
           summary: htmlFr
         } };
       }
@@ -98,7 +104,7 @@ const AdminNewCharParam: FC = () => {
           reloadCharParams();
           void navigate(`/admin/charparam/${charParams._id}`);
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -130,7 +136,7 @@ const AdminNewCharParam: FC = () => {
     <div className="adminNewCharParam">
       <form
         className="adminNewCharParam__content"
-        onSubmit={handleSubmit(onSaveCharParam)}
+        onSubmit={() => handleSubmit(onSaveCharParam)}
         noValidate
       >
         <Atitle level={1}>{t('adminNewCharParam.title', { ns: 'pages' })}</Atitle>

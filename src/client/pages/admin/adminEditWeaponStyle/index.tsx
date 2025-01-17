@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -62,9 +62,13 @@ const AdminEditWeaponStyle: FC = () => {
   const [weaponStyleText, setWeaponStyleText] = useState('');
   const [weaponStyleTextFr, setWeaponStyleTextFr] = useState('');
 
-  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const skillSelect = useMemo<ISingleValueSelect[]>(
     () =>
@@ -135,7 +139,7 @@ const AdminEditWeaponStyle: FC = () => {
         htmlText = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -164,7 +168,7 @@ const AdminEditWeaponStyle: FC = () => {
           });
           reloadWeaponStyles();
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -208,8 +212,10 @@ const AdminEditWeaponStyle: FC = () => {
         confirmCta: t('adminEditWeaponStyle.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.weaponStyles
               .delete({ id })
               .then(() => {
@@ -225,7 +231,7 @@ const AdminEditWeaponStyle: FC = () => {
                 reloadWeaponStyles();
                 void navigate('/admin/weaponstyles');
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -263,7 +269,7 @@ const AdminEditWeaponStyle: FC = () => {
       calledApi.current = true;
       api.weaponStyles
         .get({ weaponStyleId: id })
-        .then((curatedWeaponStyle: ICuratedWeaponStyle) => {
+        .then((curatedWeaponStyle) => {
           const {
             weaponStyle, i18n
           } = curatedWeaponStyle;
@@ -328,7 +334,7 @@ const AdminEditWeaponStyle: FC = () => {
       `)}
     >
       <form
-        onSubmit={handleSubmit(onSaveWeaponStyle)}
+        onSubmit={() => handleSubmit(onSaveWeaponStyle)}
         noValidate
         className="adminEditWeaponStyle__content"
       >

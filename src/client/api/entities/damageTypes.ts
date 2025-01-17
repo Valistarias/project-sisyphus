@@ -2,13 +2,13 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { ICuratedDamageType } from '../../types';
+import type { ICuratedDamageType, IDamageType } from '../../types';
 
 interface IDamageTypePayload {
   damageTypeId: string
 }
 
-export default class DamageTypes extends Entity {
+export default class DamageTypes extends Entity<IDamageType> {
   get: (payload: IDamageTypePayload) => Promise<ICuratedDamageType>;
 
   constructor() {

@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -56,9 +56,13 @@ const AdminEditSkillBranch: FC = () => {
   const [skillBranchText, seSkillBranchText] = useState('');
   const [skillBranchTextFr, seSkillBranchTextFr] = useState('');
 
-  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const createDefaultData = useCallback((skillBranchData: ICuratedSkillBranch | null) => {
     if (skillBranchData == null) {
@@ -97,7 +101,7 @@ const AdminEditSkillBranch: FC = () => {
       const htmlText = textEditor.getHTML();
       const htmlTextFr = textFrEditor.getHTML();
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -124,7 +128,7 @@ const AdminEditSkillBranch: FC = () => {
             )
           });
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -169,8 +173,10 @@ const AdminEditSkillBranch: FC = () => {
           = typeof skillBranchData?.skillBranch.skill === 'string'
             ? skillBranchData.skillBranch.skill
             : skillBranchData?.skillBranch.skill._id;
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.skillBranches
               .delete({ id })
               .then(() => {
@@ -185,7 +191,7 @@ const AdminEditSkillBranch: FC = () => {
                 });
                 void navigate(`/admin/skill/${skillId}`);
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -223,7 +229,7 @@ const AdminEditSkillBranch: FC = () => {
       calledApi.current = true;
       api.skillBranches
         .get({ skillBranchId: id })
-        .then((curatedSkillBranch: ICuratedSkillBranch) => {
+        .then((curatedSkillBranch) => {
           const {
             skillBranch, i18n
           } = curatedSkillBranch;
@@ -282,7 +288,7 @@ const AdminEditSkillBranch: FC = () => {
   return (
     <div className="adminEditSkillBranch">
       <form
-        onSubmit={handleSubmit(onSaveSkillBranch)}
+        onSubmit={() => handleSubmit(onSaveSkillBranch)}
         noValidate
         className="adminEditSkillBranch__content"
       >

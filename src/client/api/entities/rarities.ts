@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { ICuratedRarity } from '../../types';
+import type { ICuratedRarity, IRarity } from '../../types';
 
 interface IRarityPayload {
   rarityId: string
@@ -15,9 +15,10 @@ interface IChangeRaritiesOrder {
   }>
 }
 
-export default class Rarities extends Entity {
+export default class Rarities extends Entity<IRarity> {
   get: (payload: IRarityPayload) => Promise<ICuratedRarity>;
-  changeRaritiesOrder: (payload: IChangeRaritiesOrder) => Promise<ICuratedRarity>;
+  changeRaritiesOrder: (payload: IChangeRaritiesOrder) =>
+  Promise<ICuratedRarity>;
 
   constructor() {
     super('rarities');

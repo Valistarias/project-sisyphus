@@ -15,7 +15,7 @@ import {
 import { Alert } from '../../../organisms';
 import { ErrorPage } from '../../index';
 
-import type { ICampaign } from '../../../types';
+import type { ErrorResponseType, ICampaign } from '../../../types';
 
 import './campaign.scss';
 
@@ -39,17 +39,13 @@ const Campaign: FC = () => {
       calledApi.current = true;
       api.campaigns
         .get({ campaignId: id })
-        .then((sentCampaign: ICampaign) => {
+        .then((sentCampaign) => {
           setLoading(false);
-          if (sentCampaign === undefined) {
-            setNotFound(true);
-          } else {
-            setCampaign(sentCampaign);
-          }
+          setCampaign(sentCampaign);
         })
-        .catch((res) => {
+        .catch(({ response }: ErrorResponseType) => {
           setLoading(false);
-          if (res.response.status === 404) {
+          if (response.data.code === 'CYPU-104') {
             setNotFound(true);
           } else {
             const newId = getNewId();

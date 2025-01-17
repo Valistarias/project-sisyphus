@@ -2,13 +2,13 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { ICuratedImplant } from '../../types';
+import type { ICuratedImplant, IImplant } from '../../types';
 
 interface IImplantPayload {
   implantId: string
 }
 
-export default class Implants extends Entity {
+export default class Implants extends Entity<IImplant> {
   get: (payload: IImplantPayload) => Promise<ICuratedImplant>;
   getStarters: () => Promise<ICuratedImplant[]>;
 

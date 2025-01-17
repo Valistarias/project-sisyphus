@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -56,9 +56,13 @@ const AdminEditNotions: FC = () => {
   const [notionText, setNotionText] = useState('');
   const [notionTextFr, setNotionTextFr] = useState('');
 
-  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const createDefaultData = useCallback(
     (notionData: ICuratedNotion | null, ruleBooks: ISingleValueSelect[]) => {
@@ -128,7 +132,7 @@ const AdminEditNotions: FC = () => {
         htmlText = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -156,7 +160,7 @@ const AdminEditNotions: FC = () => {
             )
           });
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -199,8 +203,10 @@ const AdminEditNotions: FC = () => {
         confirmCta: t('adminEditNotion.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.notions
               .delete({ id })
               .then(() => {
@@ -215,7 +221,7 @@ const AdminEditNotions: FC = () => {
                 });
                 void navigate('/admin/rulebooks');
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -252,7 +258,7 @@ const AdminEditNotions: FC = () => {
       calledApi.current = true;
       api.notions
         .get({ notionId: id })
-        .then((curatedNotion: ICuratedNotion) => {
+        .then((curatedNotion) => {
           const {
             notion, i18n
           } = curatedNotion;
@@ -312,7 +318,7 @@ const AdminEditNotions: FC = () => {
 
   return (
     <div className="adminEditNotion">
-      <form onSubmit={handleSubmit(onSaveNotion)} noValidate className="adminEditNotion__content">
+      <form onSubmit={() => handleSubmit(onSaveNotion)} noValidate className="adminEditNotion__content">
         <div className="adminEditNotion__head">
           <Atitle level={1}>{t('adminEditNotion.title', { ns: 'pages' })}</Atitle>
           <Button onClick={onAskDelete} color="error">

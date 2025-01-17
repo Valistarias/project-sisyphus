@@ -2,13 +2,13 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { ICuratedBag } from '../../types';
+import type { IBag, ICuratedBag } from '../../types';
 
 interface IBagPayload {
   bagId: string
 }
 
-export default class Bags extends Entity {
+export default class Bags extends Entity<IBag> {
   get: (payload: IBagPayload) => Promise<ICuratedBag>;
   getStarters: () => Promise<ICuratedBag[]>;
 

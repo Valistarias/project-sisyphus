@@ -146,7 +146,7 @@ const create = (req: Request, res: Response): void => {
         .save()
         .then(() => {
           res.send({
-            message: 'Campaign was created successfully!', campaignId: campaign._id
+            message: 'Campaign was created successfully!', campaign
           });
         })
         .catch((err: unknown) => {

@@ -45,7 +45,7 @@ const Characters: FC = () => {
     if (api !== undefined) {
       api.characters
         .getAll()
-        .then((sentCharacters: ICharacter[]) => {
+        .then((sentCharacters) => {
           // setLoading(false);
           setCharacters(sentCharacters);
         })
@@ -81,8 +81,13 @@ const Characters: FC = () => {
       // TODO: add all parameters to this
       const { isReady } = character;
       let displayedName: string | undefined;
-      if (character.nickName !== undefined || character.firstName !== undefined) {
-        displayedName = character.nickName ?? `${character.firstName} ${character.lastName}`;
+      if (
+        character.nickName !== undefined
+        || character.firstName !== undefined
+      ) {
+        displayedName
+        = character.nickName
+          ?? `${character.firstName} ${character.lastName}`;
       }
       let status: string;
       if (!isReady) {
@@ -119,10 +124,10 @@ const Characters: FC = () => {
               {displayedName ?? t(`terms.character.unknown`)}
             </Atitle>
             <Ap className="characters__character-list__elt__title__status">{status}</Ap>
-            {character.campaign !== null
+            {character.campaign !== undefined
               ? (
                   <Ap className="characters__character-list__elt__title__campaign">
-                    {`${i18next.format(t(`terms.campaign.title`), 'capitalize')}: ${character.campaign?.name}`}
+                    {`${i18next.format(t(`terms.campaign.title`), 'capitalize')}: ${character.campaign.name}`}
                   </Ap>
                 )
               : null}
@@ -132,7 +137,9 @@ const Characters: FC = () => {
               className="characters__character-list__elt__buttons__main"
               theme="afterglow"
               href={
-                isReady ? `/character/${character._id}` : `/character/${character._id}/continue`
+                isReady
+                  ? `/character/${character._id}`
+                  : `/character/${character._id}/continue`
               }
             >
               {t(isReady ? 'characters.openCharacter' : 'characters.continueCharacter', { ns: 'pages' })}

@@ -19,10 +19,12 @@ interface ICharacterUpdateNodesPayload {
   toRemove: string[]
 }
 
-export default class Characters extends Entity {
+export default class Characters extends Entity<ICharacter> {
   get: (payload: ICharacterPayload) => Promise<ICharacter>;
   addNode: (payload: ICharacterAddNodePayload) => Promise<ICharacter>;
-  addFirstCyberFrameNode: (payload: ICharacterAddNodePayload) => Promise<ICharacter>;
+  addFirstCyberFrameNode: (payload: ICharacterAddNodePayload) =>
+  Promise<ICharacter>;
+
   updateNodes: (payload: ICharacterUpdateNodesPayload) => Promise<ICharacter>;
   quitCampaign: (payload: ICharacterPayload) => Promise<boolean>;
 

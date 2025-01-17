@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -103,9 +103,13 @@ const AdminEditNPC: FC = () => {
   const [nPCText, setNPCText] = useState('');
   const [nPCTextFr, setNPCTextFr] = useState('');
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const createDefaultData = useCallback((nPCData: ICuratedNPC | null) => {
     if (nPCData == null) {
@@ -229,7 +233,7 @@ const AdminEditNPC: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -264,7 +268,7 @@ const AdminEditNPC: FC = () => {
             )
           });
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -305,8 +309,10 @@ const AdminEditNPC: FC = () => {
         confirmCta: t('adminEditNPC.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.nPCs
               .delete({ id })
               .then(() => {
@@ -321,7 +327,7 @@ const AdminEditNPC: FC = () => {
                 });
                 void navigate('/admin/npcs');
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -358,7 +364,7 @@ const AdminEditNPC: FC = () => {
       calledApi.current = true;
       api.nPCs
         .get({ nPCId: id })
-        .then((curatedNPC: ICuratedNPC) => {
+        .then((curatedNPC) => {
           const {
             nPC, i18n
           } = curatedNPC;
@@ -404,7 +410,7 @@ const AdminEditNPC: FC = () => {
         ${displayInt ? 'adminEditNPC--int-visible' : ''}
       `)}
     >
-      <form className="adminEditNPC__content" onSubmit={handleSubmit(onSaveNPC)} noValidate>
+      <form className="adminEditNPC__content" onSubmit={() => handleSubmit(onSaveNPC)} noValidate>
         <div className="adminEditNPC__head">
           <Atitle className="adminEditNPC__head" level={1}>
             {t('adminEditNPC.title', { ns: 'pages' })}

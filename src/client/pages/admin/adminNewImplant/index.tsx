@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -24,6 +24,8 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 import { possibleStarterKitValues } from '../../../types/items';
+
+import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
 import {
   classTrim, isThereDuplicate
@@ -184,10 +186,11 @@ const AdminNewImplant: FC = () => {
     label: rarity.title
   })), [rarities]);
 
-  const itemModifierList = useMemo(() => itemModifiers.map(({ itemModifier }) => ({
-    value: itemModifier._id,
-    label: itemModifier.title
-  })), [itemModifiers]);
+  const itemModifierList = useMemo(() => itemModifiers.map(
+    ({ itemModifier }) => ({
+      value: itemModifier._id,
+      label: itemModifier.title
+    })), [itemModifiers]);
 
   const starterKitList = useMemo(
     () =>
@@ -202,9 +205,13 @@ const AdminNewImplant: FC = () => {
 
   const [actionIds, setActionIds] = useState<number[]>([]);
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const {
     handleSubmit,
@@ -212,7 +219,7 @@ const AdminNewImplant: FC = () => {
     unregister,
     control,
     formState: { errors }
-  } = useForm({ defaultValues: { icon: 'default' } });
+  } = useForm<FormValues>({ defaultValues: { } });
 
   const boolRange = useMemo(
     () => [
@@ -296,7 +303,9 @@ const AdminNewImplant: FC = () => {
       }
 
       // Check duplicate on skills
-      const skillBonuses = elts.skillBonuses !== undefined ? Object.values(elts.skillBonuses) : [];
+      const skillBonuses = elts.skillBonuses !== undefined
+        ? Object.values(elts.skillBonuses)
+        : [];
       let duplicateSkillBonuses = false;
       if (skillBonuses.length > 0) {
         duplicateSkillBonuses = isThereDuplicate(
@@ -313,10 +322,14 @@ const AdminNewImplant: FC = () => {
       }
 
       // Check duplicate on stats
-      const statBonuses = elts.statBonuses !== undefined ? Object.values(elts.statBonuses) : [];
+      const statBonuses = elts.statBonuses !== undefined
+        ? Object.values(elts.statBonuses)
+        : [];
       let duplicateStatBonuses = false;
       if (statBonuses.length > 0) {
-        duplicateStatBonuses = isThereDuplicate(statBonuses.map(statBonus => statBonus.stat));
+        duplicateStatBonuses = isThereDuplicate(statBonuses.map(
+          statBonus => statBonus.stat
+        ));
       }
       if (duplicateStatBonuses) {
         setError('root.serverError', {
@@ -329,7 +342,9 @@ const AdminNewImplant: FC = () => {
 
       // Check duplicate on character param
       const charParamBonuses
-        = elts.charParamBonuses !== undefined ? Object.values(elts.charParamBonuses) : [];
+        = elts.charParamBonuses !== undefined
+          ? Object.values(elts.charParamBonuses)
+          : [];
       let duplicateCharParamBonuses = false;
       if (charParamBonuses.length > 0) {
         duplicateCharParamBonuses = isThereDuplicate(
@@ -412,13 +427,16 @@ const AdminNewImplant: FC = () => {
           uses,
           isKarmic: String(isKarmic) === '1',
           karmicCost,
-          i18n: { ...(titleFr !== undefined || summaryFr !== undefined || timeFr !== undefined
-            ? { fr: {
-                title: titleFr,
-                summary: summaryFr,
-                time: timeFr
-              } }
-            : {}) }
+          i18n: { ...(
+            titleFr !== undefined
+            || summaryFr !== undefined
+            || timeFr !== undefined
+              ? { fr: {
+                  title: titleFr,
+                  summary: summaryFr,
+                  time: timeFr
+                } }
+              : {}) }
         })
       );
 
@@ -428,7 +446,7 @@ const AdminNewImplant: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -466,7 +484,7 @@ const AdminNewImplant: FC = () => {
           });
           void navigate(`/admin/implant/${quote._id}`);
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -501,7 +519,7 @@ const AdminNewImplant: FC = () => {
         ${displayInt ? 'adminNewImplant--int-visible' : ''}
       `)}
     >
-      <form className="adminNewImplant__content" onSubmit={handleSubmit(onSaveImplant)} noValidate>
+      <form className="adminNewImplant__content" onSubmit={() => handleSubmit(onSaveImplant)} noValidate>
         <Atitle className="adminNewImplant__head" level={1}>
           {t('adminNewImplant.title', { ns: 'pages' })}
         </Atitle>
@@ -670,7 +688,9 @@ const AdminNewImplant: FC = () => {
                 <div className="adminNewImplant__bonus__fields">
                   <SmartSelect
                     control={control}
-                    inputName={`charParamBonuses.charParam-${charParamBonusId}.charParam`}
+                    inputName={
+                      `charParamBonuses.charParam-${charParamBonusId}.charParam`
+                    }
                     rules={{ required: t('charParamBonusStat.required', { ns: 'fields' }) }}
                     label={t('charParamBonusStat.label', { ns: 'fields' })}
                     options={charParamSelect}
@@ -678,7 +698,9 @@ const AdminNewImplant: FC = () => {
                   />
                   <Input
                     control={control}
-                    inputName={`charParamBonuses.charParam-${charParamBonusId}.value`}
+                    inputName={
+                      `charParamBonuses.charParam-${charParamBonusId}.value`
+                    }
                     type="number"
                     rules={{ required: t('charParamBonusValue.required', { ns: 'fields' }) }}
                     label={t('charParamBonusValue.label', { ns: 'fields' })}
@@ -698,7 +720,9 @@ const AdminNewImplant: FC = () => {
                         return result;
                       }, [])
                     );
-                    unregister(`charParamBonuses.charParam-${charParamBonusId}`);
+                    unregister(
+                      `charParamBonuses.charParam-${charParamBonusId}`
+                    );
                   }}
                   className="adminNewImplant__bonus__button"
                 />

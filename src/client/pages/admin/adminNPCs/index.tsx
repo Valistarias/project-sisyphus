@@ -33,7 +33,7 @@ const AdminNPCs: FC = () => {
 
   // TODO: Handle i18n in place of basic english language
   const nPCsList = useMemo(() => {
-    if (nPCs === null || nPCs.length === 0) {
+    if (nPCs.length === 0) {
       return null;
     }
 
@@ -61,7 +61,7 @@ const AdminNPCs: FC = () => {
       calledApi.current = true;
       api.nPCs
         .getAllBasic()
-        .then((curatedNPCs: ICuratedBasicNPC[]) => {
+        .then((curatedNPCs) => {
           setNPCs(curatedNPCs);
         })
         .catch(() => {

@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -59,9 +59,13 @@ const AdminEditCyberFrameBranch: FC = () => {
   const [cyberFrameBranchText, setCyberFrameBranchText] = useState('');
   const [cyberFrameBranchTextFr, setCyberFrameBranchTextFr] = useState('');
 
-  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const createDefaultData = useCallback((cyberFrameBranchData: ICuratedCyberFrameBranch | null) => {
     if (cyberFrameBranchData == null) {
@@ -111,7 +115,7 @@ const AdminEditCyberFrameBranch: FC = () => {
         htmlText = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -138,7 +142,7 @@ const AdminEditCyberFrameBranch: FC = () => {
             )
           });
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -181,8 +185,10 @@ const AdminEditCyberFrameBranch: FC = () => {
         confirmCta: t('adminEditCyberFrameBranch.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.cyberFrameBranches
               .delete({ id })
               .then(() => {
@@ -201,7 +207,7 @@ const AdminEditCyberFrameBranch: FC = () => {
                   );
                 }
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -239,7 +245,7 @@ const AdminEditCyberFrameBranch: FC = () => {
       calledApi.current = true;
       api.cyberFrameBranches
         .get({ cyberFrameBranchId: id })
-        .then((curatedCyberFrameBranch: ICuratedCyberFrameBranch) => {
+        .then((curatedCyberFrameBranch) => {
           const {
             cyberFrameBranch, i18n
           } = curatedCyberFrameBranch;
@@ -298,7 +304,7 @@ const AdminEditCyberFrameBranch: FC = () => {
   return (
     <div className="adminEditCyberFrameBranch">
       <form
-        onSubmit={handleSubmit(onSaveCyberFrameBranch)}
+        onSubmit={() => handleSubmit(onSaveCyberFrameBranch)}
         noValidate
         className="adminEditCyberFrameBranch__content"
       >

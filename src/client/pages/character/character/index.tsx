@@ -36,7 +36,9 @@ const Character: FC = () => {
   const calledApi = useRef(false);
 
   useEffect(() => {
-    if (setCharacterFromId !== undefined && !calledApi.current && id !== undefined) {
+    if (
+      !calledApi.current && id !== undefined
+    ) {
       setCharacterFromId(id);
       calledApi.current = true;
     }

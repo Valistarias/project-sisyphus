@@ -4,7 +4,7 @@ import React, {
 
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -20,6 +20,8 @@ import {
   Button, Input
 } from '../../../molecules';
 import { Alert } from '../../../organisms';
+
+import type { ErrorResponseType } from '../../../types';
 
 import './adminNewGlobalValue.scss';
 
@@ -51,7 +53,7 @@ const AdminNewGlobalValue: FC = () => {
     ({
       name, value
     }) => {
-      if (name === null || api === undefined) {
+      if (api === undefined) {
         return;
       }
 
@@ -73,7 +75,7 @@ const AdminNewGlobalValue: FC = () => {
           reloadGlobalValues();
           void navigate(`/admin/globalvalue/${globalValue._id}`);
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           setError('root.serverError', {
             type: 'server',
@@ -108,7 +110,7 @@ const AdminNewGlobalValue: FC = () => {
     <div className="adminNewGlobalValue">
       <form
         className="adminNewGlobalValue__content"
-        onSubmit={handleSubmit(onSaveGlobalValue)}
+        onSubmit={() => handleSubmit(onSaveGlobalValue)}
         noValidate
       >
         <Atitle level={1}>{t('adminNewGlobalValue.title', { ns: 'pages' })}</Atitle>

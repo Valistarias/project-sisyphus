@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { ICuratedPage } from '../../types';
+import type { ICuratedPage, IPage } from '../../types';
 
 interface IPagesPayload {
   pageId: string
@@ -12,7 +12,7 @@ interface IChapterPayload {
   chapterId: string
 }
 
-export default class Pages extends Entity {
+export default class Pages extends Entity<IPage> {
   getAllByChapter: (payload: IChapterPayload) => Promise<ICuratedPage[]>;
   get: (payload: IPagesPayload) => Promise<ICuratedPage>;
 

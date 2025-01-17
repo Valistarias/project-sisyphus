@@ -75,11 +75,11 @@ const RuleBook: FC = () => {
       calledApi.current = ruleBookId;
       api.ruleBooks
         .get({ ruleBookId })
-        .then((ruleBook: ICuratedRuleBook) => {
+        .then((ruleBook) => {
           setLoading(false);
           setRuleBook(ruleBook);
         })
-        .catch(({ response }: { response: { data: ErrorResponseType } }) => {
+        .catch(({ response }: ErrorResponseType) => {
           setLoading(false);
           if (response.data.code === 'CYPU-202') {
             setNotFound(true);

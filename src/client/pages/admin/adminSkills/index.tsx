@@ -22,7 +22,7 @@ const AdminSkills: FC = () => {
   // TODO: Handle i18n in place of basic english language
   // TODO: Display all branches on one skill
   const skillsList = useMemo(() => {
-    if (skills === null || skills.length === 0) {
+    if (skills.length === 0) {
       return null;
     }
 

@@ -1,5 +1,7 @@
 import Entity from './entity';
 
+import type { IUser } from '../../types';
+
 // interface IUpdateUserPayload {
 //   username: string;
 //   password: string;
@@ -9,7 +11,7 @@ import Entity from './entity';
 //   scale: number;
 // }
 
-export default class Users extends Entity {
+export default class Users extends Entity<IUser> {
   constructor() {
     super('users');
   }

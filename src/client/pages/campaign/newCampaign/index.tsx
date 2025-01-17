@@ -4,7 +4,7 @@ import React, {
 
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -22,6 +22,7 @@ import {
 import { Alert } from '../../../organisms';
 
 import './newCampaign.scss';
+import type { ErrorResponseType } from '../../../types';
 
 interface FormValues {
   name: string
@@ -47,7 +48,7 @@ const NewCampaign: FC = () => {
       if (api !== undefined) {
         api.campaigns
           .create({ name })
-          .then(({ campaignId }) => {
+          .then(({ _id }) => {
             const newId = getNewId();
             createAlert({
               key: newId,
@@ -57,9 +58,9 @@ const NewCampaign: FC = () => {
                 </Alert>
               )
             });
-            void navigate(`/campaign/${campaignId}`);
+            void navigate(`/campaign/${_id}`);
           })
-          .catch(({ response }) => {
+          .catch(({ response }: ErrorResponseType) => {
             const { data } = response;
             setError('root.serverError', {
               type: 'server',

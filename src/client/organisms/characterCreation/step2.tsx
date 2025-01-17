@@ -4,7 +4,7 @@ import React, {
 
 import { motion } from 'framer-motion';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
@@ -293,7 +293,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
       </Ap>
       <form
         className="characterCreation-step2__stats"
-        onSubmit={handleSubmit(onSaveStats)}
+        onSubmit={() => handleSubmit(onSaveStats)}
         noValidate
       >
         {statSelectList()}

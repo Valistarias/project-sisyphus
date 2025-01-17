@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -59,9 +59,13 @@ const AdminEditRarity: FC = () => {
   const [rarityText, setRarityText] = useState('');
   const [rarityTextFr, setRarityTextFr] = useState('');
 
-  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const createDefaultData = useCallback((rarityData: ICuratedRarity | null) => {
     if (rarityData == null) {
@@ -108,7 +112,7 @@ const AdminEditRarity: FC = () => {
         htmlText = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -136,7 +140,7 @@ const AdminEditRarity: FC = () => {
           });
           reloadRarities();
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -180,8 +184,10 @@ const AdminEditRarity: FC = () => {
         confirmCta: t('adminEditRarity.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.rarities
               .delete({ id })
               .then(() => {
@@ -197,7 +203,7 @@ const AdminEditRarity: FC = () => {
                 reloadRarities();
                 void navigate('/admin/rarities');
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -235,7 +241,7 @@ const AdminEditRarity: FC = () => {
       calledApi.current = true;
       api.rarities
         .get({ rarityId: id })
-        .then((curatedRarity: ICuratedRarity) => {
+        .then((curatedRarity) => {
           const {
             rarity, i18n
           } = curatedRarity;
@@ -298,7 +304,7 @@ const AdminEditRarity: FC = () => {
         ${displayInt ? 'adminEditRarity--int-visible' : ''}
       `)}
     >
-      <form onSubmit={handleSubmit(onSaveRarity)} noValidate className="adminEditRarity__content">
+      <form onSubmit={() => handleSubmit(onSaveRarity)} noValidate className="adminEditRarity__content">
         <div className="adminEditRarity__head">
           <Atitle level={1}>{rarityData?.rarity.title}</Atitle>
           <Button onClick={onAskDelete} color="error">

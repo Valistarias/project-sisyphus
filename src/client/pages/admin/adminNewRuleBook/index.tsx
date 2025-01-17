@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -24,7 +24,8 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 
-import type { IRuleBookType } from '../../../types';
+import type { ErrorResponseType } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import './adminNewRuleBook.scss';
 
@@ -45,9 +46,13 @@ const AdminNewRuleBooks: FC = () => {
 
   const [ruleBookTypes, setRuleBookTypes] = useState<ISingleValueSelect[]>([]);
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const {
     handleSubmit,
@@ -69,7 +74,7 @@ const AdminNewRuleBooks: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -98,7 +103,7 @@ const AdminNewRuleBooks: FC = () => {
           reloadRuleBooks();
           void navigate(`/admin/ruleBook/${ruleBook._id}`);
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -130,7 +135,7 @@ const AdminNewRuleBooks: FC = () => {
     if (api !== undefined) {
       api.ruleBookTypes
         .getAll()
-        .then((data: IRuleBookType[]) => {
+        .then((data) => {
           setRuleBookTypes(
             data.map(ruleBookType => ({
               value: ruleBookType._id,
@@ -139,7 +144,7 @@ const AdminNewRuleBooks: FC = () => {
             }))
           );
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const newId = getNewId();
           createAlert({
             key: newId,
@@ -162,7 +167,7 @@ const AdminNewRuleBooks: FC = () => {
     <div className="adminNewRuleBook">
       <form
         className="adminNewRuleBook__content"
-        onSubmit={handleSubmit(onSaveRuleBook)}
+        onSubmit={() => handleSubmit(onSaveRuleBook)}
         noValidate
       >
         <Atitle level={1}>{t('adminNewRuleBook.title', { ns: 'pages' })}</Atitle>

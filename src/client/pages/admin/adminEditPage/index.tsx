@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -58,9 +58,13 @@ const AdminEditPages: FC = () => {
   const [pageContent, setPageContent] = useState('');
   const [pageContentFr, setPageContentFr] = useState('');
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const createDefaultData = useCallback((pageData: ICuratedPage | null) => {
     if (pageData == null) {
@@ -102,7 +106,7 @@ const AdminEditPages: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -141,7 +145,7 @@ const AdminEditPages: FC = () => {
           }
           silentSave.current = false;
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -181,8 +185,10 @@ const AdminEditPages: FC = () => {
         confirmCta: t('adminEditPage.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.pages
               .delete({ id })
               .then(() => {
@@ -197,7 +203,7 @@ const AdminEditPages: FC = () => {
                 });
                 void navigate(`/admin/chapter/${chapter._id}`);
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -234,7 +240,7 @@ const AdminEditPages: FC = () => {
       calledApi.current = id;
       api.pages
         .get({ pageId: id })
-        .then((curatedPage: ICuratedPage) => {
+        .then((curatedPage) => {
           const {
             page, i18n
           } = curatedPage;
@@ -312,7 +318,7 @@ const AdminEditPages: FC = () => {
       {autoSaved !== null ? <Ap className="adminEditPage__autosave">{autoSaved}</Ap> : null}
       <div className="adminEditPage__content">
         <form
-          onSubmit={handleSubmit(onSavePage)}
+          onSubmit={() => handleSubmit(onSavePage)}
           noValidate
           className="adminEditPage__content__left"
         >

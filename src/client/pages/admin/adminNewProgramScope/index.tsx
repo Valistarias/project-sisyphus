@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -23,6 +23,9 @@ import {
 import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
+
+import type { ErrorResponseType } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import './adminNewProgramScope.scss';
 
@@ -44,9 +47,13 @@ const AdminNewProgramScope: FC = () => {
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const {
     handleSubmit,
@@ -63,7 +70,6 @@ const AdminNewProgramScope: FC = () => {
         introEditor === null
         || introFrEditor === null
         || api === undefined
-        || scopeId === undefined
       ) {
         return;
       }
@@ -73,7 +79,7 @@ const AdminNewProgramScope: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -102,7 +108,7 @@ const AdminNewProgramScope: FC = () => {
           reloadProgramScopes();
           void navigate(`/admin/programscope/${programScope._id}`);
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -146,7 +152,7 @@ const AdminNewProgramScope: FC = () => {
     <div className="adminNewProgramScope">
       <form
         className="adminNewProgramScope__content"
-        onSubmit={handleSubmit(onSaveProgramScope)}
+        onSubmit={() => handleSubmit(onSaveProgramScope)}
         noValidate
       >
         <Atitle level={1}>{t('adminNewProgramScope.title', { ns: 'pages' })}</Atitle>

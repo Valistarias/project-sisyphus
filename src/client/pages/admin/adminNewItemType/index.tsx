@@ -4,7 +4,7 @@ import React, {
 
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -22,6 +22,7 @@ import {
 import { Alert } from '../../../organisms';
 
 import './adminNewItemType.scss';
+import type { ErrorResponseType } from '../../../types';
 
 interface FormValues {
   name: string
@@ -48,7 +49,7 @@ const AdminNewItemType: FC = () => {
 
   const onSaveItemType: SubmitHandler<FormValues> = useCallback(
     ({ name }) => {
-      if (name === null || api === undefined) {
+      if (api === undefined) {
         return;
       }
 
@@ -67,7 +68,7 @@ const AdminNewItemType: FC = () => {
           reloadItemTypes();
           void navigate(`/admin/itemtype/${itemType._id}`);
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           setError('root.serverError', {
             type: 'server',
@@ -102,7 +103,7 @@ const AdminNewItemType: FC = () => {
     <div className="adminNewItemType">
       <form
         className="adminNewItemType__content"
-        onSubmit={handleSubmit(onSaveItemType)}
+        onSubmit={() => handleSubmit(onSaveItemType)}
         noValidate
       >
         <Atitle level={1}>{t('adminNewItemType.title', { ns: 'pages' })}</Atitle>

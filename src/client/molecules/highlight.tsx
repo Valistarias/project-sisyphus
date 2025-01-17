@@ -75,7 +75,7 @@ const Highlight: FC<IHighlight> = ({
         .then((elt) => {
           setHighlightContent(elt);
         })
-        .catch((res) => {
+        .catch(({ response }: ErrorResponseType) => {
           const newId = getNewId();
           createAlert({
             key: newId,

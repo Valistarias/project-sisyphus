@@ -46,7 +46,7 @@ const EmbedNotion: FC<IEmbedNotion> = ({ notionId }) => {
           // TODO: Handle internationalization
           setNotionContent(notion.text);
         })
-        .catch((res) => {
+        .catch(({ response }: ErrorResponseType) => {
           const newId = getNewId();
           createAlert({
             key: newId,

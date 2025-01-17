@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -216,9 +216,13 @@ const AdminEditNode: FC = () => {
   const [nodeText, setNodeText] = useState('');
   const [nodeTextFr, setNodeTextFr] = useState('');
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const createDefaultData = useCallback((nodeData: ICuratedNode | null) => {
     if (nodeData == null) {
@@ -578,7 +582,7 @@ const AdminEditNode: FC = () => {
 
       const html = introEditor.getHTML();
       const htmlFr = introFrEditor.getHTML();
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>' || quoteFr !== '') {
         i18n = { fr: {
           title: nameFr,
@@ -618,7 +622,7 @@ const AdminEditNode: FC = () => {
             reloadCyberFrames();
           }
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -673,8 +677,10 @@ const AdminEditNode: FC = () => {
         ) {
           routeId = node.cyberFrameBranch.cyberFrame as string;
         }
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.nodes
               .delete({ id })
               .then(() => {
@@ -689,7 +695,7 @@ const AdminEditNode: FC = () => {
                 });
                 void navigate(`/admin/${route}/${routeId}`);
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -726,7 +732,7 @@ const AdminEditNode: FC = () => {
       calledApi.current = true;
       api.nodes
         .get({ nodeId: id })
-        .then((curatedNode: ICuratedNode) => {
+        .then((curatedNode) => {
           const {
             node, i18n
           } = curatedNode;
@@ -753,7 +759,7 @@ const AdminEditNode: FC = () => {
             const skillId = String(node.skillBranch.skill);
             api.skills
               .get({ skillId })
-              .then((curatedSkill: ICuratedSkill) => {
+              .then((curatedSkill) => {
                 setSkill(curatedSkill);
                 setBranches(curatedSkill.skill.branches ?? []);
               })
@@ -775,7 +781,7 @@ const AdminEditNode: FC = () => {
             const cyberFrameId = String(node.cyberFrameBranch.cyberFrame);
             api.cyberFrames
               .get({ cyberFrameId })
-              .then((sentCyberFrame: ICuratedCyberFrame) => {
+              .then((sentCyberFrame) => {
                 setCyberFrame(sentCyberFrame);
                 setBranches(sentCyberFrame.cyberFrame.branches ?? []);
               })
@@ -844,7 +850,7 @@ const AdminEditNode: FC = () => {
         ${displayInt ? 'adminEditNode--int-visible' : ''}
       `)}
     >
-      <form className="adminEditNode__content" onSubmit={handleSubmit(onSaveNode)} noValidate>
+      <form className="adminEditNode__content" onSubmit={() => handleSubmit(onSaveNode)} noValidate>
         <div className="adminEditNode__head">
           <Atitle className="adminEditNode__head" level={1}>
             {t('adminEditNode.title', { ns: 'pages' })}

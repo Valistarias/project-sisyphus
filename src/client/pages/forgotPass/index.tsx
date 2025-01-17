@@ -4,7 +4,7 @@ import React, {
 
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -20,6 +20,8 @@ import {
   Button, Input
 } from '../../molecules';
 import { Alert } from '../../organisms';
+
+import type { ErrorResponseType } from '../../types';
 
 import { regexMail } from '../../utils';
 
@@ -65,7 +67,7 @@ const ForgotPassword: FC = () => {
             });
             void navigate('/login');
           })
-          .catch(({ response }) => {
+          .catch(({ response }: ErrorResponseType) => {
             const { data } = response;
             setError('root.serverError', {
               type: 'server',

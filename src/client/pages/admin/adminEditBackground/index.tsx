@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -117,9 +117,13 @@ const AdminEditBackground: FC = () => {
   const [backgroundText, setBackgroundText] = useState('');
   const [backgroundTextFr, setBackgroundTextFr] = useState('');
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const createDefaultData = useCallback((backgroundData: ICuratedBackground | null) => {
     if (backgroundData == null) {
@@ -305,7 +309,7 @@ const AdminEditBackground: FC = () => {
       if (html === '<p class="ap"></p>') {
         html = null;
       }
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
           title: nameFr,
@@ -333,7 +337,7 @@ const AdminEditBackground: FC = () => {
             )
           });
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -374,8 +378,10 @@ const AdminEditBackground: FC = () => {
         confirmCta: t('adminEditBackground.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.backgrounds
               .delete({ id })
               .then(() => {
@@ -390,7 +396,7 @@ const AdminEditBackground: FC = () => {
                 });
                 void navigate('/admin/backgrounds');
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -427,7 +433,7 @@ const AdminEditBackground: FC = () => {
       calledApi.current = true;
       api.backgrounds
         .get({ backgroundId: id })
-        .then((curatedBackground: ICuratedBackground) => {
+        .then((curatedBackground) => {
           const {
             background, i18n
           } = curatedBackground;

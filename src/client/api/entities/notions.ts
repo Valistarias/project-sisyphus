@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { ICuratedNotion } from '../../types';
+import type { ICuratedNotion, INotion } from '../../types';
 
 interface INotionsPayload {
   notionId: string
@@ -12,7 +12,7 @@ interface IRulebookPayload {
   ruleBookId?: string
 }
 
-export default class Notions extends Entity {
+export default class Notions extends Entity<INotion> {
   get: (payload: INotionsPayload) => Promise<ICuratedNotion>;
   getAllByRuleBook: (payload: IRulebookPayload) => Promise<ICuratedNotion[]>;
 

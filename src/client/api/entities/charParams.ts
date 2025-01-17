@@ -2,13 +2,13 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { ICuratedCharParam } from '../../types';
+import type { ICharParam, ICuratedCharParam } from '../../types';
 
 interface ICharParamPayload {
   charParamId: string
 }
 
-export default class CharParams extends Entity {
+export default class CharParams extends Entity<ICharParam> {
   get: (payload: ICharParamPayload) => Promise<ICuratedCharParam>;
 
   constructor() {

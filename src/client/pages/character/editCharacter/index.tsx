@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -27,7 +27,9 @@ import {
 } from '../../../organisms';
 import { ErrorPage } from '../../index';
 
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type {
+  ErrorResponseType,
   ICampaign, ICharacter
 } from '../../../types';
 
@@ -108,7 +110,9 @@ const EditCharacter: FC = () => {
     setError,
     control,
     formState: { errors }
-  } = useForm({ defaultValues: useMemo(() => createDefaultData(character), [createDefaultData, character]) });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(character), [createDefaultData, character]) }
+  );
 
   const campaignList = useMemo(() => campaigns.map(({
     _id, name, owner
@@ -129,7 +133,7 @@ const EditCharacter: FC = () => {
     if (api !== undefined) {
       api.campaigns
         .getAll()
-        .then((sentCampaigns: ICampaign[]) => {
+        .then((sentCampaigns) => {
           setLoading(false);
           setCampaigns(sentCampaigns);
         })
@@ -179,7 +183,7 @@ const EditCharacter: FC = () => {
               )
             });
           })
-          .catch(({ response }) => {
+          .catch(({ response }: ErrorResponseType) => {
             const { data } = response;
             setError('root.serverError', {
               type: 'server',
@@ -199,12 +203,13 @@ const EditCharacter: FC = () => {
   );
 
   const onDeleteCharacter = useCallback(() => {
-    if (api === undefined || character === null || confMessageEvt === null) {
+    if (api === undefined || character === null) {
       return;
     }
     let displayedName: string | undefined;
     if (character.nickName !== undefined || character.firstName !== undefined) {
-      displayedName = character.nickName ?? `${character.firstName} ${character.lastName}`;
+      displayedName = character.nickName
+        ?? `${character.firstName} ${character.lastName}`;
     }
     confMessageEvt.setConfirmContent(
       {
@@ -217,8 +222,10 @@ const EditCharacter: FC = () => {
         theme: 'error'
       },
       (evtId: string) => {
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.characters
               .delete({ id })
               .then(() => {
@@ -233,7 +240,7 @@ const EditCharacter: FC = () => {
                 });
                 void navigate('/characters');
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const newId = getNewId();
                 createAlert({
                   key: newId,
@@ -268,17 +275,13 @@ const EditCharacter: FC = () => {
       getCampaigns();
       api.characters
         .get({ characterId: id })
-        .then((sentCharacter: ICharacter) => {
-          if (sentCharacter === undefined) {
-            setNotFound(true);
-          } else {
-            setCharacter(sentCharacter);
-            setBioText(sentCharacter.bio ?? '');
-          }
+        .then((sentCharacter) => {
+          setCharacter(sentCharacter);
+          setBioText(sentCharacter.bio ?? '');
           setLoading(false);
         })
-        .catch((res) => {
-          if (res.response.status === 404) {
+        .catch(({ response }: ErrorResponseType) => {
+          if (response.data.code === 'CYPU-104') {
             setNotFound(true);
           } else {
             const newId = getNewId();

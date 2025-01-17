@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -215,9 +215,13 @@ const AdminEditImplant: FC = () => {
   const [implantText, setImplantText] = useState('');
   const [implantTextFr, setImplantTextFr] = useState('');
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const createDefaultData = useCallback((implantData: ICuratedImplant | null) => {
     if (implantData == null) {
@@ -558,7 +562,7 @@ const AdminEditImplant: FC = () => {
       if (html === '<p class="ap"></p>') {
         html = null;
       }
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
           title: nameFr,
@@ -594,7 +598,7 @@ const AdminEditImplant: FC = () => {
             )
           });
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -636,8 +640,10 @@ const AdminEditImplant: FC = () => {
         confirmCta: t('adminEditImplant.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.implants
               .delete({ id })
               .then(() => {
@@ -652,7 +658,7 @@ const AdminEditImplant: FC = () => {
                 });
                 void navigate('/admin/implants');
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -689,7 +695,7 @@ const AdminEditImplant: FC = () => {
       calledApi.current = true;
       api.implants
         .get({ implantId: id })
-        .then((curatedImplant: ICuratedImplant) => {
+        .then((curatedImplant) => {
           const {
             implant, i18n
           } = curatedImplant;
@@ -735,7 +741,7 @@ const AdminEditImplant: FC = () => {
         ${displayInt ? 'adminEditImplant--int-visible' : ''}
       `)}
     >
-      <form className="adminEditImplant__content" onSubmit={handleSubmit(onSaveImplant)} noValidate>
+      <form className="adminEditImplant__content" onSubmit={() => handleSubmit(onSaveImplant)} noValidate>
         <div className="adminEditImplant__head">
           <Atitle className="adminEditImplant__head" level={1}>
             {t('adminEditImplant.title', { ns: 'pages' })}

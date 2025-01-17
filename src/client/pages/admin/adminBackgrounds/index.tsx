@@ -61,7 +61,7 @@ const AdminBackgrounds: FC = () => {
       calledApi.current = true;
       api.backgrounds
         .getAll()
-        .then((curatedBackgrounds: ICuratedBackground[]) => {
+        .then((curatedBackgrounds) => {
           setBackgrounds(curatedBackgrounds);
         })
         .catch(() => {

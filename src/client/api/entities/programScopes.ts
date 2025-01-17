@@ -2,13 +2,13 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { ICuratedProgramScope } from '../../types';
+import type { ICuratedProgramScope, IProgramScope } from '../../types';
 
 interface IProgramScopePayload {
   programScopeId: string
 }
 
-export default class ProgramScopes extends Entity {
+export default class ProgramScopes extends Entity<IProgramScope> {
   get: (payload: IProgramScopePayload) => Promise<ICuratedProgramScope>;
 
   constructor() {

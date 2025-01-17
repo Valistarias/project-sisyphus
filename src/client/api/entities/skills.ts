@@ -2,13 +2,13 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { ICuratedSkill } from '../../types';
+import type { ICuratedSkill, ISkill } from '../../types';
 
 interface ISkillPayload {
   skillId: string
 }
 
-export default class Skills extends Entity {
+export default class Skills extends Entity<ISkill> {
   get: (payload: ISkillPayload) => Promise<ICuratedSkill>;
 
   constructor() {

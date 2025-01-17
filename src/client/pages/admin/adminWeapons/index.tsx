@@ -33,7 +33,7 @@ const AdminWeapons: FC = () => {
 
   // TODO: Handle i18n in place of basic english language
   const weaponsList = useMemo(() => {
-    if (weapons === null || weapons.length === 0) {
+    if (weapons.length === 0) {
       return null;
     }
 
@@ -61,7 +61,7 @@ const AdminWeapons: FC = () => {
       calledApi.current = true;
       api.weapons
         .getAll()
-        .then((curatedWeapons: ICuratedWeapon[]) => {
+        .then((curatedWeapons) => {
           setWeapons(curatedWeapons);
         })
         .catch(() => {

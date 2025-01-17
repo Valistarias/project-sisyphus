@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -26,7 +26,8 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 
-import type { ICuratedCyberFrame } from '../../../types';
+import type { ErrorResponseType, ICuratedCyberFrame } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import './adminNewCyberFrameBranch.scss';
 
@@ -51,9 +52,13 @@ const AdminNewCyberFrameBranch: FC = () => {
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const {
     handleSubmit,
@@ -63,10 +68,10 @@ const AdminNewCyberFrameBranch: FC = () => {
   } = useForm();
 
   const getCyberFrame = useCallback(() => {
-    if (api !== undefined && params.get('cyberFrameId') !== undefined) {
+    if (api !== undefined) {
       api.cyberFrames
         .get({ cyberFrameId: params.get('cyberFrameId') ?? '' })
-        .then((sentCyberFrame: ICuratedCyberFrame) => {
+        .then((sentCyberFrame) => {
           setLoading(false);
           setCyberFrame(sentCyberFrame);
         })
@@ -99,7 +104,6 @@ const AdminNewCyberFrameBranch: FC = () => {
         introEditor === null
         || introFrEditor === null
         || api === undefined
-        || params.get('cyberFrameId') === undefined
       ) {
         return;
       }
@@ -109,7 +113,7 @@ const AdminNewCyberFrameBranch: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -137,7 +141,7 @@ const AdminNewCyberFrameBranch: FC = () => {
           });
           void navigate(`/admin/cyberFrameBranch/${cyberFrameBranch._id}`);
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -183,7 +187,7 @@ const AdminNewCyberFrameBranch: FC = () => {
     <div className="adminNewCyberFrameBranch">
       <form
         className="adminNewCyberFrameBranch__content"
-        onSubmit={handleSubmit(onSaveCyberFrameBranch)}
+        onSubmit={() => handleSubmit(onSaveCyberFrameBranch)}
         noValidate
       >
         <Atitle className="adminNewCyberFrameBranch__head" level={1}>

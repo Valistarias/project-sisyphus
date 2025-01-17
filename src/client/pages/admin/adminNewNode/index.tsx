@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -32,6 +32,7 @@ import type {
   ICuratedSkill,
   ICuratedSkillBranch
 } from '../../../types';
+import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
 import {
   classTrim, isThereDuplicate
@@ -171,7 +172,9 @@ const AdminNewNode: FC = () => {
   );
   const [charParamBonusIds, setCharParamBonusIds] = useState<number[]>([]);
 
-  const [branches, setBranches] = useState<ICuratedSkillBranch[] | ICuratedCyberFrameBranch[]>([]);
+  const [branches, setBranches] = useState<
+  ICuratedSkillBranch[] | ICuratedCyberFrameBranch[]
+  >([]);
 
   const [rankSelect, setLevelSelect] = useState<
     Array<{
@@ -209,9 +212,13 @@ const AdminNewNode: FC = () => {
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const {
     handleSubmit,
@@ -220,7 +227,7 @@ const AdminNewNode: FC = () => {
     unregister,
     control,
     formState: { errors }
-  } = useForm({ defaultValues: { icon: 'default' } });
+  } = useForm<FormValues>({ defaultValues: { icon: 'default' } });
 
   const boolRange = useMemo(
     () => [
@@ -244,15 +251,17 @@ const AdminNewNode: FC = () => {
       }>,
       elt: ICuratedSkillBranch | ICuratedCyberFrameBranch
     ) => {
-      if (elt !== undefined) {
-        const relevantElt
-            = (elt as ICuratedCyberFrameBranch).cyberFrameBranch
-              ?? (elt as ICuratedSkillBranch).skillBranch;
+      const relevantElt
+      = (elt as ICuratedCyberFrameBranch).cyberFrameBranch !== undefined
+        ? (elt as ICuratedCyberFrameBranch).cyberFrameBranch
+        : (elt as ICuratedSkillBranch).skillBranch;
+
+      if (relevantElt !== undefined) {
         result.push({
           value: relevantElt._id,
           // TODO : Handle Internationalization
           label:
-              relevantElt.title === '_general' ? t('terms.node.generalBranch') : relevantElt.title
+                  relevantElt.title === '_general' ? t('terms.node.generalBranch') : relevantElt.title
         });
       }
 
@@ -318,9 +327,9 @@ const AdminNewNode: FC = () => {
       if (cyberFrameId !== null) {
         api.cyberFrames
           .get({ cyberFrameId })
-          .then((sentCyberFrame: ICuratedCyberFrame) => {
+          .then((sentCyberFrame) => {
             setCyberFrame(sentCyberFrame);
-            setBranches(sentCyberFrame.cyberFrame.branches ?? []);
+            setBranches(sentCyberFrame.cyberFrame.branches);
           })
           .catch(() => {
             // setLoading(false);
@@ -337,9 +346,9 @@ const AdminNewNode: FC = () => {
       } else if (skillId !== null) {
         api.skills
           .get({ skillId })
-          .then((curatedSkill: ICuratedSkill) => {
+          .then((curatedSkill) => {
             setSkill(curatedSkill);
-            setBranches(curatedSkill.skill.branches ?? []);
+            setBranches(curatedSkill.skill.branches);
           })
           .catch(() => {
             const newId = getNewId();
@@ -364,14 +373,26 @@ const AdminNewNode: FC = () => {
 
   const onSaveNode: SubmitHandler<FormValues> = useCallback(
     ({
-      name, nameFr, quote, quoteFr, rank, icon, branch, effects, actions, ...elts
+      name,
+      nameFr,
+      quote,
+      quoteFr,
+      rank,
+      icon,
+      branch,
+      effects,
+      actions,
+      ...elts
     }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
 
       // Check duplicate on skills
-      const skillBonuses = elts.skillBonuses !== undefined ? Object.values(elts.skillBonuses) : [];
+      const skillBonuses
+      = elts.skillBonuses !== undefined
+        ? Object.values(elts.skillBonuses)
+        : [];
       let duplicateSkillBonuses = false;
       if (skillBonuses.length > 0) {
         duplicateSkillBonuses = isThereDuplicate(
@@ -388,10 +409,15 @@ const AdminNewNode: FC = () => {
       }
 
       // Check duplicate on stats
-      const statBonuses = elts.statBonuses !== undefined ? Object.values(elts.statBonuses) : [];
+      const statBonuses
+      = elts.statBonuses !== undefined
+        ? Object.values(elts.statBonuses)
+        : [];
       let duplicateStatBonuses = false;
       if (statBonuses.length > 0) {
-        duplicateStatBonuses = isThereDuplicate(statBonuses.map(statBonus => statBonus.stat));
+        duplicateStatBonuses = isThereDuplicate(
+          statBonuses.map(statBonus => statBonus.stat)
+        );
       }
       if (duplicateStatBonuses) {
         setError('root.serverError', {
@@ -404,7 +430,9 @@ const AdminNewNode: FC = () => {
 
       // Check duplicate on character param
       const charParamBonuses
-        = elts.charParamBonuses !== undefined ? Object.values(elts.charParamBonuses) : [];
+        = elts.charParamBonuses !== undefined
+          ? Object.values(elts.charParamBonuses)
+          : [];
       let duplicateCharParamBonuses = false;
       if (charParamBonuses.length > 0) {
         duplicateCharParamBonuses = isThereDuplicate(
@@ -488,13 +516,16 @@ const AdminNewNode: FC = () => {
           uses,
           isKarmic: String(isKarmic) === '1',
           karmicCost,
-          i18n: { ...(titleFr !== undefined || summaryFr !== undefined || timeFr !== undefined
-            ? { fr: {
-                title: titleFr,
-                summary: summaryFr,
-                time: timeFr
-              } }
-            : {}) }
+          i18n: { ...(
+            titleFr !== undefined
+            || summaryFr !== undefined
+            || timeFr !== undefined
+              ? { fr: {
+                  title: titleFr,
+                  summary: summaryFr,
+                  time: timeFr
+                } }
+              : {}) }
         })
       );
 
@@ -504,7 +535,7 @@ const AdminNewNode: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>' || quoteFr !== '') {
         i18n = { fr: {
@@ -517,7 +548,11 @@ const AdminNewNode: FC = () => {
       api.nodes
         .create({
           title: name,
-          ...(skillId !== null ? { skillBranch: branch } : { cyberFrameBranch: branch }),
+          ...(
+            skillId !== null
+              ? { skillBranch: branch }
+              : { cyberFrameBranch: branch }
+          ),
           summary: html,
           rank: Number(rank),
           icon,
@@ -546,7 +581,7 @@ const AdminNewNode: FC = () => {
           }
           void navigate(`/admin/node/${quote._id}`);
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -603,7 +638,7 @@ const AdminNewNode: FC = () => {
         ${displayInt ? 'adminNewNode--int-visible' : ''}
       `)}
     >
-      <form className="adminNewNode__content" onSubmit={handleSubmit(onSaveNode)} noValidate>
+      <form className="adminNewNode__content" onSubmit={() => handleSubmit(onSaveNode)} noValidate>
         <Atitle className="adminNewNode__head" level={1}>
           {t('adminNewNode.title', { ns: 'pages' })}
         </Atitle>
@@ -613,13 +648,19 @@ const AdminNewNode: FC = () => {
               ? (
                   <>
                     {`${t(`terms.skill.name`)}:`}
-                    <Aa href={`/admin/skill/${skill.skill._id}`}>{skill.skill.title}</Aa>
+                    <Aa
+                      href={`/admin/skill/${skill.skill._id}`}
+                    >
+                      {skill.skill.title}
+                    </Aa>
                   </>
                 )
               : (
                   <>
                     {`${t(`terms.cyberFrame.name`)}:`}
-                    <Aa href={`/admin/cyberframe/${cyberFrame?.cyberFrame._id}`}>
+                    <Aa
+                      href={`/admin/cyberframe/${cyberFrame?.cyberFrame._id}`}
+                    >
                       {cyberFrame?.cyberFrame.title}
                     </Aa>
                   </>
@@ -656,15 +697,16 @@ const AdminNewNode: FC = () => {
             options={branchSelect}
             onChange={(e) => {
               let titleBranch: string | null = null;
-              branches.forEach((elt: ICuratedSkillBranch | ICuratedCyberFrameBranch) => {
-                const relevantElt
+              branches.forEach(
+                (elt: ICuratedSkillBranch | ICuratedCyberFrameBranch) => {
+                  const relevantElt
                   = (elt as ICuratedCyberFrameBranch).cyberFrameBranch
                     ?? (elt as ICuratedSkillBranch).skillBranch;
-                if (elt !== undefined && relevantElt._id === e) {
-                  titleBranch = relevantElt.title;
-                }
-              });
-              if (titleBranch === '_general') {
+                  if (relevantElt?._id === e) {
+                    titleBranch = relevantElt.title;
+                  }
+                });
+              if ((titleBranch as string | null) === '_general') {
                 setLevelSelect(generalRange);
               } else {
                 setLevelSelect(branchRange);
@@ -796,7 +838,9 @@ const AdminNewNode: FC = () => {
                 <div className="adminNewNode__bonus__fields">
                   <SmartSelect
                     control={control}
-                    inputName={`charParamBonuses.charParam-${charParamBonusId}.charParam`}
+                    inputName={
+                      `charParamBonuses.charParam-${charParamBonusId}.charParam`
+                    }
                     rules={{ required: t('charParamBonusStat.required', { ns: 'fields' }) }}
                     label={t('charParamBonusStat.label', { ns: 'fields' })}
                     options={charParamSelect}
@@ -804,7 +848,9 @@ const AdminNewNode: FC = () => {
                   />
                   <Input
                     control={control}
-                    inputName={`charParamBonuses.charParam-${charParamBonusId}.value`}
+                    inputName={
+                      `charParamBonuses.charParam-${charParamBonusId}.value`
+                    }
                     type="number"
                     rules={{ required: t('charParamBonusValue.required', { ns: 'fields' }) }}
                     label={t('charParamBonusValue.label', { ns: 'fields' })}
@@ -824,7 +870,9 @@ const AdminNewNode: FC = () => {
                         return result;
                       }, [])
                     );
-                    unregister(`charParamBonuses.charParam-${charParamBonusId}`);
+                    unregister(
+                      `charParamBonuses.charParam-${charParamBonusId}`
+                    );
                   }}
                   className="adminNewNode__bonus__button"
                 />

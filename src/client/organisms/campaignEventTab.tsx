@@ -173,7 +173,7 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
             campaignId,
             offset: 0
           })
-          .then((sentCampaignEvents: ICampaignEvent[]) => {
+          .then((sentCampaignEvents) => {
             setDataPrevCampaignEvents(sentCampaignEvents);
           })
           .catch(() => {
@@ -213,7 +213,7 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
               campaignId,
               offset: dataPrevCampaignEvents.length
             })
-            .then((sentCampaignEvents: ICampaignEvent[]) => {
+            .then((sentCampaignEvents) => {
               const indexedTotHeight = scrollRef.current?.scrollHeight;
               setDataPrevCampaignEvents((prev) => {
                 const next = [...sentCampaignEvents, ...prev];
@@ -327,7 +327,7 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
             campaign: campaignId,
             type: mode
           })
-          .then((data: ICampaignEvent) => {
+          .then((data) => {
             if (charRef.current !== undefined) {
               const dataCampaignEvent = {
                 ...data,

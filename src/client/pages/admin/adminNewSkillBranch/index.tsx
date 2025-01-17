@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -27,6 +27,7 @@ import {
 } from '../../../organisms';
 
 import type { ICuratedSkill } from '../../../types';
+import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
 import './adminNewSkillBranch.scss';
 
@@ -51,9 +52,13 @@ const AdminNewSkillBranch: FC = () => {
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const {
     handleSubmit,
@@ -63,10 +68,10 @@ const AdminNewSkillBranch: FC = () => {
   } = useForm();
 
   const getSkill = useCallback(() => {
-    if (api !== undefined && params.get('skillId') !== undefined) {
+    if (api !== undefined) {
       api.skills
         .get({ skillId: params.get('skillId') ?? '' })
-        .then((sentSkill: ICuratedSkill) => {
+        .then((sentSkill) => {
           setLoading(false);
           setSkill(sentSkill);
         })
@@ -99,7 +104,6 @@ const AdminNewSkillBranch: FC = () => {
         introEditor === null
         || introFrEditor === null
         || api === undefined
-        || params.get('skillId') === undefined
       ) {
         return;
       }
@@ -109,7 +113,7 @@ const AdminNewSkillBranch: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -137,7 +141,7 @@ const AdminNewSkillBranch: FC = () => {
           });
           void navigate(`/admin/skillbranch/${skillBranch._id}`);
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -183,7 +187,7 @@ const AdminNewSkillBranch: FC = () => {
     <div className="adminNewSkillBranch">
       <form
         className="adminNewSkillBranch__content"
-        onSubmit={handleSubmit(onSaveSkillBranch)}
+        onSubmit={() => handleSubmit(onSaveSkillBranch)}
         noValidate
       >
         <Atitle className="adminNewSkillBranch__head" level={1}>

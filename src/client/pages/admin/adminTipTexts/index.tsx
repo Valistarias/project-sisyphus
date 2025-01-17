@@ -21,7 +21,7 @@ const AdminTipTexts: FC = () => {
 
   // TODO: Handle i18n in place of basic english language
   const tipTextsList = useMemo(() => {
-    if (tipTexts === null || tipTexts.length === 0) {
+    if (tipTexts.length === 0) {
       return null;
     }
 

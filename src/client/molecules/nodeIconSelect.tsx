@@ -22,7 +22,7 @@ import { classTrim } from '../utils';
 
 import './nodeIconSelect.scss';
 
-interface INodeIconSelect , IReactHookFormInputs {
+interface INodeIconSelect extends IReactHookFormInputs {
   /** The label, if any */
   label?: string
 }

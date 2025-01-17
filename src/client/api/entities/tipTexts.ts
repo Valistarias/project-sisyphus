@@ -2,13 +2,13 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { ICuratedTipText } from '../../types';
+import type { ICuratedTipText, ITipText } from '../../types';
 
 interface ITipTextPayload {
   tipTextId: string
 }
 
-export default class TipTexts extends Entity {
+export default class TipTexts extends Entity<ITipText> {
   get: (payload: ITipTextPayload) => Promise<ICuratedTipText>;
 
   constructor() {

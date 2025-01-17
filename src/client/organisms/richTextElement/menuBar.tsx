@@ -88,7 +88,7 @@ export const MenuBar: FC<IMenuBar> = ({
 
         api.notions
           .getAllByRuleBook({ ruleBookId })
-          .then((notions: ICuratedNotion[]) => {
+          .then((notions) => {
             resolve(true);
             setNotions(notions);
           })

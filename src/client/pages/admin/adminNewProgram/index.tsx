@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -25,7 +25,8 @@ import {
 } from '../../../organisms';
 import { possibleStarterKitValues } from '../../../types/items';
 
-import type { ICuratedBasicNPC } from '../../../types';
+import type { ErrorResponseType, ICuratedBasicNPC } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import { isThereDuplicate } from '../../../utils';
 
@@ -70,9 +71,13 @@ const AdminNewProgram: FC = () => {
   const idIncrement = useRef(0);
   const [damagesIds, setDamagesIds] = useState<number[]>([]);
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const {
     handleSubmit,
@@ -83,10 +88,11 @@ const AdminNewProgram: FC = () => {
   } = useForm();
 
   // TODO: Internationalization
-  const programScopeList = useMemo(() => programScopes.map(({ programScope }) => ({
-    value: programScope._id,
-    label: programScope.title
-  })), [programScopes]);
+  const programScopeList = useMemo(
+    () => programScopes.map(({ programScope }) => ({
+      value: programScope._id,
+      label: programScope.title
+    })), [programScopes]);
 
   const damageTypeList = useMemo(() => damageTypes.map(({ damageType }) => ({
     value: damageType._id,
@@ -128,7 +134,7 @@ const AdminNewProgram: FC = () => {
     if (api !== undefined) {
       api.nPCs
         .getAllBasic()
-        .then((curatedNPCs: ICuratedBasicNPC[]) => {
+        .then((curatedNPCs) => {
           setNPCs(curatedNPCs);
         })
         .catch(() => {
@@ -169,9 +175,6 @@ const AdminNewProgram: FC = () => {
         introEditor === null
         || introFrEditor === null
         || api === undefined
-        || programScope === undefined
-        || ram === undefined
-        || rarity === undefined
       ) {
         return;
       }
@@ -180,7 +183,9 @@ const AdminNewProgram: FC = () => {
       const sortedDamages = damages !== undefined ? Object.values(damages) : [];
       let duplicateDamages = false;
       if (sortedDamages.length > 0) {
-        duplicateDamages = isThereDuplicate(sortedDamages.map(damage => damage.damageType));
+        duplicateDamages = isThereDuplicate(
+          sortedDamages.map(damage => damage.damageType)
+        );
       }
       if (duplicateDamages) {
         setError('root.serverError', {
@@ -204,7 +209,7 @@ const AdminNewProgram: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -242,7 +247,7 @@ const AdminNewProgram: FC = () => {
           });
           void navigate(`/admin/program/${programType._id}`);
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           setError('root.serverError', {
             type: 'server',
@@ -279,7 +284,7 @@ const AdminNewProgram: FC = () => {
 
   return (
     <div className="adminNewProgram">
-      <form className="adminNewProgram__content" onSubmit={handleSubmit(onSaveProgram)} noValidate>
+      <form className="adminNewProgram__content" onSubmit={() => handleSubmit(onSaveProgram)} noValidate>
         <Atitle level={1}>{t('adminNewProgram.title', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError.message !== undefined
           ? (

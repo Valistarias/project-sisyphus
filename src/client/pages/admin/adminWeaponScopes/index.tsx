@@ -21,7 +21,7 @@ const AdminWeaponScopes: FC = () => {
 
   // TODO: Handle i18n in place of basic english language
   const weaponScopesList = useMemo(() => {
-    if (weaponScopes === null || weaponScopes.length === 0) {
+    if (weaponScopes.length === 0) {
       return null;
     }
 

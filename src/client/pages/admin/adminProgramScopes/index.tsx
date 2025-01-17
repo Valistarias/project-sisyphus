@@ -21,7 +21,7 @@ const AdminProgramScopes: FC = () => {
 
   // TODO: Handle i18n in place of basic english language
   const programScopesList = useMemo(() => {
-    if (programScopes === null || programScopes.length === 0) {
+    if (programScopes.length === 0) {
       return null;
     }
 

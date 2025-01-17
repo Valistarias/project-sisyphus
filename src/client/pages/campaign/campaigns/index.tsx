@@ -14,6 +14,9 @@ import {
 import { Button } from '../../../molecules';
 import { Alert } from '../../../organisms';
 
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
+import type { ErrorResponseType } from '../../../types';
+
 import { classTrim } from '../../../utils';
 
 import './campaigns.scss';
@@ -31,7 +34,7 @@ const Campaigns: FC = () => {
 
   const onDeleteCampaign = useCallback(
     (id: string, name: string) => {
-      if (api === undefined || confMessageEvt === null) {
+      if (api === undefined) {
         return;
       }
       confMessageEvt.setConfirmContent(
@@ -44,8 +47,10 @@ const Campaigns: FC = () => {
           theme: 'error'
         },
         (evtId: string) => {
-          const confirmDelete = ({ detail }): void => {
-            if (detail.proceed === true) {
+          const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
               api.campaigns
                 .delete({ id })
                 .then(() => {
@@ -60,7 +65,7 @@ const Campaigns: FC = () => {
                   });
                   reloadCampaigns();
                 })
-                .catch(({ response }) => {
+                .catch(({ response }: ErrorResponseType) => {
                   const newId = getNewId();
                   createAlert({
                     key: newId,
@@ -92,7 +97,7 @@ const Campaigns: FC = () => {
     if (campaigns.length === 0) {
       return null;
     }
-    const campaignList: JSX.Element[] = [];
+    const campaignList: React.ReactElement[] = [];
     campaigns.forEach((campaign) => {
       const isOwner = campaign.owner._id === user?._id;
       campaignList.push(

@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -65,9 +65,13 @@ const AdminEditSkill: FC = () => {
   const [skillText, setSkillText] = useState('');
   const [skillTextFr, setSkillTextFr] = useState('');
 
-  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const nodeTree = useMemo(() => {
     const branches = skillData?.skill.branches;
@@ -152,7 +156,7 @@ const AdminEditSkill: FC = () => {
         htmlText = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -182,7 +186,7 @@ const AdminEditSkill: FC = () => {
           });
           reloadSkills();
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -224,8 +228,10 @@ const AdminEditSkill: FC = () => {
         confirmCta: t('adminEditSkill.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.skills
               .delete({ id })
               .then(() => {
@@ -241,7 +247,7 @@ const AdminEditSkill: FC = () => {
                 reloadSkills();
                 void navigate('/admin/skills');
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -279,7 +285,7 @@ const AdminEditSkill: FC = () => {
       calledApi.current = true;
       api.skills
         .get({ skillId: id })
-        .then((curatedSkill: ICuratedSkill) => {
+        .then((curatedSkill) => {
           const {
             skill, i18n
           } = curatedSkill;
@@ -343,7 +349,7 @@ const AdminEditSkill: FC = () => {
         ${displayInt ? 'adminEditSkill--int-visible' : ''}
       `)}
     >
-      <form onSubmit={handleSubmit(onSaveSkill)} noValidate className="adminEditSkill__content">
+      <form onSubmit={() => handleSubmit(onSaveSkill)} noValidate className="adminEditSkill__content">
         <div className="adminEditSkill__head">
           <Atitle level={1}>{skillData?.skill.title}</Atitle>
           <Button onClick={onAskDelete} color="error">

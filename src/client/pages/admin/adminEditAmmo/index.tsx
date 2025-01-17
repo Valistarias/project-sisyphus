@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -65,9 +65,13 @@ const AdminEditAmmo: FC = () => {
   const [ammoText, setAmmoText] = useState('');
   const [ammoTextFr, setAmmoTextFr] = useState('');
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const createDefaultData = useCallback((ammoData: ICuratedAmmo | null) => {
     if (ammoData == null) {
@@ -146,7 +150,7 @@ const AdminEditAmmo: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -180,7 +184,7 @@ const AdminEditAmmo: FC = () => {
             )
           });
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           setError('root.serverError', {
             type: 'server',
@@ -215,8 +219,10 @@ const AdminEditAmmo: FC = () => {
         confirmCta: t('adminEditAmmo.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.ammos
               .delete({ id })
               .then(() => {
@@ -231,7 +237,7 @@ const AdminEditAmmo: FC = () => {
                 });
                 void navigate(`/admin/ammos`);
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -268,7 +274,7 @@ const AdminEditAmmo: FC = () => {
       calledApi.current = true;
       api.ammos
         .get({ ammoId: id })
-        .then((curatedAmmo: ICuratedAmmo) => {
+        .then((curatedAmmo) => {
           const {
             ammo, i18n
           } = curatedAmmo;

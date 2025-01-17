@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { ICuratedCyberFrameBranch } from '../../types';
+import type { ICuratedCyberFrameBranch, ICyberFrameBranch } from '../../types';
 
 interface ICyberFrameBranchesPayload {
   cyberFrameId: string
@@ -12,8 +12,10 @@ interface ICyberFrameBranchPayload {
   cyberFrameBranchId: string
 }
 
-export default class CyberFrameBranches extends Entity {
-  getAllByCyberFrame: (payload: ICyberFrameBranchesPayload) => Promise<ICuratedCyberFrameBranch[]>;
+export default class CyberFrameBranches extends Entity<ICyberFrameBranch> {
+  getAllByCyberFrame: (payload: ICyberFrameBranchesPayload) =>
+  Promise<ICuratedCyberFrameBranch[]>;
+
   get: (payload: ICyberFrameBranchPayload) => Promise<ICuratedCyberFrameBranch>;
 
   constructor() {

@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -59,9 +59,13 @@ const AdminEditDamageType: FC = () => {
   const [damageTypeText, setDamageTypeText] = useState('');
   const [damageTypeTextFr, setDamageTypeTextFr] = useState('');
 
-  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const createDefaultData = useCallback((damageTypeData: ICuratedDamageType | null) => {
     if (damageTypeData == null) {
@@ -111,7 +115,7 @@ const AdminEditDamageType: FC = () => {
         htmlText = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -139,7 +143,7 @@ const AdminEditDamageType: FC = () => {
           });
           reloadDamageTypes();
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -183,8 +187,10 @@ const AdminEditDamageType: FC = () => {
         confirmCta: t('adminEditDamageType.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.damageTypes
               .delete({ id })
               .then(() => {
@@ -200,7 +206,7 @@ const AdminEditDamageType: FC = () => {
                 reloadDamageTypes();
                 void navigate('/admin/damagetypes');
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -238,7 +244,7 @@ const AdminEditDamageType: FC = () => {
       calledApi.current = true;
       api.damageTypes
         .get({ damageTypeId: id })
-        .then((curatedDamageType: ICuratedDamageType) => {
+        .then((curatedDamageType) => {
           const {
             damageType, i18n
           } = curatedDamageType;
@@ -302,7 +308,7 @@ const AdminEditDamageType: FC = () => {
       `)}
     >
       <form
-        onSubmit={handleSubmit(onSaveDamageType)}
+        onSubmit={() => handleSubmit(onSaveDamageType)}
         noValidate
         className="adminEditDamageType__content"
       >

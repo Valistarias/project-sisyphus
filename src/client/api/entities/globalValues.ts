@@ -8,7 +8,7 @@ interface IGlobalValuesPayload {
   globalValueId: string
 }
 
-export default class GlobalValues extends Entity {
+export default class GlobalValues extends Entity<IGlobalValue> {
   get: (payload: IGlobalValuesPayload) => Promise<IGlobalValue>;
 
   constructor() {

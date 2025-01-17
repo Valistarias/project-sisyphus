@@ -62,7 +62,7 @@ const AdminAmmos: FC = () => {
       calledApi.current = true;
       api.ammos
         .getAll()
-        .then((curatedAmmos: ICuratedAmmo[]) => {
+        .then((curatedAmmos) => {
           setAmmos(curatedAmmos);
         })
         .catch(() => {

@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -27,6 +27,7 @@ import {
 } from '../../../organisms';
 
 import './adminNewNotion.scss';
+import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
 interface FormValues {
   name: string
@@ -46,20 +47,24 @@ const AdminNewNotions: FC = () => {
 
   const params = useMemo(() => new URLSearchParams(search), [search]);
 
-  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const createDefaultData = useCallback(
     (params: URLSearchParams, ruleBooks: ISingleValueSelect[]) => {
-      if (params.get('ruleBookId') === undefined || ruleBooks.length === 0) {
+      if (ruleBooks.length === 0) {
         return {};
       }
       const selectedfield = ruleBooks.find(
         ruleBook => ruleBook.value === params.get('ruleBookId')
       );
       if (selectedfield !== undefined) {
-        return { type: selectedfield.value };
+        return { type: String(selectedfield.value) };
       }
 
       return {};
@@ -80,7 +85,7 @@ const AdminNewNotions: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({ defaultValues: useMemo(
+  } = useForm<FormValues>({ defaultValues: useMemo(
     () => createDefaultData(params, ruleBookSelect),
     [
       createDefaultData,
@@ -104,7 +109,7 @@ const AdminNewNotions: FC = () => {
         htmlText = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -132,7 +137,7 @@ const AdminNewNotions: FC = () => {
           });
           void navigate(`/admin/notion/${notion._id}`);
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -171,7 +176,7 @@ const AdminNewNotions: FC = () => {
 
   return (
     <div className="adminNewNotion">
-      <form onSubmit={handleSubmit(onSaveNotion)} noValidate className="adminNewNotion__content">
+      <form onSubmit={() => handleSubmit(onSaveNotion)} noValidate className="adminNewNotion__content">
         <Atitle level={1}>{t('adminNewNotion.title', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError.message !== undefined
           ? (

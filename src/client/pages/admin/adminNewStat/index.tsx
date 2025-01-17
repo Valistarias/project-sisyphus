@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -25,6 +25,7 @@ import {
 } from '../../../organisms';
 
 import './adminNewStat.scss';
+import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
 interface FormValues {
   name: string
@@ -43,9 +44,13 @@ const AdminNewStat: FC = () => {
   } = useSystemAlerts();
   const { reloadStats } = useGlobalVars();
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const {
     handleSubmit,
@@ -67,12 +72,12 @@ const AdminNewStat: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
           title: nameFr,
-          short: shortFr ?? '',
+          short: shortFr,
           text: htmlFr
         } };
       }
@@ -98,7 +103,7 @@ const AdminNewStat: FC = () => {
           reloadStats();
           void navigate(`/admin/stat/${stat._id}`);
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -128,7 +133,7 @@ const AdminNewStat: FC = () => {
 
   return (
     <div className="adminNewStat">
-      <form className="adminNewStat__content" onSubmit={handleSubmit(onSaveStat)} noValidate>
+      <form className="adminNewStat__content" onSubmit={() => handleSubmit(onSaveStat)} noValidate>
         <Atitle level={1}>{t('adminNewStat.title', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError.message !== undefined
           ? (

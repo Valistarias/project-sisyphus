@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -23,6 +23,9 @@ import {
 import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
+
+import type { ErrorResponseType } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import './adminNewRarity.scss';
 
@@ -43,9 +46,13 @@ const AdminNewRarity: FC = () => {
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const {
     handleSubmit,
@@ -67,7 +74,7 @@ const AdminNewRarity: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -95,7 +102,7 @@ const AdminNewRarity: FC = () => {
           reloadRarities();
           void navigate(`/admin/rarity/${rarity._id}`);
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -137,7 +144,7 @@ const AdminNewRarity: FC = () => {
 
   return (
     <div className="adminNewRarity">
-      <form className="adminNewRarity__content" onSubmit={handleSubmit(onSaveRarity)} noValidate>
+      <form className="adminNewRarity__content" onSubmit={() => handleSubmit(onSaveRarity)} noValidate>
         <Atitle level={1}>{t('adminNewRarity.title', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError.message !== undefined
           ? (

@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -61,9 +61,13 @@ const AdminEditBodyPart: FC = () => {
   const [bodyPartText, setBodyPartText] = useState('');
   const [bodyPartTextFr, setBodyPartTextFr] = useState('');
 
-  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const createDefaultData = useCallback((bodyPartData: ICuratedBodyPart | null) => {
     if (bodyPartData == null) {
@@ -117,7 +121,7 @@ const AdminEditBodyPart: FC = () => {
         htmlText = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -147,7 +151,7 @@ const AdminEditBodyPart: FC = () => {
           });
           reloadBodyParts();
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -191,8 +195,10 @@ const AdminEditBodyPart: FC = () => {
         confirmCta: t('adminEditBodyPart.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.bodyParts
               .delete({ id })
               .then(() => {
@@ -208,7 +214,7 @@ const AdminEditBodyPart: FC = () => {
                 reloadBodyParts();
                 void navigate('/admin/bodyparts');
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -246,7 +252,7 @@ const AdminEditBodyPart: FC = () => {
       calledApi.current = true;
       api.bodyParts
         .get({ bodyPartId: id })
-        .then((curatedBodyPart: ICuratedBodyPart) => {
+        .then((curatedBodyPart) => {
           const {
             bodyPart, i18n
           } = curatedBodyPart;
@@ -310,7 +316,7 @@ const AdminEditBodyPart: FC = () => {
       `)}
     >
       <form
-        onSubmit={handleSubmit(onSaveBodyPart)}
+        onSubmit={() => handleSubmit(onSaveBodyPart)}
         noValidate
         className="adminEditBodyPart__content"
       >

@@ -4,7 +4,7 @@ import React, {
 
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -95,7 +95,7 @@ const AdminEditGlobalValue: FC = () => {
           });
           reloadGlobalValues();
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -135,8 +135,10 @@ const AdminEditGlobalValue: FC = () => {
         confirmCta: t('adminEditGlobalValue.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.globalValues
               .delete({ id })
               .then(() => {
@@ -152,7 +154,7 @@ const AdminEditGlobalValue: FC = () => {
                 reloadGlobalValues();
                 void navigate('/admin/globalvalues');
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -190,7 +192,7 @@ const AdminEditGlobalValue: FC = () => {
       calledApi.current = true;
       api.globalValues
         .get({ globalValueId: id })
-        .then((globalValue: IGlobalValue) => {
+        .then((globalValue) => {
           setGlobalValueData(globalValue);
         })
         .catch(() => {
@@ -225,7 +227,7 @@ const AdminEditGlobalValue: FC = () => {
   return (
     <div className="adminEditGlobalValue">
       <form
-        onSubmit={handleSubmit(onSaveGlobalValue)}
+        onSubmit={() => handleSubmit(onSaveGlobalValue)}
         noValidate
         className="adminEditGlobalValue__content"
       >

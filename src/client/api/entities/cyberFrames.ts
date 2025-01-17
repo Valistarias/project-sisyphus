@@ -2,13 +2,13 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { ICuratedCyberFrame } from '../../types';
+import type { ICuratedCyberFrame, ICyberFrame } from '../../types';
 
 interface ICyberFramePayload {
   cyberFrameId: string
 }
 
-export default class CyberFrames extends Entity {
+export default class CyberFrames extends Entity<ICyberFrame> {
   get: (payload: ICyberFramePayload) => Promise<ICuratedCyberFrame>;
 
   constructor() {

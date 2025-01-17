@@ -2,13 +2,13 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { ICuratedBackground } from '../../types';
+import type { IBackground, ICuratedBackground } from '../../types';
 
 interface IBackgroundPayload {
   backgroundId: string
 }
 
-export default class Backgrounds extends Entity {
+export default class Backgrounds extends Entity<IBackground> {
   get: (payload: IBackgroundPayload) => Promise<ICuratedBackground>;
 
   constructor() {

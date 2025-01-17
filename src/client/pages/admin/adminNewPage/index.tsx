@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -26,8 +26,10 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 
-import './adminNewPage.scss';
+import type { ErrorResponseType } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
+import './adminNewPage.scss';
 interface FormValues {
   name: string
   nameFr: string
@@ -44,9 +46,13 @@ const AdminNewPage: FC = () => {
 
   const params = useMemo(() => new URLSearchParams(search), [search]);
 
-  const contentEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const contentEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const contentFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const contentFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const {
     handleSubmit,
@@ -63,8 +69,6 @@ const AdminNewPage: FC = () => {
         contentEditor === null
         || contentFrEditor === null
         || api === undefined
-        || params.get('ruleBookId') === undefined
-        || params.get('chapterId') === undefined
       ) {
         return;
       }
@@ -74,7 +78,7 @@ const AdminNewPage: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -102,7 +106,7 @@ const AdminNewPage: FC = () => {
           });
           void navigate(`/admin/page/${page._id}`);
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -132,7 +136,7 @@ const AdminNewPage: FC = () => {
 
   return (
     <div className="adminNewPage">
-      <form onSubmit={handleSubmit(onSavePage)} noValidate className="adminNewPage__content">
+      <form onSubmit={() => handleSubmit(onSavePage)} noValidate className="adminNewPage__content">
         <Atitle level={1}>{t('adminNewPage.title', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError.message !== undefined
           ? (

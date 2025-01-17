@@ -2,13 +2,13 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { ICuratedBodyPart } from '../../types';
+import type { IBodyPart, ICuratedBodyPart } from '../../types';
 
 interface IBodyPartPayload {
   bodyPartId: string
 }
 
-export default class BodyParts extends Entity {
+export default class BodyParts extends Entity<IBodyPart> {
   get: (payload: IBodyPartPayload) => Promise<ICuratedBodyPart>;
 
   constructor() {

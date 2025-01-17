@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { ICuratedNode } from '../../types';
+import type { ICuratedNode, INode } from '../../types';
 
 interface IBranchPayload {
   cyberFrameBranchId?: string
@@ -13,10 +13,12 @@ interface INodePayload {
   nodeId: string
 }
 
-export default class Nodes extends Entity {
+export default class Nodes extends Entity<INode> {
   getAllByBranch: (payload: IBranchPayload) => Promise<ICuratedNode[]>;
   getAllBySkill: (payload: { skillId: string }) => Promise<ICuratedNode[]>;
-  getAllByCyberFrame: (payload: { cyberFrameId: string }) => Promise<ICuratedNode[]>;
+  getAllByCyberFrame: (payload: { cyberFrameId: string }) =>
+  Promise<ICuratedNode[]>;
+
   get: (payload: INodePayload) => Promise<ICuratedNode>;
 
   constructor() {

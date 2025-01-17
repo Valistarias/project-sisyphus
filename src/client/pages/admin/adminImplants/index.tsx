@@ -61,7 +61,7 @@ const AdminImplants: FC = () => {
       calledApi.current = true;
       api.implants
         .getAll()
-        .then((curatedImplants: ICuratedImplant[]) => {
+        .then((curatedImplants) => {
           setImplants(curatedImplants);
         })
         .catch(() => {

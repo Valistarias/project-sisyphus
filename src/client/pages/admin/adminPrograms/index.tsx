@@ -33,7 +33,7 @@ const AdminPrograms: FC = () => {
 
   // TODO: Handle i18n in place of basic english language
   const programsList = useMemo(() => {
-    if (programs === null || programs.length === 0) {
+    if (programs.length === 0) {
       return null;
     }
 
@@ -61,7 +61,7 @@ const AdminPrograms: FC = () => {
       calledApi.current = true;
       api.programs
         .getAll()
-        .then((curatedPrograms: ICuratedProgram[]) => {
+        .then((curatedPrograms) => {
           setPrograms(curatedPrograms);
         })
         .catch(() => {

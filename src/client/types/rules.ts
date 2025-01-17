@@ -87,7 +87,7 @@ export interface ISkillBranch {
 
 export interface ICuratedSkillBranch {
   i18n: InternationalizationType
-  skillBranch: ISkillBranch
+  skillBranch?: ISkillBranch
 }
 
 // Actions ------------------------------------
@@ -236,7 +236,7 @@ export interface ICyberFrameBranch {
 
 export interface ICuratedCyberFrameBranch {
   i18n: InternationalizationType
-  cyberFrameBranch: ICyberFrameBranch
+  cyberFrameBranch?: ICyberFrameBranch
 }
 
 // Node ------------------------------------

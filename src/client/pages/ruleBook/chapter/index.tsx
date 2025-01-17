@@ -17,7 +17,7 @@ import {
 } from '../../../organisms';
 import { ErrorPage } from '../../index';
 
-import type { ICuratedChapter } from '../../../types';
+import type { ErrorResponseType, ICuratedChapter } from '../../../types';
 
 import './chapter.scss';
 
@@ -47,17 +47,13 @@ const Chapter: FC = () => {
       calledApi.current = chapterId;
       api.chapters
         .get({ chapterId })
-        .then((chapter: ICuratedChapter) => {
+        .then((chapter) => {
           setLoading(false);
-          if (chapter.chapter.ruleBook === undefined) {
-            setNotFound(true);
-          } else {
-            setChapter(chapter ?? null);
-          }
+          setChapter(chapter);
         })
-        .catch((res) => {
+        .catch(({ response }: ErrorResponseType) => {
           setLoading(false);
-          if (res.response.status === 404) {
+          if (response.data.code === 'CYPU-104') {
             setNotFound(true);
           } else {
             const newId = getNewId();

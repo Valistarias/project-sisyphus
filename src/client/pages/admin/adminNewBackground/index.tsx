@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -23,6 +23,8 @@ import {
 import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
+
+import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
 import {
   classTrim, isThereDuplicate
@@ -104,9 +106,13 @@ const AdminNewBackground: FC = () => {
   );
   const [charParamBonusIds, setCharParamBonusIds] = useState<number[]>([]);
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const {
     handleSubmit,
@@ -114,7 +120,7 @@ const AdminNewBackground: FC = () => {
     unregister,
     control,
     formState: { errors }
-  } = useForm({ defaultValues: { icon: 'default' } });
+  } = useForm<FormValues>({ defaultValues: { } });
 
   const onAddSkillBonus = useCallback(() => {
     setSkillBonusIds((prev) => {
@@ -155,7 +161,9 @@ const AdminNewBackground: FC = () => {
       }
 
       // Check duplicate on skills
-      const skillBonuses = elts.skillBonuses !== undefined ? Object.values(elts.skillBonuses) : [];
+      const skillBonuses = elts.skillBonuses !== undefined
+        ? Object.values(elts.skillBonuses)
+        : [];
       let duplicateSkillBonuses = false;
       if (skillBonuses.length > 0) {
         duplicateSkillBonuses = isThereDuplicate(
@@ -172,10 +180,14 @@ const AdminNewBackground: FC = () => {
       }
 
       // Check duplicate on stats
-      const statBonuses = elts.statBonuses !== undefined ? Object.values(elts.statBonuses) : [];
+      const statBonuses = elts.statBonuses !== undefined
+        ? Object.values(elts.statBonuses)
+        : [];
       let duplicateStatBonuses = false;
       if (statBonuses.length > 0) {
-        duplicateStatBonuses = isThereDuplicate(statBonuses.map(statBonus => statBonus.stat));
+        duplicateStatBonuses = isThereDuplicate(
+          statBonuses.map(statBonus => statBonus.stat)
+        );
       }
       if (duplicateStatBonuses) {
         setError('root.serverError', {
@@ -188,7 +200,9 @@ const AdminNewBackground: FC = () => {
 
       // Check duplicate on character param
       const charParamBonuses
-        = elts.charParamBonuses !== undefined ? Object.values(elts.charParamBonuses) : [];
+        = elts.charParamBonuses !== undefined
+          ? Object.values(elts.charParamBonuses)
+          : [];
       let duplicateCharParamBonuses = false;
       if (charParamBonuses.length > 0) {
         duplicateCharParamBonuses = isThereDuplicate(
@@ -229,7 +243,7 @@ const AdminNewBackground: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -259,7 +273,7 @@ const AdminNewBackground: FC = () => {
           });
           void navigate(`/admin/background/${quote._id}`);
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -295,7 +309,7 @@ const AdminNewBackground: FC = () => {
     >
       <form
         className="adminNewBackground__content"
-        onSubmit={handleSubmit(onSaveBackground)}
+        onSubmit={() => handleSubmit(onSaveBackground)}
         noValidate
       >
         <Atitle className="adminNewBackground__head" level={1}>
@@ -422,7 +436,9 @@ const AdminNewBackground: FC = () => {
                 <div className="adminNewBackground__bonus__fields">
                   <SmartSelect
                     control={control}
-                    inputName={`charParamBonuses.charParam-${charParamBonusId}.charParam`}
+                    inputName={
+                      `charParamBonuses.charParam-${charParamBonusId}.charParam`
+                    }
                     rules={{ required: t('charParamBonusStat.required', { ns: 'fields' }) }}
                     label={t('charParamBonusStat.label', { ns: 'fields' })}
                     options={charParamSelect}
@@ -430,7 +446,9 @@ const AdminNewBackground: FC = () => {
                   />
                   <Input
                     control={control}
-                    inputName={`charParamBonuses.charParam-${charParamBonusId}.value`}
+                    inputName={
+                      `charParamBonuses.charParam-${charParamBonusId}.value`
+                    }
                     type="number"
                     rules={{ required: t('charParamBonusValue.required', { ns: 'fields' }) }}
                     label={t('charParamBonusValue.label', { ns: 'fields' })}
@@ -450,7 +468,9 @@ const AdminNewBackground: FC = () => {
                         return result;
                       }, [])
                     );
-                    unregister(`charParamBonuses.charParam-${charParamBonusId}`);
+                    unregister(
+                      `charParamBonuses.charParam-${charParamBonusId}`
+                    );
                   }}
                   className="adminNewBackground__bonus__button"
                 />

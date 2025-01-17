@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -60,9 +60,13 @@ const AdminEditWeaponScope: FC = () => {
   const [weaponScopeText, setWeaponScopeText] = useState('');
   const [weaponScopeTextFr, setWeaponScopeTextFr] = useState('');
 
-  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const createDefaultData = useCallback((weaponScopeData: ICuratedWeaponScope | null) => {
     if (weaponScopeData == null) {
@@ -114,7 +118,7 @@ const AdminEditWeaponScope: FC = () => {
         htmlText = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -143,7 +147,7 @@ const AdminEditWeaponScope: FC = () => {
           });
           reloadWeaponScopes();
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -187,8 +191,10 @@ const AdminEditWeaponScope: FC = () => {
         confirmCta: t('adminEditWeaponScope.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.weaponScopes
               .delete({ id })
               .then(() => {
@@ -204,7 +210,7 @@ const AdminEditWeaponScope: FC = () => {
                 reloadWeaponScopes();
                 void navigate('/admin/weaponscopes');
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -242,7 +248,7 @@ const AdminEditWeaponScope: FC = () => {
       calledApi.current = true;
       api.weaponScopes
         .get({ weaponScopeId: id })
-        .then((curatedWeaponScope: ICuratedWeaponScope) => {
+        .then((curatedWeaponScope) => {
           const {
             weaponScope, i18n
           } = curatedWeaponScope;
@@ -306,7 +312,7 @@ const AdminEditWeaponScope: FC = () => {
       `)}
     >
       <form
-        onSubmit={handleSubmit(onSaveWeaponScope)}
+        onSubmit={() => handleSubmit(onSaveWeaponScope)}
         noValidate
         className="adminEditWeaponScope__content"
       >

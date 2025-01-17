@@ -62,7 +62,7 @@ const AdminBags: FC = () => {
       calledApi.current = true;
       api.bags
         .getAll()
-        .then((curatedBags: ICuratedBag[]) => {
+        .then((curatedBags) => {
           setBags(curatedBags);
         })
         .catch(() => {

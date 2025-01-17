@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -24,6 +24,8 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 import { possibleStarterKitValues } from '../../../types/items';
+
+import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
 import { isThereDuplicate } from '../../../utils';
 
@@ -107,9 +109,13 @@ const AdminNewWeapon: FC = () => {
   const [effectIds, setEffectIds] = useState<number[]>([]);
   const [actionIds, setActionIds] = useState<number[]>([]);
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const {
     handleSubmit,
@@ -135,10 +141,12 @@ const AdminNewWeapon: FC = () => {
     label: damageType.title
   })), [damageTypes]);
 
-  const itemModifierList = useMemo(() => itemModifiers.map(({ itemModifier }) => ({
-    value: itemModifier._id,
-    label: itemModifier.title
-  })), [itemModifiers]);
+  const itemModifierList = useMemo(
+    () => itemModifiers.map(({ itemModifier }
+    ) => ({
+      value: itemModifier._id,
+      label: itemModifier.title
+    })), [itemModifiers]);
 
   const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
     value: rarity._id,
@@ -252,8 +260,6 @@ const AdminNewWeapon: FC = () => {
         introEditor === null
         || introFrEditor === null
         || api === undefined
-        || weaponScope === undefined
-        || rarity === undefined
       ) {
         return;
       }
@@ -262,7 +268,9 @@ const AdminNewWeapon: FC = () => {
       const sortedDamages = damages !== undefined ? Object.values(damages) : [];
       let duplicateDamages = false;
       if (sortedDamages.length > 0) {
-        duplicateDamages = isThereDuplicate(sortedDamages.map(damage => damage.damageType));
+        duplicateDamages = isThereDuplicate(
+          sortedDamages.map(damage => damage.damageType)
+        );
       }
       if (duplicateDamages) {
         setError('root.serverError', {
@@ -328,13 +336,16 @@ const AdminNewWeapon: FC = () => {
           uses,
           isKarmic: String(isKarmic) === '1',
           karmicCost,
-          i18n: { ...(titleFr !== undefined || summaryFr !== undefined || timeFr !== undefined
-            ? { fr: {
-                title: titleFr,
-                summary: summaryFr,
-                time: timeFr
-              } }
-            : {}) }
+          i18n: { ...(
+            titleFr !== undefined
+            || summaryFr !== undefined
+            || timeFr !== undefined
+              ? { fr: {
+                  title: titleFr,
+                  summary: summaryFr,
+                  time: timeFr
+                } }
+              : {}) }
         })
       );
 
@@ -344,7 +355,7 @@ const AdminNewWeapon: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -365,7 +376,9 @@ const AdminNewWeapon: FC = () => {
           starterKit,
           summary: html,
           magasine: magasine !== undefined ? Number(magasine) : undefined,
-          ammoPerShot: ammoPerShot !== undefined ? Number(ammoPerShot) : undefined,
+          ammoPerShot: ammoPerShot !== undefined
+            ? Number(ammoPerShot)
+            : undefined,
           i18n,
           quote,
           damages: curatedDamages,
@@ -384,7 +397,7 @@ const AdminNewWeapon: FC = () => {
           });
           void navigate(`/admin/weapon/${weaponType._id}`);
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           setError('root.serverError', {
             type: 'server',
@@ -418,7 +431,7 @@ const AdminNewWeapon: FC = () => {
 
   return (
     <div className="adminNewWeapon">
-      <form className="adminNewWeapon__content" onSubmit={handleSubmit(onSaveWeapon)} noValidate>
+      <form className="adminNewWeapon__content" onSubmit={() => handleSubmit(onSaveWeapon)} noValidate>
         <Atitle level={1}>{t('adminNewWeapon.title', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError.message !== undefined
           ? (

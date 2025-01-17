@@ -21,7 +21,7 @@ const AdminWeaponStyles: FC = () => {
 
   // TODO: Handle i18n in place of basic english language
   const weaponStylesList = useMemo(() => {
-    if (weaponStyles === null || weaponStyles.length === 0) {
+    if (weaponStyles.length === 0) {
       return null;
     }
 

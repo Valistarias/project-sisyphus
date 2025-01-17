@@ -23,7 +23,7 @@ interface IBodyPayload {
   characterId: string
 }
 
-export default class Bodys extends Entity {
+export default class Bodys extends Entity<IBody> {
   get: (payload: IBodyPayload) => Promise<IBody>;
   updateStats: (payload: IUpdateStatsPayload) => Promise<IBody>;
   resetItems: (payload: IResetItemsPayload) => Promise<IBody>;

@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -60,9 +60,13 @@ const AdminEditItemModifier: FC = () => {
   const [itemModifierText, setItemModifierText] = useState('');
   const [itemModifierTextFr, setItemModifierTextFr] = useState('');
 
-  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const createDefaultData = useCallback((itemModifierData: ICuratedItemModifier | null) => {
     if (itemModifierData == null) {
@@ -114,7 +118,7 @@ const AdminEditItemModifier: FC = () => {
         htmlText = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -143,7 +147,7 @@ const AdminEditItemModifier: FC = () => {
           });
           reloadItemModifiers();
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -187,8 +191,10 @@ const AdminEditItemModifier: FC = () => {
         confirmCta: t('adminEditItemModifier.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.itemModifiers
               .delete({ id })
               .then(() => {
@@ -204,7 +210,7 @@ const AdminEditItemModifier: FC = () => {
                 reloadItemModifiers();
                 void navigate('/admin/itemmodifiers');
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -242,7 +248,7 @@ const AdminEditItemModifier: FC = () => {
       calledApi.current = true;
       api.itemModifiers
         .get({ itemModifierId: id })
-        .then((curatedItemModifier: ICuratedItemModifier) => {
+        .then((curatedItemModifier) => {
           const {
             itemModifier, i18n
           } = curatedItemModifier;
@@ -306,7 +312,7 @@ const AdminEditItemModifier: FC = () => {
       `)}
     >
       <form
-        onSubmit={handleSubmit(onSaveItemModifier)}
+        onSubmit={() => handleSubmit(onSaveItemModifier)}
         noValidate
         className="adminEditItemModifier__content"
       >

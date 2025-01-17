@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -23,6 +23,8 @@ import {
 import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
+
+import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
 import './adminNewSkill.scss';
 
@@ -47,9 +49,13 @@ const AdminNewSkill: FC = () => {
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const {
     handleSubmit,
@@ -76,7 +82,7 @@ const AdminNewSkill: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -106,7 +112,7 @@ const AdminNewSkill: FC = () => {
           reloadSkills();
           void navigate(`/admin/skill/${skill._id}`);
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -148,7 +154,7 @@ const AdminNewSkill: FC = () => {
 
   return (
     <div className="adminNewSkill">
-      <form className="adminNewSkill__content" onSubmit={handleSubmit(onSaveSkill)} noValidate>
+      <form className="adminNewSkill__content" onSubmit={() => handleSubmit(onSaveSkill)} noValidate>
         <Atitle level={1}>{t('adminNewSkill.title', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError.message !== undefined
           ? (

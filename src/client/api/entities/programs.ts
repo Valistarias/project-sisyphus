@@ -2,13 +2,13 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { ICuratedProgram } from '../../types';
+import type { ICuratedProgram, IProgram } from '../../types';
 
 interface IProgramPayload {
   programId: string
 }
 
-export default class Programs extends Entity {
+export default class Programs extends Entity<IProgram> {
   get: (payload: IProgramPayload) => Promise<ICuratedProgram>;
   getStarters: () => Promise<ICuratedProgram[]>;
 

@@ -61,7 +61,7 @@ const AdminItems: FC = () => {
       calledApi.current = true;
       api.items
         .getAll()
-        .then((curatedItems: ICuratedItem[]) => {
+        .then((curatedItems) => {
           setItems(curatedItems);
         })
         .catch(() => {

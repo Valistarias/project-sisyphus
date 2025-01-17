@@ -61,7 +61,7 @@ const AdminArmors: FC = () => {
       calledApi.current = true;
       api.armors
         .getAll()
-        .then((curatedArmors: ICuratedArmor[]) => {
+        .then((curatedArmors) => {
           setArmors(curatedArmors);
         })
         .catch(() => {

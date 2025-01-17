@@ -2,13 +2,13 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { ICuratedStat } from '../../types';
+import type { ICuratedStat, IStat } from '../../types';
 
 interface IStatPayload {
   statId: string
 }
 
-export default class Stats extends Entity {
+export default class Stats extends Entity<IStat> {
   get: (payload: IStatPayload) => Promise<ICuratedStat>;
 
   constructor() {

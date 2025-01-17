@@ -7,10 +7,14 @@ export type InternationalizationType = Record<
   Record<string, string | undefined
   > | undefined>;
 export interface ErrorResponseType {
-  message: string
-  code: string
-  sent?: string | null
-  err?: unknown
+  response: {
+    data: {
+      message: string
+      code: string
+      sent?: string | null
+      err?: unknown
+    }
+  }
 }
 
 // User ------------------------------------

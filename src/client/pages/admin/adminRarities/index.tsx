@@ -16,6 +16,8 @@ import {
   Alert, DragList, type IDragElt
 } from '../../../organisms';
 
+import type { ErrorResponseType } from '../../../types';
+
 import { arraysEqual } from '../../../utils';
 
 import './adminRarities.scss';
@@ -106,7 +108,7 @@ const AdminRarities: FC = () => {
         });
         setInitialOrder(raritiesOrder);
       })
-      .catch(({ response }) => {
+      .catch(({ response }: ErrorResponseType) => {
         console.error(response);
       });
   }, [

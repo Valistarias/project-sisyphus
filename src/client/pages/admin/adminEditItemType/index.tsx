@@ -4,7 +4,7 @@ import React, {
 
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -92,7 +92,7 @@ const AdminEditItemType: FC = () => {
           });
           reloadItemTypes();
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -132,8 +132,10 @@ const AdminEditItemType: FC = () => {
         confirmCta: t('adminEditItemType.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.itemTypes
               .delete({ id })
               .then(() => {
@@ -149,7 +151,7 @@ const AdminEditItemType: FC = () => {
                 reloadItemTypes();
                 void navigate('/admin/itemtypes');
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -187,7 +189,7 @@ const AdminEditItemType: FC = () => {
       calledApi.current = true;
       api.itemTypes
         .get({ itemTypeId: id })
-        .then((itemType: IItemType) => {
+        .then((itemType) => {
           setItemTypeData(itemType);
         })
         .catch(() => {
@@ -239,7 +241,7 @@ const AdminEditItemType: FC = () => {
   return (
     <div className="adminEditItemType">
       <form
-        onSubmit={handleSubmit(onSaveItemType)}
+        onSubmit={() => handleSubmit(onSaveItemType)}
         noValidate
         className="adminEditItemType__content"
       >

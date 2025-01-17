@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
@@ -40,7 +40,7 @@ const AdminTestDiceComp: FC = () => {
         thisP?: number
         orMoreP?: number
         orLessP?: number
-      }
+      } | undefined
     > = {};
     const increments: number[] = [];
     const [diceNumber, valueDice] = formula.split('d').map(val => Number(val));
@@ -58,28 +58,46 @@ const AdminTestDiceComp: FC = () => {
         diceVal.push(singleDieVal);
         total += singleDieVal;
       });
-      if (scores[total] != null) {
-        // scores[total].rolls.push(diceVal);
-        scores[total].count++;
-      } else {
-        scores[total] = {
-          // rolls: [diceVal],
-          count: 1 };
-      }
+      scores[total] = {
+        // rolls: [diceVal],
+        count: (scores[total]?.count ?? 0) + 1
+      };
     }
-    const possibleScores = Object.keys(scores);
 
     let orLessCount = 0;
     let orMoreCount = variations;
 
+    const cleanScores: Record<
+      string,
+      {
+      // rolls: number[][];
+        count: number
+        thisP?: number
+        orMoreP?: number
+        orLessP?: number
+      }
+    > = {};
+    Object.keys(scores).forEach(
+      (scoreId) => {
+        if (scores[scoreId] !== undefined) {
+          cleanScores[scoreId] = scores[scoreId];
+        }
+      }
+    );
+
+    const possibleScores = Object.keys(cleanScores);
+
     // Probabilities
-    possibleScores.forEach((possibleScore, z) => {
-      const score = scores[possibleScore].count;
-      scores[possibleScore].thisP = Math.round((score / variations) * 10000) / 100;
+    possibleScores.forEach((possibleScore) => {
+      const score = cleanScores[possibleScore].count;
+      cleanScores[possibleScore].thisP
+      = Math.round((score / variations) * 10000) / 100;
 
       orLessCount += score;
-      scores[possibleScore].orLessP = Math.round((orLessCount / variations) * 10000) / 100;
-      scores[possibleScore].orMoreP = Math.round((orMoreCount / variations) * 10000) / 100;
+      cleanScores[possibleScore].orLessP
+      = Math.round((orLessCount / variations) * 10000) / 100;
+      cleanScores[possibleScore].orMoreP
+      = Math.round((orMoreCount / variations) * 10000) / 100;
       orMoreCount -= score;
     });
 
@@ -104,7 +122,7 @@ const AdminTestDiceComp: FC = () => {
           {possibleScores.map((possibleScore, index) => {
             const {
               count, thisP, orMoreP, orLessP
-            } = scores[possibleScore];
+            } = cleanScores[possibleScore];
 
             return (
               <tr key={index}>

@@ -3,14 +3,14 @@ import axios from 'axios';
 import Entity from './entity';
 
 import type {
-  ICuratedBasicNPC, ICuratedNPC
+  ICuratedBasicNPC, ICuratedNPC, INPC
 } from '../../types';
 
 interface INPCPayload {
   nPCId: string
 }
 
-export default class NPCs extends Entity {
+export default class NPCs extends Entity<INPC> {
   get: (payload: INPCPayload) => Promise<ICuratedNPC>;
   getAllBasic: () => Promise<ICuratedBasicNPC[]>;
 

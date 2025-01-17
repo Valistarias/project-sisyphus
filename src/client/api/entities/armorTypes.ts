@@ -2,13 +2,13 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { ICuratedArmorType } from '../../types';
+import type { IArmorType, ICuratedArmorType } from '../../types';
 
 interface IArmorTypePayload {
   armorTypeId: string
 }
 
-export default class ArmorTypes extends Entity {
+export default class ArmorTypes extends Entity<IArmorType> {
   get: (payload: IArmorTypePayload) => Promise<ICuratedArmorType>;
 
   constructor() {

@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -24,6 +24,8 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 
+import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
+
 import { classTrim } from '../../../utils';
 
 import './adminNewNPC.scss';
@@ -38,6 +40,7 @@ interface FormValues {
   hp: number
   pr?: number
   ar: number
+  icon: string
   attacks?: Record<
     string,
     {
@@ -89,9 +92,13 @@ const AdminNewNPC: FC = () => {
     [weaponScopes]
   );
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const {
     handleSubmit,
@@ -99,7 +106,7 @@ const AdminNewNPC: FC = () => {
     unregister,
     control,
     formState: { errors }
-  } = useForm({ defaultValues: { icon: 'default' } });
+  } = useForm<FormValues>({ defaultValues: { icon: 'default' } });
 
   const boolRange = useMemo(
     () => [
@@ -137,7 +144,14 @@ const AdminNewNPC: FC = () => {
 
       const curatedAttacks = attacksArr.map(
         ({
-          title, titleFr, summary, summaryFr, damageType, weaponScope, dices, bonusToHit
+          title,
+          titleFr,
+          summary,
+          summaryFr,
+          damageType,
+          weaponScope,
+          dices,
+          bonusToHit
         }) => ({
           title,
           summary,
@@ -160,7 +174,7 @@ const AdminNewNPC: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -176,7 +190,9 @@ const AdminNewNPC: FC = () => {
           i18n,
           virtual: String(virtual) === '1',
           speed: Number(speed),
-          flightSpeed: flightSpeed !== undefined ? Number(flightSpeed) : undefined,
+          flightSpeed: flightSpeed !== undefined
+            ? Number(flightSpeed)
+            : undefined,
           swimSpeed: swimSpeed !== undefined ? Number(swimSpeed) : undefined,
           hp: Number(hp),
           pr: pr !== undefined ? Number(pr) : undefined,
@@ -195,7 +211,7 @@ const AdminNewNPC: FC = () => {
           });
           void navigate(`/admin/npc/${quote._id}`);
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -229,7 +245,7 @@ const AdminNewNPC: FC = () => {
         ${displayInt ? 'adminNewNPC--int-visible' : ''}
       `)}
     >
-      <form className="adminNewNPC__content" onSubmit={handleSubmit(onSaveNPC)} noValidate>
+      <form className="adminNewNPC__content" onSubmit={() => handleSubmit(onSaveNPC)} noValidate>
         <Atitle className="adminNewNPC__head" level={1}>
           {t('adminNewNPC.title', { ns: 'pages' })}
         </Atitle>

@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { ICuratedChapter } from '../../types';
+import type { IChapter, ICuratedChapter } from '../../types';
 
 interface IChaptersPayload {
   ruleBookId: string
@@ -20,7 +20,7 @@ interface IChapterPagesOrder {
   }>
 }
 
-export default class Chapters extends Entity {
+export default class Chapters extends Entity<IChapter> {
   getAllByRuleBook: (payload: IChaptersPayload) => Promise<ICuratedChapter[]>;
   get: (payload: IChapterPayload) => Promise<ICuratedChapter>;
   changePagesOrder: (payload: IChapterPagesOrder) => Promise<ICuratedChapter>;

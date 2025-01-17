@@ -4,7 +4,7 @@ import {
 } from 'react';
 
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
@@ -151,7 +151,7 @@ const CharacterHeader: FC<ICharacterHeader> = ({
               mode: gainedLife ? 'hpGain' : 'hpLoss'
             });
           })
-          .catch(({ response }) => {
+          .catch(({ response }: ErrorResponseType) => {
             const newId = getNewId();
             createAlert({
               key: newId,
@@ -190,7 +190,7 @@ const CharacterHeader: FC<ICharacterHeader> = ({
         .then(() => {
           setCharacterFromId(character._id);
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const newId = getNewId();
           createAlert({
             key: newId,
@@ -272,7 +272,7 @@ const CharacterHeader: FC<ICharacterHeader> = ({
           <div className="char-header__health">
             <form
               className="char-header__health__field"
-              onSubmit={handleSubmitHp(onSaveHp)}
+              onSubmit={() => handleSubmitHp(onSaveHp)}
               noValidate
             >
               <Ap className="char-header__health__field__term">{t('terms.character.hp.short')}</Ap>
@@ -301,7 +301,7 @@ const CharacterHeader: FC<ICharacterHeader> = ({
           <div className="char-header__karma">
             <form
               className="char-header__karma__field"
-              onSubmit={handleSubmitKarma(onSaveKarma)}
+              onSubmit={() => handleSubmitKarma(onSaveKarma)}
               noValidate
             >
               <Ap className="char-header__karma__field__term">

@@ -21,7 +21,7 @@ const AdminStats: FC = () => {
 
   // Handle i18n in place of basic english language
   const statsList = useMemo(() => {
-    if (stats === null || stats.length === 0) {
+    if (stats.length === 0) {
       return null;
     }
 

@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -66,9 +66,13 @@ const AdminEditBag: FC = () => {
   const [bagText, setBagText] = useState('');
   const [bagTextFr, setBagTextFr] = useState('');
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const createDefaultData = useCallback((bagData: ICuratedBag | null) => {
     if (bagData == null) {
@@ -149,7 +153,7 @@ const AdminEditBag: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -183,7 +187,7 @@ const AdminEditBag: FC = () => {
             )
           });
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           setError('root.serverError', {
             type: 'server',
@@ -218,8 +222,10 @@ const AdminEditBag: FC = () => {
         confirmCta: t('adminEditBag.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.bags
               .delete({ id })
               .then(() => {
@@ -234,7 +240,7 @@ const AdminEditBag: FC = () => {
                 });
                 void navigate(`/admin/bags`);
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -271,7 +277,7 @@ const AdminEditBag: FC = () => {
       calledApi.current = true;
       api.bags
         .get({ bagId: id })
-        .then((curatedBag: ICuratedBag) => {
+        .then((curatedBag) => {
           const {
             bag, i18n
           } = curatedBag;

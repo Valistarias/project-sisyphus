@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -123,9 +123,13 @@ const AdminEditWeapon: FC = () => {
   const [weaponText, setWeaponText] = useState('');
   const [weaponTextFr, setWeaponTextFr] = useState('');
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const createDefaultData = useCallback((weaponData: ICuratedWeapon | null) => {
     if (weaponData == null) {
@@ -453,7 +457,7 @@ const AdminEditWeapon: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -493,7 +497,7 @@ const AdminEditWeapon: FC = () => {
             )
           });
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           setError('root.serverError', {
             type: 'server',
@@ -527,8 +531,10 @@ const AdminEditWeapon: FC = () => {
         confirmCta: t('adminEditWeapon.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.weapons
               .delete({ id })
               .then(() => {
@@ -543,7 +549,7 @@ const AdminEditWeapon: FC = () => {
                 });
                 void navigate(`/admin/weapons`);
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -580,7 +586,7 @@ const AdminEditWeapon: FC = () => {
       calledApi.current = true;
       api.weapons
         .get({ weaponId: id })
-        .then((curatedWeapon: ICuratedWeapon) => {
+        .then((curatedWeapon) => {
           const {
             weapon, i18n
           } = curatedWeapon;
@@ -626,7 +632,7 @@ const AdminEditWeapon: FC = () => {
         ${displayInt ? 'adminEditWeapon--int-visible' : ''}
       `)}
     >
-      <form className="adminEditWeapon__content" onSubmit={handleSubmit(onSaveWeapon)} noValidate>
+      <form className="adminEditWeapon__content" onSubmit={() => handleSubmit(onSaveWeapon)} noValidate>
         <div className="adminEditWeapon__head">
           <Atitle className="adminEditWeapon__head" level={1}>
             {weaponData?.weapon.title ?? ''}

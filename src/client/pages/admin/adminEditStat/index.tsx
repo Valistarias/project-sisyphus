@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -58,9 +58,13 @@ const AdminEditStat: FC = () => {
   const [statText, setStatText] = useState('');
   const [statTextFr, setStatTextFr] = useState('');
 
-  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const createDefaultData = useCallback((statData: ICuratedStat | null) => {
     if (statData == null) {
@@ -111,7 +115,7 @@ const AdminEditStat: FC = () => {
         htmlText = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -142,7 +146,7 @@ const AdminEditStat: FC = () => {
           });
           reloadStats();
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -186,8 +190,10 @@ const AdminEditStat: FC = () => {
         confirmCta: t('adminEditStat.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.stats
               .delete({ id })
               .then(() => {
@@ -203,7 +209,7 @@ const AdminEditStat: FC = () => {
                 reloadStats();
                 void navigate('/admin/stats');
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -241,7 +247,7 @@ const AdminEditStat: FC = () => {
       calledApi.current = true;
       api.stats
         .get({ statId: id })
-        .then((curatedStat: ICuratedStat) => {
+        .then((curatedStat) => {
           const {
             stat, i18n
           } = curatedStat;
@@ -299,7 +305,7 @@ const AdminEditStat: FC = () => {
 
   return (
     <div className="adminEditStat">
-      <form onSubmit={handleSubmit(onSaveStat)} noValidate className="adminEditStat__content">
+      <form onSubmit={() => handleSubmit(onSaveStat)} noValidate className="adminEditStat__content">
         <div className="adminEditStat__head">
           <Atitle level={1}>{t('adminEditStat.title', { ns: 'pages' })}</Atitle>
           <Button onClick={onAskDelete} color="error">

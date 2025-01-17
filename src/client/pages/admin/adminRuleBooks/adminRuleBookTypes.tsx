@@ -4,7 +4,7 @@ import React, {
 
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
@@ -20,7 +20,7 @@ import {
 } from '../../../molecules';
 import { Alert } from '../../../organisms';
 
-import type { IRuleBookType } from '../../../types';
+import type { ErrorResponseType, IRuleBookType } from '../../../types';
 
 import './adminRuleBookTypes.scss';
 
@@ -53,10 +53,10 @@ const AdminRuleBookTypes: FC = () => {
     if (api !== undefined) {
       api.ruleBookTypes
         .getAll()
-        .then((data: IRuleBookType[]) => {
+        .then((data) => {
           setRuleBookTypes(data);
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const newId = getNewId();
           createAlert({
             key: newId,
@@ -99,7 +99,7 @@ const AdminRuleBookTypes: FC = () => {
               setUpdateBookTypeMode('');
               reset();
             })
-            .catch(({ response }) => {
+            .catch(({ response }: ErrorResponseType) => {
               const { data } = response;
               if (data.code === 'CYPU-104') {
                 setError(data.sent as 'name', {
@@ -131,7 +131,7 @@ const AdminRuleBookTypes: FC = () => {
               setCreateBookTypeMode(false);
               reset();
             })
-            .catch(({ response }) => {
+            .catch(({ response }: ErrorResponseType) => {
               const { data } = response;
               if (data.code === 'CYPU-104') {
                 setError(data.sent as 'name', {
@@ -191,7 +191,7 @@ const AdminRuleBookTypes: FC = () => {
               loadRuleBookTypes();
               setDeleteBookTypeMode('');
             })
-            .catch(({ response }) => {
+            .catch(({ response }: ErrorResponseType) => {
               const { data } = response;
               const newId = getNewId();
               createAlert({
@@ -313,7 +313,7 @@ const AdminRuleBookTypes: FC = () => {
             size="small"
             onClick={
               createBookTypeMode || updateBookTypeMode !== ''
-                ? handleSubmit(onSubmit)
+                ? () => handleSubmit(onSubmit)
                 : () => {
                     setCreateBookTypeMode(true);
                   }

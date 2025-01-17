@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -27,6 +27,7 @@ import {
 } from '../../../organisms';
 
 import './adminNewChapter.scss';
+import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
 interface FormValues {
   name: string
@@ -44,9 +45,13 @@ const AdminNewChapters: FC = () => {
 
   const params = useMemo(() => new URLSearchParams(search), [search]);
 
-  const summaryEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const summaryEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const summaryFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const summaryFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const {
     handleSubmit,
@@ -63,8 +68,6 @@ const AdminNewChapters: FC = () => {
         summaryEditor === null
         || summaryFrEditor === null
         || api === undefined
-        || params.get('ruleBookId') === undefined
-        || params.get('type') === undefined
       ) {
         return;
       }
@@ -74,7 +77,7 @@ const AdminNewChapters: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -103,7 +106,7 @@ const AdminNewChapters: FC = () => {
           });
           void navigate(`/admin/chapter/${chapter._id}`);
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -133,7 +136,7 @@ const AdminNewChapters: FC = () => {
 
   return (
     <div className="adminNewChapter">
-      <form onSubmit={handleSubmit(onSaveChapter)} noValidate className="adminNewChapter__content">
+      <form onSubmit={() => handleSubmit(onSaveChapter)} noValidate className="adminNewChapter__content">
         <Atitle level={1}>{t('adminNewChapter.title', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError.message !== undefined
           ? (

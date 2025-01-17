@@ -18,7 +18,7 @@ import { Button } from '../../../molecules';
 import { Alert } from '../../../organisms';
 import { ErrorPage } from '../../index';
 
-import type { ICampaign } from '../../../types';
+import type { ErrorResponseType, ICampaign } from '../../../types';
 
 import './joinCampaign.scss';
 
@@ -56,7 +56,7 @@ const JoinCampaign: FC = () => {
           });
           void navigate(`/campaign/${campaignId}`);
         })
-        .catch((res) => {
+        .catch(() => {
           const newId = getNewId();
           createAlert({
             key: newId,
@@ -91,7 +91,9 @@ const JoinCampaign: FC = () => {
         </>
       );
     }
-    if (campaign.players.find(player => player._id === user._id) !== undefined) {
+    if (
+      campaign.players.find(player => player._id === user._id) !== undefined
+    ) {
       return (
         <>
           <Ap>{t('joinCampaign.alreadyPlayer', { ns: 'pages' })}</Ap>
@@ -122,17 +124,13 @@ const JoinCampaign: FC = () => {
       calledApi.current = true;
       api.campaigns
         .find({ campaignCode: id })
-        .then((sentJoinCampaign: ICampaign) => {
+        .then((sentJoinCampaign) => {
           setLoading(false);
-          if (sentJoinCampaign === undefined) {
-            setNotFound(true);
-          } else {
-            setCampaign(sentJoinCampaign);
-          }
+          setCampaign(sentJoinCampaign);
         })
-        .catch((res) => {
+        .catch(({ response }: ErrorResponseType) => {
           setLoading(false);
-          if (res.response.status === 404) {
+          if (response.data.code === 'CYPU-104') {
             setNotFound(true);
           } else {
             const newId = getNewId();

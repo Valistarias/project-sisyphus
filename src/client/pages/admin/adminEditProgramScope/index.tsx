@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -60,9 +60,13 @@ const AdminEditProgramScope: FC = () => {
   const [programScopeText, setProgramScopeText] = useState('');
   const [programScopeTextFr, setProgramScopeTextFr] = useState('');
 
-  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const createDefaultData = useCallback((programScopeData: ICuratedProgramScope | null) => {
     if (programScopeData == null) {
@@ -114,7 +118,7 @@ const AdminEditProgramScope: FC = () => {
         htmlText = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -143,7 +147,7 @@ const AdminEditProgramScope: FC = () => {
           });
           reloadProgramScopes();
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -187,8 +191,10 @@ const AdminEditProgramScope: FC = () => {
         confirmCta: t('adminEditProgramScope.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.programScopes
               .delete({ id })
               .then(() => {
@@ -204,7 +210,7 @@ const AdminEditProgramScope: FC = () => {
                 reloadProgramScopes();
                 void navigate('/admin/programscopes');
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -242,7 +248,7 @@ const AdminEditProgramScope: FC = () => {
       calledApi.current = true;
       api.programScopes
         .get({ programScopeId: id })
-        .then((curatedProgramScope: ICuratedProgramScope) => {
+        .then((curatedProgramScope) => {
           const {
             programScope, i18n
           } = curatedProgramScope;
@@ -306,7 +312,7 @@ const AdminEditProgramScope: FC = () => {
       `)}
     >
       <form
-        onSubmit={handleSubmit(onSaveProgramScope)}
+        onSubmit={() => handleSubmit(onSaveProgramScope)}
         noValidate
         className="adminEditProgramScope__content"
       >

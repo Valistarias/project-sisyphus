@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -60,9 +60,13 @@ const AdminEditTipText: FC = () => {
   const [tipTextText, setTipTextText] = useState('');
   const [tipTextTextFr, setTipTextTextFr] = useState('');
 
-  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const createDefaultData = useCallback((tipTextData: ICuratedTipText | null) => {
     if (tipTextData == null) {
@@ -111,7 +115,7 @@ const AdminEditTipText: FC = () => {
         htmlText = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -140,7 +144,7 @@ const AdminEditTipText: FC = () => {
           });
           reloadTipTexts();
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -184,8 +188,10 @@ const AdminEditTipText: FC = () => {
         confirmCta: t('adminEditTipText.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.tipTexts
               .delete({ id })
               .then(() => {
@@ -201,7 +207,7 @@ const AdminEditTipText: FC = () => {
                 reloadTipTexts();
                 void navigate('/admin/tiptexts');
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -239,7 +245,7 @@ const AdminEditTipText: FC = () => {
       calledApi.current = true;
       api.tipTexts
         .get({ tipTextId: id })
-        .then((curatedTipText: ICuratedTipText) => {
+        .then((curatedTipText) => {
           const {
             tipText, i18n
           } = curatedTipText;
@@ -302,7 +308,7 @@ const AdminEditTipText: FC = () => {
         ${displayInt ? 'adminEditTipText--int-visible' : ''}
       `)}
     >
-      <form onSubmit={handleSubmit(onSaveTipText)} noValidate className="adminEditTipText__content">
+      <form onSubmit={() => handleSubmit(onSaveTipText)} noValidate className="adminEditTipText__content">
         <div className="adminEditTipText__head">
           <Atitle level={1}>{tipTextData?.tipText.title}</Atitle>
           <Button onClick={onAskDelete} color="error">

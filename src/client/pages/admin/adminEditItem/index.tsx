@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -210,9 +210,13 @@ const AdminEditItem: FC = () => {
   const [itemText, setItemText] = useState('');
   const [itemTextFr, setItemTextFr] = useState('');
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const createDefaultData = useCallback((itemData: ICuratedItem | null) => {
     if (itemData == null) {
@@ -543,7 +547,7 @@ const AdminEditItem: FC = () => {
       if (html === '<p class="ap"></p>') {
         html = null;
       }
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
           title: nameFr,
@@ -578,7 +582,7 @@ const AdminEditItem: FC = () => {
             )
           });
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -620,8 +624,10 @@ const AdminEditItem: FC = () => {
         confirmCta: t('adminEditItem.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.items
               .delete({ id })
               .then(() => {
@@ -636,7 +642,7 @@ const AdminEditItem: FC = () => {
                 });
                 void navigate('/admin/items');
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data }: { data: ErrorResponseType } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -672,7 +678,7 @@ const AdminEditItem: FC = () => {
       calledApi.current = true;
       api.items
         .get({ itemId: id })
-        .then((curatedItem: ICuratedItem) => {
+        .then((curatedItem) => {
           const {
             item, i18n
           } = curatedItem;

@@ -77,7 +77,7 @@ const Signup: FC = () => {
             });
             void navigate('/');
           })
-          .catch(({ response }: { response: { data: ErrorResponseType } }) => {
+          .catch(({ response }: ErrorResponseType) => {
             const { data } = response;
             if (data.code === 'CYPU-104') {
               setError(data.sent ?? '', {

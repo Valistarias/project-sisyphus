@@ -2,13 +2,13 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { ICuratedItem } from '../../types';
+import type { ICuratedItem, IItem } from '../../types';
 
 interface IItemPayload {
   itemId: string
 }
 
-export default class Items extends Entity<ICuratedItem> {
+export default class Items extends Entity<IItem> {
   get: (payload: IItemPayload) => Promise<ICuratedItem>;
   getStarters: () => Promise<ICuratedItem[]>;
 

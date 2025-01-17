@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -70,9 +70,13 @@ const AdminEditChapters: FC = () => {
   const [initialOrder, setInitialOrder] = useState<string[]>([]);
   const [pagesOrder, setPagesOrder] = useState<string[]>([]);
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const createDefaultData = useCallback((chapterData: ICuratedChapter | null) => {
     if (chapterData == null) {
@@ -140,7 +144,7 @@ const AdminEditChapters: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -179,7 +183,7 @@ const AdminEditChapters: FC = () => {
           }
           silentSave.current = false;
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -231,7 +235,7 @@ const AdminEditChapters: FC = () => {
         });
         setInitialOrder(pagesOrder);
       })
-      .catch(({ response }) => {
+      .catch(({ response }: ErrorResponseType) => {
         const { data } = response;
         if (data.code === 'CYPU-104') {
           setError('root.serverError', {
@@ -270,8 +274,10 @@ const AdminEditChapters: FC = () => {
         confirmCta: t('adminEditChapter.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.chapters
               .delete({ id })
               .then(() => {
@@ -286,7 +292,7 @@ const AdminEditChapters: FC = () => {
                 });
                 void navigate(`/admin/rulebook/${ruleBook?._id}`);
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -324,7 +330,7 @@ const AdminEditChapters: FC = () => {
       calledApi.current = id;
       api.chapters
         .get({ chapterId: id })
-        .then((curatedChapter: ICuratedChapter) => {
+        .then((curatedChapter) => {
           const {
             chapter, i18n
           } = curatedChapter;
@@ -335,7 +341,7 @@ const AdminEditChapters: FC = () => {
             setChapterSummaryFr(i18n.fr.summary ?? '');
           }
         })
-        .catch((res) => {
+        .catch(({ response }: ErrorResponseType) => {
           const newId = getNewId();
           createAlert({
             key: newId,
@@ -398,7 +404,7 @@ const AdminEditChapters: FC = () => {
       {autoSaved !== null ? <Ap className="adminEditChapter__autosave">{autoSaved}</Ap> : null}
       <div className="adminEditChapter__content">
         <form
-          onSubmit={handleSubmit(onSaveChapter)}
+          onSubmit={() => handleSubmit(onSaveChapter)}
           noValidate
           className="adminEditChapter__content__left"
         >

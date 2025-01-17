@@ -2,13 +2,13 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { ICuratedItemModifier } from '../../types';
+import type { ICuratedItemModifier, IItemModifier } from '../../types';
 
 interface IItemModifierPayload {
   itemModifierId: string
 }
 
-export default class ItemModifiers extends Entity {
+export default class ItemModifiers extends Entity<IItemModifier> {
   get: (payload: IItemModifierPayload) => Promise<ICuratedItemModifier>;
 
   constructor() {

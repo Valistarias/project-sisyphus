@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -88,9 +88,13 @@ const AdminEditRuleBook: FC = () => {
   const [initialOrder, setInitialOrder] = useState<string[]>([]);
   const [chaptersOrder, setChaptersOrder] = useState<string[]>([]);
 
-  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const introFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const createDefaultData = useCallback(
     (ruleBookTypes: ISingleValueSelect[], rulebookData: ICuratedRuleBook | null) => {
@@ -194,7 +198,7 @@ const AdminEditRuleBook: FC = () => {
         html = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -236,7 +240,7 @@ const AdminEditRuleBook: FC = () => {
           }
           silentSave.current = false;
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -289,7 +293,7 @@ const AdminEditRuleBook: FC = () => {
         });
         setInitialOrder(chaptersOrder);
       })
-      .catch(({ response }) => {
+      .catch(({ response }: ErrorResponseType) => {
         const { data } = response;
         if (data.code === 'CYPU-104') {
           setError('root.serverError', {
@@ -369,7 +373,7 @@ const AdminEditRuleBook: FC = () => {
                 reloadRuleBooks();
                 void navigate('/admin/rulebooks');
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -408,7 +412,7 @@ const AdminEditRuleBook: FC = () => {
       calledApi.current = id;
       api.ruleBooks
         .get({ ruleBookId: id })
-        .then((curatedRuleBook: ICuratedRuleBook) => {
+        .then((curatedRuleBook) => {
           setRulebookData(curatedRuleBook);
           setArchived(curatedRuleBook.ruleBook.archived);
           setRuleBookSummary(curatedRuleBook.ruleBook.summary);
@@ -416,7 +420,7 @@ const AdminEditRuleBook: FC = () => {
             setRuleBookSummaryFr(curatedRuleBook.i18n.fr.summary ?? '');
           }
         })
-        .catch((res) => {
+        .catch(({ response }: ErrorResponseType) => {
           const newId = getNewId();
           createAlert({
             key: newId,
@@ -429,7 +433,7 @@ const AdminEditRuleBook: FC = () => {
         });
       api.ruleBookTypes
         .getAll()
-        .then((data: IRuleBookType[]) => {
+        .then((data) => {
           setRuleBookTypes(
             data.map(ruleBookType => ({
               value: ruleBookType._id,
@@ -438,7 +442,7 @@ const AdminEditRuleBook: FC = () => {
             }))
           );
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const newId = getNewId();
           createAlert({
             key: newId,
@@ -451,12 +455,12 @@ const AdminEditRuleBook: FC = () => {
         });
       api.chapterTypes
         .getAll()
-        .then((data: IChapterType[]) => {
+        .then((data) => {
           setDefaultTypeChapterId(
             data.find(chapterType => chapterType.name === 'default')?._id ?? null
           );
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const newId = getNewId();
           createAlert({
             key: newId,
@@ -516,7 +520,7 @@ const AdminEditRuleBook: FC = () => {
       <div className="adminEditRuleBook__content">
         <form
           className="adminEditRuleBook__content__left"
-          onSubmit={handleSubmit(onSaveRuleBook)}
+          onSubmit={() => handleSubmit(onSaveRuleBook)}
           noValidate
         >
           {errors.root?.serverError.message !== undefined

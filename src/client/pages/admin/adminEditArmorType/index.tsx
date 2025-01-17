@@ -5,7 +5,7 @@ import React, {
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
 import {
-  useForm, type FieldValues, type SubmitHandler
+  useForm, type SubmitHandler
 } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -59,9 +59,13 @@ const AdminEditArmorType: FC = () => {
   const [armorTypeText, setArmorTypeText] = useState('');
   const [armorTypeTextFr, setArmorTypeTextFr] = useState('');
 
-  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
-  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
+  const textFrEditor = useEditor(
+    { extensions: completeRichTextElementExtentions }
+  );
 
   const createDefaultData = useCallback((armorTypeData: ICuratedArmorType | null) => {
     if (armorTypeData == null) {
@@ -111,7 +115,7 @@ const AdminEditArmorType: FC = () => {
         htmlText = null;
       }
 
-      let i18n: any | null = null;
+      let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
         i18n = { fr: {
@@ -139,7 +143,7 @@ const AdminEditArmorType: FC = () => {
           });
           reloadArmorTypes();
         })
-        .catch(({ response }) => {
+        .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
@@ -183,8 +187,10 @@ const AdminEditArmorType: FC = () => {
         confirmCta: t('adminEditArmorType.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
-        const confirmDelete = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmDelete = (
+            { detail }: { detail: ConfirmMessageDetailData }
+          ): void => {
+            if (detail.proceed) {
             api.armorTypes
               .delete({ id })
               .then(() => {
@@ -200,7 +206,7 @@ const AdminEditArmorType: FC = () => {
                 reloadArmorTypes();
                 void navigate('/admin/armortypes');
               })
-              .catch(({ response }) => {
+              .catch(({ response }: ErrorResponseType) => {
                 const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
@@ -238,7 +244,7 @@ const AdminEditArmorType: FC = () => {
       calledApi.current = true;
       api.armorTypes
         .get({ armorTypeId: id })
-        .then((curatedArmorType: ICuratedArmorType) => {
+        .then((curatedArmorType) => {
           const {
             armorType, i18n
           } = curatedArmorType;
