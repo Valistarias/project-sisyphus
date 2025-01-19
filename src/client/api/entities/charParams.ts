@@ -8,7 +8,8 @@ interface ICharParamPayload {
   charParamId: string
 }
 
-export default class CharParams extends Entity<ICharParam> {
+export default class CharParams
+  extends Entity<ICharParam, ICuratedCharParam> {
   get: (payload: ICharParamPayload) => Promise<ICuratedCharParam>;
 
   constructor() {

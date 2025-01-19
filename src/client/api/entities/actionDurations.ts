@@ -8,7 +8,8 @@ interface IActionDurationPayload {
   actionDurationId: string
 }
 
-export default class ActionDurations extends Entity {
+export default class ActionDurations
+  extends Entity<IActionDuration, IActionDuration> {
   get: (payload: IActionDurationPayload) => Promise<IActionDuration>;
 
   constructor() {

@@ -8,7 +8,8 @@ interface ICharParamBonusPayload {
   charParamBonusId: string
 }
 
-export default class CharParamBonuses extends Entity {
+export default class CharParamBonuses
+  extends Entity<ICharParamBonus, ICharParamBonus> {
   get: (payload: ICharParamBonusPayload) => Promise<ICharParamBonus>;
 
   constructor() {

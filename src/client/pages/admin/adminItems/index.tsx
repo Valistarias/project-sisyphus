@@ -33,7 +33,7 @@ const AdminItems: FC = () => {
 
   // TODO: Handle i18n in place of basic english language
   const itemsList = useMemo(() => {
-    if (items === null || items.length === 0) {
+    if (items.length === 0) {
       return null;
     }
 

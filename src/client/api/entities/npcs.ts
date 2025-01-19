@@ -10,7 +10,7 @@ interface INPCPayload {
   nPCId: string
 }
 
-export default class NPCs extends Entity<INPC> {
+export default class NPCs extends Entity<INPC, ICuratedNPC> {
   get: (payload: INPCPayload) => Promise<ICuratedNPC>;
   getAllBasic: () => Promise<ICuratedBasicNPC[]>;
 

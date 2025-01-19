@@ -8,7 +8,7 @@ interface IArmorTypePayload {
   armorTypeId: string
 }
 
-export default class ArmorTypes extends Entity<IArmorType> {
+export default class ArmorTypes extends Entity<IArmorType, ICuratedArmorType> {
   get: (payload: IArmorTypePayload) => Promise<ICuratedArmorType>;
 
   constructor() {

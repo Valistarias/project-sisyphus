@@ -30,14 +30,18 @@ const Campaigns: FC = () => {
   const {
     user, campaigns, reloadCampaigns
   } = useGlobalVars();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
 
   const onDeleteCampaign = useCallback(
     (id: string, name: string) => {
       if (api === undefined) {
         return;
       }
-      confMessageEvt.setConfirmContent(
+      setConfirmContent(
         {
           title: t('campaigns.confirmDelete.title', { ns: 'pages' }),
           text: t('campaigns.confirmDelete.text', {
@@ -77,9 +81,9 @@ const Campaigns: FC = () => {
                   });
                 });
             }
-            confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+            removeConfirmEventListener(evtId, confirmDelete);
           };
-          confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+          addConfirmEventListener(evtId, confirmDelete);
         }
       );
     },

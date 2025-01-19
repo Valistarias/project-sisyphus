@@ -8,7 +8,7 @@ interface IItemPayload {
   itemId: string
 }
 
-export default class Items extends Entity<IItem> {
+export default class Items extends Entity<IItem, ICuratedItem> {
   get: (payload: IItemPayload) => Promise<ICuratedItem>;
   getStarters: () => Promise<ICuratedItem[]>;
 

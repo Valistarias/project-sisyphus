@@ -47,7 +47,11 @@ const AdminEditAmmo: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const {
     itemModifiers, weaponTypes, rarities
   } = useGlobalVars();
@@ -209,7 +213,7 @@ const AdminEditAmmo: FC = () => {
     if (api === undefined || ammoData === null || confMessageEvt === null) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditAmmo.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditAmmo.confirmDeletion.text', {
@@ -220,9 +224,9 @@ const AdminEditAmmo: FC = () => {
       },
       (evtId: string) => {
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.ammos
               .delete({ id })
               .then(() => {
@@ -252,9 +256,9 @@ const AdminEditAmmo: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [

@@ -2,13 +2,13 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { ICuratedAction } from '../../types';
+import type { IAction, ICuratedAction } from '../../types';
 
 interface IActionPayload {
   actionId: string
 }
 
-export default class Actions extends Entity {
+export default class Actions extends Entity<IAction, ICuratedAction> {
   get: (payload: IActionPayload) => Promise<ICuratedAction>;
 
   constructor() {

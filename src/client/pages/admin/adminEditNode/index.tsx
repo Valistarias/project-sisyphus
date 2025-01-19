@@ -26,6 +26,7 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type {
   ICuratedCyberFrame,
   ICuratedCyberFrameBranch,
@@ -34,6 +35,7 @@ import type {
   ICuratedSkillBranch,
   ISkillBranch
 } from '../../../types';
+import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
 import {
   classTrim, isThereDuplicate
@@ -118,7 +120,11 @@ const AdminEditNode: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const {
     skills,
     stats,
@@ -174,7 +180,8 @@ const AdminEditNode: FC = () => {
   );
   const [charParamBonusIds, setCharParamBonusIds] = useState<number[]>([]);
 
-  const [branches, setBranches] = useState<ICuratedSkillBranch[] | ICuratedCyberFrameBranch[]>([]);
+  const [branches, setBranches]
+  = useState<ICuratedSkillBranch[] | ICuratedCyberFrameBranch[]>([]);
 
   const [rankSelect, setLevelSelect] = useState<
     Array<{
@@ -305,17 +312,25 @@ const AdminEditNode: FC = () => {
         title: action.title,
         type: action.type,
         duration: action.duration,
+        isKarmic: action.isKarmic ? '1' : '0',
         ...(action.skill !== undefined ? { skill: action.skill } : {}),
         ...(action.damages !== undefined ? { damages: action.damages } : {}),
-        ...(action.offsetSkill !== undefined ? { offsetSkill: action.offsetSkill } : {}),
+        ...(
+          action.offsetSkill !== undefined
+            ? { offsetSkill: action.offsetSkill }
+            : {}
+        ),
         ...(action.uses !== undefined ? { uses: action.uses } : {}),
-        ...(action.isKarmic !== undefined ? { isKarmic: action.isKarmic ? '1' : '0' } : {}),
-        ...(action.karmicCost !== undefined ? { karmicCost: action.karmicCost } : {}),
+        ...(
+          action.karmicCost !== undefined
+            ? { karmicCost: action.karmicCost }
+            : {}
+        ),
         ...(action.time !== undefined ? { time: action.time } : {}),
         summary: action.summary,
-        titleFr: action.i18n.fr.title,
-        summaryFr: action.i18n.fr.summary,
-        timeFr: action.i18n.fr.time
+        titleFr: action.i18n.fr?.title,
+        summaryFr: action.i18n.fr?.summary,
+        timeFr: action.i18n.fr?.time
       };
 
       tempActionId.push(idIncrement.current);
@@ -335,8 +350,8 @@ const AdminEditNode: FC = () => {
         type: effect.type,
         formula: effect.formula,
         summary: effect.summary,
-        titleFr: effect.i18n.fr.title,
-        summaryFr: effect.i18n.fr.summary
+        titleFr: effect.i18n.fr?.title,
+        summaryFr: effect.i18n.fr?.summary
       };
 
       tempEffectId.push(idIncrement.current);
@@ -355,7 +370,9 @@ const AdminEditNode: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({ defaultValues: useMemo(() => createDefaultData(nodeData), [createDefaultData, nodeData]) });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(nodeData), [createDefaultData, nodeData]
+  ) });
 
   const boolRange = useMemo(
     () => [
@@ -377,18 +394,20 @@ const AdminEditNode: FC = () => {
         value: string
         label: string
       }>,
-      elt: ICuratedSkillBranch | ICuratedCyberFrameBranch
+      elt?: ICuratedSkillBranch | ICuratedCyberFrameBranch
     ) => {
       if (elt !== undefined) {
         const relevantElt
             = (elt as ICuratedCyberFrameBranch).cyberFrameBranch
               ?? (elt as ICuratedSkillBranch).skillBranch;
-        result.push({
-          value: relevantElt._id,
-          // TODO : Handle Internationalization
-          label:
-              relevantElt.title === '_general' ? t('terms.node.generalBranch') : relevantElt.title
-        });
+        if (relevantElt !== undefined) {
+          result.push({
+            value: relevantElt._id,
+            // TODO : Handle Internationalization
+            label:
+                relevantElt.title === '_general' ? t('terms.node.generalBranch') : relevantElt.title
+          });
+        }
       }
 
       return result;
@@ -448,13 +467,24 @@ const AdminEditNode: FC = () => {
 
   const onSaveNode: SubmitHandler<FormValues> = useCallback(
     ({
-      name, nameFr, quote, quoteFr, rank, icon, branch, effects, actions, ...elts
+      name,
+      nameFr,
+      quote,
+      quoteFr,
+      rank,
+      icon,
+      branch,
+      effects,
+      actions,
+      ...elts
     }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
       // Check duplicate on skills
-      const skillBonuses = elts.skillBonuses !== undefined ? Object.values(elts.skillBonuses) : [];
+      const skillBonuses = elts.skillBonuses !== undefined
+        ? Object.values(elts.skillBonuses)
+        : [];
       let duplicateSkillBonuses = false;
       if (skillBonuses.length > 0) {
         duplicateSkillBonuses = isThereDuplicate(
@@ -470,10 +500,14 @@ const AdminEditNode: FC = () => {
         return;
       }
       // Check duplicate on stats
-      const statBonuses = elts.statBonuses !== undefined ? Object.values(elts.statBonuses) : [];
+      const statBonuses = elts.statBonuses !== undefined
+        ? Object.values(elts.statBonuses)
+        : [];
       let duplicateStatBonuses = false;
       if (statBonuses.length > 0) {
-        duplicateStatBonuses = isThereDuplicate(statBonuses.map(statBonus => statBonus.stat));
+        duplicateStatBonuses = isThereDuplicate(
+          statBonuses.map(statBonus => statBonus.stat)
+        );
       }
       if (duplicateStatBonuses) {
         setError('root.serverError', {
@@ -485,7 +519,9 @@ const AdminEditNode: FC = () => {
       }
       // Check duplicate on character param
       const charParamBonuses
-        = elts.charParamBonuses !== undefined ? Object.values(elts.charParamBonuses) : [];
+        = elts.charParamBonuses !== undefined
+          ? Object.values(elts.charParamBonuses)
+          : [];
       let duplicateCharParamBonuses = false;
       if (charParamBonuses.length > 0) {
         duplicateCharParamBonuses = isThereDuplicate(
@@ -500,7 +536,8 @@ const AdminEditNode: FC = () => {
 
         return;
       }
-      const skillId = (nodeData?.node.skillBranch as ISkillBranch)._id;
+      const skillId: string | undefined
+      = (nodeData?.node.skillBranch as ISkillBranch)._id;
       const curatedSkillBonuses = skillBonuses.map(({
         skill, value
       }) => ({
@@ -525,7 +562,7 @@ const AdminEditNode: FC = () => {
         ({
           id, formula, type, title, summary, titleFr, summaryFr
         }) => ({
-          ...(id !== undefined ? { id } : {}),
+          id,
           title,
           summary,
           formula,
@@ -558,7 +595,7 @@ const AdminEditNode: FC = () => {
           karmicCost,
           summaryFr
         }) => ({
-          ...(id !== undefined ? { id } : {}),
+          id,
           title,
           summary,
           skill,
@@ -570,13 +607,16 @@ const AdminEditNode: FC = () => {
           uses,
           time,
           type,
-          i18n: { ...(titleFr !== undefined || summaryFr !== undefined || timeFr !== undefined
-            ? { fr: {
-                title: titleFr,
-                summary: summaryFr,
-                time: timeFr
-              } }
-            : {}) }
+          i18n: { ...(
+            titleFr !== undefined
+            || summaryFr !== undefined
+            || timeFr !== undefined
+              ? { fr: {
+                  title: titleFr,
+                  summary: summaryFr,
+                  time: timeFr
+                } }
+              : {}) }
         })
       );
 
@@ -594,7 +634,11 @@ const AdminEditNode: FC = () => {
         .update({
           id,
           title: name,
-          ...(skillId !== undefined ? { skillBranch: branch } : { cyberFrameBranch: branch }),
+          ...(
+            (skillId as string | undefined) !== undefined
+              ? { skillBranch: branch }
+              : { cyberFrameBranch: branch }
+          ),
           summary: html,
           rank: Number(rank),
           icon,
@@ -616,7 +660,7 @@ const AdminEditNode: FC = () => {
               </Alert>
             )
           });
-          if (skillId !== undefined) {
+          if ((skillId as string | undefined) !== undefined) {
             reloadSkills();
           } else {
             reloadCyberFrames();
@@ -653,10 +697,10 @@ const AdminEditNode: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || nodeData === null || confMessageEvt === null) {
+    if (api === undefined || nodeData === null) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditNode.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditNode.confirmDeletion.text', {
@@ -678,9 +722,9 @@ const AdminEditNode: FC = () => {
           routeId = node.cyberFrameBranch.cyberFrame as string;
         }
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.nodes
               .delete({ id })
               .then(() => {
@@ -710,16 +754,18 @@ const AdminEditNode: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [
     api,
     nodeData,
-    confMessageEvt,
+    setConfirmContent,
     t,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,
@@ -728,7 +774,12 @@ const AdminEditNode: FC = () => {
   ]);
 
   useEffect(() => {
-    if (api !== undefined && id !== undefined && !calledApi.current && skills.length !== 0) {
+    if (
+      api !== undefined
+      && id !== undefined
+      && !calledApi.current
+      && skills.length !== 0
+    ) {
       calledApi.current = true;
       api.nodes
         .get({ nodeId: id })
@@ -750,7 +801,7 @@ const AdminEditNode: FC = () => {
           ) {
             titleBranch = node.cyberFrameBranch.title;
           }
-          if (titleBranch === '_general') {
+          if ((titleBranch as string | null) === '_general') {
             setLevelSelect(generalRange);
           } else {
             setLevelSelect(branchRange);
@@ -761,7 +812,7 @@ const AdminEditNode: FC = () => {
               .get({ skillId })
               .then((curatedSkill) => {
                 setSkill(curatedSkill);
-                setBranches(curatedSkill.skill.branches ?? []);
+                setBranches(curatedSkill.skill.branches);
               })
               .catch(() => {
                 const newId = getNewId();
@@ -783,7 +834,7 @@ const AdminEditNode: FC = () => {
               .get({ cyberFrameId })
               .then((sentCyberFrame) => {
                 setCyberFrame(sentCyberFrame);
-                setBranches(sentCyberFrame.cyberFrame.branches ?? []);
+                setBranches(sentCyberFrame.cyberFrame.branches);
               })
               .catch(() => {
                 // setLoading(false);
@@ -800,7 +851,9 @@ const AdminEditNode: FC = () => {
           }
           if (node.skillBranch !== undefined && typeof node.skillBranch !== 'string') {
             const foundSkill = skills.find(
-              ({ skill }) => skill._id === String((node.skillBranch as ISkillBranch).skill)
+              ({ skill }) => skill._id === String(
+                (node.skillBranch as ISkillBranch).skill
+              )
             );
             if (foundSkill !== undefined) {
               setSkill(foundSkill);
@@ -908,15 +961,16 @@ const AdminEditNode: FC = () => {
             options={branchSelect}
             onChange={(e) => {
               let titleBranch: string | null = null;
-              branches.forEach((elt: ICuratedSkillBranch | ICuratedCyberFrameBranch) => {
-                const relevantElt
+              branches.forEach(
+                (elt: ICuratedSkillBranch | ICuratedCyberFrameBranch) => {
+                  const relevantElt
                   = (elt as ICuratedCyberFrameBranch).cyberFrameBranch
                     ?? (elt as ICuratedSkillBranch).skillBranch;
-                if (relevantElt !== undefined && relevantElt._id === e) {
-                  titleBranch = relevantElt.title;
-                }
-              });
-              if (titleBranch === '_general') {
+                  if (relevantElt !== undefined && relevantElt._id === e) {
+                    titleBranch = relevantElt.title;
+                  }
+                });
+              if ((titleBranch as string | null) === '_general') {
                 setLevelSelect(generalRange);
               } else {
                 setLevelSelect(branchRange);

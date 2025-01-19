@@ -11,7 +11,7 @@ import type { IUser } from '../../types';
 //   scale: number;
 // }
 
-export default class Users extends Entity<IUser> {
+export default class Users extends Entity<IUser, IUser> {
   constructor() {
     super('users');
   }

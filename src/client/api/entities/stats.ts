@@ -8,7 +8,7 @@ interface IStatPayload {
   statId: string
 }
 
-export default class Stats extends Entity<IStat> {
+export default class Stats extends Entity<IStat, ICuratedStat> {
   get: (payload: IStatPayload) => Promise<ICuratedStat>;
 
   constructor() {

@@ -8,7 +8,8 @@ interface ICyberFramePayload {
   cyberFrameId: string
 }
 
-export default class CyberFrames extends Entity<ICyberFrame> {
+export default class CyberFrames
+  extends Entity<ICyberFrame, ICuratedCyberFrame> {
   get: (payload: ICyberFramePayload) => Promise<ICuratedCyberFrame>;
 
   constructor() {

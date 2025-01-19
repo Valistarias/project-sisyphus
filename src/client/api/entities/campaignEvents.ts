@@ -9,8 +9,11 @@ interface ICampaignEventsPayload {
   offset: number
 }
 
-export default class CampaignEvents extends Entity<ICampaignEvent> {
-  getAllByCampaign: (payload: ICampaignEventsPayload) => Promise<ICampaignEvent[]>;
+export default class CampaignEvents
+  extends Entity<ICampaignEvent, ICampaignEvent> {
+  getAllByCampaign: (
+    payload: ICampaignEventsPayload
+  ) => Promise<ICampaignEvent[]>;
 
   constructor() {
     super('campaignevents');

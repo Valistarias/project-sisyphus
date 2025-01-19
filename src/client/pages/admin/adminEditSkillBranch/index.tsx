@@ -26,7 +26,9 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 
-import type { ICuratedSkillBranch } from '../../../types';
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
+import type { ErrorResponseType, ICuratedSkillBranch } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import './adminEditSkillBranch.scss';
 
@@ -41,7 +43,11 @@ const AdminEditSkillBranch: FC = () => {
   const {
     createAlert, getNewId
   } = useSystemAlerts();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -49,9 +55,10 @@ const AdminEditSkillBranch: FC = () => {
   const saveTimer = useRef<NodeJS.Timeout | null>(null);
   const silentSave = useRef(false);
 
-  const [skillBranchData, seSkillBranchData] = useState<ICuratedSkillBranch | null>(null);
+  const [skillBranchData, seSkillBranchData]
+    = useState<ICuratedSkillBranch | null>(null);
 
-  const limitedMode = skillBranchData === null || skillBranchData.skillBranch.title === '_general';
+  const limitedMode = skillBranchData?.skillBranch?.title === '_general';
 
   const [skillBranchText, seSkillBranchText] = useState('');
   const [skillBranchTextFr, seSkillBranchTextFr] = useState('');
@@ -64,21 +71,22 @@ const AdminEditSkillBranch: FC = () => {
     { extensions: completeRichTextElementExtentions }
   );
 
-  const createDefaultData = useCallback((skillBranchData: ICuratedSkillBranch | null) => {
-    if (skillBranchData == null) {
-      return {};
-    }
-    const {
-      skillBranch, i18n
-    } = skillBranchData;
-    const defaultData: Partial<FormValues> = {};
-    defaultData.name = skillBranch.title;
-    if (i18n.fr !== undefined) {
-      defaultData.nameFr = i18n.fr.title ?? '';
-    }
+  const createDefaultData = useCallback(
+    (skillBranchData: ICuratedSkillBranch | null) => {
+      if (skillBranchData == null) {
+        return {};
+      }
+      const {
+        skillBranch, i18n
+      } = skillBranchData;
+      const defaultData: Partial<FormValues> = {};
+      defaultData.name = skillBranch?.title;
+      if (i18n.fr !== undefined) {
+        defaultData.nameFr = i18n.fr.title ?? '';
+      }
 
-    return defaultData;
-  }, []);
+      return defaultData;
+    }, []);
 
   const {
     handleSubmit,
@@ -156,27 +164,27 @@ const AdminEditSkillBranch: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || confMessageEvt === null) {
+    if (api === undefined) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditSkillBranch.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditSkillBranch.confirmDeletion.text', {
           ns: 'pages',
-          elt: skillBranchData?.skillBranch.title
+          elt: skillBranchData?.skillBranch?.title
         }),
         confirmCta: t('adminEditSkillBranch.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
         const skillId
-          = typeof skillBranchData?.skillBranch.skill === 'string'
+          = typeof skillBranchData?.skillBranch?.skill === 'string'
             ? skillBranchData.skillBranch.skill
-            : skillBranchData?.skillBranch.skill._id;
+            : skillBranchData?.skillBranch?.skill._id;
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.skillBranches
               .delete({ id })
               .then(() => {
@@ -206,17 +214,18 @@ const AdminEditSkillBranch: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [
     api,
-    confMessageEvt,
+    setConfirmContent,
     t,
-    skillBranchData.skillBranch.title,
-    skillBranchData.skillBranch.skill,
+    skillBranchData?.skillBranch,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,
@@ -234,7 +243,7 @@ const AdminEditSkillBranch: FC = () => {
             skillBranch, i18n
           } = curatedSkillBranch;
           seSkillBranchData(curatedSkillBranch);
-          seSkillBranchText(skillBranch.summary);
+          seSkillBranchText(skillBranch?.summary ?? '');
           if (i18n.fr !== undefined) {
             seSkillBranchTextFr(i18n.fr.summary ?? '');
           }
@@ -264,8 +273,8 @@ const AdminEditSkillBranch: FC = () => {
     saveTimer.current = setInterval(() => {
       silentSave.current = true;
       handleSubmit(onSaveSkillBranch)().then(
-        () => {},
-        () => {}
+        () => undefined,
+        () => undefined
       );
     }, 600000);
 
@@ -302,10 +311,10 @@ const AdminEditSkillBranch: FC = () => {
           <Ap className="adminEditSkillBranch__ariane__elt">
             {`${t(`terms.skill.name`)}: `}
             <Aa
-              href={`/admin/skill/${typeof skillBranchData?.skillBranch.skill === 'string' ? skillBranchData.skillBranch.skill : skillBranchData?.skillBranch.skill._id}`}
+              href={`/admin/skill/${typeof skillBranchData?.skillBranch?.skill === 'string' ? skillBranchData.skillBranch.skill : skillBranchData?.skillBranch?.skill._id}`}
             >
-              {typeof skillBranchData?.skillBranch.skill !== 'string'
-                ? skillBranchData?.skillBranch.skill.title
+              {typeof skillBranchData?.skillBranch?.skill !== 'string'
+                ? skillBranchData?.skillBranch?.skill.title
                 : ''}
             </Aa>
           </Ap>

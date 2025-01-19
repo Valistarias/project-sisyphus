@@ -26,7 +26,9 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type { ICuratedItemModifier } from '../../../types';
+import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
 import { classTrim } from '../../../utils';
 
@@ -45,7 +47,11 @@ const AdminEditItemModifier: FC = () => {
     createAlert, getNewId
   } = useSystemAlerts();
   const { reloadItemModifiers } = useGlobalVars();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -55,7 +61,8 @@ const AdminEditItemModifier: FC = () => {
 
   const [displayInt, setDisplayInt] = useState(false);
 
-  const [itemModifierData, setItemModifierData] = useState<ICuratedItemModifier | null>(null);
+  const [itemModifierData, setItemModifierData]
+  = useState<ICuratedItemModifier | null>(null);
 
   const [itemModifierText, setItemModifierText] = useState('');
   const [itemModifierTextFr, setItemModifierTextFr] = useState('');
@@ -68,22 +75,23 @@ const AdminEditItemModifier: FC = () => {
     { extensions: completeRichTextElementExtentions }
   );
 
-  const createDefaultData = useCallback((itemModifierData: ICuratedItemModifier | null) => {
-    if (itemModifierData == null) {
-      return {};
-    }
-    const {
-      itemModifier, i18n
-    } = itemModifierData;
-    const defaultData: Partial<FormValues> = {};
-    defaultData.name = itemModifier.title;
-    defaultData.modifierId = itemModifier.modifierId;
-    if (i18n.fr !== undefined) {
-      defaultData.nameFr = i18n.fr.title ?? '';
-    }
+  const createDefaultData = useCallback(
+    (itemModifierData: ICuratedItemModifier | null) => {
+      if (itemModifierData == null) {
+        return {};
+      }
+      const {
+        itemModifier, i18n
+      } = itemModifierData;
+      const defaultData: Partial<FormValues> = {};
+      defaultData.name = itemModifier.title;
+      defaultData.modifierId = itemModifier.modifierId;
+      if (i18n.fr !== undefined) {
+        defaultData.nameFr = i18n.fr.title ?? '';
+      }
 
-    return defaultData;
-  }, []);
+      return defaultData;
+    }, []);
 
   const {
     handleSubmit,
@@ -101,11 +109,8 @@ const AdminEditItemModifier: FC = () => {
       name, nameFr, modifierId
     }) => {
       if (
-        itemModifierText === null
-        || itemModifierTextFr === null
-        || textEditor === null
+        textEditor === null
         || textFrEditor === null
-        || modifierId === null
         || api === undefined
       ) {
         return;
@@ -163,8 +168,6 @@ const AdminEditItemModifier: FC = () => {
         });
     },
     [
-      itemModifierText,
-      itemModifierTextFr,
       textEditor,
       textFrEditor,
       api,
@@ -178,10 +181,10 @@ const AdminEditItemModifier: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || confMessageEvt === null) {
+    if (api === undefined) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditItemModifier.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditItemModifier.confirmDeletion.text', {
@@ -192,9 +195,9 @@ const AdminEditItemModifier: FC = () => {
       },
       (evtId: string) => {
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.itemModifiers
               .delete({ id })
               .then(() => {
@@ -225,16 +228,18 @@ const AdminEditItemModifier: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [
     api,
-    confMessageEvt,
+    setConfirmContent,
     t,
     itemModifierData?.itemModifier.title,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,
@@ -283,8 +288,8 @@ const AdminEditItemModifier: FC = () => {
     saveTimer.current = setInterval(() => {
       silentSave.current = true;
       handleSubmit(onSaveItemModifier)().then(
-        () => {},
-        () => {}
+        () => undefined,
+        () => undefined
       );
     }, 600000);
 

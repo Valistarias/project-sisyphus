@@ -30,7 +30,9 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 
-import type { ICuratedWeaponType } from '../../../types';
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
+import type { ErrorResponseType, ICuratedWeaponType } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import { classTrim } from '../../../utils';
 
@@ -54,7 +56,11 @@ const AdminEditWeaponType: FC = () => {
   const {
     weaponStyles, itemTypes, reloadWeaponTypes
   } = useGlobalVars();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -64,7 +70,8 @@ const AdminEditWeaponType: FC = () => {
 
   const [displayInt, setDisplayInt] = useState(false);
 
-  const [weaponTypeData, setWeaponTypeData] = useState<ICuratedWeaponType | null>(null);
+  const [weaponTypeData, setWeaponTypeData]
+    = useState<ICuratedWeaponType | null>(null);
 
   const [weaponTypeText, setWeaponTypeText] = useState('');
   const [weaponTypeTextFr, setWeaponTypeTextFr] = useState('');
@@ -176,13 +183,8 @@ const AdminEditWeaponType: FC = () => {
       name, nameFr, weaponStyle, icon, needTraining, itemType
     }) => {
       if (
-        weaponTypeText === null
-        || weaponTypeTextFr === null
-        || textEditor === null
+        textEditor === null
         || textFrEditor === null
-        || icon === null
-        || needTraining === null
-        || itemType === null
         || api === undefined
       ) {
         return;
@@ -243,8 +245,6 @@ const AdminEditWeaponType: FC = () => {
         });
     },
     [
-      weaponTypeText,
-      weaponTypeTextFr,
       textEditor,
       textFrEditor,
       api,
@@ -258,10 +258,10 @@ const AdminEditWeaponType: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || confMessageEvt === null) {
+    if (api === undefined) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditWeaponType.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditWeaponType.confirmDeletion.text', {
@@ -305,16 +305,18 @@ const AdminEditWeaponType: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [
     api,
-    confMessageEvt,
+    setConfirmContent,
     t,
     weaponTypeData?.weaponType.title,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,
@@ -363,8 +365,8 @@ const AdminEditWeaponType: FC = () => {
     saveTimer.current = setInterval(() => {
       silentSave.current = true;
       handleSubmit(onSaveWeaponType)().then(
-        () => {},
-        () => {}
+        () => undefined,
+        () => undefined
       );
     }, 600000);
 

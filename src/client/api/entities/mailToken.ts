@@ -7,7 +7,7 @@ interface IGetMailUserPayload {
   token: string
 }
 
-export default class MailToken extends Entity<string> {
+export default class MailToken extends Entity<string, string> {
   getMail: (payload: IGetMailUserPayload) => Promise<string>;
 
   constructor() {

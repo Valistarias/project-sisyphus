@@ -8,7 +8,7 @@ interface IProgramPayload {
   programId: string
 }
 
-export default class Programs extends Entity<IProgram> {
+export default class Programs extends Entity<IProgram, ICuratedProgram> {
   get: (payload: IProgramPayload) => Promise<ICuratedProgram>;
   getStarters: () => Promise<ICuratedProgram[]>;
 

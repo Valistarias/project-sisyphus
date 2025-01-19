@@ -48,7 +48,11 @@ const AdminEditBag: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const {
     itemModifiers, itemTypes, rarities
   } = useGlobalVars();
@@ -212,7 +216,7 @@ const AdminEditBag: FC = () => {
     if (api === undefined || bagData === null || confMessageEvt === null) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditBag.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditBag.confirmDeletion.text', {
@@ -223,9 +227,9 @@ const AdminEditBag: FC = () => {
       },
       (evtId: string) => {
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.bags
               .delete({ id })
               .then(() => {
@@ -255,9 +259,9 @@ const AdminEditBag: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [

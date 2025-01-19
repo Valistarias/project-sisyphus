@@ -26,7 +26,9 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 
-import type { ICuratedTipText } from '../../../types';
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
+import type { ErrorResponseType, ICuratedTipText } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import { classTrim } from '../../../utils';
 
@@ -45,7 +47,11 @@ const AdminEditTipText: FC = () => {
     createAlert, getNewId
   } = useSystemAlerts();
   const { reloadTipTexts } = useGlobalVars();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -68,22 +74,23 @@ const AdminEditTipText: FC = () => {
     { extensions: completeRichTextElementExtentions }
   );
 
-  const createDefaultData = useCallback((tipTextData: ICuratedTipText | null) => {
-    if (tipTextData == null) {
-      return {};
-    }
-    const {
-      tipText, i18n
-    } = tipTextData;
-    const defaultData: Partial<FormValues> = {};
-    defaultData.name = tipText.title;
-    defaultData.tipId = tipText.tipId;
-    if (i18n.fr !== undefined) {
-      defaultData.nameFr = i18n.fr.title ?? '';
-    }
+  const createDefaultData = useCallback(
+    (tipTextData: ICuratedTipText | null) => {
+      if (tipTextData == null) {
+        return {};
+      }
+      const {
+        tipText, i18n
+      } = tipTextData;
+      const defaultData: Partial<FormValues> = {};
+      defaultData.name = tipText.title;
+      defaultData.tipId = tipText.tipId;
+      if (i18n.fr !== undefined) {
+        defaultData.nameFr = i18n.fr.title ?? '';
+      }
 
-    return defaultData;
-  }, []);
+      return defaultData;
+    }, []);
 
   const {
     handleSubmit,
@@ -91,18 +98,17 @@ const AdminEditTipText: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({ defaultValues: useMemo(() => createDefaultData(tipTextData), [createDefaultData, tipTextData]) });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(tipTextData), [createDefaultData, tipTextData]
+  ) });
 
   const onSaveTipText: SubmitHandler<FormValues> = useCallback(
     ({
       name, nameFr, tipId
     }) => {
       if (
-        tipTextText === null
-        || tipTextTextFr === null
-        || textEditor === null
+        textEditor === null
         || textFrEditor === null
-        || tipId === null
         || api === undefined
       ) {
         return;
@@ -160,8 +166,6 @@ const AdminEditTipText: FC = () => {
         });
     },
     [
-      tipTextText,
-      tipTextTextFr,
       textEditor,
       textFrEditor,
       api,
@@ -175,10 +179,10 @@ const AdminEditTipText: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || confMessageEvt === null) {
+    if (api === undefined) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditTipText.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditTipText.confirmDeletion.text', {
@@ -189,9 +193,9 @@ const AdminEditTipText: FC = () => {
       },
       (evtId: string) => {
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.tipTexts
               .delete({ id })
               .then(() => {
@@ -222,16 +226,18 @@ const AdminEditTipText: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [
     api,
-    confMessageEvt,
+    setConfirmContent,
     t,
     tipTextData?.tipText.title,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,
@@ -280,8 +286,8 @@ const AdminEditTipText: FC = () => {
     saveTimer.current = setInterval(() => {
       silentSave.current = true;
       handleSubmit(onSaveTipText)().then(
-        () => {},
-        () => {}
+        () => undefined,
+        () => undefined
       );
     }, 600000);
 

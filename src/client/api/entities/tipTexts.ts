@@ -8,7 +8,7 @@ interface ITipTextPayload {
   tipTextId: string
 }
 
-export default class TipTexts extends Entity<ITipText> {
+export default class TipTexts extends Entity<ITipText, ICuratedTipText> {
   get: (payload: ITipTextPayload) => Promise<ICuratedTipText>;
 
   constructor() {

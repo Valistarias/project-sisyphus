@@ -8,7 +8,8 @@ interface IRuleBooksTypesPayload {
   ruleBookTypeId: string
 }
 
-export default class RuleBooksTypes extends Entity<IRuleBookType> {
+export default class RuleBooksTypes
+  extends Entity<IRuleBookType, IRuleBookType> {
   get: (payload: IRuleBooksTypesPayload) => Promise<string>;
 
   constructor() {

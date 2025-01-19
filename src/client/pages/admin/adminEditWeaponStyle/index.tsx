@@ -26,7 +26,9 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 
-import type { ICuratedWeaponStyle } from '../../../types';
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
+import type { ErrorResponseType, ICuratedWeaponStyle } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import { classTrim } from '../../../utils';
 
@@ -47,7 +49,11 @@ const AdminEditWeaponStyle: FC = () => {
   const {
     skills, reloadWeaponStyles
   } = useGlobalVars();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -57,7 +63,8 @@ const AdminEditWeaponStyle: FC = () => {
 
   const [displayInt, setDisplayInt] = useState(false);
 
-  const [weaponStyleData, setWeaponStyleData] = useState<ICuratedWeaponStyle | null>(null);
+  const [weaponStyleData, setWeaponStyleData]
+  = useState<ICuratedWeaponStyle | null>(null);
 
   const [weaponStyleText, setWeaponStyleText] = useState('');
   const [weaponStyleTextFr, setWeaponStyleTextFr] = useState('');
@@ -81,7 +88,10 @@ const AdminEditWeaponStyle: FC = () => {
   );
 
   const createDefaultData = useCallback(
-    (weaponStyleData: ICuratedWeaponStyle | null, skills: ISingleValueSelect[]) => {
+    (
+      weaponStyleData: ICuratedWeaponStyle | null,
+      skills: ISingleValueSelect[]
+    ) => {
       if (weaponStyleData == null) {
         return {};
       }
@@ -90,7 +100,9 @@ const AdminEditWeaponStyle: FC = () => {
       } = weaponStyleData;
       const defaultData: Partial<FormValues> = {};
       defaultData.name = weaponStyle.title;
-      const selectedfield = skills.find(skillType => skillType.value === weaponStyle.skill._id);
+      const selectedfield = skills.find(
+        skillType => skillType.value === weaponStyle.skill._id
+      );
       if (selectedfield !== undefined) {
         defaultData.skill = String(selectedfield.value);
       }
@@ -123,9 +135,7 @@ const AdminEditWeaponStyle: FC = () => {
       name, nameFr, skill
     }) => {
       if (
-        weaponStyleText === null
-        || weaponStyleTextFr === null
-        || textEditor === null
+        textEditor === null
         || textFrEditor === null
         || api === undefined
       ) {
@@ -184,8 +194,6 @@ const AdminEditWeaponStyle: FC = () => {
         });
     },
     [
-      weaponStyleText,
-      weaponStyleTextFr,
       textEditor,
       textFrEditor,
       api,
@@ -199,10 +207,10 @@ const AdminEditWeaponStyle: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || confMessageEvt === null) {
+    if (api === undefined) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditWeaponStyle.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditWeaponStyle.confirmDeletion.text', {
@@ -213,9 +221,9 @@ const AdminEditWeaponStyle: FC = () => {
       },
       (evtId: string) => {
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.weaponStyles
               .delete({ id })
               .then(() => {
@@ -246,16 +254,18 @@ const AdminEditWeaponStyle: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [
     api,
-    confMessageEvt,
+    setConfirmContent,
     t,
     weaponStyleData?.weaponStyle.title,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,
@@ -304,8 +314,8 @@ const AdminEditWeaponStyle: FC = () => {
     saveTimer.current = setInterval(() => {
       silentSave.current = true;
       handleSubmit(onSaveWeaponStyle)().then(
-        () => {},
-        () => {}
+        () => undefined,
+        () => undefined
       );
     }, 600000);
 

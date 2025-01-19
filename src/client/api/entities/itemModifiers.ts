@@ -8,7 +8,8 @@ interface IItemModifierPayload {
   itemModifierId: string
 }
 
-export default class ItemModifiers extends Entity<IItemModifier> {
+export default class ItemModifiers
+  extends Entity<IItemModifier, ICuratedItemModifier> {
   get: (payload: IItemModifierPayload) => Promise<ICuratedItemModifier>;
 
   constructor() {

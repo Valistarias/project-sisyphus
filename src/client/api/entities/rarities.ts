@@ -15,7 +15,7 @@ interface IChangeRaritiesOrder {
   }>
 }
 
-export default class Rarities extends Entity<IRarity> {
+export default class Rarities extends Entity<IRarity, ICuratedRarity> {
   get: (payload: IRarityPayload) => Promise<ICuratedRarity>;
   changeRaritiesOrder: (payload: IChangeRaritiesOrder) =>
   Promise<ICuratedRarity>;

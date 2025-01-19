@@ -12,7 +12,7 @@ interface IRulebookPayload {
   ruleBookId?: string
 }
 
-export default class Notions extends Entity<INotion> {
+export default class Notions extends Entity<INotion, ICuratedNotion> {
   get: (payload: INotionsPayload) => Promise<ICuratedNotion>;
   getAllByRuleBook: (payload: IRulebookPayload) => Promise<ICuratedNotion[]>;
 

@@ -12,7 +12,8 @@ interface ICyberFrameBranchPayload {
   cyberFrameBranchId: string
 }
 
-export default class CyberFrameBranches extends Entity<ICyberFrameBranch> {
+export default class CyberFrameBranches
+  extends Entity<ICyberFrameBranch, ICuratedCyberFrameBranch> {
   getAllByCyberFrame: (payload: ICyberFrameBranchesPayload) =>
   Promise<ICuratedCyberFrameBranch[]>;
 

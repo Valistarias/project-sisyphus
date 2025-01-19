@@ -50,7 +50,11 @@ const EditCharacter: FC = () => {
   const {
     createAlert, getNewId
   } = useSystemAlerts();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const { user } = useGlobalVars();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -211,7 +215,7 @@ const EditCharacter: FC = () => {
       displayedName = character.nickName
         ?? `${character.firstName} ${character.lastName}`;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('characters.confirmDelete.title', { ns: 'pages' }),
         text: t('characters.confirmDelete.text', {
@@ -252,9 +256,9 @@ const EditCharacter: FC = () => {
                 });
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [

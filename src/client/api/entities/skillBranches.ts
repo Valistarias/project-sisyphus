@@ -12,7 +12,8 @@ interface ISkillBranchPayload {
   skillBranchId: string
 }
 
-export default class SkillBranches extends Entity<ISkillBranch> {
+export default class SkillBranches
+  extends Entity<ISkillBranch, ICuratedSkillBranch> {
   getAllBySkill: (payload: ISkillBranchesPayload) =>
   Promise<ICuratedSkillBranch[]>;
 

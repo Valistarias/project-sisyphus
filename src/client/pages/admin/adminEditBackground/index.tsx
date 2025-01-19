@@ -64,7 +64,11 @@ const AdminEditBackground: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const {
     skills, stats, charParams
   } = useGlobalVars();
@@ -368,7 +372,7 @@ const AdminEditBackground: FC = () => {
     if (api === undefined || backgroundData === null || confMessageEvt === null) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditBackground.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditBackground.confirmDeletion.text', {
@@ -379,9 +383,9 @@ const AdminEditBackground: FC = () => {
       },
       (evtId: string) => {
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.backgrounds
               .delete({ id })
               .then(() => {
@@ -411,9 +415,9 @@ const AdminEditBackground: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [

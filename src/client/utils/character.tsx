@@ -435,8 +435,9 @@ const curateCharacterParams = ({
 };
 
 const getBaseSkillNode = (skill: ISkill): ICuratedNode | undefined => {
-  const generalNodes = skill.branches.find(branch => branch.skillBranch.title === '_general')
-    ?.skillBranch.nodes;
+  const generalNodes = skill.branches.find(
+    branch => branch.skillBranch.title === '_general'
+  )?.skillBranch.nodes;
 
   return generalNodes?.find(({ node }) => node.rank === 1);
 };

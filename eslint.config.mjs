@@ -126,7 +126,10 @@ export default tseslint.config(
     '@stylistic/max-len': [
       'error',
       {
-        code: 80, ignoreComments: true, ignoreStrings: true
+        code: 80,
+        ignoreComments: true,
+        ignoreStrings: true,
+        ignoreTemplateLiterals: true
       }
     ],
     '@stylistic/array-element-newline': [

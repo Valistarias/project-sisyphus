@@ -59,6 +59,7 @@ import type {
 } from './items';
 import type {
   ICuratedBasicNPC,
+  IEnnemyAttack,
   ICuratedEnnemyAttack,
   ICuratedNPC,
   INPC
@@ -173,6 +174,7 @@ export type {
   IDamage,
   IDamageType,
   IEffect,
+  IEnnemyAttack,
   IGlobalValue,
   IImplant,
   IItem,

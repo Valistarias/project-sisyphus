@@ -8,7 +8,8 @@ interface IWeaponScopePayload {
   weaponScopeId: string
 }
 
-export default class WeaponScopes extends Entity<IWeaponScope> {
+export default class WeaponScopes
+  extends Entity<IWeaponScope, ICuratedWeaponScope> {
   get: (payload: IWeaponScopePayload) => Promise<ICuratedWeaponScope>;
 
   constructor() {

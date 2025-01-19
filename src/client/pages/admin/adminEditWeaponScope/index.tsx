@@ -26,7 +26,9 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 
-import type { ICuratedWeaponScope } from '../../../types';
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
+import type { ErrorResponseType, ICuratedWeaponScope } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import { classTrim } from '../../../utils';
 
@@ -45,7 +47,11 @@ const AdminEditWeaponScope: FC = () => {
     createAlert, getNewId
   } = useSystemAlerts();
   const { reloadWeaponScopes } = useGlobalVars();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -55,7 +61,8 @@ const AdminEditWeaponScope: FC = () => {
 
   const [displayInt, setDisplayInt] = useState(false);
 
-  const [weaponScopeData, setWeaponScopeData] = useState<ICuratedWeaponScope | null>(null);
+  const [weaponScopeData, setWeaponScopeData]
+  = useState<ICuratedWeaponScope | null>(null);
 
   const [weaponScopeText, setWeaponScopeText] = useState('');
   const [weaponScopeTextFr, setWeaponScopeTextFr] = useState('');
@@ -68,22 +75,23 @@ const AdminEditWeaponScope: FC = () => {
     { extensions: completeRichTextElementExtentions }
   );
 
-  const createDefaultData = useCallback((weaponScopeData: ICuratedWeaponScope | null) => {
-    if (weaponScopeData == null) {
-      return {};
-    }
-    const {
-      weaponScope, i18n
-    } = weaponScopeData;
-    const defaultData: Partial<FormValues> = {};
-    defaultData.name = weaponScope.title;
-    defaultData.scopeId = weaponScope.scopeId;
-    if (i18n.fr !== undefined) {
-      defaultData.nameFr = i18n.fr.title ?? '';
-    }
+  const createDefaultData = useCallback(
+    (weaponScopeData: ICuratedWeaponScope | null) => {
+      if (weaponScopeData == null) {
+        return {};
+      }
+      const {
+        weaponScope, i18n
+      } = weaponScopeData;
+      const defaultData: Partial<FormValues> = {};
+      defaultData.name = weaponScope.title;
+      defaultData.scopeId = weaponScope.scopeId;
+      if (i18n.fr !== undefined) {
+        defaultData.nameFr = i18n.fr.title ?? '';
+      }
 
-    return defaultData;
-  }, []);
+      return defaultData;
+    }, []);
 
   const {
     handleSubmit,
@@ -101,11 +109,8 @@ const AdminEditWeaponScope: FC = () => {
       name, nameFr, scopeId
     }) => {
       if (
-        weaponScopeText === null
-        || weaponScopeTextFr === null
-        || textEditor === null
+        textEditor === null
         || textFrEditor === null
-        || scopeId === null
         || api === undefined
       ) {
         return;
@@ -163,8 +168,6 @@ const AdminEditWeaponScope: FC = () => {
         });
     },
     [
-      weaponScopeText,
-      weaponScopeTextFr,
       textEditor,
       textFrEditor,
       api,
@@ -178,10 +181,10 @@ const AdminEditWeaponScope: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || confMessageEvt === null) {
+    if (api === undefined) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditWeaponScope.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditWeaponScope.confirmDeletion.text', {
@@ -192,9 +195,9 @@ const AdminEditWeaponScope: FC = () => {
       },
       (evtId: string) => {
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.weaponScopes
               .delete({ id })
               .then(() => {
@@ -225,16 +228,18 @@ const AdminEditWeaponScope: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [
     api,
-    confMessageEvt,
+    setConfirmContent,
     t,
     weaponScopeData?.weaponScope.title,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,
@@ -283,8 +288,8 @@ const AdminEditWeaponScope: FC = () => {
     saveTimer.current = setInterval(() => {
       silentSave.current = true;
       handleSubmit(onSaveWeaponScope)().then(
-        () => {},
-        () => {}
+        () => undefined,
+        () => undefined
       );
     }, 600000);
 

@@ -8,7 +8,7 @@ interface IActionTypePayload {
   actionTypeId: string
 }
 
-export default class ActionTypes extends Entity {
+export default class ActionTypes extends Entity<IActionType, IActionType> {
   get: (payload: IActionTypePayload) => Promise<IActionType>;
 
   constructor() {

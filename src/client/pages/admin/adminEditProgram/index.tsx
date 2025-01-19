@@ -27,9 +27,12 @@ import {
 } from '../../../organisms';
 import { possibleStarterKitValues } from '../../../types/items';
 
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type {
+  ErrorResponseType,
   ICuratedBasicNPC, ICuratedProgram
 } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import {
   classTrim, isThereDuplicate
@@ -62,7 +65,11 @@ const AdminEditProgram: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const {
     programScopes, rarities, damageTypes
   } = useGlobalVars();
@@ -92,46 +99,47 @@ const AdminEditProgram: FC = () => {
     { extensions: completeRichTextElementExtentions }
   );
 
-  const createDefaultData = useCallback((programData: ICuratedProgram | null) => {
-    if (programData == null) {
-      return {};
-    }
-    const {
-      program, i18n
-    } = programData;
-    const defaultData: Partial<FormValues> = {};
-    defaultData.name = program.title;
-    defaultData.programScope = program.programScope;
-    defaultData.uses = program.uses;
-    defaultData.radius = program.radius;
-    defaultData.ram = program.ram;
-    defaultData.cost = program.cost;
-    defaultData.rarity = program.rarity;
-    defaultData.ai = program.ai?.nPC._id;
-    defaultData.aiSummoned = program.aiSummoned;
-    defaultData.starterKit = program.starterKit ?? 'never';
-    if (i18n.fr !== undefined) {
-      defaultData.nameFr = i18n.fr.title ?? '';
-    }
-
-    // Init Bonus Skill
-    const damageIds: number[] = [];
-    program.damages?.forEach((damage) => {
-      if (defaultData.damages === undefined) {
-        defaultData.damages = {};
+  const createDefaultData = useCallback(
+    (programData: ICuratedProgram | null) => {
+      if (programData == null) {
+        return {};
       }
-      defaultData.damages[`damage-${idIncrement.current}`] = {
-        damageType: damage.damageType,
-        dices: damage.dices
-      };
+      const {
+        program, i18n
+      } = programData;
+      const defaultData: Partial<FormValues> = {};
+      defaultData.name = program.title;
+      defaultData.programScope = program.programScope;
+      defaultData.uses = program.uses;
+      defaultData.radius = program.radius;
+      defaultData.ram = program.ram;
+      defaultData.cost = program.cost;
+      defaultData.rarity = program.rarity;
+      defaultData.ai = program.ai?.nPC._id;
+      defaultData.aiSummoned = program.aiSummoned;
+      defaultData.starterKit = program.starterKit ?? 'never';
+      if (i18n.fr !== undefined) {
+        defaultData.nameFr = i18n.fr.title ?? '';
+      }
 
-      damageIds.push(idIncrement.current);
-      idIncrement.current += 1;
-    });
-    setDamagesIds(damageIds);
+      // Init Bonus Skill
+      const damageIds: number[] = [];
+      program.damages?.forEach((damage) => {
+        if (defaultData.damages === undefined) {
+          defaultData.damages = {};
+        }
+        defaultData.damages[`damage-${idIncrement.current}`] = {
+          damageType: damage.damageType,
+          dices: damage.dices
+        };
 
-    return defaultData;
-  }, []);
+        damageIds.push(idIncrement.current);
+        idIncrement.current += 1;
+      });
+      setDamagesIds(damageIds);
+
+      return defaultData;
+    }, []);
 
   const {
     handleSubmit,
@@ -140,13 +148,16 @@ const AdminEditProgram: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({ defaultValues: useMemo(() => createDefaultData(programData), [createDefaultData, programData]) });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(programData), [createDefaultData, programData]
+  ) });
 
   // TODO: Internationalization
-  const programScopeList = useMemo(() => programScopes.map(({ programScope }) => ({
-    value: programScope._id,
-    label: programScope.title
-  })), [programScopes]);
+  const programScopeList = useMemo(
+    () => programScopes.map(({ programScope }) => ({
+      value: programScope._id,
+      label: programScope.title
+    })), [programScopes]);
 
   const damageTypeList = useMemo(() => damageTypes.map(({ damageType }) => ({
     value: damageType._id,
@@ -203,9 +214,6 @@ const AdminEditProgram: FC = () => {
         introEditor === null
         || introFrEditor === null
         || api === undefined
-        || programScope === undefined
-        || ram === undefined
-        || rarity === undefined
       ) {
         return;
       }
@@ -214,7 +222,9 @@ const AdminEditProgram: FC = () => {
       const sortedDamages = damages !== undefined ? Object.values(damages) : [];
       let duplicateDamages = false;
       if (sortedDamages.length > 0) {
-        duplicateDamages = isThereDuplicate(sortedDamages.map(damage => damage.damageType));
+        duplicateDamages = isThereDuplicate(
+          sortedDamages.map(damage => damage.damageType)
+        );
       }
       if (duplicateDamages) {
         setError('root.serverError', {
@@ -298,10 +308,10 @@ const AdminEditProgram: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || programData === null || confMessageEvt === null) {
+    if (api === undefined || programData === null) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditProgram.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditProgram.confirmDeletion.text', {
@@ -312,9 +322,9 @@ const AdminEditProgram: FC = () => {
       },
       (evtId: string) => {
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.programs
               .delete({ id })
               .then(() => {
@@ -344,16 +354,18 @@ const AdminEditProgram: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [
     api,
     programData,
-    confMessageEvt,
+    setConfirmContent,
     t,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,

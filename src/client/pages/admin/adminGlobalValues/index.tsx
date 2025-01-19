@@ -21,7 +21,7 @@ const AdminGlobalValues: FC = () => {
 
   // TODO: Handle i18n in place of basic english language
   const globalValuesList = useMemo(() => {
-    if (globalValues === null || globalValues.length === 0) {
+    if (globalValues.length === 0) {
       return null;
     }
 

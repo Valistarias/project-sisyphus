@@ -21,7 +21,7 @@ const AdminItemModifiers: FC = () => {
 
   // TODO: Handle i18n in place of basic english language
   const itemModifiersList = useMemo(() => {
-    if (itemModifiers === null || itemModifiers.length === 0) {
+    if (itemModifiers.length === 0) {
       return null;
     }
 

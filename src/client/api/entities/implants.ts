@@ -8,7 +8,7 @@ interface IImplantPayload {
   implantId: string
 }
 
-export default class Implants extends Entity<IImplant> {
+export default class Implants extends Entity<IImplant, ICuratedImplant> {
   get: (payload: IImplantPayload) => Promise<ICuratedImplant>;
   getStarters: () => Promise<ICuratedImplant[]>;
 

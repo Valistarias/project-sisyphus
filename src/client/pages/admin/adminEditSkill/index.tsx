@@ -26,9 +26,12 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type {
+  ErrorResponseType,
   ICuratedNode, ICuratedSkill, ISkillBranch
 } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import { classTrim } from '../../../utils';
 
@@ -50,7 +53,11 @@ const AdminEditSkill: FC = () => {
   const {
     stats, reloadSkills
   } = useGlobalVars();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -83,10 +90,12 @@ const AdminEditSkill: FC = () => {
       }
     > = {};
     branches?.forEach(({ skillBranch }) => {
-      tempTree[skillBranch._id] = {
-        branch: skillBranch,
-        nodes: skillBranch.nodes
-      };
+      if (skillBranch !== undefined) {
+        tempTree[skillBranch._id] = {
+          branch: skillBranch,
+          nodes: skillBranch.nodes
+        };
+      }
     });
 
     return Object.values(tempTree);
@@ -113,7 +122,9 @@ const AdminEditSkill: FC = () => {
       const defaultData: Partial<FormValues> = {};
       defaultData.name = skill.title;
       defaultData.formulaId = skill.formulaId;
-      const selectedfield = stats.find(statType => statType.value === skill.stat._id);
+      const selectedfield = stats.find(
+        statType => statType.value === skill.stat._id
+      );
       if (selectedfield !== undefined) {
         defaultData.stat = String(selectedfield.value);
       }
@@ -145,7 +156,11 @@ const AdminEditSkill: FC = () => {
     ({
       name, nameFr, stat, formulaId
     }) => {
-      if (textEditor === null || textFrEditor === null || formulaId === null || api === undefined) {
+      if (
+        textEditor === null
+        || textFrEditor === null
+        || api === undefined
+      ) {
         return;
       }
       let htmlText: string | null = textEditor.getHTML();
@@ -215,10 +230,10 @@ const AdminEditSkill: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || confMessageEvt === null) {
+    if (api === undefined) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditSkill.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditSkill.confirmDeletion.text', {
@@ -229,9 +244,9 @@ const AdminEditSkill: FC = () => {
       },
       (evtId: string) => {
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.skills
               .delete({ id })
               .then(() => {
@@ -262,16 +277,18 @@ const AdminEditSkill: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [
     api,
-    confMessageEvt,
+    setConfirmContent,
     t,
     skillData?.skill.title,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,
@@ -320,8 +337,8 @@ const AdminEditSkill: FC = () => {
     saveTimer.current = setInterval(() => {
       silentSave.current = true;
       handleSubmit(onSaveSkill)().then(
-        () => {},
-        () => {}
+        () => undefined,
+        () => undefined
       );
     }, 600000);
 

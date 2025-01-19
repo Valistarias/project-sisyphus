@@ -102,7 +102,11 @@ const AdminEditImplant: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const {
     skills,
     stats,
@@ -630,7 +634,7 @@ const AdminEditImplant: FC = () => {
     if (api === undefined || implantData === null || confMessageEvt === null) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditImplant.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditImplant.confirmDeletion.text', {
@@ -641,9 +645,9 @@ const AdminEditImplant: FC = () => {
       },
       (evtId: string) => {
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.implants
               .delete({ id })
               .then(() => {
@@ -673,9 +677,9 @@ const AdminEditImplant: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [

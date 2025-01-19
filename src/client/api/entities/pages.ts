@@ -12,7 +12,7 @@ interface IChapterPayload {
   chapterId: string
 }
 
-export default class Pages extends Entity<IPage> {
+export default class Pages extends Entity<IPage, ICuratedPage> {
   getAllByChapter: (payload: IChapterPayload) => Promise<ICuratedPage[]>;
   get: (payload: IPagesPayload) => Promise<ICuratedPage>;
 

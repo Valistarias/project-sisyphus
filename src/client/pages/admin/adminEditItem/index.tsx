@@ -27,14 +27,15 @@ import {
 } from '../../../organisms';
 import { possibleStarterKitValues } from '../../../types/items';
 
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type { ICuratedItem } from '../../../types';
+import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
 import {
   classTrim, isThereDuplicate
 } from '../../../utils';
 
 import './adminEditItem.scss';
-import type { ErrorResponseType } from '../../../types/global';
 
 interface FormValues {
   name: string
@@ -103,10 +104,18 @@ const AdminEditItem: FC = () => {
   const { api } = useApi();
   const { id } = useParams();
   const {
-    setConfirmContent, ConfMessageEvent
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
   } = useConfirmMessage();
   const {
-    skills, stats, charParams, actionTypes, actionDurations, rarities, itemModifiers
+    skills,
+    stats,
+    charParams,
+    actionTypes,
+    actionDurations,
+    rarities,
+    itemModifiers
   }
     = useGlobalVars();
   const {
@@ -294,17 +303,25 @@ const AdminEditItem: FC = () => {
         title: action.title,
         type: action.type,
         duration: action.duration,
+        isKarmic: action.isKarmic ? '1' : '0',
         ...(action.skill !== undefined ? { skill: action.skill } : {}),
         ...(action.damages !== undefined ? { damages: action.damages } : {}),
-        ...(action.offsetSkill !== undefined ? { offsetSkill: action.offsetSkill } : {}),
+        ...(
+          action.offsetSkill !== undefined
+            ? { offsetSkill: action.offsetSkill }
+            : {}
+        ),
         ...(action.uses !== undefined ? { uses: action.uses } : {}),
-        ...(action.isKarmic !== undefined ? { isKarmic: action.isKarmic ? '1' : '0' } : {}),
-        ...(action.karmicCost !== undefined ? { karmicCost: action.karmicCost } : {}),
+        ...(
+          action.karmicCost !== undefined
+            ? { karmicCost: action.karmicCost }
+            : {}
+        ),
         ...(action.time !== undefined ? { time: action.time } : {}),
         summary: action.summary,
-        titleFr: action.i18n.fr.title,
-        summaryFr: action.i18n.fr.summary,
-        timeFr: action.i18n.fr.time
+        titleFr: action.i18n.fr?.title,
+        summaryFr: action.i18n.fr?.summary,
+        timeFr: action.i18n.fr?.time
       };
 
       tempActionId.push(idIncrement.current);
@@ -324,8 +341,8 @@ const AdminEditItem: FC = () => {
         type: effect.type,
         formula: effect.formula,
         summary: effect.summary,
-        titleFr: effect.i18n.fr.title,
-        summaryFr: effect.i18n.fr.summary
+        titleFr: effect.i18n.fr?.title,
+        summaryFr: effect.i18n.fr?.summary
       };
 
       tempEffectId.push(idIncrement.current);
@@ -343,7 +360,9 @@ const AdminEditItem: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({ defaultValues: useMemo(() => createDefaultData(itemData), [createDefaultData, itemData]) });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(itemData), [createDefaultData, itemData]
+  ) });
 
   const boolRange = useMemo(
     () => [
@@ -411,13 +430,23 @@ const AdminEditItem: FC = () => {
 
   const onSaveItem: SubmitHandler<FormValues> = useCallback(
     ({
-      name, nameFr, cost, rarity, itemModifiers, effects, actions, starterKit, ...elts
+      name,
+      nameFr,
+      cost,
+      rarity,
+      itemModifiers,
+      effects,
+      actions,
+      starterKit,
+      ...elts
     }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
       // Check duplicate on skills
-      const skillBonuses = elts.skillBonuses !== undefined ? Object.values(elts.skillBonuses) : [];
+      const skillBonuses = elts.skillBonuses !== undefined
+        ? Object.values(elts.skillBonuses)
+        : [];
       let duplicateSkillBonuses = false;
       if (skillBonuses.length > 0) {
         duplicateSkillBonuses = isThereDuplicate(
@@ -433,10 +462,14 @@ const AdminEditItem: FC = () => {
         return;
       }
       // Check duplicate on stats
-      const statBonuses = elts.statBonuses !== undefined ? Object.values(elts.statBonuses) : [];
+      const statBonuses = elts.statBonuses !== undefined
+        ? Object.values(elts.statBonuses)
+        : [];
       let duplicateStatBonuses = false;
       if (statBonuses.length > 0) {
-        duplicateStatBonuses = isThereDuplicate(statBonuses.map(statBonus => statBonus.stat));
+        duplicateStatBonuses = isThereDuplicate(
+          statBonuses.map(statBonus => statBonus.stat)
+        );
       }
       if (duplicateStatBonuses) {
         setError('root.serverError', {
@@ -448,7 +481,9 @@ const AdminEditItem: FC = () => {
       }
       // Check duplicate on character param
       const charParamBonuses
-        = elts.charParamBonuses !== undefined ? Object.values(elts.charParamBonuses) : [];
+        = elts.charParamBonuses !== undefined
+          ? Object.values(elts.charParamBonuses)
+          : [];
       let duplicateCharParamBonuses = false;
       if (charParamBonuses.length > 0) {
         duplicateCharParamBonuses = isThereDuplicate(
@@ -487,7 +522,7 @@ const AdminEditItem: FC = () => {
         ({
           id, formula, type, title, summary, titleFr, summaryFr
         }) => ({
-          ...(id !== undefined ? { id } : {}),
+          id,
           title,
           summary,
           formula,
@@ -520,7 +555,7 @@ const AdminEditItem: FC = () => {
           karmicCost,
           summaryFr
         }) => ({
-          ...(id !== undefined ? { id } : {}),
+          id,
           title,
           summary,
           skill,
@@ -532,13 +567,16 @@ const AdminEditItem: FC = () => {
           uses,
           time,
           type,
-          i18n: { ...(titleFr !== undefined || summaryFr !== undefined || timeFr !== undefined
-            ? { fr: {
-                title: titleFr,
-                summary: summaryFr,
-                time: timeFr
-              } }
-            : {}) }
+          i18n: { ...(
+            titleFr !== undefined
+            || summaryFr !== undefined
+            || timeFr !== undefined
+              ? { fr: {
+                  title: titleFr,
+                  summary: summaryFr,
+                  time: timeFr
+                } }
+              : {}) }
         })
       );
 
@@ -611,10 +649,10 @@ const AdminEditItem: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || itemData === null || confMessageEvt === null) {
+    if (api === undefined || itemData === null) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditItem.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditItem.confirmDeletion.text', {
@@ -625,9 +663,9 @@ const AdminEditItem: FC = () => {
       },
       (evtId: string) => {
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.items
               .delete({ id })
               .then(() => {
@@ -643,7 +681,7 @@ const AdminEditItem: FC = () => {
                 void navigate('/admin/items');
               })
               .catch(({ response }: ErrorResponseType) => {
-                const { data }: { data: ErrorResponseType } = response;
+                const { data } = response;
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
@@ -657,15 +695,18 @@ const AdminEditItem: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [
     api,
     itemData,
+    setConfirmContent,
     t,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,

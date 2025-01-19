@@ -13,7 +13,7 @@ interface INodePayload {
   nodeId: string
 }
 
-export default class Nodes extends Entity<INode> {
+export default class Nodes extends Entity<INode, ICuratedNode> {
   getAllByBranch: (payload: IBranchPayload) => Promise<ICuratedNode[]>;
   getAllBySkill: (payload: { skillId: string }) => Promise<ICuratedNode[]>;
   getAllByCyberFrame: (payload: { cyberFrameId: string }) =>

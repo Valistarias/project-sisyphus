@@ -218,7 +218,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = (
       setState: React.Dispatch<React.SetStateAction<unknown>>
     ) => {
       if (api !== undefined) {
-        (api[request] as Entity<unknown>)
+        (api[request] as Entity<unknown, unknown>)
           .getAll()
           .then((data) => {
             setState(data);

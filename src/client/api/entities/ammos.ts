@@ -8,7 +8,7 @@ interface IAmmoPayload {
   ammoId: string
 }
 
-export default class Ammos extends Entity<IAmmo> {
+export default class Ammos extends Entity<IAmmo, ICuratedAmmo> {
   get: (payload: IAmmoPayload) => Promise<ICuratedAmmo>;
 
   constructor() {

@@ -2,13 +2,13 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { ICuratedEffect } from '../../types';
+import type { ICuratedEffect, IEffect } from '../../types';
 
 interface IEffectPayload {
   effectId: string
 }
 
-export default class Effects extends Entity {
+export default class Effects extends Entity<IEffect, ICuratedEffect> {
   get: (payload: IEffectPayload) => Promise<ICuratedEffect>;
 
   constructor() {

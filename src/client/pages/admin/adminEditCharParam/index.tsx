@@ -45,7 +45,11 @@ const AdminEditCharParam: FC = () => {
     createAlert, getNewId
   } = useSystemAlerts();
   const { reloadCharParams } = useGlobalVars();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -183,7 +187,7 @@ const AdminEditCharParam: FC = () => {
     if (api === undefined || confMessageEvt === null) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditCharParam.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditCharParam.confirmDeletion.text', {
@@ -194,9 +198,9 @@ const AdminEditCharParam: FC = () => {
       },
       (evtId: string) => {
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.charParams
               .delete({ id })
               .then(() => {
@@ -227,9 +231,9 @@ const AdminEditCharParam: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [
@@ -285,8 +289,8 @@ const AdminEditCharParam: FC = () => {
     saveTimer.current = setInterval(() => {
       silentSave.current = true;
       handleSubmit(onSaveCharParam)().then(
-        () => {},
-        () => {}
+        () => undefined,
+        () => undefined
       );
     }, 600000);
 

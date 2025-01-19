@@ -7,7 +7,8 @@ import type { IBody } from '../../types';
 interface IUpdateStatsPayload {
   id: string
   stats: Array<{
-    id: string, value: number
+    id: string
+    value: number
   }>
 }
 interface IResetItemsPayload {
@@ -23,7 +24,7 @@ interface IBodyPayload {
   characterId: string
 }
 
-export default class Bodys extends Entity<IBody> {
+export default class Bodys extends Entity<IBody, IBody> {
   get: (payload: IBodyPayload) => Promise<IBody>;
   updateStats: (payload: IUpdateStatsPayload) => Promise<IBody>;
   resetItems: (payload: IResetItemsPayload) => Promise<IBody>;

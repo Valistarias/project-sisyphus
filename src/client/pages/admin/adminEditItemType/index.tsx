@@ -23,7 +23,8 @@ import {
 } from '../../../molecules';
 import { Alert } from '../../../organisms';
 
-import type { IItemType } from '../../../types';
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
+import type { ErrorResponseType, IItemType } from '../../../types';
 
 import './adminEditItemType.scss';
 
@@ -38,7 +39,11 @@ const AdminEditItemType: FC = () => {
     createAlert, getNewId
   } = useSystemAlerts();
   const { reloadItemTypes } = useGlobalVars();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -71,7 +76,7 @@ const AdminEditItemType: FC = () => {
 
   const onSaveItemType: SubmitHandler<FormValues> = useCallback(
     ({ name }) => {
-      if (name === null || api === undefined) {
+      if (api === undefined) {
         return;
       }
 
@@ -119,10 +124,10 @@ const AdminEditItemType: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || confMessageEvt === null) {
+    if (api === undefined) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditItemType.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditItemType.confirmDeletion.text', {
@@ -133,9 +138,9 @@ const AdminEditItemType: FC = () => {
       },
       (evtId: string) => {
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.itemTypes
               .delete({ id })
               .then(() => {
@@ -166,16 +171,18 @@ const AdminEditItemType: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [
     api,
-    confMessageEvt,
+    setConfirmContent,
     t,
     itemTypeData?.name,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,
@@ -217,8 +224,8 @@ const AdminEditItemType: FC = () => {
     saveTimer.current = setInterval(() => {
       silentSave.current = true;
       handleSubmit(onSaveItemType)().then(
-        () => {},
-        () => {}
+        () => undefined,
+        () => undefined
       );
     }, 600000);
 

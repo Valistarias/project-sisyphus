@@ -39,7 +39,11 @@ const AdminEditGlobalValue: FC = () => {
     createAlert, getNewId
   } = useSystemAlerts();
   const { reloadGlobalValues } = useGlobalVars();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -125,7 +129,7 @@ const AdminEditGlobalValue: FC = () => {
     if (api === undefined || confMessageEvt === null) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditGlobalValue.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditGlobalValue.confirmDeletion.text', {
@@ -136,9 +140,9 @@ const AdminEditGlobalValue: FC = () => {
       },
       (evtId: string) => {
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.globalValues
               .delete({ id })
               .then(() => {
@@ -169,9 +173,9 @@ const AdminEditGlobalValue: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [

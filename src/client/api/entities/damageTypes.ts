@@ -8,7 +8,8 @@ interface IDamageTypePayload {
   damageTypeId: string
 }
 
-export default class DamageTypes extends Entity<IDamageType> {
+export default class DamageTypes
+  extends Entity<IDamageType, ICuratedDamageType> {
   get: (payload: IDamageTypePayload) => Promise<ICuratedDamageType>;
 
   constructor() {

@@ -8,7 +8,8 @@ interface IProgramScopePayload {
   programScopeId: string
 }
 
-export default class ProgramScopes extends Entity<IProgramScope> {
+export default class ProgramScopes
+  extends Entity<IProgramScope, ICuratedProgramScope> {
   get: (payload: IProgramScopePayload) => Promise<ICuratedProgramScope>;
 
   constructor() {

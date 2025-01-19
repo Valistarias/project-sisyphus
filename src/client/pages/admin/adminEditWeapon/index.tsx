@@ -27,7 +27,9 @@ import {
 } from '../../../organisms';
 import { possibleStarterKitValues } from '../../../types/items';
 
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type { ICuratedWeapon } from '../../../types';
+import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
 import {
   classTrim, isThereDuplicate
@@ -93,7 +95,11 @@ const AdminEditWeapon: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const {
     weaponTypes,
     weaponScopes,
@@ -181,17 +187,25 @@ const AdminEditWeapon: FC = () => {
         title: action.title,
         type: action.type,
         duration: action.duration,
+        isKarmic: action.isKarmic ? '1' : '0',
         ...(action.skill !== undefined ? { skill: action.skill } : {}),
         ...(action.damages !== undefined ? { damages: action.damages } : {}),
-        ...(action.offsetSkill !== undefined ? { offsetSkill: action.offsetSkill } : {}),
+        ...(
+          action.offsetSkill !== undefined
+            ? { offsetSkill: action.offsetSkill }
+            : {}
+        ),
         ...(action.uses !== undefined ? { uses: action.uses } : {}),
-        ...(action.isKarmic !== undefined ? { isKarmic: action.isKarmic ? '1' : '0' } : {}),
-        ...(action.karmicCost !== undefined ? { karmicCost: action.karmicCost } : {}),
+        ...(
+          action.karmicCost !== undefined
+            ? { karmicCost: action.karmicCost }
+            : {}
+        ),
         ...(action.time !== undefined ? { time: action.time } : {}),
         summary: action.summary,
-        titleFr: action.i18n.fr.title,
-        summaryFr: action.i18n.fr.summary,
-        timeFr: action.i18n.fr.time
+        titleFr: action.i18n.fr?.title ?? '',
+        summaryFr: action.i18n.fr?.summary ?? '',
+        timeFr: action.i18n.fr?.time ?? ''
       };
 
       tempActionId.push(idIncrement.current);
@@ -211,8 +225,8 @@ const AdminEditWeapon: FC = () => {
         type: effect.type,
         formula: effect.formula,
         summary: effect.summary,
-        titleFr: effect.i18n.fr.title,
-        summaryFr: effect.i18n.fr.summary
+        titleFr: effect.i18n.fr?.title ?? '',
+        summaryFr: effect.i18n.fr?.summary ?? ''
       };
 
       tempEffectId.push(idIncrement.current);
@@ -230,7 +244,9 @@ const AdminEditWeapon: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({ defaultValues: useMemo(() => createDefaultData(weaponData), [createDefaultData, weaponData]) });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(weaponData), [createDefaultData, weaponData]) }
+  );
 
   // TODO: Internationalization
   const weaponTypeList = useMemo(() => weaponTypes.map(({ weaponType }) => ({
@@ -248,10 +264,11 @@ const AdminEditWeapon: FC = () => {
     label: damageType.title
   })), [damageTypes]);
 
-  const itemModifierList = useMemo(() => itemModifiers.map(({ itemModifier }) => ({
-    value: itemModifier._id,
-    label: itemModifier.title
-  })), [itemModifiers]);
+  const itemModifierList = useMemo(
+    () => itemModifiers.map(({ itemModifier }) => ({
+      value: itemModifier._id,
+      label: itemModifier.title
+    })), [itemModifiers]);
 
   const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
     value: rarity._id,
@@ -365,8 +382,6 @@ const AdminEditWeapon: FC = () => {
         introEditor === null
         || introFrEditor === null
         || api === undefined
-        || weaponScope === undefined
-        || rarity === undefined
       ) {
         return;
       }
@@ -375,7 +390,9 @@ const AdminEditWeapon: FC = () => {
       const sortedDamages = damages !== undefined ? Object.values(damages) : [];
       let duplicateDamages = false;
       if (sortedDamages.length > 0) {
-        duplicateDamages = isThereDuplicate(sortedDamages.map(damage => damage.damageType));
+        duplicateDamages = isThereDuplicate(
+          sortedDamages.map(damage => damage.damageType)
+        );
       }
       if (duplicateDamages) {
         setError('root.serverError', {
@@ -441,13 +458,16 @@ const AdminEditWeapon: FC = () => {
           uses,
           isKarmic: String(isKarmic) === '1',
           karmicCost,
-          i18n: { ...(titleFr !== undefined || summaryFr !== undefined || timeFr !== undefined
-            ? { fr: {
-                title: titleFr,
-                summary: summaryFr,
-                time: timeFr
-              } }
-            : {}) }
+          i18n: { ...(
+            titleFr !== undefined
+            || summaryFr !== undefined
+            || timeFr !== undefined
+              ? { fr: {
+                  title: titleFr,
+                  summary: summaryFr,
+                  time: timeFr
+                } }
+              : {}) }
         })
       );
 
@@ -479,7 +499,9 @@ const AdminEditWeapon: FC = () => {
           starterKit,
           summary: html,
           magasine: magasine !== undefined ? Number(magasine) : undefined,
-          ammoPerShot: ammoPerShot !== undefined ? Number(ammoPerShot) : undefined,
+          ammoPerShot: ammoPerShot !== undefined
+            ? Number(ammoPerShot)
+            : undefined,
           i18n,
           quote,
           damages: curatedDamages,
@@ -518,10 +540,10 @@ const AdminEditWeapon: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || weaponData === null || confMessageEvt === null) {
+    if (api === undefined || weaponData === null) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditWeapon.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditWeapon.confirmDeletion.text', {
@@ -532,9 +554,9 @@ const AdminEditWeapon: FC = () => {
       },
       (evtId: string) => {
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.weapons
               .delete({ id })
               .then(() => {
@@ -564,16 +586,18 @@ const AdminEditWeapon: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [
     api,
     weaponData,
-    confMessageEvt,
+    setConfirmContent,
     t,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,

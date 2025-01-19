@@ -20,7 +20,7 @@ interface IChapterPagesOrder {
   }>
 }
 
-export default class Chapters extends Entity<IChapter> {
+export default class Chapters extends Entity<IChapter, ICuratedChapter> {
   getAllByRuleBook: (payload: IChaptersPayload) => Promise<ICuratedChapter[]>;
   get: (payload: IChapterPayload) => Promise<ICuratedChapter>;
   changePagesOrder: (payload: IChapterPagesOrder) => Promise<ICuratedChapter>;

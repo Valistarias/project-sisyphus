@@ -44,7 +44,11 @@ const AdminEditDamageType: FC = () => {
     createAlert, getNewId
   } = useSystemAlerts();
   const { reloadDamageTypes } = useGlobalVars();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -177,7 +181,7 @@ const AdminEditDamageType: FC = () => {
     if (api === undefined || confMessageEvt === null) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditDamageType.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditDamageType.confirmDeletion.text', {
@@ -188,9 +192,9 @@ const AdminEditDamageType: FC = () => {
       },
       (evtId: string) => {
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.damageTypes
               .delete({ id })
               .then(() => {
@@ -221,9 +225,9 @@ const AdminEditDamageType: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [
@@ -279,8 +283,8 @@ const AdminEditDamageType: FC = () => {
     saveTimer.current = setInterval(() => {
       silentSave.current = true;
       handleSubmit(onSaveDamageType)().then(
-        () => {},
-        () => {}
+        () => undefined,
+        () => undefined
       );
     }, 600000);
 

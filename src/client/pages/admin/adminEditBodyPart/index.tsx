@@ -46,7 +46,11 @@ const AdminEditBodyPart: FC = () => {
     createAlert, getNewId
   } = useSystemAlerts();
   const { reloadBodyParts } = useGlobalVars();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -185,7 +189,7 @@ const AdminEditBodyPart: FC = () => {
     if (api === undefined || confMessageEvt === null) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditBodyPart.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditBodyPart.confirmDeletion.text', {
@@ -196,9 +200,9 @@ const AdminEditBodyPart: FC = () => {
       },
       (evtId: string) => {
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.bodyParts
               .delete({ id })
               .then(() => {
@@ -229,9 +233,9 @@ const AdminEditBodyPart: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [
@@ -287,8 +291,8 @@ const AdminEditBodyPart: FC = () => {
     saveTimer.current = setInterval(() => {
       silentSave.current = true;
       handleSubmit(onSaveBodyPart)().then(
-        () => {},
-        () => {}
+        () => undefined,
+        () => undefined
       );
     }, 600000);
 

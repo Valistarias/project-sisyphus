@@ -8,7 +8,7 @@ interface IBagPayload {
   bagId: string
 }
 
-export default class Bags extends Entity<IBag> {
+export default class Bags extends Entity<IBag, IBag> {
   get: (payload: IBagPayload) => Promise<ICuratedBag>;
   getStarters: () => Promise<ICuratedBag[]>;
 

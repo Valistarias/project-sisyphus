@@ -129,7 +129,7 @@ export interface IAction {
   /** How many times the action is usable in a day */
   uses?: number
   /** All the related Chapters */
-  damages: string
+  damages?: string
   /** When the action was created */
   createdAt: Date
   /** The internationalization */

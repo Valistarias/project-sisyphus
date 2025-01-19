@@ -26,7 +26,9 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 
-import type { ICuratedNotion } from '../../../types';
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
+import type { ErrorResponseType, ICuratedNotion } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import './adminEditNotion.scss';
 
@@ -42,7 +44,11 @@ const AdminEditNotions: FC = () => {
   const {
     createAlert, getNewId
   } = useSystemAlerts();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const { id } = useParams();
   const { ruleBooks } = useGlobalVars();
   const navigate = useNavigate();
@@ -74,7 +80,9 @@ const AdminEditNotions: FC = () => {
       } = notionData;
       const defaultData: Partial<FormValues> = {};
       defaultData.name = notion.title;
-      const selectedfield = ruleBooks.find(notionType => notionType.value === notion.ruleBook);
+      const selectedfield = ruleBooks.find(
+        notionType => notionType.value === notion.ruleBook
+      );
       if (selectedfield !== undefined) {
         defaultData.type = String(selectedfield.value);
       }
@@ -116,9 +124,7 @@ const AdminEditNotions: FC = () => {
       name, nameFr, type
     }) => {
       if (
-        notionText === null
-        || notionTextFr === null
-        || textEditor === null
+        textEditor === null
         || textFrEditor === null
         || api === undefined
       ) {
@@ -176,8 +182,6 @@ const AdminEditNotions: FC = () => {
         });
     },
     [
-      notionText,
-      notionTextFr,
       textEditor,
       textFrEditor,
       api,
@@ -190,10 +194,10 @@ const AdminEditNotions: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || confMessageEvt === null) {
+    if (api === undefined) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditNotion.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditNotion.confirmDeletion.text', {
@@ -204,9 +208,9 @@ const AdminEditNotions: FC = () => {
       },
       (evtId: string) => {
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.notions
               .delete({ id })
               .then(() => {
@@ -236,16 +240,18 @@ const AdminEditNotions: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [
     api,
-    confMessageEvt,
+    setConfirmContent,
     t,
     notionData?.notion.title,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,
@@ -294,8 +300,8 @@ const AdminEditNotions: FC = () => {
     saveTimer.current = setInterval(() => {
       silentSave.current = true;
       handleSubmit(onSaveNotion)().then(
-        () => {},
-        () => {}
+        () => undefined,
+        () => undefined
       );
     }, 600000);
 

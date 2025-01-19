@@ -8,7 +8,8 @@ interface IBackgroundPayload {
   backgroundId: string
 }
 
-export default class Backgrounds extends Entity<IBackground> {
+export default class Backgrounds
+  extends Entity<IBackground, ICuratedBackground> {
   get: (payload: IBackgroundPayload) => Promise<ICuratedBackground>;
 
   constructor() {

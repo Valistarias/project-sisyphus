@@ -33,7 +33,7 @@ const AdminImplants: FC = () => {
 
   // TODO: Handle i18n in place of basic english language
   const implantsList = useMemo(() => {
-    if (implants === null || implants.length === 0) {
+    if (implants.length === 0) {
       return null;
     }
 

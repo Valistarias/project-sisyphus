@@ -12,7 +12,7 @@ interface ICampaignCodePayload {
   campaignCode: string
 }
 
-export default class Campaigns extends Entity<ICampaign> {
+export default class Campaigns extends Entity<ICampaign, ICampaign> {
   get: (payload: ICampaignPayload) => Promise<ICampaign>;
   register: (payload: ICampaignCodePayload) => Promise<{ campaignId: string }>;
   unregister: (payload: ICampaignPayload) => Promise<boolean>;

@@ -26,7 +26,9 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type { ICuratedProgramScope } from '../../../types';
+import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
 import { classTrim } from '../../../utils';
 
@@ -45,7 +47,11 @@ const AdminEditProgramScope: FC = () => {
     createAlert, getNewId
   } = useSystemAlerts();
   const { reloadProgramScopes } = useGlobalVars();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -55,7 +61,8 @@ const AdminEditProgramScope: FC = () => {
 
   const [displayInt, setDisplayInt] = useState(false);
 
-  const [programScopeData, setProgramScopeData] = useState<ICuratedProgramScope | null>(null);
+  const [programScopeData, setProgramScopeData]
+  = useState<ICuratedProgramScope | null>(null);
 
   const [programScopeText, setProgramScopeText] = useState('');
   const [programScopeTextFr, setProgramScopeTextFr] = useState('');
@@ -68,22 +75,23 @@ const AdminEditProgramScope: FC = () => {
     { extensions: completeRichTextElementExtentions }
   );
 
-  const createDefaultData = useCallback((programScopeData: ICuratedProgramScope | null) => {
-    if (programScopeData == null) {
-      return {};
-    }
-    const {
-      programScope, i18n
-    } = programScopeData;
-    const defaultData: Partial<FormValues> = {};
-    defaultData.name = programScope.title;
-    defaultData.scopeId = programScope.scopeId;
-    if (i18n.fr !== undefined) {
-      defaultData.nameFr = i18n.fr.title ?? '';
-    }
+  const createDefaultData = useCallback(
+    (programScopeData: ICuratedProgramScope | null) => {
+      if (programScopeData == null) {
+        return {};
+      }
+      const {
+        programScope, i18n
+      } = programScopeData;
+      const defaultData: Partial<FormValues> = {};
+      defaultData.name = programScope.title;
+      defaultData.scopeId = programScope.scopeId;
+      if (i18n.fr !== undefined) {
+        defaultData.nameFr = i18n.fr.title ?? '';
+      }
 
-    return defaultData;
-  }, []);
+      return defaultData;
+    }, []);
 
   const {
     handleSubmit,
@@ -101,11 +109,8 @@ const AdminEditProgramScope: FC = () => {
       name, nameFr, scopeId
     }) => {
       if (
-        programScopeText === null
-        || programScopeTextFr === null
-        || textEditor === null
+        textEditor === null
         || textFrEditor === null
-        || scopeId === null
         || api === undefined
       ) {
         return;
@@ -163,8 +168,6 @@ const AdminEditProgramScope: FC = () => {
         });
     },
     [
-      programScopeText,
-      programScopeTextFr,
       textEditor,
       textFrEditor,
       api,
@@ -178,10 +181,10 @@ const AdminEditProgramScope: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || confMessageEvt === null) {
+    if (api === undefined) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditProgramScope.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditProgramScope.confirmDeletion.text', {
@@ -192,9 +195,9 @@ const AdminEditProgramScope: FC = () => {
       },
       (evtId: string) => {
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.programScopes
               .delete({ id })
               .then(() => {
@@ -225,16 +228,18 @@ const AdminEditProgramScope: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [
     api,
-    confMessageEvt,
+    setConfirmContent,
     t,
     programScopeData?.programScope.title,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,
@@ -283,8 +288,8 @@ const AdminEditProgramScope: FC = () => {
     saveTimer.current = setInterval(() => {
       silentSave.current = true;
       handleSubmit(onSaveProgramScope)().then(
-        () => {},
-        () => {}
+        () => undefined,
+        () => undefined
       );
     }, 600000);
 

@@ -8,7 +8,7 @@ interface IBodyPartPayload {
   bodyPartId: string
 }
 
-export default class BodyParts extends Entity<IBodyPart> {
+export default class BodyParts extends Entity<IBodyPart, ICuratedBodyPart> {
   get: (payload: IBodyPartPayload) => Promise<ICuratedBodyPart>;
 
   constructor() {

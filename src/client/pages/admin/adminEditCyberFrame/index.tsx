@@ -46,7 +46,11 @@ const AdminEditCyberFrame: FC = () => {
   const {
     createAlert, getNewId
   } = useSystemAlerts();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const { id } = useParams();
   const {
     ruleBooks, reloadCyberFrames
@@ -224,7 +228,7 @@ const AdminEditCyberFrame: FC = () => {
     if (api === undefined || confMessageEvt === null) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditCyberFrame.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditCyberFrame.confirmDeletion.text', {
@@ -235,9 +239,9 @@ const AdminEditCyberFrame: FC = () => {
       },
       (evtId: string) => {
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.cyberFrames
               .delete({ id })
               .then(() => {
@@ -268,9 +272,9 @@ const AdminEditCyberFrame: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [
@@ -326,8 +330,8 @@ const AdminEditCyberFrame: FC = () => {
     saveTimer.current = setInterval(() => {
       silentSave.current = true;
       handleSubmit(onSaveCyberFrame)().then(
-        () => {},
-        () => {}
+        () => undefined,
+        () => undefined
       );
     }, 600000);
 

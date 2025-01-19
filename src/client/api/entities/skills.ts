@@ -8,7 +8,7 @@ interface ISkillPayload {
   skillId: string
 }
 
-export default class Skills extends Entity<ISkill> {
+export default class Skills extends Entity<ISkill, ICuratedSkill> {
   get: (payload: ISkillPayload) => Promise<ICuratedSkill>;
 
   constructor() {

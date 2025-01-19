@@ -44,7 +44,11 @@ const AdminEditArmorType: FC = () => {
     createAlert, getNewId
   } = useSystemAlerts();
   const { reloadArmorTypes } = useGlobalVars();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -177,7 +181,7 @@ const AdminEditArmorType: FC = () => {
     if (api === undefined || confMessageEvt === null) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditArmorType.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditArmorType.confirmDeletion.text', {
@@ -188,9 +192,9 @@ const AdminEditArmorType: FC = () => {
       },
       (evtId: string) => {
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.armorTypes
               .delete({ id })
               .then(() => {
@@ -221,9 +225,9 @@ const AdminEditArmorType: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [
@@ -279,8 +283,8 @@ const AdminEditArmorType: FC = () => {
     saveTimer.current = setInterval(() => {
       silentSave.current = true;
       handleSubmit(onSaveArmorType)().then(
-        () => {},
-        () => {}
+        () => undefined,
+        () => undefined
       );
     }, 600000);
 

@@ -26,7 +26,9 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 
-import type { ICuratedRarity } from '../../../types';
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
+import type { ErrorResponseType, ICuratedRarity } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import { classTrim } from '../../../utils';
 
@@ -44,7 +46,11 @@ const AdminEditRarity: FC = () => {
     createAlert, getNewId
   } = useSystemAlerts();
   const { reloadRarities } = useGlobalVars();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -89,16 +95,16 @@ const AdminEditRarity: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({ defaultValues: useMemo(() => createDefaultData(rarityData), [createDefaultData, rarityData]) });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(rarityData), [createDefaultData, rarityData]
+  ) });
 
   const onSaveRarity: SubmitHandler<FormValues> = useCallback(
     ({
       name, nameFr
     }) => {
       if (
-        rarityText === null
-        || rarityTextFr === null
-        || textEditor === null
+        textEditor === null
         || textFrEditor === null
         || api === undefined
       ) {
@@ -156,8 +162,6 @@ const AdminEditRarity: FC = () => {
         });
     },
     [
-      rarityText,
-      rarityTextFr,
       textEditor,
       textFrEditor,
       api,
@@ -171,10 +175,10 @@ const AdminEditRarity: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || confMessageEvt === null) {
+    if (api === undefined) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditRarity.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditRarity.confirmDeletion.text', {
@@ -185,9 +189,9 @@ const AdminEditRarity: FC = () => {
       },
       (evtId: string) => {
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.rarities
               .delete({ id })
               .then(() => {
@@ -218,16 +222,18 @@ const AdminEditRarity: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [
     api,
-    confMessageEvt,
+    setConfirmContent,
     t,
     rarityData?.rarity.title,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,
@@ -276,8 +282,8 @@ const AdminEditRarity: FC = () => {
     saveTimer.current = setInterval(() => {
       silentSave.current = true;
       handleSubmit(onSaveRarity)().then(
-        () => {},
-        () => {}
+        () => undefined,
+        () => undefined
       );
     }, 600000);
 

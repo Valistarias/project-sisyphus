@@ -52,7 +52,11 @@ const AdminEditChapters: FC = () => {
     createAlert, getNewId
   } = useSystemAlerts();
   const { id } = useParams();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const navigate = useNavigate();
 
   const calledApi = useRef<string | null>(null);
@@ -264,7 +268,7 @@ const AdminEditChapters: FC = () => {
     if (api === undefined || confMessageEvt === null) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditChapter.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditChapter.confirmDeletion.text', {
@@ -275,9 +279,9 @@ const AdminEditChapters: FC = () => {
       },
       (evtId: string) => {
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.chapters
               .delete({ id })
               .then(() => {
@@ -307,9 +311,9 @@ const AdminEditChapters: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [
@@ -366,8 +370,8 @@ const AdminEditChapters: FC = () => {
     saveTimer.current = setInterval(() => {
       silentSave.current = true;
       handleSubmit(onSaveChapter)().then(
-        () => {},
-        () => {}
+        () => undefined,
+        () => undefined
       );
     }, 600000);
 

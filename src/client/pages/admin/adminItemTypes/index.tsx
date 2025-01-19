@@ -21,7 +21,7 @@ const AdminItemTypes: FC = () => {
 
   // TODO: Handle i18n in place of basic english language
   const itemTypesList = useMemo(() => {
-    if (itemTypes === null || itemTypes.length === 0) {
+    if (itemTypes.length === 0) {
       return null;
     }
 

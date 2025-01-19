@@ -26,7 +26,9 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type { ICuratedNPC } from '../../../types';
+import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
 import { classTrim } from '../../../utils';
 
@@ -63,7 +65,11 @@ const AdminEditNPC: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const {
     damageTypes, weaponScopes
   } = useGlobalVars();
@@ -144,8 +150,8 @@ const AdminEditNPC: FC = () => {
         dices: attack.dices,
         bonusToHit: attack.bonusToHit,
         summary: attack.summary,
-        titleFr: attack.i18n.fr.title,
-        summaryFr: attack.i18n.fr.summary
+        titleFr: attack.i18n.fr?.title,
+        summaryFr: attack.i18n.fr?.summary
       };
 
       tempAttackId.push(idIncrement.current);
@@ -163,7 +169,9 @@ const AdminEditNPC: FC = () => {
     control,
     reset,
     formState: { errors }
-  } = useForm({ defaultValues: useMemo(() => createDefaultData(nPCData), [createDefaultData, nPCData]) });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(nPCData), [createDefaultData, nPCData]
+  ) });
 
   const boolRange = useMemo(
     () => [
@@ -211,7 +219,7 @@ const AdminEditNPC: FC = () => {
           dices,
           bonusToHit
         }) => ({
-          ...(id !== undefined ? { id } : {}),
+          id,
           title,
           summary,
           damageType,
@@ -250,7 +258,9 @@ const AdminEditNPC: FC = () => {
           i18n,
           virtual: String(virtual) === '1',
           speed: Number(speed),
-          flightSpeed: flightSpeed !== undefined ? Number(flightSpeed) : undefined,
+          flightSpeed: flightSpeed !== undefined
+            ? Number(flightSpeed)
+            : undefined,
           swimSpeed: swimSpeed !== undefined ? Number(swimSpeed) : undefined,
           hp: Number(hp),
           pr: pr !== undefined ? Number(pr) : undefined,
@@ -296,10 +306,10 @@ const AdminEditNPC: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || nPCData === null || confMessageEvt === null) {
+    if (api === undefined || nPCData === null) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditNPC.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditNPC.confirmDeletion.text', {
@@ -310,9 +320,9 @@ const AdminEditNPC: FC = () => {
       },
       (evtId: string) => {
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.nPCs
               .delete({ id })
               .then(() => {
@@ -342,16 +352,18 @@ const AdminEditNPC: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [
     api,
     nPCData,
-    confMessageEvt,
+    setConfirmContent,
     t,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,

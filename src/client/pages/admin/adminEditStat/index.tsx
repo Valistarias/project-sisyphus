@@ -26,7 +26,9 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 
-import type { ICuratedStat } from '../../../types';
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
+import type { ErrorResponseType, ICuratedStat } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import './adminEditStat.scss';
 
@@ -45,7 +47,11 @@ const AdminEditStat: FC = () => {
     createAlert, getNewId
   } = useSystemAlerts();
   const { reloadStats } = useGlobalVars();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -91,18 +97,17 @@ const AdminEditStat: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({ defaultValues: useMemo(() => createDefaultData(statData), [createDefaultData, statData]) });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(statData), [createDefaultData, statData]
+  ) });
 
   const onSaveStat: SubmitHandler<FormValues> = useCallback(
     ({
       name, nameFr, short, shortFr, formulaId
     }) => {
       if (
-        statText === null
-        || statTextFr === null
-        || textEditor === null
+        textEditor === null
         || textFrEditor === null
-        || formulaId === null
         || api === undefined
       ) {
         return;
@@ -120,7 +125,7 @@ const AdminEditStat: FC = () => {
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
         i18n = { fr: {
           title: nameFr,
-          short: shortFr ?? '',
+          short: shortFr,
           text: htmlTextFr
         } };
       }
@@ -162,8 +167,6 @@ const AdminEditStat: FC = () => {
         });
     },
     [
-      statText,
-      statTextFr,
       textEditor,
       textFrEditor,
       api,
@@ -177,10 +180,10 @@ const AdminEditStat: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || confMessageEvt === null) {
+    if (api === undefined) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditStat.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditStat.confirmDeletion.text', {
@@ -191,9 +194,9 @@ const AdminEditStat: FC = () => {
       },
       (evtId: string) => {
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.stats
               .delete({ id })
               .then(() => {
@@ -224,16 +227,18 @@ const AdminEditStat: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [
     api,
-    confMessageEvt,
+    setConfirmContent,
     t,
     statData?.stat.title,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,
@@ -282,8 +287,8 @@ const AdminEditStat: FC = () => {
     saveTimer.current = setInterval(() => {
       silentSave.current = true;
       handleSubmit(onSaveStat)().then(
-        () => {},
-        () => {}
+        () => undefined,
+        () => undefined
       );
     }, 600000);
 

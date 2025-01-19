@@ -2,11 +2,13 @@ import axios from 'axios';
 
 import Entity from './entity';
 
+import type { IChapterType } from '../../types';
+
 interface IChapterTypesPayload {
   ruleBookTypeId: string
 }
 
-export default class ChapterTypes extends Entity {
+export default class ChapterTypes extends Entity<IChapterType, IChapterType> {
   get: (payload: IChapterTypesPayload) => Promise<string>;
 
   constructor() {

@@ -21,7 +21,7 @@ interface IArchivedPayload {
   archived: boolean
 }
 
-export default class RuleBooks extends Entity<IRuleBook> {
+export default class RuleBooks extends Entity<IRuleBook, ICuratedRuleBook> {
   get: (payload: IRuleBooksPayload) => Promise<ICuratedRuleBook>;
   archive: (payload: IArchivedPayload) => Promise<boolean>;
   changeChaptersOrder: (payload: IRuleBooksChapterOrder) =>

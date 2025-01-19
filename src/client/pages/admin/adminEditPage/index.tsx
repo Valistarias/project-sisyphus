@@ -26,7 +26,9 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 
-import type { ICuratedPage } from '../../../types';
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
+import type { ErrorResponseType, ICuratedPage } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import { formatDate } from '../../../utils';
 
@@ -44,7 +46,11 @@ const AdminEditPages: FC = () => {
     createAlert, getNewId
   } = useSystemAlerts();
   const { id } = useParams();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const navigate = useNavigate();
 
   const calledApi = useRef<string | null>(null);
@@ -88,7 +94,9 @@ const AdminEditPages: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({ defaultValues: useMemo(() => createDefaultData(pageData), [createDefaultData, pageData]) });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(pageData), [createDefaultData, pageData]
+  ) });
 
   const ruleBook = useMemo(() => pageData?.page.chapter.ruleBook, [pageData]);
   const chapter = useMemo(() => pageData?.page.chapter, [pageData]);
@@ -173,10 +181,10 @@ const AdminEditPages: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || chapter == null || confMessageEvt === null) {
+    if (api === undefined || chapter == null) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t('adminEditPage.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditPage.confirmDeletion.text', {
@@ -186,9 +194,9 @@ const AdminEditPages: FC = () => {
       },
       (evtId: string) => {
         const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
-            if (detail.proceed) {
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.pages
               .delete({ id })
               .then(() => {
@@ -218,16 +226,18 @@ const AdminEditPages: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmDelete);
+          removeConfirmEventListener(evtId, confirmDelete);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmDelete);
+        addConfirmEventListener(evtId, confirmDelete);
       }
     );
   }, [
     api,
     chapter,
-    confMessageEvt,
+    setConfirmContent,
     t,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,
@@ -247,7 +257,7 @@ const AdminEditPages: FC = () => {
           setPageData(curatedPage);
 
           setPageContent(page.content);
-          if (curatedPage.i18n.fr !== undefined) {
+          if (curatedPage.i18n.fr !== undefined && i18n.fr !== undefined) {
             setPageContentFr(i18n.fr.content ?? '');
           }
         })
@@ -276,8 +286,8 @@ const AdminEditPages: FC = () => {
     saveTimer.current = setInterval(() => {
       silentSave.current = true;
       handleSubmit(onSavePage)().then(
-        () => {},
-        () => {}
+        () => undefined,
+        () => undefined
       );
     }, 600000);
 
@@ -308,11 +318,11 @@ const AdminEditPages: FC = () => {
       <div className="adminEditPage__ariane">
         <Ap className="adminEditPage__ariane__elt">
           {`${t(`terms.ruleBook.ruleBook`)}: `}
-          <Aa href={`/admin/rulebook/${ruleBook?._id}`}>{ruleBook?.title!}</Aa>
+          <Aa href={`/admin/rulebook/${ruleBook?._id}`}>{ruleBook?.title}</Aa>
         </Ap>
         <Ap className="adminEditPage__ariane__elt">
           {`${t(`terms.ruleBook.chapter`)}: `}
-          <Aa href={`/admin/chapter/${chapter?._id}`}>{chapter?.title!}</Aa>
+          <Aa href={`/admin/chapter/${chapter?._id}`}>{chapter?.title}</Aa>
         </Ap>
       </div>
       {autoSaved !== null ? <Ap className="adminEditPage__autosave">{autoSaved}</Ap> : null}

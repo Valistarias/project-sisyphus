@@ -8,7 +8,7 @@ interface IItemTypesPayload {
   itemTypeId: string
 }
 
-export default class ItemTypes extends Entity<IItemType> {
+export default class ItemTypes extends Entity<IItemType, IItemType> {
   get: (payload: IItemTypesPayload) => Promise<IItemType>;
 
   constructor() {

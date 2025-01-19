@@ -30,9 +30,12 @@ import {
   type IDragElt
 } from '../../../organisms';
 
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type {
-  IChapterType, ICuratedRuleBook, IRuleBookType
+  ErrorResponseType,
+  ICuratedRuleBook
 } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import {
   arraysEqual, formatDate
@@ -54,7 +57,11 @@ const AdminEditRuleBook: FC = () => {
     createAlert, getNewId
   } = useSystemAlerts();
   const { id } = useParams();
-  const confMessageEvt = useConfirmMessage();
+  const {
+    setConfirmContent,
+    removeConfirmEventListener,
+    addConfirmEventListener
+  } = useConfirmMessage();
   const navigate = useNavigate();
   const { reloadRuleBooks } = useGlobalVars();
 
@@ -80,11 +87,13 @@ const AdminEditRuleBook: FC = () => {
     }
   ]);
 
-  const [rulebookData, setRulebookData] = useState<ICuratedRuleBook | null>(null);
+  const [rulebookData, setRulebookData]
+  = useState<ICuratedRuleBook | null>(null);
 
   const [ruleBookTypes, setRuleBookTypes] = useState<ISingleValueSelect[]>([]);
 
-  const [defaultTypeChapterId, setDefaultTypeChapterId] = useState<string | null>(null);
+  const [defaultTypeChapterId, setDefaultTypeChapterId]
+  = useState<string | null>(null);
   const [initialOrder, setInitialOrder] = useState<string[]>([]);
   const [chaptersOrder, setChaptersOrder] = useState<string[]>([]);
 
@@ -97,7 +106,10 @@ const AdminEditRuleBook: FC = () => {
   );
 
   const createDefaultData = useCallback(
-    (ruleBookTypes: ISingleValueSelect[], rulebookData: ICuratedRuleBook | null) => {
+    (
+      ruleBookTypes: ISingleValueSelect[],
+      rulebookData: ICuratedRuleBook | null
+    ) => {
       if (rulebookData == null) {
         return {};
       }
@@ -107,10 +119,12 @@ const AdminEditRuleBook: FC = () => {
       const sentApiType = ruleBook.type._id;
       const defaultData: Partial<FormValues> = {};
       defaultData.draft = ruleBook.draft ? 'draft' : 'published';
-      defaultData.name = ruleBook.title ?? '';
-      if (sentApiType != null && ruleBookTypes.length > 0) {
+      defaultData.name = ruleBook.title;
+      if (ruleBookTypes.length > 0) {
         defaultData.type = String(
-          ruleBookTypes.find(ruleBookType => ruleBookType.value === sentApiType)?.value
+          ruleBookTypes.find(
+            ruleBookType => ruleBookType.value === sentApiType
+          )?.value
         );
       }
       if (i18n.fr !== undefined) {
@@ -269,7 +283,11 @@ const AdminEditRuleBook: FC = () => {
   );
 
   const onUpdateOrder = useCallback(() => {
-    if (arraysEqual(chaptersOrder, initialOrder) || api === undefined || id === undefined) {
+    if (
+      arraysEqual(chaptersOrder, initialOrder)
+      || api === undefined
+      || id === undefined
+    ) {
       return;
     }
 
@@ -319,10 +337,10 @@ const AdminEditRuleBook: FC = () => {
   ]);
 
   const onAskArchive = useCallback(() => {
-    if (api === undefined || id === undefined || confMessageEvt === null) {
+    if (api === undefined || id === undefined) {
       return;
     }
-    confMessageEvt.setConfirmContent(
+    setConfirmContent(
       {
         title: t(
           archived
@@ -347,8 +365,10 @@ const AdminEditRuleBook: FC = () => {
         theme: archived ? 'info' : 'error'
       },
       (evtId: string) => {
-        const confirmArchive = ({ detail }): void => {
-          if (detail.proceed === true) {
+        const confirmArchive = (
+          { detail }: { detail: ConfirmMessageDetailData }
+        ): void => {
+          if (detail.proceed) {
             api.ruleBooks
               .archive({
                 id, archived: !archived
@@ -388,18 +408,20 @@ const AdminEditRuleBook: FC = () => {
                 }
               });
           }
-          confMessageEvt.removeConfirmEventListener(evtId, confirmArchive);
+          removeConfirmEventListener(evtId, confirmArchive);
         };
-        confMessageEvt.addConfirmEventListener(evtId, confirmArchive);
+        addConfirmEventListener(evtId, confirmArchive);
       }
     );
   }, [
     api,
     id,
-    confMessageEvt,
+    setConfirmContent,
     t,
     archived,
     rulebookData?.ruleBook.title,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     getNewId,
     createAlert,
     reloadRuleBooks,
@@ -486,8 +508,8 @@ const AdminEditRuleBook: FC = () => {
     saveTimer.current = setInterval(() => {
       silentSave.current = true;
       handleSubmit(onSaveRuleBook)().then(
-        () => {},
-        () => {}
+        () => undefined,
+        () => undefined
       );
     }, 600000);
 
