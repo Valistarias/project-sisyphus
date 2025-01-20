@@ -50,5 +50,5 @@ export const SocketProvider: FC<SocketProviderProps> = ({ children }) => {
   );
 };
 
-export const useSocket = (): ISocketContext | null =>
+export const useSocket = (): ISocketContext =>
   useContext(SocketContext);

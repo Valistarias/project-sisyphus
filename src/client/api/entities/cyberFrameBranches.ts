@@ -13,11 +13,13 @@ interface ICyberFrameBranchPayload {
 }
 
 export default class CyberFrameBranches
-  extends Entity<ICyberFrameBranch, ICuratedCyberFrameBranch> {
+  extends Entity<
+    ICyberFrameBranchPayload,
+    ICyberFrameBranch,
+    ICuratedCyberFrameBranch
+  > {
   getAllByCyberFrame: (payload: ICyberFrameBranchesPayload) =>
   Promise<ICuratedCyberFrameBranch[]>;
-
-  get: (payload: ICyberFrameBranchPayload) => Promise<ICuratedCyberFrameBranch>;
 
   constructor() {
     super('cyberframebranches');
@@ -28,18 +30,6 @@ export default class CyberFrameBranches
           .get(`${this.url}/byframe/`, { params: payload })
           .then((res) => {
             resolve(res.data as ICuratedCyberFrameBranch[]);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
-
-    this.get = async payload =>
-      await new Promise((resolve, reject) => {
-        axios
-          .get(`${this.url}/single/`, { params: payload })
-          .then((res) => {
-            resolve(res.data as ICuratedCyberFrameBranch);
           })
           .catch((err) => {
             reject(err);

@@ -8,24 +8,12 @@ interface IProgramPayload {
   programId: string
 }
 
-export default class Programs extends Entity<IProgram, ICuratedProgram> {
-  get: (payload: IProgramPayload) => Promise<ICuratedProgram>;
+export default class Programs
+  extends Entity<IProgramPayload, IProgram, ICuratedProgram> {
   getStarters: () => Promise<ICuratedProgram[]>;
 
   constructor() {
     super('programs');
-
-    this.get = async payload =>
-      await new Promise((resolve, reject) => {
-        axios
-          .get(`${this.url}/single/`, { params: payload })
-          .then((res) => {
-            resolve(res.data as ICuratedProgram);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
 
     this.getStarters = async () =>
       await new Promise((resolve, reject) => {

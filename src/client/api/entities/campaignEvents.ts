@@ -10,7 +10,7 @@ interface ICampaignEventsPayload {
 }
 
 export default class CampaignEvents
-  extends Entity<ICampaignEvent, ICampaignEvent> {
+  extends Entity<unknown, ICampaignEvent, ICampaignEvent> {
   getAllByCampaign: (
     payload: ICampaignEventsPayload
   ) => Promise<ICampaignEvent[]>;

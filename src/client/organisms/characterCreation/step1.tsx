@@ -30,18 +30,23 @@ interface ICharacterCreationStep1 {
   onSubmitCyberFrame: (id: string) => void
 }
 
-const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFrame }) => {
+const CharacterCreationStep1: FC<ICharacterCreationStep1> = (
+  { onSubmitCyberFrame }
+) => {
   const { t } = useTranslation();
   const {
     cyberFrames, character
   } = useGlobalVars();
 
-  const [openedCFrame, setOpenedCFrame] = useState<ICuratedCyberFrame | null>(null);
+  const [openedCFrame, setOpenedCFrame]
+  = useState<ICuratedCyberFrame | null>(null);
   const [detailsOpened, setDetailsOpened] = useState<boolean>(false);
 
   const onOpenDetails = useCallback(
     (id: string) => {
-      const foundCFrame = cyberFrames.find(({ cyberFrame }) => cyberFrame._id === id);
+      const foundCFrame = cyberFrames.find(
+        ({ cyberFrame }) => cyberFrame._id === id
+      );
       if (foundCFrame !== undefined) {
         setOpenedCFrame(foundCFrame);
       }
@@ -54,7 +59,10 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
       return null;
     }
 
-    return getCyberFrameLevelsByNodes(character.nodes, cyberFrames)[0]?.cyberFrame;
+    return getCyberFrameLevelsByNodes(
+      character.nodes,
+      cyberFrames
+    )[0]?.cyberFrame;
   }, [character, cyberFrames]);
 
   const detailsBlock = useMemo(() => {

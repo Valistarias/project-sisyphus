@@ -14,6 +14,9 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../organisms';
 
+import type Entity from '../api/entities/entity';
+import type { ErrorResponseType, INotion } from '../types';
+
 import { classTrim } from '../utils';
 
 import './highlight.scss';
@@ -36,7 +39,8 @@ const Highlight: FC<IHighlight> = ({
     createAlert, getNewId
   } = useSystemAlerts();
 
-  const [highlightContent, setHighlightContent] = useState<unknown>(null);
+  const [highlightContent, setHighlightContent]
+  = useState<Record<string, unknown> | null>(null);
   const [isHighlightShown, setIsHighlightShown] = useState<boolean>(false);
 
   const textEditor = useEditor({
@@ -51,7 +55,7 @@ const Highlight: FC<IHighlight> = ({
       return null;
     }
     if (type === 'notions') {
-      return highlightContent.notion.text;
+      return (highlightContent.notion as INotion).text;
     }
 
     return null;
@@ -70,10 +74,10 @@ const Highlight: FC<IHighlight> = ({
   const getData = useCallback(() => {
     if (api !== undefined && sentOptions !== null) {
       calledApi.current = true;
-      api[type]
+      (api[type] as Entity<unknown, unknown, unknown>)
         .get(sentOptions)
         .then((elt) => {
-          setHighlightContent(elt);
+          setHighlightContent(elt as Record<string, unknown>);
         })
         .catch(({ response }: ErrorResponseType) => {
           const newId = getNewId();
@@ -129,7 +133,11 @@ const Highlight: FC<IHighlight> = ({
               loading
             )
           : (
-              <RichTextElement editor={textEditor} rawStringContent={contentHighlight} readOnly />
+              <RichTextElement
+                editor={textEditor}
+                rawStringContent={contentHighlight}
+                readOnly
+              />
             )}
       </span>
     </span>

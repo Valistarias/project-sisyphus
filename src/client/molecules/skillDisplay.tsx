@@ -10,7 +10,7 @@ import DetailsBonuses from './detailsBonuses';
 import type {
   ICuratedSkill, ICuratedStat
 } from '../types';
-import type { IScoreStatSkill } from '../utils/character';
+import type { IScore } from '../utils/character';
 
 import { addSymbol } from '../utils';
 
@@ -19,13 +19,13 @@ import './skillDisplay.scss';
 interface ISkillDisplay {
   /** The skill to display */
   skill: ICuratedSkill & {
-    score: IScoreStatSkill
+    score: IScore
     stat: ICuratedStat
   }
   /** When the clickable zone is clicked */
   onSkillClick: (
     skill: ICuratedSkill & {
-      score: IScoreStatSkill
+      score: IScore
       stat: ICuratedStat
     }
   ) => void
@@ -50,7 +50,12 @@ const SkillDisplay: FC<ISkillDisplay> = ({
         onClick={() => {
           onSkillClick(skill);
         }}
-        hint={<DetailsBonuses bonuses={[...skill.score.sources]} stat={skill.stat} />}
+        hint={(
+          <DetailsBonuses
+            bonuses={[...skill.score.sources]}
+            stat={skill.stat}
+          />
+        )}
       />
     </div>
   );

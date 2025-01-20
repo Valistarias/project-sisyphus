@@ -1,4 +1,4 @@
-import {
+import React, {
   useMemo, useRef, useState, type FC
 } from 'react';
 
@@ -58,7 +58,7 @@ const ProgramDisplay: FC<IQuarkProps<IProgramDisplay>> = ({
   const domBlockContent = useRef<HTMLDivElement>(null);
 
   const curatedProgram = useMemo<ICuratedCompleteProgram | null>(() => {
-    if (programScopes.length === 0 || program === undefined) {
+    if (programScopes.length === 0) {
       return null;
     }
     const {
@@ -69,14 +69,18 @@ const ProgramDisplay: FC<IQuarkProps<IProgramDisplay>> = ({
       program: {
         ...programObj,
         programScope: programScopes.find(
-          programScope => programScope.programScope._id === programObj.programScope
+          programScope =>
+            programScope.programScope._id === programObj.programScope
         ),
-        rarity: rarities.find(rarity => rarity.rarity._id === programObj.rarity),
+        rarity: rarities.find(
+          rarity => rarity.rarity._id === programObj.rarity
+        ),
         damages:
           programObj.damages?.map(programDamage => ({
             ...programDamage,
             damageType: damageTypes.find(
-              damageType => damageType.damageType._id === programDamage.damageType
+              damageType =>
+                damageType.damageType._id === programDamage.damageType
             )
           })) ?? []
       },

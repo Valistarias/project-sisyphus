@@ -30,8 +30,11 @@ interface IAriane {
   onArianeClick?: (id: string | number) => void
 }
 
-const Ariane: FC<IAriane> = ({
-  className, data, onArianeClick, isSteps = false
+const Ariane: FC<IQuarkProps<IAriane>> = ({
+  className,
+  data,
+  onArianeClick,
+  isSteps = false
 }) => (
   <Aul
     noPoints

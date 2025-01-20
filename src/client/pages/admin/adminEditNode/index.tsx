@@ -398,16 +398,14 @@ const AdminEditNode: FC = () => {
     ) => {
       if (elt !== undefined) {
         const relevantElt
-            = (elt as ICuratedCyberFrameBranch).cyberFrameBranch
+            = (elt as ICuratedCyberFrameBranch | undefined)?.cyberFrameBranch
               ?? (elt as ICuratedSkillBranch).skillBranch;
-        if (relevantElt !== undefined) {
-          result.push({
-            value: relevantElt._id,
-            // TODO : Handle Internationalization
-            label:
-                relevantElt.title === '_general' ? t('terms.node.generalBranch') : relevantElt.title
-          });
-        }
+        result.push({
+          value: relevantElt._id,
+          // TODO : Handle Internationalization
+          label:
+                    relevantElt.title === '_general' ? t('terms.node.generalBranch') : relevantElt.title
+        });
       }
 
       return result;
@@ -964,9 +962,11 @@ const AdminEditNode: FC = () => {
               branches.forEach(
                 (elt: ICuratedSkillBranch | ICuratedCyberFrameBranch) => {
                   const relevantElt
-                  = (elt as ICuratedCyberFrameBranch).cyberFrameBranch
-                    ?? (elt as ICuratedSkillBranch).skillBranch;
-                  if (relevantElt !== undefined && relevantElt._id === e) {
+                  = (
+                    elt as ICuratedCyberFrameBranch | undefined
+                  )?.cyberFrameBranch
+                  ?? (elt as ICuratedSkillBranch).skillBranch;
+                  if (relevantElt._id === e.value) {
                     titleBranch = relevantElt.title;
                   }
                 });

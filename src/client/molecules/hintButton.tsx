@@ -70,7 +70,11 @@ const HintButton: FC<IHintButton> = ({
         ${className ?? ''}
       `)}
     >
-      <Button {...rest} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
+      <Button
+        {...rest}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      />
       <span className="hint-button__hint" ref={hintContent}>
         {hint}
       </span>

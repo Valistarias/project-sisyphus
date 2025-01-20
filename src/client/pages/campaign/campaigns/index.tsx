@@ -89,8 +89,10 @@ const Campaigns: FC = () => {
     },
     [
       api,
-      confMessageEvt,
+      setConfirmContent,
       t,
+      addConfirmEventListener,
+      removeConfirmEventListener,
       getNewId,
       createAlert,
       reloadCampaigns

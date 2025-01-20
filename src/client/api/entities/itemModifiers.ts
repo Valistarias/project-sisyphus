@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 import Entity from './entity';
 
 import type { ICuratedItemModifier, IItemModifier } from '../../types';
@@ -9,22 +7,8 @@ interface IItemModifierPayload {
 }
 
 export default class ItemModifiers
-  extends Entity<IItemModifier, ICuratedItemModifier> {
-  get: (payload: IItemModifierPayload) => Promise<ICuratedItemModifier>;
-
+  extends Entity<IItemModifierPayload, IItemModifier, ICuratedItemModifier> {
   constructor() {
     super('itemmodifiers');
-
-    this.get = async payload =>
-      await new Promise((resolve, reject) => {
-        axios
-          .get(`${this.url}/single/`, { params: payload })
-          .then((res) => {
-            resolve(res.data as ICuratedItemModifier);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
   }
 }

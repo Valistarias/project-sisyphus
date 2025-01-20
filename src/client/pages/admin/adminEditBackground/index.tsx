@@ -26,7 +26,9 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 
-import type { ICuratedBackground } from '../../../types';
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
+import type { ErrorResponseType, ICuratedBackground } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import {
   classTrim, isThereDuplicate
@@ -116,7 +118,8 @@ const AdminEditBackground: FC = () => {
 
   const calledApi = useRef(false);
 
-  const [backgroundData, setBackgroundData] = useState<ICuratedBackground | null>(null);
+  const [backgroundData, setBackgroundData]
+  = useState<ICuratedBackground | null>(null);
 
   const [backgroundText, setBackgroundText] = useState('');
   const [backgroundTextFr, setBackgroundTextFr] = useState('');
@@ -129,69 +132,70 @@ const AdminEditBackground: FC = () => {
     { extensions: completeRichTextElementExtentions }
   );
 
-  const createDefaultData = useCallback((backgroundData: ICuratedBackground | null) => {
-    if (backgroundData == null) {
-      return {};
-    }
-    const {
-      background, i18n
-    } = backgroundData;
-    const defaultData: Partial<FormValues> = {};
-    defaultData.name = background.title;
-    if (i18n.fr !== undefined) {
-      defaultData.nameFr = i18n.fr.title ?? '';
-    }
-
-    // Init Bonus Skill
-    const tempSkillBonusId: number[] = [];
-    background.skillBonuses?.forEach((skillBonus) => {
-      if (defaultData.skillBonuses === undefined) {
-        defaultData.skillBonuses = {};
+  const createDefaultData = useCallback(
+    (backgroundData: ICuratedBackground | null) => {
+      if (backgroundData == null) {
+        return {};
       }
-      defaultData.skillBonuses[`skill-${idIncrement.current}`] = {
-        skill: skillBonus.skill,
-        value: skillBonus.value
-      };
-
-      tempSkillBonusId.push(idIncrement.current);
-      idIncrement.current += 1;
-    });
-    setSkillBonusIds(tempSkillBonusId);
-
-    // Init Bonus Stat
-    const tempStatBonusId: number[] = [];
-    background.statBonuses?.forEach((statBonus) => {
-      if (defaultData.statBonuses === undefined) {
-        defaultData.statBonuses = {};
+      const {
+        background, i18n
+      } = backgroundData;
+      const defaultData: Partial<FormValues> = {};
+      defaultData.name = background.title;
+      if (i18n.fr !== undefined) {
+        defaultData.nameFr = i18n.fr.title ?? '';
       }
-      defaultData.statBonuses[`stat-${idIncrement.current}`] = {
-        stat: statBonus.stat,
-        value: statBonus.value
-      };
 
-      tempStatBonusId.push(idIncrement.current);
-      idIncrement.current += 1;
-    });
-    setStatBonusIds(tempStatBonusId);
+      // Init Bonus Skill
+      const tempSkillBonusId: number[] = [];
+      background.skillBonuses?.forEach((skillBonus) => {
+        if (defaultData.skillBonuses === undefined) {
+          defaultData.skillBonuses = {};
+        }
+        defaultData.skillBonuses[`skill-${idIncrement.current}`] = {
+          skill: skillBonus.skill,
+          value: skillBonus.value
+        };
 
-    // Init Bonus CharParam
-    const tempCharParamBonusId: number[] = [];
-    background.charParamBonuses?.forEach((charParamBonus) => {
-      if (defaultData.charParamBonuses === undefined) {
-        defaultData.charParamBonuses = {};
-      }
-      defaultData.charParamBonuses[`charParam-${idIncrement.current}`] = {
-        charParam: charParamBonus.charParam,
-        value: charParamBonus.value
-      };
+        tempSkillBonusId.push(idIncrement.current);
+        idIncrement.current += 1;
+      });
+      setSkillBonusIds(tempSkillBonusId);
 
-      tempCharParamBonusId.push(idIncrement.current);
-      idIncrement.current += 1;
-    });
-    setCharParamBonusIds(tempCharParamBonusId);
+      // Init Bonus Stat
+      const tempStatBonusId: number[] = [];
+      background.statBonuses?.forEach((statBonus) => {
+        if (defaultData.statBonuses === undefined) {
+          defaultData.statBonuses = {};
+        }
+        defaultData.statBonuses[`stat-${idIncrement.current}`] = {
+          stat: statBonus.stat,
+          value: statBonus.value
+        };
 
-    return defaultData;
-  }, []);
+        tempStatBonusId.push(idIncrement.current);
+        idIncrement.current += 1;
+      });
+      setStatBonusIds(tempStatBonusId);
+
+      // Init Bonus CharParam
+      const tempCharParamBonusId: number[] = [];
+      background.charParamBonuses?.forEach((charParamBonus) => {
+        if (defaultData.charParamBonuses === undefined) {
+          defaultData.charParamBonuses = {};
+        }
+        defaultData.charParamBonuses[`charParam-${idIncrement.current}`] = {
+          charParam: charParamBonus.charParam,
+          value: charParamBonus.value
+        };
+
+        tempCharParamBonusId.push(idIncrement.current);
+        idIncrement.current += 1;
+      });
+      setCharParamBonusIds(tempCharParamBonusId);
+
+      return defaultData;
+    }, []);
 
   const {
     handleSubmit,
@@ -243,7 +247,9 @@ const AdminEditBackground: FC = () => {
         return;
       }
       // Check duplicate on skills
-      const skillBonuses = elts.skillBonuses !== undefined ? Object.values(elts.skillBonuses) : [];
+      const skillBonuses = elts.skillBonuses !== undefined
+        ? Object.values(elts.skillBonuses)
+        : [];
       let duplicateSkillBonuses = false;
       if (skillBonuses.length > 0) {
         duplicateSkillBonuses = isThereDuplicate(
@@ -259,10 +265,14 @@ const AdminEditBackground: FC = () => {
         return;
       }
       // Check duplicate on stats
-      const statBonuses = elts.statBonuses !== undefined ? Object.values(elts.statBonuses) : [];
+      const statBonuses = elts.statBonuses !== undefined
+        ? Object.values(elts.statBonuses)
+        : [];
       let duplicateStatBonuses = false;
       if (statBonuses.length > 0) {
-        duplicateStatBonuses = isThereDuplicate(statBonuses.map(statBonus => statBonus.stat));
+        duplicateStatBonuses = isThereDuplicate(
+          statBonuses.map(statBonus => statBonus.stat)
+        );
       }
       if (duplicateStatBonuses) {
         setError('root.serverError', {
@@ -274,7 +284,9 @@ const AdminEditBackground: FC = () => {
       }
       // Check duplicate on character param
       const charParamBonuses
-        = elts.charParamBonuses !== undefined ? Object.values(elts.charParamBonuses) : [];
+        = elts.charParamBonuses !== undefined
+          ? Object.values(elts.charParamBonuses)
+          : [];
       let duplicateCharParamBonuses = false;
       if (charParamBonuses.length > 0) {
         duplicateCharParamBonuses = isThereDuplicate(
@@ -369,7 +381,10 @@ const AdminEditBackground: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || backgroundData === null || confMessageEvt === null) {
+    if (
+      api === undefined
+      || backgroundData === null
+    ) {
       return;
     }
     setConfirmContent(
@@ -423,8 +438,10 @@ const AdminEditBackground: FC = () => {
   }, [
     api,
     backgroundData,
-    confMessageEvt,
+    setConfirmContent,
     t,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,

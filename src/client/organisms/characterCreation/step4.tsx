@@ -32,7 +32,8 @@ const CharacterCreationStep4: FC<ICharacterCreationStep4> = ({
 }) => {
   const { t } = useTranslation();
   const {
-    skills, character
+    skills,
+    character
   } = useGlobalVars();
   const [selectedBg, setSelectedBg] = useState<ICuratedBackground | null>(null);
 
@@ -59,9 +60,9 @@ const CharacterCreationStep4: FC<ICharacterCreationStep4> = ({
   useEffect(() => {
     if (
       backgrounds.length > 0
-      && character !== undefined
+      && character !== null
       && character !== false
-      && character?.background !== undefined
+      && character.background !== undefined
       && selectedBg === null
     ) {
       const findBg = backgrounds.find(

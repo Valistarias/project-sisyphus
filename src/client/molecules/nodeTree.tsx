@@ -40,7 +40,7 @@ interface INodeTree {
 }
 
 const NodeTree: FC<IQuarkProps<INodeTree>> = ({
-  tree, onNodeClick = () => {}, isAdmin = false, className
+  tree, onNodeClick = () => undefined, isAdmin = false, className
 }) => {
   const {
     t, i18n: translationI18nData
@@ -86,7 +86,8 @@ const NodeTree: FC<IQuarkProps<INodeTree>> = ({
                   node={node}
                   size="small"
                   menuDirection={
-                    relatedNodes.length !== 1 && relatedNodes.length === indexNode + 1
+                    relatedNodes.length !== 1
+                    && relatedNodes.length === indexNode + 1
                       ? 'left'
                       : 'right'
                   }
@@ -108,7 +109,9 @@ const NodeTree: FC<IQuarkProps<INodeTree>> = ({
   const rankLinesGeneral = useMemo(() => {
     const lines: React.JSX.Element[] = [];
     for (let i = specBeginRank - 1; i >= 1; i--) {
-      const relatedNodes = generalBranch?.nodes.filter(({ node }) => node.rank === i) ?? [];
+      const relatedNodes = generalBranch?.nodes.filter(
+        ({ node }) => node.rank === i
+      ) ?? [];
       const roman = romanize(i);
       lines.push(
         <div
@@ -127,7 +130,8 @@ const NodeTree: FC<IQuarkProps<INodeTree>> = ({
                 node={node}
                 size="small"
                 menuDirection={
-                  relatedNodes.length !== 1 && relatedNodes.length === indexNode + 1
+                  relatedNodes.length !== 1
+                  && relatedNodes.length === indexNode + 1
                     ? 'left'
                     : 'right'
                 }
@@ -174,7 +178,7 @@ const NodeTree: FC<IQuarkProps<INodeTree>> = ({
                 {isAdmin
                   ? (
                       <Button
-                        href={`/admin/${(branch as ISkillBranch).skill !== undefined ? 'skillbranch' : 'cyberframebranch'}/${branch._id}`}
+                        href={`/admin/${(branch as ISkillBranch | undefined)?.skill !== undefined ? 'skillbranch' : 'cyberframebranch'}/${branch._id}`}
                         size="small"
                       >
                         {t('terms.general.edit')}

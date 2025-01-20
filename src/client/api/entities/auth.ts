@@ -21,7 +21,7 @@ interface INewPassPayload {
   confirmPass: string
 }
 
-export default class Auth extends Entity<IUser, IUser> {
+export default class Auth extends Entity<unknown, IUser, IUser> {
   signup: (payload: ISignUpUserPayload) => Promise<boolean>;
   signin: (payload: ISignInUserPayload) => Promise<IUser>;
   signout: () => Promise<boolean>;

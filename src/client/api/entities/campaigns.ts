@@ -12,8 +12,8 @@ interface ICampaignCodePayload {
   campaignCode: string
 }
 
-export default class Campaigns extends Entity<ICampaign, ICampaign> {
-  get: (payload: ICampaignPayload) => Promise<ICampaign>;
+export default class Campaigns
+  extends Entity<ICampaignPayload, ICampaign, ICampaign> {
   register: (payload: ICampaignCodePayload) => Promise<{ campaignId: string }>;
   unregister: (payload: ICampaignPayload) => Promise<boolean>;
   find: (payload: ICampaignCodePayload) => Promise<ICampaign>;
@@ -21,18 +21,6 @@ export default class Campaigns extends Entity<ICampaign, ICampaign> {
 
   constructor() {
     super('campaigns');
-
-    this.get = async payload =>
-      await new Promise((resolve, reject) => {
-        axios
-          .get(`${this.url}/single/`, { params: payload })
-          .then((res) => {
-            resolve(res.data as ICampaign);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
 
     this.register = async payload =>
       await new Promise((resolve, reject) => {

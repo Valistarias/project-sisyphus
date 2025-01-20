@@ -26,7 +26,9 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 
-import type { ICuratedAmmo } from '../../../types';
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
+import type { ErrorResponseType, ICuratedAmmo } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import { classTrim } from '../../../utils';
 
@@ -105,7 +107,9 @@ const AdminEditAmmo: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({ defaultValues: useMemo(() => createDefaultData(ammoData), [createDefaultData, ammoData]) });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(ammoData), [createDefaultData, ammoData]
+  ) });
 
   // TODO: Internationalization
   const itemModifierList = useMemo(
@@ -137,13 +141,19 @@ const AdminEditAmmo: FC = () => {
 
   const onSaveAmmo: SubmitHandler<FormValues> = useCallback(
     ({
-      name, nameFr, rarity, cost, weaponTypes, itemModifiers, offsetToHit, offsetDamage
+      name,
+      nameFr,
+      rarity,
+      cost,
+      weaponTypes,
+      itemModifiers,
+      offsetToHit,
+      offsetDamage
     }) => {
       if (
         introEditor === null
         || introFrEditor === null
         || api === undefined
-        || weaponTypes === undefined
       ) {
         return;
       }
@@ -210,7 +220,7 @@ const AdminEditAmmo: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || ammoData === null || confMessageEvt === null) {
+    if (api === undefined || ammoData === null) {
       return;
     }
     setConfirmContent(
@@ -264,8 +274,10 @@ const AdminEditAmmo: FC = () => {
   }, [
     api,
     ammoData,
-    confMessageEvt,
+    setConfirmContent,
     t,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,

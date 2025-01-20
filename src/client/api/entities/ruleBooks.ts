@@ -21,28 +21,14 @@ interface IArchivedPayload {
   archived: boolean
 }
 
-export default class RuleBooks extends Entity<IRuleBook, ICuratedRuleBook> {
-  get: (payload: IRuleBooksPayload) => Promise<ICuratedRuleBook>;
+export default class RuleBooks
+  extends Entity<IRuleBooksPayload, IRuleBook, ICuratedRuleBook> {
   archive: (payload: IArchivedPayload) => Promise<boolean>;
   changeChaptersOrder: (payload: IRuleBooksChapterOrder) =>
   Promise<ICuratedRuleBook>;
 
   constructor() {
     super('rulebooks');
-
-    this.get = async payload =>
-      await new Promise((resolve, reject) => {
-        axios
-          .get(`${this.url}/single/`, { params: payload })
-          .then((res) => {
-            resolve(
-              res.data as ICuratedRuleBook | PromiseLike<ICuratedRuleBook>
-            );
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
 
     this.changeChaptersOrder = async payload =>
       await new Promise((resolve, reject) => {

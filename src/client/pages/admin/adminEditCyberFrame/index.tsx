@@ -26,9 +26,12 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type {
+  ErrorResponseType,
   ICuratedCyberFrame, ICuratedNode, ICyberFrameBranch
 } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import { classTrim } from '../../../utils';
 
@@ -63,7 +66,8 @@ const AdminEditCyberFrame: FC = () => {
 
   const [displayInt, setDisplayInt] = useState(false);
 
-  const [cyberFrameData, setCyberFrameData] = useState<ICuratedCyberFrame | null>(null);
+  const [cyberFrameData, setCyberFrameData]
+  = useState<ICuratedCyberFrame | null>(null);
 
   const [cyberFrameText, setCyberFrameText] = useState('');
   const [cyberFrameTextFr, setCyberFrameTextFr] = useState('');
@@ -103,7 +107,10 @@ const AdminEditCyberFrame: FC = () => {
   })), [t, ruleBooks]);
 
   const createDefaultData = useCallback(
-    (cyberFrameData: ICuratedCyberFrame | null, ruleBookSelect: ISingleValueSelect[]) => {
+    (
+      cyberFrameData: ICuratedCyberFrame | null,
+      ruleBookSelect: ISingleValueSelect[]
+    ) => {
       if (cyberFrameData == null) {
         return {};
       }
@@ -142,16 +149,16 @@ const AdminEditCyberFrame: FC = () => {
     ]
   ) });
 
-  const ruleBook = useMemo(() => cyberFrameData?.cyberFrame.ruleBook, [cyberFrameData]);
+  const ruleBook = useMemo(
+    () => cyberFrameData?.cyberFrame.ruleBook, [cyberFrameData]
+  );
 
   const onSaveCyberFrame: SubmitHandler<FormValues> = useCallback(
     ({
       name, nameFr, ruleBook
     }) => {
       if (
-        cyberFrameText === null
-        || cyberFrameTextFr === null
-        || textEditor === null
+        textEditor === null
         || textFrEditor === null
         || api === undefined
       ) {
@@ -210,8 +217,6 @@ const AdminEditCyberFrame: FC = () => {
         });
     },
     [
-      cyberFrameText,
-      cyberFrameTextFr,
       textEditor,
       textFrEditor,
       api,
@@ -225,7 +230,7 @@ const AdminEditCyberFrame: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || confMessageEvt === null) {
+    if (api === undefined) {
       return;
     }
     setConfirmContent(
@@ -279,9 +284,11 @@ const AdminEditCyberFrame: FC = () => {
     );
   }, [
     api,
-    confMessageEvt,
+    setConfirmContent,
     t,
     cyberFrameData?.cyberFrame.title,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,

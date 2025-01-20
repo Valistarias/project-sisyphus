@@ -61,10 +61,14 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
   // const [isOpen, setOpen] = useState(false);
   // const [notFound, setNotFound] = useState(false);
 
-  const [diceValues, setDiceValues] = useState<DiceRequest[]>(createBasicDiceRequest());
-  const [dataPrevCampaignEvents, setDataPrevCampaignEvents] = useState<ICampaignEvent[]>([]);
+  const [diceValues, setDiceValues]
+  = useState<DiceRequest[]>(createBasicDiceRequest());
+  const [dataPrevCampaignEvents, setDataPrevCampaignEvents]
+  = useState<ICampaignEvent[]>([]);
 
-  const canCampaignEvent = useMemo(() => diceValues.some(({ qty }) => qty > 0), [diceValues]);
+  const canCampaignEvent = useMemo(
+    () => diceValues.some(({ qty }) => qty > 0), [diceValues]
+  );
 
   const calledApi = useRef(false);
   const initEvt = useRef(false);
@@ -112,7 +116,9 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
   const diceElts = useMemo(
     () =>
       diceValues.map(({ type: typeDiceNumber }) => {
-        const diceElt = diceValues.find(diceValue => diceValue.type === typeDiceNumber);
+        const diceElt = diceValues.find(
+          diceValue => diceValue.type === typeDiceNumber
+        );
         if (diceElt != null) {
           return (
             <Button
@@ -199,10 +205,18 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
 
   const onLogScroll = useCallback(() => {
     if (scrollRef.current !== null) {
-      const totalHeight = scrollRef.current.scrollTop + scrollRef.current.clientHeight;
-      if (totalHeight >= scrollRef.current.scrollHeight && !lockedScroll.current) {
+      const totalHeight
+      = scrollRef.current.scrollTop
+        + scrollRef.current.clientHeight;
+      if (
+        totalHeight >= scrollRef.current.scrollHeight
+        && !lockedScroll.current
+      ) {
         lockedScroll.current = true;
-      } else if (totalHeight < scrollRef.current.scrollHeight && lockedScroll.current) {
+      } else if (
+        totalHeight < scrollRef.current.scrollHeight
+        && lockedScroll.current
+      ) {
         lockedScroll.current = false;
       }
 
@@ -221,8 +235,14 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
                 return next;
               });
               setTimeout(function () {
-                if (scrollRef.current !== null && indexedTotHeight !== undefined) {
-                  scrollRef.current.scrollTo(0, scrollRef.current.scrollHeight - indexedTotHeight);
+                if (
+                  scrollRef.current !== null
+                  && indexedTotHeight !== undefined
+                ) {
+                  scrollRef.current.scrollTo(
+                    0,
+                    scrollRef.current.scrollHeight - indexedTotHeight
+                  );
                 }
               }, 0);
             })
@@ -308,7 +328,9 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
   ]);
 
   useEffect(() => {
-    const addCampaignEvent = ({ detail }: { detail?: CampaignEventDetailData }): void => {
+    const addCampaignEvent = (
+      { detail }: { detail?: CampaignEventDetailData }
+    ): void => {
       if (
         api !== undefined
         && detail !== undefined
@@ -354,13 +376,16 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
       }
     };
 
-    if (!initEvt.current && api !== undefined && socket !== null && campaignId !== undefined && campaignEvt !== null) {
+    if (
+      !initEvt.current && api !== undefined
+      && socket !== null && campaignId !== undefined
+    ) {
       initEvt.current = true;
       campaignEvt.addCampaignEventListener(addCampaignEvent);
     }
 
     return () => {
-      if (unMountEvt.current && campaignEvt !== null) {
+      if (unMountEvt.current) {
         campaignEvt.removeCampaignEventListener(addCampaignEvent);
       }
     };

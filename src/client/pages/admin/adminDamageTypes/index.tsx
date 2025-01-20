@@ -21,7 +21,7 @@ const AdminDamageTypes: FC = () => {
 
   // TODO: Handle i18n in place of basic english language
   const damageTypesList = useMemo(() => {
-    if (damageTypes === null || damageTypes.length === 0) {
+    if (damageTypes.length === 0) {
       return null;
     }
 

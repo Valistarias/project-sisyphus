@@ -14,6 +14,8 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../organisms';
 
+import type { ErrorResponseType } from '../types';
+
 import './embedNotion.scss';
 
 interface IEmbedNotion {
@@ -38,7 +40,7 @@ const EmbedNotion: FC<IEmbedNotion> = ({ notionId }) => {
   const [notionContent, setNotionContent] = useState<string>('');
 
   useEffect(() => {
-    if (api !== undefined && notionId !== undefined && !calledApi.current) {
+    if (api !== undefined && !calledApi.current) {
       calledApi.current = true;
       api.notions
         .get({ notionId })
@@ -66,7 +68,13 @@ const EmbedNotion: FC<IEmbedNotion> = ({ notionId }) => {
     t
   ]);
 
-  return <RichTextElement editor={textEditor} rawStringContent={notionContent} readOnly />;
+  return (
+    <RichTextElement
+      editor={textEditor}
+      rawStringContent={notionContent}
+      readOnly
+    />
+  );
 };
 
 export default EmbedNotion;

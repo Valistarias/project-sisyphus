@@ -19,8 +19,8 @@ interface ICharacterUpdateNodesPayload {
   toRemove: string[]
 }
 
-export default class Characters extends Entity<ICharacter, ICharacter> {
-  get: (payload: ICharacterPayload) => Promise<ICharacter>;
+export default class Characters
+  extends Entity<ICharacterPayload, ICharacter, ICharacter> {
   addNode: (payload: ICharacterAddNodePayload) => Promise<ICharacter>;
   addFirstCyberFrameNode: (payload: ICharacterAddNodePayload) =>
   Promise<ICharacter>;
@@ -30,18 +30,6 @@ export default class Characters extends Entity<ICharacter, ICharacter> {
 
   constructor() {
     super('characters');
-
-    this.get = async payload =>
-      await new Promise((resolve, reject) => {
-        axios
-          .get(`${this.url}/single/`, { params: payload })
-          .then((res) => {
-            resolve(res.data as ICharacter);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
 
     this.addFirstCyberFrameNode = async payload =>
       await new Promise((resolve, reject) => {

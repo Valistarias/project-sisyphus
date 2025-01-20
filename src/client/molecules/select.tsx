@@ -23,9 +23,9 @@ interface ISingleValueSelect {
 }
 
 interface IGroupedOption {
-  readonly label: string
-  readonly cat: string
-  readonly options: readonly ISingleValueSelect[]
+  label: string
+  cat: string
+  options: ISingleValueSelect[]
 }
 
 interface IAp extends IReactHookFormInputs {
@@ -40,7 +40,7 @@ interface IAp extends IReactHookFormInputs {
   /** The classname of the select */
   className?: string
   /** Triggered when the selected field is changing */
-  onChange?: (val: string | number | string[]) => void
+  onChange?: (val: ISingleValueSelect) => void
   /** The size of the select */
   size?: 'medium' | 'small'
   /** Is the field disabled */
@@ -50,7 +50,7 @@ interface IAp extends IReactHookFormInputs {
 const Option: FC<OptionProps<ISingleValueSelect, false>> = ({
   children, ...props
 }) => {
-  if (props.data.details !== null) {
+  if (props.data.details !== undefined) {
     return (
       <components.Option
         {...props}
@@ -68,7 +68,7 @@ const Option: FC<OptionProps<ISingleValueSelect, false>> = ({
   return <components.Option {...props}>{children}</components.Option>;
 };
 
-const formatGroupLabel: FC = (data: IGroupedOption) => (
+const formatGroupLabel = (data: IGroupedOption): React.ReactNode => (
   <div className="smartselect__group-label">
     <span className="smartselect__group-label__name">{data.label}</span>
     <span className="smartselect__group-label__list">{data.options.length}</span>
@@ -121,17 +121,22 @@ const SmartSelect: FC<IAp> = ({
               isMulti={isMulti}
               value={
                 isMulti
-                  ? options.filter(c => value?.includes(c.value))
+                  ? options.filter(
+                      c => (value as unknown[]).includes(c.value)
+                    )
                   : options.find(c => c.value === value)
               }
               onChange={(val) => {
                 if (val != null && !isMulti) {
                   onChange((val as ISingleValueSelect).value);
                   if (exteriorChange !== undefined) {
-                    exteriorChange((val as ISingleValueSelect).value);
+                    exteriorChange(val as ISingleValueSelect);
                   }
                 } else if (val != null && isMulti) {
-                  onChange((val as MultiValue<ISingleValueSelect>).map(valElt => valElt.value));
+                  onChange(
+                    (val as MultiValue<ISingleValueSelect>)
+                      .map(valElt => valElt.value)
+                  );
                 }
               }}
               className="smartselect__field"

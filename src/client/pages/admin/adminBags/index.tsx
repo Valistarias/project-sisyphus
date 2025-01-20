@@ -34,7 +34,7 @@ const AdminBags: FC = () => {
   // TODO: Handle i18n in place of basic english language
   // TODO: Display all branches on one bag
   const bagsList = useMemo(() => {
-    if (bags === null || bags.length === 0) {
+    if (bags.length === 0) {
       return null;
     }
 

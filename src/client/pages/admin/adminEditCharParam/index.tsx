@@ -26,7 +26,9 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 
-import type { ICuratedCharParam } from '../../../types';
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
+import type { ErrorResponseType, ICuratedCharParam } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import './adminEditCharParam.scss';
 
@@ -57,7 +59,8 @@ const AdminEditCharParam: FC = () => {
   const saveTimer = useRef<NodeJS.Timeout | null>(null);
   const silentSave = useRef(false);
 
-  const [charParamData, setCharParamData] = useState<ICuratedCharParam | null>(null);
+  const [charParamData, setCharParamData]
+  = useState<ICuratedCharParam | null>(null);
 
   const [charParamText, setCharParamText] = useState('');
   const [charParamTextFr, setCharParamTextFr] = useState('');
@@ -70,24 +73,25 @@ const AdminEditCharParam: FC = () => {
     { extensions: completeRichTextElementExtentions }
   );
 
-  const createDefaultData = useCallback((charParamData: ICuratedCharParam | null) => {
-    if (charParamData == null) {
-      return {};
-    }
-    const {
-      charParam, i18n
-    } = charParamData;
-    const defaultData: Partial<FormValues> = {};
-    defaultData.name = charParam.title;
-    defaultData.short = charParam.short;
-    defaultData.formulaId = charParam.formulaId;
-    if (i18n.fr !== undefined) {
-      defaultData.nameFr = i18n.fr.title ?? '';
-      defaultData.shortFr = i18n.fr.short ?? '';
-    }
+  const createDefaultData = useCallback(
+    (charParamData: ICuratedCharParam | null) => {
+      if (charParamData == null) {
+        return {};
+      }
+      const {
+        charParam, i18n
+      } = charParamData;
+      const defaultData: Partial<FormValues> = {};
+      defaultData.name = charParam.title;
+      defaultData.short = charParam.short;
+      defaultData.formulaId = charParam.formulaId;
+      if (i18n.fr !== undefined) {
+        defaultData.nameFr = i18n.fr.title ?? '';
+        defaultData.shortFr = i18n.fr.short ?? '';
+      }
 
-    return defaultData;
-  }, []);
+      return defaultData;
+    }, []);
 
   const {
     handleSubmit,
@@ -105,11 +109,8 @@ const AdminEditCharParam: FC = () => {
       name, nameFr, short, shortFr, formulaId
     }) => {
       if (
-        charParamText === null
-        || charParamTextFr === null
-        || textEditor === null
+        textEditor === null
         || textFrEditor === null
-        || formulaId === null
         || api === undefined
       ) {
         return;
@@ -127,7 +128,7 @@ const AdminEditCharParam: FC = () => {
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
         i18n = { fr: {
           title: nameFr,
-          short: shortFr ?? '',
+          short: shortFr,
           text: htmlTextFr
         } };
       }
@@ -169,8 +170,6 @@ const AdminEditCharParam: FC = () => {
         });
     },
     [
-      charParamText,
-      charParamTextFr,
       textEditor,
       textFrEditor,
       api,
@@ -184,7 +183,7 @@ const AdminEditCharParam: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || confMessageEvt === null) {
+    if (api === undefined) {
       return;
     }
     setConfirmContent(
@@ -238,9 +237,11 @@ const AdminEditCharParam: FC = () => {
     );
   }, [
     api,
-    confMessageEvt,
+    setConfirmContent,
     t,
     charParamData?.charParam.title,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,

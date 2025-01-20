@@ -63,7 +63,7 @@ const ArmorDisplay: FC<IQuarkProps<IArmorDisplay>> = ({
   const domBlockContent = useRef<HTMLDivElement>(null);
 
   const curateArmor = useMemo<ICuratedCompleteArmor | null>(() => {
-    if (armorTypes.length === 0 || armor === undefined) {
+    if (armorTypes.length === 0) {
       return null;
     }
     const {
@@ -73,7 +73,9 @@ const ArmorDisplay: FC<IQuarkProps<IArmorDisplay>> = ({
     return {
       armor: {
         ...armorObj,
-        armorType: armorTypes.find(armorType => armorType.armorType._id === armorObj.armorType),
+        armorType: armorTypes.find(
+          armorType => armorType.armorType._id === armorObj.armorType
+        ),
         rarity: rarities.find(rarity => rarity.rarity._id === armorObj.rarity),
         itemModifiers: armorObj.itemModifiers?.map(
           itemModifierId =>

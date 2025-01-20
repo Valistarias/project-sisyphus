@@ -26,7 +26,9 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 
-import type { ICuratedDamageType } from '../../../types';
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
+import type { ErrorResponseType, ICuratedDamageType } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import { classTrim } from '../../../utils';
 
@@ -58,7 +60,8 @@ const AdminEditDamageType: FC = () => {
 
   const [displayInt, setDisplayInt] = useState(false);
 
-  const [damageTypeData, setDamageTypeData] = useState<ICuratedDamageType | null>(null);
+  const [damageTypeData, setDamageTypeData]
+  = useState<ICuratedDamageType | null>(null);
 
   const [damageTypeText, setDamageTypeText] = useState('');
   const [damageTypeTextFr, setDamageTypeTextFr] = useState('');
@@ -71,21 +74,22 @@ const AdminEditDamageType: FC = () => {
     { extensions: completeRichTextElementExtentions }
   );
 
-  const createDefaultData = useCallback((damageTypeData: ICuratedDamageType | null) => {
-    if (damageTypeData == null) {
-      return {};
-    }
-    const {
-      damageType, i18n
-    } = damageTypeData;
-    const defaultData: Partial<FormValues> = {};
-    defaultData.name = damageType.title;
-    if (i18n.fr !== undefined) {
-      defaultData.nameFr = i18n.fr.title ?? '';
-    }
+  const createDefaultData = useCallback(
+    (damageTypeData: ICuratedDamageType | null) => {
+      if (damageTypeData == null) {
+        return {};
+      }
+      const {
+        damageType, i18n
+      } = damageTypeData;
+      const defaultData: Partial<FormValues> = {};
+      defaultData.name = damageType.title;
+      if (i18n.fr !== undefined) {
+        defaultData.nameFr = i18n.fr.title ?? '';
+      }
 
-    return defaultData;
-  }, []);
+      return defaultData;
+    }, []);
 
   const {
     handleSubmit,
@@ -103,9 +107,7 @@ const AdminEditDamageType: FC = () => {
       name, nameFr
     }) => {
       if (
-        damageTypeText === null
-        || damageTypeTextFr === null
-        || textEditor === null
+        textEditor === null
         || textFrEditor === null
         || api === undefined
       ) {
@@ -163,8 +165,6 @@ const AdminEditDamageType: FC = () => {
         });
     },
     [
-      damageTypeText,
-      damageTypeTextFr,
       textEditor,
       textFrEditor,
       api,
@@ -178,7 +178,7 @@ const AdminEditDamageType: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || confMessageEvt === null) {
+    if (api === undefined) {
       return;
     }
     setConfirmContent(
@@ -232,9 +232,11 @@ const AdminEditDamageType: FC = () => {
     );
   }, [
     api,
-    confMessageEvt,
+    setConfirmContent,
     t,
     damageTypeData?.damageType.title,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,

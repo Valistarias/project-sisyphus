@@ -2,6 +2,7 @@ import React, {
   useCallback, useMemo, useState, type FC
 } from 'react';
 
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -27,7 +28,7 @@ interface IMenuBar {
   /** Is the text editor with all options ? */
   complete: boolean
   /** The className of the menubar */
-  className: string
+  className?: string
   /** The RuleBookId, if there is one */
   ruleBookId?: string
 }
@@ -50,7 +51,12 @@ export const MenuBar: FC<IMenuBar> = ({
   // Highlight Tool
   const [highlightOpened, highlightOpen] = useState(false);
   const [textHighlight, setTextHighlight] = useState<string>('');
-  const [selectedHighlight, setSelectedHighlight] = useState<string | null>(null);
+  const [selectedHighlight, setSelectedHighlight]
+  = useState<string | null>(null);
+
+  const {
+    control
+  } = useForm();
 
   const embedSelectChoices = useMemo(
     () =>
@@ -61,20 +67,17 @@ export const MenuBar: FC<IMenuBar> = ({
     [notions]
   );
 
-  const highlightSelectChoices = useMemo(() => {
-    const groupedOptions: IGroupedOption[] = [];
+  const highlightSelectChoices = useMemo<IGroupedOption>(() => {
     const notionOptions = notions.map(({ notion }) => ({
       value: notion._id,
       label: notion.title
     }));
 
-    groupedOptions.push({
+    return {
       label: t('richTextElement.highlight.highlightNotionCat', { ns: 'components' }),
       cat: 'notions',
       options: notionOptions
-    });
-
-    return groupedOptions;
+    };
   }, [notions, t]);
 
   const callNotions = useCallback(
@@ -121,7 +124,7 @@ export const MenuBar: FC<IMenuBar> = ({
           embedBarOpen(true);
         }
       },
-      () => {}
+      () => undefined
     );
   }, [callNotions]);
 
@@ -132,7 +135,7 @@ export const MenuBar: FC<IMenuBar> = ({
           highlightOpen(true);
         }
       },
-      () => {}
+      () => undefined
     );
   }, [callNotions]);
 
@@ -157,14 +160,6 @@ export const MenuBar: FC<IMenuBar> = ({
       return null;
     }
 
-    const selectedGroup = highlightSelectChoices.find((groupElt) => {
-      if (groupElt.options.find(option => option.value === selectedHighlight) !== null) {
-        return true;
-      }
-
-      return false;
-    });
-
     editor
       .chain()
       .insertContentAt(editor.state.selection.head, {
@@ -172,7 +167,7 @@ export const MenuBar: FC<IMenuBar> = ({
         attrs: {
           idElt: selectedHighlight,
           textElt: textHighlight !== '' ? textHighlight : null,
-          typeElt: selectedGroup?.cat ?? null
+          typeElt: highlightSelectChoices.cat
         }
       })
       .focus()
@@ -234,21 +229,27 @@ export const MenuBar: FC<IMenuBar> = ({
           </Button>
           <Button
             size="small"
-            onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+            onClick={
+              () => editor.chain().focus().toggleHeading({ level: 1 }).run()
+            }
             active={editor.isActive('heading', { level: 1 })}
           >
             {t('richTextElement.h1', { ns: 'components' })}
           </Button>
           <Button
             size="small"
-            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+            onClick={
+              () => editor.chain().focus().toggleHeading({ level: 2 }).run()
+            }
             active={editor.isActive('heading', { level: 2 })}
           >
             {t('richTextElement.h2', { ns: 'components' })}
           </Button>
           <Button
             size="small"
-            onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+            onClick={
+              () => editor.chain().focus().toggleHeading({ level: 3 }).run()
+            }
             active={editor.isActive('heading', { level: 3 })}
           >
             {t('richTextElement.h3', { ns: 'components' })}
@@ -319,19 +320,22 @@ export const MenuBar: FC<IMenuBar> = ({
             ? (
                 <div className="menubar__categories__highlight__highlightbar">
                   <SmartSelect
-                    options={highlightSelectChoices}
+                    inputName="category"
+                    control={control}
+                    options={highlightSelectChoices.options}
                     onChange={(choice) => {
                       setTextHighlight(choice.label);
-                      setSelectedHighlight(choice.value);
+                      setSelectedHighlight(String(choice.value));
                     }}
                   />
                   <Input
+                    inputName="highlight"
+                    control={control}
                     type="text"
                     placeholder={t('richTextElement.highlight.title', { ns: 'components' })}
                     onChange={(e) => {
                       setTextHighlight(e.target.value);
                     }}
-                    value={textHighlight}
                   />
                   <Button onClick={onConfirmHighlightBar}>
                     {t('richTextElement.highlight.confirm', { ns: 'components' })}
@@ -371,9 +375,11 @@ export const MenuBar: FC<IMenuBar> = ({
                   ? (
                       <div className="menubar__categories__embeds__embedbar">
                         <SmartSelect
+                          inputName="embed"
+                          control={control}
                           options={embedSelectChoices}
-                          onChange={(value) => {
-                            setSelectedEmbed(value);
+                          onChange={(e) => {
+                            setSelectedEmbed(String(e.value));
                           }}
                         />
                         <Button onClick={onConfirmEmbedBar}>

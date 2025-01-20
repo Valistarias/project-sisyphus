@@ -15,7 +15,7 @@ interface IAli {
   /** The childrens of the LI element */
   children: ReactNode
   /** The innerRef, if there is any */
-  innerRef?: RefObject<null | ReactNode>
+  innerRef?: RefObject<HTMLElement | null>
   role?: string
   tabIndex?: number
   draggable?: boolean

@@ -27,7 +27,9 @@ import {
 } from '../../../organisms';
 import { possibleStarterKitValues } from '../../../types/items';
 
-import type { ICuratedBag } from '../../../types';
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
+import type { ErrorResponseType, ICuratedBag } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import { classTrim } from '../../../utils';
 
@@ -106,13 +108,16 @@ const AdminEditBag: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({ defaultValues: useMemo(() => createDefaultData(bagData), [createDefaultData, bagData]) });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(bagData), [createDefaultData, bagData]
+  ) });
 
   // TODO: Internationalization
-  const itemModifierList = useMemo(() => itemModifiers.map(({ itemModifier }) => ({
-    value: itemModifier._id,
-    label: itemModifier.title
-  })), [itemModifiers]);
+  const itemModifierList = useMemo(
+    () => itemModifiers.map(({ itemModifier }) => ({
+      value: itemModifier._id,
+      label: itemModifier.title
+    })), [itemModifiers]);
 
   const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
     value: rarity._id,
@@ -139,14 +144,19 @@ const AdminEditBag: FC = () => {
 
   const onSaveBag: SubmitHandler<FormValues> = useCallback(
     ({
-      name, nameFr, rarity, cost, storableItemTypes, size, itemModifiers, starterKit
+      name,
+      nameFr,
+      rarity,
+      cost,
+      storableItemTypes,
+      size,
+      itemModifiers,
+      starterKit
     }) => {
       if (
         introEditor === null
         || introFrEditor === null
         || api === undefined
-        || storableItemTypes === undefined
-        || size === undefined
       ) {
         return;
       }
@@ -213,7 +223,7 @@ const AdminEditBag: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || bagData === null || confMessageEvt === null) {
+    if (api === undefined || bagData === null) {
       return;
     }
     setConfirmContent(
@@ -267,8 +277,10 @@ const AdminEditBag: FC = () => {
   }, [
     api,
     bagData,
-    confMessageEvt,
+    setConfirmContent,
     t,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,

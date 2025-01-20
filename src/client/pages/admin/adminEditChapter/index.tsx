@@ -30,9 +30,12 @@ import {
   type IDragElt
 } from '../../../organisms';
 
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type {
+  ErrorResponseType,
   ICuratedChapter, IPage
 } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import {
   arraysEqual, formatDate
@@ -82,21 +85,22 @@ const AdminEditChapters: FC = () => {
     { extensions: completeRichTextElementExtentions }
   );
 
-  const createDefaultData = useCallback((chapterData: ICuratedChapter | null) => {
-    if (chapterData == null) {
-      return {};
-    }
-    const {
-      chapter, i18n
-    } = chapterData;
-    const defaultData: Partial<FormValues> = {};
-    defaultData.name = chapter.title;
-    if (i18n.fr !== undefined) {
-      defaultData.nameFr = i18n.fr.title ?? '';
-    }
+  const createDefaultData = useCallback(
+    (chapterData: ICuratedChapter | null) => {
+      if (chapterData == null) {
+        return {};
+      }
+      const {
+        chapter, i18n
+      } = chapterData;
+      const defaultData: Partial<FormValues> = {};
+      defaultData.name = chapter.title;
+      if (i18n.fr !== undefined) {
+        defaultData.nameFr = i18n.fr.title ?? '';
+      }
 
-    return defaultData;
-  }, []);
+      return defaultData;
+    }, []);
 
   const {
     handleSubmit,
@@ -104,10 +108,12 @@ const AdminEditChapters: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({ defaultValues: useMemo(() => createDefaultData(chapterData), [createDefaultData, chapterData]) });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(chapterData), [createDefaultData, chapterData]
+  ) });
 
   const pageDragData = useMemo(() => {
-    if (pagesData === null || (pagesData.length === 0) === null) {
+    if (pagesData === null) {
       return {};
     }
 
@@ -215,7 +221,11 @@ const AdminEditChapters: FC = () => {
   );
 
   const onUpdateOrder = useCallback(() => {
-    if (arraysEqual(pagesOrder, initialOrder) || api === undefined || id === undefined) {
+    if (
+      arraysEqual(pagesOrder, initialOrder)
+      || api === undefined
+      || id === undefined
+    ) {
       return;
     }
 
@@ -265,7 +275,7 @@ const AdminEditChapters: FC = () => {
   ]);
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || confMessageEvt === null) {
+    if (api === undefined) {
       return;
     }
     setConfirmContent(
@@ -318,9 +328,11 @@ const AdminEditChapters: FC = () => {
     );
   }, [
     api,
-    confMessageEvt,
+    setConfirmContent,
     t,
     chapterData?.chapter.title,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,
@@ -340,7 +352,7 @@ const AdminEditChapters: FC = () => {
           } = curatedChapter;
           setChapterData(curatedChapter);
           setChapterSummary(chapter.summary);
-          setPagesData(chapter.pages ?? null);
+          setPagesData(chapter.pages);
           if (i18n.fr !== undefined) {
             setChapterSummaryFr(i18n.fr.summary ?? '');
           }
@@ -402,7 +414,7 @@ const AdminEditChapters: FC = () => {
       <div className="adminEditChapter__ariane">
         <Ap className="adminEditChapter__ariane__elt">
           {`${t(`terms.ruleBook.ruleBook`)}: `}
-          <Aa href={`/admin/rulebook/${ruleBook?._id}`}>{ruleBook?.title!}</Aa>
+          <Aa href={`/admin/rulebook/${ruleBook?._id}`}>{ruleBook?.title}</Aa>
         </Ap>
       </div>
       {autoSaved !== null ? <Ap className="adminEditChapter__autosave">{autoSaved}</Ap> : null}

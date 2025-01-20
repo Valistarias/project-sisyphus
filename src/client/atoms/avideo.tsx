@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition -- There is only one type of video, for the moment */
 import React from 'react';
 import {
   useMemo, type FC
@@ -47,8 +48,6 @@ const Avideo: FC<IQuarkProps<IAvideo>> = ({
             disablePictureInPicture
           />
         );
-      default:
-        return <Quark quarkType="video" className={classes} src={LogoVideo} />;
     }
   }, [video, classes]);
 

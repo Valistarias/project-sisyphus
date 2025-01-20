@@ -4,8 +4,9 @@ import type { ErrorResponseType } from '../../types/global';
 
 type IBasicRequests<T> = (payload: unknown) => Promise<T>;
 
-export default class Entity<T, CuratedT> {
+export default class Entity<Payload, T, CuratedT> {
   url: string;
+  get: (payload: Payload) => Promise<CuratedT>;
   getAll: () => Promise<CuratedT[]>;
   create: IBasicRequests<T>;
   update: (payload: unknown) => Promise<T>;
@@ -20,6 +21,18 @@ export default class Entity<T, CuratedT> {
         axios
           .get(`${this.url}/`)
           .then((res: { data: CuratedT[] }) => {
+            resolve(res.data);
+          })
+          .catch((err: ErrorResponseType) => {
+            reject(err);
+          });
+      });
+
+    this.get = async payload =>
+      await new Promise((resolve, reject) => {
+        axios
+          .get(`${this.url}/single/`, { params: payload })
+          .then((res: { data: CuratedT }) => {
             resolve(res.data);
           })
           .catch((err: ErrorResponseType) => {

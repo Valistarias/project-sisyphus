@@ -21,6 +21,12 @@ import {
 } from '../atoms';
 import { Button } from '../molecules';
 
+import type {
+  BaseEventPayload,
+  DropTargetLocalizedData,
+  ElementDragType
+} from '@atlaskit/pragmatic-drag-and-drop/dist/types/internal-types';
+
 import { classTrim } from '../utils';
 
 import './dragList.scss';
@@ -56,12 +62,12 @@ interface IDragListCard {
 const DragListCard: FC<IDragListCard> = ({
   children, index
 }) => {
-  const cardRef = useRef(null);
+  const cardRef = useRef<HTMLElement | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     const cardEl = cardRef.current;
-    invariant(cardEl);
+    invariant(cardEl !== null);
 
     return combine(
       draggable({
@@ -113,7 +119,7 @@ const DragListCard: FC<IDragListCard> = ({
 const DragList: FC<IDragList> = ({
   data, className, id, onChange
 }) => {
-  const dragListRef = useRef(null);
+  const dragListRef = useRef<HTMLElement | null>(null);
   const [isDraggedOver, setIsDraggedOver] = useState(false);
   const [order, setOrder] = useState<string[]>([]);
 
@@ -121,7 +127,8 @@ const DragList: FC<IDragList> = ({
     ({
       movedIndex, destinationIndex
     }: {
-      movedIndex: string, destinationIndex: string
+      movedIndex: string
+      destinationIndex: string
     }) => {
       setOrder((prev: string[]) => {
         const movedPos = prev.findIndex(id => id === movedIndex);
@@ -144,16 +151,16 @@ const DragList: FC<IDragList> = ({
   const handleDrop = useCallback(
     ({
       source, location
-    }) => {
+    }: BaseEventPayload<ElementDragType> & DropTargetLocalizedData) => {
       const destination = location.current.dropTargets.length;
-      if (destination === undefined) {
+      if (destination <= 0) {
         return;
       }
       if (source.data.type === 'card') {
-        const movedIndex = data[source.data.cardId].id;
+        const movedIndex = data[source.data.cardId as string].id;
 
         const [destination] = location.current.dropTargets;
-        const destinationIndex = destination.data.cardId;
+        const destinationIndex = destination.data.cardId as string;
 
         if (movedIndex !== destinationIndex) {
           reorderCard({
@@ -192,7 +199,7 @@ const DragList: FC<IDragList> = ({
 
   useEffect(() => {
     const dragListEl = dragListRef.current;
-    invariant(dragListEl);
+    invariant(dragListEl !== null);
 
     return dropTargetForElements({
       element: dragListEl,

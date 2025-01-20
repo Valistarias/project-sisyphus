@@ -67,7 +67,7 @@ interface ICharacterCreationStep5 {
   /** All the available armors to be used in character creation */
   armors: ICuratedArmor[]
   /** When the user click send and the data is send perfectly */
-  onSubmitItems: (items: {
+  onSubmitItems?: (items: {
     weapons: string[]
     armors: string[]
     bags: string[]
@@ -94,20 +94,32 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
   } = useGlobalVars();
 
   const createDefaultData = useCallback(
-    (
-      weapons: ICuratedWeapon[],
-      armors: ICuratedArmor[],
-      bags: ICuratedBag[],
-      items: ICuratedItem[],
-      programs: ICuratedProgram[],
-      implants: ICuratedImplant[],
+    ({
+      weapons,
+      armors,
+      bags,
+      items,
+      programs,
+      implants,
+      character
+    }: {
+      weapons: ICuratedWeapon[]
+      armors: ICuratedArmor[]
+      bags: ICuratedBag[]
+      items: ICuratedItem[]
+      programs: ICuratedProgram[]
+      implants: ICuratedImplant[]
       character: false | ICharacter | null
-    ) => {
+    }) => {
       if (weapons.length === 0) {
         return {};
       }
       let relevantBody: IBody | undefined;
-      if (character !== null && character !== false && character.bodies !== undefined) {
+      if (
+        character !== null
+        && character !== false
+        && character.bodies !== undefined
+      ) {
         relevantBody = character.bodies.find(body => body.alive);
       }
       const defaultData: Partial<FormValues> = {};
@@ -118,8 +130,9 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         defaultData.weapons[weapon._id] = weapon.starterKit === 'always';
         if (relevantBody?.weapons?.length !== 0) {
           defaultData.weapons[weapon._id]
-            = relevantBody?.weapons?.find(bodyWeapon => bodyWeapon.weapon === weapon._id)
-              !== undefined;
+            = relevantBody?.weapons?.find(
+              bodyWeapon => bodyWeapon.weapon === weapon._id
+            ) !== undefined;
         }
       });
 
@@ -130,7 +143,9 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         defaultData.armors[armor._id] = armor.starterKit === 'always';
         if (relevantBody?.armors?.length !== 0) {
           defaultData.armors[armor._id]
-            = relevantBody?.armors?.find(bodyArmor => bodyArmor.armor === armor._id) !== undefined;
+            = relevantBody?.armors?.find(
+              bodyArmor => bodyArmor.armor === armor._id
+            ) !== undefined;
         }
       });
 
@@ -141,7 +156,9 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         defaultData.bags[bag._id] = bag.starterKit === 'always';
         if (relevantBody?.bags?.length !== 0) {
           defaultData.bags[bag._id]
-            = relevantBody?.bags?.find(bodyBag => bodyBag.bag === bag._id) !== undefined;
+            = relevantBody?.bags?.find(
+              bodyBag => bodyBag.bag === bag._id
+            ) !== undefined;
         }
       });
 
@@ -152,7 +169,9 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         defaultData.items[item._id] = item.starterKit === 'always';
         if (relevantBody?.items?.length !== 0) {
           defaultData.items[item._id]
-            = relevantBody?.items?.find(bodyItem => bodyItem.item === item._id) !== undefined;
+            = relevantBody?.items?.find(
+              bodyItem => bodyItem.item === item._id
+            ) !== undefined;
         }
       });
 
@@ -163,8 +182,9 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         defaultData.programs[program._id] = program.starterKit === 'always';
         if (relevantBody?.programs?.length !== 0) {
           defaultData.programs[program._id]
-            = relevantBody?.programs?.find(bodyProgram => bodyProgram.program === program._id)
-              !== undefined;
+            = relevantBody?.programs?.find(
+              bodyProgram => bodyProgram.program === program._id
+            ) !== undefined;
         }
       });
 
@@ -175,8 +195,9 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         defaultData.implants[implant._id] = implant.starterKit === 'always';
         if (relevantBody?.implants?.length !== 0) {
           defaultData.implants[implant._id]
-            = relevantBody?.implants?.find(bodyImplant => bodyImplant.implant === implant._id)
-              !== undefined;
+            = relevantBody?.implants?.find(
+              bodyImplant => bodyImplant.implant === implant._id
+            ) !== undefined;
         }
       });
 
@@ -188,7 +209,15 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
   const {
     handleSubmit, watch, control, reset
   } = useForm<FormValues>({ defaultValues: useMemo(
-    () => createDefaultData(weapons, armors, bags, items, programs, implants, character),
+    () => createDefaultData({
+      weapons,
+      armors,
+      bags,
+      items,
+      programs,
+      implants,
+      character
+    }),
     [
       createDefaultData,
       weapons,
@@ -235,7 +264,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         items: [],
         programs: [],
         implants: [],
-        money: starterMoneyNoItem
+        money: starterMoneyNoItem ?? 0
       });
     }
   }, [onSubmitItems, starterMoneyNoItem]);
@@ -288,7 +317,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
           items: itemIds,
           programs: programIds,
           implants: implantIds,
-          money: starterMoney
+          money: starterMoney ?? 0
         });
       }
     },
@@ -326,7 +355,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
           <Atitle level={4}>
             {t('characterCreation.step5.choose', {
               ns: 'components',
-              qty: nbOptionnalWeaponCharCreate - included.length
+              qty: (nbOptionnalWeaponCharCreate ?? 0) - included.length
             })}
           </Atitle>
           {optionnal.map(optionnalWeapon => (
@@ -337,7 +366,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
               key={optionnalWeapon.weapon._id}
               label={<WeaponDisplay weapon={optionnalWeapon} mode="hover" />}
               disabled={
-                countSelected >= nbOptionnalWeaponCharCreate
+                countSelected >= (nbOptionnalWeaponCharCreate ?? 0)
                 && !weaponSelected[optionnalWeapon.weapon._id]
               }
             />
@@ -385,7 +414,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
                 <Atitle level={4}>
                   {t('characterCreation.step5.choose', {
                     ns: 'components',
-                    qty: nbOptionnalArmorCharCreate - included.length
+                    qty: (nbOptionnalArmorCharCreate ?? 0) - included.length
                   })}
                 </Atitle>
                 {optionnal.map(optionnalArmor => (
@@ -395,7 +424,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
                     control={control}
                     key={optionnalArmor.armor._id}
                     disabled={
-                      countSelected >= nbOptionnalArmorCharCreate
+                      countSelected >= (nbOptionnalArmorCharCreate ?? 0)
                       && !armorSelected[optionnalArmor.armor._id]
                     }
                     label={<ArmorDisplay armor={optionnalArmor} mode="hover" />}
@@ -446,7 +475,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
                 <Atitle level={4}>
                   {t('characterCreation.step5.choose', {
                     ns: 'components',
-                    qty: nbOptionnalBagCharCreate - included.length
+                    qty: (nbOptionnalBagCharCreate ?? 0) - included.length
                   })}
                 </Atitle>
                 {optionnal.map(optionnalBag => (
@@ -456,7 +485,8 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
                     control={control}
                     key={optionnalBag.bag._id}
                     disabled={
-                      countSelected >= nbOptionnalBagCharCreate && !bagSelected[optionnalBag.bag._id]
+                      countSelected >= (nbOptionnalBagCharCreate ?? 0)
+                      && !bagSelected[optionnalBag.bag._id]
                     }
                     label={<BagDisplay bag={optionnalBag} mode="hover" />}
                   />
@@ -506,7 +536,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
                 <Atitle level={4}>
                   {t('characterCreation.step5.choose', {
                     ns: 'components',
-                    qty: nbOptionnalItemCharCreate - included.length
+                    qty: (nbOptionnalItemCharCreate ?? 0) - included.length
                   })}
                 </Atitle>
                 {optionnal.map(optionnalItem => (
@@ -516,7 +546,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
                     control={control}
                     key={optionnalItem.item._id}
                     disabled={
-                      countSelected >= nbOptionnalItemCharCreate
+                      countSelected >= (nbOptionnalItemCharCreate ?? 0)
                       && !itemSelected[optionnalItem.item._id]
                     }
                     label={<ItemDisplay item={optionnalItem} mode="hover" />}
@@ -573,7 +603,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
                     control={control}
                     key={optionnalProgram.program._id}
                     disabled={
-                      countSelected >= nbOptionnalOtherCharCreate
+                      countSelected >= (nbOptionnalOtherCharCreate ?? 0)
                       && !programSelected[optionnalProgram.program._id]
                     }
                     label={<ProgramDisplay program={optionnalProgram} mode="hover" />}
@@ -593,7 +623,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
                     control={control}
                     key={optionnalImplant.implant._id}
                     disabled={
-                      countSelected >= nbOptionnalOtherCharCreate
+                      countSelected >= (nbOptionnalOtherCharCreate ?? 0)
                       && !implantSelected[optionnalImplant.implant._id]
                     }
                     label={<ImplantDisplay implant={optionnalImplant} mode="hover" />}
@@ -608,24 +638,34 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
 
   const elts: FormValues = watch();
   let canSubmitList = false;
-  if (elts !== undefined) {
-    const nbChosenArmors = countTrueInArray(Object.values(elts.armors ?? {}));
-    const nbChosenPrograms = countTrueInArray(Object.values(elts.programs ?? {}));
-    const nbChosenItems = countTrueInArray(Object.values(elts.items ?? {}));
-    const nbChosenImplants = countTrueInArray(Object.values(elts.implants ?? {}));
-    const nbChosenBags = countTrueInArray(Object.values(elts.bags ?? {}));
-    const nbChosenWeapons = countTrueInArray(Object.values(elts.weapons ?? {}));
+  const nbChosenArmors = countTrueInArray(Object.values(elts.armors));
+  const nbChosenPrograms = countTrueInArray(
+    Object.values(elts.programs)
+  );
+  const nbChosenItems = countTrueInArray(Object.values(elts.items));
+  const nbChosenImplants = countTrueInArray(
+    Object.values(elts.implants)
+  );
+  const nbChosenBags = countTrueInArray(Object.values(elts.bags));
+  const nbChosenWeapons = countTrueInArray(Object.values(elts.weapons));
 
-    canSubmitList
+  canSubmitList
       = nbChosenArmors === nbOptionnalArmorCharCreate
         && nbChosenPrograms + nbChosenImplants === nbOptionnalOtherCharCreate
         && nbChosenItems === nbOptionnalItemCharCreate
         && nbChosenBags === nbOptionnalBagCharCreate
         && nbChosenWeapons === nbOptionnalWeaponCharCreate;
-  }
 
   useEffect(() => {
-    reset(createDefaultData(weapons, armors, bags, items, programs, implants, character));
+    reset(createDefaultData({
+      weapons,
+      armors,
+      bags,
+      items,
+      programs,
+      implants,
+      character
+    }));
   }, [
     character,
     reset,

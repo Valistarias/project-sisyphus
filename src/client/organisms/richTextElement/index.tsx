@@ -61,7 +61,10 @@ const basicRichTextElementExtentions = [
   ReactHighlight
 ];
 
-const completeRichTextElementExtentions = [...basicRichTextElementExtentions, ReactComponentEmbed];
+const completeRichTextElementExtentions = [
+  ...basicRichTextElementExtentions,
+  ReactComponentEmbed
+];
 
 interface IRichTextElement {
   /** The text Editor */
@@ -121,7 +124,7 @@ const RichTextElement: FC<IRichTextElement> = ({
       className={classTrim(`
           richTextElt
           ${small ? 'richTextElt--small' : ''}
-          ${readOnly !== undefined && readOnly ? ' richTextElt--readOnly' : ''}
+          ${readOnly ? ' richTextElt--readOnly' : ''}
           ${className ?? ''}
         `)}
     >
@@ -149,5 +152,7 @@ const RichTextElement: FC<IRichTextElement> = ({
 };
 
 export {
-  basicRichTextElementExtentions, completeRichTextElementExtentions, RichTextElement
+  basicRichTextElementExtentions,
+  completeRichTextElementExtentions,
+  RichTextElement
 };

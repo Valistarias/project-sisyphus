@@ -60,7 +60,7 @@ const ImplantDisplay: FC<IQuarkProps<IImplantDisplay>> = ({
   const domBlockContent = useRef<HTMLDivElement>(null);
 
   const curateImplant = useMemo<ICuratedCompleteImplant | null>(() => {
-    if (sentBodyparts.length === 0 || implant === undefined) {
+    if (sentBodyparts.length === 0) {
       return null;
     }
     const {
@@ -72,10 +72,14 @@ const ImplantDisplay: FC<IQuarkProps<IImplantDisplay>> = ({
         ...implantObj,
         bodyParts: implantObj.bodyParts.map(
           bodyPartId =>
-            sentBodyparts.find(({ bodyPart }) => bodyPart._id === bodyPartId)?.bodyPart.title
-            ?? sentBodyparts[0].bodyPart.title
+            sentBodyparts.find(
+              ({ bodyPart }) =>
+                bodyPart._id === bodyPartId)?.bodyPart.title
+                ?? sentBodyparts[0].bodyPart.title
         ),
-        rarity: rarities.find(rarity => rarity.rarity._id === implantObj.rarity),
+        rarity: rarities.find(
+          rarity => rarity.rarity._id === implantObj.rarity
+        ),
         itemModifiers: implantObj.itemModifiers?.map(
           itemModifierId =>
             itemModifiers.find(

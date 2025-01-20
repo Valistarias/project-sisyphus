@@ -45,24 +45,29 @@ interface FormValues {
   pronouns: string
 }
 
-const CharacterCreationStep6: FC<ICharacterCreationStep6> = ({ onSubmitIdentification }) => {
+const CharacterCreationStep6: FC<ICharacterCreationStep6> = (
+  { onSubmitIdentification }
+) => {
   const { t } = useTranslation();
   const { character } = useGlobalVars();
 
   const bioEditor = useEditor({ extensions: basicRichTextElementExtentions });
 
-  const createDefaultData = useCallback((character: false | ICharacter | null) => {
-    if (character === false || character === null) {
-      return {};
-    }
-    const defaultData: Partial<FormValues> = {};
+  const createDefaultData = useCallback(
+    (character: false | ICharacter | null) => {
+      if (character === false || character === null) {
+        return {};
+      }
+      const defaultData: Partial<FormValues> = {};
 
-    return defaultData;
-  }, []);
+      return defaultData;
+    }, []);
 
   const {
     handleSubmit, control, reset
-  } = useForm<FormValues>({ defaultValues: useMemo(() => createDefaultData(character), [createDefaultData, character]) });
+  } = useForm<FormValues>({ defaultValues: useMemo(
+    () => createDefaultData(character), [createDefaultData, character]
+  ) });
 
   const genderRange = useMemo(
     () => [

@@ -23,7 +23,7 @@ import './bagDisplay.scss';
 
 interface IBagDisplay {
   /** The bag to be displayed */
-  bag: ICuratedBag
+  bag?: ICuratedBag
   /** The display mode */
   mode?: 'basic' | 'hover'
 }
@@ -39,7 +39,8 @@ interface ICuratedCompleteBag extends Omit<ICuratedBag, 'bag'> {
 }
 
 const BagDisplay: FC<IQuarkProps<IBagDisplay>> = ({
-  bag, mode = 'basic'
+  bag,
+  mode = 'basic'
 }) => {
   const { t } = useTranslation();
   const {
@@ -69,7 +70,9 @@ const BagDisplay: FC<IQuarkProps<IBagDisplay>> = ({
         ),
         storableItemTypes: bagObj.storableItemTypes.map((itemTypeId) => {
           const elt
-            = itemTypes.find(itemType => itemType._id === itemTypeId)?.name ?? itemTypes[0].name;
+            = itemTypes.find(
+              itemType => itemType._id === itemTypeId
+            )?.name ?? itemTypes[0].name;
 
           return t(`itemTypeNames.${elt}`);
         })

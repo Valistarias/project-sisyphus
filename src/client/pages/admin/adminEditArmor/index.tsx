@@ -27,7 +27,9 @@ import {
 } from '../../../organisms';
 import { possibleStarterKitValues } from '../../../types/items';
 
-import type { ICuratedArmor } from '../../../types';
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
+import type { ErrorResponseType, ICuratedArmor } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import {
   classTrim, isThereDuplicate
@@ -195,10 +197,11 @@ const AdminEditArmor: FC = () => {
     label: rarity.title
   })), [rarities]);
 
-  const itemModifierList = useMemo(() => itemModifiers.map(({ itemModifier }) => ({
-    value: itemModifier._id,
-    label: itemModifier.title
-  })), [itemModifiers]);
+  const itemModifierList = useMemo(
+    () => itemModifiers.map(({ itemModifier }) => ({
+      value: itemModifier._id,
+      label: itemModifier.title
+    })), [itemModifiers]);
 
   const starterKitList = useMemo(
     () =>
@@ -304,17 +307,24 @@ const AdminEditArmor: FC = () => {
         title: action.title,
         type: action.type,
         duration: action.duration,
+        isKarmic: action.isKarmic ? '1' : '0',
         ...(action.skill !== undefined ? { skill: action.skill } : {}),
         ...(action.damages !== undefined ? { damages: action.damages } : {}),
-        ...(action.offsetSkill !== undefined ? { offsetSkill: action.offsetSkill } : {}),
+        ...(
+          action.offsetSkill !== undefined
+            ? { offsetSkill: action.offsetSkill }
+            : {}),
         ...(action.uses !== undefined ? { uses: action.uses } : {}),
-        ...(action.isKarmic !== undefined ? { isKarmic: action.isKarmic ? '1' : '0' } : {}),
-        ...(action.karmicCost !== undefined ? { karmicCost: action.karmicCost } : {}),
+        ...(
+          action.karmicCost !== undefined
+            ? { karmicCost: action.karmicCost }
+            : {}
+        ),
         ...(action.time !== undefined ? { time: action.time } : {}),
         summary: action.summary,
-        titleFr: action.i18n.fr.title,
-        summaryFr: action.i18n.fr.summary,
-        timeFr: action.i18n.fr.time
+        titleFr: action.i18n.fr?.title,
+        summaryFr: action.i18n.fr?.summary,
+        timeFr: action.i18n.fr?.time
       };
 
       tempActionId.push(idIncrement.current);
@@ -334,8 +344,8 @@ const AdminEditArmor: FC = () => {
         type: effect.type,
         formula: effect.formula,
         summary: effect.summary,
-        titleFr: effect.i18n.fr.title,
-        summaryFr: effect.i18n.fr.summary
+        titleFr: effect.i18n.fr?.title,
+        summaryFr: effect.i18n.fr?.summary
       };
 
       tempEffectId.push(idIncrement.current);
@@ -353,7 +363,9 @@ const AdminEditArmor: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({ defaultValues: useMemo(() => createDefaultData(armorData), [createDefaultData, armorData]) });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(armorData), [createDefaultData, armorData]
+  ) });
 
   const boolRange = useMemo(
     () => [
@@ -436,7 +448,9 @@ const AdminEditArmor: FC = () => {
         return;
       }
       // Check duplicate on skills
-      const skillBonuses = elts.skillBonuses !== undefined ? Object.values(elts.skillBonuses) : [];
+      const skillBonuses = elts.skillBonuses !== undefined
+        ? Object.values(elts.skillBonuses)
+        : [];
       let duplicateSkillBonuses = false;
       if (skillBonuses.length > 0) {
         duplicateSkillBonuses = isThereDuplicate(
@@ -452,10 +466,14 @@ const AdminEditArmor: FC = () => {
         return;
       }
       // Check duplicate on stats
-      const statBonuses = elts.statBonuses !== undefined ? Object.values(elts.statBonuses) : [];
+      const statBonuses = elts.statBonuses !== undefined
+        ? Object.values(elts.statBonuses)
+        : [];
       let duplicateStatBonuses = false;
       if (statBonuses.length > 0) {
-        duplicateStatBonuses = isThereDuplicate(statBonuses.map(statBonus => statBonus.stat));
+        duplicateStatBonuses = isThereDuplicate(
+          statBonuses.map(statBonus => statBonus.stat)
+        );
       }
       if (duplicateStatBonuses) {
         setError('root.serverError', {
@@ -466,8 +484,9 @@ const AdminEditArmor: FC = () => {
         return;
       }
       // Check duplicate on character param
-      const charParamBonuses
-        = elts.charParamBonuses !== undefined ? Object.values(elts.charParamBonuses) : [];
+      const charParamBonuses = elts.charParamBonuses !== undefined
+        ? Object.values(elts.charParamBonuses)
+        : [];
       let duplicateCharParamBonuses = false;
       if (charParamBonuses.length > 0) {
         duplicateCharParamBonuses = isThereDuplicate(
@@ -506,7 +525,7 @@ const AdminEditArmor: FC = () => {
         ({
           id, formula, type, title, summary, titleFr, summaryFr
         }) => ({
-          ...(id !== undefined ? { id } : {}),
+          id,
           title,
           summary,
           formula,
@@ -539,7 +558,7 @@ const AdminEditArmor: FC = () => {
           karmicCost,
           summaryFr
         }) => ({
-          ...(id !== undefined ? { id } : {}),
+          id,
           title,
           summary,
           skill,
@@ -551,13 +570,16 @@ const AdminEditArmor: FC = () => {
           uses,
           time,
           type,
-          i18n: { ...(titleFr !== undefined || summaryFr !== undefined || timeFr !== undefined
-            ? { fr: {
-                title: titleFr,
-                summary: summaryFr,
-                time: timeFr
-              } }
-            : {}) }
+          i18n: { ...(
+            titleFr !== undefined
+            || summaryFr !== undefined
+            || timeFr !== undefined
+              ? { fr: {
+                  title: titleFr,
+                  summary: summaryFr,
+                  time: timeFr
+                } }
+              : {}) }
         })
       );
 
@@ -631,7 +653,7 @@ const AdminEditArmor: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || armorData === null || confMessageEvt === null) {
+    if (api === undefined || armorData === null) {
       return;
     }
     setConfirmContent(
@@ -685,8 +707,10 @@ const AdminEditArmor: FC = () => {
   }, [
     api,
     armorData,
-    confMessageEvt,
+    setConfirmContent,
     t,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,

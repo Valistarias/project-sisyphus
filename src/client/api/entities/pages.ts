@@ -12,9 +12,8 @@ interface IChapterPayload {
   chapterId: string
 }
 
-export default class Pages extends Entity<IPage, ICuratedPage> {
+export default class Pages extends Entity<IPagesPayload, IPage, ICuratedPage> {
   getAllByChapter: (payload: IChapterPayload) => Promise<ICuratedPage[]>;
-  get: (payload: IPagesPayload) => Promise<ICuratedPage>;
 
   constructor() {
     super('pages');
@@ -25,18 +24,6 @@ export default class Pages extends Entity<IPage, ICuratedPage> {
           .get(`${this.url}/pagesbychapterid/`, { params: payload })
           .then((res) => {
             resolve(res.data as ICuratedPage[]);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
-
-    this.get = async payload =>
-      await new Promise((resolve, reject) => {
-        axios
-          .get(`${this.url}/single/`, { params: payload })
-          .then((res) => {
-            resolve(res.data as ICuratedPage);
           })
           .catch((err) => {
             reject(err);

@@ -1,7 +1,8 @@
 import React, { type FC } from 'react';
 
 import {
-  mergeAttributes, Node
+  mergeAttributes, Node,
+  type NodeViewProps
 } from '@tiptap/core';
 import {
   NodeViewWrapper, ReactNodeViewRenderer
@@ -9,12 +10,7 @@ import {
 
 import { Highlight } from '../../molecules';
 
-interface ITest {
-  /** The Node element */
-  node: unknown
-}
-
-const HighlightReact: FC<ITest> = ({ node }) => (
+const HighlightReact: FC<NodeViewProps> = ({ node }) => (
   <NodeViewWrapper as="span">
     <Highlight id={node.attrs.idElt} type={node.attrs.typeElt}>
       {node.attrs.textElt}

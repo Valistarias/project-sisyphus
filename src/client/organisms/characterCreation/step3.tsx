@@ -22,6 +22,7 @@ import {
 } from '../../utils/character';
 import { RichTextElement } from '../richTextElement';
 
+import type { IStatBonuses } from './step2';
 import type {
   ICuratedNode, ICuratedSkill, ISkillBranch
 } from '../../types';
@@ -32,12 +33,14 @@ import {
 
 import './characterCreation.scss';
 
-interface ICharacterCreationStep2 {
+interface ICharacterCreationStep3 {
   /** When the user click send and the data is send perfectly */
   onSubmitSkills: (nodes: string[]) => void
 }
 
-const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills }) => {
+const CharacterCreationStep3: FC<ICharacterCreationStep3> = (
+  { onSubmitSkills }
+) => {
   const { t } = useTranslation();
   const {
     skills, stats, globalValues, character, cyberFrames
@@ -69,7 +72,9 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
     onSubmitSkills
   ]);
 
-  const aggregatedSkills = useMemo(() => aggregateSkillsByStats(skills, stats), [skills, stats]);
+  const aggregatedSkills = useMemo(
+    () => aggregateSkillsByStats(skills, stats), [skills, stats]
+  );
 
   const { nbBeginningSkills } = useMemo(
     () => getValuesFromGlobalValues(['nbBeginningSkills'], globalValues),
@@ -80,30 +85,27 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
   // TODO : When level up / death, reuse this function more globally
   const bonusesByStat = useMemo(() => {
     if (character === null || character === false) {
-      return [];
+      return {};
     }
 
-    const nodesByCyberFrames = getCyberFrameLevelsByNodes(character.nodes, cyberFrames);
+    const nodesByCyberFrames = getCyberFrameLevelsByNodes(
+      character.nodes,
+      cyberFrames
+    );
 
-    const statBonuses: Record<
-      string,
-      {
-        bonus: number
-        source: string
-        sourceId: string
-        broad: boolean
-      }
-    > = {};
+    const statBonuses: Record<string, IStatBonuses> = {};
 
     // If only one source for the list, we'll be precise
-    // If multiple sources for bonuses, we are borad in the phrasing
+    // If multiple sources for bonuses, we are broad in the phrasing
     nodesByCyberFrames.forEach(({
       cyberFrame, chosenNodes
     }) => {
       chosenNodes.forEach((node) => {
         if (node.statBonuses !== undefined && node.statBonuses.length > 0) {
           node.statBonuses.forEach((statBonus) => {
-            if (statBonuses[statBonus.stat] === undefined) {
+            if ((
+              statBonuses[statBonus.stat] as IStatBonuses | undefined
+            ) === undefined) {
               statBonuses[statBonus.stat] = {
                 bonus: statBonus.value,
                 source: cyberFrame.cyberFrame.title,
@@ -112,7 +114,10 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
               };
             } else {
               statBonuses[statBonus.stat].bonus += statBonus.value;
-              if (statBonuses[statBonus.stat].sourceId !== cyberFrame.cyberFrame._id) {
+              if (
+                statBonuses[statBonus.stat].sourceId
+                !== cyberFrame.cyberFrame._id
+              ) {
                 statBonuses[statBonus.stat].broad = true;
               }
             }
@@ -198,7 +203,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
       return [];
     }
     const statElts: ReactNode[] = [];
-    const nbSkillSelected = nbBeginningSkills - selectedSkills.length;
+    const nbSkillSelected = nbBeginningSkills ?? 0 - selectedSkills.length;
     aggregatedSkills.forEach(({
       stat, skills
     }) => {
@@ -208,7 +213,12 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
         );
 
         const valMod = calculateStatMod(
-          Number(relevantCharacterData?.value + (bonusesByStat[stat.stat._id]?.bonus ?? 0))
+          Number(
+            relevantCharacterData?.value ?? 0
+            + ((
+              bonusesByStat[stat.stat._id] as IStatBonuses | undefined
+            )?.bonus ?? 0)
+          )
         );
         statElts.push(
           <div key={stat.stat._id} className="characterCreation-step3__stat-block">
@@ -232,7 +242,9 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
             <Aul noPoints className="characterCreation-step3__stat-block__content">
               {skills.map((skill) => {
                 const selected
-                  = selectedSkills.find(skillId => skillId === skill.skill._id) !== undefined;
+                  = selectedSkills.find(
+                    skillId => skillId === skill.skill._id
+                  ) !== undefined;
                 const baseNode = getBaseSkillNode(skill.skill);
                 let bonus = 0;
                 if (baseNode !== undefined) {
@@ -271,7 +283,9 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
                         onClick={() => {
                           setSelectedSkills((prev) => {
                             const next = [...prev];
-                            const valIndex = next.findIndex(val => val === skill.skill._id);
+                            const valIndex = next.findIndex(
+                              val => val === skill.skill._id
+                            );
                             if (valIndex !== -1) {
                               next.splice(valIndex, 1);
                             } else {
@@ -291,7 +305,10 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
                           setDetailsOpened(true);
                         }}
                       >
-                        <RichTextElement rawStringContent={skill.skill.summary} readOnly />
+                        <RichTextElement
+                          rawStringContent={skill.skill.summary}
+                          readOnly
+                        />
                       </Helper>
                     </span>
                     <span
@@ -356,13 +373,15 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
       nodeBranchIds.forEach((nodeBranchId) => {
         const foundSkill = skills.find(
           ({ skill }) =>
-            skill.branches.find(({ skillBranch }) => skillBranch._id === nodeBranchId) !== undefined
+            skill.branches.find(
+              ({ skillBranch }) => skillBranch._id === nodeBranchId
+            ) !== undefined
         );
         if (foundSkill !== undefined) {
           skillIds.push(foundSkill.skill._id);
         }
       });
-      setSelectedSkills(skillIds ?? []);
+      setSelectedSkills(skillIds);
     }
   }, [character, skills]);
 
@@ -394,4 +413,4 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitSkills })
   );
 };
 
-export default CharacterCreationStep2;
+export default CharacterCreationStep3;

@@ -20,9 +20,9 @@ interface IChapterPagesOrder {
   }>
 }
 
-export default class Chapters extends Entity<IChapter, ICuratedChapter> {
+export default class Chapters
+  extends Entity<IChapterPayload, IChapter, ICuratedChapter> {
   getAllByRuleBook: (payload: IChaptersPayload) => Promise<ICuratedChapter[]>;
-  get: (payload: IChapterPayload) => Promise<ICuratedChapter>;
   changePagesOrder: (payload: IChapterPagesOrder) => Promise<ICuratedChapter>;
 
   constructor() {
@@ -34,18 +34,6 @@ export default class Chapters extends Entity<IChapter, ICuratedChapter> {
           .get(`${this.url}/`, { params: payload })
           .then((res) => {
             resolve(res.data as ICuratedChapter[]);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
-
-    this.get = async payload =>
-      await new Promise((resolve, reject) => {
-        axios
-          .get(`${this.url}/single/`, { params: payload })
-          .then((res) => {
-            resolve(res.data as ICuratedChapter);
           })
           .catch((err) => {
             reject(err);

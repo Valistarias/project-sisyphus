@@ -1,7 +1,8 @@
 import React, { type FC } from 'react';
 
 import {
-  mergeAttributes, Node
+  mergeAttributes, Node,
+  type NodeViewProps
 } from '@tiptap/core';
 import {
   NodeViewWrapper, ReactNodeViewRenderer
@@ -9,12 +10,7 @@ import {
 
 import { EmbedNotion } from '../../molecules';
 
-interface ITest {
-  /** The Node element */
-  node: unknown
-}
-
-const EmbedReact: FC<ITest> = ({ node }) => (
+const EmbedReact: FC<NodeViewProps> = ({ node }) => (
   <NodeViewWrapper className="react-component-embed">
     <EmbedNotion notionId={node.attrs.notionId} />
   </NodeViewWrapper>

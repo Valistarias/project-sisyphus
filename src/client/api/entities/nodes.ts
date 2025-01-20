@@ -13,13 +13,11 @@ interface INodePayload {
   nodeId: string
 }
 
-export default class Nodes extends Entity<INode, ICuratedNode> {
+export default class Nodes extends Entity<INodePayload, INode, ICuratedNode> {
   getAllByBranch: (payload: IBranchPayload) => Promise<ICuratedNode[]>;
   getAllBySkill: (payload: { skillId: string }) => Promise<ICuratedNode[]>;
   getAllByCyberFrame: (payload: { cyberFrameId: string }) =>
   Promise<ICuratedNode[]>;
-
-  get: (payload: INodePayload) => Promise<ICuratedNode>;
 
   constructor() {
     super('nodes');
@@ -54,18 +52,6 @@ export default class Nodes extends Entity<INode, ICuratedNode> {
           .get(`${this.url}/bycyberframe/`, { params: payload })
           .then((res) => {
             resolve(res.data as ICuratedNode[]);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
-
-    this.get = async payload =>
-      await new Promise((resolve, reject) => {
-        axios
-          .get(`${this.url}/single/`, { params: payload })
-          .then((res) => {
-            resolve(res.data as ICuratedNode);
           })
           .catch((err) => {
             reject(err);

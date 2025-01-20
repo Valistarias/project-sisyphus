@@ -58,7 +58,7 @@ const AdminEditSkillBranch: FC = () => {
   const [skillBranchData, seSkillBranchData]
     = useState<ICuratedSkillBranch | null>(null);
 
-  const limitedMode = skillBranchData?.skillBranch?.title === '_general';
+  const limitedMode = skillBranchData?.skillBranch.title === '_general';
 
   const [skillBranchText, seSkillBranchText] = useState('');
   const [skillBranchTextFr, seSkillBranchTextFr] = useState('');
@@ -80,7 +80,7 @@ const AdminEditSkillBranch: FC = () => {
         skillBranch, i18n
       } = skillBranchData;
       const defaultData: Partial<FormValues> = {};
-      defaultData.name = skillBranch?.title;
+      defaultData.name = skillBranch.title;
       if (i18n.fr !== undefined) {
         defaultData.nameFr = i18n.fr.title ?? '';
       }
@@ -172,15 +172,15 @@ const AdminEditSkillBranch: FC = () => {
         title: t('adminEditSkillBranch.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditSkillBranch.confirmDeletion.text', {
           ns: 'pages',
-          elt: skillBranchData?.skillBranch?.title
+          elt: skillBranchData?.skillBranch.title
         }),
         confirmCta: t('adminEditSkillBranch.confirmDeletion.confirmCta', { ns: 'pages' })
       },
       (evtId: string) => {
         const skillId
-          = typeof skillBranchData?.skillBranch?.skill === 'string'
+          = typeof skillBranchData?.skillBranch.skill === 'string'
             ? skillBranchData.skillBranch.skill
-            : skillBranchData?.skillBranch?.skill._id;
+            : skillBranchData?.skillBranch.skill._id;
         const confirmDelete = (
           { detail }: { detail: ConfirmMessageDetailData }
         ): void => {
@@ -243,7 +243,7 @@ const AdminEditSkillBranch: FC = () => {
             skillBranch, i18n
           } = curatedSkillBranch;
           seSkillBranchData(curatedSkillBranch);
-          seSkillBranchText(skillBranch?.summary ?? '');
+          seSkillBranchText(skillBranch.summary);
           if (i18n.fr !== undefined) {
             seSkillBranchTextFr(i18n.fr.summary ?? '');
           }
@@ -311,10 +311,10 @@ const AdminEditSkillBranch: FC = () => {
           <Ap className="adminEditSkillBranch__ariane__elt">
             {`${t(`terms.skill.name`)}: `}
             <Aa
-              href={`/admin/skill/${typeof skillBranchData?.skillBranch?.skill === 'string' ? skillBranchData.skillBranch.skill : skillBranchData?.skillBranch?.skill._id}`}
+              href={`/admin/skill/${typeof skillBranchData?.skillBranch.skill === 'string' ? skillBranchData.skillBranch.skill : skillBranchData?.skillBranch.skill._id}`}
             >
-              {typeof skillBranchData?.skillBranch?.skill !== 'string'
-                ? skillBranchData?.skillBranch?.skill.title
+              {typeof skillBranchData?.skillBranch.skill !== 'string'
+                ? skillBranchData?.skillBranch.skill.title
                 : ''}
             </Aa>
           </Ap>

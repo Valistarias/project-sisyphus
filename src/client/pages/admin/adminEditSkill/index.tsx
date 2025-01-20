@@ -90,12 +90,10 @@ const AdminEditSkill: FC = () => {
       }
     > = {};
     branches?.forEach(({ skillBranch }) => {
-      if (skillBranch !== undefined) {
-        tempTree[skillBranch._id] = {
-          branch: skillBranch,
-          nodes: skillBranch.nodes
-        };
-      }
+      tempTree[skillBranch._id] = {
+        branch: skillBranch,
+        nodes: skillBranch.nodes
+      };
     });
 
     return Object.values(tempTree);

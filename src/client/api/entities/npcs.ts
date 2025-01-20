@@ -10,24 +10,11 @@ interface INPCPayload {
   nPCId: string
 }
 
-export default class NPCs extends Entity<INPC, ICuratedNPC> {
-  get: (payload: INPCPayload) => Promise<ICuratedNPC>;
+export default class NPCs extends Entity<INPCPayload, INPC, ICuratedNPC> {
   getAllBasic: () => Promise<ICuratedBasicNPC[]>;
 
   constructor() {
     super('npcs');
-
-    this.get = async payload =>
-      await new Promise((resolve, reject) => {
-        axios
-          .get(`${this.url}/single/`, { params: payload })
-          .then((res) => {
-            resolve(res.data as ICuratedNPC);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
 
     this.getAllBasic = async () =>
       await new Promise((resolve, reject) => {

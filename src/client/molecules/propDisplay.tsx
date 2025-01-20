@@ -37,7 +37,7 @@ interface IPropDisplay {
   /** The type for the prop */
   type: string
   /** The item modifiers of the prop */
-  itemModifiers: ICuratedItemModifier[] | undefined
+  itemModifiers?: ICuratedItemModifier[]
   /** The specialized content of the prop, main part */
   mainNode?: ReactNode
   /** The specialized content of the prop, sub part */
@@ -130,7 +130,7 @@ const PropDisplay = forwardRef<HTMLDivElement, IQuarkProps<IPropDisplay>>(
               : null}
           </div>
         </div>
-        {effects !== undefined && effects.length > 0 !== undefined
+        {effects !== undefined && effects.length > 0
           ? (
               <div className="prop-display__effects">
                 {effects.map(({ effect }) => (

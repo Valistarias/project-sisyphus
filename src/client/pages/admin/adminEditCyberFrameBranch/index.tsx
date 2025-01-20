@@ -26,7 +26,9 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type { ICuratedCyberFrameBranch } from '../../../types';
+import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
 import './adminEditCyberFrameBranch.scss';
 
@@ -53,7 +55,8 @@ const AdminEditCyberFrameBranch: FC = () => {
   const saveTimer = useRef<NodeJS.Timeout | null>(null);
   const silentSave = useRef(false);
 
-  const [cyberFrameBranchData, setCyberFrameBranchData] = useState<ICuratedCyberFrameBranch | null>(
+  const [cyberFrameBranchData, setCyberFrameBranchData]
+  = useState<ICuratedCyberFrameBranch | null>(
     null
   );
 
@@ -71,21 +74,22 @@ const AdminEditCyberFrameBranch: FC = () => {
     { extensions: completeRichTextElementExtentions }
   );
 
-  const createDefaultData = useCallback((cyberFrameBranchData: ICuratedCyberFrameBranch | null) => {
-    if (cyberFrameBranchData == null) {
-      return {};
-    }
-    const {
-      cyberFrameBranch, i18n
-    } = cyberFrameBranchData;
-    const defaultData: Partial<FormValues> = {};
-    defaultData.name = cyberFrameBranch.title;
-    if (i18n.fr !== undefined) {
-      defaultData.nameFr = i18n.fr.title ?? '';
-    }
+  const createDefaultData = useCallback(
+    (cyberFrameBranchData: ICuratedCyberFrameBranch | null) => {
+      if (cyberFrameBranchData == null) {
+        return {};
+      }
+      const {
+        cyberFrameBranch, i18n
+      } = cyberFrameBranchData;
+      const defaultData: Partial<FormValues> = {};
+      defaultData.name = cyberFrameBranch.title;
+      if (i18n.fr !== undefined) {
+        defaultData.nameFr = i18n.fr.title ?? '';
+      }
 
-    return defaultData;
-  }, []);
+      return defaultData;
+    }, []);
 
   const {
     handleSubmit,
@@ -103,9 +107,7 @@ const AdminEditCyberFrameBranch: FC = () => {
       name, nameFr
     }) => {
       if (
-        cyberFrameBranchText === null
-        || cyberFrameBranchTextFr === null
-        || textEditor === null
+        textEditor === null
         || textFrEditor === null
         || api === undefined
       ) {
@@ -162,8 +164,6 @@ const AdminEditCyberFrameBranch: FC = () => {
         });
     },
     [
-      cyberFrameBranchText,
-      cyberFrameBranchTextFr,
       textEditor,
       textFrEditor,
       api,
@@ -176,7 +176,7 @@ const AdminEditCyberFrameBranch: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || confMessageEvt === null) {
+    if (api === undefined) {
       return;
     }
     setConfirmContent(
@@ -206,7 +206,7 @@ const AdminEditCyberFrameBranch: FC = () => {
                   )
                 });
                 if (typeof cyberFrameBranchData?.cyberFrameBranch.cyberFrame !== 'string') {
-                  navigate(
+                  void navigate(
                     `/admin/cyberframe/${cyberFrameBranchData?.cyberFrameBranch.cyberFrame._id}`
                   );
                 }
@@ -233,10 +233,12 @@ const AdminEditCyberFrameBranch: FC = () => {
     );
   }, [
     api,
-    confMessageEvt,
+    setConfirmContent,
     t,
     cyberFrameBranchData?.cyberFrameBranch.title,
     cyberFrameBranchData?.cyberFrameBranch.cyberFrame,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,
@@ -326,7 +328,7 @@ const AdminEditCyberFrameBranch: FC = () => {
                   <Aa
                     href={`/admin/cyberframe/${cyberFrameBranchData?.cyberFrameBranch.cyberFrame._id}`}
                   >
-                    {cyberFrameBranchData?.cyberFrameBranch.cyberFrame.title!}
+                    {cyberFrameBranchData?.cyberFrameBranch.cyberFrame.title}
                   </Aa>
                 )
               : (

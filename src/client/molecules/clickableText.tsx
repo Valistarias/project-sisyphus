@@ -7,11 +7,13 @@ import {
   Abutton, type IAButton
 } from '../atoms';
 
+import type { IQuarkProps } from '../quark';
+
 import { classTrim } from '../utils';
 
 import './clickableText.scss';
 
-interface IClickableText extends IAButton {
+interface IClickableText extends IQuarkProps<IAButton> {
   /** The clickable text */
   text: string
   /** When the clickable text is clicked */
@@ -21,7 +23,10 @@ interface IClickableText extends IAButton {
 }
 
 const ClickableText: FC<IClickableText> = ({
-  text, onClick, className, hint
+  text,
+  onClick,
+  className,
+  hint
 }) => {
   const [delayHandler, setDelayHandler] = useState<NodeJS.Timeout | null>(null);
   const [isHintOpen, setHintOpen] = useState<boolean>(false);

@@ -34,7 +34,7 @@ const AdminAmmos: FC = () => {
   // TODO: Handle i18n in place of basic english language
   // TODO: Display all branches on one ammo
   const ammosList = useMemo(() => {
-    if (ammos === null || ammos.length === 0) {
+    if (ammos.length === 0) {
       return null;
     }
 

@@ -21,7 +21,7 @@ const AdminBodyParts: FC = () => {
 
   // TODO: Handle i18n in place of basic english language
   const bodyPartsList = useMemo(() => {
-    if (bodyParts === null || bodyParts.length === 0) {
+    if (bodyParts.length === 0) {
       return null;
     }
 

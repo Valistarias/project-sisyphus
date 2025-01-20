@@ -8,24 +8,12 @@ interface IBagPayload {
   bagId: string
 }
 
-export default class Bags extends Entity<IBag, IBag> {
-  get: (payload: IBagPayload) => Promise<ICuratedBag>;
+export default class Bags extends Entity<IBagPayload, IBag, ICuratedBag> {
   getStarters: () => Promise<ICuratedBag[]>;
 
   constructor() {
     super('bags');
 
-    this.get = async payload =>
-      await new Promise((resolve, reject) => {
-        axios
-          .get(`${this.url}/single/`, { params: payload })
-          .then((res) => {
-            resolve(res.data as ICuratedBag);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
     this.getStarters = async () =>
       await new Promise((resolve, reject) => {
         axios

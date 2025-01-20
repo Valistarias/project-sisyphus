@@ -264,8 +264,10 @@ const EditCharacter: FC = () => {
   }, [
     api,
     character,
-    confMessageEvt,
+    setConfirmContent,
     t,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,

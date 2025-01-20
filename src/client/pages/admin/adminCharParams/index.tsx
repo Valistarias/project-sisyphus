@@ -21,7 +21,7 @@ const AdminCharParams: FC = () => {
 
   // Handle i18n in place of basic english language
   const charParamsList = useMemo(() => {
-    if (charParams === null || charParams.length === 0) {
+    if (charParams.length === 0) {
       return null;
     }
 

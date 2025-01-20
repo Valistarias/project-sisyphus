@@ -62,7 +62,7 @@ const DropDownMenu: FC<IDropDownMenu> = ({
           }
           | ILinkElt
       ) => {
-        if ((single as ILinkElt).text !== undefined) {
+        if ((single as ILinkElt | undefined)?.text !== undefined) {
           const {
             href, text, onClick
           } = single as ILinkElt;

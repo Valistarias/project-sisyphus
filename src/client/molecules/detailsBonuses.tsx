@@ -22,6 +22,12 @@ interface IDetailsBonuses extends IAButton {
   stat?: ICuratedStat
 }
 
+interface ILineData {
+  id: string
+  total: number
+  text: string
+}
+
 const DetailsBonuses: FC<IDetailsBonuses> = ({
   bonuses, stat
 }) => {
@@ -32,11 +38,7 @@ const DetailsBonuses: FC<IDetailsBonuses> = ({
 
   const lines: Record<
     string,
-    {
-      id: string
-      total: number
-      text: string
-    }
+    ILineData
   > = {};
   bonuses.forEach((bonus) => {
     if (bonus.fromBody === true) {
@@ -57,7 +59,10 @@ const DetailsBonuses: FC<IDetailsBonuses> = ({
         total: bonus.value,
         text: statTexts?.title ?? t('detailBonuses.fromStatGeneric', { ns: 'components' })
       };
-    } else if (bonus.origin?.skill !== undefined || bonus.origin?.cyberFrame !== undefined) {
+    } else if (
+      bonus.origin?.skill !== undefined
+      || bonus.origin?.cyberFrame !== undefined
+    ) {
       const relevantId
         = bonus.origin.skill !== undefined
           ? `skill-${bonus.origin.skill.skill._id}`
@@ -67,7 +72,7 @@ const DetailsBonuses: FC<IDetailsBonuses> = ({
         = bonus.origin.skill !== undefined
           ? bonus.origin.skill.skill.title
           : bonus.origin.cyberFrame?.cyberFrame.title;
-      if (lines[relevantId] === undefined) {
+      if ((lines[relevantId] as ILineData | undefined) === undefined) {
         lines[relevantId] = {
           id: relevantId,
           total: bonus.value,
@@ -92,23 +97,23 @@ const DetailsBonuses: FC<IDetailsBonuses> = ({
     `)}
     >
       <Ap className="details-bonuses__title">{t('detailBonuses.title', { ns: 'components' })}</Ap>
-      {lines !== undefined
-        ? Object.values(lines).map(({
-            id, total, text
-          }) => (
-            <Ap key={id} className="details-bonuses__line">
-              {`${text}:`}
-              <span
-                className={classTrim(`
-                  details-bonuses__line__score
-                  ${total > 0 ? 'details-bonuses__line__score--positive' : 'details-bonuses__line__score--negative'}
-                `)}
-              >
-                {addSymbol(total)}
-              </span>
-            </Ap>
-          ))
-        : null}
+      {
+        Object.values(lines).map(({
+          id, total, text
+        }) => (
+          <Ap key={id} className="details-bonuses__line">
+            {`${text}:`}
+            <span
+              className={classTrim(`
+              details-bonuses__line__score
+              ${total > 0 ? 'details-bonuses__line__score--positive' : 'details-bonuses__line__score--negative'}
+            `)}
+            >
+              {addSymbol(total)}
+            </span>
+          </Ap>
+        ))
+      }
     </div>
   );
 };

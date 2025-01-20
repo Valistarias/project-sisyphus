@@ -26,7 +26,9 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 
-import type { ICuratedArmorType } from '../../../types';
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
+import type { ErrorResponseType, ICuratedArmorType } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import { classTrim } from '../../../utils';
 
@@ -58,7 +60,8 @@ const AdminEditArmorType: FC = () => {
 
   const [displayInt, setDisplayInt] = useState(false);
 
-  const [armorTypeData, setArmorTypeData] = useState<ICuratedArmorType | null>(null);
+  const [armorTypeData, setArmorTypeData]
+  = useState<ICuratedArmorType | null>(null);
 
   const [armorTypeText, setArmorTypeText] = useState('');
   const [armorTypeTextFr, setArmorTypeTextFr] = useState('');
@@ -71,21 +74,22 @@ const AdminEditArmorType: FC = () => {
     { extensions: completeRichTextElementExtentions }
   );
 
-  const createDefaultData = useCallback((armorTypeData: ICuratedArmorType | null) => {
-    if (armorTypeData == null) {
-      return {};
-    }
-    const {
-      armorType, i18n
-    } = armorTypeData;
-    const defaultData: Partial<FormValues> = {};
-    defaultData.name = armorType.title;
-    if (i18n.fr !== undefined) {
-      defaultData.nameFr = i18n.fr.title ?? '';
-    }
+  const createDefaultData = useCallback(
+    (armorTypeData: ICuratedArmorType | null) => {
+      if (armorTypeData == null) {
+        return {};
+      }
+      const {
+        armorType, i18n
+      } = armorTypeData;
+      const defaultData: Partial<FormValues> = {};
+      defaultData.name = armorType.title;
+      if (i18n.fr !== undefined) {
+        defaultData.nameFr = i18n.fr.title ?? '';
+      }
 
-    return defaultData;
-  }, []);
+      return defaultData;
+    }, []);
 
   const {
     handleSubmit,
@@ -103,9 +107,7 @@ const AdminEditArmorType: FC = () => {
       name, nameFr
     }) => {
       if (
-        armorTypeText === null
-        || armorTypeTextFr === null
-        || textEditor === null
+        textEditor === null
         || textFrEditor === null
         || api === undefined
       ) {
@@ -163,8 +165,6 @@ const AdminEditArmorType: FC = () => {
         });
     },
     [
-      armorTypeText,
-      armorTypeTextFr,
       textEditor,
       textFrEditor,
       api,
@@ -178,7 +178,7 @@ const AdminEditArmorType: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || confMessageEvt === null) {
+    if (api === undefined) {
       return;
     }
     setConfirmContent(
@@ -232,9 +232,11 @@ const AdminEditArmorType: FC = () => {
     );
   }, [
     api,
-    confMessageEvt,
+    setConfirmContent,
     t,
     armorTypeData?.armorType.title,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,

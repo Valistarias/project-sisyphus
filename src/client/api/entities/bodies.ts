@@ -24,25 +24,12 @@ interface IBodyPayload {
   characterId: string
 }
 
-export default class Bodys extends Entity<IBody, IBody> {
-  get: (payload: IBodyPayload) => Promise<IBody>;
+export default class Bodys extends Entity<IBodyPayload, IBody, IBody> {
   updateStats: (payload: IUpdateStatsPayload) => Promise<IBody>;
   resetItems: (payload: IResetItemsPayload) => Promise<IBody>;
 
   constructor() {
     super('bodies');
-
-    this.get = async payload =>
-      await new Promise((resolve, reject) => {
-        axios
-          .get(`${this.url}/single/`, { params: payload })
-          .then((res) => {
-            resolve(res.data as IBody);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
 
     this.updateStats = async payload =>
       await new Promise((resolve, reject) => {

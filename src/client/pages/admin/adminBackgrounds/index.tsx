@@ -33,7 +33,7 @@ const AdminBackgrounds: FC = () => {
 
   // TODO: Handle i18n in place of basic english language
   const backgroundsList = useMemo(() => {
-    if (backgrounds === null || backgrounds.length === 0) {
+    if (backgrounds.length === 0) {
       return null;
     }
 

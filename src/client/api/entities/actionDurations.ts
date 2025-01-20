@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 import Entity from './entity';
 
 import type { IActionDuration } from '../../types';
@@ -9,22 +7,8 @@ interface IActionDurationPayload {
 }
 
 export default class ActionDurations
-  extends Entity<IActionDuration, IActionDuration> {
-  get: (payload: IActionDurationPayload) => Promise<IActionDuration>;
-
+  extends Entity<IActionDurationPayload, IActionDuration, IActionDuration> {
   constructor() {
     super('actiondurations');
-
-    this.get = async payload =>
-      await new Promise((resolve, reject) => {
-        axios
-          .get(`${this.url}/single/`, { params: payload })
-          .then((res) => {
-            resolve(res.data as IActionDuration);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
   }
 }

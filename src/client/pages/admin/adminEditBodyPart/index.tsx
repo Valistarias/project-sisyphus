@@ -26,7 +26,9 @@ import {
   Alert, RichTextElement, completeRichTextElementExtentions
 } from '../../../organisms';
 
-import type { ICuratedBodyPart } from '../../../types';
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
+import type { ErrorResponseType, ICuratedBodyPart } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import { classTrim } from '../../../utils';
 
@@ -60,7 +62,8 @@ const AdminEditBodyPart: FC = () => {
 
   const [displayInt, setDisplayInt] = useState(false);
 
-  const [bodyPartData, setBodyPartData] = useState<ICuratedBodyPart | null>(null);
+  const [bodyPartData, setBodyPartData]
+  = useState<ICuratedBodyPart | null>(null);
 
   const [bodyPartText, setBodyPartText] = useState('');
   const [bodyPartTextFr, setBodyPartTextFr] = useState('');
@@ -73,23 +76,24 @@ const AdminEditBodyPart: FC = () => {
     { extensions: completeRichTextElementExtentions }
   );
 
-  const createDefaultData = useCallback((bodyPartData: ICuratedBodyPart | null) => {
-    if (bodyPartData == null) {
-      return {};
-    }
-    const {
-      bodyPart, i18n
-    } = bodyPartData;
-    const defaultData: Partial<FormValues> = {};
-    defaultData.name = bodyPart.title;
-    defaultData.partId = bodyPart.partId;
-    defaultData.limit = bodyPart.limit;
-    if (i18n.fr !== undefined) {
-      defaultData.nameFr = i18n.fr.title ?? '';
-    }
+  const createDefaultData = useCallback(
+    (bodyPartData: ICuratedBodyPart | null) => {
+      if (bodyPartData == null) {
+        return {};
+      }
+      const {
+        bodyPart, i18n
+      } = bodyPartData;
+      const defaultData: Partial<FormValues> = {};
+      defaultData.name = bodyPart.title;
+      defaultData.partId = bodyPart.partId;
+      defaultData.limit = bodyPart.limit;
+      if (i18n.fr !== undefined) {
+        defaultData.nameFr = i18n.fr.title ?? '';
+      }
 
-    return defaultData;
-  }, []);
+      return defaultData;
+    }, []);
 
   const {
     handleSubmit,
@@ -107,12 +111,8 @@ const AdminEditBodyPart: FC = () => {
       name, nameFr, partId, limit
     }) => {
       if (
-        bodyPartText === null
-        || bodyPartTextFr === null
-        || textEditor === null
+        textEditor === null
         || textFrEditor === null
-        || limit === null
-        || partId === null
         || api === undefined
       ) {
         return;
@@ -171,8 +171,6 @@ const AdminEditBodyPart: FC = () => {
         });
     },
     [
-      bodyPartText,
-      bodyPartTextFr,
       textEditor,
       textFrEditor,
       api,
@@ -186,7 +184,7 @@ const AdminEditBodyPart: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || confMessageEvt === null) {
+    if (api === undefined) {
       return;
     }
     setConfirmContent(
@@ -240,9 +238,11 @@ const AdminEditBodyPart: FC = () => {
     );
   }, [
     api,
-    confMessageEvt,
+    setConfirmContent,
     t,
     bodyPartData?.bodyPart.title,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,

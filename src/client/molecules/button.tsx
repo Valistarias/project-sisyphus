@@ -2,7 +2,7 @@ import React from 'react';
 import type { FC } from 'react';
 
 import {
-  useNavigate, type NavigateFunction
+  useNavigate
 } from 'react-router-dom';
 
 import {
@@ -79,7 +79,7 @@ const Button: FC<IButton> = ({
       onClick={(e: React.MouseEvent<HTMLElement>) => {
         e.stopPropagation();
         if (href !== null) {
-          navigate(href);
+          void navigate(href);
         }
         if (onClick !== undefined) {
           onClick(e);

@@ -104,47 +104,49 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
           >
             {t('home.title', { ns: 'pages' })}
           </Aa>
-          {userState !== 'unlogged' ? (
-            <>
-              <Aa
-                className="headerbar__menu"
-                onClick={() => {
-                  setMenuOpened(null);
-                }}
-                href="/characters"
-              >
-                {t('characters.title', { ns: 'pages' })}
-              </Aa>
-              <Aa
-                className="headerbar__menu"
-                onClick={() => {
-                  setMenuOpened(null);
-                }}
-                href="/campaigns"
-              >
-                {t('campaigns.title', { ns: 'pages' })}
-              </Aa>
-              <DropDownMenu
-                title={{
-                  href: '/rulebooks',
-                  text: t('ruleBooks.title', { ns: 'pages' })
-                }}
-                content={cleanedRuleBooks.map(({ ruleBook }) => ({
-                  href: `/rulebook/${ruleBook._id}`,
-                  // TODO: Handle Internationalization
-                  text: ruleBook.title
-                }))}
-                className="headerbar__menu-list"
-                onOpen={() => {
-                  setMenuOpened('rulebooks');
-                }}
-                onClose={() => {
-                  setMenuOpened(null);
-                }}
-                isOpen={menuOpened === 'rulebooks'}
-              />
-            </>
-          ) : null}
+          {userState !== 'unlogged'
+            ? (
+                <>
+                  <Aa
+                    className="headerbar__menu"
+                    onClick={() => {
+                      setMenuOpened(null);
+                    }}
+                    href="/characters"
+                  >
+                    {t('characters.title', { ns: 'pages' })}
+                  </Aa>
+                  <Aa
+                    className="headerbar__menu"
+                    onClick={() => {
+                      setMenuOpened(null);
+                    }}
+                    href="/campaigns"
+                  >
+                    {t('campaigns.title', { ns: 'pages' })}
+                  </Aa>
+                  <DropDownMenu
+                    title={{
+                      href: '/rulebooks',
+                      text: t('ruleBooks.title', { ns: 'pages' })
+                    }}
+                    content={cleanedRuleBooks.map(({ ruleBook }) => ({
+                      href: `/rulebook/${ruleBook._id}`,
+                      // TODO: Handle Internationalization
+                      text: ruleBook.title
+                    }))}
+                    className="headerbar__menu-list"
+                    onOpen={() => {
+                      setMenuOpened('rulebooks');
+                    }}
+                    onClose={() => {
+                      setMenuOpened(null);
+                    }}
+                    isOpen={menuOpened === 'rulebooks'}
+                  />
+                </>
+              )
+            : null}
 
           {userState === 'admin'
             ? (

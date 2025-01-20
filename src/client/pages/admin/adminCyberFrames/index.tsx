@@ -22,7 +22,7 @@ const AdminCyberFrames: FC = () => {
   // TODO: Handle i18n in place of basic english language
   // TODO: Display all branches on one cyber frame
   const cyberFramesList = useMemo(() => {
-    if (cyberFrames === null || cyberFrames.length === 0) {
+    if (cyberFrames.length === 0) {
       return null;
     }
 

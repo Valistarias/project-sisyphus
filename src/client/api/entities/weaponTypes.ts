@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 import Entity from './entity';
 
 import type { ICuratedWeaponType, IWeaponType } from '../../types';
@@ -9,22 +7,8 @@ interface IWeaponTypePayload {
 }
 
 export default class WeaponTypes
-  extends Entity<IWeaponType, ICuratedWeaponType> {
-  get: (payload: IWeaponTypePayload) => Promise<ICuratedWeaponType>;
-
+  extends Entity<IWeaponTypePayload, IWeaponType, ICuratedWeaponType> {
   constructor() {
     super('weapontypes');
-
-    this.get = async payload =>
-      await new Promise((resolve, reject) => {
-        axios
-          .get(`${this.url}/single/`, { params: payload })
-          .then((res) => {
-            resolve(res.data as ICuratedWeaponType);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
   }
 }

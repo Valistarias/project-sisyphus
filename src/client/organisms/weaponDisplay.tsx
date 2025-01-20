@@ -24,7 +24,6 @@ import type {
 import type {
   ICuratedDamageType, IDamage, IWeapon
 } from '../types/items';
-import type { TypeNodeIcons } from '../types/rules';
 
 import { classTrim } from '../utils';
 
@@ -66,7 +65,10 @@ const WeaponDisplay: FC<IQuarkProps<IWeaponDisplay>> = ({
   const domBlockContent = useRef<HTMLDivElement>(null);
 
   const curatedWeapon = useMemo<ICuratedCompleteWeapon | null>(() => {
-    if (weaponTypes.length === 0 || weaponScopes.length === 0 || weapon === undefined) {
+    if (
+      weaponTypes.length === 0
+      || weaponScopes.length === 0
+    ) {
       return null;
     }
     const {
@@ -171,9 +173,7 @@ const WeaponDisplay: FC<IQuarkProps<IWeaponDisplay>> = ({
                       {t('display.cat.clip', { ns: 'components' })}
                     </Atitle>
                     <Ap className="weapon-display__block__number-block__number">
-                      {weapon.magasine !== undefined
-                        ? `${weapon.magasine} / ${weapon.ammoPerShot ?? 0}`
-                        : '/'}
+                      {`${weapon.magasine} / ${weapon.ammoPerShot ?? 0}`}
                     </Ap>
                   </div>
                 </div>

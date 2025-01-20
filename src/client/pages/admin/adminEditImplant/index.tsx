@@ -27,7 +27,9 @@ import {
 } from '../../../organisms';
 import { possibleStarterKitValues } from '../../../types/items';
 
-import type { ICuratedImplant } from '../../../types';
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
+import type { ErrorResponseType, ICuratedImplant } from '../../../types';
+import type { InternationalizationType } from '../../../types/global';
 
 import {
   classTrim, isThereDuplicate
@@ -195,10 +197,11 @@ const AdminEditImplant: FC = () => {
     label: rarity.title
   })), [rarities]);
 
-  const itemModifierList = useMemo(() => itemModifiers.map(({ itemModifier }) => ({
-    value: itemModifier._id,
-    label: itemModifier.title
-  })), [itemModifiers]);
+  const itemModifierList = useMemo(
+    () => itemModifiers.map(({ itemModifier }) => ({
+      value: itemModifier._id,
+      label: itemModifier.title
+    })), [itemModifiers]);
 
   const starterKitList = useMemo(
     () =>
@@ -227,124 +230,133 @@ const AdminEditImplant: FC = () => {
     { extensions: completeRichTextElementExtentions }
   );
 
-  const createDefaultData = useCallback((implantData: ICuratedImplant | null) => {
-    if (implantData == null) {
-      return {};
-    }
-    const {
-      implant, i18n
-    } = implantData;
-    const defaultData: Partial<FormValues> = {};
-    defaultData.name = implant.title;
-    defaultData.cost = implant.cost;
-    defaultData.rarity = implant.rarity;
-    defaultData.bodyParts = implant.bodyParts;
-    defaultData.itemModifiers = implant.itemModifiers;
-    defaultData.starterKit = implant.starterKit ?? 'never';
-    if (i18n.fr !== undefined) {
-      defaultData.nameFr = i18n.fr.title ?? '';
-    }
-
-    // Init Bonus Skill
-    const tempSkillBonusId: number[] = [];
-    implant.skillBonuses?.forEach((skillBonus) => {
-      if (defaultData.skillBonuses === undefined) {
-        defaultData.skillBonuses = {};
+  const createDefaultData = useCallback(
+    (implantData: ICuratedImplant | null) => {
+      if (implantData == null) {
+        return {};
       }
-      defaultData.skillBonuses[`skill-${idIncrement.current}`] = {
-        skill: skillBonus.skill,
-        value: skillBonus.value
-      };
-
-      tempSkillBonusId.push(idIncrement.current);
-      idIncrement.current += 1;
-    });
-    setSkillBonusIds(tempSkillBonusId);
-
-    // Init Bonus Stat
-    const tempStatBonusId: number[] = [];
-    implant.statBonuses?.forEach((statBonus) => {
-      if (defaultData.statBonuses === undefined) {
-        defaultData.statBonuses = {};
+      const {
+        implant, i18n
+      } = implantData;
+      const defaultData: Partial<FormValues> = {};
+      defaultData.name = implant.title;
+      defaultData.cost = implant.cost;
+      defaultData.rarity = implant.rarity;
+      defaultData.bodyParts = implant.bodyParts;
+      defaultData.itemModifiers = implant.itemModifiers;
+      defaultData.starterKit = implant.starterKit ?? 'never';
+      if (i18n.fr !== undefined) {
+        defaultData.nameFr = i18n.fr.title ?? '';
       }
-      defaultData.statBonuses[`stat-${idIncrement.current}`] = {
-        stat: statBonus.stat,
-        value: statBonus.value
-      };
 
-      tempStatBonusId.push(idIncrement.current);
-      idIncrement.current += 1;
-    });
-    setStatBonusIds(tempStatBonusId);
+      // Init Bonus Skill
+      const tempSkillBonusId: number[] = [];
+      implant.skillBonuses?.forEach((skillBonus) => {
+        if (defaultData.skillBonuses === undefined) {
+          defaultData.skillBonuses = {};
+        }
+        defaultData.skillBonuses[`skill-${idIncrement.current}`] = {
+          skill: skillBonus.skill,
+          value: skillBonus.value
+        };
 
-    // Init Bonus CharParam
-    const tempCharParamBonusId: number[] = [];
-    implant.charParamBonuses?.forEach((charParamBonus) => {
-      if (defaultData.charParamBonuses === undefined) {
-        defaultData.charParamBonuses = {};
-      }
-      defaultData.charParamBonuses[`charParam-${idIncrement.current}`] = {
-        charParam: charParamBonus.charParam,
-        value: charParamBonus.value
-      };
+        tempSkillBonusId.push(idIncrement.current);
+        idIncrement.current += 1;
+      });
+      setSkillBonusIds(tempSkillBonusId);
 
-      tempCharParamBonusId.push(idIncrement.current);
-      idIncrement.current += 1;
-    });
-    setCharParamBonusIds(tempCharParamBonusId);
+      // Init Bonus Stat
+      const tempStatBonusId: number[] = [];
+      implant.statBonuses?.forEach((statBonus) => {
+        if (defaultData.statBonuses === undefined) {
+          defaultData.statBonuses = {};
+        }
+        defaultData.statBonuses[`stat-${idIncrement.current}`] = {
+          stat: statBonus.stat,
+          value: statBonus.value
+        };
 
-    // Init Actions
-    const tempActionId: number[] = [];
-    implant.actions?.forEach(({ action }) => {
-      if (defaultData.actions === undefined) {
-        defaultData.actions = {};
-      }
-      defaultData.actions[`action-${idIncrement.current}`] = {
-        id: action._id,
-        title: action.title,
-        type: action.type,
-        duration: action.duration,
-        ...(action.skill !== undefined ? { skill: action.skill } : {}),
-        ...(action.damages !== undefined ? { damages: action.damages } : {}),
-        ...(action.offsetSkill !== undefined ? { offsetSkill: action.offsetSkill } : {}),
-        ...(action.uses !== undefined ? { uses: action.uses } : {}),
-        ...(action.isKarmic !== undefined ? { isKarmic: action.isKarmic ? '1' : '0' } : {}),
-        ...(action.karmicCost !== undefined ? { karmicCost: action.karmicCost } : {}),
-        ...(action.time !== undefined ? { time: action.time } : {}),
-        summary: action.summary,
-        titleFr: action.i18n.fr.title,
-        summaryFr: action.i18n.fr.summary,
-        timeFr: action.i18n.fr.time
-      };
+        tempStatBonusId.push(idIncrement.current);
+        idIncrement.current += 1;
+      });
+      setStatBonusIds(tempStatBonusId);
 
-      tempActionId.push(idIncrement.current);
-      idIncrement.current += 1;
-    });
-    setActionIds(tempActionId);
+      // Init Bonus CharParam
+      const tempCharParamBonusId: number[] = [];
+      implant.charParamBonuses?.forEach((charParamBonus) => {
+        if (defaultData.charParamBonuses === undefined) {
+          defaultData.charParamBonuses = {};
+        }
+        defaultData.charParamBonuses[`charParam-${idIncrement.current}`] = {
+          charParam: charParamBonus.charParam,
+          value: charParamBonus.value
+        };
 
-    // Init Effects
-    const tempEffectId: number[] = [];
-    implant.effects?.forEach(({ effect }) => {
-      if (defaultData.effects === undefined) {
-        defaultData.effects = {};
-      }
-      defaultData.effects[`effect-${idIncrement.current}`] = {
-        id: effect._id,
-        title: effect.title,
-        type: effect.type,
-        formula: effect.formula,
-        summary: effect.summary,
-        titleFr: effect.i18n.fr.title,
-        summaryFr: effect.i18n.fr.summary
-      };
+        tempCharParamBonusId.push(idIncrement.current);
+        idIncrement.current += 1;
+      });
+      setCharParamBonusIds(tempCharParamBonusId);
 
-      tempEffectId.push(idIncrement.current);
-      idIncrement.current += 1;
-    });
-    setEffectIds(tempEffectId);
+      // Init Actions
+      const tempActionId: number[] = [];
+      implant.actions?.forEach(({ action }) => {
+        if (defaultData.actions === undefined) {
+          defaultData.actions = {};
+        }
+        defaultData.actions[`action-${idIncrement.current}`] = {
+          id: action._id,
+          title: action.title,
+          type: action.type,
+          duration: action.duration,
+          isKarmic: action.isKarmic ? '1' : '0',
+          ...(action.skill !== undefined ? { skill: action.skill } : {}),
+          ...(action.damages !== undefined ? { damages: action.damages } : {}),
+          ...(
+            action.offsetSkill !== undefined
+              ? { offsetSkill: action.offsetSkill }
+              : {}
+          ),
+          ...(action.uses !== undefined ? { uses: action.uses } : {}),
+          ...(
+            action.karmicCost !== undefined
+              ? { karmicCost: action.karmicCost }
+              : {}
+          ),
+          ...(action.time !== undefined ? { time: action.time } : {}),
+          summary: action.summary,
+          titleFr: action.i18n.fr?.title,
+          summaryFr: action.i18n.fr?.summary,
+          timeFr: action.i18n.fr?.time
+        };
 
-    return defaultData;
-  }, []);
+        tempActionId.push(idIncrement.current);
+        idIncrement.current += 1;
+      });
+      setActionIds(tempActionId);
+
+      // Init Effects
+      const tempEffectId: number[] = [];
+      implant.effects?.forEach(({ effect }) => {
+        if (defaultData.effects === undefined) {
+          defaultData.effects = {};
+        }
+        defaultData.effects[`effect-${idIncrement.current}`] = {
+          id: effect._id,
+          title: effect.title,
+          type: effect.type,
+          formula: effect.formula,
+          summary: effect.summary,
+          titleFr: effect.i18n.fr?.title,
+          summaryFr: effect.i18n.fr?.summary
+        };
+
+        tempEffectId.push(idIncrement.current);
+        idIncrement.current += 1;
+      });
+      setEffectIds(tempEffectId);
+
+      return defaultData;
+    }, []);
 
   const {
     handleSubmit,
@@ -353,7 +365,9 @@ const AdminEditImplant: FC = () => {
     control,
     formState: { errors },
     reset
-  } = useForm({ defaultValues: useMemo(() => createDefaultData(implantData), [createDefaultData, implantData]) });
+  } = useForm({ defaultValues: useMemo(
+    () => createDefaultData(implantData), [createDefaultData, implantData]
+  ) });
 
   const boolRange = useMemo(
     () => [
@@ -436,7 +450,9 @@ const AdminEditImplant: FC = () => {
         return;
       }
       // Check duplicate on skills
-      const skillBonuses = elts.skillBonuses !== undefined ? Object.values(elts.skillBonuses) : [];
+      const skillBonuses = elts.skillBonuses !== undefined
+        ? Object.values(elts.skillBonuses)
+        : [];
       let duplicateSkillBonuses = false;
       if (skillBonuses.length > 0) {
         duplicateSkillBonuses = isThereDuplicate(
@@ -452,10 +468,14 @@ const AdminEditImplant: FC = () => {
         return;
       }
       // Check duplicate on stats
-      const statBonuses = elts.statBonuses !== undefined ? Object.values(elts.statBonuses) : [];
+      const statBonuses = elts.statBonuses !== undefined
+        ? Object.values(elts.statBonuses)
+        : [];
       let duplicateStatBonuses = false;
       if (statBonuses.length > 0) {
-        duplicateStatBonuses = isThereDuplicate(statBonuses.map(statBonus => statBonus.stat));
+        duplicateStatBonuses = isThereDuplicate(
+          statBonuses.map(statBonus => statBonus.stat)
+        );
       }
       if (duplicateStatBonuses) {
         setError('root.serverError', {
@@ -466,8 +486,9 @@ const AdminEditImplant: FC = () => {
         return;
       }
       // Check duplicate on character param
-      const charParamBonuses
-        = elts.charParamBonuses !== undefined ? Object.values(elts.charParamBonuses) : [];
+      const charParamBonuses = elts.charParamBonuses !== undefined
+        ? Object.values(elts.charParamBonuses)
+        : [];
       let duplicateCharParamBonuses = false;
       if (charParamBonuses.length > 0) {
         duplicateCharParamBonuses = isThereDuplicate(
@@ -506,7 +527,7 @@ const AdminEditImplant: FC = () => {
         ({
           id, formula, type, title, summary, titleFr, summaryFr
         }) => ({
-          ...(id !== undefined ? { id } : {}),
+          id,
           title,
           summary,
           formula,
@@ -539,7 +560,7 @@ const AdminEditImplant: FC = () => {
           karmicCost,
           summaryFr
         }) => ({
-          ...(id !== undefined ? { id } : {}),
+          id,
           title,
           summary,
           skill,
@@ -551,13 +572,16 @@ const AdminEditImplant: FC = () => {
           uses,
           time,
           type,
-          i18n: { ...(titleFr !== undefined || summaryFr !== undefined || timeFr !== undefined
-            ? { fr: {
-                title: titleFr,
-                summary: summaryFr,
-                time: timeFr
-              } }
-            : {}) }
+          i18n: { ...(
+            titleFr !== undefined
+            || summaryFr !== undefined
+            || timeFr !== undefined
+              ? { fr: {
+                  title: titleFr,
+                  summary: summaryFr,
+                  time: timeFr
+                } }
+              : {}) }
         })
       );
 
@@ -631,7 +655,7 @@ const AdminEditImplant: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || implantData === null || confMessageEvt === null) {
+    if (api === undefined || implantData === null) {
       return;
     }
     setConfirmContent(
@@ -685,8 +709,10 @@ const AdminEditImplant: FC = () => {
   }, [
     api,
     implantData,
-    confMessageEvt,
+    setConfirmContent,
     t,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,

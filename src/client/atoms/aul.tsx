@@ -16,7 +16,7 @@ interface IAul {
   /** Is the decoration to be removed ? */
   noPoints?: boolean
   /** The innerRef, if there is any */
-  innerRef?: RefObject<null | ReactNode>
+  innerRef?: RefObject<HTMLElement | null>
 }
 
 const Aul: FC<IQuarkProps<IAul>> = (props) => {

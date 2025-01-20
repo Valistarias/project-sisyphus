@@ -37,7 +37,10 @@ const CharacterSkills: FC<ICharacterSkills> = ({
   const [searchWord, setSearchWord] = useState('');
 
   const sortedSkillList = useMemo(() => {
-    if (characterStatSkills === undefined || characterStatSkills.skills.length === 0) {
+    if (
+      characterStatSkills === undefined
+      || characterStatSkills.skills.length === 0
+    ) {
       return [];
     }
 
@@ -46,7 +49,9 @@ const CharacterSkills: FC<ICharacterSkills> = ({
     const searchElt = removeDiacritics(searchWord).toLowerCase();
 
     const filteredBySearch = characterStatSkills.skills.filter((skill) => {
-      const curatedTitle = removeDiacritics(skill[textField].title).toLowerCase();
+      const curatedTitle = removeDiacritics(
+        skill[textField].title
+      ).toLowerCase();
 
       return !!curatedTitle.includes(searchElt);
     });

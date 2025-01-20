@@ -27,6 +27,8 @@ import {
 } from '../../utils/character';
 import Alert from '../alert';
 
+import type { ErrorResponseType } from '../../types';
+
 import {
   classTrim,
   getCyberFrameLevelsByNodes,
@@ -37,11 +39,11 @@ import {
 import './characterHeader.scss';
 
 interface FormHpValues {
-  hp: string
+  hp: number
 }
 
 interface FormKarmaValues {
-  karma: string
+  karma: number
 }
 
 interface ICharacterHeader {
@@ -69,13 +71,19 @@ const CharacterHeader: FC<ICharacterHeader> = ({
     if (character === null || character === false) {
       return null;
     }
-    const cyberFrameLevelsByNodes = getCyberFrameLevelsByNodes(character.nodes, cyberFrames);
+    const cyberFrameLevelsByNodes = getCyberFrameLevelsByNodes(
+      character.nodes,
+      cyberFrames
+    );
 
     return cyberFrameLevelsByNodes.reduce(
-      (chosenCyberFrame: ICyberFrameLevels | null, actualCyberFrame: ICyberFrameLevels) => {
+      (
+        chosenCyberFrame: ICyberFrameLevels | null,
+        actualCyberFrame: ICyberFrameLevels
+      ) => {
         if (
           chosenCyberFrame === null
-          || (chosenCyberFrame !== null && actualCyberFrame.level > chosenCyberFrame.level)
+          || actualCyberFrame.level > chosenCyberFrame.level
         ) {
           return actualCyberFrame;
         }
@@ -120,23 +128,34 @@ const CharacterHeader: FC<ICharacterHeader> = ({
     handleSubmit: handleSubmitHp,
     control: controlHp,
     reset: resetHp
-  } = useForm({ defaultValues: useMemo(() => ({ hp: hpValues.isLoading ? 0 : hpValues.hp }), [hpValues]) });
+  } = useForm({ defaultValues: useMemo(
+    () => ({ hp: hpValues.isLoading ? 0 : hpValues.hp }), [hpValues]
+  ) });
 
   const {
     handleSubmit: handleSubmitKarma,
     control: controlKarma,
     reset: resetKarma
-  } = useForm({ defaultValues: useMemo(() => ({ karma: charKarma }), [charKarma]) });
+  } = useForm({ defaultValues: useMemo(
+    () => ({ karma: charKarma }), [charKarma]
+  ) });
 
   const onSaveHp: SubmitHandler<FormHpValues> = useCallback(
     ({ hp }) => {
-      if (api === undefined || character === null || character === false || socket === null) {
+      if (
+        api === undefined
+        || character === null
+        || character === false
+        || socket === null
+      ) {
         return;
       }
 
-      if (hp !== undefined && Number(hp) !== hpValues.hp) {
+      if (Number(hp) !== hpValues.hp) {
         const actualHp = hpValues.hp;
-        const hpSent = Number(hp) > hpValues.total ? hpValues.total : Number(hp);
+        const hpSent = Number(hp) > hpValues.total
+          ? hpValues.total
+          : Number(hp);
         const gainedLife = hpSent > actualHp;
         const { body } = getActualBody(character);
         api.bodies
@@ -157,7 +176,7 @@ const CharacterHeader: FC<ICharacterHeader> = ({
               key: newId,
               dom: (
                 <Alert key={newId} id={newId} timer={5}>
-                  <Ap>{response}</Ap>
+                  <Ap>{response.data.message}</Ap>
                 </Alert>
               )
             });
@@ -179,7 +198,12 @@ const CharacterHeader: FC<ICharacterHeader> = ({
 
   const onSaveKarma: SubmitHandler<FormKarmaValues> = useCallback(
     ({ karma }) => {
-      if (api === undefined || character === null || character === false || socket === null) {
+      if (
+        api === undefined
+        || character === null
+        || character === false
+        || socket === null
+      ) {
         return;
       }
       api.characters
@@ -196,7 +220,7 @@ const CharacterHeader: FC<ICharacterHeader> = ({
             key: newId,
             dom: (
               <Alert key={newId} id={newId} timer={5}>
-                <Ap>{response}</Ap>
+                <Ap>{response.data.message}</Ap>
               </Alert>
             )
           });
@@ -285,7 +309,7 @@ const CharacterHeader: FC<ICharacterHeader> = ({
                   inline
                   rules={{ required: t('hp.required', { ns: 'fields' }) }}
                   className="char-header__health__field__input"
-                  onBlur={handleSubmitHp(onSaveHp)}
+                  onBlur={() => handleSubmitHp(onSaveHp)}
                 />
                 <Ap className="char-header__health__field__total">{`/ ${hpValues.total}`}</Ap>
               </div>
@@ -293,7 +317,9 @@ const CharacterHeader: FC<ICharacterHeader> = ({
 
             <Aloadbar
               progress={
-                hpValues.isLoading || hpValues.total === 0 ? 0 : hpValues.hp / hpValues.total
+                hpValues.isLoading || hpValues.total === 0
+                  ? 0
+                  : hpValues.hp / hpValues.total
               }
               withDangerZone
             />
@@ -316,7 +342,7 @@ const CharacterHeader: FC<ICharacterHeader> = ({
                   inline
                   rules={{ required: t('karma.required', { ns: 'fields' }) }}
                   className="char-header__karma__field__input"
-                  onBlur={handleSubmitKarma(onSaveKarma)}
+                  onBlur={() => handleSubmitKarma(onSaveKarma)}
                 />
                 <Ap className="char-header__karma__field__total">/ ??</Ap>
               </div>

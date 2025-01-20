@@ -32,7 +32,9 @@ const CharacterCreationStep7: FC = () => {
       return null;
     }
 
-    return getCyberFrameLevelsByNodes(character.nodes, cyberFrames)[0]?.cyberFrame;
+    return getCyberFrameLevelsByNodes(
+      character.nodes, cyberFrames
+    )[0]?.cyberFrame;
   }, [character, cyberFrames]);
 
   let name = '';

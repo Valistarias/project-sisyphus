@@ -61,7 +61,7 @@ const ItemDisplay: FC<IQuarkProps<IItemDisplay>> = ({
   const domBlockContent = useRef<HTMLDivElement>(null);
 
   const curateItem = useMemo<ICuratedCompleteItem | null>(() => {
-    if (itemTypes.length === 0 || item === undefined) {
+    if (itemTypes.length === 0) {
       return null;
     }
     const {

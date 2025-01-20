@@ -48,7 +48,7 @@ const Node: FC<INode> = ({
   const { t } = useTranslation();
   const { character } = useGlobalVars();
   const {
-    node: nodeElt, i18n
+    node: nodeElt
   } = node;
   const {
     skills, stats, charParams
@@ -80,7 +80,10 @@ const Node: FC<INode> = ({
       value,
       charParam:
         charParams.length > 0
-          ? charParams.find(({ charParam: globalCharParams }) => globalCharParams._id === charParam)
+          ? charParams.find(
+              (
+                { charParam: globalCharParams }
+              ) => globalCharParams._id === charParam)
           : undefined
     }));
 
@@ -121,7 +124,7 @@ const Node: FC<INode> = ({
   ]);
 
   const noContent
-    = (content.summary === null || content.summary === '<p class="ap"></p>')
+    = (content.summary === '<p class="ap"></p>')
       && (content.quote === undefined || content.quote === '');
 
   return (
@@ -157,7 +160,7 @@ const Node: FC<INode> = ({
             <div className="node__content__main__infos">
               <Ap>{`${t('terms.node.rank')}: ${nodeElt.rank}`}</Ap>
             </div>
-            {content.summary !== null && content.summary !== '<p class="ap"></p>'
+            {content.summary !== '<p class="ap"></p>'
               ? (
                   <RichTextElement
                     className="node__content__main__text"
@@ -192,7 +195,7 @@ const Node: FC<INode> = ({
                     <Ap>
                       {curateStringDamage(
                         action.summary,
-                        action.damages,
+                        action.damages ?? '',
                         action.offsetSkill ?? '',
                         character
                       )}

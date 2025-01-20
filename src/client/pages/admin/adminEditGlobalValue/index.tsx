@@ -23,7 +23,8 @@ import {
 } from '../../../molecules';
 import { Alert } from '../../../organisms';
 
-import type { IGlobalValue } from '../../../types';
+import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
+import type { ErrorResponseType, IGlobalValue } from '../../../types';
 
 import './adminEditGlobalValue.scss';
 
@@ -49,18 +50,20 @@ const AdminEditGlobalValue: FC = () => {
 
   const calledApi = useRef(false);
 
-  const [globalValueData, setGlobalValueData] = useState<IGlobalValue | null>(null);
+  const [globalValueData, setGlobalValueData]
+  = useState<IGlobalValue | null>(null);
 
-  const createDefaultData = useCallback((globalValueData: IGlobalValue | null) => {
-    if (globalValueData == null) {
-      return {};
-    }
-    const defaultData: Partial<FormValues> = {};
-    defaultData.name = globalValueData.name;
-    defaultData.value = globalValueData.value;
+  const createDefaultData = useCallback(
+    (globalValueData: IGlobalValue | null) => {
+      if (globalValueData == null) {
+        return {};
+      }
+      const defaultData: Partial<FormValues> = {};
+      defaultData.name = globalValueData.name;
+      defaultData.value = globalValueData.value;
 
-    return defaultData;
-  }, []);
+      return defaultData;
+    }, []);
 
   const {
     handleSubmit,
@@ -77,7 +80,7 @@ const AdminEditGlobalValue: FC = () => {
     ({
       name, value
     }) => {
-      if (name === null || api === undefined) {
+      if (api === undefined) {
         return;
       }
 
@@ -126,7 +129,7 @@ const AdminEditGlobalValue: FC = () => {
   );
 
   const onAskDelete = useCallback(() => {
-    if (api === undefined || confMessageEvt === null) {
+    if (api === undefined) {
       return;
     }
     setConfirmContent(
@@ -180,9 +183,11 @@ const AdminEditGlobalValue: FC = () => {
     );
   }, [
     api,
-    confMessageEvt,
+    setConfirmContent,
     t,
     globalValueData?.name,
+    addConfirmEventListener,
+    removeConfirmEventListener,
     id,
     getNewId,
     createAlert,

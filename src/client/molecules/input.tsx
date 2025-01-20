@@ -1,11 +1,15 @@
 import React, {
+  type ChangeEvent,
   useState, type FC
 } from 'react';
 
 import { Controller } from 'react-hook-form';
 
 import {
-  Aerror, Ainput, Alabel, Atextarea
+  Aerror,
+  Ainput,
+  Alabel,
+  Atextarea
 } from '../atoms';
 
 import type { IReactHookFormInputs } from '../types/form';
@@ -29,6 +33,8 @@ interface IInput extends IReactHookFormInputs {
   label?: string
   /** Is the field editable */
   readOnly?: boolean
+  /** Triggered when the selected field is changing */
+  onChange?: (val: ChangeEvent<HTMLTextAreaElement>) => void
   /** Is the field hidden */
   hidden?: boolean
   /** Allow the user's password manager to automatically enter the password */
@@ -44,6 +50,7 @@ const Input: FC<IInput> = ({
   rules,
   type = 'text',
   size = 'medium',
+  onChange: exteriorChange,
   className,
   placeholder,
   label,
@@ -90,7 +97,12 @@ const Input: FC<IInput> = ({
                       placeholder={placeholder}
                       className="input__field"
                       autoComplete={autoComplete ?? undefined}
-                      onChange={onChange}
+                      onChange={(e) => {
+                        onChange(e);
+                        if (exteriorChange !== undefined) {
+                          exteriorChange(e);
+                        }
+                      }}
                       value={value ?? ''}
                       onFocus={() => {
                         setFocus(true);

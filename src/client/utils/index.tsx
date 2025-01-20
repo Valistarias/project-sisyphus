@@ -366,7 +366,7 @@ export const countTrueInArray = (arr: boolean[]): number =>
 export const getValuesFromGlobalValues = (
   namesSent: string[],
   globalValues: IGlobalValue[]
-): Record<string, number> => {
+): Record<string, number | undefined> => {
   const elt: Record<string, number> = {};
   namesSent.forEach((nameSent) => {
     elt[nameSent] = Number(

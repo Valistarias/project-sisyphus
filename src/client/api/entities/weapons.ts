@@ -9,24 +9,11 @@ interface IWeaponPayload {
 }
 
 export default class Weapons
-  extends Entity<IWeapon, ICuratedWeapon> {
-  get: (payload: IWeaponPayload) => Promise<ICuratedWeapon>;
+  extends Entity<IWeaponPayload, IWeapon, ICuratedWeapon> {
   getStarters: () => Promise<ICuratedWeapon[]>;
 
   constructor() {
     super('weapons');
-
-    this.get = async payload =>
-      await new Promise((resolve, reject) => {
-        axios
-          .get(`${this.url}/single/`, { params: payload })
-          .then((res) => {
-            resolve(res.data as ICuratedWeapon);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
 
     this.getStarters = async () =>
       await new Promise((resolve, reject) => {
