@@ -17,7 +17,8 @@ import {
   Aerror, Ap, Atitle
 } from '../../atoms';
 import {
-  Button, Input
+  Button, Input,
+  LinkButton
 } from '../../molecules';
 import { Alert } from '../../organisms';
 
@@ -107,7 +108,13 @@ const Signup: FC = () => {
     <div className="signup">
       <div className="signup__main">
         <Atitle level={1}>{t('signup.title', { ns: 'pages' })}</Atitle>
-        <form className="signup__main__form" onSubmit={() => handleSubmit(onSubmit)} noValidate>
+        <form
+          className="signup__main__form"
+          onSubmit={(evt) => {
+            void handleSubmit(onSubmit)(evt);
+          }}
+          noValidate
+        >
           {errors.root?.serverError.message !== undefined
             ? (
                 <Aerror>{errors.root.serverError.message}</Aerror>
@@ -160,9 +167,9 @@ const Signup: FC = () => {
 
           <div className="signup__main__buttons">
             <Button type="submit">{t('signup.formCTA', { ns: 'pages' })}</Button>
-            <Button href="/login" theme="text-only">
+            <LinkButton href="/login" theme="text-only">
               {t('signup.loginCTA', { ns: 'pages' })}
-            </Button>
+            </LinkButton>
           </div>
         </form>
       </div>

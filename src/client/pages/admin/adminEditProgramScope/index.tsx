@@ -317,7 +317,9 @@ const AdminEditProgramScope: FC = () => {
       `)}
     >
       <form
-        onSubmit={() => handleSubmit(onSaveProgramScope)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveProgramScope)(evt);
+        }}
         noValidate
         className="adminEditProgramScope__content"
       >

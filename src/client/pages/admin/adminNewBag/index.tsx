@@ -193,7 +193,13 @@ const AdminNewBag: FC = () => {
 
   return (
     <div className="adminNewBag">
-      <form className="adminNewBag__content" onSubmit={() => handleSubmit(onSaveBag)} noValidate>
+      <form
+        className="adminNewBag__content"
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveBag)(evt);
+        }}
+        noValidate
+      >
         <Atitle level={1}>{t('adminNewBag.title', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError.message !== undefined
           ? (

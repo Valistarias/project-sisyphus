@@ -19,7 +19,7 @@ import invariant from 'tiny-invariant';
 import {
   Ali, Atitle, Aul
 } from '../atoms';
-import { Button } from '../molecules';
+import { LinkButton } from '../molecules';
 
 import type {
   BaseEventPayload,
@@ -183,9 +183,9 @@ const DragList: FC<IDragList> = ({
         </Atitle>
         {singleData.button !== undefined
           ? (
-              <Button size="small" href={singleData.button.href}>
+              <LinkButton size="small" href={singleData.button.href}>
                 {singleData.button.content}
-              </Button>
+              </LinkButton>
             )
           : null}
       </DragListCard>

@@ -14,7 +14,7 @@ import {
 import {
   Ap, Atitle
 } from '../../../atoms';
-import { Button } from '../../../molecules';
+import { Button, LinkButton } from '../../../molecules';
 import { Alert } from '../../../organisms';
 import { ErrorPage } from '../../index';
 
@@ -85,9 +85,9 @@ const JoinCampaign: FC = () => {
       return (
         <>
           <Ap>{t('joinCampaign.alreadyOwner', { ns: 'pages' })}</Ap>
-          <Button href={`/campaign/${campaign._id}`}>
+          <LinkButton href={`/campaign/${campaign._id}`}>
             {t('joinCampaign.openCTA', { ns: 'pages' })}
-          </Button>
+          </LinkButton>
         </>
       );
     }
@@ -97,9 +97,9 @@ const JoinCampaign: FC = () => {
       return (
         <>
           <Ap>{t('joinCampaign.alreadyPlayer', { ns: 'pages' })}</Ap>
-          <Button href={`/campaign/${campaign._id}`}>
+          <LinkButton href={`/campaign/${campaign._id}`}>
             {t('joinCampaign.openCTA', { ns: 'pages' })}
-          </Button>
+          </LinkButton>
         </>
       );
     }

@@ -3,7 +3,7 @@ import React, { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Atitle } from '../../atoms';
-import { Button } from '../../molecules';
+import { LinkButton } from '../../molecules';
 
 import './error.scss';
 
@@ -15,9 +15,9 @@ const Error: FC = () => {
       <Atitle className="error__title" level={1}>
         {t('error.title', { ns: 'pages' })}
       </Atitle>
-      <Button size="large" theme="afterglow" href="/">
+      <LinkButton size="large" theme="afterglow" href="/">
         {t('error.cta', { ns: 'pages' })}
-      </Button>
+      </LinkButton>
     </div>
   );
 };

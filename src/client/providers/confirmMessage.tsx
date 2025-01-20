@@ -147,7 +147,9 @@ export const ConfirmMessageProvider: FC<ConfirmMessageProviderProps> = (
         <div className="confirm-message__shadow" onClick={onAbort} />
         <form
           className="confirm-message__window"
-          onSubmit={() => handleSubmit(onConfirmAction)}
+          onSubmit={(evt) => {
+            void handleSubmit(onConfirmAction)(evt);
+          }}
           noValidate
         >
           <Atitle>{confirmData?.title ?? ''}</Atitle>

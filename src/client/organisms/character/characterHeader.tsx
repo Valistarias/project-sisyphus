@@ -296,7 +296,9 @@ const CharacterHeader: FC<ICharacterHeader> = ({
           <div className="char-header__health">
             <form
               className="char-header__health__field"
-              onSubmit={() => handleSubmitHp(onSaveHp)}
+              onSubmit={(evt) => {
+                void handleSubmitHp(onSaveHp)(evt);
+              }}
               noValidate
             >
               <Ap className="char-header__health__field__term">{t('terms.character.hp.short')}</Ap>
@@ -327,7 +329,9 @@ const CharacterHeader: FC<ICharacterHeader> = ({
           <div className="char-header__karma">
             <form
               className="char-header__karma__field"
-              onSubmit={() => handleSubmitKarma(onSaveKarma)}
+              onSubmit={(evt) => {
+                void handleSubmitKarma(onSaveKarma)(evt);
+              }}
               noValidate
             >
               <Ap className="char-header__karma__field__term">

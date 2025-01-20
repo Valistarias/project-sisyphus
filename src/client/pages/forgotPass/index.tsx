@@ -89,7 +89,13 @@ const ForgotPassword: FC = () => {
   return (
     <div className="forgot-pass">
       <Atitle level={1}>{t('forgotPass.title', { ns: 'pages' })}</Atitle>
-      <form className="forgot-pass__form" onSubmit={() => handleSubmit(onSubmit)} noValidate>
+      <form
+        className="forgot-pass__form"
+        onSubmit={(evt) => {
+          void handleSubmit(onSubmit)(evt);
+        }}
+        noValidate
+      >
         {errors.root?.serverError.message !== undefined
           ? (
               <Aerror>{errors.root.serverError.message}</Aerror>

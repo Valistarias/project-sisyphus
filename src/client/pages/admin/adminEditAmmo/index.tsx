@@ -336,7 +336,13 @@ const AdminEditAmmo: FC = () => {
         ${displayInt ? 'adminEditAmmo--int-visible' : ''}
       `)}
     >
-      <form className="adminEditAmmo__content" onSubmit={() => handleSubmit(onSaveAmmo)} noValidate>
+      <form
+        className="adminEditAmmo__content"
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveAmmo)(evt);
+        }}
+        noValidate
+      >
         <div className="adminEditAmmo__head">
           <Atitle className="adminEditAmmo__head" level={1}>
             {ammoData?.ammo.title ?? ''}

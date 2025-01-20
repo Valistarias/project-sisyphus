@@ -144,7 +144,9 @@ const AdminNewDamageType: FC = () => {
     <div className="adminNewDamageType">
       <form
         className="adminNewDamageType__content"
-        onSubmit={() => handleSubmit(onSaveDamageType)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveDamageType)(evt);
+        }}
         noValidate
       >
         <Atitle level={1}>{t('adminNewDamageType.title', { ns: 'pages' })}</Atitle>

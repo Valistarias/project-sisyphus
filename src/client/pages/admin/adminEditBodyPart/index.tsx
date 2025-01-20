@@ -20,7 +20,8 @@ import {
   Aerror, Ap, Atitle
 } from '../../../atoms';
 import {
-  Button, Input
+  Button, Input,
+  LinkButton
 } from '../../../molecules';
 import {
   Alert, RichTextElement, completeRichTextElementExtentions
@@ -320,7 +321,9 @@ const AdminEditBodyPart: FC = () => {
       `)}
     >
       <form
-        onSubmit={() => handleSubmit(onSaveBodyPart)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveBodyPart)(evt);
+        }}
         noValidate
         className="adminEditBodyPart__content"
       >
@@ -330,9 +333,9 @@ const AdminEditBodyPart: FC = () => {
             {t('adminEditBodyPart.delete', { ns: 'pages' })}
           </Button>
         </div>
-        <Button className="adminEditBodyPart__return-btn" href="/admin/bodyparts" size="small">
+        <LinkButton className="adminEditBodyPart__return-btn" href="/admin/bodyparts" size="small">
           {t('adminEditBodyPart.return', { ns: 'pages' })}
-        </Button>
+        </LinkButton>
         <Atitle level={2}>{t('adminEditBodyPart.edit', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError.message !== undefined
           ? (

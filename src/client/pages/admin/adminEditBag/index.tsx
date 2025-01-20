@@ -20,7 +20,7 @@ import {
   Aerror, Ap, Atitle
 } from '../../../atoms';
 import {
-  Button, Input, SmartSelect
+  Button, Input, LinkButton, SmartSelect
 } from '../../../molecules';
 import {
   Alert, RichTextElement, completeRichTextElementExtentions
@@ -339,7 +339,13 @@ const AdminEditBag: FC = () => {
         ${displayInt ? 'adminEditBag--int-visible' : ''}
       `)}
     >
-      <form className="adminEditBag__content" onSubmit={() => handleSubmit(onSaveBag)} noValidate>
+      <form
+        className="adminEditBag__content"
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveBag)(evt);
+        }}
+        noValidate
+      >
         <div className="adminEditBag__head">
           <Atitle className="adminEditBag__head" level={1}>
             {bagData?.bag.title ?? ''}
@@ -348,9 +354,9 @@ const AdminEditBag: FC = () => {
             {t('adminEditBag.delete', { ns: 'pages' })}
           </Button>
         </div>
-        <Button className="adminEditBag__return-btn" href="/admin/bags" size="small">
+        <LinkButton className="adminEditBag__return-btn" href="/admin/bags" size="small">
           {t('adminEditBag.return', { ns: 'pages' })}
-        </Button>
+        </LinkButton>
         {errors.root?.serverError.message !== undefined
           ? (
               <Aerror>{errors.root.serverError.message}</Aerror>

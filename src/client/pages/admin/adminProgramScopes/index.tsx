@@ -9,7 +9,7 @@ import { useGlobalVars } from '../../../providers';
 import {
   Ali, Atitle, Aul
 } from '../../../atoms';
-import { Button } from '../../../molecules';
+import { LinkButton } from '../../../molecules';
 
 import { classTrim } from '../../../utils';
 
@@ -35,9 +35,9 @@ const AdminProgramScopes: FC = () => {
             key={programScope._id}
           >
             <Atitle level={3}>{programScope.title}</Atitle>
-            <Button href={`/admin/programscope/${programScope._id}`}>
+            <LinkButton href={`/admin/programscope/${programScope._id}`}>
               {t('adminProgramScopes.editProgramScope', { ns: 'pages' })}
-            </Button>
+            </LinkButton>
           </Ali>
         ))}
       </Aul>
@@ -51,9 +51,9 @@ const AdminProgramScopes: FC = () => {
         <div className="adminProgramScopes__program-scopes">
           <Atitle level={2}>{t('adminProgramScopes.list', { ns: 'pages' })}</Atitle>
           <div className="adminProgramScopes__program-scopes__list">{programScopesList}</div>
-          <Button href="/admin/programscope/new">
+          <LinkButton href="/admin/programscope/new">
             {t('adminNewProgramScope.title', { ns: 'pages' })}
-          </Button>
+          </LinkButton>
         </div>
       </div>
     </div>

@@ -140,7 +140,9 @@ const AdminNewCyberFrame: FC = () => {
     <div className="adminNewCyberFrame">
       <form
         className="adminNewCyberFrame__content"
-        onSubmit={() => handleSubmit(onSaveCyberFrame)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveCyberFrame)(evt);
+        }}
         noValidate
       >
         <Atitle level={1}>{t('adminNewCyberFrame.title', { ns: 'pages' })}</Atitle>

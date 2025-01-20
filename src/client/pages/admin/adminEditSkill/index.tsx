@@ -20,7 +20,7 @@ import {
   Aerror, Ap, Atitle
 } from '../../../atoms';
 import {
-  Button, Input, NodeTree, SmartSelect, type ISingleValueSelect
+  Button, Input, LinkButton, NodeTree, SmartSelect, type ISingleValueSelect
 } from '../../../molecules';
 import {
   Alert, RichTextElement, completeRichTextElementExtentions
@@ -364,16 +364,22 @@ const AdminEditSkill: FC = () => {
         ${displayInt ? 'adminEditSkill--int-visible' : ''}
       `)}
     >
-      <form onSubmit={() => handleSubmit(onSaveSkill)} noValidate className="adminEditSkill__content">
+      <form
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveSkill)(evt);
+        }}
+        noValidate
+        className="adminEditSkill__content"
+      >
         <div className="adminEditSkill__head">
           <Atitle level={1}>{skillData?.skill.title}</Atitle>
           <Button onClick={onAskDelete} color="error">
             {t('adminEditSkill.delete', { ns: 'pages' })}
           </Button>
         </div>
-        <Button className="adminEditSkill__return-btn" href="/admin/skills" size="small">
+        <LinkButton className="adminEditSkill__return-btn" href="/admin/skills" size="small">
           {t('adminEditSkill.return', { ns: 'pages' })}
-        </Button>
+        </LinkButton>
         <Atitle level={2}>{t('adminEditSkill.edit', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError.message !== undefined
           ? (
@@ -468,12 +474,12 @@ const AdminEditSkill: FC = () => {
             />
           </div>
           <div className="adminEditSkill__nodes__btns">
-            <Button href={`/admin/node/new?skillId=${id}`}>
+            <LinkButton href={`/admin/node/new?skillId=${id}`}>
               {t('adminNewNode.title', { ns: 'pages' })}
-            </Button>
-            <Button href={`/admin/skillbranch/new?skillId=${id}`}>
+            </LinkButton>
+            <LinkButton href={`/admin/skillbranch/new?skillId=${id}`}>
               {t('adminNewSkillBranch.title', { ns: 'pages' })}
-            </Button>
+            </LinkButton>
           </div>
         </div>
         <Button type="submit">{t('adminEditSkill.button', { ns: 'pages' })}</Button>

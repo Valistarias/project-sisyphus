@@ -136,7 +136,13 @@ const AdminNewPage: FC = () => {
 
   return (
     <div className="adminNewPage">
-      <form onSubmit={() => handleSubmit(onSavePage)} noValidate className="adminNewPage__content">
+      <form
+        onSubmit={(evt) => {
+          void handleSubmit(onSavePage)(evt);
+        }}
+        noValidate
+        className="adminNewPage__content"
+      >
         <Atitle level={1}>{t('adminNewPage.title', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError.message !== undefined
           ? (

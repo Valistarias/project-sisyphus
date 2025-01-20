@@ -103,7 +103,9 @@ const AdminNewItemType: FC = () => {
     <div className="adminNewItemType">
       <form
         className="adminNewItemType__content"
-        onSubmit={() => handleSubmit(onSaveItemType)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveItemType)(evt);
+        }}
         noValidate
       >
         <Atitle level={1}>{t('adminNewItemType.title', { ns: 'pages' })}</Atitle>

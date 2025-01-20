@@ -245,7 +245,13 @@ const AdminNewNPC: FC = () => {
         ${displayInt ? 'adminNewNPC--int-visible' : ''}
       `)}
     >
-      <form className="adminNewNPC__content" onSubmit={() => handleSubmit(onSaveNPC)} noValidate>
+      <form
+        className="adminNewNPC__content"
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveNPC)(evt);
+        }}
+        noValidate
+      >
         <Atitle className="adminNewNPC__head" level={1}>
           {t('adminNewNPC.title', { ns: 'pages' })}
         </Atitle>

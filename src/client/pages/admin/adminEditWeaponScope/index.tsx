@@ -20,7 +20,8 @@ import {
   Aerror, Ap, Atitle
 } from '../../../atoms';
 import {
-  Button, Input
+  Button, Input,
+  LinkButton
 } from '../../../molecules';
 import {
   Alert, RichTextElement, completeRichTextElementExtentions
@@ -317,7 +318,9 @@ const AdminEditWeaponScope: FC = () => {
       `)}
     >
       <form
-        onSubmit={() => handleSubmit(onSaveWeaponScope)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveWeaponScope)(evt);
+        }}
         noValidate
         className="adminEditWeaponScope__content"
       >
@@ -327,13 +330,13 @@ const AdminEditWeaponScope: FC = () => {
             {t('adminEditWeaponScope.delete', { ns: 'pages' })}
           </Button>
         </div>
-        <Button
+        <LinkButton
           className="adminEditWeaponScope__return-btn"
           href="/admin/weaponscopes"
           size="small"
         >
           {t('adminEditWeaponScope.return', { ns: 'pages' })}
-        </Button>
+        </LinkButton>
         <Atitle level={2}>{t('adminEditWeaponScope.edit', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError.message !== undefined
           ? (

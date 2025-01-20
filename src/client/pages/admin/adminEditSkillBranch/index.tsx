@@ -297,7 +297,9 @@ const AdminEditSkillBranch: FC = () => {
   return (
     <div className="adminEditSkillBranch">
       <form
-        onSubmit={() => handleSubmit(onSaveSkillBranch)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveSkillBranch)(evt);
+        }}
         noValidate
         className="adminEditSkillBranch__content"
       >

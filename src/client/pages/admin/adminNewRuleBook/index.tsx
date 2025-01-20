@@ -167,7 +167,9 @@ const AdminNewRuleBooks: FC = () => {
     <div className="adminNewRuleBook">
       <form
         className="adminNewRuleBook__content"
-        onSubmit={() => handleSubmit(onSaveRuleBook)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveRuleBook)(evt);
+        }}
         noValidate
       >
         <Atitle level={1}>{t('adminNewRuleBook.title', { ns: 'pages' })}</Atitle>

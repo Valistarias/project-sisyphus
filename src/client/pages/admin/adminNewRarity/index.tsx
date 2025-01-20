@@ -144,7 +144,13 @@ const AdminNewRarity: FC = () => {
 
   return (
     <div className="adminNewRarity">
-      <form className="adminNewRarity__content" onSubmit={() => handleSubmit(onSaveRarity)} noValidate>
+      <form
+        className="adminNewRarity__content"
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveRarity)(evt);
+        }}
+        noValidate
+      >
         <Atitle level={1}>{t('adminNewRarity.title', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError.message !== undefined
           ? (

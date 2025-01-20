@@ -11,7 +11,7 @@ import {
 import {
   Ali, Ap, Atitle, Aul
 } from '../../../atoms';
-import { Button } from '../../../molecules';
+import { LinkButton } from '../../../molecules';
 import { Alert } from '../../../organisms';
 
 import type { ICuratedAmmo } from '../../../types';
@@ -48,9 +48,9 @@ const AdminAmmos: FC = () => {
             key={ammo._id}
           >
             <Atitle level={3}>{ammo.title}</Atitle>
-            <Button href={`/admin/ammo/${ammo._id}`}>
+            <LinkButton href={`/admin/ammo/${ammo._id}`}>
               {t('adminAmmos.editAmmo', { ns: 'pages' })}
-            </Button>
+            </LinkButton>
           </Ali>
         ))}
       </Aul>
@@ -91,7 +91,7 @@ const AdminAmmos: FC = () => {
         <div className="adminAmmos__ammos">
           <Atitle level={2}>{t('adminAmmos.list', { ns: 'pages' })}</Atitle>
           <div className="adminAmmos__ammos__list">{ammosList}</div>
-          <Button href="/admin/ammo/new">{t('adminNewAmmo.title', { ns: 'pages' })}</Button>
+          <LinkButton href="/admin/ammo/new">{t('adminNewAmmo.title', { ns: 'pages' })}</LinkButton>
         </div>
       </div>
     </div>

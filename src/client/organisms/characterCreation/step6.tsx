@@ -146,7 +146,9 @@ const CharacterCreationStep6: FC<ICharacterCreationStep6> = (
       </Ap>
       <form
         className="characterCreation-step6__form"
-        onSubmit={() => handleSubmit(onSaveIdentification)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveIdentification)(evt);
+        }}
         noValidate
       >
         <div className="characterCreation-step6__form__basics">

@@ -20,7 +20,8 @@ import {
   Aerror, Ap, Atitle
 } from '../../../atoms';
 import {
-  Button, Input
+  Button, Input,
+  LinkButton
 } from '../../../molecules';
 import {
   Alert, RichTextElement, completeRichTextElementExtentions
@@ -314,7 +315,9 @@ const AdminEditArmorType: FC = () => {
       `)}
     >
       <form
-        onSubmit={() => handleSubmit(onSaveArmorType)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveArmorType)(evt);
+        }}
         noValidate
         className="adminEditArmorType__content"
       >
@@ -324,9 +327,9 @@ const AdminEditArmorType: FC = () => {
             {t('adminEditArmorType.delete', { ns: 'pages' })}
           </Button>
         </div>
-        <Button className="adminEditArmorType__return-btn" href="/admin/armortypes" size="small">
+        <LinkButton className="adminEditArmorType__return-btn" href="/admin/armortypes" size="small">
           {t('adminEditArmorType.return', { ns: 'pages' })}
-        </Button>
+        </LinkButton>
         <Atitle level={2}>{t('adminEditArmorType.edit', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError.message !== undefined
           ? (

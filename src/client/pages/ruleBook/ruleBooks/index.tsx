@@ -9,7 +9,7 @@ import { useGlobalVars } from '../../../providers';
 import {
   Ali, Ap, Atitle, Aul
 } from '../../../atoms';
-import { Button } from '../../../molecules';
+import { LinkButton } from '../../../molecules';
 
 import { classTrim } from '../../../utils';
 
@@ -43,9 +43,9 @@ const RuleBooks: FC = () => {
                 ruleBook.archived ? t('terms.ruleBook.archived') : ''
               } ${ruleBook.draft ? t('terms.ruleBook.draft') : ''}`}
             </Ap>
-            <Button href={`/rulebook/${ruleBook._id}`}>
+            <LinkButton href={`/rulebook/${ruleBook._id}`}>
               {t('ruleBooks.openRuleBook', { ns: 'pages' })}
-            </Button>
+            </LinkButton>
           </Ali>
         ))}
       </Aul>

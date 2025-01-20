@@ -9,7 +9,7 @@ import { useGlobalVars } from '../../../providers';
 import {
   Ali, Atitle, Aul
 } from '../../../atoms';
-import { Button } from '../../../molecules';
+import { LinkButton } from '../../../molecules';
 
 import { classTrim } from '../../../utils';
 
@@ -35,9 +35,9 @@ const AdminCharParams: FC = () => {
             key={charParam._id}
           >
             <Atitle level={3}>{charParam.title}</Atitle>
-            <Button href={`/admin/charParam/${charParam._id}`}>
+            <LinkButton href={`/admin/charParam/${charParam._id}`}>
               {t('adminCharParams.editCharParam', { ns: 'pages' })}
-            </Button>
+            </LinkButton>
           </Ali>
         ))}
       </Aul>
@@ -51,9 +51,9 @@ const AdminCharParams: FC = () => {
         <div className="adminCharParams__books">
           <Atitle level={2}>{t('adminCharParams.list', { ns: 'pages' })}</Atitle>
           <div className="adminCharParams__books__list">{charParamsList}</div>
-          <Button href="/admin/charParam/new">
+          <LinkButton href="/admin/charParam/new">
             {t('adminNewCharParam.title', { ns: 'pages' })}
-          </Button>
+          </LinkButton>
         </div>
       </div>
     </div>

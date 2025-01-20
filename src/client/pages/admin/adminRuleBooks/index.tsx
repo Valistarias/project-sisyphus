@@ -9,7 +9,7 @@ import { useGlobalVars } from '../../../providers';
 import {
   Ali, Ap, Atitle, Aul
 } from '../../../atoms';
-import { Button } from '../../../molecules';
+import { LinkButton } from '../../../molecules';
 
 import AdminRuleBookTypes from './adminRuleBookTypes';
 
@@ -46,9 +46,9 @@ const AdminRuleBooks: FC = () => {
                 ruleBook.archived ? t('terms.ruleBook.archived') : ''
               } ${ruleBook.draft ? t('terms.ruleBook.draft') : ''}`}
             </Ap>
-            <Button href={`/admin/rulebook/${ruleBook._id}`}>
+            <LinkButton href={`/admin/rulebook/${ruleBook._id}`}>
               {t('adminRuleBooks.editRuleBook', { ns: 'pages' })}
-            </Button>
+            </LinkButton>
           </Ali>
         ))}
       </Aul>
@@ -62,7 +62,7 @@ const AdminRuleBooks: FC = () => {
         <div className="adminRuleBooks__books">
           <Atitle level={2}>{t('adminRuleBooks.list', { ns: 'pages' })}</Atitle>
           <div className="adminRuleBooks__books__list">{ruleBookList}</div>
-          <Button href="/admin/rulebook/new">{t('adminNewRuleBook.title', { ns: 'pages' })}</Button>
+          <LinkButton href="/admin/rulebook/new">{t('adminNewRuleBook.title', { ns: 'pages' })}</LinkButton>
         </div>
         <AdminRuleBookTypes />
       </div>

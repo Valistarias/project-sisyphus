@@ -310,7 +310,9 @@ const AdminEditCyberFrameBranch: FC = () => {
   return (
     <div className="adminEditCyberFrameBranch">
       <form
-        onSubmit={() => handleSubmit(onSaveCyberFrameBranch)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveCyberFrameBranch)(evt);
+        }}
         noValidate
         className="adminEditCyberFrameBranch__content"
       >

@@ -4,15 +4,16 @@ import React, {
 
 import { Quark } from '../quark';
 
-import Button, { type IButton } from './button';
+import LinkButton, { type ILinkButton } from './linkButton';
 
 import { classTrim } from '../utils';
 
 import './hintButton.scss';
 
-export type IHintButton = IButton & {
+export type IHintButton = ILinkButton & {
   /** The content of the hint */
-  hint: ReactNode };
+  hint: ReactNode
+};
 
 const HintButton: FC<IHintButton> = ({
   className, hint, ...rest
@@ -70,7 +71,7 @@ const HintButton: FC<IHintButton> = ({
         ${className ?? ''}
       `)}
     >
-      <Button
+      <LinkButton
         {...rest}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}

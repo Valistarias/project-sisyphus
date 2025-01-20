@@ -147,7 +147,13 @@ const AdminTestDiceComp: FC = () => {
   return (
     <div className="adminTestDiceComp">
       <Atitle level={1}>{t('adminTestDiceComp.title', { ns: 'pages' })}</Atitle>
-      <form className="adminTestDiceComp__form" onSubmit={() => handleSubmit(onSubmit)} noValidate>
+      <form
+        className="adminTestDiceComp__form"
+        onSubmit={(evt) => {
+          void handleSubmit(onSubmit)(evt);
+        }}
+        noValidate
+      >
         <Input
           control={control}
           inputName="diceFormula"

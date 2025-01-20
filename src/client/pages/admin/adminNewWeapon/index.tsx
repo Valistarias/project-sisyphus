@@ -431,7 +431,13 @@ const AdminNewWeapon: FC = () => {
 
   return (
     <div className="adminNewWeapon">
-      <form className="adminNewWeapon__content" onSubmit={() => handleSubmit(onSaveWeapon)} noValidate>
+      <form
+        className="adminNewWeapon__content"
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveWeapon)(evt);
+        }}
+        noValidate
+      >
         <Atitle level={1}>{t('adminNewWeapon.title', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError.message !== undefined
           ? (

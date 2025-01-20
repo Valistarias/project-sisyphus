@@ -20,7 +20,7 @@ import {
   Aerror, Ap, Atitle
 } from '../../../atoms';
 import {
-  Button, Input, NodeTree, SmartSelect, type ISingleValueSelect
+  Button, Input, LinkButton, NodeTree, SmartSelect, type ISingleValueSelect
 } from '../../../molecules';
 import {
   Alert, RichTextElement, completeRichTextElementExtentions
@@ -367,7 +367,9 @@ const AdminEditCyberFrame: FC = () => {
       `)}
     >
       <form
-        onSubmit={() => handleSubmit(onSaveCyberFrame)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveCyberFrame)(evt);
+        }}
         noValidate
         className="adminEditCyberFrame__content"
       >
@@ -463,12 +465,12 @@ const AdminEditCyberFrame: FC = () => {
             />
           </div>
           <div className="adminEditCyberFrame__nodes__btns">
-            <Button href={`/admin/node/new?cyberFrameId=${id}`}>
+            <LinkButton href={`/admin/node/new?cyberFrameId=${id}`}>
               {t('adminNewNode.title', { ns: 'pages' })}
-            </Button>
-            <Button href={`/admin/cyberframebranch/new?cyberFrameId=${id}`}>
+            </LinkButton>
+            <LinkButton href={`/admin/cyberframebranch/new?cyberFrameId=${id}`}>
               {t('adminNewCyberFrameBranch.title', { ns: 'pages' })}
-            </Button>
+            </LinkButton>
           </div>
         </div>
         <Button type="submit">{t('adminEditCyberFrame.button', { ns: 'pages' })}</Button>

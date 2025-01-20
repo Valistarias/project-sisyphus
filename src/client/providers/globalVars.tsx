@@ -385,7 +385,6 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = (
           loadActionTypes();
           loadArmorTypes();
           loadBodyParts();
-          loadCampaigns();
           loadCharParams();
           loadCyberFrames();
           loadDamageTypes();
@@ -401,6 +400,9 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = (
           loadWeaponScopes();
           loadWeaponStyles();
           loadWeaponTypes();
+          if (Object.keys(data).length > 0) {
+            loadCampaigns();
+          }
           setLoading(false);
         })
         .catch((err) => {

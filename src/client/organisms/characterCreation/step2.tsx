@@ -320,7 +320,9 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = (
       </Ap>
       <form
         className="characterCreation-step2__stats"
-        onSubmit={() => handleSubmit(onSaveStats)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveStats)(evt);
+        }}
         noValidate
       >
         {statSelectList()}

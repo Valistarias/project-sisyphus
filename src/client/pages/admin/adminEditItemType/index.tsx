@@ -248,7 +248,9 @@ const AdminEditItemType: FC = () => {
   return (
     <div className="adminEditItemType">
       <form
-        onSubmit={() => handleSubmit(onSaveItemType)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveItemType)(evt);
+        }}
         noValidate
         className="adminEditItemType__content"
       >

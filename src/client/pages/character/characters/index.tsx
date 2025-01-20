@@ -19,7 +19,7 @@ import holoBackground from '../../../assets/imgs/tvbg2.gif';
 import {
   Ali, Ap, Atitle, Aul, Avideo
 } from '../../../atoms';
-import { Button } from '../../../molecules';
+import { LinkButton } from '../../../molecules';
 import { Alert } from '../../../organisms';
 
 import type { ICharacter } from '../../../types';
@@ -109,13 +109,13 @@ const Characters: FC = () => {
             <Avideo className="characters__character-list__elt__img__animatedbg" video="logo" />
             {isReady
               ? (
-                  <Button
+                  <LinkButton
                     theme="text-only"
                     className="characters__character-list__elt__img__edit"
                     href={`/character/${character._id}/edit`}
                   >
                     {t('characters.editCharacter', { ns: 'pages' })}
-                  </Button>
+                  </LinkButton>
                 )
               : null}
           </div>
@@ -133,7 +133,7 @@ const Characters: FC = () => {
               : null}
           </div>
           <div className="characters__character-list__elt__buttons">
-            <Button
+            <LinkButton
               className="characters__character-list__elt__buttons__main"
               theme="afterglow"
               href={
@@ -143,7 +143,7 @@ const Characters: FC = () => {
               }
             >
               {t(isReady ? 'characters.openCharacter' : 'characters.continueCharacter', { ns: 'pages' })}
-            </Button>
+            </LinkButton>
           </div>
         </Ali>
       );
@@ -173,9 +173,9 @@ const Characters: FC = () => {
     <div className="characters">
       <div className="characters__header">
         <Atitle level={1}>{t('characters.title', { ns: 'pages' })}</Atitle>
-        <Button theme="afterglow" href="/character/new">
+        <LinkButton theme="afterglow" href="/character/new">
           {t('characters.create', { ns: 'pages' })}
-        </Button>
+        </LinkButton>
       </div>
       {characterList}
     </div>

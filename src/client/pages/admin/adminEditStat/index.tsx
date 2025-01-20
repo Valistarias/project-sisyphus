@@ -310,7 +310,13 @@ const AdminEditStat: FC = () => {
 
   return (
     <div className="adminEditStat">
-      <form onSubmit={() => handleSubmit(onSaveStat)} noValidate className="adminEditStat__content">
+      <form
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveStat)(evt);
+        }}
+        noValidate
+        className="adminEditStat__content"
+      >
         <div className="adminEditStat__head">
           <Atitle level={1}>{t('adminEditStat.title', { ns: 'pages' })}</Atitle>
           <Button onClick={onAskDelete} color="error">

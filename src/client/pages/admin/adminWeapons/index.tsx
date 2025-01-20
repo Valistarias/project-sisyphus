@@ -11,7 +11,7 @@ import {
 import {
   Ali, Ap, Atitle, Aul
 } from '../../../atoms';
-import { Button } from '../../../molecules';
+import { LinkButton } from '../../../molecules';
 import { Alert } from '../../../organisms';
 
 import type { ICuratedWeapon } from '../../../types';
@@ -47,9 +47,9 @@ const AdminWeapons: FC = () => {
             key={weapon._id}
           >
             <Atitle level={3}>{weapon.title}</Atitle>
-            <Button href={`/admin/weapon/${weapon._id}`}>
+            <LinkButton href={`/admin/weapon/${weapon._id}`}>
               {t('adminWeapons.editWeapon', { ns: 'pages' })}
-            </Button>
+            </LinkButton>
           </Ali>
         ))}
       </Aul>
@@ -90,7 +90,7 @@ const AdminWeapons: FC = () => {
         <div className="adminWeapons__weapons">
           <Atitle level={2}>{t('adminWeapons.list', { ns: 'pages' })}</Atitle>
           <div className="adminWeapons__weapons__list">{weaponsList}</div>
-          <Button href="/admin/weapon/new">{t('adminNewWeapon.title', { ns: 'pages' })}</Button>
+          <LinkButton href="/admin/weapon/new">{t('adminNewWeapon.title', { ns: 'pages' })}</LinkButton>
         </div>
       </div>
     </div>

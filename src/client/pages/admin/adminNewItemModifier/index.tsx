@@ -147,7 +147,9 @@ const AdminNewItemModifier: FC = () => {
     <div className="adminNewItemModifier">
       <form
         className="adminNewItemModifier__content"
-        onSubmit={() => handleSubmit(onSaveItemModifier)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveItemModifier)(evt);
+        }}
         noValidate
       >
         <Atitle level={1}>{t('adminNewItemModifier.title', { ns: 'pages' })}</Atitle>

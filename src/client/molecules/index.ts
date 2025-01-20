@@ -12,6 +12,7 @@ import Helper from './helper';
 import Highlight from './highlight';
 import HintButton from './hintButton';
 import Input from './input';
+import LinkButton from './linkButton';
 import Node from './node';
 import {
   NodeIconSelect, defaultNodeIcon
@@ -39,6 +40,7 @@ export {
   Highlight,
   HintButton,
   Input,
+  LinkButton,
   Node,
   NodeIconSelect,
   NodeTree,

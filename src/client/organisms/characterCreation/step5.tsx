@@ -706,7 +706,9 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
           </Atitle>
           <form
             className="characterCreation-step5__choices__form"
-            onSubmit={() => handleSubmit(onSaveItems)}
+            onSubmit={(evt) => {
+              void handleSubmit(onSaveItems)(evt);
+            }}
             noValidate
           >
             <div className="characterCreation-step5__choices__main__blocks">

@@ -187,7 +187,9 @@ const AdminNewCyberFrameBranch: FC = () => {
     <div className="adminNewCyberFrameBranch">
       <form
         className="adminNewCyberFrameBranch__content"
-        onSubmit={() => handleSubmit(onSaveCyberFrameBranch)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveCyberFrameBranch)(evt);
+        }}
         noValidate
       >
         <Atitle className="adminNewCyberFrameBranch__head" level={1}>

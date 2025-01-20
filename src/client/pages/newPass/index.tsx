@@ -122,7 +122,13 @@ const NewPassword: FC = () => {
   return (
     <div className="new-pass">
       <Atitle level={1}>{t('newPass.title', { ns: 'pages' })}</Atitle>
-      <form className="new-pass__form" onSubmit={() => handleSubmit(onSubmit)} noValidate>
+      <form
+        className="new-pass__form"
+        onSubmit={(evt) => {
+          void handleSubmit(onSubmit)(evt);
+        }}
+        noValidate
+      >
         {errors.root?.serverError.message !== undefined
           ? (
               <Aerror>{errors.root.serverError.message}</Aerror>

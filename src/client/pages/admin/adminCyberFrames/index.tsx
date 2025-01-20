@@ -9,7 +9,7 @@ import { useGlobalVars } from '../../../providers';
 import {
   Ali, Atitle, Aul
 } from '../../../atoms';
-import { Button } from '../../../molecules';
+import { LinkButton } from '../../../molecules';
 
 import { classTrim } from '../../../utils';
 
@@ -36,9 +36,9 @@ const AdminCyberFrames: FC = () => {
             key={cyberFrame._id}
           >
             <Atitle level={3}>{cyberFrame.title}</Atitle>
-            <Button href={`/admin/cyberframe/${cyberFrame._id}`}>
+            <LinkButton href={`/admin/cyberframe/${cyberFrame._id}`}>
               {t('adminCyberFrames.editCyberFrame', { ns: 'pages' })}
-            </Button>
+            </LinkButton>
           </Ali>
         ))}
       </Aul>
@@ -52,9 +52,9 @@ const AdminCyberFrames: FC = () => {
         <div className="adminCyberFrames__frames">
           <Atitle level={2}>{t('adminCyberFrames.list', { ns: 'pages' })}</Atitle>
           <div className="adminCyberFrames__frames__list">{cyberFramesList}</div>
-          <Button href="/admin/cyberframe/new">
+          <LinkButton href="/admin/cyberframe/new">
             {t('adminNewCyberFrame.title', { ns: 'pages' })}
-          </Button>
+          </LinkButton>
         </div>
       </div>
     </div>

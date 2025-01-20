@@ -506,7 +506,13 @@ const AdminNewItem: FC = () => {
         ${displayInt ? 'adminNewItem--int-visible' : ''}
       `)}
     >
-      <form className="adminNewItem__content" onSubmit={() => handleSubmit(onSaveItem)} noValidate>
+      <form
+        className="adminNewItem__content"
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveItem)(evt);
+        }}
+        noValidate
+      >
         <Atitle className="adminNewItem__head" level={1}>
           {t('adminNewItem.title', { ns: 'pages' })}
         </Atitle>

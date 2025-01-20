@@ -20,7 +20,8 @@ import {
   Aerror, Ap, Atitle
 } from '../../../atoms';
 import {
-  Button, Input
+  Button, Input,
+  LinkButton
 } from '../../../molecules';
 import {
   Alert, RichTextElement, completeRichTextElementExtentions
@@ -310,16 +311,22 @@ const AdminEditRarity: FC = () => {
         ${displayInt ? 'adminEditRarity--int-visible' : ''}
       `)}
     >
-      <form onSubmit={() => handleSubmit(onSaveRarity)} noValidate className="adminEditRarity__content">
+      <form
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveRarity)(evt);
+        }}
+        noValidate
+        className="adminEditRarity__content"
+      >
         <div className="adminEditRarity__head">
           <Atitle level={1}>{rarityData?.rarity.title}</Atitle>
           <Button onClick={onAskDelete} color="error">
             {t('adminEditRarity.delete', { ns: 'pages' })}
           </Button>
         </div>
-        <Button className="adminEditRarity__return-btn" href="/admin/rarities" size="small">
+        <LinkButton className="adminEditRarity__return-btn" href="/admin/rarities" size="small">
           {t('adminEditRarity.return', { ns: 'pages' })}
-        </Button>
+        </LinkButton>
         <Atitle level={2}>{t('adminEditRarity.edit', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError.message !== undefined
           ? (

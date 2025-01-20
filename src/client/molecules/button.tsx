@@ -2,10 +2,6 @@ import React from 'react';
 import type { FC } from 'react';
 
 import {
-  useNavigate
-} from 'react-router-dom';
-
-import {
   Abutton, Aicon, type IAButton, type typeIcons
 } from '../atoms';
 
@@ -22,8 +18,6 @@ export type IButton = IQuarkProps<IAButton> & {
   color?: 'primary' | 'secondary' | 'tertiary' | 'error'
   /** The size of the button */
   size?: 'xlarge' | 'large' | 'medium' | 'small'
-  /** The redirect (if there is) on a button click */
-  href?: string
   /** Similar to disabled, but without the opacity */
   unclickable?: boolean
   /** Is the button activated by any means ? */
@@ -51,7 +45,6 @@ const Button: FC<IButton> = ({
   disabled = false,
   unclickable = false,
   active = false,
-  href = null,
   className,
   children,
   icon,
@@ -59,12 +52,9 @@ const Button: FC<IButton> = ({
   onContextMenu,
   onMouseEnter,
   onMouseLeave
-}) => {
-  const navigate = useNavigate();
-
-  return (
-    <Abutton
-      className={classTrim(`
+}) => (
+  <Abutton
+    className={classTrim(`
         button
         button--${theme}
         button--${size}
@@ -76,25 +66,21 @@ const Button: FC<IButton> = ({
         ${active ? 'button--active' : ''}
         ${className ?? ''}
       `)}
-      onClick={(e: React.MouseEvent<HTMLElement>) => {
-        e.stopPropagation();
-        if (href !== null) {
-          void navigate(href);
-        }
-        if (onClick !== undefined) {
-          onClick(e);
-        }
-      }}
-      type={type}
-      disabled={disabled}
-      onContextMenu={onContextMenu}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-    >
-      {children !== undefined ? <span className="button__content">{children}</span> : null}
-      {icon !== undefined ? <Aicon className="button__icon" type={icon} /> : null}
-    </Abutton>
-  );
-};
+    onClick={(e: React.MouseEvent<HTMLElement>) => {
+      e.stopPropagation();
+      if (onClick !== undefined) {
+        onClick(e);
+      }
+    }}
+    type={type}
+    disabled={disabled}
+    onContextMenu={onContextMenu}
+    onMouseEnter={onMouseEnter}
+    onMouseLeave={onMouseLeave}
+  >
+    {children !== undefined ? <span className="button__content">{children}</span> : null}
+    {icon !== undefined ? <Aicon className="button__icon" type={icon} /> : null}
+  </Abutton>
+);
 
 export default Button;

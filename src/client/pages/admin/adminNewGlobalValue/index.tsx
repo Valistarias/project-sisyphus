@@ -110,7 +110,9 @@ const AdminNewGlobalValue: FC = () => {
     <div className="adminNewGlobalValue">
       <form
         className="adminNewGlobalValue__content"
-        onSubmit={() => handleSubmit(onSaveGlobalValue)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveGlobalValue)(evt);
+        }}
         noValidate
       >
         <Atitle level={1}>{t('adminNewGlobalValue.title', { ns: 'pages' })}</Atitle>

@@ -133,7 +133,13 @@ const AdminNewStat: FC = () => {
 
   return (
     <div className="adminNewStat">
-      <form className="adminNewStat__content" onSubmit={() => handleSubmit(onSaveStat)} noValidate>
+      <form
+        className="adminNewStat__content"
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveStat)(evt);
+        }}
+        noValidate
+      >
         <Atitle level={1}>{t('adminNewStat.title', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError.message !== undefined
           ? (

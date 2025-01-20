@@ -328,7 +328,9 @@ const AdminEditPages: FC = () => {
       {autoSaved !== null ? <Ap className="adminEditPage__autosave">{autoSaved}</Ap> : null}
       <div className="adminEditPage__content">
         <form
-          onSubmit={() => handleSubmit(onSavePage)}
+          onSubmit={(evt) => {
+            void handleSubmit(onSavePage)(evt);
+          }}
           noValidate
           className="adminEditPage__content__left"
         >

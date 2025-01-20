@@ -324,7 +324,13 @@ const AdminEditNotions: FC = () => {
 
   return (
     <div className="adminEditNotion">
-      <form onSubmit={() => handleSubmit(onSaveNotion)} noValidate className="adminEditNotion__content">
+      <form
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveNotion)(evt);
+        }}
+        noValidate
+        className="adminEditNotion__content"
+      >
         <div className="adminEditNotion__head">
           <Atitle level={1}>{t('adminEditNotion.title', { ns: 'pages' })}</Atitle>
           <Button onClick={onAskDelete} color="error">

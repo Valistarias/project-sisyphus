@@ -9,7 +9,7 @@ import { useGlobalVars } from '../../../providers';
 import {
   Ali, Atitle, Aul
 } from '../../../atoms';
-import { Button } from '../../../molecules';
+import { LinkButton } from '../../../molecules';
 
 import { classTrim } from '../../../utils';
 
@@ -35,9 +35,9 @@ const AdminBodyParts: FC = () => {
             key={bodyPart._id}
           >
             <Atitle level={3}>{bodyPart.title}</Atitle>
-            <Button href={`/admin/bodypart/${bodyPart._id}`}>
+            <LinkButton href={`/admin/bodypart/${bodyPart._id}`}>
               {t('adminBodyParts.editBodyPart', { ns: 'pages' })}
-            </Button>
+            </LinkButton>
           </Ali>
         ))}
       </Aul>
@@ -51,7 +51,7 @@ const AdminBodyParts: FC = () => {
         <div className="adminBodyParts__body-parts">
           <Atitle level={2}>{t('adminBodyParts.list', { ns: 'pages' })}</Atitle>
           <div className="adminBodyParts__body-parts__list">{bodyPartsList}</div>
-          <Button href="/admin/bodypart/new">{t('adminNewBodyPart.title', { ns: 'pages' })}</Button>
+          <LinkButton href="/admin/bodypart/new">{t('adminNewBodyPart.title', { ns: 'pages' })}</LinkButton>
         </div>
       </div>
     </div>

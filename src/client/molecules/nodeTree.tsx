@@ -11,7 +11,7 @@ import {
 } from '../quark';
 
 import {
-  Button, Node
+  LinkButton, Node
 } from './index';
 
 import type {
@@ -177,12 +177,12 @@ const NodeTree: FC<IQuarkProps<INodeTree>> = ({
                 </Ap>
                 {isAdmin
                   ? (
-                      <Button
+                      <LinkButton
                         href={`/admin/${(branch as ISkillBranch | undefined)?.skill !== undefined ? 'skillbranch' : 'cyberframebranch'}/${branch._id}`}
                         size="small"
                       >
                         {t('terms.general.edit')}
-                      </Button>
+                      </LinkButton>
                     )
                   : null}
               </div>

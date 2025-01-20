@@ -901,7 +901,13 @@ const AdminEditNode: FC = () => {
         ${displayInt ? 'adminEditNode--int-visible' : ''}
       `)}
     >
-      <form className="adminEditNode__content" onSubmit={() => handleSubmit(onSaveNode)} noValidate>
+      <form
+        className="adminEditNode__content"
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveNode)(evt);
+        }}
+        noValidate
+      >
         <div className="adminEditNode__head">
           <Atitle className="adminEditNode__head" level={1}>
             {t('adminEditNode.title', { ns: 'pages' })}

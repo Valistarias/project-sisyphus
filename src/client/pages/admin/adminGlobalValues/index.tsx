@@ -9,7 +9,7 @@ import { useGlobalVars } from '../../../providers';
 import {
   Ali, Atitle, Aul
 } from '../../../atoms';
-import { Button } from '../../../molecules';
+import { LinkButton } from '../../../molecules';
 
 import { classTrim } from '../../../utils';
 
@@ -35,9 +35,9 @@ const AdminGlobalValues: FC = () => {
             key={globalValue._id}
           >
             <Atitle level={3}>{globalValue.name}</Atitle>
-            <Button href={`/admin/globalvalue/${globalValue._id}`}>
+            <LinkButton href={`/admin/globalvalue/${globalValue._id}`}>
               {t('adminGlobalValues.editGlobalValue', { ns: 'pages' })}
-            </Button>
+            </LinkButton>
           </Ali>
         ))}
       </Aul>
@@ -51,9 +51,9 @@ const AdminGlobalValues: FC = () => {
         <div className="adminGlobalValues__global-values">
           <Atitle level={2}>{t('adminGlobalValues.list', { ns: 'pages' })}</Atitle>
           <div className="adminGlobalValues__global-values__list">{globalValuesList}</div>
-          <Button href="/admin/globalvalue/new">
+          <LinkButton href="/admin/globalvalue/new">
             {t('adminNewGlobalValue.title', { ns: 'pages' })}
-          </Button>
+          </LinkButton>
         </div>
       </div>
     </div>

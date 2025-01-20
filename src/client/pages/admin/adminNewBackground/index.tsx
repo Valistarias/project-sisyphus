@@ -309,7 +309,9 @@ const AdminNewBackground: FC = () => {
     >
       <form
         className="adminNewBackground__content"
-        onSubmit={() => handleSubmit(onSaveBackground)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveBackground)(evt);
+        }}
         noValidate
       >
         <Atitle className="adminNewBackground__head" level={1}>

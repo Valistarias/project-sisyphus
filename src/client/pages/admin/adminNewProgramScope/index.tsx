@@ -152,7 +152,9 @@ const AdminNewProgramScope: FC = () => {
     <div className="adminNewProgramScope">
       <form
         className="adminNewProgramScope__content"
-        onSubmit={() => handleSubmit(onSaveProgramScope)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveProgramScope)(evt);
+        }}
         noValidate
       >
         <Atitle level={1}>{t('adminNewProgramScope.title', { ns: 'pages' })}</Atitle>

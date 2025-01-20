@@ -11,7 +11,7 @@ import {
 import {
   Ali, Ap, Atitle, Aul
 } from '../../../atoms';
-import { Button } from '../../../molecules';
+import { Button, LinkButton } from '../../../molecules';
 import { Alert } from '../../../organisms';
 
 import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
@@ -125,9 +125,9 @@ const Campaigns: FC = () => {
             {`${t('terms.general.player', { count: campaign.players.length })}: ${campaign.players.length}`}
           </Ap>
           <div className="campaigns__campaign-list__elt__buttons">
-            <Button href={`/campaign/${campaign._id}`}>
+            <LinkButton href={`/campaign/${campaign._id}`}>
               {t('campaigns.openCampaign', { ns: 'pages' })}
-            </Button>
+            </LinkButton>
             {isOwner
               ? (
                   <Button
@@ -162,7 +162,7 @@ const Campaigns: FC = () => {
     <div className="campaigns">
       <div className="campaigns__header">
         <Atitle level={1}>{t('campaigns.title', { ns: 'pages' })}</Atitle>
-        <Button href="/campaign/new">{t('campaigns.create', { ns: 'pages' })}</Button>
+        <LinkButton href="/campaign/new">{t('campaigns.create', { ns: 'pages' })}</LinkButton>
       </div>
       {campaignList}
     </div>

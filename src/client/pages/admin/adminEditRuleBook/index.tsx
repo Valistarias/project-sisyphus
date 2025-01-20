@@ -20,7 +20,7 @@ import {
   Aerror, Ali, Ap, Atitle, Aul
 } from '../../../atoms';
 import {
-  Button, Input, SmartSelect, type ISingleValueSelect
+  Button, Input, LinkButton, SmartSelect, type ISingleValueSelect
 } from '../../../molecules';
 import {
   Alert,
@@ -162,9 +162,9 @@ const AdminEditRuleBook: FC = () => {
         {notionsData.map(notion => (
           <Ali className="adminEditRuleBook__notion-list__elt" key={notion._id}>
             <Atitle level={4}>{notion.title}</Atitle>
-            <Button size="small" href={`/admin/notion/${notion._id}`}>
+            <LinkButton size="small" href={`/admin/notion/${notion._id}`}>
               {t('adminEditRuleBook.editNotion', { ns: 'pages' })}
-            </Button>
+            </LinkButton>
           </Ali>
         ))}
       </Aul>
@@ -542,7 +542,9 @@ const AdminEditRuleBook: FC = () => {
       <div className="adminEditRuleBook__content">
         <form
           className="adminEditRuleBook__content__left"
-          onSubmit={() => handleSubmit(onSaveRuleBook)}
+          onSubmit={(evt) => {
+            void handleSubmit(onSaveRuleBook)(evt);
+          }}
           noValidate
         >
           {errors.root?.serverError.message !== undefined
@@ -632,9 +634,9 @@ const AdminEditRuleBook: FC = () => {
                     </Button>
                   )
                 : null}
-              <Button href={`/admin/chapter/new?ruleBookId=${id}&type=${defaultTypeChapterId}`}>
+              <LinkButton href={`/admin/chapter/new?ruleBookId=${id}&type=${defaultTypeChapterId}`}>
                 {t('adminEditRuleBook.createDefaultChapter', { ns: 'pages' })}
-              </Button>
+              </LinkButton>
             </div>
           </div>
           <div className="adminEditRuleBook__block-children">
@@ -642,9 +644,9 @@ const AdminEditRuleBook: FC = () => {
               {t('adminEditRuleBook.notions', { ns: 'pages' })}
             </Atitle>
             {notionsListDom ?? null}
-            <Button href={`/admin/notion/new?ruleBookId=${id}`}>
+            <LinkButton href={`/admin/notion/new?ruleBookId=${id}`}>
               {t('adminEditRuleBook.createNotion', { ns: 'pages' })}
-            </Button>
+            </LinkButton>
           </div>
         </div>
       </div>

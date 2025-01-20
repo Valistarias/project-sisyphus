@@ -284,7 +284,13 @@ const AdminNewProgram: FC = () => {
 
   return (
     <div className="adminNewProgram">
-      <form className="adminNewProgram__content" onSubmit={() => handleSubmit(onSaveProgram)} noValidate>
+      <form
+        className="adminNewProgram__content"
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveProgram)(evt);
+        }}
+        noValidate
+      >
         <Atitle level={1}>{t('adminNewProgram.title', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError.message !== undefined
           ? (

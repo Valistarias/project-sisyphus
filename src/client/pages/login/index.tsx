@@ -20,7 +20,8 @@ import {
   Aerror, Ap, Avideo
 } from '../../atoms';
 import {
-  Button, Input
+  Button, Input,
+  LinkButton
 } from '../../molecules';
 import { Alert } from '../../organisms';
 
@@ -124,7 +125,13 @@ const Login: FC = () => {
     <div className="login" style={{ backgroundImage: `url(${tvBackground})` }}>
       <div className="login__main">
         <Avideo video="logo" className="login__main__video" />
-        <form className="login__main__form" onSubmit={() => handleSubmit(onSubmit)} noValidate>
+        <form
+          className="login__main__form"
+          onSubmit={(evt) => {
+            void handleSubmit(onSubmit)(evt);
+          }}
+          noValidate
+        >
           {errors.root?.serverError.message !== undefined
             ? (
                 <Aerror>{errors.root.serverError.message}</Aerror>
@@ -154,9 +161,9 @@ const Login: FC = () => {
           />
           <div className="login__main__buttons">
             <Button type="submit">{t('login.formCTA', { ns: 'pages' })}</Button>
-            <Button href="/reset/password" theme="text-only">
+            <LinkButton href="/reset/password" theme="text-only">
               {t('login.forgotPass', { ns: 'pages' })}
-            </Button>
+            </LinkButton>
           </div>
         </form>
       </div>

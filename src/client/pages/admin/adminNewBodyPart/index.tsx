@@ -154,7 +154,9 @@ const AdminNewBodyPart: FC = () => {
     <div className="adminNewBodyPart">
       <form
         className="adminNewBodyPart__content"
-        onSubmit={() => handleSubmit(onSaveBodyPart)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveBodyPart)(evt);
+        }}
         noValidate
       >
         <Atitle level={1}>{t('adminNewBodyPart.title', { ns: 'pages' })}</Atitle>

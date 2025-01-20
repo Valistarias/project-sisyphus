@@ -20,7 +20,8 @@ import {
   Aerror, Ap, Atitle
 } from '../../../atoms';
 import {
-  Button, Input
+  Button, Input,
+  LinkButton
 } from '../../../molecules';
 import {
   Alert, RichTextElement, completeRichTextElementExtentions
@@ -314,7 +315,9 @@ const AdminEditCharParam: FC = () => {
   return (
     <div className="adminEditCharParam">
       <form
-        onSubmit={() => handleSubmit(onSaveCharParam)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveCharParam)(evt);
+        }}
         noValidate
         className="adminEditCharParam__content"
       >
@@ -324,9 +327,9 @@ const AdminEditCharParam: FC = () => {
             {t('adminEditCharParam.delete', { ns: 'pages' })}
           </Button>
         </div>
-        <Button className="adminEditCharParam__return-btn" href="/admin/charparams" size="small">
+        <LinkButton className="adminEditCharParam__return-btn" href="/admin/charparams" size="small">
           {t('adminEditCharParam.return', { ns: 'pages' })}
-        </Button>
+        </LinkButton>
         {errors.root?.serverError.message !== undefined
           ? (
               <Aerror className="adminEditCharParam__error">{errors.root.serverError.message}</Aerror>

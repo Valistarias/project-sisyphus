@@ -20,7 +20,8 @@ import {
   Aerror, Ap, Atitle
 } from '../../../atoms';
 import {
-  Button, Input
+  Button, Input,
+  LinkButton
 } from '../../../molecules';
 import {
   Alert, RichTextElement, completeRichTextElementExtentions
@@ -314,16 +315,22 @@ const AdminEditTipText: FC = () => {
         ${displayInt ? 'adminEditTipText--int-visible' : ''}
       `)}
     >
-      <form onSubmit={() => handleSubmit(onSaveTipText)} noValidate className="adminEditTipText__content">
+      <form
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveTipText)(evt);
+        }}
+        noValidate
+        className="adminEditTipText__content"
+      >
         <div className="adminEditTipText__head">
           <Atitle level={1}>{tipTextData?.tipText.title}</Atitle>
           <Button onClick={onAskDelete} color="error">
             {t('adminEditTipText.delete', { ns: 'pages' })}
           </Button>
         </div>
-        <Button className="adminEditTipText__return-btn" href="/admin/tiptexts" size="small">
+        <LinkButton className="adminEditTipText__return-btn" href="/admin/tiptexts" size="small">
           {t('adminEditTipText.return', { ns: 'pages' })}
-        </Button>
+        </LinkButton>
         <Atitle level={2}>{t('adminEditTipText.edit', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError.message !== undefined
           ? (

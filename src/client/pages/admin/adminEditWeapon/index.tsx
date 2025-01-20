@@ -20,7 +20,7 @@ import {
   Aerror, Ap, Atitle
 } from '../../../atoms';
 import {
-  Button, Input, SmartSelect
+  Button, Input, LinkButton, SmartSelect
 } from '../../../molecules';
 import {
   Alert, RichTextElement, completeRichTextElementExtentions
@@ -656,7 +656,13 @@ const AdminEditWeapon: FC = () => {
         ${displayInt ? 'adminEditWeapon--int-visible' : ''}
       `)}
     >
-      <form className="adminEditWeapon__content" onSubmit={() => handleSubmit(onSaveWeapon)} noValidate>
+      <form
+        className="adminEditWeapon__content"
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveWeapon)(evt);
+        }}
+        noValidate
+      >
         <div className="adminEditWeapon__head">
           <Atitle className="adminEditWeapon__head" level={1}>
             {weaponData?.weapon.title ?? ''}
@@ -665,9 +671,9 @@ const AdminEditWeapon: FC = () => {
             {t('adminEditWeapon.delete', { ns: 'pages' })}
           </Button>
         </div>
-        <Button className="adminEditWeapon__return-btn" href="/admin/weapons" size="small">
+        <LinkButton className="adminEditWeapon__return-btn" href="/admin/weapons" size="small">
           {t('adminEditWeapon.return', { ns: 'pages' })}
-        </Button>
+        </LinkButton>
         {errors.root?.serverError.message !== undefined
           ? (
               <Aerror>{errors.root.serverError.message}</Aerror>

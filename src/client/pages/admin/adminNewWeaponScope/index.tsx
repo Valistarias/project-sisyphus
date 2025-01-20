@@ -150,7 +150,9 @@ const AdminNewWeaponScope: FC = () => {
     <div className="adminNewWeaponScope">
       <form
         className="adminNewWeaponScope__content"
-        onSubmit={() => handleSubmit(onSaveWeaponScope)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveWeaponScope)(evt);
+        }}
         noValidate
       >
         <Atitle level={1}>{t('adminNewWeaponScope.title', { ns: 'pages' })}</Atitle>

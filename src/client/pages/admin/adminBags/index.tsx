@@ -11,7 +11,7 @@ import {
 import {
   Ali, Ap, Atitle, Aul
 } from '../../../atoms';
-import { Button } from '../../../molecules';
+import { LinkButton } from '../../../molecules';
 import { Alert } from '../../../organisms';
 
 import type { ICuratedBag } from '../../../types';
@@ -48,9 +48,9 @@ const AdminBags: FC = () => {
             key={bag._id}
           >
             <Atitle level={3}>{bag.title}</Atitle>
-            <Button href={`/admin/bag/${bag._id}`}>
+            <LinkButton href={`/admin/bag/${bag._id}`}>
               {t('adminBags.editBag', { ns: 'pages' })}
-            </Button>
+            </LinkButton>
           </Ali>
         ))}
       </Aul>
@@ -91,7 +91,7 @@ const AdminBags: FC = () => {
         <div className="adminBags__bags">
           <Atitle level={2}>{t('adminBags.list', { ns: 'pages' })}</Atitle>
           <div className="adminBags__bags__list">{bagsList}</div>
-          <Button href="/admin/bag/new">{t('adminNewBag.title', { ns: 'pages' })}</Button>
+          <LinkButton href="/admin/bag/new">{t('adminNewBag.title', { ns: 'pages' })}</LinkButton>
         </div>
       </div>
     </div>

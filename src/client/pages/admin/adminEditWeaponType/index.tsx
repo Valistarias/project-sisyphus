@@ -22,6 +22,7 @@ import {
 import {
   Button,
   Input,
+  LinkButton,
   NodeIconSelect,
   SmartSelect,
   type ISingleValueSelect
@@ -396,7 +397,9 @@ const AdminEditWeaponType: FC = () => {
       `)}
     >
       <form
-        onSubmit={() => handleSubmit(onSaveWeaponType)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveWeaponType)(evt);
+        }}
         noValidate
         className="adminEditWeaponType__content"
       >
@@ -406,9 +409,9 @@ const AdminEditWeaponType: FC = () => {
             {t('adminEditWeaponType.delete', { ns: 'pages' })}
           </Button>
         </div>
-        <Button className="adminEditWeaponType__return-btn" href="/admin/weapontypes" size="small">
+        <LinkButton className="adminEditWeaponType__return-btn" href="/admin/weapontypes" size="small">
           {t('adminEditWeaponType.return', { ns: 'pages' })}
-        </Button>
+        </LinkButton>
         <Atitle level={2}>{t('adminEditWeaponType.edit', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError.message !== undefined
           ? (

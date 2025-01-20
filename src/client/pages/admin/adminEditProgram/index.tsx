@@ -20,7 +20,7 @@ import {
   Aerror, Ap, Atitle
 } from '../../../atoms';
 import {
-  Button, Input, SmartSelect
+  Button, Input, LinkButton, SmartSelect
 } from '../../../molecules';
 import {
   Alert, RichTextElement, completeRichTextElementExtentions
@@ -440,7 +440,13 @@ const AdminEditProgram: FC = () => {
         ${displayInt ? 'adminEditProgram--int-visible' : ''}
       `)}
     >
-      <form className="adminEditProgram__content" onSubmit={() => handleSubmit(onSaveProgram)} noValidate>
+      <form
+        className="adminEditProgram__content"
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveProgram)(evt);
+        }}
+        noValidate
+      >
         <div className="adminEditProgram__head">
           <Atitle className="adminEditProgram__head" level={1}>
             {programData?.program.title ?? ''}
@@ -449,9 +455,9 @@ const AdminEditProgram: FC = () => {
             {t('adminEditProgram.delete', { ns: 'pages' })}
           </Button>
         </div>
-        <Button className="adminEditProgram__return-btn" href="/admin/programs" size="small">
+        <LinkButton className="adminEditProgram__return-btn" href="/admin/programs" size="small">
           {t('adminEditProgram.return', { ns: 'pages' })}
-        </Button>
+        </LinkButton>
         {errors.root?.serverError.message !== undefined
           ? (
               <Aerror>{errors.root.serverError.message}</Aerror>

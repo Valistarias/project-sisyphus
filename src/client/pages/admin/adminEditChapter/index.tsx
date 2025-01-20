@@ -20,7 +20,8 @@ import {
   Aa, Aerror, Ap, Atitle
 } from '../../../atoms';
 import {
-  Button, Input
+  Button, Input,
+  LinkButton
 } from '../../../molecules';
 import {
   Alert,
@@ -420,7 +421,9 @@ const AdminEditChapters: FC = () => {
       {autoSaved !== null ? <Ap className="adminEditChapter__autosave">{autoSaved}</Ap> : null}
       <div className="adminEditChapter__content">
         <form
-          onSubmit={() => handleSubmit(onSaveChapter)}
+          onSubmit={(evt) => {
+            void handleSubmit(onSaveChapter)(evt);
+          }}
           noValidate
           className="adminEditChapter__content__left"
         >
@@ -496,9 +499,9 @@ const AdminEditChapters: FC = () => {
                     </Button>
                   )
                 : null}
-              <Button href={`/admin/page/new?chapterId=${id}&ruleBookId=${ruleBook?._id}`}>
+              <LinkButton href={`/admin/page/new?chapterId=${id}&ruleBookId=${ruleBook?._id}`}>
                 {t('adminEditChapter.createPage', { ns: 'pages' })}
-              </Button>
+              </LinkButton>
             </div>
           </div>
         </div>

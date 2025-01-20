@@ -188,7 +188,9 @@ const AdminNewWeaponType: FC = () => {
     <div className="adminNewWeaponType">
       <form
         className="adminNewWeaponType__content"
-        onSubmit={() => handleSubmit(onSaveWeaponType)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveWeaponType)(evt);
+        }}
         noValidate
       >
         <Atitle level={1}>{t('adminNewWeaponType.title', { ns: 'pages' })}</Atitle>

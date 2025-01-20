@@ -638,7 +638,13 @@ const AdminNewNode: FC = () => {
         ${displayInt ? 'adminNewNode--int-visible' : ''}
       `)}
     >
-      <form className="adminNewNode__content" onSubmit={() => handleSubmit(onSaveNode)} noValidate>
+      <form
+        className="adminNewNode__content"
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveNode)(evt);
+        }}
+        noValidate
+      >
         <Atitle className="adminNewNode__head" level={1}>
           {t('adminNewNode.title', { ns: 'pages' })}
         </Atitle>

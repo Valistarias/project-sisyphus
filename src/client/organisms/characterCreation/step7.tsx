@@ -9,7 +9,7 @@ import { TypeAnimation } from 'react-type-animation';
 import { useGlobalVars } from '../../providers';
 
 import { Aicon } from '../../atoms';
-import { Button } from '../../molecules';
+import { LinkButton } from '../../molecules';
 
 import type { ICuratedCyberFrame } from '../../types';
 
@@ -96,9 +96,9 @@ const CharacterCreationStep7: FC = () => {
         omitDeletionAnimation={true}
         style={{ whiteSpace: 'pre-line' }}
       />
-      <Button className="characterCreation-step7__next-btn" href={`/character/${id}`} size="large">
+      <LinkButton className="characterCreation-step7__next-btn" href={`/character/${id}`} size="large">
         {t('characterCreation.step7.text.next', { ns: 'components' })}
-      </Button>
+      </LinkButton>
     </motion.div>
   );
 };

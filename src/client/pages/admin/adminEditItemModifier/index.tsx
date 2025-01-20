@@ -20,7 +20,8 @@ import {
   Aerror, Ap, Atitle
 } from '../../../atoms';
 import {
-  Button, Input
+  Button, Input,
+  LinkButton
 } from '../../../molecules';
 import {
   Alert, RichTextElement, completeRichTextElementExtentions
@@ -317,7 +318,9 @@ const AdminEditItemModifier: FC = () => {
       `)}
     >
       <form
-        onSubmit={() => handleSubmit(onSaveItemModifier)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveItemModifier)(evt);
+        }}
         noValidate
         className="adminEditItemModifier__content"
       >
@@ -327,13 +330,13 @@ const AdminEditItemModifier: FC = () => {
             {t('adminEditItemModifier.delete', { ns: 'pages' })}
           </Button>
         </div>
-        <Button
+        <LinkButton
           className="adminEditItemModifier__return-btn"
           href="/admin/itemmodifiers"
           size="small"
         >
           {t('adminEditItemModifier.return', { ns: 'pages' })}
-        </Button>
+        </LinkButton>
         <Atitle level={2}>{t('adminEditItemModifier.edit', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError.message !== undefined
           ? (

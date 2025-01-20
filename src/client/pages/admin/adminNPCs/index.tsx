@@ -11,7 +11,7 @@ import {
 import {
   Ali, Ap, Atitle, Aul
 } from '../../../atoms';
-import { Button } from '../../../molecules';
+import { LinkButton } from '../../../molecules';
 import { Alert } from '../../../organisms';
 
 import type { ICuratedBasicNPC } from '../../../types';
@@ -47,9 +47,9 @@ const AdminNPCs: FC = () => {
             key={nPC._id}
           >
             <Atitle level={3}>{nPC.title}</Atitle>
-            <Button href={`/admin/npc/${nPC._id}`}>
+            <LinkButton href={`/admin/npc/${nPC._id}`}>
               {t('adminNPCs.editNPC', { ns: 'pages' })}
-            </Button>
+            </LinkButton>
           </Ali>
         ))}
       </Aul>
@@ -90,7 +90,7 @@ const AdminNPCs: FC = () => {
         <div className="adminNPCs__nPCs">
           <Atitle level={2}>{t('adminNPCs.list', { ns: 'pages' })}</Atitle>
           <div className="adminNPCs__nPCs__list">{nPCsList}</div>
-          <Button href="/admin/nPC/new">{t('adminNewNPC.title', { ns: 'pages' })}</Button>
+          <LinkButton href="/admin/nPC/new">{t('adminNewNPC.title', { ns: 'pages' })}</LinkButton>
         </div>
       </div>
     </div>

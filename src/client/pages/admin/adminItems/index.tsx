@@ -11,7 +11,7 @@ import {
 import {
   Ali, Ap, Atitle, Aul
 } from '../../../atoms';
-import { Button } from '../../../molecules';
+import { LinkButton } from '../../../molecules';
 import { Alert } from '../../../organisms';
 
 import type { ICuratedItem } from '../../../types';
@@ -47,9 +47,9 @@ const AdminItems: FC = () => {
             key={item._id}
           >
             <Atitle level={3}>{item.title}</Atitle>
-            <Button href={`/admin/item/${item._id}`}>
+            <LinkButton href={`/admin/item/${item._id}`}>
               {t('adminItems.editItem', { ns: 'pages' })}
-            </Button>
+            </LinkButton>
           </Ali>
         ))}
       </Aul>
@@ -90,7 +90,7 @@ const AdminItems: FC = () => {
         <div className="adminItems__items">
           <Atitle level={2}>{t('adminItems.list', { ns: 'pages' })}</Atitle>
           <div className="adminItems__items__list">{itemsList}</div>
-          <Button href="/admin/item/new">{t('adminNewItem.title', { ns: 'pages' })}</Button>
+          <LinkButton href="/admin/item/new">{t('adminNewItem.title', { ns: 'pages' })}</LinkButton>
         </div>
       </div>
     </div>

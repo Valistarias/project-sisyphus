@@ -42,7 +42,7 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
   const [menuOpened, setMenuOpened] = useState<null | string>(null);
 
   const userState = useMemo(() => {
-    if (user === null) {
+    if (user?.roles === undefined) {
       return 'unlogged';
     }
     if (user.roles.find(role => role.name === 'admin') !== undefined) {

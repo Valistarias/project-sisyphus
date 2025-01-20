@@ -19,7 +19,8 @@ import {
   Aerror, Ap, Atitle
 } from '../../../atoms';
 import {
-  Button, Input
+  Button, Input,
+  LinkButton
 } from '../../../molecules';
 import { Alert } from '../../../organisms';
 
@@ -236,7 +237,9 @@ const AdminEditGlobalValue: FC = () => {
   return (
     <div className="adminEditGlobalValue">
       <form
-        onSubmit={() => handleSubmit(onSaveGlobalValue)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveGlobalValue)(evt);
+        }}
         noValidate
         className="adminEditGlobalValue__content"
       >
@@ -246,13 +249,13 @@ const AdminEditGlobalValue: FC = () => {
             {t('adminEditGlobalValue.delete', { ns: 'pages' })}
           </Button>
         </div>
-        <Button
+        <LinkButton
           className="adminEditGlobalValue__return-btn"
           href="/admin/globalvalues"
           size="small"
         >
           {t('adminEditGlobalValue.return', { ns: 'pages' })}
-        </Button>
+        </LinkButton>
         <Atitle level={2}>{t('adminEditGlobalValue.edit', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError.message !== undefined
           ? (

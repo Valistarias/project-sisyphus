@@ -20,7 +20,7 @@ import {
   Aerror, Ap, Atitle
 } from '../../../atoms';
 import {
-  Button, Input, SmartSelect, type ISingleValueSelect
+  Button, Input, LinkButton, SmartSelect, type ISingleValueSelect
 } from '../../../molecules';
 import {
   Alert, RichTextElement, completeRichTextElementExtentions
@@ -344,7 +344,9 @@ const AdminEditWeaponStyle: FC = () => {
       `)}
     >
       <form
-        onSubmit={() => handleSubmit(onSaveWeaponStyle)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveWeaponStyle)(evt);
+        }}
         noValidate
         className="adminEditWeaponStyle__content"
       >
@@ -354,13 +356,13 @@ const AdminEditWeaponStyle: FC = () => {
             {t('adminEditWeaponStyle.delete', { ns: 'pages' })}
           </Button>
         </div>
-        <Button
+        <LinkButton
           className="adminEditWeaponStyle__return-btn"
           href="/admin/weaponstyles"
           size="small"
         >
           {t('adminEditWeaponStyle.return', { ns: 'pages' })}
-        </Button>
+        </LinkButton>
         <Atitle level={2}>{t('adminEditWeaponStyle.edit', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError.message !== undefined
           ? (

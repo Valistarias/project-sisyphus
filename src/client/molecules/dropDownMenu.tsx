@@ -8,6 +8,7 @@ import {
 } from '../atoms';
 
 import Button from './button';
+import LinkButton from './linkButton';
 
 import { classTrim } from '../utils';
 
@@ -67,7 +68,7 @@ const DropDownMenu: FC<IDropDownMenu> = ({
             href, text, onClick
           } = single as ILinkElt;
           sentElts.push(
-            <Button
+            <LinkButton
               key={`eltlist-${href ?? text}`}
               className="dropdown-menu__list__elt"
               theme="text-only"
@@ -80,7 +81,7 @@ const DropDownMenu: FC<IDropDownMenu> = ({
               href={href}
             >
               {text}
-            </Button>
+            </LinkButton>
           );
         } else {
           const {
@@ -102,7 +103,7 @@ const DropDownMenu: FC<IDropDownMenu> = ({
                     className="dropdown-menu__list__sublist__list__elt"
                     key={`eltsublist-${href ?? text}`}
                   >
-                    <Button
+                    <LinkButton
                       className="dropdown-menu__list__elt"
                       theme="text-only"
                       onClick={(e) => {
@@ -114,7 +115,7 @@ const DropDownMenu: FC<IDropDownMenu> = ({
                       href={href}
                     >
                       {text}
-                    </Button>
+                    </LinkButton>
                   </Ali>
                 ))}
               </Aul>

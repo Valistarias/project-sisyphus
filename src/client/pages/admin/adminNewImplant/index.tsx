@@ -519,7 +519,13 @@ const AdminNewImplant: FC = () => {
         ${displayInt ? 'adminNewImplant--int-visible' : ''}
       `)}
     >
-      <form className="adminNewImplant__content" onSubmit={() => handleSubmit(onSaveImplant)} noValidate>
+      <form
+        className="adminNewImplant__content"
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveImplant)(evt);
+        }}
+        noValidate
+      >
         <Atitle className="adminNewImplant__head" level={1}>
           {t('adminNewImplant.title', { ns: 'pages' })}
         </Atitle>

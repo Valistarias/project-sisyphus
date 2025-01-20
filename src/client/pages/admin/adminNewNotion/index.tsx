@@ -176,7 +176,13 @@ const AdminNewNotions: FC = () => {
 
   return (
     <div className="adminNewNotion">
-      <form onSubmit={() => handleSubmit(onSaveNotion)} noValidate className="adminNewNotion__content">
+      <form
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveNotion)(evt);
+        }}
+        noValidate
+        className="adminNewNotion__content"
+      >
         <Atitle level={1}>{t('adminNewNotion.title', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError.message !== undefined
           ? (

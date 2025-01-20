@@ -11,7 +11,7 @@ import {
 import {
   Ap, Atitle
 } from '../../../atoms';
-import { Button } from '../../../molecules';
+import { Button, LinkButton } from '../../../molecules';
 import {
   Alert, DragList, type IDragElt
 } from '../../../organisms';
@@ -150,7 +150,7 @@ const AdminRarities: FC = () => {
                   </Button>
                 )
               : null}
-            <Button href="/admin/rarity/new">{t('adminNewRarity.title', { ns: 'pages' })}</Button>
+            <LinkButton href="/admin/rarity/new">{t('adminNewRarity.title', { ns: 'pages' })}</LinkButton>
           </div>
         </div>
       </div>

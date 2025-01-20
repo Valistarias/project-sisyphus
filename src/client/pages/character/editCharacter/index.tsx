@@ -20,7 +20,7 @@ import {
   Aerror, Ap, Atitle
 } from '../../../atoms';
 import {
-  Button, Input, SmartSelect
+  Button, Input, LinkButton, SmartSelect
 } from '../../../molecules';
 import {
   Alert, RichTextElement, basicRichTextElementExtentions
@@ -346,14 +346,20 @@ const EditCharacter: FC = () => {
           {t('characters.deleteCharacter', { ns: 'pages' })}
         </Button>
       </div>
-      <Button
+      <LinkButton
         className="editcharacter__return-btn"
         href={`/character/${character?._id}`}
         size="small"
       >
         {t('editCharacter.return', { ns: 'pages' })}
-      </Button>
-      <form className="editcharacter__form" onSubmit={() => handleSubmit(onSubmit)} noValidate>
+      </LinkButton>
+      <form
+        className="editcharacter__form"
+        onSubmit={(evt) => {
+          void handleSubmit(onSubmit)(evt);
+        }}
+        noValidate
+      >
         {errors.root?.serverError.message !== undefined
           ? (
               <Aerror>{errors.root.serverError.message}</Aerror>

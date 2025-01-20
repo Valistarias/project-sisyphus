@@ -11,7 +11,7 @@ import {
 import {
   Ali, Ap, Atitle, Aul
 } from '../../../atoms';
-import { Button } from '../../../molecules';
+import { LinkButton } from '../../../molecules';
 import { Alert } from '../../../organisms';
 
 import type { ICuratedBackground } from '../../../types';
@@ -47,9 +47,9 @@ const AdminBackgrounds: FC = () => {
             key={background._id}
           >
             <Atitle level={3}>{background.title}</Atitle>
-            <Button href={`/admin/background/${background._id}`}>
+            <LinkButton href={`/admin/background/${background._id}`}>
               {t('adminBackgrounds.editBackground', { ns: 'pages' })}
-            </Button>
+            </LinkButton>
           </Ali>
         ))}
       </Aul>
@@ -90,9 +90,9 @@ const AdminBackgrounds: FC = () => {
         <div className="adminBackgrounds__backgrounds">
           <Atitle level={2}>{t('adminBackgrounds.list', { ns: 'pages' })}</Atitle>
           <div className="adminBackgrounds__backgrounds__list">{backgroundsList}</div>
-          <Button href="/admin/background/new">
+          <LinkButton href="/admin/background/new">
             {t('adminNewBackground.title', { ns: 'pages' })}
-          </Button>
+          </LinkButton>
         </div>
       </div>
     </div>

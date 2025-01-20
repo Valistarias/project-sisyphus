@@ -187,7 +187,9 @@ const AdminNewSkillBranch: FC = () => {
     <div className="adminNewSkillBranch">
       <form
         className="adminNewSkillBranch__content"
-        onSubmit={() => handleSubmit(onSaveSkillBranch)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveSkillBranch)(evt);
+        }}
         noValidate
       >
         <Atitle className="adminNewSkillBranch__head" level={1}>

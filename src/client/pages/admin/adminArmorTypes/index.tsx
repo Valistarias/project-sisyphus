@@ -9,7 +9,7 @@ import { useGlobalVars } from '../../../providers';
 import {
   Ali, Atitle, Aul
 } from '../../../atoms';
-import { Button } from '../../../molecules';
+import { LinkButton } from '../../../molecules';
 
 import { classTrim } from '../../../utils';
 
@@ -35,9 +35,9 @@ const AdminArmorTypes: FC = () => {
             key={armorType._id}
           >
             <Atitle level={3}>{armorType.title}</Atitle>
-            <Button href={`/admin/armortype/${armorType._id}`}>
+            <LinkButton href={`/admin/armortype/${armorType._id}`}>
               {t('adminArmorTypes.editArmorType', { ns: 'pages' })}
-            </Button>
+            </LinkButton>
           </Ali>
         ))}
       </Aul>
@@ -51,9 +51,9 @@ const AdminArmorTypes: FC = () => {
         <div className="adminArmorTypes__armor-types">
           <Atitle level={2}>{t('adminArmorTypes.list', { ns: 'pages' })}</Atitle>
           <div className="adminArmorTypes__armor-types__list">{armorTypesList}</div>
-          <Button href="/admin/armortype/new">
+          <LinkButton href="/admin/armortype/new">
             {t('adminNewArmorType.title', { ns: 'pages' })}
-          </Button>
+          </LinkButton>
         </div>
       </div>
     </div>

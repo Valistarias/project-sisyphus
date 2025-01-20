@@ -519,7 +519,13 @@ const AdminNewArmor: FC = () => {
         ${displayInt ? 'adminNewArmor--int-visible' : ''}
       `)}
     >
-      <form className="adminNewArmor__content" onSubmit={() => handleSubmit(onSaveArmor)} noValidate>
+      <form
+        className="adminNewArmor__content"
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveArmor)(evt);
+        }}
+        noValidate
+      >
         <Atitle className="adminNewArmor__head" level={1}>
           {t('adminNewArmor.title', { ns: 'pages' })}
         </Atitle>

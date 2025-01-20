@@ -20,7 +20,7 @@ import {
   Aerror, Ap, Atitle
 } from '../../../atoms';
 import {
-  Button, Input, SmartSelect
+  Button, Input, LinkButton, SmartSelect
 } from '../../../molecules';
 import {
   Alert, RichTextElement, completeRichTextElementExtentions
@@ -502,7 +502,9 @@ const AdminEditBackground: FC = () => {
     >
       <form
         className="adminEditBackground__content"
-        onSubmit={() => handleSubmit(onSaveBackground)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveBackground)(evt);
+        }}
         noValidate
       >
         <div className="adminEditBackground__head">
@@ -513,9 +515,9 @@ const AdminEditBackground: FC = () => {
             {t('adminEditBackground.delete', { ns: 'pages' })}
           </Button>
         </div>
-        <Button className="adminEditBackground__return-btn" href="/admin/backgrounds" size="small">
+        <LinkButton className="adminEditBackground__return-btn" href="/admin/backgrounds" size="small">
           {t('adminEditBackground.return', { ns: 'pages' })}
-        </Button>
+        </LinkButton>
         {errors.root?.serverError.message !== undefined
           ? (
               <Aerror>{errors.root.serverError.message}</Aerror>

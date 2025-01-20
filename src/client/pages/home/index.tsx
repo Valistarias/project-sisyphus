@@ -10,7 +10,7 @@ import tvBackground from '../../assets/imgs/tvbg2.gif';
 import {
   Ap, Atitle, Avideo
 } from '../../atoms';
-import { Button } from '../../molecules';
+import { LinkButton } from '../../molecules';
 
 import { classTrim } from '../../utils';
 
@@ -64,12 +64,12 @@ const Home: FC = () => {
         {user?._id === undefined
           ? (
               <div className="home__intro__buttons">
-                <Button size="large" theme="afterglow" href="/signup">
+                <LinkButton size="large" theme="afterglow" href="/signup">
                   {t('home.registerCta', { ns: 'pages' })}
-                </Button>
-                <Button size="large" theme="text-only" href="/login">
+                </LinkButton>
+                <LinkButton size="large" theme="text-only" href="/login">
                   {t('home.loginCta', { ns: 'pages' })}
-                </Button>
+                </LinkButton>
               </div>
             )
           : null}

@@ -136,7 +136,9 @@ const AdminNewCharParam: FC = () => {
     <div className="adminNewCharParam">
       <form
         className="adminNewCharParam__content"
-        onSubmit={() => handleSubmit(onSaveCharParam)}
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveCharParam)(evt);
+        }}
         noValidate
       >
         <Atitle level={1}>{t('adminNewCharParam.title', { ns: 'pages' })}</Atitle>

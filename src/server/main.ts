@@ -199,8 +199,6 @@ ItemRoutes(apiRouter);
 EnnemyAttackRoutes(apiRouter);
 NPCRoutes(apiRouter);
 
-console.log('process.env.NODE_ENV', process.env.NODE_ENV);
-
 // Global Router
 app.use('/api/', apiRouter);
 // ----------------------------------------------------------------------------------------

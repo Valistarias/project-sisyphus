@@ -144,7 +144,13 @@ const AdminNewTipText: FC = () => {
 
   return (
     <div className="adminNewTipText">
-      <form className="adminNewTipText__content" onSubmit={() => handleSubmit(onSaveTipText)} noValidate>
+      <form
+        className="adminNewTipText__content"
+        onSubmit={(evt) => {
+          void handleSubmit(onSaveTipText)(evt);
+        }}
+        noValidate
+      >
         <Atitle level={1}>{t('adminNewTipText.title', { ns: 'pages' })}</Atitle>
         {errors.root?.serverError.message !== undefined
           ? (

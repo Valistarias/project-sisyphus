@@ -11,7 +11,7 @@ import {
 import {
   Ali, Ap, Atitle, Aul
 } from '../../../atoms';
-import { Button } from '../../../molecules';
+import { LinkButton } from '../../../molecules';
 import { Alert } from '../../../organisms';
 
 import type { ICuratedImplant } from '../../../types';
@@ -47,9 +47,9 @@ const AdminImplants: FC = () => {
             key={implant._id}
           >
             <Atitle level={3}>{implant.title}</Atitle>
-            <Button href={`/admin/implant/${implant._id}`}>
+            <LinkButton href={`/admin/implant/${implant._id}`}>
               {t('adminImplants.editImplant', { ns: 'pages' })}
-            </Button>
+            </LinkButton>
           </Ali>
         ))}
       </Aul>
@@ -90,7 +90,7 @@ const AdminImplants: FC = () => {
         <div className="adminImplants__implants">
           <Atitle level={2}>{t('adminImplants.list', { ns: 'pages' })}</Atitle>
           <div className="adminImplants__implants__list">{implantsList}</div>
-          <Button href="/admin/implant/new">{t('adminNewImplant.title', { ns: 'pages' })}</Button>
+          <LinkButton href="/admin/implant/new">{t('adminNewImplant.title', { ns: 'pages' })}</LinkButton>
         </div>
       </div>
     </div>
