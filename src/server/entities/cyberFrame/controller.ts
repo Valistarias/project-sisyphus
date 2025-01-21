@@ -307,12 +307,10 @@ const findAll = (req: Request, res: Response): void => {
                   const data = node;
 
                   return {
-                    ...data,
-                    ...(
-                      data.i18n !== undefined
-                        ? { i18n: JSON.parse(data.i18n) }
-                        : {}
-                    )
+                    node: data,
+                    i18n: data.i18n !== undefined
+                      ? { i18n: JSON.parse(data.i18n) }
+                      : {}
                   };
                 })
               : [];

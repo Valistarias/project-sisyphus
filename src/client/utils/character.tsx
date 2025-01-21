@@ -418,16 +418,21 @@ const curateCharacterParams = ({
       );
     }
     node.charParamBonuses?.forEach((charParamBonus) => {
-      charParamsById[charParamBonus.charParam].score.total
+      if ((
+        charParamsById[charParamBonus.charParam] as
+        ICuratedCharParamWithScore | undefined
+      ) !== undefined) {
+        charParamsById[charParamBonus.charParam].score.total
           += charParamBonus.value;
-      charParamsById[charParamBonus.charParam].score.sources.push({
-        value: charParamBonus.value,
-        origin: {
-          ...node,
-          cyberFrame: foundCyberFrame,
-          skill: foundSkill
-        }
-      });
+        charParamsById[charParamBonus.charParam].score.sources.push({
+          value: charParamBonus.value,
+          origin: {
+            ...node,
+            cyberFrame: foundCyberFrame,
+            skill: foundSkill
+          }
+        });
+      }
     });
   });
 

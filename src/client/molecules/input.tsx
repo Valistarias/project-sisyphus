@@ -1,6 +1,7 @@
 import React, {
   type ChangeEvent,
-  useState, type FC
+  useState, type FC,
+  type MouseEvent
 } from 'react';
 
 import { Controller } from 'react-hook-form';
@@ -40,7 +41,7 @@ interface IInput extends IReactHookFormInputs {
   /** Allow the user's password manager to automatically enter the password */
   autoComplete?: string
   /** When the user select elsewhere of the input */
-  onBlur?: () => void
+  onBlur?: (val: MouseEvent) => void
 }
 
 const Input: FC<IInput> = ({
@@ -111,7 +112,7 @@ const Input: FC<IInput> = ({
                         setFocus(false);
                         onControllerBlur();
                         if (onBlur !== undefined) {
-                          onBlur();
+                          onBlur(e);
                         }
                       }}
                     />
@@ -135,7 +136,7 @@ const Input: FC<IInput> = ({
                         setFocus(false);
                         onControllerBlur();
                         if (onBlur !== undefined) {
-                          onBlur();
+                          onBlur(e);
                         }
                       }}
                     />

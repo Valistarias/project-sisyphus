@@ -311,7 +311,9 @@ const CharacterHeader: FC<ICharacterHeader> = ({
                   inline
                   rules={{ required: t('hp.required', { ns: 'fields' }) }}
                   className="char-header__health__field__input"
-                  onBlur={() => handleSubmitHp(onSaveHp)}
+                  onBlur={(evt) => {
+                    void handleSubmitHp(onSaveHp)(evt);
+                  }}
                 />
                 <Ap className="char-header__health__field__total">{`/ ${hpValues.total}`}</Ap>
               </div>
@@ -346,7 +348,9 @@ const CharacterHeader: FC<ICharacterHeader> = ({
                   inline
                   rules={{ required: t('karma.required', { ns: 'fields' }) }}
                   className="char-header__karma__field__input"
-                  onBlur={() => handleSubmitKarma(onSaveKarma)}
+                  onBlur={(evt) => {
+                    void handleSubmitKarma(onSaveKarma)(evt);
+                  }}
                 />
                 <Ap className="char-header__karma__field__total">/ ??</Ap>
               </div>

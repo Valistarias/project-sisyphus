@@ -22,15 +22,16 @@ import {
   Ariane, Button, Checkbox, type IArianeElt
 } from '../../../molecules';
 import {
-  Alert, CharCreationStep1, CharCreationStep2, RichTextElement
-} from '../../../organisms';
-import {
+  Alert,
+  CharCreationStep1,
+  CharCreationStep2,
   CharCreationStep3,
   CharCreationStep4,
   CharCreationStep5,
   CharCreationStep6,
-  CharCreationStep7
-} from '../../../organisms/characterCreation';
+  CharCreationStep7,
+  RichTextElement
+} from '../../../organisms';
 
 import { introSequence } from './introSequence';
 
@@ -957,7 +958,13 @@ const NewCharacter: FC = () => {
             : null}
         </div>
       </div>
-      <form className="newcharacter__tooltip" onSubmit={() => submitTips(onSubmitTooltip)} noValidate>
+      <form
+        className="newcharacter__tooltip"
+        onSubmit={(evt) => {
+          void submitTips(onSubmitTooltip)(evt);
+        }}
+        noValidate
+      >
         <div className="newcharacter__tooltip__shell">
           <div className="newcharacter__tooltip__core">
             <Atitle className="newcharacter__tooltip__core__title">

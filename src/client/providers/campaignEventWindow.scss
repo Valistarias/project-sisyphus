@@ -151,12 +151,20 @@
     }
   }
 
-  &--card-large,
-  &--card-single {
+  &--card-large {
     .roll-window__window {
       &__values {
         max-width: 85rem;
         padding: 8rem;
+      }
+    }
+  }
+
+  &--card-single {
+    .roll-window__window {
+      &__values {
+        max-width: 85rem;
+        padding: 0;
       }
     }
   }

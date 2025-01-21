@@ -11,7 +11,9 @@ import {
   CharCreationStep2,
   CharCreationStep3,
   CharCreationStep4,
-  CharCreationStep5
+  CharCreationStep5,
+  CharCreationStep6,
+  CharCreationStep7
 } from './characterCreation';
 import {
   DragList, type IDragElt
@@ -38,6 +40,8 @@ export {
   CharCreationStep3,
   CharCreationStep4,
   CharCreationStep5,
+  CharCreationStep6,
+  CharCreationStep7,
   CharacterHeader,
   CharacterSkills,
   CharacterStatus,
