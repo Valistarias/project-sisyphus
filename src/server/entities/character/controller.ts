@@ -97,11 +97,7 @@ const findCharactersByPlayer = async (
           })
           .populate<{ background: HydratedIBackground }>('background')
           .then((res: HydratedICharacter[]) => {
-            if (res.length === 0) {
-              reject(gemNotFound('Characters'));
-            } else {
-              resolve(res);
-            }
+            resolve(res);
           })
           .catch((err) => {
             reject(err);
@@ -434,7 +430,7 @@ const createOrFindCharacter = async (req: Request): Promise<string> =>
 
 const create = (req: Request, res: Response): void => {
   const {
-    campaignId = null, player = null
+    campaignId, player = null
   } = req.body;
   getUserFromToken(req as IVerifyTokenRequest)
     .then((user) => {
@@ -449,7 +445,7 @@ const create = (req: Request, res: Response): void => {
         character.player = player;
       }
 
-      if (campaignId !== null) {
+      if (campaignId !== undefined) {
         character.campaign = campaignId;
       }
 

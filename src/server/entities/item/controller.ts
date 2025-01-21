@@ -702,8 +702,14 @@ interface CuratedIItemToSend {
     | 'effects'
     | 'actions'
   > & {
-    effects: ICuratedEffectToSend[]
-    actions: ICuratedActionToSend[]
+    effects: Array<{
+      effect: ICuratedEffectToSend
+      i18n?: InternationalizationType
+    }>
+    actions: Array<{
+      action: ICuratedActionToSend
+      i18n?: InternationalizationType
+    }>
   }
   i18n?: InternationalizationType
 }
@@ -715,12 +721,8 @@ const curateSingleItem = (itemSent: IItemSent): CuratedIItemToSend => {
         const data = action.toJSON();
 
         return {
-          ...data,
-          ...(
-            data.i18n !== undefined
-              ? { i18n: JSON.parse(data.i18n) }
-              : {}
-          )
+          action: data,
+          i18n: curateI18n(data.i18n)
         };
       })
     : [];
@@ -730,12 +732,8 @@ const curateSingleItem = (itemSent: IItemSent): CuratedIItemToSend => {
         const data = effect.toJSON();
 
         return {
-          ...data,
-          ...(
-            data.i18n !== undefined
-              ? { i18n: JSON.parse(data.i18n) }
-              : {}
-          )
+          effect: data,
+          i18n: curateI18n(data.i18n)
         };
       })
     : [];

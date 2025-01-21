@@ -14,6 +14,7 @@ import db from '../../models';
 import {
   gemInvalidField, gemNotFound, gemServerError
 } from '../../utils/globalErrorMessage';
+import { deleteCampaignEventByCampaignId } from '../campaignEvent/controller';
 
 import type { ICharacter } from '../character';
 import type {
@@ -43,11 +44,7 @@ const findCampaigns = async (
             select: '_id name campaign'
           })
           .then((res: HydratedICompleteCampaign[]) => {
-            if (res.length === 0) {
-              reject(gemNotFound('Campaigns'));
-            } else {
-              resolve(res);
-            }
+            resolve(res);
           })
           .catch((err) => {
             reject(err);
@@ -324,9 +321,15 @@ const deleteCampaign = (req: Request, res: Response): void => {
 
     return;
   }
-  Campaign.findByIdAndDelete(id)
+  deleteCampaignEventByCampaignId(id)
     .then(() => {
-      res.send({ message: 'Campaign was deleted successfully!' });
+      Campaign.findByIdAndDelete(id)
+        .then(() => {
+          res.send({ message: 'Campaign was deleted successfully!' });
+        })
+        .catch((err: unknown) => {
+          res.status(500).send(gemServerError(err));
+        });
     })
     .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));

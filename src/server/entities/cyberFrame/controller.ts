@@ -255,18 +255,10 @@ const findSingle = (req: Request, res: Response): void => {
         ...data,
         branches: data.branches.map((cyberFrameBranch) => {
           const curatedNodes = cyberFrameBranch.nodes.length > 0
-            ? cyberFrameBranch.nodes.map((node) => {
-                const data = node.toJSON();
-
-                return {
-                  ...data,
-                  ...(
-                    data.i18n !== undefined
-                      ? { i18n: JSON.parse(data.i18n) }
-                      : {}
-                  )
-                };
-              })
+            ? cyberFrameBranch.nodes.map(node => ({
+                node,
+                i18n: curateI18n(node.i18n)
+              }))
             : [];
 
           return {
@@ -303,16 +295,10 @@ const findAll = (req: Request, res: Response): void => {
           ...cyberFrame,
           branches: cyberFrame.branches.map((cyberFrameBranch) => {
             const curatedNodes = cyberFrameBranch.nodes.length > 0
-              ? cyberFrameBranch.nodes.map((node) => {
-                  const data = node;
-
-                  return {
-                    node: data,
-                    i18n: data.i18n !== undefined
-                      ? { i18n: JSON.parse(data.i18n) }
-                      : {}
-                  };
-                })
+              ? cyberFrameBranch.nodes.map(node => ({
+                  node,
+                  i18n: curateI18n(node.i18n)
+                }))
               : [];
 
             return {

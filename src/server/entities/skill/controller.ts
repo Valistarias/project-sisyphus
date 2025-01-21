@@ -343,18 +343,10 @@ const findSingle = (req: Request, res: Response): void => {
         ...data,
         branches: data.branches.map((skillBranch) => {
           const curatedNodes = skillBranch.nodes.length > 0
-            ? skillBranch.nodes.map((node) => {
-                const data = node.toJSON();
-
-                return {
-                  ...data,
-                  ...(
-                    data.i18n !== undefined
-                      ? { i18n: JSON.parse(data.i18n) }
-                      : {}
-                  )
-                };
-              })
+            ? skillBranch.nodes.map(node => ({
+                node,
+                i18n: curateI18n(node.i18n)
+              }))
             : [];
 
           return {
@@ -391,18 +383,10 @@ const findAll = (req: Request, res: Response): void => {
           ...skill,
           branches: skill.branches.map((skillBranch) => {
             const curatedNodes = skillBranch.nodes.length > 0
-              ? skillBranch.nodes.map((node) => {
-                  const data = node;
-
-                  return {
-                    ...data,
-                    ...(
-                      data.i18n !== undefined
-                        ? { i18n: JSON.parse(data.i18n) }
-                        : {}
-                    )
-                  };
-                })
+              ? skillBranch.nodes.map(node => ({
+                  node,
+                  i18n: curateI18n(node.i18n)
+                }))
               : [];
 
             return {

@@ -188,9 +188,9 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = (
     ? Object.values(watchedStats)
     : []
   );
-  const pointsLeft = baseStatPoints ?? 0 - pointSpent;
+  const pointsLeft = (baseStatPoints ?? 0) - pointSpent;
 
-  const statSelectList = (): ReactNode[] => {
+  const statSelectList = useCallback((): ReactNode[] => {
     const cStatElts: ReactNode[] = [];
     let statBlock: ReactNode[] = [];
     stats.forEach(({ stat }, index) => {
@@ -277,7 +277,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = (
                 {t('characterCreation.step2.pointsLeft', { ns: 'components' })}
               </Ap>
               <Ap className="characterCreation-step2__points__value">
-                {baseStatPoints ?? 0 - pointSpent}
+                {pointsLeft}
               </Ap>
               <Button
                 type="submit"
@@ -295,7 +295,15 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = (
     });
 
     return cStatElts;
-  };
+  }, [
+    bonusesByStat,
+    control,
+    minStatAtCreation,
+    pointsLeft,
+    stats,
+    t,
+    watch
+  ]);
 
   return (
     <motion.div

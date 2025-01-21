@@ -570,8 +570,14 @@ const findAll = (req: Request, res: Response): void => {
           FlattenMaps<IWeapon>
           , 'effects' | 'actions' | 'damages'
         > & {
-          effects: ICuratedEffectToSend[]
-          actions: ICuratedActionToSend[]
+          effects: Array<{
+            effect: ICuratedEffectToSend
+            i18n?: InternationalizationType
+          }>
+          actions: Array<{
+            action: ICuratedActionToSend
+            i18n?: InternationalizationType
+          }>
           damages: Array<FlattenMaps<HydratedIDamage>>
         }
         i18n?: InternationalizationType
@@ -583,12 +589,8 @@ const findAll = (req: Request, res: Response): void => {
                 const data = action.toJSON();
 
                 return {
-                  ...data,
-                  ...(
-                    data.i18n !== undefined
-                      ? { i18n: JSON.parse(data.i18n) }
-                      : {}
-                  )
+                  action: data,
+                  i18n: curateI18n(data.i18n)
                 };
               })
             : [];
@@ -598,12 +600,8 @@ const findAll = (req: Request, res: Response): void => {
                 const data = effect.toJSON();
 
                 return {
-                  ...data,
-                  ...(
-                    data.i18n !== undefined
-                      ? { i18n: JSON.parse(data.i18n) }
-                      : {}
-                  )
+                  effect: data,
+                  i18n: curateI18n(data.i18n)
                 };
               })
             : [];
@@ -636,8 +634,14 @@ const findAllStarter = (req: Request, res: Response): void => {
           FlattenMaps<IWeapon>
           , 'effects' | 'actions' | 'damages'
         > & {
-          effects: ICuratedEffectToSend[]
-          actions: ICuratedActionToSend[]
+          effects: Array<{
+            effect: ICuratedEffectToSend
+            i18n?: InternationalizationType
+          }>
+          actions: Array<{
+            action: ICuratedActionToSend
+            i18n?: InternationalizationType
+          }>
           damages: Array<FlattenMaps<HydratedIDamage>>
         }
         i18n?: InternationalizationType
@@ -649,12 +653,8 @@ const findAllStarter = (req: Request, res: Response): void => {
                 const data = action.toJSON();
 
                 return {
-                  ...data,
-                  ...(
-                    data.i18n !== undefined
-                      ? { i18n: JSON.parse(data.i18n) }
-                      : {}
-                  )
+                  action: data,
+                  i18n: curateI18n(data.i18n)
                 };
               })
             : [];
@@ -664,12 +664,8 @@ const findAllStarter = (req: Request, res: Response): void => {
                 const data = effect.toJSON();
 
                 return {
-                  ...data,
-                  ...(
-                    data.i18n !== undefined
-                      ? { i18n: JSON.parse(data.i18n) }
-                      : {}
-                  )
+                  effect: data,
+                  i18n: curateI18n(data.i18n)
                 };
               })
             : [];

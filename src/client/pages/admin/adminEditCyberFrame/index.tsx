@@ -56,7 +56,8 @@ const AdminEditCyberFrame: FC = () => {
   } = useConfirmMessage();
   const { id } = useParams();
   const {
-    ruleBooks, reloadCyberFrames
+    ruleBooks,
+    reloadCyberFrames
   } = useGlobalVars();
   const navigate = useNavigate();
 

@@ -122,7 +122,10 @@ const SmartSelect: FC<IAp> = ({
               value={
                 isMulti
                   ? options.filter(
-                      c => (value as unknown[]).includes(c.value)
+                      c => (
+                        value !== undefined
+                        && (value as unknown[]).includes(c.value)
+                      )
                     )
                   : options.find(c => c.value === value)
               }

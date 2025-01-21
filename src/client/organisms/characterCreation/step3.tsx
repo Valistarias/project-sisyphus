@@ -203,7 +203,7 @@ const CharacterCreationStep3: FC<ICharacterCreationStep3> = (
       return [];
     }
     const statElts: ReactNode[] = [];
-    const nbSkillSelected = nbBeginningSkills ?? 0 - selectedSkills.length;
+    const nbSkillLeft = (nbBeginningSkills ?? 0) - selectedSkills.length;
     aggregatedSkills.forEach(({
       stat, skills
     }) => {
@@ -257,12 +257,12 @@ const CharacterCreationStep3: FC<ICharacterCreationStep3> = (
                 const skillVal = valMod + (selected ? bonus : 0);
                 let icon: typeIcons = 'Add';
                 if (selected) {
-                  if (nbSkillSelected === 0) {
+                  if (nbSkillLeft === 0) {
                     icon = 'Check';
                   } else {
                     icon = 'Minus';
                   }
-                } else if (nbSkillSelected === 0) {
+                } else if (nbSkillLeft === 0) {
                   icon = 'Cross';
                 }
 
@@ -277,9 +277,9 @@ const CharacterCreationStep3: FC<ICharacterCreationStep3> = (
                     <span className="characterCreation-step3__stat-block__content__name">
                       <Button
                         icon={icon}
-                        theme={selected || nbSkillSelected === 0 ? 'text-only' : 'solid'}
+                        theme={selected || nbSkillLeft === 0 ? 'text-only' : 'solid'}
                         size="small"
-                        disabled={nbSkillSelected === 0 && !selected}
+                        disabled={nbSkillLeft === 0 && !selected}
                         onClick={() => {
                           setSelectedSkills((prev) => {
                             const next = [...prev];
@@ -332,12 +332,12 @@ const CharacterCreationStep3: FC<ICharacterCreationStep3> = (
               <Ap className="characterCreation-step3__points__text">
                 {t('characterCreation.step3.pointsLeft', { ns: 'components' })}
               </Ap>
-              <Ap className="characterCreation-step3__points__value">{nbSkillSelected}</Ap>
+              <Ap className="characterCreation-step3__points__value">{nbSkillLeft}</Ap>
               <Button
                 type="submit"
                 className="characterCreation-step3__points__btn"
-                disabled={nbSkillSelected !== 0}
-                theme={nbSkillSelected !== 0 ? 'text-only' : 'afterglow'}
+                disabled={nbSkillLeft !== 0}
+                theme={nbSkillLeft !== 0 ? 'text-only' : 'afterglow'}
                 onClick={handleSubmitSkills}
               >
                 {t('characterCreation.step3.next', { ns: 'components' })}
