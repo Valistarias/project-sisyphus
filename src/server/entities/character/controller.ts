@@ -524,9 +524,6 @@ const updateInfos = (req: Request, res: Response): void => {
         if (campaignId !== null) {
           char.campaign = campaignId;
         }
-        if (campaignId === false) {
-          char.campaign = undefined;
-        }
         char
           .save()
           .then(() => {

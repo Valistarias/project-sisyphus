@@ -20,7 +20,7 @@
     border: 1px solid var(--primary);
     box-shadow: 0 0 2rem var(--primary-10);
     display: flex;
-    font-family: var(--main-font);
+    font-family: var(--mono-font);
     font-size: 1.4rem;
     letter-spacing: normal;
     line-height: 2rem;
@@ -31,7 +31,7 @@
     position: absolute;
     text-transform: none;
     transition: opacity 0.3s ease;
-    width: 18rem;
+    width: 24rem;
     z-index: 1;
 
     &__info {

@@ -77,8 +77,7 @@ const characterSchema = new Schema<ICharacter>(
     },
     campaign: {
       type: Schema.Types.ObjectId,
-      ref: 'Campaign',
-      default: null
+      ref: 'Campaign'
     },
     background: {
       type: Schema.Types.ObjectId,

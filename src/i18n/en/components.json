@@ -185,7 +185,8 @@
     "fromBody": "Body",
     "fromThrottleStat": "To Stat",
     "fromStatGeneric": "Stat",
-    "fromBase": "Base"
+    "fromBase": "Base",
+    "fromBackground": "Background ({{details}})"
   },
   "characterHeader": {
     "close": "Close",

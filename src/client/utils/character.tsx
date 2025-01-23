@@ -160,6 +160,8 @@ export interface ISourcePoints {
   fromStat?: boolean
   fromThrottleStat?: boolean
   fromBase?: boolean
+  fromBackground?: boolean
+  details?: string
 }
 
 export interface IScore {
@@ -266,6 +268,7 @@ const curateCharacterSkills = (
       });
     });
   });
+
   const charStats: Record<string, ICuratedStatWithScore | undefined> = {};
   const charSkills: ICuratedSkillWithScore[] = [];
   skills.forEach(({
@@ -274,6 +277,9 @@ const curateCharacterSkills = (
     const relatedStat = stats.find(({ stat }) => stat._id === skill.stat._id);
     const relatedStatBonuses = statNodesById[skill.stat._id];
     const relatedSkillBonuses = skillNodesById[skill._id];
+    const relatedSkillBackground = character.background?.skillBonuses?.find(
+      ({ skill: bgSkill }) => bgSkill === skill._id
+    );
     if (relatedStat !== undefined) {
       if (charStats[skill.stat._id] === undefined) {
         charStats[skill.stat._id] = {
@@ -282,16 +288,26 @@ const curateCharacterSkills = (
         };
       }
 
-      const score = {
+      const score: IScore = {
         total:
         calculateStatMod(relatedStatBonuses.total)
-        + (relatedSkillBonuses?.total ?? 0),
+        + (relatedSkillBonuses?.total ?? 0)
+        + (relatedSkillBackground?.value ?? 0),
         sources: [
           {
             value: calculateStatMod(relatedStatBonuses.total),
             fromStat: true
           },
-          ...(relatedSkillBonuses?.sources ?? [])
+          ...(relatedSkillBonuses?.sources ?? []),
+          ...(
+            relatedSkillBackground !== undefined
+              ? [{
+                  value: relatedSkillBackground.value,
+                  fromBackground: true,
+                  details: character.background?.title
+                }]
+              : []
+          )
         ]
       };
       charSkills.push({

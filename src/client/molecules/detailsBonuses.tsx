@@ -59,6 +59,15 @@ const DetailsBonuses: FC<IDetailsBonuses> = ({
         total: bonus.value,
         text: statTexts?.title ?? t('detailBonuses.fromStatGeneric', { ns: 'components' })
       };
+    } else if (bonus.fromBackground === true) {
+      lines.background = {
+        id: 'background',
+        total: bonus.value,
+        text: t(
+          'detailBonuses.fromBackground',
+          { ns: 'components', details: bonus.details }
+        )
+      };
     } else if (
       bonus.origin?.skill !== undefined
       || bonus.origin?.cyberFrame !== undefined
