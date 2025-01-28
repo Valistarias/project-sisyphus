@@ -78,3 +78,7 @@ export type ICuratedEnnemyAttackToSend = FlattenMaps<Omit<IEnnemyAttack, 'damage
 } & {
   _id: Types.ObjectId
 }>;
+
+export type Lean<T> = T & {
+  _id: string
+};

@@ -126,7 +126,7 @@ export {
   MailTokenModel, type IMailToken
 } from './mailToken/model';
 export {
-  NodeModel, type HydratedINode, type INode
+  NodeModel, type HydratedINode, type INode, type LeanINode
 } from './node/model';
 export {
   NotionModel, type HydratedNotion, type INotion

@@ -2,10 +2,11 @@ import {
   Schema, model, type HydratedDocument, type Model, type ObjectId
 } from 'mongoose';
 
-import type { HydratedIBackground } from '../../background/model';
-import type { HydratedIBodyAmmo, HydratedIBodyArmor, HydratedIBodyBag, HydratedIBodyImplant, HydratedIBodyItem, HydratedIBodyProgram, HydratedIBodyStat, HydratedIBodyWeapon, IBody } from '../../body';
+import type { Lean } from '../../../utils/types';
+import type { HydratedIBackground, IBackground } from '../../background/model';
+import type { HydratedIBody, IBody, IBodyAmmo, IBodyArmor, IBodyBag, IBodyImplant, IBodyItem, IBodyProgram, IBodyStat, IBodyWeapon } from '../../body';
 import type { ICampaign } from '../../campaign/model';
-import type { HydratedINode } from '../../node/model';
+import type { HydratedINode, LeanINode } from '../../node/model';
 import type { IUser } from '../../user/model';
 
 interface ICharacter {
@@ -41,29 +42,34 @@ interface ICharacter {
   background?: ObjectId
 }
 
-type HydratedIBodyRecursive = HydratedDocument<
-  IBody & {
-    stats: HydratedIBodyStat[]
-    ammos: HydratedIBodyAmmo[]
-    armors: HydratedIBodyArmor[]
-    bags: HydratedIBodyBag[]
-    implants: HydratedIBodyImplant[]
-    items: HydratedIBodyItem[]
-    programs: HydratedIBodyProgram[]
-    weapons: HydratedIBodyWeapon[]
-  }
->;
+type LeanIPopulatedBody = IBody & {
+  stats: IBodyStat[]
+  ammos: IBodyAmmo[]
+  armors: IBodyArmor[]
+  bags: IBodyBag[]
+  implants: IBodyImplant[]
+  items: IBodyItem[]
+  programs: IBodyProgram[]
+  weapons: IBodyWeapon[]
+};
 
 type LeanICharacter = Omit<ICharacter, 'player' | 'campaign' | 'createdBy' | 'background'> & {
+  player?: Lean<IUser>
+  createdBy: Lean<IUser>
+  campaign?: Lean<ICampaign>
+  nodes?: Array<Lean<LeanINode>>
+  bodies?: LeanIPopulatedBody[]
+  background?: Lean<IBackground>
+};
+
+type HydratedICharacter = HydratedDocument<Omit<ICharacter, 'player' | 'campaign' | 'createdBy' | 'background'> & {
   player?: HydratedDocument<IUser>
   createdBy: HydratedDocument<IUser>
   campaign?: HydratedDocument<ICampaign>
   nodes?: HydratedINode[]
-  bodies?: HydratedIBodyRecursive[]
+  bodies?: HydratedIBody[]
   background?: HydratedIBackground
-};
-
-type HydratedICharacter = HydratedDocument<LeanICharacter>;
+}>;
 
 const characterSchema = new Schema<ICharacter>(
   {
@@ -128,5 +134,5 @@ export {
   type HydratedICharacter,
   type ICharacter,
   type LeanICharacter,
-  type HydratedIBodyRecursive
+  type LeanIPopulatedBody
 };

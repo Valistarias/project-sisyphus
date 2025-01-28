@@ -28,14 +28,15 @@ import {
 } from './node/controller';
 
 import type { HydratedICharacter } from './index';
+import type { Lean } from '../../utils/types';
 import type { CuratedIAmmo } from '../ammo/controller';
-import type { HydratedIBackground } from '../background/model';
+import type { HydratedIBackground, IBackground } from '../background/model';
 import type { CuratedIBag } from '../bag/controller';
-import type { HydratedIBodyAmmo, HydratedIBodyBag, HydratedIBodyStat, IBody, IBodyAmmo, IBodyArmor, IBodyBag, IBodyImplant, IBodyItem, IBodyProgram, IBodyWeapon } from '../body';
+import type { HydratedIBody, HydratedIBodyAmmo, HydratedIBodyBag, HydratedIBodyStat, IBody, IBodyAmmo, IBodyArmor, IBodyBag, IBodyImplant, IBodyItem, IBodyProgram, IBodyStat, IBodyWeapon } from '../body';
 import type { ICampaign } from '../campaign/model';
-import type { HydratedINode } from '../node/model';
+import type { HydratedINode, LeanINode } from '../node/model';
 import type { IUser } from '../user/model';
-import type { HydratedIBodyRecursive, LeanICharacter } from './id/model';
+import type { LeanIPopulatedBody, LeanICharacter } from './id/model';
 
 import { curateI18n } from '../../utils';
 
@@ -66,7 +67,7 @@ const findCharactersByPlayer = async (
                 '_id title summary icon i18n rank quote cyberFrameBranch skillBranch effects actions skillBonuses statBonuses charParamBonuses'
             }
           })
-          .populate<{ bodies: HydratedIBodyRecursive[] }>({
+          .populate<{ bodies: HydratedIBody[] }>({
             path: 'bodies',
             select: '_id character alive hp stats createdAt',
             populate: [
@@ -134,10 +135,10 @@ const findCompleteCharacterById = async (
         }
         Character.findById(id)
           .lean()
-          .populate<{ player: HydratedDocument<IUser> }>('player')
-          .populate<{ createdBy: HydratedDocument<IUser> }>('createdBy')
-          .populate<{ campaign: HydratedDocument<ICampaign> }>('campaign')
-          .populate<{ nodes: HydratedINode[] }>({
+          .populate<{ player: Lean<IUser> }>('player')
+          .populate<{ createdBy: Lean<IUser> }>('createdBy')
+          .populate<{ campaign: Lean<ICampaign> }>('campaign')
+          .populate<{ nodes: Array<Lean<LeanINode>> }>({
             path: 'nodes',
             select: '_id character node used',
             populate: {
@@ -153,7 +154,7 @@ const findCompleteCharacterById = async (
               ]
             }
           })
-          .populate<{ bodies: HydratedIBodyRecursive[] }>({
+          .populate<{ bodies: LeanIPopulatedBody[] }>({
             path: 'bodies',
             select: '_id character alive hp stats createdAt',
             populate: [
@@ -253,7 +254,7 @@ const findCompleteCharacterById = async (
               }
             ]
           })
-          .populate<{ background: HydratedIBackground }>({
+          .populate<{ background: Lean<IBackground> }>({
             path: 'background',
             select: '_id title summary i18n skillBonuses statBonuses charParamBonuses createdAt',
             populate: [
@@ -306,7 +307,7 @@ const findCharacterById = async (
             path: 'nodes',
             select: '_id character node used'
           })
-          .populate<{ bodies: HydratedIBodyRecursive[] }>({
+          .populate<{ bodies: LeanIPopulatedBody[] }>({
             path: 'bodies',
             select: '_id character alive hp stats createdAt',
             populate: [
@@ -724,18 +725,18 @@ type IBodyWeaponSent = HydratedDocument<
   }
 >;
 
-export type ICharacterSent = Omit<LeanICharacter, 'bodies'> & {
-  bodies?: Array<IBody & {
-    stats: HydratedIBodyStat[]
-    ammos: HydratedIBodyAmmo[]
-    armors: IBodyArmorSent[]
-    bags: HydratedIBodyBag[]
-    implants: IBodyImplantSent[]
-    items: IBodyItemSent[]
-    programs: IBodyProgramSent[]
-    weapons: IBodyWeaponSent[]
-  }>
-};
+// export type ICharacterSent = Omit<LeanICharacter, 'bodies'> & {
+//   bodies?: Array<IBody & {
+//     stats: IBodyStat[]
+//     ammos: IBodyAmmo[]
+//     armors: IBodyArmorSent[]
+//     bags: IBodyBag[]
+//     implants: IBodyImplantSent[]
+//     items: IBodyItemSent[]
+//     programs: IBodyProgramSent[]
+//     weapons: IBodyWeaponSent[]
+//   }>
+// };
 
 type CuratedICharacterToSend = Omit<LeanICharacter, 'bodies'> & {
   bodies: Array<{
@@ -768,7 +769,7 @@ type CuratedICharacterToSend = Omit<LeanICharacter, 'bodies'> & {
 };
 
 const curateSingleCharacter = (
-  characterSent: ICharacterSent
+  characterSent: LeanICharacter
 ): CuratedICharacterToSend => {
   const curatedBodies = characterSent.bodies?.map(body => ({
     ...body,
@@ -836,9 +837,8 @@ const findSingle = (req: Request, res: Response): void => {
   }
   findCompleteCharacterById(characterId, req)
     .then(
-      ({ char }) => res.send(curateSingleCharacter(char as ICharacterSent)))
+      ({ char }) => res.send(curateSingleCharacter(char)))
     .catch((err: unknown) => {
-      console.log('err', err);
       res.status(404).send(err);
     });
 };

@@ -729,13 +729,12 @@ export interface CuratedIArmorToSend {
 }
 
 export const curateSingleArmor = (
-  armorSent: IArmorSent,
-  alreadyJson = false
+  armorSent: IArmorSent
 ): CuratedIArmorToSend => {
   const curatedActions
   = armorSent.actions.length > 0
     ? armorSent.actions.map((action) => {
-        const data = alreadyJson ? action : action.toJSON();
+        const data = action.toJSON();
 
         return {
           action: data,

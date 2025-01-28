@@ -8,8 +8,13 @@ import type {
   HydratedIEffect,
   HydratedISkillBonus,
   HydratedIStatBonus,
+  IAction,
+  ICharParamBonus,
   ICyberFrameBranch,
-  ISkillBranch
+  IEffect,
+  ISkillBonus,
+  ISkillBranch,
+  IStatBonus
 } from '../index';
 
 interface INode {
@@ -65,6 +70,25 @@ type HydratedINode = HydratedDocument<
     cyberFrameBranch?: ICyberFrameBranch | ObjectId
   }
 >;
+
+type LeanINode = Omit<
+  INode,
+  | 'effects'
+  | 'actions'
+  | 'skillBonuses'
+  | 'statBonuses'
+  | 'charParamBonuses'
+  | 'skillBranch'
+  | 'cyberFrameBranch'
+> & {
+  effects: IEffect[] | string[]
+  actions: IAction[] | string[]
+  skillBonuses: ISkillBonus[] | string[]
+  statBonuses: IStatBonus[] | string[]
+  charParamBonuses: ICharParamBonus[] | string[]
+  skillBranch?: ISkillBranch | ObjectId
+  cyberFrameBranch?: ICyberFrameBranch | ObjectId
+};
 
 const nodeSchema = new Schema<INode>({
   title: String,
@@ -126,5 +150,5 @@ const nodeSchema = new Schema<INode>({
 const NodeModel = (): Model<INode> => model('Node', nodeSchema);
 
 export {
-  NodeModel, type HydratedINode, type INode
+  NodeModel, type HydratedINode, type INode, type LeanINode
 };
