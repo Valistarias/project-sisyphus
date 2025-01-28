@@ -4,7 +4,10 @@ import BagDisplay from './bagDisplay';
 import CampaignEventResult from './campaignEventLine';
 import CampaignEventTab from './campaignEventTab';
 import {
-  CharacterHeader, CharacterSkills, CharacterStatus
+  CharacterHeader,
+  CharacterSkills,
+  CharacterStatus,
+  CharacterActionBoard
 } from './character';
 import {
   CharCreationStep1,
@@ -54,5 +57,6 @@ export {
   WeaponDisplay,
   basicRichTextElementExtentions,
   completeRichTextElementExtentions,
+  CharacterActionBoard,
   type IDragElt
 };

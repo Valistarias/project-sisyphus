@@ -19,7 +19,7 @@ const replaceBagByBody = async (req: {
           });
       })
       .catch((err) => {
-        reject(gemServerError(err));
+        reject(err);
       });
   });
 
@@ -41,7 +41,7 @@ const createBagsByBody = async (req: {
         resolve(true);
       })
       .catch((err) => {
-        reject(gemServerError(err));
+        reject(err);
       });
   });
 
@@ -69,7 +69,7 @@ const updateBagByBody = async (req: {
         resolve(true);
       })
       .catch((err) => {
-        reject(gemServerError(err));
+        reject(err);
       });
   });
 
@@ -80,7 +80,7 @@ const deleteBagsByBody = async (bodyId: string): Promise<boolean> =>
         resolve(true);
       })
       .catch((err) => {
-        reject(gemServerError(err));
+        reject(err);
       });
   });
 

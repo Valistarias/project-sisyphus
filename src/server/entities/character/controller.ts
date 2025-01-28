@@ -13,7 +13,12 @@ import {
   gemServerError,
   gemUnauthorizedGlobal
 } from '../../utils/globalErrorMessage';
+import { curateSingleArmor, type CuratedIArmorToSend, type IArmorSent } from '../armor/controller';
 import { deleteBodiesRecursive } from '../body/controller';
+import { curateSingleImplant, type CuratedIImplantToSend, type IImplantSent } from '../implant/controller';
+import { curateSingleItem, type CuratedIItemToSend, type IItemSent } from '../item/controller';
+import { curateSingleProgram, type CuratedIProgramToSend, type IProgramSent } from '../program/controller';
+import { curateSingleWeapon, type CuratedIWeaponToSend, type IWeaponSent } from '../weapon/controller';
 
 import {
   createNodesByCharacter,
@@ -22,13 +27,17 @@ import {
   replaceCyberFrameNodeByCharacter
 } from './node/controller';
 
+import type { HydratedICharacter } from './index';
+import type { CuratedIAmmo } from '../ammo/controller';
 import type { HydratedIBackground } from '../background/model';
-import type { HydratedIBody } from '../body';
+import type { CuratedIBag } from '../bag/controller';
+import type { HydratedIBodyAmmo, HydratedIBodyBag, HydratedIBodyStat, IBody, IBodyAmmo, IBodyArmor, IBodyBag, IBodyImplant, IBodyItem, IBodyProgram, IBodyWeapon } from '../body';
 import type { ICampaign } from '../campaign/model';
 import type { HydratedINode } from '../node/model';
 import type { IUser } from '../user/model';
-import type { LeanICharacter } from './id/model';
-import type { HydratedICharacter } from './index';
+import type { HydratedIBodyRecursive, LeanICharacter } from './id/model';
+
+import { curateI18n } from '../../utils';
 
 const { Character } = db;
 
@@ -54,10 +63,10 @@ const findCharactersByPlayer = async (
             populate: {
               path: 'node',
               select:
-                '_id title summary icon i18n rank quote cyberFrameBranch skillBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses'
+                '_id title summary icon i18n rank quote cyberFrameBranch skillBranch effects actions skillBonuses statBonuses charParamBonuses'
             }
           })
-          .populate<{ bodies: HydratedIBody[] }>({
+          .populate<{ bodies: HydratedIBodyRecursive[] }>({
             path: 'bodies',
             select: '_id character alive hp stats createdAt',
             populate: [
@@ -134,7 +143,7 @@ const findCompleteCharacterById = async (
             populate: {
               path: 'node',
               select:
-                '_id title summary icon i18n rank quote cyberFrameBranch skillBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses',
+                '_id title summary icon i18n rank quote cyberFrameBranch skillBranch effects actions skillBonuses statBonuses charParamBonuses',
               populate: [
                 'effects',
                 'actions',
@@ -144,7 +153,7 @@ const findCompleteCharacterById = async (
               ]
             }
           })
-          .populate<{ bodies: HydratedIBody[] }>({
+          .populate<{ bodies: HydratedIBodyRecursive[] }>({
             path: 'bodies',
             select: '_id character alive hp stats createdAt',
             populate: [
@@ -154,31 +163,93 @@ const findCompleteCharacterById = async (
               },
               {
                 path: 'ammos',
-                select: '_id body ammo bag qty'
+                select: '_id body ammo bag qty',
+                populate: ['ammo']
               },
               {
                 path: 'armors',
-                select: '_id body armor bag equiped'
+                select: '_id body armor bag equiped',
+                populate: [
+                  {
+                    path: 'armor',
+                    select: '_id title summary i18n rarity itemType itemModifiers armorType effects actions skillBonuses statBonuses charParamBonuses',
+                    populate: [
+                      'effects',
+                      'actions',
+                      'skillBonuses',
+                      'statBonuses',
+                      'charParamBonuses'
+                    ]
+                  }
+                ]
               },
               {
                 path: 'bags',
-                select: '_id body bag equiped'
+                select: '_id body bag equiped',
+                populate: ['bag']
               },
               {
                 path: 'implants',
-                select: '_id body implant bag equiped'
+                select: '_id body implant bag equiped',
+                populate: [
+                  {
+                    path: 'implant',
+                    select: '_id title summary i18n rarity itemType itemModifiers bodyParts effects actions skillBonuses statBonuses charParamBonuses',
+                    populate: [
+                      'effects',
+                      'actions',
+                      'skillBonuses',
+                      'statBonuses',
+                      'charParamBonuses'
+                    ]
+                  }
+                ]
               },
               {
                 path: 'items',
-                select: '_id body item bag qty'
+                select: '_id body item bag qty',
+                populate: [
+                  {
+                    path: 'item',
+                    select: '_id title summary i18n rarity itemType itemModifiers effects actions skillBonuses statBonuses charParamBonuses',
+                    populate: [
+                      'effects',
+                      'actions',
+                      'skillBonuses',
+                      'statBonuses',
+                      'charParamBonuses'
+                    ]
+                  }
+                ]
               },
               {
                 path: 'programs',
-                select: '_id body program bag uses'
+                select: '_id body program bag uses',
+                populate: [
+                  {
+                    path: 'program',
+                    select: '_id title summary i18n rarity itemType programScope uses ram radius ai aiSummoned damages',
+                    populate: [
+                      'ai',
+                      'damages'
+                    ]
+                  }
+                ]
               },
               {
                 path: 'weapons',
-                select: '_id body weapon bag ammo bullets'
+                select: '_id body weapon bag ammo bullets',
+                populate: [
+                  {
+                    path: 'weapon',
+                    select: '_id title summary quote i18n weaponType rarity weaponScope itemModifiers magasine ammoPerShot effects actions damages',
+                    populate: [
+                      'effects',
+                      'actions',
+                      'damages'
+                    ]
+                  }
+                ]
               }
             ]
           })
@@ -192,6 +263,7 @@ const findCompleteCharacterById = async (
             ]
           })
           .then((res?: LeanICharacter | null) => {
+            console.log('res', res);
             if (res === undefined || res === null) {
               reject(gemNotFound('Character'));
             } else {
@@ -202,6 +274,7 @@ const findCompleteCharacterById = async (
             }
           })
           .catch((err) => {
+            console.log('err', err);
             reject(err);
           });
       })
@@ -233,7 +306,7 @@ const findCharacterById = async (
             path: 'nodes',
             select: '_id character node used'
           })
-          .populate<{ bodies: HydratedIBody[] }>({
+          .populate<{ bodies: HydratedIBodyRecursive[] }>({
             path: 'bodies',
             select: '_id character alive hp stats createdAt',
             populate: [
@@ -278,13 +351,13 @@ const findCharacterById = async (
             } else {
               const canEdit: boolean
                 = String(
-                  (res as HydratedICharacter).player?._id
+                  res.player._id
                 ) === String(user._id)
                 || String(
-                  (res as HydratedICharacter).createdBy._id
+                  res.createdBy._id
                 ) === String(user._id);
               resolve({
-                char: res as HydratedICharacter,
+                char: res,
                 canEdit
               });
             }
@@ -616,6 +689,144 @@ const deleteCharacter = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
+type IBodyArmorSent = HydratedDocument<
+  Omit<IBodyArmor, 'armor'> & { armor: IArmorSent }
+>;
+
+type IBodyImplantSent = HydratedDocument<
+  Omit<
+    IBodyImplant,
+    | 'implant'
+  > & {
+    implant: IImplantSent
+  }
+>;
+
+type IBodyItemSent = HydratedDocument<
+  Omit<
+    IBodyItem,
+    | 'item'
+  > & {
+    item: IItemSent
+  }
+>;
+
+type IBodyProgramSent = HydratedDocument<
+  Omit<IBodyProgram, 'program'> & { program: IProgramSent }
+>;
+
+type IBodyWeaponSent = HydratedDocument<
+  Omit<
+    IBodyWeapon,
+    | 'weapon'
+  > & {
+    weapon: IWeaponSent
+  }
+>;
+
+export type ICharacterSent = Omit<LeanICharacter, 'bodies'> & {
+  bodies?: Array<IBody & {
+    stats: HydratedIBodyStat[]
+    ammos: HydratedIBodyAmmo[]
+    armors: IBodyArmorSent[]
+    bags: HydratedIBodyBag[]
+    implants: IBodyImplantSent[]
+    items: IBodyItemSent[]
+    programs: IBodyProgramSent[]
+    weapons: IBodyWeaponSent[]
+  }>
+};
+
+type CuratedICharacterToSend = Omit<LeanICharacter, 'bodies'> & {
+  bodies: Array<{
+    alive: boolean
+    hp: number
+    character: string
+    stats: HydratedIBodyStat[]
+    ammos: Array<Omit<IBodyAmmo, 'ammo'> & {
+      ammo: CuratedIAmmo
+    }>
+    armors: Array<Omit<IBodyArmor, 'armor'> & {
+      armor: CuratedIArmorToSend
+    }>
+    bags: Array<Omit<IBodyBag, 'bag'> & {
+      bag: CuratedIBag
+    }>
+    implants: Array<Omit<IBodyImplant, 'implant'> & {
+      implant: CuratedIImplantToSend
+    }>
+    items: Array<Omit<IBodyItem, 'item'> & {
+      item: CuratedIItemToSend
+    }>
+    programs: Array<Omit<IBodyProgram, 'program'> & {
+      program: CuratedIProgramToSend
+    }>
+    weapons: Array<Omit<IBodyWeapon, 'weapon'> & {
+      weapon: CuratedIWeaponToSend
+    }>
+  }>
+};
+
+const curateSingleCharacter = (
+  characterSent: ICharacterSent
+): CuratedICharacterToSend => {
+  const curatedBodies = characterSent.bodies?.map(body => ({
+    ...body,
+    character: body.character.toString(),
+    ammos: body.ammos.map((bodyAmmoSent) => {
+      const ammo = bodyAmmoSent.ammo.toJSON();
+
+      return {
+        ...bodyAmmoSent,
+        ammo: {
+          ammo,
+          i18n: curateI18n(ammo.i18n)
+        }
+      };
+    }),
+    armors: body.armors.map(bodyArmorSent => ({
+      ...bodyArmorSent,
+      armor: curateSingleArmor(bodyArmorSent.armor, true)
+    })),
+    bags: body.bags.map((bodyBagSent) => {
+      const bag = bodyBagSent.bag.toJSON();
+
+      return {
+        ...bodyBagSent,
+        bag: {
+          bag,
+          i18n: curateI18n(bag.i18n)
+        }
+      };
+    }),
+    implants: body.implants.map(
+      bodyImplantSent => ({
+        ...bodyImplantSent,
+        implant: curateSingleImplant(bodyImplantSent.implant)
+      })
+    ),
+    items: body.items.map(bodyItemSent => ({
+      ...bodyItemSent,
+      item: curateSingleItem(bodyItemSent.item)
+    })),
+    programs: body.programs.map(
+      bodyProgramSent => ({
+        ...bodyProgramSent,
+        program: curateSingleProgram(bodyProgramSent.program)
+      })
+    ),
+    weapons: body.weapons.map(bodyWeaponSent => ({
+      ...bodyWeaponSent,
+      weapon: curateSingleWeapon(bodyWeaponSent.weapon)
+    }))
+  }));
+
+  return {
+    ...characterSent,
+    bodies: curatedBodies ?? []
+  };
+};
+
 const findSingle = (req: Request, res: Response): void => {
   const { characterId } = req.query;
   if (characterId === undefined || typeof characterId !== 'string') {
@@ -624,8 +835,12 @@ const findSingle = (req: Request, res: Response): void => {
     return;
   }
   findCompleteCharacterById(characterId, req)
-    .then(({ char }) => res.send(char))
-    .catch((err: unknown) => res.status(404).send(err));
+    .then(
+      ({ char }) => res.send(curateSingleCharacter(char as ICharacterSent)))
+    .catch((err: unknown) => {
+      console.log('err', err);
+      res.status(404).send(err);
+    });
 };
 
 const findAll = (req: Request, res: Response): void => {

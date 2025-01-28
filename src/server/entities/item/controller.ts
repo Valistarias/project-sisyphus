@@ -682,7 +682,7 @@ const deleteItem = (req: Request, res: Response): void => {
     });
 };
 
-type IItemSent = HydratedDocument<
+export type IItemSent = HydratedDocument<
   Omit<
     IItem,
     | 'effects'
@@ -696,7 +696,7 @@ type IItemSent = HydratedDocument<
   }
 >;
 
-interface CuratedIItemToSend {
+export interface CuratedIItemToSend {
   item: Omit<
     FlattenMaps<IItem>,
     | 'effects'
@@ -714,7 +714,7 @@ interface CuratedIItemToSend {
   i18n?: InternationalizationType
 }
 
-const curateSingleItem = (itemSent: IItemSent): CuratedIItemToSend => {
+export const curateSingleItem = (itemSent: IItemSent): CuratedIItemToSend => {
   const curatedActions
   = itemSent.actions.length > 0
     ? itemSent.actions.map((action) => {

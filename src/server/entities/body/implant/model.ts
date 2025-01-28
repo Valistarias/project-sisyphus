@@ -2,7 +2,7 @@ import {
   Schema, model, type HydratedDocument, type Model, type ObjectId
 } from 'mongoose';
 
-import type { IImplant } from '../../implant/model';
+import type { HydratedIImplant } from '../../implant/model';
 
 interface IBodyImplant {
   /** When the body was created */
@@ -18,7 +18,7 @@ interface IBodyImplant {
 }
 
 type HydratedIBodyImplant = HydratedDocument<
-  Omit<IBodyImplant, 'implant'> & { implant: HydratedDocument<IImplant> }
+  Omit<IBodyImplant, 'implant'> & { implant: HydratedIImplant }
 >;
 
 const BodyImplantSchema = new Schema<IBodyImplant>({

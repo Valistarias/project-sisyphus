@@ -697,7 +697,7 @@ const deleteImplant = (req: Request, res: Response): void => {
     });
 };
 
-type IImplantSent = HydratedDocument<
+export type IImplantSent = HydratedDocument<
   Omit<
     IImplant,
     | 'effects'
@@ -711,7 +711,7 @@ type IImplantSent = HydratedDocument<
   }
 >;
 
-interface CuratedIImplantToSend {
+export interface CuratedIImplantToSend {
   implant: Omit<
     FlattenMaps<IImplant>,
     | 'effects'
@@ -729,7 +729,7 @@ interface CuratedIImplantToSend {
   i18n?: InternationalizationType
 }
 
-const curateSingleImplant = (
+export const curateSingleImplant = (
   implantSent: IImplantSent
 ): CuratedIImplantToSend => {
   const curatedActions

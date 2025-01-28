@@ -3,7 +3,7 @@ import {
 } from 'mongoose';
 
 import type { HydratedIBackground } from '../../background/model';
-import type { HydratedIBody } from '../../body';
+import type { HydratedIBodyAmmo, HydratedIBodyArmor, HydratedIBodyBag, HydratedIBodyImplant, HydratedIBodyItem, HydratedIBodyProgram, HydratedIBodyStat, HydratedIBodyWeapon, IBody } from '../../body';
 import type { ICampaign } from '../../campaign/model';
 import type { HydratedINode } from '../../node/model';
 import type { IUser } from '../../user/model';
@@ -41,12 +41,25 @@ interface ICharacter {
   background?: ObjectId
 }
 
+type HydratedIBodyRecursive = HydratedDocument<
+  IBody & {
+    stats: HydratedIBodyStat[]
+    ammos: HydratedIBodyAmmo[]
+    armors: HydratedIBodyArmor[]
+    bags: HydratedIBodyBag[]
+    implants: HydratedIBodyImplant[]
+    items: HydratedIBodyItem[]
+    programs: HydratedIBodyProgram[]
+    weapons: HydratedIBodyWeapon[]
+  }
+>;
+
 type LeanICharacter = Omit<ICharacter, 'player' | 'campaign' | 'createdBy' | 'background'> & {
   player?: HydratedDocument<IUser>
   createdBy: HydratedDocument<IUser>
   campaign?: HydratedDocument<ICampaign>
   nodes?: HydratedINode[]
-  bodies?: HydratedIBody[]
+  bodies?: HydratedIBodyRecursive[]
   background?: HydratedIBackground
 };
 
@@ -111,5 +124,9 @@ characterSchema.virtual('bodies', {
 const CharacterModel = (): Model<ICharacter> => model('Character', characterSchema);
 
 export {
-  CharacterModel, type HydratedICharacter, type ICharacter, type LeanICharacter
+  CharacterModel,
+  type HydratedICharacter,
+  type ICharacter,
+  type LeanICharacter,
+  type HydratedIBodyRecursive
 };

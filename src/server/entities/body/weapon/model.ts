@@ -2,8 +2,7 @@ import {
   Schema, model, type HydratedDocument, type Model, type ObjectId
 } from 'mongoose';
 
-import type { IAmmo } from '../../ammo/model';
-import type { IWeapon } from '../../weapon/model';
+import type { HydratedIWeapon } from '../../weapon/model';
 
 interface IBodyWeapon {
   /** When the body was created */
@@ -21,9 +20,8 @@ interface IBodyWeapon {
 }
 
 type HydratedIBodyWeapon = HydratedDocument<
-  Omit<IBodyWeapon, 'weapon' | 'ammo'> & {
-    weapon: HydratedDocument<IWeapon>
-    ammo: HydratedDocument<IAmmo>
+  Omit<IBodyWeapon, 'weapon'> & {
+    weapon: HydratedIWeapon
   }
 >;
 

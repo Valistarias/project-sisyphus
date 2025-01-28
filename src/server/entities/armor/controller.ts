@@ -696,7 +696,7 @@ const deleteArmor = (req: Request, res: Response): void => {
     });
 };
 
-type IArmorSent = HydratedDocument<
+export type IArmorSent = HydratedDocument<
   Omit<
     IArmor,
     | 'effects'
@@ -710,7 +710,7 @@ type IArmorSent = HydratedDocument<
   }
 >;
 
-interface CuratedIArmorToSend {
+export interface CuratedIArmorToSend {
   armor: Omit<
     FlattenMaps<IArmor>,
     | 'effects'
@@ -728,13 +728,14 @@ interface CuratedIArmorToSend {
   i18n?: InternationalizationType
 }
 
-const curateSingleArmor = (
-  armorSent: IArmorSent
+export const curateSingleArmor = (
+  armorSent: IArmorSent,
+  alreadyJson = false
 ): CuratedIArmorToSend => {
   const curatedActions
   = armorSent.actions.length > 0
     ? armorSent.actions.map((action) => {
-        const data = action.toJSON();
+        const data = alreadyJson ? action : action.toJSON();
 
         return {
           action: data,

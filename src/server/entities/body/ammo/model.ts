@@ -2,7 +2,7 @@ import {
   Schema, model, type HydratedDocument, type Model, type ObjectId
 } from 'mongoose';
 
-import type { IAmmo } from '../../ammo/model';
+import type { HydratedIAmmo } from '../../ammo/model';
 
 interface IBodyAmmo {
   /** When the body was created */
@@ -18,7 +18,7 @@ interface IBodyAmmo {
 }
 
 type HydratedIBodyAmmo = HydratedDocument<
-  Omit<IBodyAmmo, 'ammo'> & { ammo: HydratedDocument<IAmmo> }
+  Omit<IBodyAmmo, 'ammo'> & { ammo: HydratedIAmmo }
 >;
 
 const BodyAmmoSchema = new Schema<IBodyAmmo>({

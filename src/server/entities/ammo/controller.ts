@@ -221,7 +221,7 @@ const deleteAmmo = (req: Request, res: Response): void => {
     });
 };
 
-interface CuratedIAmmo {
+export interface CuratedIAmmo {
   i18n?: InternationalizationType
   ammo: IAmmo
 }

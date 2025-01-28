@@ -12,7 +12,8 @@ import {
   CampaignEventTab,
   CharacterHeader,
   CharacterSkills,
-  CharacterStatus
+  CharacterStatus,
+  CharacterActionBoard
 } from '../../../organisms';
 import { ErrorPage } from '../../index';
 
@@ -90,6 +91,7 @@ const Character: FC = () => {
                 setToRoll(dices, id);
               }}
             />
+            <CharacterActionBoard />
           </div>
         </div>
       </div>

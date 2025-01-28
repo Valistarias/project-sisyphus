@@ -22,7 +22,7 @@ const replaceAmmoByBody = async (req: {
           });
       })
       .catch((err) => {
-        reject(gemServerError(err));
+        reject(err);
       });
   });
 
@@ -50,7 +50,7 @@ const createAmmosByBody = async (req: {
         resolve(true);
       })
       .catch((err) => {
-        reject(gemServerError(err));
+        reject(err);
       });
   });
 
@@ -85,7 +85,7 @@ const updateAmmoByBody = async (req: {
         resolve(true);
       })
       .catch((err) => {
-        reject(gemServerError(err));
+        reject(err);
       });
   });
 
@@ -96,7 +96,7 @@ const deleteAmmosByBody = async (bodyId: string): Promise<boolean> =>
         resolve(true);
       })
       .catch((err) => {
-        reject(gemServerError(err));
+        reject(err);
       });
   });
 

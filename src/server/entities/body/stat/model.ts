@@ -2,7 +2,7 @@ import {
   Schema, model, type HydratedDocument, type Model, type ObjectId
 } from 'mongoose';
 
-import type { IStat } from '../../stat/model';
+import type { HydratedIStat } from '../../stat/model';
 
 interface IBodyStat {
   /** When the body was created */
@@ -16,7 +16,7 @@ interface IBodyStat {
 }
 
 type HydratedIBodyStat = HydratedDocument<
-  Omit<IBodyStat, 'stat'> & { stat: HydratedDocument<IStat> }
+  Omit<IBodyStat, 'stat'> & { stat: HydratedIStat }
 >;
 
 const BodyStatSchema = new Schema<IBodyStat>({

@@ -228,7 +228,7 @@ const deleteBag = (req: Request, res: Response): void => {
     });
 };
 
-interface CuratedIBag {
+export interface CuratedIBag {
   i18n?: InternationalizationType
   bag: FlattenMaps<IBag>
 }

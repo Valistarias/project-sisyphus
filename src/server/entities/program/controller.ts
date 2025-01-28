@@ -363,6 +363,52 @@ const deleteProgram = (req: Request, res: Response): void => {
     });
 };
 
+export type IProgramSent = HydratedDocument<
+  Omit<IProgram, 'damages' | 'ai'> & {
+    damages: HydratedIDamage[]
+    ai?: INPC
+  }
+>;
+
+export interface CuratedIProgramToSend {
+  program: Omit<
+    FlattenMaps<IProgram>
+    , 'damages' | 'ai'
+  > & {
+    damages: Array<FlattenMaps<HydratedIDamage>>
+    ai?: {
+      nPC: INPC
+      i18n?: InternationalizationType
+    }
+  }
+  i18n?: InternationalizationType
+}
+
+export const curateSingleProgram = (
+  programSent: IProgramSent
+): CuratedIProgramToSend => {
+  let curatedAI: {
+    nPC: INPC
+    i18n?: InternationalizationType
+  } | undefined;
+  if (programSent.ai !== undefined) {
+    curatedAI = {
+      nPC: programSent.ai,
+      i18n: programSent.ai.i18n !== undefined
+        ? JSON.parse(programSent.ai.i18n)
+        : {}
+    };
+  }
+
+  return {
+    program: {
+      ...programSent.toJSON(),
+      ai: curatedAI
+    },
+    i18n: curateI18n(programSent.i18n)
+  };
+};
+
 const findSingle = (req: Request, res: Response): void => {
   const { programId } = req.query;
   if (programId === undefined || typeof programId !== 'string') {
@@ -371,40 +417,8 @@ const findSingle = (req: Request, res: Response): void => {
     return;
   }
   findProgramById(programId)
-    .then((programSent: HydratedDocument<
-      Omit<IProgram, 'damages' | 'ai'> & {
-        damages: HydratedIDamage[]
-        ai?: INPC
-      }
-    >) => {
-      // const program: InternationalizedProgram = programSent.toJSON();
-      let curatedAI: {
-        nPC: INPC
-        i18n?: InternationalizationType
-      } | undefined;
-      if (programSent.ai !== undefined) {
-        curatedAI = {
-          nPC: programSent.ai,
-          i18n: programSent.ai.i18n !== undefined
-            ? JSON.parse(programSent.ai.i18n)
-            : {}
-        };
-      }
-      const program: Omit<
-        FlattenMaps<IProgram>
-        , 'damages' | 'ai'
-      > & {
-        damages: Array<FlattenMaps<HydratedIDamage>>
-        ai?: {
-          nPC: INPC
-          i18n?: InternationalizationType
-        }
-      } = { ...programSent.toJSON(), ai: curatedAI };
-      const sentObj = {
-        program,
-        i18n: curateI18n(programSent.i18n)
-      };
-      res.send(sentObj);
+    .then((programSent: IProgramSent) => {
+      res.send(curateSingleProgram(programSent));
     })
     .catch((err: unknown) => {
       res.status(404).send(err);
@@ -413,53 +427,11 @@ const findSingle = (req: Request, res: Response): void => {
 
 const findAll = (req: Request, res: Response): void => {
   findPrograms()
-    .then((programs: Array<HydratedDocument<
-      Omit<IProgram, 'damages' | 'ai'> & {
-        damages: HydratedIDamage[]
-        ai?: INPC
-      }
-    >>) => {
-      const curatedPrograms: Array<{
-        program: Omit<
-          FlattenMaps<IProgram>
-          , 'damages' | 'ai'
-        > & {
-          damages: Array<FlattenMaps<HydratedIDamage>>
-          ai?: {
-            nPC: INPC
-            i18n?: InternationalizationType
-          }
-        }
-        i18n?: InternationalizationType
-      }> = [];
+    .then((programs: IProgramSent[]) => {
+      const curatedPrograms: CuratedIProgramToSend[] = [];
 
       programs.forEach((programSent) => {
-        let curatedAI: {
-          nPC: INPC
-          i18n?: InternationalizationType
-        } | undefined;
-        if (programSent.ai !== undefined) {
-          curatedAI = {
-            nPC: programSent.ai,
-            i18n: programSent.ai.i18n !== undefined
-              ? JSON.parse(programSent.ai.i18n)
-              : {}
-          };
-        }
-        const program: Omit<
-          FlattenMaps<IProgram>
-          , 'damages' | 'ai'
-        > & {
-          damages: Array<FlattenMaps<HydratedIDamage>>
-          ai?: {
-            nPC: INPC
-            i18n?: InternationalizationType
-          }
-        } = { ...programSent.toJSON(), ai: curatedAI };
-        curatedPrograms.push({
-          program,
-          i18n: curateI18n(programSent.i18n)
-        });
+        curatedPrograms.push(curateSingleProgram(programSent));
       });
 
       res.send(curatedPrograms);
@@ -469,52 +441,10 @@ const findAll = (req: Request, res: Response): void => {
 
 const findAllStarter = (req: Request, res: Response): void => {
   findPrograms({ starterKit: { $in: ['always', 'option'] } })
-    .then((programs: Array<HydratedDocument<
-      Omit<IProgram, 'damages' | 'ai'> & {
-        damages: HydratedIDamage[]
-        ai?: INPC
-      }
-    >>) => {
-      const curatedPrograms: Array<{
-        program: Omit<
-          FlattenMaps<IProgram>
-          , 'damages' | 'ai'
-        > & {
-          damages: Array<FlattenMaps<HydratedIDamage>>
-          ai?: {
-            nPC: INPC
-            i18n?: InternationalizationType
-          }
-        }
-        i18n?: InternationalizationType
-      }> = [];
+    .then((programs: IProgramSent[]) => {
+      const curatedPrograms: CuratedIProgramToSend[] = [];
       programs.forEach((programSent) => {
-        let curatedAI: {
-          nPC: INPC
-          i18n?: InternationalizationType
-        } | undefined;
-        if (programSent.ai !== undefined) {
-          curatedAI = {
-            nPC: programSent.ai,
-            i18n: programSent.ai.i18n !== undefined
-              ? JSON.parse(programSent.ai.i18n)
-              : {}
-          };
-        }
-        const program: Omit<
-          FlattenMaps<IProgram>
-          , 'damages' | 'ai'
-        > & {
-          damages: Array<FlattenMaps<HydratedIDamage>>
-          ai?: {
-            nPC: INPC
-            i18n?: InternationalizationType
-          }
-        } = { ...programSent.toJSON(), ai: curatedAI };
-        curatedPrograms.push({
-          program,
-          i18n: curateI18n(programSent.i18n)
-        });
+        curatedPrograms.push(curateSingleProgram(programSent));
       });
 
       res.send(curatedPrograms);
