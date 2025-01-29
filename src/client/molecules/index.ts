@@ -26,6 +26,7 @@ import {
   SmartSelect, type IGroupedOption, type ISingleValueSelect
 } from './select';
 import SkillDisplay from './skillDisplay';
+import TabsWindow from './tabsWindow';
 
 export {
   Ariane,
@@ -50,6 +51,7 @@ export {
   SearchBar,
   SkillDisplay,
   SmartSelect,
+  TabsWindow,
   defaultNodeIcon,
   type IArianeElt,
   type IGroupedOption,
