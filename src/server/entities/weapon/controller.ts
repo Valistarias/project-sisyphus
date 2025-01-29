@@ -1,7 +1,7 @@
 import type {
   Request, Response
 } from 'express';
-import type { FlattenMaps, HydratedDocument, ObjectId } from 'mongoose';
+import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
 import {
@@ -12,16 +12,17 @@ import { curateDamageIds } from '../damage/controller';
 import { type ISentEffect, smartUpdateEffects } from '../effect/controller';
 
 import type {
-  ICuratedActionToSend,
-  ICuratedEffectToSend,
   InternationalizationType
 } from '../../utils/types';
 import type {
   HydratedIAction,
   HydratedIEffect,
-  HydratedIDamage
+  HydratedIDamage,
+  IEffect,
+  IAction,
+  IDamage
 } from '../index';
-import type { HydratedIWeapon, IWeapon } from './model';
+import type { HydratedIWeapon, LeanIWeapon } from './model';
 
 import { curateI18n } from '../../utils';
 
@@ -32,13 +33,14 @@ interface findAllPayload {
 }
 
 const findWeapons
-  = async (options?: findAllPayload): Promise<HydratedIWeapon[]> =>
+  = async (options?: findAllPayload): Promise<LeanIWeapon[]> =>
     await new Promise((resolve, reject) => {
       Weapon.find(options ?? {})
-        .populate<{ effects: HydratedIEffect[] }>('effects')
-        .populate<{ actions: HydratedIAction[] }>('actions')
-        .populate<{ damages: HydratedIDamage[] }>('damages')
-        .then((res: HydratedIWeapon[]) => {
+        .lean()
+        .populate<{ effects: IEffect[] }>('effects')
+        .populate<{ actions: IAction[] }>('actions')
+        .populate<{ damages: IDamage[] }>('damages')
+        .then((res: LeanIWeapon[]) => {
           if (res.length === 0) {
             reject(gemNotFound('Weapons'));
           } else {
@@ -50,13 +52,32 @@ const findWeapons
         });
     });
 
-const findWeaponById = async (id: string): Promise<HydratedIWeapon> =>
+const findCompleteWeaponById = async (id: string): Promise<HydratedIWeapon> =>
   await new Promise((resolve, reject) => {
     Weapon.findById(id)
       .populate<{ effects: HydratedIEffect[] }>('effects')
       .populate<{ actions: HydratedIAction[] }>('actions')
       .populate<{ damages: HydratedIDamage[] }>('damages')
       .then((res?: HydratedIWeapon | null) => {
+        if (res === undefined || res === null) {
+          reject(gemNotFound('Weapon'));
+        } else {
+          resolve(res);
+        }
+      })
+      .catch((err: unknown) => {
+        reject(err);
+      });
+  });
+
+const findWeaponById = async (id: string): Promise<LeanIWeapon> =>
+  await new Promise((resolve, reject) => {
+    Weapon.findById(id)
+      .lean()
+      .populate<{ effects: IEffect[] }>('effects')
+      .populate<{ actions: IAction[] }>('actions')
+      .populate<{ damages: IDamage[] }>('damages')
+      .then((res?: LeanIWeapon | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Weapon'));
         } else {
@@ -119,7 +140,7 @@ const create = (req: Request, res: Response): void => {
     return;
   }
 
-  const weapon = new Weapon({
+  const weapon: HydratedIWeapon = new Weapon({
     title,
     summary,
     quote,
@@ -208,10 +229,10 @@ const update = (req: Request, res: Response): void => {
     summary: string | null
     quote: string | null
     i18n: InternationalizationType | null
-    weaponType: ObjectId | null
-    rarity: ObjectId | null
-    weaponScope: ObjectId | null
-    itemModifiers: ObjectId[] | null
+    weaponType: string | null
+    rarity: string | null
+    weaponScope: string | null
+    itemModifiers: string[] | null
     starterKit: 'always' | 'never' | 'option' | null
     cost: number | null
     magasine: number | null
@@ -229,7 +250,7 @@ const update = (req: Request, res: Response): void => {
     return;
   }
 
-  findWeaponById(id)
+  findCompleteWeaponById(id)
     .then((weapon) => {
       if (title !== null) {
         weapon.title = title;
@@ -443,14 +464,12 @@ const deleteWeaponById = async (id?: string): Promise<boolean> =>
 const deleteWeapon = (req: Request, res: Response): void => {
   const { id }: { id: string } = req.body;
 
-  findWeaponById(id)
-    .then((weapon: HydratedDocument<
-      Omit<IWeapon, 'effects' | 'actions' | 'damages'> & {
-        effects: HydratedIEffect[]
-        actions: HydratedIAction[]
-        damages: HydratedIDamage[]
-      }
-    >) => {
+  findCompleteWeaponById(id)
+    .then((weapon: Omit<HydratedIWeapon, 'effects' | 'actions' | 'damages'> & {
+      effects: HydratedIEffect[]
+      actions: HydratedIAction[]
+      damages: HydratedIDamage[]
+    }) => {
       const damagesToRemove = weapon.damages.map(elt => String(elt._id));
       const effectsToRemove = weapon.effects.map(elt => String(elt._id));
       const actionsToRemove = weapon.actions.map(elt => String(elt._id));
@@ -496,6 +515,52 @@ const deleteWeapon = (req: Request, res: Response): void => {
     });
 };
 
+export interface CuratedIWeaponToSend {
+  weapon: Omit<
+    LeanIWeapon
+    , 'effects' | 'actions' | 'damages'
+  > & {
+    damages: IDamage[]
+    effects: Array<{
+      effect: IEffect
+      i18n?: InternationalizationType
+    }>
+    actions: Array<{
+      action: IAction
+      i18n?: InternationalizationType
+    }>
+  }
+  i18n?: InternationalizationType
+}
+
+export const curateSingleWeapon = (
+  weaponSent: LeanIWeapon
+): CuratedIWeaponToSend => {
+  const curatedActions
+    = weaponSent.actions.length > 0
+      ? weaponSent.actions.map(action => ({
+          action,
+          i18n: curateI18n(action.i18n)
+        }))
+      : [];
+  const curatedEffects
+    = weaponSent.effects.length > 0
+      ? weaponSent.effects.map(effect => ({
+          effect,
+          i18n: curateI18n(effect.i18n)
+        }))
+      : [];
+
+  return {
+    weapon: {
+      ...weaponSent,
+      actions: curatedActions,
+      effects: curatedEffects
+    },
+    i18n: curateI18n(weaponSent.i18n)
+  };
+};
+
 const findSingle = (req: Request, res: Response): void => {
   const { weaponId } = req.query;
   if (weaponId === undefined || typeof weaponId !== 'string') {
@@ -504,52 +569,8 @@ const findSingle = (req: Request, res: Response): void => {
     return;
   }
   findWeaponById(weaponId)
-    .then((weaponSent: HydratedDocument<
-      Omit<IWeapon, 'effects' | 'actions' | 'damages'> & {
-        effects: HydratedIEffect[]
-        actions: HydratedIAction[]
-        damages: HydratedIDamage[]
-      }
-    >) => {
-      const curatedActions
-        = weaponSent.actions.length > 0
-          ? weaponSent.actions.map((action) => {
-              const data = action.toJSON();
-
-              return {
-                ...data,
-                ...(
-                  data.i18n !== undefined
-                    ? { i18n: JSON.parse(data.i18n) }
-                    : {}
-                )
-              };
-            })
-          : [];
-      const curatedEffects
-        = weaponSent.effects.length > 0
-          ? weaponSent.effects.map((effect) => {
-              const data = effect.toJSON();
-
-              return {
-                ...data,
-                ...(
-                  data.i18n !== undefined
-                    ? { i18n: JSON.parse(data.i18n) }
-                    : {}
-                )
-              };
-            })
-          : [];
-      const sentObj = {
-        weapon: {
-          ...weaponSent.toJSON(),
-          actions: curatedActions,
-          effects: curatedEffects
-        },
-        i18n: curateI18n(weaponSent.i18n)
-      };
-      res.send(sentObj);
+    .then((weaponSent) => {
+      res.send(curateSingleWeapon(weaponSent));
     })
     .catch((err: unknown) => {
       res.status(404).send(err);
@@ -558,61 +579,10 @@ const findSingle = (req: Request, res: Response): void => {
 
 const findAll = (req: Request, res: Response): void => {
   findWeapons()
-    .then((weapons: Array<HydratedDocument<
-      Omit<IWeapon, 'effects' | 'actions' | 'damages'> & {
-        effects: HydratedIEffect[]
-        actions: HydratedIAction[]
-        damages: HydratedIDamage[]
-      }
-    >>) => {
-      const curatedWeapons: Array<{
-        weapon: Omit<
-          FlattenMaps<IWeapon>
-          , 'effects' | 'actions' | 'damages'
-        > & {
-          effects: Array<{
-            effect: ICuratedEffectToSend
-            i18n?: InternationalizationType
-          }>
-          actions: Array<{
-            action: ICuratedActionToSend
-            i18n?: InternationalizationType
-          }>
-          damages: Array<FlattenMaps<HydratedIDamage>>
-        }
-        i18n?: InternationalizationType
-      }> = [];
+    .then((weapons) => {
+      const curatedWeapons: CuratedIWeaponToSend[] = [];
       weapons.forEach((weaponSent) => {
-        const curatedActions
-          = weaponSent.actions.length > 0
-            ? weaponSent.actions.map((action) => {
-                const data = action.toJSON();
-
-                return {
-                  action: data,
-                  i18n: curateI18n(data.i18n)
-                };
-              })
-            : [];
-        const curatedEffects
-          = weaponSent.effects.length > 0
-            ? weaponSent.effects.map((effect) => {
-                const data = effect.toJSON();
-
-                return {
-                  effect: data,
-                  i18n: curateI18n(data.i18n)
-                };
-              })
-            : [];
-        curatedWeapons.push({
-          weapon: {
-            ...weaponSent.toJSON(),
-            actions: curatedActions,
-            effects: curatedEffects
-          },
-          i18n: curateI18n(weaponSent.i18n)
-        });
+        curatedWeapons.push(curateSingleWeapon(weaponSent));
       });
 
       res.send(curatedWeapons);
@@ -620,71 +590,9 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export type IWeaponSent = HydratedDocument<
-  Omit<IWeapon, 'effects' | 'actions' | 'damages'> & {
-    effects: HydratedIEffect[]
-    actions: HydratedIAction[]
-    damages: HydratedIDamage[]
-  }
->;
-
-export interface CuratedIWeaponToSend {
-  weapon: Omit<
-    FlattenMaps<IWeapon>
-    , 'effects' | 'actions' | 'damages'
-  > & {
-    effects: Array<{
-      effect: ICuratedEffectToSend
-      i18n?: InternationalizationType
-    }>
-    actions: Array<{
-      action: ICuratedActionToSend
-      i18n?: InternationalizationType
-    }>
-    damages: Array<FlattenMaps<HydratedIDamage>>
-  }
-  i18n?: InternationalizationType
-}
-
-export const curateSingleWeapon = (
-  weaponSent: IWeaponSent
-): CuratedIWeaponToSend => {
-  const curatedActions
-    = weaponSent.actions.length > 0
-      ? weaponSent.actions.map((action) => {
-          const data = action.toJSON();
-
-          return {
-            action: data,
-            i18n: curateI18n(data.i18n)
-          };
-        })
-      : [];
-  const curatedEffects
-    = weaponSent.effects.length > 0
-      ? weaponSent.effects.map((effect) => {
-          const data = effect.toJSON();
-
-          return {
-            effect: data,
-            i18n: curateI18n(data.i18n)
-          };
-        })
-      : [];
-
-  return {
-    weapon: {
-      ...weaponSent.toJSON(),
-      actions: curatedActions,
-      effects: curatedEffects
-    },
-    i18n: curateI18n(weaponSent.i18n)
-  };
-};
-
 const findAllStarter = (req: Request, res: Response): void => {
   findWeapons({ starterKit: { $in: ['always', 'option'] } })
-    .then((weapons: IWeaponSent[]) => {
+    .then((weapons) => {
       const curatedWeapons: CuratedIWeaponToSend[] = [];
       weapons.forEach((weaponSent) => {
         curatedWeapons.push(curateSingleWeapon(weaponSent));

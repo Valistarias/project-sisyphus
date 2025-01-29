@@ -1,7 +1,7 @@
 import type {
   Request, Response
 } from 'express';
-import type { FlattenMaps, HydratedDocument, ObjectId } from 'mongoose';
+import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
 import {
@@ -10,9 +10,10 @@ import {
 import { curateDamageIds } from '../damage/controller';
 
 import type { InternationalizationType } from '../../utils/types';
-import type { INPC, HydratedIDamage } from '../index';
+import type { INPC, HydratedIDamage, IDamage, HydratedINPC } from '../index';
 import type {
-  HydratedIProgram, IProgram
+  HydratedIProgram,
+  LeanIProgram
 } from './model';
 
 import { curateI18n } from '../../utils';
@@ -25,12 +26,13 @@ interface findAllPayload {
 
 const findPrograms = async (
   options?: findAllPayload
-): Promise<HydratedIProgram[]> =>
+): Promise<LeanIProgram[]> =>
   await new Promise((resolve, reject) => {
     Program.find(options ?? {})
-      .populate<{ damages: HydratedIDamage[] }>('damages')
+      .lean()
+      .populate<{ damages: IDamage[] }>('damages')
       .populate<{ ai: INPC }>('ai')
-      .then((res: HydratedIProgram[]) => {
+      .then((res: LeanIProgram[]) => {
         if (res.length === 0) {
           reject(gemNotFound('Programs'));
         } else {
@@ -42,12 +44,30 @@ const findPrograms = async (
       });
   });
 
-const findProgramById = async (id: string): Promise<HydratedIProgram> =>
+const findCompleteProgramById = async (id: string): Promise<HydratedIProgram> =>
   await new Promise((resolve, reject) => {
     Program.findById(id)
       .populate<{ damages: HydratedIDamage[] }>('damages')
-      .populate<{ ai: INPC }>('ai')
+      .populate<{ ai: HydratedINPC }>('ai')
       .then((res?: HydratedIProgram | null) => {
+        if (res === undefined || res === null) {
+          reject(gemNotFound('Program'));
+        } else {
+          resolve(res);
+        }
+      })
+      .catch((err: unknown) => {
+        reject(err);
+      });
+  });
+
+const findProgramById = async (id: string): Promise<LeanIProgram> =>
+  await new Promise((resolve, reject) => {
+    Program.findById(id)
+      .lean()
+      .populate<{ damages: IDamage[] }>('damages')
+      .populate<{ ai: INPC }>('ai')
+      .then((res?: LeanIProgram | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Program'));
         } else {
@@ -108,7 +128,7 @@ const create = (req: Request, res: Response): void => {
     return;
   }
 
-  const program = new Program({
+  const program: HydratedIProgram = new Program({
     title,
     summary,
     rarity,
@@ -173,12 +193,12 @@ const update = (req: Request, res: Response): void => {
     summary: string | null
     i18n: InternationalizationType | null
     ram: number | null
-    rarity: ObjectId | null
-    programScope: ObjectId | null
-    itemType: ObjectId | null
+    rarity: string | null
+    programScope: string | null
+    itemType: string | null
     starterKit?: 'always' | 'never' | 'option' | null
     cost: number | null
-    ai?: ObjectId | null
+    ai?: string | null
     aiSummoned?: number | null
     uses: number | null
     radius: number | null
@@ -193,7 +213,7 @@ const update = (req: Request, res: Response): void => {
     return;
   }
 
-  findProgramById(id)
+  findCompleteProgramById(id)
     .then((program) => {
       if (title !== null) {
         program.title = title;
@@ -363,19 +383,12 @@ const deleteProgram = (req: Request, res: Response): void => {
     });
 };
 
-export type IProgramSent = HydratedDocument<
-  Omit<IProgram, 'damages' | 'ai'> & {
-    damages: HydratedIDamage[]
-    ai?: INPC
-  }
->;
-
 export interface CuratedIProgramToSend {
   program: Omit<
-    FlattenMaps<IProgram>
+    LeanIProgram
     , 'damages' | 'ai'
   > & {
-    damages: Array<FlattenMaps<HydratedIDamage>>
+    damages: IDamage[]
     ai?: {
       nPC: INPC
       i18n?: InternationalizationType
@@ -385,7 +398,7 @@ export interface CuratedIProgramToSend {
 }
 
 export const curateSingleProgram = (
-  programSent: IProgramSent
+  programSent: LeanIProgram
 ): CuratedIProgramToSend => {
   let curatedAI: {
     nPC: INPC
@@ -402,7 +415,7 @@ export const curateSingleProgram = (
 
   return {
     program: {
-      ...programSent.toJSON(),
+      ...programSent,
       ai: curatedAI
     },
     i18n: curateI18n(programSent.i18n)
@@ -417,7 +430,7 @@ const findSingle = (req: Request, res: Response): void => {
     return;
   }
   findProgramById(programId)
-    .then((programSent: IProgramSent) => {
+    .then((programSent) => {
       res.send(curateSingleProgram(programSent));
     })
     .catch((err: unknown) => {
@@ -427,7 +440,7 @@ const findSingle = (req: Request, res: Response): void => {
 
 const findAll = (req: Request, res: Response): void => {
   findPrograms()
-    .then((programs: IProgramSent[]) => {
+    .then((programs) => {
       const curatedPrograms: CuratedIProgramToSend[] = [];
 
       programs.forEach((programSent) => {
@@ -441,7 +454,7 @@ const findAll = (req: Request, res: Response): void => {
 
 const findAllStarter = (req: Request, res: Response): void => {
   findPrograms({ starterKit: { $in: ['always', 'option'] } })
-    .then((programs: IProgramSent[]) => {
+    .then((programs) => {
       const curatedPrograms: CuratedIProgramToSend[] = [];
       programs.forEach((programSent) => {
         curatedPrograms.push(curateSingleProgram(programSent));

@@ -1,7 +1,7 @@
 import type {
   Request, Response
 } from 'express';
-import type { FlattenMaps, HydratedDocument, ObjectId } from 'mongoose';
+import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
 import {
@@ -13,15 +13,21 @@ import { type ISentEffect, smartUpdateEffects } from '../effect/controller';
 import { curateSkillBonusIds } from '../skillBonus/controller';
 import { curateStatBonusIds } from '../statBonus/controller';
 
-import type { ICuratedActionToSend, ICuratedEffectToSend, InternationalizationType } from '../../utils/types';
+import type { InternationalizationType } from '../../utils/types';
 import type {
   HydratedIAction,
   HydratedICharParamBonus,
   HydratedIEffect,
   HydratedISkillBonus,
-  HydratedIStatBonus
+  HydratedIStatBonus,
+  HydratedIArmor,
+  LeanIArmor,
+  IEffect,
+  IAction,
+  ISkillBonus,
+  IStatBonus,
+  ICharParamBonus
 } from '../index';
-import type { HydratedIArmor, IArmor } from './model';
 
 import { curateI18n } from '../../utils';
 
@@ -33,15 +39,16 @@ interface findAllPayload {
 
 const findArmors = async (
   options?: findAllPayload
-): Promise<HydratedIArmor[]> =>
+): Promise<LeanIArmor[]> =>
   await new Promise((resolve, reject) => {
     Armor.find(options ?? {})
-      .populate<{ effects: HydratedIEffect[] }>('effects')
-      .populate<{ actions: HydratedIAction[] }>('actions')
-      .populate<{ skillBonuses: HydratedISkillBonus[] }>('skillBonuses')
-      .populate<{ statBonuses: HydratedIStatBonus[] }>('statBonuses')
-      .populate<{ charParamBonuses: HydratedICharParamBonus[] }>('charParamBonuses')
-      .then((res: HydratedIArmor[]) => {
+      .lean()
+      .populate<{ effects: IEffect[] }>('effects')
+      .populate<{ actions: IAction[] }>('actions')
+      .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
+      .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
+      .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
+      .then((res: LeanIArmor[]) => {
         if (res.length === 0) {
           reject(gemNotFound('Armors'));
         } else {
@@ -53,7 +60,9 @@ const findArmors = async (
       });
   });
 
-const findArmorById = async (id: string): Promise<HydratedIArmor> =>
+const findCompleteArmorById = async (
+  id: string
+): Promise<HydratedIArmor> =>
   await new Promise((resolve, reject) => {
     Armor.findById(id)
       .populate<{ effects: HydratedIEffect[] }>('effects')
@@ -62,6 +71,27 @@ const findArmorById = async (id: string): Promise<HydratedIArmor> =>
       .populate<{ statBonuses: HydratedIStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: HydratedICharParamBonus[] }>('charParamBonuses')
       .then((res?: HydratedIArmor | null) => {
+        if (res === undefined || res === null) {
+          reject(gemNotFound('Armor'));
+        } else {
+          resolve(res);
+        }
+      })
+      .catch((err: unknown) => {
+        reject(err);
+      });
+  });
+
+const findArmorById = async (id: string): Promise<LeanIArmor> =>
+  await new Promise((resolve, reject) => {
+    Armor.findById(id)
+      .lean()
+      .populate<{ effects: IEffect[] }>('effects')
+      .populate<{ actions: IAction[] }>('actions')
+      .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
+      .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
+      .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
+      .then((res?: LeanIArmor | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Armor'));
         } else {
@@ -103,7 +133,7 @@ const create = (req: Request, res: Response): void => {
     return;
   }
 
-  const armor = new Armor({
+  const armor: HydratedIArmor = new Armor({
     title,
     summary,
     rarity,
@@ -232,12 +262,12 @@ const update = (req: Request, res: Response): void => {
     title: string | null
     summary: string | null
     i18n: InternationalizationType | null
-    rarity: ObjectId | null
+    rarity: string | null
     starterKit: 'always' | 'never' | 'option' | null
     cost: number | null
-    itemType: ObjectId | null
-    itemModifiers: ObjectId[] | null
-    armorType: ObjectId | null
+    itemType: string | null
+    itemModifiers: string[] | null
+    armorType: string | null
     effects: ISentEffect[] | null
     actions: ISentAction[] | null
     skillBonuses: Array<{
@@ -260,7 +290,7 @@ const update = (req: Request, res: Response): void => {
     return;
   }
 
-  findArmorById(id)
+  findCompleteArmorById(id)
     .then((armor) => {
       if (title !== null) {
         armor.title = title;
@@ -605,24 +635,22 @@ const deleteArmorById = async (id?: string): Promise<boolean> =>
 const deleteArmor = (req: Request, res: Response): void => {
   const { id }: { id: string } = req.body;
 
-  findArmorById(id)
-    .then((armor: HydratedDocument<
-      Omit<IArmor,
-      | 'effects'
-      | 'actions'
-      | 'skillBonuses'
-      | 'statBonuses'
-      | 'charParamBonuses'
-      | 'skillBranch'
-      | 'cyberFrameBranch'
-      > & {
-        effects: HydratedIEffect[]
-        actions: HydratedIAction[]
-        skillBonuses: HydratedISkillBonus[]
-        statBonuses: HydratedIStatBonus[]
-        charParamBonuses: HydratedICharParamBonus[]
-      }
-    >) => {
+  findCompleteArmorById(id)
+    .then((armor: Omit<HydratedIArmor,
+    | 'effects'
+    | 'actions'
+    | 'skillBonuses'
+    | 'statBonuses'
+    | 'charParamBonuses'
+    | 'skillBranch'
+    | 'cyberFrameBranch'
+    > & {
+      effects: HydratedIEffect[]
+      actions: HydratedIAction[]
+      skillBonuses: HydratedISkillBonus[]
+      statBonuses: HydratedIStatBonus[]
+      charParamBonuses: HydratedICharParamBonus[]
+    }) => {
       const skillBonusesToRemove = armor.skillBonuses.map(
         elt => String(elt._id)
       );
@@ -696,32 +724,18 @@ const deleteArmor = (req: Request, res: Response): void => {
     });
 };
 
-export type IArmorSent = HydratedDocument<
-  Omit<
-    IArmor,
-    | 'effects'
-    | 'actions'
-  > & {
-    effects: HydratedIEffect[]
-    actions: HydratedIAction[]
-    skillBonuses: HydratedISkillBonus[]
-    statBonuses: HydratedIStatBonus[]
-    charParamBonuses: HydratedICharParamBonus[]
-  }
->;
-
 export interface CuratedIArmorToSend {
   armor: Omit<
-    FlattenMaps<IArmor>,
+    LeanIArmor,
     | 'effects'
     | 'actions'
   > & {
     effects: Array<{
-      effect: ICuratedEffectToSend
+      effect: IEffect
       i18n?: InternationalizationType
     }>
     actions: Array<{
-      action: ICuratedActionToSend
+      action: IAction
       i18n?: InternationalizationType
     }>
   }
@@ -729,34 +743,26 @@ export interface CuratedIArmorToSend {
 }
 
 export const curateSingleArmor = (
-  armorSent: IArmorSent
+  armorSent: LeanIArmor
 ): CuratedIArmorToSend => {
   const curatedActions
   = armorSent.actions.length > 0
-    ? armorSent.actions.map((action) => {
-        const data = action.toJSON();
-
-        return {
-          action: data,
-          i18n: curateI18n(data.i18n)
-        };
-      })
+    ? armorSent.actions.map(action => ({
+        action,
+        i18n: curateI18n(action.i18n)
+      }))
     : [];
   const curatedEffects
   = armorSent.effects.length > 0
-    ? armorSent.effects.map((effect) => {
-        const data = effect.toJSON();
-
-        return {
-          effect: data,
-          i18n: curateI18n(data.i18n)
-        };
-      })
+    ? armorSent.effects.map(effect => ({
+        effect,
+        i18n: curateI18n(effect.i18n)
+      }))
     : [];
 
   return {
     armor: {
-      ...armorSent.toJSON(),
+      ...armorSent,
       actions: curatedActions,
       effects: curatedEffects
     },
@@ -772,7 +778,7 @@ const findSingle = (req: Request, res: Response): void => {
     return;
   }
   findArmorById(armorId)
-    .then((armorSent: IArmorSent) => {
+    .then((armorSent: LeanIArmor) => {
       res.send(curateSingleArmor(armorSent));
     })
     .catch((err: unknown) => {
@@ -782,7 +788,7 @@ const findSingle = (req: Request, res: Response): void => {
 
 const findAll = (req: Request, res: Response): void => {
   findArmors()
-    .then((implants: IArmorSent[]) => {
+    .then((implants: LeanIArmor[]) => {
       const curatedArmors: CuratedIArmorToSend[] = [];
       implants.forEach((armorSent) => {
         curatedArmors.push(curateSingleArmor(armorSent));
@@ -795,7 +801,7 @@ const findAll = (req: Request, res: Response): void => {
 
 const findAllStarter = (req: Request, res: Response): void => {
   findArmors({ starterKit: { $in: ['always', 'option'] } })
-    .then((implants: IArmorSent[]) => {
+    .then((implants: LeanIArmor[]) => {
       const curatedArmors: CuratedIArmorToSend[] = [];
       implants.forEach((armorSent) => {
         curatedArmors.push(curateSingleArmor(armorSent));

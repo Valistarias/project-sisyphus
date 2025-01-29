@@ -2,15 +2,21 @@ import {
   Schema, model, type HydratedDocument, type Model, type ObjectId
 } from 'mongoose';
 
+import type { Lean } from '../../utils/types';
 import type {
   HydratedIAction,
   HydratedICharParamBonus,
   HydratedIEffect,
   HydratedISkillBonus,
-  HydratedIStatBonus
+  HydratedIStatBonus,
+  IAction,
+  ICharParamBonus,
+  IEffect,
+  ISkillBonus,
+  IStatBonus
 } from '../index';
 
-interface IImplant {
+interface IImplant<IdType> {
   /** The title of the implant */
   title: string
   /** A summary of the implant */
@@ -18,34 +24,34 @@ interface IImplant {
   /** The internationnal content, as a json, stringified */
   i18n?: string
   /** The rarity of the implant */
-  rarity: ObjectId
+  rarity: IdType
   /** Is this weapon in the starter kit ?
    * (always -> element included, never -> not included, option -> can be chosen with similar weapons) */
   starterKit?: 'always' | 'never' | 'option'
   /** The cost of the implant */
   cost: number
   /** The type of item */
-  itemType: ObjectId
+  itemType: IdType
   /** The item modifiers of the implant */
-  itemModifiers?: ObjectId[]
+  itemModifiers?: IdType[]
   /** All the body parts that can install this implant */
-  bodyParts: ObjectId[]
+  bodyParts: IdType[]
   /** The effects related to the implant */
-  effects?: string[] | ObjectId[]
+  effects?: IdType[]
   /** The actions related to the implant */
-  actions?: string[] | ObjectId[]
+  actions?: IdType[]
   /** The skill bonuses related to the implant */
-  skillBonuses?: string[] | ObjectId[]
+  skillBonuses?: IdType[]
   /** The stat bonuses related to the implant */
-  statBonuses?: string[] | ObjectId[]
+  statBonuses?: IdType[]
   /** The charParam bonuses related to the implant */
-  charParamBonuses?: string[] | ObjectId[]
+  charParamBonuses?: IdType[]
   /** When the implant was created */
   createdAt: Date
 }
 
 type HydratedIImplant = HydratedDocument<
-  Omit<IImplant,
+  Omit<IImplant<string>,
   | 'effects'
   | 'actions'
   | 'skillBonuses'
@@ -62,7 +68,15 @@ type HydratedIImplant = HydratedDocument<
   }
 >;
 
-const implantSchema = new Schema<IImplant>({
+type LeanIImplant = Omit<Lean<IImplant<string>>, 'effects' | 'actions' | 'skillBonuses' | 'statBonuses' | 'charParamBonuses'> & {
+  effects: IEffect[]
+  actions: IAction[]
+  skillBonuses: ISkillBonus[]
+  statBonuses: IStatBonus[]
+  charParamBonuses: ICharParamBonus[]
+};
+
+const implantSchema = new Schema<IImplant<ObjectId>>({
   title: String,
   summary: String,
   i18n: String,
@@ -127,8 +141,8 @@ const implantSchema = new Schema<IImplant>({
   }
 });
 
-const ImplantModel = (): Model<IImplant> => model('Implant', implantSchema);
+const ImplantModel = (): Model<IImplant<ObjectId>> => model('Implant', implantSchema);
 
 export {
-  ImplantModel, type HydratedIImplant, type IImplant
+  ImplantModel, type HydratedIImplant, type IImplant, type LeanIImplant
 };

@@ -1,7 +1,6 @@
 import type {
   Request, Response
 } from 'express';
-import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
 import {
@@ -73,7 +72,7 @@ const create = (req: Request, res: Response): void => {
     return;
   }
 
-  const ammo = new Ammo({
+  const ammo: HydratedIAmmo = new Ammo({
     title,
     summary,
     rarity,
@@ -119,10 +118,10 @@ const update = (req: Request, res: Response): void => {
     i18n: InternationalizationType | null
     offsetToHit: number | null
     offsetDamage: number | null
-    rarity: ObjectId | null
-    itemType: ObjectId | null
-    weaponTypes: ObjectId[] | null
-    itemModifiers: ObjectId[] | null
+    rarity: string | null
+    itemType: string | null
+    weaponTypes: string[] | null
+    itemModifiers: string[] | null
     cost: number | null
   } = req.body;
   if (id === undefined) {
@@ -223,7 +222,7 @@ const deleteAmmo = (req: Request, res: Response): void => {
 
 export interface CuratedIAmmo {
   i18n?: InternationalizationType
-  ammo: IAmmo
+  ammo: IAmmo<string>
 }
 
 const findSingle = (req: Request, res: Response): void => {

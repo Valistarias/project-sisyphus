@@ -2,7 +2,7 @@ import {
   Schema, model, type HydratedDocument, type Model, type ObjectId
 } from 'mongoose';
 
-interface IAmmo {
+interface IAmmo<IdType> {
   /** The title of the ammo */
   title: string
   /** A summary of the ammo */
@@ -10,13 +10,13 @@ interface IAmmo {
   /** The internationnal content, as a json, stringified */
   i18n?: string
   /** The rarity of the ammo */
-  rarity: ObjectId
+  rarity: IdType
   /** The type of item */
-  itemType: ObjectId
+  itemType: IdType
   /** All the weapons that can use this type of ammo */
-  weaponTypes?: ObjectId[]
+  weaponTypes?: IdType[]
   /** The item modifiers of the ammo */
-  itemModifiers?: ObjectId[]
+  itemModifiers?: IdType[]
   /** How this bullet impact the hit roll */
   offsetToHit?: number
   /** How this bullet impact the damage score */
@@ -27,9 +27,9 @@ interface IAmmo {
   createdAt: Date
 }
 
-type HydratedIAmmo = HydratedDocument<IAmmo>;
+type HydratedIAmmo = HydratedDocument<IAmmo<string>>;
 
-const ammoSchema = new Schema<IAmmo>({
+const ammoSchema = new Schema<IAmmo<ObjectId>>({
   title: String,
   summary: String,
   offsetToHit: Number,
@@ -62,7 +62,7 @@ const ammoSchema = new Schema<IAmmo>({
   }
 });
 
-const AmmoModel = (): Model<IAmmo> => model('Ammo', ammoSchema);
+const AmmoModel = (): Model<IAmmo<ObjectId>> => model('Ammo', ammoSchema);
 
 export {
   AmmoModel, type HydratedIAmmo, type IAmmo

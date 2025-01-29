@@ -2,7 +2,7 @@ import {
   Schema, model, type HydratedDocument, type Model, type ObjectId
 } from 'mongoose';
 
-import type { HydratedIItem } from '../../item/model';
+import type { HydratedIItem, LeanIItem } from '../../item/model';
 
 interface IBodyItem {
   /** When the body was created */
@@ -16,6 +16,8 @@ interface IBodyItem {
   /** How many items the player have */
   qty: number
 }
+
+type LeanIBodyItem = Omit<IBodyItem, 'item'> & { item: LeanIItem };
 
 type HydratedIBodyItem = HydratedDocument<
   Omit<IBodyItem, 'item'> & { item: HydratedIItem }
@@ -47,5 +49,5 @@ const BodyItemSchema = new Schema<IBodyItem>({
 const BodyItemModel = (): Model<IBodyItem> => model('BodyItem', BodyItemSchema);
 
 export {
-  BodyItemModel, type HydratedIBodyItem, type IBodyItem
+  BodyItemModel, type HydratedIBodyItem, type IBodyItem, type LeanIBodyItem
 };

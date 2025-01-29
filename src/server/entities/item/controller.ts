@@ -1,7 +1,6 @@
 import type {
   Request, Response
 } from 'express';
-import type { FlattenMaps, HydratedDocument, ObjectId } from 'mongoose';
 
 import db from '../../models';
 import {
@@ -13,15 +12,20 @@ import { type ISentEffect, smartUpdateEffects } from '../effect/controller';
 import { curateSkillBonusIds } from '../skillBonus/controller';
 import { curateStatBonusIds } from '../statBonus/controller';
 
-import type { ICuratedActionToSend, ICuratedEffectToSend, InternationalizationType } from '../../utils/types';
+import type { InternationalizationType } from '../../utils/types';
 import type {
   HydratedIAction,
   HydratedICharParamBonus,
   HydratedIEffect,
   HydratedISkillBonus,
-  HydratedIStatBonus
+  HydratedIStatBonus,
+  IAction,
+  ICharParamBonus,
+  IEffect,
+  ISkillBonus,
+  IStatBonus
 } from '../index';
-import type { HydratedIItem, IItem } from './model';
+import type { HydratedIItem, LeanIItem } from './model';
 
 import { curateI18n } from '../../utils';
 
@@ -31,15 +35,16 @@ interface findAllPayload {
   starterKit?: string | Record<string, string[]>
 }
 
-const findItems = async (options?: findAllPayload): Promise<HydratedIItem[]> =>
+const findItems = async (options?: findAllPayload): Promise<LeanIItem[]> =>
   await new Promise((resolve, reject) => {
     Item.find(options ?? {})
-      .populate<{ effects: HydratedIEffect[] }>('effects')
-      .populate<{ actions: HydratedIAction[] }>('actions')
-      .populate<{ skillBonuses: HydratedISkillBonus[] }>('skillBonuses')
-      .populate<{ statBonuses: HydratedIStatBonus[] }>('statBonuses')
-      .populate<{ charParamBonuses: HydratedICharParamBonus[] }>('charParamBonuses')
-      .then((res: HydratedIItem[]) => {
+      .lean()
+      .populate<{ effects: IEffect[] }>('effects')
+      .populate<{ actions: IAction[] }>('actions')
+      .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
+      .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
+      .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
+      .then((res: LeanIItem[]) => {
         if (res.length === 0) {
           reject(gemNotFound('Items'));
         } else {
@@ -51,7 +56,7 @@ const findItems = async (options?: findAllPayload): Promise<HydratedIItem[]> =>
       });
   });
 
-const findItemById = async (id: string): Promise<HydratedIItem> =>
+const findCompleteItemById = async (id: string): Promise<HydratedIItem> =>
   await new Promise((resolve, reject) => {
     Item.findById(id)
       .populate<{ effects: HydratedIEffect[] }>('effects')
@@ -60,6 +65,27 @@ const findItemById = async (id: string): Promise<HydratedIItem> =>
       .populate<{ statBonuses: HydratedIStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: HydratedICharParamBonus[] }>('charParamBonuses')
       .then((res?: HydratedIItem | null) => {
+        if (res === undefined || res === null) {
+          reject(gemNotFound('Item'));
+        } else {
+          resolve(res);
+        }
+      })
+      .catch((err: unknown) => {
+        reject(err);
+      });
+  });
+
+const findItemById = async (id: string): Promise<LeanIItem> =>
+  await new Promise((resolve, reject) => {
+    Item.findById(id)
+      .lean()
+      .populate<{ effects: IEffect[] }>('effects')
+      .populate<{ actions: IAction[] }>('actions')
+      .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
+      .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
+      .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
+      .then((res?: LeanIItem | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Item'));
         } else {
@@ -99,7 +125,7 @@ const create = (req: Request, res: Response): void => {
     return;
   }
 
-  const item = new Item({
+  const item: HydratedIItem = new Item({
     title,
     summary,
     rarity,
@@ -227,11 +253,11 @@ const update = (req: Request, res: Response): void => {
     title: string | null
     summary: string | null
     i18n: InternationalizationType | null
-    rarity: ObjectId | null
+    rarity: string | null
     starterKit: 'always' | 'never' | 'option' | null
     cost: number | null
-    itemType: ObjectId | null
-    itemModifiers: ObjectId[] | null
+    itemType: string | null
+    itemModifiers: string[] | null
     effects: ISentEffect[] | null
     actions: ISentAction[] | null
     skillBonuses: Array<{
@@ -246,7 +272,7 @@ const update = (req: Request, res: Response): void => {
       charParam: string
       value: number
     }> | null
-    overrides: ObjectId[] | null
+    overrides: string[] | null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Item ID'));
@@ -254,7 +280,7 @@ const update = (req: Request, res: Response): void => {
     return;
   }
 
-  findItemById(id)
+  findCompleteItemById(id)
     .then((item) => {
       if (title !== null) {
         item.title = title;
@@ -596,21 +622,19 @@ const deleteItemById = async (id?: string): Promise<boolean> =>
 const deleteItem = (req: Request, res: Response): void => {
   const { id }: { id: string } = req.body;
 
-  findItemById(id)
-    .then((item: HydratedDocument<
-      Omit<IItem, | 'effects'
-      | 'actions'
-      | 'skillBonuses'
-      | 'statBonuses'
-      | 'charParamBonuses'
-      > & {
-        effects: HydratedIEffect[]
-        actions: HydratedIAction[]
-        skillBonuses: HydratedISkillBonus[]
-        statBonuses: HydratedIStatBonus[]
-        charParamBonuses: HydratedICharParamBonus[]
-      }
-    >) => {
+  findCompleteItemById(id)
+    .then((item: Omit<HydratedIItem, | 'effects'
+    | 'actions'
+    | 'skillBonuses'
+    | 'statBonuses'
+    | 'charParamBonuses'
+    > & {
+      effects: HydratedIEffect[]
+      actions: HydratedIAction[]
+      skillBonuses: HydratedISkillBonus[]
+      statBonuses: HydratedIStatBonus[]
+      charParamBonuses: HydratedICharParamBonus[]
+    }) => {
       const skillBonusesToRemove = item.skillBonuses.map(
         elt => String(elt._id)
       );
@@ -682,65 +706,43 @@ const deleteItem = (req: Request, res: Response): void => {
     });
 };
 
-export type IItemSent = HydratedDocument<
-  Omit<
-    IItem,
-    | 'effects'
-    | 'actions'
-  > & {
-    effects: HydratedIEffect[]
-    actions: HydratedIAction[]
-    skillBonuses: HydratedISkillBonus[]
-    statBonuses: HydratedIStatBonus[]
-    charParamBonuses: HydratedICharParamBonus[]
-  }
->;
-
 export interface CuratedIItemToSend {
   item: Omit<
-    FlattenMaps<IItem>,
+    LeanIItem,
     | 'effects'
     | 'actions'
   > & {
     effects: Array<{
-      effect: ICuratedEffectToSend
+      effect: IEffect
       i18n?: InternationalizationType
     }>
     actions: Array<{
-      action: ICuratedActionToSend
+      action: IAction
       i18n?: InternationalizationType
     }>
   }
   i18n?: InternationalizationType
 }
 
-export const curateSingleItem = (itemSent: IItemSent): CuratedIItemToSend => {
+export const curateSingleItem = (itemSent: LeanIItem): CuratedIItemToSend => {
   const curatedActions
   = itemSent.actions.length > 0
-    ? itemSent.actions.map((action) => {
-        const data = action.toJSON();
-
-        return {
-          action: data,
-          i18n: curateI18n(data.i18n)
-        };
-      })
+    ? itemSent.actions.map(action => ({
+        action,
+        i18n: curateI18n(action.i18n)
+      }))
     : [];
   const curatedEffects
   = itemSent.effects.length > 0
-    ? itemSent.effects.map((effect) => {
-        const data = effect.toJSON();
-
-        return {
-          effect: data,
-          i18n: curateI18n(data.i18n)
-        };
-      })
+    ? itemSent.effects.map(effect => ({
+        effect,
+        i18n: curateI18n(effect.i18n)
+      }))
     : [];
 
   return {
     item: {
-      ...itemSent.toJSON(),
+      ...itemSent,
       actions: curatedActions,
       effects: curatedEffects
     },
@@ -756,7 +758,7 @@ const findSingle = (req: Request, res: Response): void => {
     return;
   }
   findItemById(itemId)
-    .then((itemSent: IItemSent) => {
+    .then((itemSent) => {
       res.send(curateSingleItem(itemSent));
     })
     .catch((err: unknown) => {
@@ -766,7 +768,7 @@ const findSingle = (req: Request, res: Response): void => {
 
 const findAll = (req: Request, res: Response): void => {
   findItems()
-    .then((items: IItemSent[]) => {
+    .then((items) => {
       const curatedItems: CuratedIItemToSend[] = [];
       items.forEach((itemSent) => {
         curatedItems.push(curateSingleItem(itemSent));
@@ -779,7 +781,7 @@ const findAll = (req: Request, res: Response): void => {
 
 const findAllStarter = (req: Request, res: Response): void => {
   findItems({ starterKit: { $in: ['always', 'option'] } })
-    .then((items: IItemSent[]) => {
+    .then((items) => {
       const curatedItems: CuratedIItemToSend[] = [];
       items.forEach((itemSent) => {
         curatedItems.push(curateSingleItem(itemSent));

@@ -2,7 +2,7 @@ import {
   Schema, model, type HydratedDocument, type Model, type ObjectId
 } from 'mongoose';
 
-import type { HydratedIProgram } from '../../program/model';
+import type { HydratedIProgram, LeanIProgram } from '../../program/model';
 
 interface IBodyProgram {
   /** When the body was created */
@@ -16,6 +16,8 @@ interface IBodyProgram {
   /** How many times the progam was used in the day */
   uses: number
 }
+
+type LeanIBodyProgram = Omit<IBodyProgram, 'program'> & { program: LeanIProgram };
 
 type HydratedIBodyProgram = HydratedDocument<
   Omit<IBodyProgram, 'program'> & { program: HydratedIProgram }
@@ -47,5 +49,8 @@ const BodyProgramSchema = new Schema<IBodyProgram>({
 const BodyProgramModel = (): Model<IBodyProgram> => model('BodyProgram', BodyProgramSchema);
 
 export {
-  BodyProgramModel, type HydratedIBodyProgram, type IBodyProgram
+  BodyProgramModel,
+  type HydratedIBodyProgram,
+  type IBodyProgram,
+  type LeanIBodyProgram
 };

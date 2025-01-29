@@ -2,6 +2,7 @@ import type { ICampaign } from './campaign';
 import type {
   InternationalizationType, IUser
 } from './global';
+import type { ICuratedAmmo, ICuratedArmor, ICuratedBag, ICuratedImplant, ICuratedItem, ICuratedProgram, ICuratedWeapon } from './items';
 import type {
   IBackground, INode
 } from './rules';
@@ -27,7 +28,7 @@ export interface IBodyAmmo {
   /** The body targeted */
   body: string
   /** The linked Ammo */
-  ammo: string
+  ammo: ICuratedAmmo
   /** The bag that store this ammo */
   bag: string
   /** How many ammos the player have */
@@ -43,7 +44,7 @@ export interface IBodyArmor {
   /** The body targeted */
   body: string
   /** The linked Armor */
-  armor: string
+  armor: ICuratedArmor
   /** The bag that store this armor */
   bag: string
   /** Is the armor equiped ? */
@@ -59,7 +60,7 @@ export interface IBodyBag {
   /** The body targeted */
   body: string
   /** The linked Bag */
-  bag: string
+  bag: ICuratedBag
   /** Is the bag equiped ? */
   equiped: boolean
   /** When the body was created */
@@ -73,7 +74,7 @@ export interface IBodyImplant {
   /** The body targeted */
   body: string
   /** The linked Implant */
-  implant: string
+  implant: ICuratedImplant
   /** The bag that store this implant */
   bag: string
   /** at what part the implant is equiped ? */
@@ -89,7 +90,7 @@ export interface IBodyItem {
   /** The body targeted */
   body: string
   /** The linked Item */
-  item: string
+  item: ICuratedItem
   /** The bag that store this item */
   bag: string
   /** How many items the player have */
@@ -105,7 +106,7 @@ export interface IBodyProgram {
   /** The body targeted */
   body: string
   /** The linked Program */
-  program: string
+  program: ICuratedProgram
   /** The bag that store this program */
   bag: string
   /** How many times the progam was used in the day */
@@ -121,7 +122,7 @@ export interface IBodyWeapon {
   /** The body targeted */
   body: string
   /** The linked Weapon */
-  weapon: string
+  weapon: ICuratedWeapon
   /** The type of ammo */
   ammo: string
   /** The bag that store this weapon */

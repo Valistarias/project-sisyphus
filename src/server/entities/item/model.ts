@@ -2,15 +2,21 @@ import {
   Schema, model, type HydratedDocument, type Model, type ObjectId
 } from 'mongoose';
 
+import type { Lean } from '../../utils/types';
 import type {
   HydratedIAction,
   HydratedICharParamBonus,
   HydratedIEffect,
   HydratedISkillBonus,
-  HydratedIStatBonus
+  HydratedIStatBonus,
+  IAction,
+  ICharParamBonus,
+  IEffect,
+  ISkillBonus,
+  IStatBonus
 } from '../index';
 
-interface IItem {
+interface IItem<IdType> {
   /** The title of the Item */
   title: string
   /** A summary of the Item */
@@ -18,32 +24,32 @@ interface IItem {
   /** The internationnal content, as a json, stringified */
   i18n?: string
   /** The rarity of the Item */
-  rarity: ObjectId
+  rarity: IdType
   /** Is this weapon in the starter kit ?
    * (always -> element included, never -> not included, option -> can be chosen with similar weapons) */
   starterKit?: 'always' | 'never' | 'option'
   /** The cost of the Item */
   cost: number
   /** The type of item */
-  itemType: ObjectId
+  itemType: IdType
   /** The item modifiers of the item */
-  itemModifiers?: ObjectId[]
+  itemModifiers?: IdType[]
   /** The effects related to the Item */
-  effects?: string[] | ObjectId[]
+  effects?: IdType[]
   /** The actions related to the Item */
-  actions?: string[] | ObjectId[]
+  actions?: IdType[]
   /** The skill bonuses related to the Item */
-  skillBonuses?: string[] | ObjectId[]
+  skillBonuses?: IdType[]
   /** The stat bonuses related to the Item */
-  statBonuses?: string[] | ObjectId[]
+  statBonuses?: IdType[]
   /** The charParam bonuses related to the Item */
-  charParamBonuses?: string[] | ObjectId[]
+  charParamBonuses?: IdType[]
   /** When the Item was created */
   createdAt: Date
 }
 
 type HydratedIItem = HydratedDocument<
-  Omit<IItem, | 'effects'
+  Omit<IItem<string>, | 'effects'
   | 'actions'
   | 'skillBonuses'
   | 'statBonuses'
@@ -57,7 +63,15 @@ type HydratedIItem = HydratedDocument<
   }
 >;
 
-const itemSchema = new Schema<IItem>({
+type LeanIItem = Omit<Lean<IItem<string>>, 'effects' | 'actions' | 'skillBonuses' | 'statBonuses' | 'charParamBonuses'> & {
+  effects: IEffect[]
+  actions: IAction[]
+  skillBonuses: ISkillBonus[]
+  statBonuses: IStatBonus[]
+  charParamBonuses: ICharParamBonus[]
+};
+
+const itemSchema = new Schema<IItem<ObjectId>>({
   title: String,
   summary: String,
   i18n: String,
@@ -116,8 +130,11 @@ const itemSchema = new Schema<IItem>({
   }
 });
 
-const ItemModel = (): Model<IItem> => model('Item', itemSchema);
+const ItemModel = (): Model<IItem<ObjectId>> => model('Item', itemSchema);
 
 export {
-  ItemModel, type HydratedIItem, type IItem
+  ItemModel,
+  type HydratedIItem,
+  type IItem,
+  type LeanIItem
 };

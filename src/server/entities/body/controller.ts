@@ -65,7 +65,7 @@ const findBodiesByCharacter = async (req: Request): Promise<HydratedIBody[]> =>
         const { characterId }: { characterId: string } = req.body;
 
         Body.find({ character: characterId })
-          .populate<{ character: HydratedDocument<ICharacter> }>('character')
+          .populate<{ character: HydratedDocument<ICharacter<string>> }>('character')
           .populate<{ stats: HydratedIBodyStat[] }>({
             path: 'stats',
             select: '_id body stat value'
@@ -98,11 +98,11 @@ const findBodiesByCharacter = async (req: Request): Promise<HydratedIBody[]> =>
             path: 'weapons',
             select: '_id body weapon bag ammo bullets'
           })
-          .then((res) => {
+          .then((res: HydratedIBody[]) => {
             if (res.length === 0) {
               reject(gemNotFound('Bodies'));
             } else {
-              resolve(res as HydratedIBody[]);
+              resolve(res);
             }
           })
           .catch((err) => {
@@ -130,7 +130,7 @@ const findBodyById = async (
           return;
         }
         Body.findById(id)
-          .populate<{ character: HydratedDocument<ICharacter> }>('character')
+          .populate<{ character: HydratedDocument<ICharacter<string>> }>('character')
           .populate<{ stats: HydratedIBodyStat[] }>({
             path: 'stats',
             select: '_id body stat value'
@@ -163,12 +163,12 @@ const findBodyById = async (
             path: 'weapons',
             select: '_id body weapon bag ammo bullets'
           })
-          .then((res) => {
-            if (res === null) {
+          .then((res?: HydratedIBody | null) => {
+            if (res === null || res === undefined) {
               reject(gemNotFound('Body'));
             } else {
               resolve({
-                body: res as HydratedIBody,
+                body: res,
                 canEdit:
                   String(res.character.player) === String(user._id)
                   || (res.character.player === undefined
@@ -208,7 +208,7 @@ const create = (req: Request, res: Response): void => {
           char, canEdit
         }) => {
           if (canEdit) {
-            const body = new Body({
+            const body: HydratedIBody = new Body({
               character: characterId,
               hp
             });

@@ -2,12 +2,15 @@ import {
   Schema, model, type HydratedDocument, type Model, type ObjectId
 } from 'mongoose';
 
+import type { Lean } from '../../utils/types';
 import type {
   HydratedIDamage,
+  HydratedINPC,
+  IDamage,
   INPC
 } from '../index';
 
-interface IProgram {
+interface IProgram<IdType> {
   /** The title of the program */
   title: string
   /** A summary of the program */
@@ -15,14 +18,14 @@ interface IProgram {
   /** The internationnal content, as a json, stringified */
   i18n?: string
   /** The rarity of the program */
-  rarity: ObjectId
+  rarity: IdType
   /** Is this weapon in the starter kit ?
    * (always -> element included, never -> not included, option -> can be chosen with similar weapons) */
   starterKit?: 'always' | 'never' | 'option'
   /** The type of item */
-  itemType: ObjectId
+  itemType: IdType
   /** The type of program, as his range or type */
-  programScope: ObjectId
+  programScope: IdType
   /** How many times the program is usable before detroying itseld (undefined | 0 = no limits) */
   uses: number
   /** How many RAM it costs */
@@ -32,23 +35,28 @@ interface IProgram {
   /** The cost of the program */
   cost: number
   /** The summon of the program */
-  ai?: ObjectId
+  ai?: IdType
   /** How many AIs the program summons */
   aiSummoned?: number
   /** The damages of the program */
-  damages?: string[] | ObjectId[]
+  damages?: IdType[]
   /** When the program was created */
   createdAt: Date
 }
 
 type HydratedIProgram = HydratedDocument<
-  Omit<IProgram, 'damages' | 'ai'> & {
+  Omit<IProgram<string>, 'damages' | 'ai'> & {
     damages: HydratedIDamage[] | string[]
-    ai?: INPC | ObjectId
+    ai?: HydratedINPC | string
   }
 >;
 
-const programSchema = new Schema<IProgram>({
+type LeanIProgram = Omit<Lean<IProgram<string>>, 'damages' | 'ai'> & {
+  damages: IDamage[]
+  ai?: INPC
+};
+
+const programSchema = new Schema<IProgram<ObjectId>>({
   title: String,
   summary: String,
   ram: Number,
@@ -89,8 +97,8 @@ const programSchema = new Schema<IProgram>({
   }
 });
 
-const ProgramModel = (): Model<IProgram> => model('Program', programSchema);
+const ProgramModel = (): Model<IProgram<ObjectId>> => model('Program', programSchema);
 
 export {
-  ProgramModel, type HydratedIProgram, type IProgram
+  ProgramModel, type HydratedIProgram, type IProgram, type LeanIProgram
 };

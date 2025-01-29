@@ -1,7 +1,7 @@
 import type {
   Request, Response
 } from 'express';
-import type { FlattenMaps, ObjectId } from 'mongoose';
+import type { FlattenMaps } from 'mongoose';
 
 import db from '../../models';
 import {
@@ -76,7 +76,7 @@ const create = (req: Request, res: Response): void => {
     return;
   }
 
-  const bag = new Bag({
+  const bag: HydratedIBag = new Bag({
     title,
     summary,
     rarity,
@@ -120,12 +120,12 @@ const update = (req: Request, res: Response): void => {
     title: string | null
     summary: string | null
     i18n: InternationalizationType | null
-    storableItemTypes: ObjectId[] | null
-    rarity: ObjectId | null
-    itemType: ObjectId | null
+    storableItemTypes: string[] | null
+    rarity: string | null
+    itemType: string | null
     starterKit?: 'always' | 'never' | 'option' | null
     cost: number | null
-    itemModifiers?: ObjectId[] | null
+    itemModifiers?: string[] | null
     size: number | null
   } = req.body;
   if (id === undefined) {
@@ -230,7 +230,7 @@ const deleteBag = (req: Request, res: Response): void => {
 
 export interface CuratedIBag {
   i18n?: InternationalizationType
-  bag: FlattenMaps<IBag>
+  bag: FlattenMaps<IBag<string>>
 }
 
 const findSingle = (req: Request, res: Response): void => {

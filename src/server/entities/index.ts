@@ -11,7 +11,7 @@ export {
   AmmoModel, type HydratedIAmmo, type IAmmo
 } from './ammo/model';
 export {
-  ArmorModel, type HydratedIArmor, type IArmor
+  ArmorModel, type HydratedIArmor, type IArmor, type LeanIArmor
 } from './armor/model';
 export {
   ArmorTypeModel, type HydratedIArmorType, type IArmorType
@@ -41,13 +41,19 @@ export {
   type HydratedIBodyStat,
   type HydratedIBodyWeapon,
   type IBody,
+  type LeanIBody,
   type IBodyAmmo,
+  type LeanIBodyAmmo,
   type IBodyArmor,
+  type LeanIBodyArmor,
   type IBodyBag,
+  type LeanIBodyBag,
   type IBodyImplant,
   type IBodyProgram,
+  type LeanIBodyProgram,
   type IBodyStat,
-  type IBodyWeapon
+  type IBodyWeapon,
+  type LeanIBodyWeapon
 } from './body';
 export {
   BodyPartModel, type HydratedIBodyPart, type IBodyPart
@@ -109,10 +115,10 @@ export {
   GlobalValueModel, type IGlobalValue
 } from './globalValue/model';
 export {
-  ImplantModel, type HydratedIImplant, type IImplant
+  ImplantModel, type HydratedIImplant, type IImplant, type LeanIImplant
 } from './implant/model';
 export {
-  ItemModel, type HydratedIItem, type IItem
+  ItemModel, type HydratedIItem, type IItem, type LeanIItem
 } from './item/model';
 export {
   ItemModifierModel,
@@ -138,7 +144,7 @@ export {
   PageModel, type HydratedIPage, type IPage
 } from './page/model';
 export {
-  ProgramModel, type HydratedIProgram, type IProgram
+  ProgramModel, type HydratedIProgram, type IProgram, type LeanIProgram
 } from './program/model';
 export {
   ProgramScopeModel,
@@ -181,7 +187,7 @@ export {
   UserModel, type HydratedIUser, type IUser
 } from './user/model';
 export {
-  WeaponModel, type HydratedIWeapon, type IWeapon
+  WeaponModel, type HydratedIWeapon, type IWeapon, type LeanIWeapon
 } from './weapon/model';
 export {
   WeaponScopeModel,

@@ -2,24 +2,26 @@ import {
   Schema, model, type HydratedDocument, type Model, type ObjectId
 } from 'mongoose';
 
-import type { HydratedIBag } from '../../bag/model';
+import type { HydratedIBag, IBag } from '../../bag/model';
 
-interface IBodyBag {
+interface IBodyBag<IdType> {
   /** When the body was created */
   createdAt: Date
   /** The body targeted */
-  body: ObjectId
+  body: IdType
   /** The linked Bag */
-  bag: ObjectId
+  bag: IdType
   /** Is the bag equiped ? */
   equiped: boolean
 }
 
+type LeanIBodyBag = Omit<IBodyBag<string>, 'bag'> & { bag: IBag<string> };
+
 type HydratedIBodyBag = HydratedDocument<
-  Omit<IBodyBag, 'bag'> & { bag: HydratedIBag }
+  Omit<IBodyBag<string>, 'bag'> & { bag: HydratedIBag }
 >;
 
-const BodyBagSchema = new Schema<IBodyBag>({
+const BodyBagSchema = new Schema<IBodyBag<ObjectId>>({
   body: {
     type: Schema.Types.ObjectId,
     ref: 'Body'
@@ -38,8 +40,8 @@ const BodyBagSchema = new Schema<IBodyBag>({
   }
 });
 
-const BodyBagModel = (): Model<IBodyBag> => model('BodyBag', BodyBagSchema);
+const BodyBagModel = (): Model<IBodyBag<ObjectId>> => model('BodyBag', BodyBagSchema);
 
 export {
-  BodyBagModel, type HydratedIBodyBag, type IBodyBag
+  BodyBagModel, type HydratedIBodyBag, type IBodyBag, type LeanIBodyBag
 };

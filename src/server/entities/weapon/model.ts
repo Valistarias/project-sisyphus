@@ -2,13 +2,16 @@ import {
   Schema, model, type HydratedDocument, type Model, type ObjectId
 } from 'mongoose';
 
-import type { HydratedIDamage } from '../damage/model';
+import type { Lean } from '../../utils/types';
+import type { HydratedIDamage, IDamage } from '../damage/model';
 import type {
   HydratedIAction,
-  HydratedIEffect
+  HydratedIEffect,
+  IAction,
+  IEffect
 } from '../index';
 
-interface IWeapon {
+interface IWeapon<IdType> {
   /** The title of the weapon */
   title: string
   /** A summary of the weapon */
@@ -18,13 +21,13 @@ interface IWeapon {
   /** The internationnal content, as a json, stringified */
   i18n?: string
   /** The associated weaponType */
-  weaponType: ObjectId
+  weaponType: IdType
   /** The rarity of the weapon */
-  rarity: ObjectId
+  rarity: IdType
   /** The range of the weapon */
-  weaponScope: ObjectId
+  weaponScope: IdType
   /** The item modifiers of the weapon */
-  itemModifiers?: ObjectId[]
+  itemModifiers?: IdType[]
   /** The cost of the weapon */
   cost: number
   /** The size of the magasine */
@@ -35,24 +38,30 @@ interface IWeapon {
    * (always -> element included, never -> not included, option -> can be chosen with similar weapons) */
   starterKit?: 'always' | 'never' | 'option'
   /** The effects related to the weapon */
-  effects?: string[] | ObjectId[]
+  effects?: IdType[]
   /** The actions related to the weapon */
-  actions?: string[] | ObjectId[]
+  actions?: IdType[]
   /** The damages of the weapon */
-  damages: string[] | ObjectId[]
+  damages: IdType[]
   /** When the weapon was created */
   createdAt: Date
 }
 
 type HydratedIWeapon = HydratedDocument<
-  Omit<IWeapon, 'effects' | 'actions' | 'damages'> & {
+  Omit<IWeapon<string>, 'effects' | 'actions' | 'damages'> & {
     effects: HydratedIEffect[] | string[]
     actions: HydratedIAction[] | string[]
     damages: HydratedIDamage[] | string[]
   }
 >;
 
-const weaponSchema = new Schema<IWeapon>({
+type LeanIWeapon = Omit<Lean<IWeapon<string>>, 'effects' | 'actions' | 'damages'> & {
+  effects: IEffect[]
+  actions: IAction[]
+  damages: IDamage[]
+};
+
+const weaponSchema = new Schema<IWeapon<ObjectId>>({
   title: String,
   summary: String,
   quote: String,
@@ -106,8 +115,8 @@ const weaponSchema = new Schema<IWeapon>({
   }
 });
 
-const WeaponModel = (): Model<IWeapon> => model('Weapon', weaponSchema);
+const WeaponModel = (): Model<IWeapon<ObjectId>> => model('Weapon', weaponSchema);
 
 export {
-  WeaponModel, type HydratedIWeapon, type IWeapon
+  WeaponModel, type HydratedIWeapon, type IWeapon, type LeanIWeapon
 };

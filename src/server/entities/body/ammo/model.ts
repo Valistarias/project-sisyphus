@@ -2,26 +2,28 @@ import {
   Schema, model, type HydratedDocument, type Model, type ObjectId
 } from 'mongoose';
 
-import type { HydratedIAmmo } from '../../ammo/model';
+import type { HydratedIAmmo, IAmmo } from '../../ammo/model';
 
-interface IBodyAmmo {
+interface IBodyAmmo<IdType> {
   /** When the body was created */
   createdAt: Date
   /** The body targeted */
-  body: ObjectId
+  body: IdType
   /** The linked Ammo */
-  ammo: ObjectId
+  ammo: IdType
   /** The bag that store this ammo */
-  bag: ObjectId
+  bag: IdType
   /** How many ammos the player have */
   qty: number
 }
 
+type LeanIBodyAmmo = Omit<IBodyAmmo<string>, 'ammo'> & { ammo: IAmmo<string> };
+
 type HydratedIBodyAmmo = HydratedDocument<
-  Omit<IBodyAmmo, 'ammo'> & { ammo: HydratedIAmmo }
+  Omit<IBodyAmmo<string>, 'ammo'> & { ammo: HydratedIAmmo }
 >;
 
-const BodyAmmoSchema = new Schema<IBodyAmmo>({
+const BodyAmmoSchema = new Schema<IBodyAmmo<ObjectId>>({
   body: {
     type: Schema.Types.ObjectId,
     ref: 'Body'
@@ -44,8 +46,8 @@ const BodyAmmoSchema = new Schema<IBodyAmmo>({
   }
 });
 
-const BodyAmmoModel = (): Model<IBodyAmmo> => model('BodyAmmo', BodyAmmoSchema);
+const BodyAmmoModel = (): Model<IBodyAmmo<ObjectId>> => model('BodyAmmo', BodyAmmoSchema);
 
 export {
-  BodyAmmoModel, type HydratedIBodyAmmo, type IBodyAmmo
+  BodyAmmoModel, type HydratedIBodyAmmo, type IBodyAmmo, type LeanIBodyAmmo
 };

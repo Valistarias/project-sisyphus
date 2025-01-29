@@ -13,12 +13,12 @@ import {
   gemServerError,
   gemUnauthorizedGlobal
 } from '../../utils/globalErrorMessage';
-import { curateSingleArmor, type CuratedIArmorToSend, type IArmorSent } from '../armor/controller';
+import { curateSingleArmor, type CuratedIArmorToSend } from '../armor/controller';
 import { deleteBodiesRecursive } from '../body/controller';
-import { curateSingleImplant, type CuratedIImplantToSend, type IImplantSent } from '../implant/controller';
-import { curateSingleItem, type CuratedIItemToSend, type IItemSent } from '../item/controller';
-import { curateSingleProgram, type CuratedIProgramToSend, type IProgramSent } from '../program/controller';
-import { curateSingleWeapon, type CuratedIWeaponToSend, type IWeaponSent } from '../weapon/controller';
+import { curateSingleImplant, type CuratedIImplantToSend } from '../implant/controller';
+import { curateSingleItem, type CuratedIItemToSend } from '../item/controller';
+import { curateSingleProgram, type CuratedIProgramToSend } from '../program/controller';
+import { curateSingleWeapon, type CuratedIWeaponToSend } from '../weapon/controller';
 
 import {
   createNodesByCharacter,
@@ -32,11 +32,21 @@ import type { Lean } from '../../utils/types';
 import type { CuratedIAmmo } from '../ammo/controller';
 import type { HydratedIBackground, IBackground } from '../background/model';
 import type { CuratedIBag } from '../bag/controller';
-import type { HydratedIBody, HydratedIBodyAmmo, HydratedIBodyBag, HydratedIBodyStat, IBody, IBodyAmmo, IBodyArmor, IBodyBag, IBodyImplant, IBodyItem, IBodyProgram, IBodyStat, IBodyWeapon } from '../body';
+import type {
+  HydratedIBody,
+  LeanIBody,
+  LeanIBodyAmmo,
+  LeanIBodyArmor,
+  LeanIBodyBag,
+  LeanIBodyImplant,
+  LeanIBodyItem,
+  LeanIBodyProgram,
+  LeanIBodyWeapon
+} from '../body';
 import type { ICampaign } from '../campaign/model';
 import type { HydratedINode, LeanINode } from '../node/model';
 import type { IUser } from '../user/model';
-import type { LeanIPopulatedBody, LeanICharacter } from './id/model';
+import type { LeanICharacter } from './id/model';
 
 import { curateI18n } from '../../utils';
 
@@ -154,7 +164,7 @@ const findCompleteCharacterById = async (
               ]
             }
           })
-          .populate<{ bodies: LeanIPopulatedBody[] }>({
+          .populate<{ bodies: LeanIBody[] }>({
             path: 'bodies',
             select: '_id character alive hp stats createdAt',
             populate: [
@@ -264,7 +274,6 @@ const findCompleteCharacterById = async (
             ]
           })
           .then((res?: LeanICharacter | null) => {
-            console.log('res', res);
             if (res === undefined || res === null) {
               reject(gemNotFound('Character'));
             } else {
@@ -275,7 +284,6 @@ const findCompleteCharacterById = async (
             }
           })
           .catch((err) => {
-            console.log('err', err);
             reject(err);
           });
       })
@@ -307,7 +315,7 @@ const findCharacterById = async (
             path: 'nodes',
             select: '_id character node used'
           })
-          .populate<{ bodies: LeanIPopulatedBody[] }>({
+          .populate<{ bodies: HydratedIBody[] }>({
             path: 'bodies',
             select: '_id character alive hp stats createdAt',
             populate: [
@@ -346,13 +354,13 @@ const findCharacterById = async (
             ]
           })
           .populate<{ background: HydratedIBackground }>('background')
-          .then((res) => {
-            if (res === null) {
+          .then((res?: HydratedICharacter | null) => {
+            if (res === null || res === undefined) {
               reject(gemNotFound('Character'));
             } else {
               const canEdit: boolean
                 = String(
-                  res.player._id
+                  res.player?._id
                 ) === String(user._id)
                 || String(
                   res.createdBy._id
@@ -474,7 +482,7 @@ const createOrFindCharacter = async (req: Request): Promise<string> =>
             reject(gemNotFound('User'));
           } else {
             Character.create({ createdBy: user._id })
-              .then(({ _id }) => {
+              .then(({ _id }: HydratedICharacter) => {
                 resolve(_id.toString());
               })
               .catch((err: unknown) => {
@@ -513,7 +521,9 @@ const create = (req: Request, res: Response): void => {
 
         return;
       }
-      const character = new Character({ createdBy: user._id });
+      const character: HydratedICharacter = new Character(
+        { createdBy: user._id }
+      );
 
       if (player !== null) {
         character.player = player;
@@ -690,82 +700,32 @@ const deleteCharacter = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-type IBodyArmorSent = HydratedDocument<
-  Omit<IBodyArmor, 'armor'> & { armor: IArmorSent }
->;
-
-type IBodyImplantSent = HydratedDocument<
-  Omit<
-    IBodyImplant,
-    | 'implant'
-  > & {
-    implant: IImplantSent
-  }
->;
-
-type IBodyItemSent = HydratedDocument<
-  Omit<
-    IBodyItem,
-    | 'item'
-  > & {
-    item: IItemSent
-  }
->;
-
-type IBodyProgramSent = HydratedDocument<
-  Omit<IBodyProgram, 'program'> & { program: IProgramSent }
->;
-
-type IBodyWeaponSent = HydratedDocument<
-  Omit<
-    IBodyWeapon,
-    | 'weapon'
-  > & {
-    weapon: IWeaponSent
-  }
->;
-
-// export type ICharacterSent = Omit<LeanICharacter, 'bodies'> & {
-//   bodies?: Array<IBody & {
-//     stats: IBodyStat[]
-//     ammos: IBodyAmmo[]
-//     armors: IBodyArmorSent[]
-//     bags: IBodyBag[]
-//     implants: IBodyImplantSent[]
-//     items: IBodyItemSent[]
-//     programs: IBodyProgramSent[]
-//     weapons: IBodyWeaponSent[]
-//   }>
-// };
-
 type CuratedICharacterToSend = Omit<LeanICharacter, 'bodies'> & {
-  bodies: Array<{
-    alive: boolean
-    hp: number
-    character: string
-    stats: HydratedIBodyStat[]
-    ammos: Array<Omit<IBodyAmmo, 'ammo'> & {
-      ammo: CuratedIAmmo
+  bodies: Array<
+    Pick<LeanIBody, 'alive' | 'hp' | 'character' | 'stats'>
+    & {
+      ammos: Array<Omit<LeanIBodyAmmo, 'ammo'> & {
+        ammo: CuratedIAmmo
+      }>
+      armors: Array<Omit<LeanIBodyArmor, 'armor'> & {
+        armor: CuratedIArmorToSend
+      }>
+      bags: Array<Omit<LeanIBodyBag, 'bag'> & {
+        bag: CuratedIBag
+      }>
+      implants: Array<Omit<LeanIBodyImplant, 'implant'> & {
+        implant: CuratedIImplantToSend
+      }>
+      items: Array<Omit<LeanIBodyItem, 'item'> & {
+        item: CuratedIItemToSend
+      }>
+      programs: Array<Omit<LeanIBodyProgram, 'program'> & {
+        program: CuratedIProgramToSend
+      }>
+      weapons: Array<Omit<LeanIBodyWeapon, 'weapon'> & {
+        weapon: CuratedIWeaponToSend
+      }>
     }>
-    armors: Array<Omit<IBodyArmor, 'armor'> & {
-      armor: CuratedIArmorToSend
-    }>
-    bags: Array<Omit<IBodyBag, 'bag'> & {
-      bag: CuratedIBag
-    }>
-    implants: Array<Omit<IBodyImplant, 'implant'> & {
-      implant: CuratedIImplantToSend
-    }>
-    items: Array<Omit<IBodyItem, 'item'> & {
-      item: CuratedIItemToSend
-    }>
-    programs: Array<Omit<IBodyProgram, 'program'> & {
-      program: CuratedIProgramToSend
-    }>
-    weapons: Array<Omit<IBodyWeapon, 'weapon'> & {
-      weapon: CuratedIWeaponToSend
-    }>
-  }>
 };
 
 const curateSingleCharacter = (
@@ -775,7 +735,7 @@ const curateSingleCharacter = (
     ...body,
     character: body.character.toString(),
     ammos: body.ammos.map((bodyAmmoSent) => {
-      const ammo = bodyAmmoSent.ammo.toJSON();
+      const { ammo } = bodyAmmoSent;
 
       return {
         ...bodyAmmoSent,
@@ -787,10 +747,10 @@ const curateSingleCharacter = (
     }),
     armors: body.armors.map(bodyArmorSent => ({
       ...bodyArmorSent,
-      armor: curateSingleArmor(bodyArmorSent.armor, true)
+      armor: curateSingleArmor(bodyArmorSent.armor)
     })),
     bags: body.bags.map((bodyBagSent) => {
-      const bag = bodyBagSent.bag.toJSON();
+      const { bag } = bodyBagSent;
 
       return {
         ...bodyBagSent,

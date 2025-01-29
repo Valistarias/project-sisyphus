@@ -3,29 +3,40 @@ import {
 } from 'mongoose';
 
 import type { ICharacter } from '../../character';
-import type { HydratedIBodyAmmo } from '../ammo/model';
-import type { HydratedIBodyArmor } from '../armor/model';
-import type { HydratedIBodyBag } from '../bag/model';
-import type { HydratedIBodyImplant } from '../implant/model';
-import type { HydratedIBodyItem } from '../item/model';
-import type { HydratedIBodyProgram } from '../program/model';
-import type { HydratedIBodyStat } from '../stat/model';
-import type { HydratedIBodyWeapon } from '../weapon/model';
+import type { HydratedIBodyAmmo, LeanIBodyAmmo } from '../ammo/model';
+import type { HydratedIBodyArmor, LeanIBodyArmor } from '../armor/model';
+import type { HydratedIBodyBag, LeanIBodyBag } from '../bag/model';
+import type { HydratedIBodyImplant, LeanIBodyImplant } from '../implant/model';
+import type { HydratedIBodyItem, LeanIBodyItem } from '../item/model';
+import type { HydratedIBodyProgram, LeanIBodyProgram } from '../program/model';
+import type { HydratedIBodyStat, IBodyStat } from '../stat/model';
+import type { HydratedIBodyWeapon, LeanIBodyWeapon } from '../weapon/model';
 
-interface IBody {
+interface IBody<IdType> {
   /** Is this body alive */
   alive: boolean
   /** The body HP */
   hp: number
   /** The character associated to this body */
-  character: ObjectId
+  character: IdType
   /** When the body was created */
   createdAt: Date
 }
 
+type LeanIBody = IBody<string> & {
+  stats: IBodyStat[]
+  ammos: LeanIBodyAmmo[]
+  armors: LeanIBodyArmor[]
+  bags: LeanIBodyBag[]
+  implants: LeanIBodyImplant[]
+  items: LeanIBodyItem[]
+  programs: LeanIBodyProgram[]
+  weapons: LeanIBodyWeapon[]
+};
+
 type HydratedIBody = HydratedDocument<
-  Omit<IBody, 'character'> & {
-    character: HydratedDocument<ICharacter>
+  Omit<IBody<string>, 'character'> & {
+    character: HydratedDocument<ICharacter<string>>
     stats: HydratedIBodyStat[]
     ammos: HydratedIBodyAmmo[]
     armors: HydratedIBodyArmor[]
@@ -37,7 +48,7 @@ type HydratedIBody = HydratedDocument<
   }
 >;
 
-const bodySchema = new Schema<IBody>({
+const bodySchema = new Schema<IBody<ObjectId>>({
   alive: {
     type: Boolean,
     default: true
@@ -103,8 +114,8 @@ bodySchema.virtual('weapons', {
   foreignField: 'body'
 });
 
-const BodyModel = (): Model<IBody> => model('Body', bodySchema);
+const BodyModel = (): Model<IBody<ObjectId>> => model('Body', bodySchema);
 
 export {
-  BodyModel, type HydratedIBody, type IBody
+  BodyModel, type HydratedIBody, type IBody, type LeanIBody
 };

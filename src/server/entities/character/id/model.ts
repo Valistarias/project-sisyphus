@@ -4,12 +4,12 @@ import {
 
 import type { Lean } from '../../../utils/types';
 import type { HydratedIBackground, IBackground } from '../../background/model';
-import type { HydratedIBody, IBody, IBodyAmmo, IBodyArmor, IBodyBag, IBodyImplant, IBodyItem, IBodyProgram, IBodyStat, IBodyWeapon } from '../../body';
+import type { HydratedIBody, LeanIBody } from '../../body';
 import type { ICampaign } from '../../campaign/model';
 import type { HydratedINode, LeanINode } from '../../node/model';
 import type { IUser } from '../../user/model';
 
-interface ICharacter {
+interface ICharacter<IdType> {
   /** The first name of the character */
   firstName?: string
   /** The last name of the character */
@@ -33,36 +33,25 @@ interface ICharacter {
   /** When the character was created */
   createdAt: Date
   /** The player of the character */
-  player?: ObjectId
+  player?: IdType
   /** Who has created this character */
-  createdBy: ObjectId
+  createdBy: IdType
   /** The campaign where the character plays */
-  campaign?: ObjectId
+  campaign?: IdType
   /** The background of this character */
-  background?: ObjectId
+  background?: IdType
 }
 
-type LeanIPopulatedBody = IBody & {
-  stats: IBodyStat[]
-  ammos: IBodyAmmo[]
-  armors: IBodyArmor[]
-  bags: IBodyBag[]
-  implants: IBodyImplant[]
-  items: IBodyItem[]
-  programs: IBodyProgram[]
-  weapons: IBodyWeapon[]
-};
-
-type LeanICharacter = Omit<ICharacter, 'player' | 'campaign' | 'createdBy' | 'background'> & {
+type LeanICharacter = Omit<ICharacter<string>, 'player' | 'campaign' | 'createdBy' | 'background'> & {
   player?: Lean<IUser>
   createdBy: Lean<IUser>
   campaign?: Lean<ICampaign>
   nodes?: Array<Lean<LeanINode>>
-  bodies?: LeanIPopulatedBody[]
+  bodies?: LeanIBody[]
   background?: Lean<IBackground>
 };
 
-type HydratedICharacter = HydratedDocument<Omit<ICharacter, 'player' | 'campaign' | 'createdBy' | 'background'> & {
+type HydratedICharacter = HydratedDocument<Omit<ICharacter<string>, 'player' | 'campaign' | 'createdBy' | 'background'> & {
   player?: HydratedDocument<IUser>
   createdBy: HydratedDocument<IUser>
   campaign?: HydratedDocument<ICampaign>
@@ -71,7 +60,7 @@ type HydratedICharacter = HydratedDocument<Omit<ICharacter, 'player' | 'campaign
   background?: HydratedIBackground
 }>;
 
-const characterSchema = new Schema<ICharacter>(
+const characterSchema = new Schema<ICharacter<ObjectId>>(
   {
     firstName: String,
     lastName: String,
@@ -127,12 +116,11 @@ characterSchema.virtual('bodies', {
   foreignField: 'character'
 });
 
-const CharacterModel = (): Model<ICharacter> => model('Character', characterSchema);
+const CharacterModel = (): Model<ICharacter<ObjectId>> => model('Character', characterSchema);
 
 export {
   CharacterModel,
   type HydratedICharacter,
   type ICharacter,
-  type LeanICharacter,
-  type LeanIPopulatedBody
+  type LeanICharacter
 };

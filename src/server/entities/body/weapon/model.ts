@@ -2,7 +2,7 @@ import {
   Schema, model, type HydratedDocument, type Model, type ObjectId
 } from 'mongoose';
 
-import type { HydratedIWeapon } from '../../weapon/model';
+import type { HydratedIWeapon, LeanIWeapon } from '../../weapon/model';
 
 interface IBodyWeapon {
   /** When the body was created */
@@ -18,6 +18,8 @@ interface IBodyWeapon {
   /** The bullets in the chamber */
   bullets: number
 }
+
+type LeanIBodyWeapon = Omit<IBodyWeapon, 'weapon'> & { weapon: LeanIWeapon };
 
 type HydratedIBodyWeapon = HydratedDocument<
   Omit<IBodyWeapon, 'weapon'> & {
@@ -55,5 +57,8 @@ const BodyWeaponSchema = new Schema<IBodyWeapon>({
 const BodyWeaponModel = (): Model<IBodyWeapon> => model('BodyWeapon', BodyWeaponSchema);
 
 export {
-  BodyWeaponModel, type HydratedIBodyWeapon, type IBodyWeapon
+  BodyWeaponModel,
+  type HydratedIBodyWeapon,
+  type IBodyWeapon,
+  type LeanIBodyWeapon
 };

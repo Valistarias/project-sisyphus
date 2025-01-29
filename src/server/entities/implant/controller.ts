@@ -1,7 +1,6 @@
 import type {
   Request, Response
 } from 'express';
-import type { FlattenMaps, HydratedDocument, ObjectId } from 'mongoose';
 
 import db from '../../models';
 import {
@@ -13,15 +12,20 @@ import { type ISentEffect, smartUpdateEffects } from '../effect/controller';
 import { curateSkillBonusIds } from '../skillBonus/controller';
 import { curateStatBonusIds } from '../statBonus/controller';
 
-import type { ICuratedActionToSend, ICuratedEffectToSend, InternationalizationType } from '../../utils/types';
+import type { InternationalizationType } from '../../utils/types';
 import type {
   HydratedIAction,
   HydratedICharParamBonus,
   HydratedIEffect,
   HydratedISkillBonus,
-  HydratedIStatBonus
+  HydratedIStatBonus,
+  IAction,
+  ICharParamBonus,
+  IEffect,
+  ISkillBonus,
+  IStatBonus
 } from '../index';
-import type { HydratedIImplant, IImplant } from './model';
+import type { HydratedIImplant, LeanIImplant } from './model';
 
 import { curateI18n } from '../../utils';
 
@@ -33,15 +37,16 @@ interface findAllPayload {
 
 const findImplants = async (
   options?: findAllPayload
-): Promise<HydratedIImplant[]> =>
+): Promise<LeanIImplant[]> =>
   await new Promise((resolve, reject) => {
     Implant.find(options ?? {})
-      .populate<{ effects: HydratedIEffect[] }>('effects')
-      .populate<{ actions: HydratedIAction[] }>('actions')
-      .populate<{ skillBonuses: HydratedISkillBonus[] }>('skillBonuses')
-      .populate<{ statBonuses: HydratedIStatBonus[] }>('statBonuses')
-      .populate<{ charParamBonuses: HydratedICharParamBonus[] }>('charParamBonuses')
-      .then((res: HydratedIImplant[]) => {
+      .lean()
+      .populate<{ effects: IEffect[] }>('effects')
+      .populate<{ actions: IAction[] }>('actions')
+      .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
+      .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
+      .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
+      .then((res: LeanIImplant[]) => {
         if (res.length === 0) {
           reject(gemNotFound('Implants'));
         } else {
@@ -53,7 +58,7 @@ const findImplants = async (
       });
   });
 
-const findImplantById = async (id: string): Promise<HydratedIImplant> =>
+const findCompleteImplantById = async (id: string): Promise<HydratedIImplant> =>
   await new Promise((resolve, reject) => {
     Implant.findById(id)
       .populate<{ effects: HydratedIEffect[] }>('effects')
@@ -62,6 +67,27 @@ const findImplantById = async (id: string): Promise<HydratedIImplant> =>
       .populate<{ statBonuses: HydratedIStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: HydratedICharParamBonus[] }>('charParamBonuses')
       .then((res?: HydratedIImplant | null) => {
+        if (res === undefined || res === null) {
+          reject(gemNotFound('Implant'));
+        } else {
+          resolve(res);
+        }
+      })
+      .catch((err: unknown) => {
+        reject(err);
+      });
+  });
+
+const findImplantById = async (id: string): Promise<LeanIImplant> =>
+  await new Promise((resolve, reject) => {
+    Implant.findById(id)
+      .lean()
+      .populate<{ effects: IEffect[] }>('effects')
+      .populate<{ actions: IAction[] }>('actions')
+      .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
+      .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
+      .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
+      .then((res?: LeanIImplant | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Implant'));
         } else {
@@ -103,7 +129,7 @@ const create = (req: Request, res: Response): void => {
     return;
   }
 
-  const implant = new Implant({
+  const implant: HydratedIImplant = new Implant({
     title,
     summary,
     rarity,
@@ -233,12 +259,12 @@ const update = (req: Request, res: Response): void => {
     title: string | null
     summary: string | null
     i18n: InternationalizationType | null
-    rarity: ObjectId | null
+    rarity: string | null
     starterKit: 'always' | 'never' | 'option' | null
     cost: number | null
-    itemType: ObjectId | null
-    itemModifiers: ObjectId[] | null
-    bodyParts: ObjectId[] | null
+    itemType: string | null
+    itemModifiers: string[] | null
+    bodyParts: string[] | null
     effects: ISentEffect[] | null
     actions: ISentAction[] | null
     skillBonuses: Array<{
@@ -253,7 +279,7 @@ const update = (req: Request, res: Response): void => {
       charParam: string
       value: number
     }> | null
-    overrides: ObjectId[] | null
+    overrides: string[] | null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Implant ID'));
@@ -261,7 +287,7 @@ const update = (req: Request, res: Response): void => {
     return;
   }
 
-  findImplantById(id)
+  findCompleteImplantById(id)
     .then((implant) => {
       if (title !== null) {
         implant.title = title;
@@ -606,24 +632,22 @@ const deleteImplantById = async (id?: string): Promise<boolean> =>
 const deleteImplant = (req: Request, res: Response): void => {
   const { id }: { id: string } = req.body;
 
-  findImplantById(id)
-    .then((implant: HydratedDocument<
-      Omit<IImplant,
-      | 'effects'
-      | 'actions'
-      | 'skillBonuses'
-      | 'statBonuses'
-      | 'charParamBonuses'
-      | 'skillBranch'
-      | 'cyberFrameBranch'
-      > & {
-        effects: HydratedIEffect[]
-        actions: HydratedIAction[]
-        skillBonuses: HydratedISkillBonus[]
-        statBonuses: HydratedIStatBonus[]
-        charParamBonuses: HydratedICharParamBonus[]
-      }
-    >) => {
+  findCompleteImplantById(id)
+    .then((implant: Omit<HydratedIImplant,
+    | 'effects'
+    | 'actions'
+    | 'skillBonuses'
+    | 'statBonuses'
+    | 'charParamBonuses'
+    | 'skillBranch'
+    | 'cyberFrameBranch'
+    > & {
+      effects: HydratedIEffect[]
+      actions: HydratedIAction[]
+      skillBonuses: HydratedISkillBonus[]
+      statBonuses: HydratedIStatBonus[]
+      charParamBonuses: HydratedICharParamBonus[]
+    }) => {
       const skillBonusesToRemove = implant.skillBonuses.map(
         elt => String(elt._id)
       );
@@ -697,32 +721,18 @@ const deleteImplant = (req: Request, res: Response): void => {
     });
 };
 
-export type IImplantSent = HydratedDocument<
-  Omit<
-    IImplant,
-    | 'effects'
-    | 'actions'
-  > & {
-    effects: HydratedIEffect[]
-    actions: HydratedIAction[]
-    skillBonuses: HydratedISkillBonus[]
-    statBonuses: HydratedIStatBonus[]
-    charParamBonuses: HydratedICharParamBonus[]
-  }
->;
-
 export interface CuratedIImplantToSend {
   implant: Omit<
-    FlattenMaps<IImplant>,
+    LeanIImplant,
     | 'effects'
     | 'actions'
   > & {
     effects: Array<{
-      effect: ICuratedEffectToSend
+      effect: IEffect
       i18n?: InternationalizationType
     }>
     actions: Array<{
-      action: ICuratedActionToSend
+      action: IAction
       i18n?: InternationalizationType
     }>
   }
@@ -730,34 +740,26 @@ export interface CuratedIImplantToSend {
 }
 
 export const curateSingleImplant = (
-  implantSent: IImplantSent
+  implantSent: LeanIImplant
 ): CuratedIImplantToSend => {
   const curatedActions
   = implantSent.actions.length > 0
-    ? implantSent.actions.map((action) => {
-        const data = action.toJSON();
-
-        return {
-          action: data,
-          i18n: curateI18n(data.i18n)
-        };
-      })
+    ? implantSent.actions.map(action => ({
+        action,
+        i18n: curateI18n(action.i18n)
+      }))
     : [];
   const curatedEffects
   = implantSent.effects.length > 0
-    ? implantSent.effects.map((effect) => {
-        const data = effect.toJSON();
-
-        return {
-          effect: data,
-          i18n: curateI18n(data.i18n)
-        };
-      })
+    ? implantSent.effects.map(effect => ({
+        effect,
+        i18n: curateI18n(effect.i18n)
+      }))
     : [];
 
   return {
     implant: {
-      ...implantSent.toJSON(),
+      ...implantSent,
       actions: curatedActions,
       effects: curatedEffects
     },
@@ -773,7 +775,7 @@ const findSingle = (req: Request, res: Response): void => {
     return;
   }
   findImplantById(implantId)
-    .then((implantSent: IImplantSent) => {
+    .then((implantSent) => {
       res.send(curateSingleImplant(implantSent));
     })
     .catch((err: unknown) => {
@@ -783,7 +785,7 @@ const findSingle = (req: Request, res: Response): void => {
 
 const findAll = (req: Request, res: Response): void => {
   findImplants()
-    .then((implants: IImplantSent[]) => {
+    .then((implants: LeanIImplant[]) => {
       const curatedImplants: CuratedIImplantToSend[] = [];
       implants.forEach((implantSent) => {
         curatedImplants.push(curateSingleImplant(implantSent));
@@ -796,7 +798,7 @@ const findAll = (req: Request, res: Response): void => {
 
 const findAllStarter = (req: Request, res: Response): void => {
   findImplants({ starterKit: { $in: ['always', 'option'] } })
-    .then((implants: IImplantSent[]) => {
+    .then((implants: LeanIImplant[]) => {
       const curatedImplants: CuratedIImplantToSend[] = [];
       implants.forEach((implantSent) => {
         curatedImplants.push(curateSingleImplant(implantSent));

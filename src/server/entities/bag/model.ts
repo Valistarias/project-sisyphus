@@ -2,7 +2,7 @@ import {
   Schema, model, type HydratedDocument, type Model, type ObjectId
 } from 'mongoose';
 
-interface IBag {
+interface IBag<IdType> {
   /** The title of the bag */
   title: string
   /** A summary of the bag */
@@ -10,16 +10,16 @@ interface IBag {
   /** The internationnal content, as a json, stringified */
   i18n?: string
   /** The rarity of the bag */
-  rarity: ObjectId
+  rarity: IdType
   /** Is this weapon in the starter kit ?
    * (always -> element included, never -> not included, option -> can be chosen with similar weapons) */
   starterKit?: 'always' | 'never' | 'option'
   /** The type of item */
-  itemType: ObjectId
+  itemType: IdType
   /** The range of the item storable in the bag */
-  storableItemTypes: ObjectId[]
+  storableItemTypes: IdType[]
   /** The item modifiers of the bag */
-  itemModifiers?: ObjectId[]
+  itemModifiers?: IdType[]
   /** How many item it can store */
   size: number
   /** The cost of the bag */
@@ -28,9 +28,9 @@ interface IBag {
   createdAt: Date
 }
 
-type HydratedIBag = HydratedDocument<IBag>;
+type HydratedIBag = HydratedDocument<IBag<string>>;
 
-const bagSchema = new Schema<IBag>({
+const bagSchema = new Schema<IBag<ObjectId>>({
   title: String,
   summary: String,
   size: Number,
@@ -66,7 +66,7 @@ const bagSchema = new Schema<IBag>({
   }
 });
 
-const BagModel = (): Model<IBag> => model('Bag', bagSchema);
+const BagModel = (): Model<IBag<ObjectId>> => model('Bag', bagSchema);
 
 export {
   BagModel, type HydratedIBag, type IBag

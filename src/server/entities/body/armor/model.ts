@@ -2,7 +2,7 @@ import {
   Schema, model, type HydratedDocument, type Model, type ObjectId
 } from 'mongoose';
 
-import type { HydratedIArmor } from '../../armor/model';
+import type { HydratedIArmor, LeanIArmor } from '../../armor/model';
 
 interface IBodyArmor {
   /** When the body was created */
@@ -16,6 +16,8 @@ interface IBodyArmor {
   /** Is the armor equiped ? */
   equiped: boolean
 }
+
+type LeanIBodyArmor = Omit<IBodyArmor, 'armor'> & { armor: LeanIArmor };
 
 type HydratedIBodyArmor = HydratedDocument<
   Omit<IBodyArmor, 'armor'> & { armor: HydratedIArmor }
@@ -47,5 +49,5 @@ const BodyArmorSchema = new Schema<IBodyArmor>({
 const BodyArmorModel = (): Model<IBodyArmor> => model('BodyArmor', BodyArmorSchema);
 
 export {
-  BodyArmorModel, type HydratedIBodyArmor, type IBodyArmor
+  BodyArmorModel, type HydratedIBodyArmor, type IBodyArmor, type LeanIBodyArmor
 };
