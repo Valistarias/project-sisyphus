@@ -1,3 +1,13 @@
 .tabs-window {
-  width: 100%;
+  border: 1px solid var(--primary-20);
+
+  &__buttons {
+    display: flex;
+  }
+
+  &__window {
+    background: var(--primary-20);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+  }
 }

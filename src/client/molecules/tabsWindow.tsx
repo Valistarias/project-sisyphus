@@ -25,9 +25,14 @@ const TabsWindow: FC<ITabsWindow> = ({
   <div className="tabs-window">
     <div className="tabs-window__buttons">
       {
-        tabs.map(({ label, id }) => (
+        tabs.map(({ label, id }, index) => (
           <Button
             key={id}
+            theme={
+              (displayedTab === null && index === 0) || displayedTab === id
+                ? 'text-only-alt'
+                : 'text-only'
+            }
             onClick={() => {
               onTabLabelClick(id);
             }}
@@ -38,7 +43,11 @@ const TabsWindow: FC<ITabsWindow> = ({
       }
     </div>
     <div className="tabs-window__window">
-      { tabs.find(({ id }) => id === displayedTab)?.content }
+      {
+        displayedTab === null
+          ? tabs[0].content
+          : tabs.find(({ id }) => id === displayedTab)?.content
+      }
     </div>
   </div>
 );

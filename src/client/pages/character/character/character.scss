@@ -25,7 +25,8 @@
         width: 100%;
       }
 
-      &__left {
+      &__left,
+      &__right {
         display: flex;
         flex-direction: column;
         gap: 2rem;

@@ -191,5 +191,13 @@
   "characterHeader": {
     "close": "Close",
     "open": "Dices & Timeline"
+  },
+  "characterActionBoard": {
+    "tabs": {
+      "actions": "Actions",
+      "programs": "Programs",
+      "inventory": "Inventory"
+    },
+    "open": "Dices & Timeline"
   }
 }

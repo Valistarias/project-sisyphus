@@ -109,6 +109,7 @@
   // Themes ----------------------------------
   &--solid,
   &--line,
+  &--line-alt,
   &--afterglow {
     background: var(--button-color-05);
     border-radius: var(--border-radius);
@@ -156,6 +157,11 @@
     }
   }
 
+  &--line-alt,
+  &--text-only-alt {
+    background: var(--primary-20);
+  }
+
   &--afterglow {
     box-shadow: 0 0 2rem var(--primary-40);
   }
@@ -164,7 +170,8 @@
     justify-content: center;
   }
 
-  &--line {
+  &--line,
+  &--line-alt {
     &::before {
       border: 0.1rem solid var(--button-color-20);
     }
@@ -180,7 +187,8 @@
     }
   }
 
-  &--text-only {
+  &--text-only,
+  &--text-only-alt {
     &::before {
       border: 0.1rem solid var(--button-color-00);
       content: '';

@@ -169,6 +169,8 @@ const AdminEditNode: FC = () => {
   );
   const [statBonusIds, setStatBonusIds] = useState<number[]>([]);
 
+  console.log('statBonusIds', statBonusIds);
+
   const charParamSelect = useMemo(
     () =>
       charParams.map(({ charParam }) => ({
@@ -481,7 +483,9 @@ const AdminEditNode: FC = () => {
       }
       // Check duplicate on skills
       const skillBonuses = elts.skillBonuses !== undefined
-        ? Object.values(elts.skillBonuses)
+        ? Object
+            .values(elts.skillBonuses)
+            .filter(({ skill }) => skill as string | undefined !== undefined)
         : [];
       let duplicateSkillBonuses = false;
       if (skillBonuses.length > 0) {
@@ -499,7 +503,9 @@ const AdminEditNode: FC = () => {
       }
       // Check duplicate on stats
       const statBonuses = elts.statBonuses !== undefined
-        ? Object.values(elts.statBonuses)
+        ? Object
+            .values(elts.statBonuses)
+            .filter(({ stat }) => stat as string | undefined !== undefined)
         : [];
       let duplicateStatBonuses = false;
       if (statBonuses.length > 0) {
@@ -518,7 +524,12 @@ const AdminEditNode: FC = () => {
       // Check duplicate on character param
       const charParamBonuses
         = elts.charParamBonuses !== undefined
-          ? Object.values(elts.charParamBonuses)
+          ? Object
+              .values(elts.charParamBonuses)
+              .filter(
+                ({ charParam }) =>
+                  charParam as string | undefined !== undefined
+              )
           : [];
       let duplicateCharParamBonuses = false;
       if (charParamBonuses.length > 0) {
@@ -535,7 +546,7 @@ const AdminEditNode: FC = () => {
         return;
       }
       const skillId: string | undefined
-      = (nodeData?.node.skillBranch as ISkillBranch)._id;
+      = (nodeData?.node.skillBranch as ISkillBranch | undefined)?._id;
       const curatedSkillBonuses = skillBonuses.map(({
         skill, value
       }) => ({
@@ -554,7 +565,6 @@ const AdminEditNode: FC = () => {
         charParam,
         value: Number(value)
       }));
-
       const effectsArr = effects !== undefined ? Object.values(effects) : [];
       const curatedEffects = effectsArr.map(
         ({
@@ -633,7 +643,7 @@ const AdminEditNode: FC = () => {
           id,
           title: name,
           ...(
-            (skillId as string | undefined) !== undefined
+            (skillId) !== undefined
               ? { skillBranch: branch }
               : { cyberFrameBranch: branch }
           ),
@@ -658,7 +668,7 @@ const AdminEditNode: FC = () => {
               </Alert>
             )
           });
-          if ((skillId as string | undefined) !== undefined) {
+          if ((skillId) !== undefined) {
             reloadSkills();
           } else {
             reloadCyberFrames();
@@ -1085,8 +1095,11 @@ const AdminEditNode: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
+                    console.log('statBonusId', statBonusId);
+                    console.log('unregister');
                     setStatBonusIds(prev =>
                       prev.reduce((result: number[], elt) => {
+                        console.log('prev', prev);
                         if (elt !== statBonusId) {
                           result.push(elt);
                         }

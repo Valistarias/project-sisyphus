@@ -15,7 +15,7 @@ import { curateSkillBonusIds } from '../skillBonus/controller';
 import { findSkillBranchesBySkill } from '../skillBranch/controller';
 import { curateStatBonusIds } from '../statBonus/controller';
 
-import type { ICuratedActionToSend, ICuratedEffectToSend, InternationalizationType } from '../../utils/types';
+import type { InternationalizationType } from '../../utils/types';
 import type {
   HydratedIAction,
   HydratedICharParamBonus,

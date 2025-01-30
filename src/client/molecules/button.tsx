@@ -13,7 +13,7 @@ import './button.scss';
 
 export type IButton = IQuarkProps<IAButton> & {
   /** The theme of the button */
-  theme?: 'solid' | 'line' | 'afterglow' | 'text-only' | 'bland'
+  theme?: 'solid' | 'line' | 'line-alt' | 'afterglow' | 'text-only' | 'text-only-alt' | 'bland'
   /** The main color of the button */
   color?: 'primary' | 'secondary' | 'tertiary' | 'error'
   /** The size of the button */
