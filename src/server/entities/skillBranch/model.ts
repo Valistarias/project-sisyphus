@@ -2,12 +2,15 @@ import {
   Schema, model, type HydratedDocument, type Model, type ObjectId
 } from 'mongoose';
 
+import type { Lean } from '../../utils/types';
 import type {
   HydratedINode,
-  HydratedISkill
+  HydratedISkill,
+  ISkill,
+  LeanINode
 } from '../index';
 
-interface ISkillBranch {
+interface ISkillBranch<IdType> {
   /** The title of the skill branch */
   title: string
   /** A summary of the skill branch */
@@ -15,19 +18,24 @@ interface ISkillBranch {
   /** The internationnal content, as a json, stringified */
   i18n?: string
   /** The associated skill branch */
-  skill: ObjectId
+  skill: IdType
   /** When the skill branch was created */
   createdAt: Date
 }
 
 type HydratedISkillBranch = HydratedDocument<
-  Omit<ISkillBranch, 'skill'> & {
+  Omit<ISkillBranch<string>, 'skill'> & {
     skill: HydratedISkill | ObjectId
     nodes?: HydratedINode[]
   }
 >;
 
-const skillBranchSchema = new Schema<ISkillBranch>(
+type LeanISkillBranch = Omit<Lean<ISkillBranch<string>>, 'skill'> & {
+  skill: ISkill
+  nodes?: LeanINode[]
+};
+
+const skillBranchSchema = new Schema<ISkillBranch<ObjectId>>(
   {
     title: String,
     summary: String,
@@ -55,8 +63,11 @@ skillBranchSchema.virtual('nodes', {
   foreignField: 'skillBranch'
 });
 
-const SkillBranchModel = (): Model<ISkillBranch> => model('SkillBranch', skillBranchSchema);
+const SkillBranchModel = (): Model<ISkillBranch<ObjectId>> => model('SkillBranch', skillBranchSchema);
 
 export {
-  SkillBranchModel, type HydratedISkillBranch, type ISkillBranch
+  SkillBranchModel,
+  type HydratedISkillBranch,
+  type ISkillBranch,
+  type LeanISkillBranch
 };

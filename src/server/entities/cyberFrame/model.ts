@@ -2,8 +2,10 @@ import {
   Schema, model, type HydratedDocument, type Model, type ObjectId
 } from 'mongoose';
 
+import type { Lean } from '../../utils/types';
 import type {
-  HydratedINode, ICyberFrameBranch, IRuleBook
+  HydratedINode, HydratedIRuleBook, ICyberFrameBranch, IRuleBook,
+  LeanINode
 } from '../index';
 
 interface ICyberFrame {
@@ -20,13 +22,18 @@ interface ICyberFrame {
 }
 
 type LeanICyberFrame = Omit<ICyberFrame, 'ruleBook'> & {
-  ruleBook: IRuleBook | ObjectId
-  branches: Array<ICyberFrameBranch & {
-    nodes: HydratedINode[]
+  ruleBook: IRuleBook
+  branches: Array<Lean<ICyberFrameBranch<string>> & {
+    nodes: LeanINode[]
   }>
 };
 
-type HydratedICyberFrame = HydratedDocument<LeanICyberFrame>;
+type HydratedICyberFrame = HydratedDocument<Omit<ICyberFrame, 'ruleBook'>> & {
+  ruleBook: HydratedIRuleBook | string
+  branches: Array<ICyberFrameBranch<string> & {
+    nodes: HydratedINode[]
+  }>
+};
 
 const cyberFrameSchema = new Schema<ICyberFrame>(
   {

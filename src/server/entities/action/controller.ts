@@ -98,17 +98,17 @@ const updateActions = (
 
   if (id === undefined) {
     const action = new Action({
-      title,
-      summary,
-      type,
-      duration,
-      time,
-      skill,
-      uses,
-      offsetSkill,
-      damages,
-      isKarmic,
-      karmicCost
+      title: title ?? undefined,
+      summary: summary ?? undefined,
+      type: type ?? undefined,
+      duration: duration ?? undefined,
+      time: time ?? undefined,
+      skill: skill ?? undefined,
+      uses: uses ?? undefined,
+      offsetSkill: offsetSkill ?? undefined,
+      damages: damages ?? undefined,
+      isKarmic: isKarmic ?? undefined,
+      karmicCost: karmicCost ?? undefined
     });
 
     if (i18n !== null) {

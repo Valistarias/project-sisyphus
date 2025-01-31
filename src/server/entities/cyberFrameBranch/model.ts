@@ -2,12 +2,15 @@ import {
   Schema, model, type HydratedDocument, type Model, type ObjectId
 } from 'mongoose';
 
+import type { Lean } from '../../utils/types';
 import type {
   HydratedICyberFrame,
-  HydratedINode
+  HydratedINode,
+  ICyberFrame,
+  LeanINode
 } from '../index';
 
-interface ICyberFrameBranch {
+interface ICyberFrameBranch<IdType> {
   /** The title of the cyberframe branch */
   title: string
   /** A summary of the cyberframe branch */
@@ -15,19 +18,24 @@ interface ICyberFrameBranch {
   /** The internationnal content, as a json, stringified */
   i18n?: string
   /** The associated cyberFrame */
-  cyberFrame: ObjectId
+  cyberFrame: IdType
   /** When the cyberframe branch was created */
   createdAt: Date
 }
 
 type HydratedICyberFrameBranch = HydratedDocument<
-  Omit<ICyberFrameBranch, 'cyberFrame'> & {
+  Omit<ICyberFrameBranch<string>, 'cyberFrame'> & {
     cyberFrame: HydratedICyberFrame | ObjectId
     nodes?: HydratedINode[]
   }
 >;
 
-const cyberFrameBranchSchema = new Schema<ICyberFrameBranch>(
+type LeanICyberFrameBranch = Omit<Lean<ICyberFrameBranch<string>>, 'cyberFrame'> & {
+  cyberFrame: ICyberFrame
+  nodes?: LeanINode[]
+};
+
+const cyberFrameBranchSchema = new Schema<ICyberFrameBranch<ObjectId>>(
   {
     title: String,
     summary: String,
@@ -55,9 +63,12 @@ cyberFrameBranchSchema.virtual('nodes', {
   foreignField: 'cyberFrameBranch'
 });
 
-const CyberFrameBranchModel = (): Model<ICyberFrameBranch> =>
+const CyberFrameBranchModel = (): Model<ICyberFrameBranch<ObjectId>> =>
   model('CyberFrameBranch', cyberFrameBranchSchema);
 
 export {
-  CyberFrameBranchModel, type HydratedICyberFrameBranch, type ICyberFrameBranch
+  CyberFrameBranchModel,
+  type HydratedICyberFrameBranch,
+  type ICyberFrameBranch,
+  type LeanICyberFrameBranch
 };

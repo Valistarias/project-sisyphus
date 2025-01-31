@@ -1,7 +1,6 @@
 import type {
   Request, Response
 } from 'express';
-import type { FlattenMaps, HydratedDocument, ObjectId } from 'mongoose';
 
 import db from '../../models';
 import {
@@ -22,10 +21,15 @@ import type {
   HydratedIEffect,
   HydratedISkillBonus,
   HydratedIStatBonus,
+  IAction,
+  ICharParamBonus,
   ICyberFrameBranch,
-  ISkillBranch
+  IEffect,
+  ISkillBonus,
+  ISkillBranch,
+  IStatBonus
 } from '../index';
-import type { HydratedINode, INode } from './model';
+import type { HydratedINode, LeanINode } from './model';
 
 import { curateI18n } from '../../utils';
 
@@ -36,15 +40,16 @@ interface findAllPayload {
   skillBranch?: string | Record<string, string[]>
 }
 
-const findNodes = async (options?: findAllPayload): Promise<HydratedINode[]> =>
+const findNodes = async (options?: findAllPayload): Promise<LeanINode[]> =>
   await new Promise((resolve, reject) => {
     Node.find(options ?? {})
-      .populate<{ effects: HydratedIEffect[] }>('effects')
-      .populate<{ actions: HydratedIAction[] }>('actions')
-      .populate<{ skillBonuses: HydratedISkillBonus[] }>('skillBonuses')
-      .populate<{ statBonuses: HydratedIStatBonus[] }>('statBonuses')
-      .populate<{ charParamBonuses: HydratedICharParamBonus[] }>('charParamBonuses')
-      .then((res: HydratedINode[]) => {
+      .lean()
+      .populate<{ effects: IEffect[] }>('effects')
+      .populate<{ actions: IAction[] }>('actions')
+      .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
+      .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
+      .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
+      .then((res: LeanINode[]) => {
         if (res.length === 0) {
           reject(gemNotFound('Nodes'));
         } else {
@@ -56,7 +61,7 @@ const findNodes = async (options?: findAllPayload): Promise<HydratedINode[]> =>
       });
   });
 
-const findNodeById = async (id: string): Promise<HydratedINode> =>
+const findCompleteNodeById = async (id: string): Promise<HydratedINode> =>
   await new Promise((resolve, reject) => {
     Node.findById(id)
       .populate<{ effects: HydratedIEffect[] }>('effects')
@@ -64,9 +69,32 @@ const findNodeById = async (id: string): Promise<HydratedINode> =>
       .populate<{ skillBonuses: HydratedISkillBonus[] }>('skillBonuses')
       .populate<{ statBonuses: HydratedIStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: HydratedICharParamBonus[] }>('charParamBonuses')
-      .populate<{ skillBranch: ISkillBranch }>('skillBranch')
-      .populate<{ cyberFrameBranch: ICyberFrameBranch }>('cyberFrameBranch')
+      .populate<{ skillBranch: ISkillBranch<string> }>('skillBranch')
+      .populate<{ cyberFrameBranch: ICyberFrameBranch<string> }>('cyberFrameBranch')
       .then((res?: HydratedINode | null) => {
+        if (res === undefined || res === null) {
+          reject(gemNotFound('Node'));
+        } else {
+          resolve(res);
+        }
+      })
+      .catch((err: unknown) => {
+        reject(err);
+      });
+  });
+
+const findNodeById = async (id: string): Promise<LeanINode> =>
+  await new Promise((resolve, reject) => {
+    Node.findById(id)
+      .lean()
+      .populate<{ effects: IEffect[] }>('effects')
+      .populate<{ actions: IAction[] }>('actions')
+      .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
+      .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
+      .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
+      .populate<{ skillBranch: ISkillBranch<string> }>('skillBranch')
+      .populate<{ cyberFrameBranch: ICyberFrameBranch<string> }>('cyberFrameBranch')
+      .then((res?: LeanINode | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Node'));
         } else {
@@ -106,7 +134,7 @@ const create = (req: Request, res: Response): void => {
     return;
   }
 
-  const node = new Node({
+  const node: HydratedINode = new Node({
     title,
     summary,
     icon,
@@ -238,8 +266,8 @@ const update = (req: Request, res: Response): void => {
     icon: string | null
     quote: string | null
     i18n: InternationalizationType | null
-    skillBranch: ObjectId | null
-    cyberFrameBranch: ObjectId | null
+    skillBranch: string | null
+    cyberFrameBranch: string | null
     rank: number | null
     effects: ISentEffect[] | null
     actions: ISentAction[] | null
@@ -255,7 +283,7 @@ const update = (req: Request, res: Response): void => {
       charParam: string
       value: number
     }> | null
-    overrides: ObjectId[] | null
+    overrides: string[] | null
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Node ID'));
@@ -263,7 +291,7 @@ const update = (req: Request, res: Response): void => {
     return;
   }
 
-  findNodeById(id)
+  findCompleteNodeById(id)
     .then((node) => {
       if (title !== null) {
         node.title = title;
@@ -496,7 +524,6 @@ const update = (req: Request, res: Response): void => {
 
         node.i18n = JSON.stringify(newIntl);
       }
-
       curateSkillBonusIds({
         skillBonusesToRemove,
         skillBonusesToAdd,
@@ -603,32 +630,21 @@ const deleteNodeById = async (id?: string): Promise<boolean> =>
       });
   });
 
-export type INodeSent = HydratedDocument<
-  Omit<
-    INode,
-    | 'effects'
-    | 'actions'
-    | 'skillBonuses'
-    | 'statBonuses'
-    | 'charParamBonuses'
-    | 'skillBranch'
-    | 'cyberFrameBranch'
-  > & {
-    effects: HydratedIEffect[]
-    actions: HydratedIAction[]
-    skillBonuses: HydratedISkillBonus[]
-    statBonuses: HydratedIStatBonus[]
-    charParamBonuses: HydratedICharParamBonus[]
-    skillBranch?: ISkillBranch
-    cyberFrameBranch?: ICyberFrameBranch
-  }
->;
-
 const deleteNode = (req: Request, res: Response): void => {
   const { id }: { id: string } = req.body;
 
-  findNodeById(id)
-    .then((node: INodeSent) => {
+  findCompleteNodeById(id)
+    .then((node: Omit<HydratedINode, | 'effects'
+    | 'actions'
+    | 'skillBonuses'
+    | 'statBonuses'
+    | 'charParamBonuses'> & {
+      effects: HydratedIEffect[]
+      actions: HydratedIAction[]
+      skillBonuses: HydratedISkillBonus[]
+      statBonuses: HydratedIStatBonus[]
+      charParamBonuses: HydratedICharParamBonus[]
+    }) => {
       const skillBonusesToRemove = node.skillBonuses.map(
         elt => String(elt._id)
       );
@@ -700,66 +716,43 @@ const deleteNode = (req: Request, res: Response): void => {
     });
 };
 
-interface CuratedINode {
-  i18n?: InternationalizationType
-  node: HydratedINode
-}
-
 export interface CuratedINodeToSend {
   node: Omit<
-    FlattenMaps<INode>,
+    LeanINode,
     | 'effects'
     | 'actions'
-    | 'skillBonuses'
-    | 'statBonuses'
-    | 'charParamBonuses'
-    | 'skillBranch'
-    | 'cyberFrameBranch'
   > & {
     effects: Array<{
-      effect: ICuratedEffectToSend
+      effect: IEffect
       i18n?: InternationalizationType
     }>
     actions: Array<{
-      action: ICuratedActionToSend
+      action: IAction
       i18n?: InternationalizationType
     }>
-    skillBonuses: HydratedISkillBonus[]
-    statBonuses: HydratedIStatBonus[]
-    charParamBonuses: HydratedICharParamBonus[]
-    skillBranch?: ISkillBranch
-    cyberFrameBranch?: ICyberFrameBranch
   }
   i18n?: InternationalizationType
 }
 
-const curateSingleNode = (nodeSent: INodeSent): CuratedINodeToSend => {
+export const curateSingleNode = (nodeSent: LeanINode): CuratedINodeToSend => {
   const curatedActions
   = nodeSent.actions.length > 0
-    ? nodeSent.actions.map((action) => {
-        const data = action.toJSON();
-
-        return {
-          action: data,
-          i18n: curateI18n(data.i18n)
-        };
-      })
+    ? nodeSent.actions.map(action => ({
+        action,
+        i18n: curateI18n(action.i18n)
+      }))
     : [];
   const curatedEffects
   = nodeSent.effects.length > 0
-    ? nodeSent.effects.map((effect) => {
-        const data = effect.toJSON();
-
-        return {
-          effect: data,
-          i18n: curateI18n(data.i18n)
-        };
-      })
+    ? nodeSent.effects.map(effect => ({
+        effect,
+        i18n: curateI18n(effect.i18n)
+      }))
     : [];
 
   return {
     node: {
-      ...nodeSent.toJSON(),
+      ...nodeSent,
       actions: curatedActions,
       effects: curatedEffects
     },
@@ -775,7 +768,7 @@ const findSingle = (req: Request, res: Response): void => {
     return;
   }
   findNodeById(nodeId)
-    .then((nodeSent: INodeSent) => {
+    .then((nodeSent) => {
       res.send(curateSingleNode(nodeSent));
     })
     .catch((err: unknown) => {
@@ -785,7 +778,7 @@ const findSingle = (req: Request, res: Response): void => {
 
 const findAll = (req: Request, res: Response): void => {
   findNodes()
-    .then((nodes: INodeSent[]) => {
+    .then((nodes) => {
       const curatedNodes: CuratedINodeToSend[] = [];
       nodes.forEach((nodeSent) => {
         curatedNodes.push(curateSingleNode(nodeSent));
@@ -811,7 +804,7 @@ const findAllByBranch = (req: Request, res: Response): void => {
   findNodes({
     cyberFrameBranch: cyberFrameBranchId, skillBranch: skillBranchId
   })
-    .then((nodes: INodeSent[]) => {
+    .then((nodes) => {
       const curatedNodes: CuratedINodeToSend[] = [];
 
       nodes.forEach((nodeSent) => {
@@ -839,7 +832,7 @@ const findAndCurateNodesByParent = async ({
       opts.cyberFrameBranch = { $in: cyberFrameBranchIds };
     }
     findNodes(opts)
-      .then((nodes: INodeSent[]) => {
+      .then((nodes) => {
         const curatedNodes: CuratedINodeToSend[] = [];
 
         nodes.forEach((nodeSent) => {
@@ -874,13 +867,13 @@ const findAllBySkill = (req: Request, res: Response): void => {
 };
 
 const findAllByCyberFrame = (req: Request, res: Response): void => {
-  const { cyberFrameId } = req.query;
+  const { cyberFrameId }: { cyberFrameId?: string } = req.query;
   if (cyberFrameId === undefined) {
     res.status(400).send(gemInvalidField('Skill ID'));
 
     return;
   }
-  findCyberFrameBranchesByFrame(cyberFrameId as string)
+  findCyberFrameBranchesByFrame(cyberFrameId)
     .then((cyberFrameBranches) => {
       const cyberFrameBranchIds = cyberFrameBranches.map(cyberFrameBranch =>
         String(cyberFrameBranch._id)
@@ -903,6 +896,5 @@ export {
   findAllBySkill,
   findNodeById,
   findSingle,
-  update,
-  type CuratedINode
+  update
 };

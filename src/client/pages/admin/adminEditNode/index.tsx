@@ -169,8 +169,6 @@ const AdminEditNode: FC = () => {
   );
   const [statBonusIds, setStatBonusIds] = useState<number[]>([]);
 
-  console.log('statBonusIds', statBonusIds);
-
   const charParamSelect = useMemo(
     () =>
       charParams.map(({ charParam }) => ({
@@ -305,7 +303,7 @@ const AdminEditNode: FC = () => {
 
     // Init Actions
     const tempActionId: number[] = [];
-    node.actions?.forEach((action) => {
+    node.actions?.forEach(({ action }) => {
       if (defaultData.actions === undefined) {
         defaultData.actions = {};
       }
@@ -342,7 +340,7 @@ const AdminEditNode: FC = () => {
 
     // Init Effects
     const tempEffectId: number[] = [];
-    node.effects?.forEach((effect) => {
+    node.effects?.forEach(({ effect }) => {
       if (defaultData.effects === undefined) {
         defaultData.effects = {};
       }
@@ -1095,11 +1093,8 @@ const AdminEditNode: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    console.log('statBonusId', statBonusId);
-                    console.log('unregister');
                     setStatBonusIds(prev =>
                       prev.reduce((result: number[], elt) => {
-                        console.log('prev', prev);
                         if (elt !== statBonusId) {
                           result.push(elt);
                         }

@@ -95,7 +95,8 @@ export {
 export {
   CyberFrameBranchModel,
   type HydratedICyberFrameBranch,
-  type ICyberFrameBranch
+  type ICyberFrameBranch,
+  type LeanICyberFrameBranch
 } from './cyberFrameBranch/model';
 export {
   DamageModel, type HydratedIDamage, type IDamage
@@ -172,7 +173,8 @@ export {
 export {
   SkillBranchModel,
   type HydratedISkillBranch,
-  type ISkillBranch
+  type ISkillBranch,
+  type LeanISkillBranch
 } from './skillBranch/model';
 export {
   StatModel, type HydratedIStat, type IStat

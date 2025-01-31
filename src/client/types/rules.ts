@@ -347,9 +347,9 @@ export interface INode {
   /** The position/rank where the node is located */
   rank: number
   /** The effects related to the node */
-  effects?: IEffect[]
+  effects?: ICuratedEffect[]
   /** The actions related to the node */
-  actions?: IAction[]
+  actions?: ICuratedAction[]
   /** The skill bonuses related to the node */
   skillBonuses?: ISkillBonus[]
   /** The stat bonuses related to the node */

@@ -1,7 +1,7 @@
 import type {
   Request, Response
 } from 'express';
-import type { FlattenMaps, HydratedDocument, ObjectId } from 'mongoose';
+import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
 import {
@@ -11,30 +11,34 @@ import {
   gemServerError
 } from '../../utils/globalErrorMessage';
 
-import type { ICuratedCyberFrameToSend, ICuratedNodeToSend, InternationalizationType } from '../../utils/types';
-import type { HydratedICyberFrame, HydratedINode, ICyberFrame } from '../index';
+import type { InternationalizationType } from '../../utils/types';
+import type { HydratedINode, ICyberFrame, INode, LeanINode } from '../index';
 import type {
-  HydratedICyberFrameBranch, ICyberFrameBranch
+  HydratedICyberFrameBranch,
+  LeanICyberFrameBranch
 } from './model';
-import type { INodeSent } from '../node/controller';
 
 import { curateI18n } from '../../utils';
 
 const { CyberFrameBranch } = db;
 
-const findCyberFrameBranches = async (): Promise<HydratedICyberFrameBranch[]> =>
+const findCyberFrameBranches = async (): Promise<LeanICyberFrameBranch[]> =>
   await new Promise((resolve, reject) => {
     CyberFrameBranch.find()
-      .populate<{ cyberFrame: HydratedICyberFrame }>('cyberFrame')
-      .populate<{ nodes: HydratedINode[] }>({
+      .lean()
+      .populate<{ cyberFrame: ICyberFrame }>('cyberFrame')
+      .populate<{ nodes: Array<INode<string>> }>({
         path: 'nodes',
         select: '_id title summary icon',
         populate: [
           'effects',
-          'actions'
+          'actions',
+          'skillBonuses',
+          'statBonuses',
+          'charParamBonuses'
         ]
       })
-      .then((res: HydratedICyberFrameBranch[]) => {
+      .then((res: LeanICyberFrameBranch[]) => {
         if (res.length === 0) {
           reject(gemNotFound('CyberFrameBranches'));
         } else {
@@ -48,15 +52,23 @@ const findCyberFrameBranches = async (): Promise<HydratedICyberFrameBranch[]> =>
 
 const findCyberFrameBranchesByFrame = async (
   cyberFrameId: string
-): Promise<HydratedICyberFrameBranch[]> =>
+): Promise<LeanICyberFrameBranch[]> =>
   await new Promise((resolve, reject) => {
     CyberFrameBranch.find({ cyberFrame: cyberFrameId })
-      .populate<{ cyberFrame: HydratedICyberFrame }>('cyberFrame')
-      .populate<{ nodes: HydratedINode[] }>({
+      .lean()
+      .populate<{ cyberFrame: ICyberFrame }>('cyberFrame')
+      .populate<{ nodes: Array<INode<string>> }>({
         path: 'nodes',
-        select: '_id title summary icon'
+        select: '_id title summary icon',
+        populate: [
+          'effects',
+          'actions',
+          'skillBonuses',
+          'statBonuses',
+          'charParamBonuses'
+        ]
       })
-      .then((res?: HydratedICyberFrameBranch[] | null) => {
+      .then((res?: LeanICyberFrameBranch[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('CyberFrameBranches'));
         } else {
@@ -68,7 +80,7 @@ const findCyberFrameBranchesByFrame = async (
       });
   });
 
-const findCyberFrameBranchById = async (
+const findCompleteCyberFrameBranchById = async (
   id: string
 ): Promise<HydratedICyberFrameBranch> =>
   await new Promise((resolve, reject) => {
@@ -83,6 +95,36 @@ const findCyberFrameBranchById = async (
           reject(gemNotFound('CyberFrameBranch'));
         } else {
           resolve(res as HydratedICyberFrameBranch);
+        }
+      })
+      .catch((err) => {
+        reject(gemServerError(err));
+      });
+  });
+
+const findCyberFrameBranchById = async (
+  id: string
+): Promise<LeanICyberFrameBranch> =>
+  await new Promise((resolve, reject) => {
+    CyberFrameBranch.findById(id)
+      .lean()
+      .populate<{ cyberFrame: ICyberFrame }>('cyberFrame')
+      .populate<{ nodes: Array<INode<string>> }>({
+        path: 'nodes',
+        select: '_id title summary icon',
+        populate: [
+          'effects',
+          'actions',
+          'skillBonuses',
+          'statBonuses',
+          'charParamBonuses'
+        ]
+      })
+      .then((res) => {
+        if (res === null) {
+          reject(gemNotFound('CyberFrameBranch'));
+        } else {
+          resolve(res as LeanICyberFrameBranch);
         }
       })
       .catch((err) => {
@@ -115,7 +157,7 @@ const create = (req: Request, res: Response): void => {
     return;
   }
 
-  const cyberFrameBranch = new CyberFrameBranch({
+  const cyberFrameBranch: HydratedICyberFrameBranch = new CyberFrameBranch({
     title,
     summary,
     cyberFrame
@@ -142,7 +184,7 @@ const createGeneralForCyberFrameId = async (id?: string): Promise<boolean> =>
 
       return;
     }
-    const cyberFrameBranch = new CyberFrameBranch({
+    const cyberFrameBranch: HydratedICyberFrameBranch = new CyberFrameBranch({
       title: '_general',
       summary: '',
       cyberFrame: id
@@ -177,7 +219,7 @@ const update = (req: Request, res: Response): void => {
 
     return;
   }
-  findCyberFrameBranchById(id)
+  findCompleteCyberFrameBranchById(id)
     .then((cyberFrameBranch) => {
       if (cyberFrameBranch.title === '_general') {
         res.status(403).send(gemForbidden());
@@ -280,49 +322,35 @@ const deleteCyberFrameBranchesByCyberFrameId = async (
       });
   });
 
-type ICyberFrameBranchSent = HydratedDocument<
-  Omit<
-    FlattenMaps<ICyberFrameBranch>
-    , 'cyberFrame'
-  > & {
-    cyberFrame: HydratedICyberFrame
-    nodes?: INodeSent[]
-  }
->;
-
 interface CuratedICyberFrameBranchToSend {
   cyberFrameBranch:
     Omit<
-      FlattenMaps<ICyberFrameBranch>
+      LeanICyberFrameBranch
       , 'cyberFrame'
     > & {
-      cyberFrame: ICuratedCyberFrameToSend
-      nodes?: ICuratedNodeToSend[]
+      cyberFrame: ICyberFrame
+      nodes?: LeanINode[]
     }
   i18n?: InternationalizationType
 }
 
 const curateSingleCyberFrameBranch = (
-  cyberFrameBranchSent: ICyberFrameBranchSent
+  cyberFrameBranchSent: LeanICyberFrameBranch
 ): CuratedICyberFrameBranchToSend => {
   const curatedNodes = cyberFrameBranchSent.nodes?.length !== undefined
     && cyberFrameBranchSent.nodes.length > 0
-    ? cyberFrameBranchSent.nodes.map((node) => {
-        const data = node.toJSON();
-
-        return {
-          ...data,
-          ...(
-            data.i18n !== undefined
-              ? { i18n: JSON.parse(data.i18n) }
-              : {}
-          )
-        };
-      })
+    ? cyberFrameBranchSent.nodes.map(node => ({
+        ...node,
+        ...(
+          node.i18n !== undefined
+            ? { i18n: JSON.parse(node.i18n) }
+            : {}
+        )
+      }))
     : [];
 
   const curatedCyberFrame = {
-    ...cyberFrameBranchSent.cyberFrame.toJSON(),
+    ...cyberFrameBranchSent.cyberFrame,
     ...(
       cyberFrameBranchSent.cyberFrame.i18n !== undefined
         ? { i18n: JSON.parse(cyberFrameBranchSent.cyberFrame.i18n) }
@@ -332,7 +360,7 @@ const curateSingleCyberFrameBranch = (
 
   return {
     cyberFrameBranch: {
-      ...cyberFrameBranchSent.toJSON(),
+      ...cyberFrameBranchSent,
       nodes: curatedNodes,
       cyberFrame: curatedCyberFrame
     },
@@ -348,7 +376,7 @@ const findSingle = (req: Request, res: Response): void => {
     return;
   }
   findCyberFrameBranchById(cyberFrameBranchId)
-    .then((cyberFrameBranch: ICyberFrameBranchSent) => {
+    .then((cyberFrameBranch) => {
       res.send(curateSingleCyberFrameBranch(cyberFrameBranch));
     })
     .catch((err: unknown) => {
@@ -358,7 +386,7 @@ const findSingle = (req: Request, res: Response): void => {
 
 const findAll = (req: Request, res: Response): void => {
   findCyberFrameBranches()
-    .then((cyberFrameBranches: ICyberFrameBranchSent[]) => {
+    .then((cyberFrameBranches) => {
       const curatedCyberFrameBranches: CuratedICyberFrameBranchToSend[] = [];
 
       cyberFrameBranches.forEach((cyberFrameBranch) => {
@@ -380,7 +408,7 @@ const findAllByFrame = (req: Request, res: Response): void => {
     return;
   }
   findCyberFrameBranchesByFrame(cyberFrameId)
-    .then((cyberFrameBranches: ICyberFrameBranchSent[]) => {
+    .then((cyberFrameBranches) => {
       const curatedCyberFrameBranches: CuratedICyberFrameBranchToSend[] = [];
 
       cyberFrameBranches.forEach((cyberFrameBranch) => {

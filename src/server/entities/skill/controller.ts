@@ -1,10 +1,6 @@
 import type {
   Request, Response
 } from 'express';
-import type {
-  FlattenMaps,
-  ObjectId
-} from 'mongoose';
 
 import db from '../../models';
 import {
@@ -13,16 +9,19 @@ import {
   gemNotFound,
   gemServerError
 } from '../../utils/globalErrorMessage';
+import { type CuratedINodeToSend, curateSingleNode } from '../node/controller';
 import {
   createGeneralForSkillId,
   deleteSkillBranchesBySkillId
 } from '../skillBranch/controller';
 import { checkDuplicateStatFormulaId } from '../stat/controller';
 
-import type { InternationalizationType } from '../../utils/types';
+import type { InternationalizationType, Lean } from '../../utils/types';
 import type {
   HydratedINode,
-  HydratedIStat, ISkillBranch, IStat
+  HydratedIStat, ISkillBranch, IStat,
+  LeanINode,
+  LeanISkillBranch
 } from '../index';
 import type {
   HydratedISkill, LeanISkill
@@ -37,8 +36,8 @@ const findSkills = async (): Promise<LeanISkill[]> =>
     Skill.find()
       .lean()
       .populate<{ stat: IStat }>('stat')
-      .populate<{ branches: Array<ISkillBranch & {
-        nodes: HydratedINode[]
+      .populate<{ branches: Array<Lean<ISkillBranch<string>> & {
+        nodes: LeanINode[]
       }> }>({
         path: 'branches',
         select: '_id title skill summary i18n',
@@ -68,11 +67,47 @@ const findSkills = async (): Promise<LeanISkill[]> =>
       });
   });
 
-const findSkillById = async (id: string): Promise<HydratedISkill> =>
+const findSkillById = async (id: string): Promise<LeanISkill> =>
+  await new Promise((resolve, reject) => {
+    Skill.findById(id)
+      .lean()
+      .populate<{ stat: IStat }>('stat')
+      .populate<{ branches: Array<Lean<ISkillBranch<string>> & {
+        nodes: LeanINode[]
+      }> }>({
+        path: 'branches',
+        select: '_id title skill summary i18n',
+        populate: {
+          path: 'nodes',
+          select:
+          '_id title summary icon i18n rank quote skillBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses',
+          populate: [
+            'effects',
+            'actions',
+            'skillBonuses',
+            'skillBonuses',
+            'statBonuses',
+            'charParamBonuses'
+          ]
+        }
+      })
+      .then((res: LeanISkill | null) => {
+        if (res === null) {
+          reject(gemNotFound('Skill'));
+        } else {
+          resolve(res);
+        }
+      })
+      .catch((err) => {
+        reject(gemServerError(err));
+      });
+  });
+
+const findCompleteSkillById = async (id: string): Promise<HydratedISkill> =>
   await new Promise((resolve, reject) => {
     Skill.findById(id)
       .populate<{ stat: HydratedIStat }>('stat')
-      .populate<{ branches: Array<ISkillBranch & {
+      .populate<{ branches: Array<ISkillBranch<string> & {
         nodes: HydratedINode[]
       }> }>({
         path: 'branches',
@@ -218,7 +253,7 @@ const update = (req: Request, res: Response): void => {
     id?: string
     title: string | null
     summary: string | null
-    stat: ObjectId | null
+    stat: string | null
     i18n: InternationalizationType | null
     formulaId: string | null
   } = req.body;
@@ -227,7 +262,7 @@ const update = (req: Request, res: Response): void => {
 
     return;
   }
-  findSkillById(id)
+  findCompleteSkillById(id)
     .then((skill) => {
       const alreadyExistOnce = typeof formulaId === 'string' && formulaId === skill.formulaId;
       checkDuplicateFormulaId(formulaId, alreadyExistOnce)
@@ -316,18 +351,45 @@ const deleteSkill = (req: Request, res: Response): void => {
     });
 };
 
-interface CuratedISkill extends Omit<LeanISkill, 'branches'> {
-  branches: Array<{
-    skillBranch:
-      Omit<
-        FlattenMaps<ISkillBranch>
-        , 'skill'
-      > & {
-        skill: ObjectId
-      }
-    i18n?: InternationalizationType
-  }>
+export interface CuratedISkillToSend {
+  skill: Omit<
+    LeanISkill, 'branches'
+  > & {
+    branches: Array<{
+      skillBranch:
+        Omit<
+          LeanISkillBranch, 'skill' | 'nodes'
+        > & {
+          skill: string
+          nodes: CuratedINodeToSend[]
+        }
+      i18n?: InternationalizationType
+    }>
+  }
+  i18n?: InternationalizationType
 }
+
+const curateSingleSkill = (
+  skillSent: LeanISkill
+): CuratedISkillToSend => ({
+  skill: {
+    ...skillSent,
+    branches: skillSent.branches.map((skillBranch) => {
+      const curatedNodes = skillBranch.nodes.length > 0
+        ? skillBranch.nodes.map(node => curateSingleNode(node))
+        : [];
+
+      return {
+        skillBranch: {
+          ...skillBranch,
+          nodes: curatedNodes
+        },
+        i18n: curateI18n(skillBranch.i18n)
+      };
+    })
+  },
+  i18n: curateI18n(skillSent.i18n)
+});
 
 const findSingle = (req: Request, res: Response): void => {
   const { skillId } = req.query;
@@ -338,32 +400,7 @@ const findSingle = (req: Request, res: Response): void => {
   }
   findSkillById(skillId)
     .then((skillSent) => {
-      const data = skillSent.toJSON();
-      const cleanSkill = {
-        ...data,
-        branches: data.branches.map((skillBranch) => {
-          const curatedNodes = skillBranch.nodes.length > 0
-            ? skillBranch.nodes.map(node => ({
-                node,
-                i18n: curateI18n(node.i18n)
-              }))
-            : [];
-
-          return {
-            skillBranch: {
-              ...skillBranch,
-              nodes: curatedNodes
-            },
-            i18n: curateI18n(skillBranch.i18n)
-          };
-        })
-      };
-
-      const sentObj = {
-        skill: cleanSkill,
-        i18n: curateI18n(data.i18n)
-      };
-      res.send(sentObj);
+      res.send(curateSingleSkill(skillSent));
     })
     .catch((err: unknown) => {
       res.status(404).send(err);
@@ -373,36 +410,10 @@ const findSingle = (req: Request, res: Response): void => {
 const findAll = (req: Request, res: Response): void => {
   findSkills()
     .then((skills) => {
-      const curatedSkills: Array<{
-        i18n?: InternationalizationType
-        skill: CuratedISkill
-      }> = [];
+      const curatedSkills: CuratedISkillToSend[] = [];
 
-      skills.forEach((skill) => {
-        const cleanSkill: CuratedISkill = {
-          ...skill,
-          branches: skill.branches.map((skillBranch) => {
-            const curatedNodes = skillBranch.nodes.length > 0
-              ? skillBranch.nodes.map(node => ({
-                  node,
-                  i18n: curateI18n(node.i18n)
-                }))
-              : [];
-
-            return {
-              skillBranch: {
-                ...skillBranch,
-                nodes: curatedNodes
-              },
-              i18n: curateI18n(skillBranch.i18n)
-            };
-          })
-        };
-
-        curatedSkills.push({
-          skill: cleanSkill,
-          i18n: curateI18n(skill.i18n)
-        });
+      skills.forEach((skillSent) => {
+        curatedSkills.push(curateSingleSkill(skillSent));
       });
 
       res.send(curatedSkills);

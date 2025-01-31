@@ -2,9 +2,11 @@ import {
   Schema, model, type HydratedDocument, type Model, type ObjectId
 } from 'mongoose';
 
+import type { Lean } from '../../utils/types';
 import type {
   HydratedINode,
-  ISkillBranch, IStat
+  ISkillBranch, IStat,
+  LeanINode
 } from '../index';
 
 interface ISkill {
@@ -23,13 +25,18 @@ interface ISkill {
 }
 
 type LeanISkill = Omit<ISkill, 'stat'> & {
-  stat: IStat | ObjectId
-  branches: Array<ISkillBranch & {
-    nodes: HydratedINode[]
+  stat: IStat
+  branches: Array<Lean<ISkillBranch<string>> & {
+    nodes: LeanINode[]
   }>
 };
 
-type HydratedISkill = HydratedDocument<LeanISkill>;
+type HydratedISkill = HydratedDocument<Omit<ISkill, 'stat'>> & {
+  stat: IStat | string
+  branches: Array<ISkillBranch<string> & {
+    nodes: HydratedINode[]
+  }>
+};
 
 const skillSchema = new Schema<ISkill>(
   {

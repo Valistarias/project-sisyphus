@@ -17,7 +17,7 @@ import type {
   IStatBonus
 } from '../index';
 
-interface INode {
+interface INode<IdType> {
   /** The title of the node */
   title: string
   /** A summary of the node */
@@ -29,30 +29,30 @@ interface INode {
   /** The internationnal content, as a json, stringified */
   i18n?: string
   /** The associated skillBranch */
-  skillBranch?: ObjectId
+  skillBranch?: IdType
   /** The associated cyberFrameBranch */
-  cyberFrameBranch?: ObjectId
+  cyberFrameBranch?: IdType
   /** The position/rank where the node is located */
   rank: number
   /** The effects related to the node */
-  effects?: string[] | ObjectId[]
+  effects?: IdType[]
   /** The actions related to the node */
-  actions?: string[] | ObjectId[]
+  actions?: IdType[]
   /** The skill bonuses related to the node */
-  skillBonuses?: string[] | ObjectId[]
+  skillBonuses?: IdType[]
   /** The stat bonuses related to the node */
-  statBonuses?: string[] | ObjectId[]
+  statBonuses?: IdType[]
   /** The charParam bonuses related to the node */
-  charParamBonuses?: string[] | ObjectId[]
+  charParamBonuses?: IdType[]
   /** The overriden nodes by this one (to upgrade a previous node) */
-  overrides?: string[] | ObjectId[]
+  overrides?: IdType[]
   /** When the node was created */
   createdAt: Date
 }
 
 type HydratedINode = HydratedDocument<
   Omit<
-    INode,
+    INode<string>,
     | 'effects'
     | 'actions'
     | 'skillBonuses'
@@ -66,13 +66,13 @@ type HydratedINode = HydratedDocument<
     skillBonuses: HydratedISkillBonus[] | string[]
     statBonuses: HydratedIStatBonus[] | string[]
     charParamBonuses: HydratedICharParamBonus[] | string[]
-    skillBranch?: ISkillBranch | ObjectId
-    cyberFrameBranch?: ICyberFrameBranch | ObjectId
+    skillBranch?: ISkillBranch<string> | string
+    cyberFrameBranch?: ICyberFrameBranch<string> | string
   }
 >;
 
 type LeanINode = Omit<
-  INode,
+  INode<string>,
   | 'effects'
   | 'actions'
   | 'skillBonuses'
@@ -81,16 +81,16 @@ type LeanINode = Omit<
   | 'skillBranch'
   | 'cyberFrameBranch'
 > & {
-  effects: IEffect[] | string[]
-  actions: IAction[] | string[]
-  skillBonuses: ISkillBonus[] | string[]
-  statBonuses: IStatBonus[] | string[]
-  charParamBonuses: ICharParamBonus[] | string[]
-  skillBranch?: ISkillBranch | ObjectId
-  cyberFrameBranch?: ICyberFrameBranch | ObjectId
+  effects: IEffect[]
+  actions: IAction[]
+  skillBonuses: ISkillBonus[]
+  statBonuses: IStatBonus[]
+  charParamBonuses: ICharParamBonus[]
+  skillBranch?: ISkillBranch<string>
+  cyberFrameBranch?: ICyberFrameBranch<string>
 };
 
-const nodeSchema = new Schema<INode>({
+const nodeSchema = new Schema<INode<ObjectId>>({
   title: String,
   summary: String,
   icon: String,
@@ -147,7 +147,7 @@ const nodeSchema = new Schema<INode>({
   }
 });
 
-const NodeModel = (): Model<INode> => model('Node', nodeSchema);
+const NodeModel = (): Model<INode<ObjectId>> => model('Node', nodeSchema);
 
 export {
   NodeModel, type HydratedINode, type INode, type LeanINode

@@ -75,10 +75,10 @@ const updateEffects = (
   }: ISentEffect = elts[0];
   if (id === undefined) {
     const effect = new Effect({
-      title,
-      summary,
-      formula,
-      type
+      title: title ?? undefined,
+      summary: summary ?? undefined,
+      formula: formula ?? undefined,
+      type: type ?? undefined
     });
 
     if (i18n !== null) {

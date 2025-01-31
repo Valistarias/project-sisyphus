@@ -13,7 +13,7 @@ const replaceCyberFrameNodeByCharacter = async (req: {
       characterId, nodeIds
     } = req;
     CharacterNode.find({ character: characterId })
-      .populate<{ node: INode }>('node')
+      .populate<{ node: INode<string> }>('node')
       .then((res) => {
         const idToDel: string[] = [];
         res.forEach((charNode) => {

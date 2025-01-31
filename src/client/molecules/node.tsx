@@ -176,7 +176,7 @@ const Node: FC<INode> = ({
               : null}
           </div>
           {nodeElt.actions !== undefined
-            ? nodeElt.actions.map(action => (
+            ? nodeElt.actions.map(({ action }) => (
                 <div className="node__content__action" key={`action-${action._id}`}>
                   <div className="node__content__action__title">
                     <Ap className="node__content__action__title__elt">{`${action.isKarmic ? `${t('terms.node.offering')}: ` : ''}${action.title}`}</Ap>
@@ -223,7 +223,7 @@ const Node: FC<INode> = ({
               ))
             : null}
           {nodeElt.effects !== undefined
-            ? nodeElt.effects.map(effect => (
+            ? nodeElt.effects.map(({ effect }) => (
                 <div className="node__content__effect" key={`effect-${effect._id}`}>
                   <div className="node__content__effect__title">
                     <Ap className="node__content__effect__title__elt">{effect.title}</Ap>
