@@ -1,12 +1,8 @@
-import React, {
-  type FC, type ReactNode
-} from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
 import { Controller } from 'react-hook-form';
 
-import {
-  Aerror, Aicon, Alabel
-} from '../atoms';
+import { Aerror, Aicon, Alabel } from '../atoms';
 
 import type { IReactHookFormInputs } from '../types/form';
 
@@ -16,15 +12,15 @@ import './checkbox.scss';
 
 interface ICheckbox extends IReactHookFormInputs {
   /** The size of the checkbox */
-  size?: 'medium' | 'small'
+  size?: 'medium' | 'small';
   /** The class of the checkbox element */
-  className?: string
+  className?: string;
   /** The label, if any */
-  label: ReactNode
+  label: ReactNode;
   /** Allow the user's password manager to automatically enter the password */
-  autoComplete?: string
+  autoComplete?: string;
   /** Is the checkbox disabled ? */
-  disabled?: boolean
+  disabled?: boolean;
 }
 
 const Checkbox: FC<ICheckbox> = ({
@@ -35,7 +31,7 @@ const Checkbox: FC<ICheckbox> = ({
   className,
   label,
   autoComplete,
-  disabled = false
+  disabled = false,
 }) => (
   <div
     className={classTrim(`
@@ -49,11 +45,7 @@ const Checkbox: FC<ICheckbox> = ({
       control={control}
       name={inputName}
       rules={rules}
-      render={({
-        field: {
-          onChange, onBlur, value, name, ref
-        }, fieldState: { error }
-      }) => (
+      render={({ field: { onChange, onBlur, value, name, ref }, fieldState: { error } }) => (
         <>
           <Alabel className="checkbox__block">
             <div
@@ -62,11 +54,9 @@ const Checkbox: FC<ICheckbox> = ({
               ${value === true ? 'checkbox__field--checked' : ''}
             `)}
             >
-              {value === true
-                ? (
-                    <Aicon type="Check" size="small" className="checkbox__field__icon" />
-                  )
-                : null}
+              {value === true ? (
+                <Aicon type="Check" size="small" className="checkbox__field__icon" />
+              ) : null}
             </div>
             <input
               type="checkbox"
@@ -77,11 +67,9 @@ const Checkbox: FC<ICheckbox> = ({
             />
             <div className="checkbox__label">{label}</div>
           </Alabel>
-          {error?.message !== undefined
-            ? (
-                <Aerror className="checkbox__error">{error.message}</Aerror>
-              )
-            : null}
+          {error?.message !== undefined ? (
+            <Aerror className="checkbox__error">{error.message}</Aerror>
+          ) : null}
         </>
       )}
     />

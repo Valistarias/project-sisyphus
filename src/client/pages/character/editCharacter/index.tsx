@@ -1,60 +1,38 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  useNavigate, useParams
-} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input, LinkButton, SmartSelect
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, basicRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input, LinkButton, SmartSelect } from '../../../molecules';
+import { Alert, RichTextElement, basicRichTextElementExtentions } from '../../../organisms';
 import { ErrorPage } from '../../index';
 
 import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
-import type {
-  ErrorResponseType,
-  ICampaign, ICharacter
-} from '../../../types';
+import type { ErrorResponseType, ICampaign, ICharacter } from '../../../types';
 
 import './editCharacter.scss';
 
 interface FormValues {
-  firstName: string
-  lastName: string
-  nickName: string
-  gender: string
-  pronouns: string
-  campaign: string
+  firstName: string;
+  lastName: string;
+  nickName: string;
+  gender: string;
+  pronouns: string;
+  campaign: string;
 }
 
 const EditCharacter: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
-  const {
-    setConfirmContent,
-    removeConfirmEventListener,
-    addConfirmEventListener
-  } = useConfirmMessage();
+  const { createAlert, getNewId } = useSystemAlerts();
+  const { setConfirmContent, removeConfirmEventListener, addConfirmEventListener } =
+    useConfirmMessage();
   const { user } = useGlobalVars();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -90,20 +68,20 @@ const EditCharacter: FC = () => {
     () => [
       {
         value: 'M',
-        label: t('terms.gender.male')
+        label: t('terms.gender.male'),
       },
       {
         value: 'F',
-        label: t('terms.gender.female')
+        label: t('terms.gender.female'),
       },
       {
         value: 'N',
-        label: t('terms.gender.neutral')
+        label: t('terms.gender.neutral'),
       },
       {
         value: 'O',
-        label: t('terms.gender.other')
-      }
+        label: t('terms.gender.other'),
+      },
     ],
     [t]
   );
@@ -113,25 +91,25 @@ const EditCharacter: FC = () => {
     handleSubmit,
     setError,
     control,
-    formState: { errors }
-  } = useForm({ defaultValues: useMemo(
-    () => createDefaultData(character), [createDefaultData, character]) }
-  );
+    formState: { errors },
+  } = useForm({
+    defaultValues: useMemo(() => createDefaultData(character), [createDefaultData, character]),
+  });
 
-  const campaignList = useMemo(() => campaigns.map(({
-    _id, name, owner
-  }) => ({
-    value: _id,
-    label: name,
-    details: i18next.format(
-      t('terms.general.createdByShort', { owner: owner._id === user?._id ? t('terms.general.you') : owner.username }),
-      'capitalize'
-    )
-  })), [
-    campaigns,
-    t,
-    user
-  ]);
+  const campaignList = useMemo(
+    () =>
+      campaigns.map(({ _id, name, owner }) => ({
+        value: _id,
+        label: name,
+        details: i18next.format(
+          t('terms.general.createdByShort', {
+            owner: owner._id === user?._id ? t('terms.general.you') : owner.username,
+          }),
+          'capitalize'
+        ),
+      })),
+    [campaigns, t, user]
+  );
 
   const getCampaigns = useCallback(() => {
     if (api !== undefined) {
@@ -150,21 +128,14 @@ const EditCharacter: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    t
-  ]);
+  }, [api, createAlert, getNewId, t]);
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
-    ({
-      firstName, lastName, nickName, gender, pronouns, campaign
-    }) => {
+    ({ firstName, lastName, nickName, gender, pronouns, campaign }) => {
       if (api !== undefined) {
         api.characters
           .update({
@@ -174,7 +145,7 @@ const EditCharacter: FC = () => {
             nickName,
             gender,
             pronouns,
-            campaignId: campaign !== '' ? campaign : undefined
+            campaignId: campaign !== '' ? campaign : undefined,
           })
           .then(() => {
             const newId = getNewId();
@@ -184,26 +155,21 @@ const EditCharacter: FC = () => {
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{t('editCharacter.successEdit', { ns: 'pages' })}</Ap>
                 </Alert>
-              )
+              ),
             });
           })
           .catch(({ response }: ErrorResponseType) => {
             const { data } = response;
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
+              }),
             });
           });
       }
     },
-    [
-      api,
-      createAlert,
-      getNewId,
-      id,
-      setError,
-      t
-    ]
+    [api, createAlert, getNewId, id, setError, t]
   );
 
   const onDeleteCharacter = useCallback(() => {
@@ -212,23 +178,21 @@ const EditCharacter: FC = () => {
     }
     let displayedName: string | undefined;
     if (character.nickName !== undefined || character.firstName !== undefined) {
-      displayedName = character.nickName
-        ?? `${character.firstName} ${character.lastName}`;
+      displayedName = character.nickName ?? `${character.firstName} ${character.lastName}`;
     }
     setConfirmContent(
       {
         title: t('characters.confirmDelete.title', { ns: 'pages' }),
         text: t('characters.confirmDelete.text', {
-          ns: 'pages', elt: displayedName
+          ns: 'pages',
+          elt: displayedName,
         }),
         confirmCta: t('characters.confirmDelete.confirmCta', { ns: 'pages' }),
         confirmWord: t('terms.general.delete'),
-        theme: 'error'
+        theme: 'error',
       },
       (evtId: string) => {
-        const confirmDelete = (
-          { detail }: { detail: ConfirmMessageDetailData }
-        ): void => {
+        const confirmDelete = ({ detail }: { detail: ConfirmMessageDetailData }): void => {
           if (detail.proceed) {
             api.characters
               .delete({ id })
@@ -240,7 +204,7 @@ const EditCharacter: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('characters.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  )
+                  ),
                 });
                 void navigate('/characters');
               })
@@ -252,7 +216,7 @@ const EditCharacter: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('serverErrors.CYPU-301')}</Ap>
                     </Alert>
-                  )
+                  ),
                 });
               });
           }
@@ -271,7 +235,7 @@ const EditCharacter: FC = () => {
     id,
     getNewId,
     createAlert,
-    navigate
+    navigate,
   ]);
 
   useEffect(() => {
@@ -297,29 +261,18 @@ const EditCharacter: FC = () => {
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{t('serverErrors.CYPU-301')}</Ap>
                 </Alert>
-              )
+              ),
             });
           }
           setLoading(false);
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    t,
-    id,
-    getCampaigns
-  ]);
+  }, [api, createAlert, getNewId, t, id, getCampaigns]);
 
   // Default data
   useEffect(() => {
     reset(createDefaultData(character));
-  }, [
-    character,
-    reset,
-    createDefaultData
-  ]);
+  }, [character, reset, createDefaultData]);
 
   // TODO: Add loading state
   if (loading) {
@@ -360,11 +313,9 @@ const EditCharacter: FC = () => {
         }}
         noValidate
       >
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror>{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="editcharacter__form__basics">
           <Input
             control={control}

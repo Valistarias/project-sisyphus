@@ -1,20 +1,13 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 import type { FlattenMaps, HydratedDocument } from 'mongoose';
 
 import db from '../../models';
-import {
-  gemInvalidField, gemNotFound, gemServerError
-} from '../../utils/globalErrorMessage';
+import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { type ISentEnnemyAttack, smartUpdateAttacks } from '../ennemyAttack/controller';
 
 import type { ICuratedEnnemyAttackToSend, InternationalizationType } from '../../utils/types';
 import type { HydratedIEnnemyAttack } from '../index';
-import type {
-  BasicHydratedINPC, HydratedINPC,
-  INPC
-} from './model';
+import type { BasicHydratedINPC, HydratedINPC, INPC } from './model';
 
 import { curateI18n } from '../../utils';
 
@@ -79,14 +72,14 @@ const create = (req: Request, res: Response): void => {
     summary,
     swimSpeed,
     title,
-    virtual
+    virtual,
   } = req.body;
   if (
-    title === undefined
-    || summary === undefined
-    || speed === undefined
-    || hp === undefined
-    || ar === undefined
+    title === undefined ||
+    summary === undefined ||
+    speed === undefined ||
+    hp === undefined ||
+    ar === undefined
   ) {
     res.status(400).send(gemInvalidField('NPC'));
 
@@ -102,7 +95,7 @@ const create = (req: Request, res: Response): void => {
     summary,
     swimSpeed,
     title,
-    virtual
+    virtual,
   });
 
   if (i18n !== null) {
@@ -111,11 +104,11 @@ const create = (req: Request, res: Response): void => {
 
   smartUpdateAttacks({
     attacksToRemove: [],
-    attacksToUpdate: attacks
+    attacksToUpdate: attacks,
   })
     .then((attackIds) => {
       if (attackIds.length > 0) {
-        nPC.attacks = attackIds.map(attackId => String(attackId));
+        nPC.attacks = attackIds.map((attackId) => String(attackId));
       }
       nPC
         .save()
@@ -144,20 +137,20 @@ const update = (req: Request, res: Response): void => {
     summary = null,
     swimSpeed = null,
     title = null,
-    virtual = null
+    virtual = null,
   }: {
-    id?: string
-    title: string | null
-    summary: string | null
-    i18n: InternationalizationType | null
-    ar: number | null
-    pr: number | null
-    attacks: ISentEnnemyAttack[] | null
-    speed: number | null
-    swimSpeed: number | null
-    flightSpeed: number | null
-    hp: number | null
-    virtual: boolean | null
+    id?: string;
+    title: string | null;
+    summary: string | null;
+    i18n: InternationalizationType | null;
+    ar: number | null;
+    pr: number | null;
+    attacks: ISentEnnemyAttack[] | null;
+    speed: number | null;
+    swimSpeed: number | null;
+    flightSpeed: number | null;
+    hp: number | null;
+    virtual: boolean | null;
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('NPC ID'));
@@ -198,25 +191,21 @@ const update = (req: Request, res: Response): void => {
       let attacksToRemove: string[] = [];
 
       if (attacks !== null) {
-        attacksToRemove = nPC.attacks.reduce(
-          (result: string[], elt: HydratedIEnnemyAttack) => {
-            const foundAttack = attacks.find(
-              attack => attack.id !== undefined
-                && String(attack.id) === String(elt._id)
-            );
-            if (foundAttack === undefined) {
-              result.push(String(elt._id));
-            }
+        attacksToRemove = nPC.attacks.reduce((result: string[], elt: HydratedIEnnemyAttack) => {
+          const foundAttack = attacks.find(
+            (attack) => attack.id !== undefined && String(attack.id) === String(elt._id)
+          );
+          if (foundAttack === undefined) {
+            result.push(String(elt._id));
+          }
 
-            return result;
-          }, []);
+          return result;
+        }, []);
 
         if (i18n !== null) {
-          const newIntl: InternationalizationType = { ...(
-            nPC.i18n !== undefined
-            && nPC.i18n !== ''
-              ? JSON.parse(nPC.i18n)
-              : {}) };
+          const newIntl: InternationalizationType = {
+            ...(nPC.i18n !== undefined && nPC.i18n !== '' ? JSON.parse(nPC.i18n) : {}),
+          };
 
           Object.keys(i18n).forEach((lang) => {
             newIntl[lang] = i18n[lang];
@@ -228,17 +217,18 @@ const update = (req: Request, res: Response): void => {
 
       smartUpdateAttacks({
         attacksToRemove,
-        attacksToUpdate: attacks ?? []
+        attacksToUpdate: attacks ?? [],
       })
         .then((attackIds) => {
           if (attackIds.length > 0) {
-            nPC.attacks = attackIds.map(attackId => String(attackId));
+            nPC.attacks = attackIds.map((attackId) => String(attackId));
           }
           nPC
             .save()
             .then(() => {
               res.send({
-                message: 'NPC was updated successfully!', nPC
+                message: 'NPC was updated successfully!',
+                nPC,
               });
             })
             .catch((err: unknown) => {
@@ -296,32 +286,28 @@ const findSingle = (req: Request, res: Response): void => {
     return;
   }
   findNPCById(nPCId)
-    .then((nPCSent: HydratedDocument<
-      Omit<INPC, 'attacks'> & { attacks: HydratedIEnnemyAttack[] }
-    >) => {
-      const curatedAttacks
-        = nPCSent.attacks.length > 0
-          ? nPCSent.attacks.map((attack) => {
-              const data = attack.toJSON();
+    .then(
+      (nPCSent: HydratedDocument<Omit<INPC, 'attacks'> & { attacks: HydratedIEnnemyAttack[] }>) => {
+        const curatedAttacks =
+          nPCSent.attacks.length > 0
+            ? nPCSent.attacks.map((attack) => {
+                const data = attack.toJSON();
 
-              return {
-                ...data,
-                ...(
-                  data.i18n !== undefined
-                    ? { i18n: JSON.parse(data.i18n) }
-                    : {}
-                )
-              };
-            })
-          : [];
-      res.send({
-        nPC: {
-          ...nPCSent.toJSON(),
-          attacks: curatedAttacks
-        },
-        i18n: curateI18n(nPCSent.i18n)
-      });
-    })
+                return {
+                  ...data,
+                  ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n) } : {}),
+                };
+              })
+            : [];
+        res.send({
+          nPC: {
+            ...nPCSent.toJSON(),
+            attacks: curatedAttacks,
+          },
+          i18n: curateI18n(nPCSent.i18n),
+        });
+      }
+    )
     .catch((err: unknown) => {
       res.status(404).send(err);
     });
@@ -329,51 +315,47 @@ const findSingle = (req: Request, res: Response): void => {
 
 const findAll = (req: Request, res: Response): void => {
   findNPCs()
-    .then((nPCs: Array<
-      HydratedDocument<
-        Omit<FlattenMaps<INPC>, 'attacks'>
-        & {
-          attacks: HydratedIEnnemyAttack[]
-        }
-      >
-    >) => {
-      const curatedNPCs: Array<{
-        nPC: Omit<
-          FlattenMaps<INPC>
-          , 'attacks'
-        > & {
-          attacks: ICuratedEnnemyAttackToSend[]
-        }
-        i18n?: InternationalizationType
-      }> = [];
+    .then(
+      (
+        nPCs: Array<
+          HydratedDocument<
+            Omit<FlattenMaps<INPC>, 'attacks'> & {
+              attacks: HydratedIEnnemyAttack[];
+            }
+          >
+        >
+      ) => {
+        const curatedNPCs: Array<{
+          nPC: Omit<FlattenMaps<INPC>, 'attacks'> & {
+            attacks: ICuratedEnnemyAttackToSend[];
+          };
+          i18n?: InternationalizationType;
+        }> = [];
 
-      nPCs.forEach((nPCSent) => {
-        const curatedAttacks
-        = nPCSent.attacks.length > 0
-          ? nPCSent.attacks.map((attack) => {
-              const data = attack.toJSON();
+        nPCs.forEach((nPCSent) => {
+          const curatedAttacks =
+            nPCSent.attacks.length > 0
+              ? nPCSent.attacks.map((attack) => {
+                  const data = attack.toJSON();
 
-              return {
-                ...data,
-                ...(
-                  data.i18n !== undefined
-                    ? { i18n: JSON.parse(data.i18n) }
-                    : {}
-                )
-              };
-            })
-          : [];
-        curatedNPCs.push({
-          nPC: {
-            ...nPCSent.toJSON(),
-            attacks: curatedAttacks
-          },
-          i18n: curateI18n(nPCSent.i18n)
+                  return {
+                    ...data,
+                    ...(data.i18n !== undefined ? { i18n: JSON.parse(data.i18n) } : {}),
+                  };
+                })
+              : [];
+          curatedNPCs.push({
+            nPC: {
+              ...nPCSent.toJSON(),
+              attacks: curatedAttacks,
+            },
+            i18n: curateI18n(nPCSent.i18n),
+          });
         });
-      });
 
-      res.send(curatedNPCs);
-    })
+        res.send(curatedNPCs);
+      }
+    )
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
@@ -381,15 +363,13 @@ const findAllBasic = (req: Request, res: Response): void => {
   basicListNPCs()
     .then((nPCs) => {
       res.send(
-        nPCs.map(nPCSent => ({
+        nPCs.map((nPCSent) => ({
           nPC: nPCSent.toJSON(),
-          i18n: curateI18n(nPCSent.i18n)
+          i18n: curateI18n(nPCSent.i18n),
         }))
       );
     })
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export {
-  create, deleteNPC, findAll, findAllBasic, findNPCById, findSingle, update
-};
+export { create, deleteNPC, findAll, findAllBasic, findNPCById, findSingle, update };

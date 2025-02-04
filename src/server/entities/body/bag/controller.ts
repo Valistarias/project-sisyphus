@@ -2,10 +2,7 @@ import db from '../../../models';
 
 const { BodyBag } = db;
 
-const replaceBagByBody = async (req: {
-  bodyId: string
-  bagIds: string[]
-}): Promise<boolean> =>
+const replaceBagByBody = async (req: { bodyId: string; bagIds: string[] }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { bodyId } = req;
     BodyBag.deleteMany({ body: bodyId })
@@ -23,18 +20,13 @@ const replaceBagByBody = async (req: {
       });
   });
 
-const createBagsByBody = async (req: {
-  bodyId: string
-  bagIds: string[]
-}): Promise<boolean> =>
+const createBagsByBody = async (req: { bodyId: string; bagIds: string[] }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    const {
-      bodyId, bagIds
-    } = req;
+    const { bodyId, bagIds } = req;
     BodyBag.create(
-      bagIds.map(bagId => ({
+      bagIds.map((bagId) => ({
         body: bodyId,
-        bag: bagId
+        bag: bagId,
       }))
     )
       .then(() => {
@@ -46,14 +38,12 @@ const createBagsByBody = async (req: {
   });
 
 const updateBagByBody = async (req: {
-  bodyId: string
-  bagId: string
-  equiped?: boolean
+  bodyId: string;
+  bagId: string;
+  equiped?: boolean;
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    const {
-      bodyId, bagId, equiped = null
-    } = req;
+    const { bodyId, bagId, equiped = null } = req;
     const updateObj: { equiped?: boolean } = {};
     if (equiped !== null) {
       updateObj.equiped = equiped;
@@ -61,7 +51,7 @@ const updateBagByBody = async (req: {
     BodyBag.findOneAndUpdate(
       {
         body: bodyId,
-        bag: bagId
+        bag: bagId,
       },
       updateObj
     )
@@ -84,6 +74,4 @@ const deleteBagsByBody = async (bodyId: string): Promise<boolean> =>
       });
   });
 
-export {
-  createBagsByBody, deleteBagsByBody, replaceBagByBody, updateBagByBody
-};
+export { createBagsByBody, deleteBagsByBody, replaceBagByBody, updateBagByBody };

@@ -1,114 +1,95 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  useNavigate, useParams
-} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input, LinkButton, SmartSelect
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input, LinkButton, SmartSelect } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 import { possibleStarterKitValues } from '../../../types/items';
 
 import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type { ErrorResponseType, ICuratedArmor } from '../../../types';
 import type { InternationalizationType } from '../../../types/global';
 
-import {
-  classTrim, isThereDuplicate
-} from '../../../utils';
+import { classTrim, isThereDuplicate } from '../../../utils';
 
 import './adminEditArmor.scss';
 
 interface FormValues {
-  name: string
-  nameFr: string
-  cost: number
-  rarity: string
-  starterKit: string
-  armorType: string
-  itemModifiers: string[]
+  name: string;
+  nameFr: string;
+  cost: number;
+  rarity: string;
+  starterKit: string;
+  armorType: string;
+  itemModifiers: string[];
   skillBonuses?: Record<
     string,
     {
-      skill: string
-      value: number
+      skill: string;
+      value: number;
     }
-  >
+  >;
   statBonuses?: Record<
     string,
     {
-      stat: string
-      value: number
+      stat: string;
+      value: number;
     }
-  >
+  >;
   charParamBonuses?: Record<
     string,
     {
-      charParam: string
-      value: number
+      charParam: string;
+      value: number;
     }
-  >
+  >;
   effects?: Record<
     string,
     {
-      id: string
-      title: string
-      titleFr?: string
-      summary: string
-      summaryFr?: string
-      type: string
-      formula?: string
+      id: string;
+      title: string;
+      titleFr?: string;
+      summary: string;
+      summaryFr?: string;
+      type: string;
+      formula?: string;
     }
-  >
+  >;
   actions?: Record<
     string,
     {
-      id: string
-      title: string
-      titleFr?: string
-      summary: string
-      summaryFr?: string
-      type: string
-      skill?: string
-      duration: string
-      time?: string
-      timeFr?: string
-      damages?: string
-      offsetSkill?: string
-      uses?: number
-      isKarmic?: string
-      karmicCost?: number
+      id: string;
+      title: string;
+      titleFr?: string;
+      summary: string;
+      summaryFr?: string;
+      type: string;
+      skill?: string;
+      duration: string;
+      time?: string;
+      timeFr?: string;
+      damages?: string;
+      offsetSkill?: string;
+      uses?: number;
+      isKarmic?: string;
+      karmicCost?: number;
     }
-  >
+  >;
 }
 
 const AdminEditArmor: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const {
-    setConfirmContent,
-    removeConfirmEventListener,
-    addConfirmEventListener
-  } = useConfirmMessage();
+  const { setConfirmContent, removeConfirmEventListener, addConfirmEventListener } =
+    useConfirmMessage();
   const {
     skills,
     stats,
@@ -117,11 +98,9 @@ const AdminEditArmor: FC = () => {
     actionDurations,
     armorTypes,
     rarities,
-    itemModifiers
+    itemModifiers,
   } = useGlobalVars();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
   const navigate = useNavigate();
 
   const [displayInt, setDisplayInt] = useState(false);
@@ -132,7 +111,7 @@ const AdminEditArmor: FC = () => {
       skills.map(({ skill }) => ({
         value: skill._id,
         // TODO : Handle Internationalization
-        label: skill.title
+        label: skill.title,
       })),
     [skills]
   );
@@ -144,7 +123,7 @@ const AdminEditArmor: FC = () => {
       stats.map(({ stat }) => ({
         value: stat._id,
         // TODO : Handle Internationalization
-        label: stat.title
+        label: stat.title,
       })),
     [stats]
   );
@@ -155,7 +134,7 @@ const AdminEditArmor: FC = () => {
       charParams.map(({ charParam }) => ({
         value: charParam._id,
         // TODO : Handle Internationalization
-        label: charParam.title
+        label: charParam.title,
       })),
     [charParams]
   );
@@ -163,22 +142,18 @@ const AdminEditArmor: FC = () => {
 
   const actionTypeSelect = useMemo(
     () =>
-      actionTypes.map(({
-        name, _id
-      }) => ({
+      actionTypes.map(({ name, _id }) => ({
         value: _id,
-        label: t(`terms.actionType.${name}`)
+        label: t(`terms.actionType.${name}`),
       })),
     [actionTypes, t]
   );
 
   const actionDurationSelect = useMemo(
     () =>
-      actionDurations.map(({
-        name, _id
-      }) => ({
+      actionDurations.map(({ name, _id }) => ({
         value: _id,
-        label: t(`terms.actionDuration.${name}`)
+        label: t(`terms.actionDuration.${name}`),
       })),
     [actionDurations, t]
   );
@@ -187,27 +162,34 @@ const AdminEditArmor: FC = () => {
     () =>
       armorTypes.map(({ armorType }) => ({
         value: armorType._id,
-        label: armorType.title
+        label: armorType.title,
       })),
     [armorTypes]
   );
 
-  const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
-    value: rarity._id,
-    label: rarity.title
-  })), [rarities]);
+  const rarityList = useMemo(
+    () =>
+      rarities.map(({ rarity }) => ({
+        value: rarity._id,
+        label: rarity.title,
+      })),
+    [rarities]
+  );
 
   const itemModifierList = useMemo(
-    () => itemModifiers.map(({ itemModifier }) => ({
-      value: itemModifier._id,
-      label: itemModifier.title
-    })), [itemModifiers]);
+    () =>
+      itemModifiers.map(({ itemModifier }) => ({
+        value: itemModifier._id,
+        label: itemModifier.title,
+      })),
+    [itemModifiers]
+  );
 
   const starterKitList = useMemo(
     () =>
-      possibleStarterKitValues.map(possibleStarterKitValue => ({
+      possibleStarterKitValues.map((possibleStarterKitValue) => ({
         value: possibleStarterKitValue,
-        label: t(`terms.starterKit.${possibleStarterKitValue}`)
+        label: t(`terms.starterKit.${possibleStarterKitValue}`),
       })),
     [t]
   );
@@ -222,21 +204,15 @@ const AdminEditArmor: FC = () => {
   const [armorText, setArmorText] = useState('');
   const [armorTextFr, setArmorTextFr] = useState('');
 
-  const introEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const createDefaultData = useCallback((armorData: ICuratedArmor | null) => {
     if (armorData == null) {
       return {};
     }
-    const {
-      armor, i18n
-    } = armorData;
+    const { armor, i18n } = armorData;
     const defaultData: Partial<FormValues> = {};
     defaultData.name = armor.title;
     defaultData.cost = armor.cost;
@@ -256,7 +232,7 @@ const AdminEditArmor: FC = () => {
       }
       defaultData.skillBonuses[`skill-${idIncrement.current}`] = {
         skill: skillBonus.skill,
-        value: skillBonus.value
+        value: skillBonus.value,
       };
 
       tempSkillBonusId.push(idIncrement.current);
@@ -272,7 +248,7 @@ const AdminEditArmor: FC = () => {
       }
       defaultData.statBonuses[`stat-${idIncrement.current}`] = {
         stat: statBonus.stat,
-        value: statBonus.value
+        value: statBonus.value,
       };
 
       tempStatBonusId.push(idIncrement.current);
@@ -288,7 +264,7 @@ const AdminEditArmor: FC = () => {
       }
       defaultData.charParamBonuses[`charParam-${idIncrement.current}`] = {
         charParam: charParamBonus.charParam,
-        value: charParamBonus.value
+        value: charParamBonus.value,
       };
 
       tempCharParamBonusId.push(idIncrement.current);
@@ -310,21 +286,14 @@ const AdminEditArmor: FC = () => {
         isKarmic: action.isKarmic ? '1' : '0',
         ...(action.skill !== undefined ? { skill: action.skill } : {}),
         ...(action.damages !== undefined ? { damages: action.damages } : {}),
-        ...(
-          action.offsetSkill !== undefined
-            ? { offsetSkill: action.offsetSkill }
-            : {}),
+        ...(action.offsetSkill !== undefined ? { offsetSkill: action.offsetSkill } : {}),
         ...(action.uses !== undefined ? { uses: action.uses } : {}),
-        ...(
-          action.karmicCost !== undefined
-            ? { karmicCost: action.karmicCost }
-            : {}
-        ),
+        ...(action.karmicCost !== undefined ? { karmicCost: action.karmicCost } : {}),
         ...(action.time !== undefined ? { time: action.time } : {}),
         summary: action.summary,
         titleFr: action.i18n.fr?.title,
         summaryFr: action.i18n.fr?.summary,
-        timeFr: action.i18n.fr?.time
+        timeFr: action.i18n.fr?.time,
       };
 
       tempActionId.push(idIncrement.current);
@@ -345,7 +314,7 @@ const AdminEditArmor: FC = () => {
         formula: effect.formula,
         summary: effect.summary,
         titleFr: effect.i18n.fr?.title,
-        summaryFr: effect.i18n.fr?.summary
+        summaryFr: effect.i18n.fr?.summary,
       };
 
       tempEffectId.push(idIncrement.current);
@@ -362,21 +331,21 @@ const AdminEditArmor: FC = () => {
     unregister,
     control,
     formState: { errors },
-    reset
-  } = useForm({ defaultValues: useMemo(
-    () => createDefaultData(armorData), [createDefaultData, armorData]
-  ) });
+    reset,
+  } = useForm({
+    defaultValues: useMemo(() => createDefaultData(armorData), [createDefaultData, armorData]),
+  });
 
   const boolRange = useMemo(
     () => [
       {
         value: '1',
-        label: t('terms.general.yes')
+        label: t('terms.general.yes'),
       },
       {
         value: '0',
-        label: t('terms.general.no')
-      }
+        label: t('terms.general.no'),
+      },
     ],
     [t]
   );
@@ -448,94 +417,83 @@ const AdminEditArmor: FC = () => {
         return;
       }
       // Check duplicate on skills
-      const skillBonuses = elts.skillBonuses !== undefined
-        ? Object.values(elts.skillBonuses)
-        : [];
+      const skillBonuses = elts.skillBonuses !== undefined ? Object.values(elts.skillBonuses) : [];
       let duplicateSkillBonuses = false;
       if (skillBonuses.length > 0) {
         duplicateSkillBonuses = isThereDuplicate(
-          skillBonuses.map(skillBonus => skillBonus.skill)
+          skillBonuses.map((skillBonus) => skillBonus.skill)
         );
       }
       if (duplicateSkillBonuses) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminEditArmor.errorDuplicateSkill', { ns: 'pages' })
+          message: t('adminEditArmor.errorDuplicateSkill', { ns: 'pages' }),
         });
 
         return;
       }
       // Check duplicate on stats
-      const statBonuses = elts.statBonuses !== undefined
-        ? Object.values(elts.statBonuses)
-        : [];
+      const statBonuses = elts.statBonuses !== undefined ? Object.values(elts.statBonuses) : [];
       let duplicateStatBonuses = false;
       if (statBonuses.length > 0) {
-        duplicateStatBonuses = isThereDuplicate(
-          statBonuses.map(statBonus => statBonus.stat)
-        );
+        duplicateStatBonuses = isThereDuplicate(statBonuses.map((statBonus) => statBonus.stat));
       }
       if (duplicateStatBonuses) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminEditArmor.errorDuplicateStat', { ns: 'pages' })
+          message: t('adminEditArmor.errorDuplicateStat', { ns: 'pages' }),
         });
 
         return;
       }
       // Check duplicate on character param
-      const charParamBonuses = elts.charParamBonuses !== undefined
-        ? Object.values(elts.charParamBonuses)
-        : [];
+      const charParamBonuses =
+        elts.charParamBonuses !== undefined ? Object.values(elts.charParamBonuses) : [];
       let duplicateCharParamBonuses = false;
       if (charParamBonuses.length > 0) {
         duplicateCharParamBonuses = isThereDuplicate(
-          charParamBonuses.map(charParamBonus => charParamBonus.charParam)
+          charParamBonuses.map((charParamBonus) => charParamBonus.charParam)
         );
       }
       if (duplicateCharParamBonuses) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminEditArmor.errorDuplicateCharParam', { ns: 'pages' })
+          message: t('adminEditArmor.errorDuplicateCharParam', { ns: 'pages' }),
         });
 
         return;
       }
-      const curatedSkillBonuses = skillBonuses.map(({
-        skill, value
-      }) => ({
+      const curatedSkillBonuses = skillBonuses.map(({ skill, value }) => ({
         skill,
-        value: Number(value)
+        value: Number(value),
       }));
-      const curatedStatBonuses = statBonuses.map(({
-        stat, value
-      }) => ({
+      const curatedStatBonuses = statBonuses.map(({ stat, value }) => ({
         stat,
-        value: Number(value)
+        value: Number(value),
       }));
-      const curatedCharParamBonuses = charParamBonuses.map(({
-        charParam, value
-      }) => ({
+      const curatedCharParamBonuses = charParamBonuses.map(({ charParam, value }) => ({
         charParam,
-        value: Number(value)
+        value: Number(value),
       }));
 
       const effectsArr = effects !== undefined ? Object.values(effects) : [];
       const curatedEffects = effectsArr.map(
-        ({
-          id, formula, type, title, summary, titleFr, summaryFr
-        }) => ({
+        ({ id, formula, type, title, summary, titleFr, summaryFr }) => ({
           id,
           title,
           summary,
           formula,
           type,
-          i18n: { ...(titleFr !== undefined || summaryFr !== undefined
-            ? { fr: {
-                title: titleFr,
-                summary: summaryFr
-              } }
-            : {}) }
+          i18n: {
+            ...(titleFr !== undefined || summaryFr !== undefined
+              ? {
+                  fr: {
+                    title: titleFr,
+                    summary: summaryFr,
+                  },
+                }
+              : {}),
+          },
         })
       );
 
@@ -556,7 +514,7 @@ const AdminEditArmor: FC = () => {
           uses,
           isKarmic,
           karmicCost,
-          summaryFr
+          summaryFr,
         }) => ({
           id,
           title,
@@ -570,16 +528,17 @@ const AdminEditArmor: FC = () => {
           uses,
           time,
           type,
-          i18n: { ...(
-            titleFr !== undefined
-            || summaryFr !== undefined
-            || timeFr !== undefined
-              ? { fr: {
-                  title: titleFr,
-                  summary: summaryFr,
-                  time: timeFr
-                } }
-              : {}) }
+          i18n: {
+            ...(titleFr !== undefined || summaryFr !== undefined || timeFr !== undefined
+              ? {
+                  fr: {
+                    title: titleFr,
+                    summary: summaryFr,
+                    time: timeFr,
+                  },
+                }
+              : {}),
+          },
         })
       );
 
@@ -590,10 +549,12 @@ const AdminEditArmor: FC = () => {
       }
       let i18n: InternationalizationType | null = null;
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          summary: htmlFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            summary: htmlFr,
+          },
+        };
       }
       api.armors
         .update({
@@ -611,7 +572,7 @@ const AdminEditArmor: FC = () => {
           statBonuses: curatedStatBonuses,
           charParamBonuses: curatedCharParamBonuses,
           effects: curatedEffects,
-          actions: curatedActions
+          actions: curatedActions,
         })
         .then((quote) => {
           const newId = getNewId();
@@ -621,7 +582,7 @@ const AdminEditArmor: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditArmor.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
         })
         .catch(({ response }: ErrorResponseType) => {
@@ -629,27 +590,21 @@ const AdminEditArmor: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
+              }),
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
     },
-    [
-      introEditor,
-      introFrEditor,
-      api,
-      id,
-      armorData,
-      setError,
-      t,
-      getNewId,
-      createAlert
-    ]
+    [introEditor, introFrEditor, api, id, armorData, setError, t, getNewId, createAlert]
   );
 
   const onAskDelete = useCallback(() => {
@@ -661,14 +616,12 @@ const AdminEditArmor: FC = () => {
         title: t('adminEditArmor.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditArmor.confirmDeletion.text', {
           ns: 'pages',
-          elt: armorData.armor.title
+          elt: armorData.armor.title,
         }),
-        confirmCta: t('adminEditArmor.confirmDeletion.confirmCta', { ns: 'pages' })
+        confirmCta: t('adminEditArmor.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
       (evtId: string) => {
-        const confirmDelete = (
-          { detail }: { detail: ConfirmMessageDetailData }
-        ): void => {
+        const confirmDelete = ({ detail }: { detail: ConfirmMessageDetailData }): void => {
           if (detail.proceed) {
             api.armors
               .delete({ id })
@@ -680,7 +633,7 @@ const AdminEditArmor: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditArmor.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  )
+                  ),
                 });
                 void navigate('/admin/armors');
               })
@@ -689,12 +642,16 @@ const AdminEditArmor: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skillBranch.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize'),
+                    }),
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skillBranch.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize'),
+                    }),
                   });
                 }
               });
@@ -715,7 +672,7 @@ const AdminEditArmor: FC = () => {
     getNewId,
     createAlert,
     navigate,
-    setError
+    setError,
   ]);
 
   useEffect(() => {
@@ -724,9 +681,7 @@ const AdminEditArmor: FC = () => {
       api.armors
         .get({ armorId: id })
         .then((curatedArmor) => {
-          const {
-            armor, i18n
-          } = curatedArmor;
+          const { armor, i18n } = curatedArmor;
           setArmorData(curatedArmor);
           setArmorText(armor.summary);
           if (i18n.fr !== undefined) {
@@ -741,26 +696,16 @@ const AdminEditArmor: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    id,
-    t
-  ]);
+  }, [api, createAlert, getNewId, id, t]);
 
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(armorData));
-  }, [
-    armorData,
-    reset,
-    createDefaultData
-  ]);
+  }, [armorData, reset, createDefaultData]);
 
   return (
     <div
@@ -787,11 +732,9 @@ const AdminEditArmor: FC = () => {
         <LinkButton className="adminEditArmor__return-btn" href="/admin/armors" size="small">
           {t('adminEditArmor.return', { ns: 'pages' })}
         </LinkButton>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror>{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminEditArmor__basics">
           <Input
             control={control}
@@ -859,7 +802,7 @@ const AdminEditArmor: FC = () => {
         </Atitle>
         <div className="adminEditArmor__bonuses">
           <div className="adminEditArmor__bonuses__elts">
-            {skillBonusIds.map(skillBonusId => (
+            {skillBonusIds.map((skillBonusId) => (
               <div className="adminEditArmor__bonus" key={`skill-${skillBonusId}`}>
                 <Atitle className="adminEditArmor__bonus__title" level={4}>
                   {t('adminEditArmor.skillBonusTitle', { ns: 'pages' })}
@@ -886,7 +829,7 @@ const AdminEditArmor: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setSkillBonusIds(prev =>
+                    setSkillBonusIds((prev) =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== skillBonusId) {
                           result.push(elt);
@@ -901,7 +844,7 @@ const AdminEditArmor: FC = () => {
                 />
               </div>
             ))}
-            {statBonusIds.map(statBonusId => (
+            {statBonusIds.map((statBonusId) => (
               <div className="adminEditArmor__bonus" key={`stat-${statBonusId}`}>
                 <Atitle className="adminEditArmor__bonus__title" level={4}>
                   {t('adminEditArmor.statBonusTitle', { ns: 'pages' })}
@@ -928,7 +871,7 @@ const AdminEditArmor: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setStatBonusIds(prev =>
+                    setStatBonusIds((prev) =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== statBonusId) {
                           result.push(elt);
@@ -943,7 +886,7 @@ const AdminEditArmor: FC = () => {
                 />
               </div>
             ))}
-            {charParamBonusIds.map(charParamBonusId => (
+            {charParamBonusIds.map((charParamBonusId) => (
               <div className="adminEditArmor__bonus" key={`charParam-${charParamBonusId}`}>
                 <Atitle className="adminEditArmor__bonus__title" level={4}>
                   {t('adminEditArmor.charParamBonusTitle', { ns: 'pages' })}
@@ -970,7 +913,7 @@ const AdminEditArmor: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setCharParamBonusIds(prev =>
+                    setCharParamBonusIds((prev) =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== charParamBonusId) {
                           result.push(elt);
@@ -985,7 +928,7 @@ const AdminEditArmor: FC = () => {
                 />
               </div>
             ))}
-            {effectIds.map(effectId => (
+            {effectIds.map((effectId) => (
               <div className="adminEditArmor__bonus" key={`charParam-${effectId}`}>
                 <Atitle className="adminEditArmor__bonus__title" level={4}>
                   {t('adminEditArmor.effectTitle', { ns: 'pages' })}
@@ -1041,7 +984,7 @@ const AdminEditArmor: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setEffectIds(prev =>
+                    setEffectIds((prev) =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== effectId) {
                           result.push(elt);
@@ -1056,7 +999,7 @@ const AdminEditArmor: FC = () => {
                 />
               </div>
             ))}
-            {actionIds.map(actionId => (
+            {actionIds.map((actionId) => (
               <div className="adminEditArmor__bonus" key={`charParam-${actionId}`}>
                 <Atitle className="adminEditArmor__bonus__title" level={4}>
                   {t('adminEditArmor.actionTitle', { ns: 'pages' })}
@@ -1112,9 +1055,9 @@ const AdminEditArmor: FC = () => {
                     options={[
                       {
                         value: '',
-                        label: ''
+                        label: '',
                       },
-                      ...skillSelect
+                      ...skillSelect,
                     ]}
                     className="adminEditArmor__bonus__select adminEditArmor__bonus__value--s"
                   />
@@ -1172,7 +1115,7 @@ const AdminEditArmor: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setActionIds(prev =>
+                    setActionIds((prev) =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== actionId) {
                           result.push(elt);
@@ -1219,7 +1162,7 @@ const AdminEditArmor: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt(prev => !prev);
+              setDisplayInt((prev) => !prev);
             }}
             className="adminEditArmor__intl-title__btn"
           />

@@ -1,35 +1,17 @@
-import React, {
-  type FC, type ReactNode
-} from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
-import {
-  ApiProvider, useApi
-} from './api';
-import {
-  CampaignEventWindowProvider, useCampaignEventWindow
-} from './campaignEventWindow';
-import {
-  ConfirmMessageProvider, useConfirmMessage
-} from './confirmMessage';
-import {
-  GlobalVarsProvider, useGlobalVars
-} from './globalVars';
-import {
-  LangProvider, useLang
-} from './lang';
-import {
-  SocketProvider, useSocket
-} from './socket';
-import {
-  SystemAlertsProvider, useSystemAlerts
-} from './systemAlerts';
-import {
-  ThemeProvider, useTheme
-} from './theme';
+import { ApiProvider, useApi } from './api';
+import { CampaignEventWindowProvider, useCampaignEventWindow } from './campaignEventWindow';
+import { ConfirmMessageProvider, useConfirmMessage } from './confirmMessage';
+import { GlobalVarsProvider, useGlobalVars } from './globalVars';
+import { LangProvider, useLang } from './lang';
+import { SocketProvider, useSocket } from './socket';
+import { SystemAlertsProvider, useSystemAlerts } from './systemAlerts';
+import { ThemeProvider, useTheme } from './theme';
 
 interface ProviderProps {
   /** The childrens of the Providers element */
-  children: ReactNode
+  children: ReactNode;
 }
 
 const Providers: FC<ProviderProps> = ({ children }) => (
@@ -40,9 +22,7 @@ const Providers: FC<ProviderProps> = ({ children }) => (
           <SocketProvider>
             <SystemAlertsProvider>
               <ConfirmMessageProvider>
-                <CampaignEventWindowProvider>
-                  {children}
-                </CampaignEventWindowProvider>
+                <CampaignEventWindowProvider>{children}</CampaignEventWindowProvider>
               </ConfirmMessageProvider>
             </SystemAlertsProvider>
           </SocketProvider>
@@ -61,5 +41,5 @@ export {
   useLang,
   useSocket,
   useSystemAlerts,
-  useTheme
+  useTheme,
 };

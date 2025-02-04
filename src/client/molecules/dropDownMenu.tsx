@@ -1,11 +1,7 @@
 import React from 'react';
-import {
-  useMemo, type FC
-} from 'react';
+import { useMemo, type FC } from 'react';
 
-import {
-  Ali, Atitle, Aul
-} from '../atoms';
+import { Ali, Atitle, Aul } from '../atoms';
 
 import Button from './button';
 import LinkButton from './linkButton';
@@ -16,32 +12,32 @@ import './dropDownMenu.scss';
 
 interface ILinkElt {
   /** The link */
-  href?: string
+  href?: string;
   /** The onClick event sent when necessary */
-  onClick?: (e: React.MouseEvent<HTMLElement>) => void
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
   /** The text */
-  text: string
+  text: string;
 }
 
 interface IDropDownMenu {
   /** The main element of the list */
-  title: ILinkElt
+  title: ILinkElt;
   /** The elements present in the dropdown */
   content: Array<
     | ILinkElt
     | {
-      title: string
-      list: ILinkElt[]
-    }
-  >
+        title: string;
+        list: ILinkElt[];
+      }
+  >;
   /** The class of the DropDownMenu element */
-  className?: string
+  className?: string;
   /** When the menu is hovered */
-  onOpen: () => void
+  onOpen: () => void;
   /** When the menu is not hovered anymore */
-  onClose: () => void
+  onClose: () => void;
   /** Is the menu open */
-  isOpen: boolean
+  isOpen: boolean;
 }
 
 const DropDownMenu: FC<IDropDownMenu> = ({
@@ -50,7 +46,7 @@ const DropDownMenu: FC<IDropDownMenu> = ({
   className,
   onOpen,
   onClose,
-  isOpen
+  isOpen,
 }) => {
   const listElt = useMemo(() => {
     const sentElts: React.JSX.Element[] = [];
@@ -58,15 +54,13 @@ const DropDownMenu: FC<IDropDownMenu> = ({
       (
         single:
           | {
-            title: string
-            list: ILinkElt[]
-          }
+              title: string;
+              list: ILinkElt[];
+            }
           | ILinkElt
       ) => {
         if ((single as ILinkElt | undefined)?.text !== undefined) {
-          const {
-            href, text, onClick
-          } = single as ILinkElt;
+          const { href, text, onClick } = single as ILinkElt;
           sentElts.push(
             <LinkButton
               key={`eltlist-${href ?? text}`}
@@ -84,11 +78,9 @@ const DropDownMenu: FC<IDropDownMenu> = ({
             </LinkButton>
           );
         } else {
-          const {
-            title, list
-          } = single as {
-            title: string
-            list: ILinkElt[]
+          const { title, list } = single as {
+            title: string;
+            list: ILinkElt[];
           };
           sentElts.push(
             <div key={`sublist-${title}`} className="dropdown-menu__list__sublist">
@@ -96,9 +88,7 @@ const DropDownMenu: FC<IDropDownMenu> = ({
                 {title}
               </Atitle>
               <Aul className="dropdown-menu__list__sublist__list">
-                {list.map(({
-                  href, text, onClick
-                }) => (
+                {list.map(({ href, text, onClick }) => (
                   <Ali
                     className="dropdown-menu__list__sublist__list__elt"
                     key={`eltsublist-${href ?? text}`}

@@ -2,28 +2,34 @@ import React, { type MouseEventHandler } from 'react';
 
 type IQuarkProps<T> = {
   /** The class of the element */
-  className?: string
+  className?: string;
   /** When the component is hovered in */
-  onMouseEnter?: MouseEventHandler
+  onMouseEnter?: MouseEventHandler;
   /** When the component is hovered out */
-  onMouseLeave?: MouseEventHandler
+  onMouseLeave?: MouseEventHandler;
   /** When the component is focused in */
-  onFocus?: MouseEventHandler
+  onFocus?: MouseEventHandler;
   /** When the component is focused out */
-  onBlur?: MouseEventHandler
+  onBlur?: MouseEventHandler;
   /** The style defined for the element */
-  style?: React.CSSProperties
+  style?: React.CSSProperties;
   /** The react props that need to be set to the smallest defined element */
-  reactProps?: Record<string, unknown>
+  reactProps?: Record<string, unknown>;
 } & T;
 
 interface IQuarkInherit {
   /** The type of the element */
-  quarkType: React.ElementType
+  quarkType: React.ElementType;
 }
 
 function Quark<InheritedProps>({
-  className, onMouseEnter, onMouseLeave, style, quarkType, reactProps, ...rest
+  className,
+  onMouseEnter,
+  onMouseLeave,
+  style,
+  quarkType,
+  reactProps,
+  ...rest
 }: IQuarkProps<InheritedProps> & IQuarkInherit): React.ReactNode {
   const QuarkComponent = quarkType;
 
@@ -41,6 +47,4 @@ function Quark<InheritedProps>({
 
 Quark.displayName = 'Quark';
 
-export {
-  Quark, type IQuarkProps
-};
+export { Quark, type IQuarkProps };

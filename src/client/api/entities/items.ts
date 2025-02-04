@@ -5,7 +5,7 @@ import Entity from './entity';
 import type { ICuratedItem, IItem } from '../../types';
 
 interface IItemPayload {
-  itemId: string
+  itemId: string;
 }
 
 export default class Items extends Entity<IItemPayload, IItem, ICuratedItem> {

@@ -5,15 +5,14 @@ import Entity from './entity';
 import type { ICampaign } from '../../types';
 
 interface ICampaignPayload {
-  campaignId: string
+  campaignId: string;
 }
 
 interface ICampaignCodePayload {
-  campaignCode: string
+  campaignCode: string;
 }
 
-export default class Campaigns
-  extends Entity<ICampaignPayload, ICampaign, ICampaign> {
+export default class Campaigns extends Entity<ICampaignPayload, ICampaign, ICampaign> {
   register: (payload: ICampaignCodePayload) => Promise<{ campaignId: string }>;
   unregister: (payload: ICampaignPayload) => Promise<boolean>;
   find: (payload: ICampaignCodePayload) => Promise<ICampaign>;
@@ -22,7 +21,7 @@ export default class Campaigns
   constructor() {
     super('campaigns');
 
-    this.register = async payload =>
+    this.register = async (payload) =>
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/register/`, payload)
@@ -34,7 +33,7 @@ export default class Campaigns
           });
       });
 
-    this.unregister = async payload =>
+    this.unregister = async (payload) =>
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/unregister/`, payload)
@@ -46,7 +45,7 @@ export default class Campaigns
           });
       });
 
-    this.find = async payload =>
+    this.find = async (payload) =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/find/`, { params: payload })
@@ -58,7 +57,7 @@ export default class Campaigns
           });
       });
 
-    this.generateCode = async payload =>
+    this.generateCode = async (payload) =>
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/generatecode/`, payload)

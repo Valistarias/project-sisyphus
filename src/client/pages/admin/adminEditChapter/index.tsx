@@ -1,66 +1,43 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  useNavigate, useParams
-} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  useApi, useConfirmMessage, useSystemAlerts
-} from '../../../providers';
+import { useApi, useConfirmMessage, useSystemAlerts } from '../../../providers';
 
-import {
-  Aa, Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input,
-  LinkButton
-} from '../../../molecules';
+import { Aa, Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input, LinkButton } from '../../../molecules';
 import {
   Alert,
   DragList,
   RichTextElement,
   completeRichTextElementExtentions,
-  type IDragElt
+  type IDragElt,
 } from '../../../organisms';
 
 import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
-import type {
-  ErrorResponseType,
-  ICuratedChapter, IPage
-} from '../../../types';
+import type { ErrorResponseType, ICuratedChapter, IPage } from '../../../types';
 import type { InternationalizationType } from '../../../types/global';
 
-import {
-  arraysEqual, formatDate
-} from '../../../utils';
+import { arraysEqual, formatDate } from '../../../utils';
 
 import './adminEditChapter.scss';
 
 interface FormValues {
-  name: string
-  nameFr: string
+  name: string;
+  nameFr: string;
 }
 
 const AdminEditChapters: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
   const { id } = useParams();
-  const {
-    setConfirmContent,
-    removeConfirmEventListener,
-    addConfirmEventListener
-  } = useConfirmMessage();
+  const { setConfirmContent, removeConfirmEventListener, addConfirmEventListener } =
+    useConfirmMessage();
   const navigate = useNavigate();
 
   const calledApi = useRef<string | null>(null);
@@ -78,40 +55,33 @@ const AdminEditChapters: FC = () => {
   const [initialOrder, setInitialOrder] = useState<string[]>([]);
   const [pagesOrder, setPagesOrder] = useState<string[]>([]);
 
-  const introEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const createDefaultData = useCallback(
-    (chapterData: ICuratedChapter | null) => {
-      if (chapterData == null) {
-        return {};
-      }
-      const {
-        chapter, i18n
-      } = chapterData;
-      const defaultData: Partial<FormValues> = {};
-      defaultData.name = chapter.title;
-      if (i18n.fr !== undefined) {
-        defaultData.nameFr = i18n.fr.title ?? '';
-      }
+  const createDefaultData = useCallback((chapterData: ICuratedChapter | null) => {
+    if (chapterData == null) {
+      return {};
+    }
+    const { chapter, i18n } = chapterData;
+    const defaultData: Partial<FormValues> = {};
+    defaultData.name = chapter.title;
+    if (i18n.fr !== undefined) {
+      defaultData.nameFr = i18n.fr.title ?? '';
+    }
 
-      return defaultData;
-    }, []);
+    return defaultData;
+  }, []);
 
   const {
     handleSubmit,
     setError,
     control,
     formState: { errors },
-    reset
-  } = useForm({ defaultValues: useMemo(
-    () => createDefaultData(chapterData), [createDefaultData, chapterData]
-  ) });
+    reset,
+  } = useForm({
+    defaultValues: useMemo(() => createDefaultData(chapterData), [createDefaultData, chapterData]),
+  });
 
   const pageDragData = useMemo(() => {
     if (pagesData === null) {
@@ -125,8 +95,8 @@ const AdminEditChapters: FC = () => {
         title: pageData.title,
         button: {
           href: `/admin/page/${pageData._id}`,
-          content: t('adminEditChapter.editPage', { ns: 'pages' })
-        }
+          content: t('adminEditChapter.editPage', { ns: 'pages' }),
+        },
       };
     });
 
@@ -143,9 +113,7 @@ const AdminEditChapters: FC = () => {
   const ruleBook = useMemo(() => chapterData?.chapter.ruleBook, [chapterData]);
 
   const onSaveChapter: SubmitHandler<FormValues> = useCallback(
-    ({
-      name, nameFr
-    }) => {
+    ({ name, nameFr }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -158,10 +126,12 @@ const AdminEditChapters: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          summary: htmlFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            summary: htmlFr,
+          },
+        };
       }
 
       api.chapters
@@ -169,7 +139,7 @@ const AdminEditChapters: FC = () => {
           id,
           title: name,
           summary: html,
-          i18n
+          i18n,
         })
         .then(() => {
           if (!silentSave.current) {
@@ -180,7 +150,7 @@ const AdminEditChapters: FC = () => {
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{t('adminEditChapter.successUpdate', { ns: 'pages' })}</Ap>
                 </Alert>
-              )
+              ),
             });
           } else {
             const date = formatDate(new Date(Date.now()));
@@ -188,7 +158,7 @@ const AdminEditChapters: FC = () => {
               t('autosave', {
                 date: date.date,
                 hour: date.hour,
-                ns: 'components'
+                ns: 'components',
               })
             );
           }
@@ -199,34 +169,25 @@ const AdminEditChapters: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize'),
+              }),
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
     },
-    [
-      introEditor,
-      introFrEditor,
-      api,
-      id,
-      getNewId,
-      createAlert,
-      t,
-      setError
-    ]
+    [introEditor, introFrEditor, api, id, getNewId, createAlert, t, setError]
   );
 
   const onUpdateOrder = useCallback(() => {
-    if (
-      arraysEqual(pagesOrder, initialOrder)
-      || api === undefined
-      || id === undefined
-    ) {
+    if (arraysEqual(pagesOrder, initialOrder) || api === undefined || id === undefined) {
       return;
     }
 
@@ -235,8 +196,8 @@ const AdminEditChapters: FC = () => {
         id,
         order: pagesOrder.map((page, index) => ({
           id: page,
-          position: index
-        }))
+          position: index,
+        })),
       })
       .then(() => {
         const newId = getNewId();
@@ -246,7 +207,7 @@ const AdminEditChapters: FC = () => {
             <Alert key={newId} id={newId} timer={5}>
               <Ap>{t('adminEditChapter.successUpdate', { ns: 'pages' })}</Ap>
             </Alert>
-          )
+          ),
         });
         setInitialOrder(pagesOrder);
       })
@@ -255,25 +216,20 @@ const AdminEditChapters: FC = () => {
         if (data.code === 'CYPU-104') {
           setError('root.serverError', {
             type: 'server',
-            message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize') })
+            message: t(`serverErrors.${data.code}`, {
+              field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize'),
+            }),
           });
         } else {
           setError('root.serverError', {
             type: 'server',
-            message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize') })
+            message: t(`serverErrors.${data.code}`, {
+              field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize'),
+            }),
           });
         }
       });
-  }, [
-    pagesOrder,
-    initialOrder,
-    api,
-    id,
-    getNewId,
-    createAlert,
-    t,
-    setError
-  ]);
+  }, [pagesOrder, initialOrder, api, id, getNewId, createAlert, t, setError]);
 
   const onAskDelete = useCallback(() => {
     if (api === undefined) {
@@ -284,14 +240,12 @@ const AdminEditChapters: FC = () => {
         title: t('adminEditChapter.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditChapter.confirmDeletion.text', {
           ns: 'pages',
-          elt: chapterData?.chapter.title
+          elt: chapterData?.chapter.title,
         }),
-        confirmCta: t('adminEditChapter.confirmDeletion.confirmCta', { ns: 'pages' })
+        confirmCta: t('adminEditChapter.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
       (evtId: string) => {
-        const confirmDelete = (
-          { detail }: { detail: ConfirmMessageDetailData }
-        ): void => {
+        const confirmDelete = ({ detail }: { detail: ConfirmMessageDetailData }): void => {
           if (detail.proceed) {
             api.chapters
               .delete({ id })
@@ -303,7 +257,7 @@ const AdminEditChapters: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditChapter.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  )
+                  ),
                 });
                 void navigate(`/admin/rulebook/${ruleBook?._id}`);
               })
@@ -312,12 +266,16 @@ const AdminEditChapters: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize'),
+                    }),
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.chapterType.${data.sent}`), 'capitalize'),
+                    }),
                   });
                 }
               });
@@ -339,7 +297,7 @@ const AdminEditChapters: FC = () => {
     createAlert,
     navigate,
     ruleBook?._id,
-    setError
+    setError,
   ]);
 
   useEffect(() => {
@@ -348,9 +306,7 @@ const AdminEditChapters: FC = () => {
       api.chapters
         .get({ chapterId: id })
         .then((curatedChapter) => {
-          const {
-            chapter, i18n
-          } = curatedChapter;
+          const { chapter, i18n } = curatedChapter;
           setChapterData(curatedChapter);
           setChapterSummary(chapter.summary);
           setPagesData(chapter.pages);
@@ -366,17 +322,11 @@ const AdminEditChapters: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    id,
-    t
-  ]);
+  }, [api, createAlert, getNewId, id, t]);
 
   // The Autosave
   useEffect(() => {
@@ -398,11 +348,7 @@ const AdminEditChapters: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(chapterData));
-  }, [
-    chapterData,
-    reset,
-    createDefaultData
-  ]);
+  }, [chapterData, reset, createDefaultData]);
 
   return (
     <div className="adminEditChapter">
@@ -427,11 +373,9 @@ const AdminEditChapters: FC = () => {
           noValidate
           className="adminEditChapter__content__left"
         >
-          {errors.root?.serverError.message !== undefined
-            ? (
-                <Aerror>{errors.root.serverError.message}</Aerror>
-              )
-            : null}
+          {errors.root?.serverError.message !== undefined ? (
+            <Aerror>{errors.root.serverError.message}</Aerror>
+          ) : null}
           <div className="adminEditChapter__basics">
             <Input
               control={control}
@@ -492,13 +436,11 @@ const AdminEditChapters: FC = () => {
               onChange={onPageOrder}
             />
             <div className="adminEditRuleBook__block-children__buttons">
-              {!arraysEqual(pagesOrder, initialOrder)
-                ? (
-                    <Button onClick={onUpdateOrder}>
-                      {t('adminEditRuleBook.updateOrder', { ns: 'pages' })}
-                    </Button>
-                  )
-                : null}
+              {!arraysEqual(pagesOrder, initialOrder) ? (
+                <Button onClick={onUpdateOrder}>
+                  {t('adminEditRuleBook.updateOrder', { ns: 'pages' })}
+                </Button>
+              ) : null}
               <LinkButton href={`/admin/page/new?chapterId=${id}&ruleBookId=${ruleBook?._id}`}>
                 {t('adminEditChapter.createPage', { ns: 'pages' })}
               </LinkButton>

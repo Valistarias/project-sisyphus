@@ -5,43 +5,38 @@ import React, {
   useRef,
   useState,
   type FC,
-  type ReactNode
+  type ReactNode,
 } from 'react';
 
 import './systemAlerts.scss';
 
 interface IAlert {
   /** The alert number on the list (id only resets on full refresh) */
-  key: number
+  key: number;
   /** Setting the user */
-  dom: React.JSX.Element
+  dom: React.JSX.Element;
 }
 
 interface ISystemAlertsContext {
   /** Delete an alert with the id "key" */
-  deleteAlert: (req: { key: number }) => void
+  deleteAlert: (req: { key: number }) => void;
   /** Create an alert with the id "key" and the DOM */
-  createAlert: (req: {
-    key: number
-    dom: React.JSX.Element
-  }) => void
+  createAlert: (req: { key: number; dom: React.JSX.Element }) => void;
   /** Get a fresh new ID */
-  getNewId: () => number
+  getNewId: () => number;
 }
 
 interface SystemAlertsProviderProps {
   /** The childrens of the Providers element */
-  children: ReactNode
+  children: ReactNode;
 }
 
-const SystemAlertsContext = React.createContext< ISystemAlertsContext>(
+const SystemAlertsContext = React.createContext<ISystemAlertsContext>(
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- To avoid null values
   {} as ISystemAlertsContext
 );
 
-export const SystemAlertsProvider: FC<SystemAlertsProviderProps> = (
-  { children }
-) => {
+export const SystemAlertsProvider: FC<SystemAlertsProviderProps> = ({ children }) => {
   const [alertsElts, setAlerts] = useState<IAlert[]>([]);
   const idToGive = useRef(0);
 
@@ -52,18 +47,16 @@ export const SystemAlertsProvider: FC<SystemAlertsProviderProps> = (
     return oldId;
   }, []);
 
-  const createAlert = useCallback(({
-    key, dom
-  }) => {
+  const createAlert = useCallback(({ key, dom }) => {
     setAlerts((prev) => {
       const next = [...prev];
 
-      const foundAlertId = next.findIndex(alert => alert.key === key);
+      const foundAlertId = next.findIndex((alert) => alert.key === key);
 
       if (foundAlertId === -1) {
         next.push({
           key,
-          dom
+          dom,
         });
       }
 
@@ -79,7 +72,7 @@ export const SystemAlertsProvider: FC<SystemAlertsProviderProps> = (
     setAlerts((prev) => {
       const next = [...prev];
 
-      const foundAlertId = next.findIndex(alert => alert.key === key);
+      const foundAlertId = next.findIndex((alert) => alert.key === key);
 
       if (foundAlertId !== -1) {
         next.splice(foundAlertId, 1);
@@ -97,22 +90,17 @@ export const SystemAlertsProvider: FC<SystemAlertsProviderProps> = (
     () => ({
       deleteAlert,
       createAlert,
-      getNewId
+      getNewId,
     }),
-    [
-      deleteAlert,
-      createAlert,
-      getNewId
-    ]
+    [deleteAlert, createAlert, getNewId]
   );
 
   return (
     <SystemAlertsContext.Provider value={providerValues}>
-      <div className="alerts">{alertsElts.map(window => window.dom)}</div>
+      <div className="alerts">{alertsElts.map((window) => window.dom)}</div>
       {children}
     </SystemAlertsContext.Provider>
   );
 };
 
-export const useSystemAlerts = (): ISystemAlertsContext =>
-  useContext(SystemAlertsContext);
+export const useSystemAlerts = (): ISystemAlertsContext => useContext(SystemAlertsContext);

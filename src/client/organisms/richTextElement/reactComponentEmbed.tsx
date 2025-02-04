@@ -1,12 +1,7 @@
 import React, { type FC } from 'react';
 
-import {
-  mergeAttributes, Node,
-  type NodeViewProps
-} from '@tiptap/core';
-import {
-  NodeViewWrapper, ReactNodeViewRenderer
-} from '@tiptap/react';
+import { mergeAttributes, Node, type NodeViewProps } from '@tiptap/core';
+import { NodeViewWrapper, ReactNodeViewRenderer } from '@tiptap/react';
 
 import { EmbedNotion } from '../../molecules';
 
@@ -35,5 +30,5 @@ export default Node.create({
 
   addNodeView() {
     return ReactNodeViewRenderer(EmbedReact);
-  }
+  },
 });

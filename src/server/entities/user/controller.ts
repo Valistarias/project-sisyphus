@@ -1,13 +1,9 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 
 import bcrypt from 'bcryptjs';
 
 import db from '../../models';
-import {
-  gemInvalidField, gemNotFound, gemServerError
-} from '../../utils/globalErrorMessage';
+import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
 import type { HydratedIUser } from './model';
 import type { IRole } from '../role/model';
@@ -39,16 +35,16 @@ const update = (req: Request, res: Response): void => {
     newPass = null,
     theme = null,
     charCreationTips = null,
-    scale = null
+    scale = null,
   }: {
-    id?: string
-    username: string | null
-    lang: string | null
-    oldPass: string | null
-    newPass: string | null
-    theme: string | null
-    charCreationTips: boolean | null
-    scale: number | null
+    id?: string;
+    username: string | null;
+    lang: string | null;
+    oldPass: string | null;
+    newPass: string | null;
+    theme: string | null;
+    charCreationTips: boolean | null;
+    scale: number | null;
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('User ID'));
@@ -104,6 +100,4 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-export {
-  findUserById, update
-};
+export { findUserById, update };

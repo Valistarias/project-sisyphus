@@ -1,18 +1,16 @@
-import {
-  Schema, model, type HydratedDocument, type Model, type ObjectId
-} from 'mongoose';
+import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
 import type { INode } from '../../node/model';
 
 interface ICharacterNode {
   /** When the character was created */
-  createdAt: Date
+  createdAt: Date;
   /** The character targeted */
-  character: ObjectId
+  character: ObjectId;
   /** The linked Node */
-  node: ObjectId
+  node: ObjectId;
   /** How many time this node was used */
-  used?: number
+  used?: number;
 }
 
 type HydratedICharacterNode = HydratedDocument<
@@ -22,21 +20,19 @@ type HydratedICharacterNode = HydratedDocument<
 const CharacterNodeSchema = new Schema<ICharacterNode>({
   character: {
     type: Schema.Types.ObjectId,
-    ref: 'Character'
+    ref: 'Character',
   },
   node: {
     type: Schema.Types.ObjectId,
-    ref: 'Node'
+    ref: 'Node',
   },
   used: Number,
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 const CharacterNodeModel = (): Model<ICharacterNode> => model('CharacterNode', CharacterNodeSchema);
 
-export {
-  CharacterNodeModel, type HydratedICharacterNode, type ICharacterNode
-};
+export { CharacterNodeModel, type HydratedICharacterNode, type ICharacterNode };

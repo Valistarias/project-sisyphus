@@ -1,29 +1,21 @@
-import React, {
-  useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useMemo, useRef, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../providers';
 
-import {
-  Ali, Ap, Atitle, Aul
-} from '../atoms';
+import { Ali, Ap, Atitle, Aul } from '../atoms';
 import { PropDisplay } from '../molecules';
-import {
-  Quark, type IQuarkProps
-} from '../quark';
+import { Quark, type IQuarkProps } from '../quark';
 
 import type {
   ICuratedItemModifier,
   ICuratedRarity,
   ICuratedWeapon,
   ICuratedWeaponScope,
-  ICuratedWeaponType
+  ICuratedWeaponType,
 } from '../types';
-import type {
-  ICuratedDamageType, IDamage, IWeapon
-} from '../types/items';
+import type { ICuratedDamageType, IDamage, IWeapon } from '../types/items';
 
 import { classTrim } from '../utils';
 
@@ -31,84 +23,68 @@ import './weaponDisplay.scss';
 
 interface IWeaponDisplay {
   /** The weapon to be displayed */
-  weapon: ICuratedWeapon
+  weapon: ICuratedWeapon;
   /** The display mode */
-  mode?: 'basic' | 'hover'
+  mode?: 'basic' | 'hover';
 }
 
 interface ICompleteDamage extends Omit<IDamage, 'damageType'> {
-  damageType: ICuratedDamageType | undefined
+  damageType: ICuratedDamageType | undefined;
 }
 
 interface ICompleteWeapon
   extends Omit<IWeapon, 'weaponType' | 'weaponScope' | 'itemModifiers' | 'rarity' | 'damages'> {
-  weaponType: ICuratedWeaponType | undefined
-  weaponScope: ICuratedWeaponScope | undefined
-  itemModifiers: ICuratedItemModifier[] | undefined
-  rarity: ICuratedRarity | undefined
-  damages: ICompleteDamage[]
+  weaponType: ICuratedWeaponType | undefined;
+  weaponScope: ICuratedWeaponScope | undefined;
+  itemModifiers: ICuratedItemModifier[] | undefined;
+  rarity: ICuratedRarity | undefined;
+  damages: ICompleteDamage[];
 }
 
 interface ICuratedCompleteWeapon extends Omit<ICuratedWeapon, 'weapon'> {
-  weapon: ICompleteWeapon
+  weapon: ICompleteWeapon;
 }
 
-const WeaponDisplay: FC<IQuarkProps<IWeaponDisplay>> = ({
-  weapon, mode = 'basic'
-}) => {
+const WeaponDisplay: FC<IQuarkProps<IWeaponDisplay>> = ({ weapon, mode = 'basic' }) => {
   const { t } = useTranslation();
-  const {
-    weaponTypes, weaponScopes, itemModifiers, rarities, damageTypes
-  } = useGlobalVars();
+  const { weaponTypes, weaponScopes, itemModifiers, rarities, damageTypes } = useGlobalVars();
 
   const [placement, setPlacement] = useState<string>('left');
   const domBlockContent = useRef<HTMLDivElement>(null);
 
   const curatedWeapon = useMemo<ICuratedCompleteWeapon | null>(() => {
-    if (
-      weaponTypes.length === 0
-      || weaponScopes.length === 0
-    ) {
+    if (weaponTypes.length === 0 || weaponScopes.length === 0) {
       return null;
     }
-    const {
-      weapon: weaponObj, i18n
-    } = weapon;
+    const { weapon: weaponObj, i18n } = weapon;
 
     return {
       weapon: {
         ...weaponObj,
         weaponScope: weaponScopes.find(
-          weaponScope => weaponScope.weaponScope._id === weaponObj.weaponScope
+          (weaponScope) => weaponScope.weaponScope._id === weaponObj.weaponScope
         ),
         weaponType: weaponTypes.find(
-          weaponType => weaponType.weaponType._id === weaponObj.weaponType
+          (weaponType) => weaponType.weaponType._id === weaponObj.weaponType
         ),
-        rarity: rarities.find(rarity => rarity.rarity._id === weaponObj.rarity),
+        rarity: rarities.find((rarity) => rarity.rarity._id === weaponObj.rarity),
         // itemModifiers[0] should never occurs. wath out for this
         itemModifiers: weaponObj.itemModifiers?.map(
-          itemModifierId =>
+          (itemModifierId) =>
             itemModifiers.find(
-              itemModifier => itemModifier.itemModifier._id === itemModifierId
+              (itemModifier) => itemModifier.itemModifier._id === itemModifierId
             ) ?? itemModifiers[0]
         ),
-        damages: weaponObj.damages.map(weaponDamage => ({
+        damages: weaponObj.damages.map((weaponDamage) => ({
           ...weaponDamage,
           damageType: damageTypes.find(
-            damageType => damageType.damageType._id === weaponDamage.damageType
-          )
-        }))
+            (damageType) => damageType.damageType._id === weaponDamage.damageType
+          ),
+        })),
       },
-      i18n
+      i18n,
     };
-  }, [
-    weaponTypes,
-    weaponScopes,
-    weapon,
-    rarities,
-    itemModifiers,
-    damageTypes
-  ]);
+  }, [weaponTypes, weaponScopes, weapon, rarities, itemModifiers, damageTypes]);
 
   const handleMouseEnter = (): void => {
     if (mode === 'hover') {
@@ -149,13 +125,13 @@ const WeaponDisplay: FC<IQuarkProps<IWeaponDisplay>> = ({
         subTitle={scope?.weaponScope.title}
         type={type?.weaponType.title ?? ''}
         itemModifiers={weapon.itemModifiers}
-        mainNode={(
+        mainNode={
           <div className="weapon-display__block__main">
             <Atitle className="weapon-display__block__main__title" level={4}>
               {t('display.cat.damages', { ns: 'components' })}
             </Atitle>
             <Aul noPoints className="weapon-display__block__damages">
-              {weapon.damages.map(damage => (
+              {weapon.damages.map((damage) => (
                 <Ali key={damage._id} className="weapon-display__block__damages__elt">
                   {damage.dices}
                   <span className="weapon-display__block__damages__elt__type">{`(${damage.damageType?.damageType.title})`}</span>
@@ -163,22 +139,20 @@ const WeaponDisplay: FC<IQuarkProps<IWeaponDisplay>> = ({
               ))}
             </Aul>
           </div>
-        )}
+        }
         subNode={
-          weapon.magasine !== undefined
-            ? (
-                <div className="weapon-display__block__sub">
-                  <div className="weapon-display__block__number-block">
-                    <Atitle className="weapon-display__block__number-block__title" level={4}>
-                      {t('display.cat.clip', { ns: 'components' })}
-                    </Atitle>
-                    <Ap className="weapon-display__block__number-block__number">
-                      {`${weapon.magasine} / ${weapon.ammoPerShot ?? 0}`}
-                    </Ap>
-                  </div>
-                </div>
-              )
-            : undefined
+          weapon.magasine !== undefined ? (
+            <div className="weapon-display__block__sub">
+              <div className="weapon-display__block__number-block">
+                <Atitle className="weapon-display__block__number-block__title" level={4}>
+                  {t('display.cat.clip', { ns: 'components' })}
+                </Atitle>
+                <Ap className="weapon-display__block__number-block__number">
+                  {`${weapon.magasine} / ${weapon.ammoPerShot ?? 0}`}
+                </Ap>
+              </div>
+            </div>
+          ) : undefined
         }
       />
     );

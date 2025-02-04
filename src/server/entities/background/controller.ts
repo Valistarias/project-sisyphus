@@ -1,22 +1,14 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 import type { FlattenMaps, HydratedDocument } from 'mongoose';
 
 import db from '../../models';
-import {
-  gemInvalidField, gemNotFound, gemServerError
-} from '../../utils/globalErrorMessage';
+import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { curateCharParamBonusIds } from '../charParamBonus/controller';
 import { curateSkillBonusIds } from '../skillBonus/controller';
 import { curateStatBonusIds } from '../statBonus/controller';
 
 import type { InternationalizationType } from '../../utils/types';
-import type {
-  HydratedICharParamBonus,
-  HydratedISkillBonus,
-  HydratedIStatBonus
-} from '../index';
+import type { HydratedICharParamBonus, HydratedISkillBonus, HydratedIStatBonus } from '../index';
 import type { HydratedIBackground, IBackground } from './model';
 
 import { curateI18n } from '../../utils';
@@ -60,9 +52,7 @@ const findBackgroundById = async (id: string): Promise<HydratedIBackground> =>
   });
 
 const create = (req: Request, res: Response): void => {
-  const {
-    title, summary, i18n = null, skillBonuses, statBonuses, charParamBonuses
-  } = req.body;
+  const { title, summary, i18n = null, skillBonuses, statBonuses, charParamBonuses } = req.body;
   if (title === undefined || summary === undefined) {
     res.status(400).send(gemInvalidField('Background'));
 
@@ -71,7 +61,7 @@ const create = (req: Request, res: Response): void => {
 
   const background = new Background({
     title,
-    summary
+    summary,
   });
 
   if (i18n !== null) {
@@ -82,43 +72,38 @@ const create = (req: Request, res: Response): void => {
     skillBonusesToRemove: [],
     skillBonusesToStay: [],
     skillBonusesToAdd: skillBonuses as Array<{
-      skill: string
-      value: number
-    }>
+      skill: string;
+      value: number;
+    }>,
   })
     .then((skillBonusIds) => {
       if (skillBonusIds.length > 0) {
-        background.skillBonuses = skillBonusIds.map(
-          skillBonusId => String(skillBonusId)
-        );
+        background.skillBonuses = skillBonusIds.map((skillBonusId) => String(skillBonusId));
       }
       curateStatBonusIds({
         statBonusesToRemove: [],
         statBonusesToStay: [],
         statBonusesToAdd: statBonuses as Array<{
-          stat: string
-          value: number
-        }>
+          stat: string;
+          value: number;
+        }>,
       })
         .then((statBonusIds) => {
           if (statBonusIds.length > 0) {
-            background.statBonuses = statBonusIds.map(
-              statBonusId => String(statBonusId)
-            );
+            background.statBonuses = statBonusIds.map((statBonusId) => String(statBonusId));
           }
           curateCharParamBonusIds({
             charParamBonusesToRemove: [],
             charParamBonusesToStay: [],
             charParamBonusesToAdd: charParamBonuses as Array<{
-              charParam: string
-              value: number
-            }>
+              charParam: string;
+              value: number;
+            }>,
           })
             .then((charParamBonusIds) => {
               if (charParamBonusIds.length > 0) {
-                background.charParamBonuses = charParamBonusIds.map(
-                  charParamBonusId =>
-                    String(charParamBonusId)
+                background.charParamBonuses = charParamBonusIds.map((charParamBonusId) =>
+                  String(charParamBonusId)
                 );
               }
               background
@@ -151,24 +136,24 @@ const update = (req: Request, res: Response): void => {
     i18n,
     skillBonuses = null,
     statBonuses = null,
-    charParamBonuses = null
+    charParamBonuses = null,
   }: {
-    id?: string
-    title: string | null
-    summary: string | null
-    i18n: InternationalizationType | null
+    id?: string;
+    title: string | null;
+    summary: string | null;
+    i18n: InternationalizationType | null;
     skillBonuses: Array<{
-      skill: string
-      value: number
-    }> | null
+      skill: string;
+      value: number;
+    }> | null;
     statBonuses: Array<{
-      stat: string
-      value: number
-    }> | null
+      stat: string;
+      value: number;
+    }> | null;
     charParamBonuses: Array<{
-      charParam: string
-      value: number
-    }> | null
+      charParam: string;
+      value: number;
+    }> | null;
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Background ID'));
@@ -188,16 +173,16 @@ const update = (req: Request, res: Response): void => {
       const skillBonusesToStay: string[] = [];
       let skillBonusesToRemove: string[] = [];
       let skillBonusesToAdd: Array<{
-        skill: string
-        value: number
+        skill: string;
+        value: number;
       }> = [];
 
       if (skillBonuses !== null) {
         skillBonusesToRemove = background.skillBonuses.reduce(
           (result: string[], elt: HydratedISkillBonus) => {
             const foundSkillBonus = skillBonuses.find(
-              skillBonus => skillBonus.skill === String(elt.skill)
-                && skillBonus.value === elt.value
+              (skillBonus) =>
+                skillBonus.skill === String(elt.skill) && skillBonus.value === elt.value
             );
             if (foundSkillBonus === undefined) {
               result.push(String(elt._id));
@@ -213,19 +198,19 @@ const update = (req: Request, res: Response): void => {
         skillBonusesToAdd = skillBonuses.reduce(
           (
             result: Array<{
-              skill: string
-              value: number
+              skill: string;
+              value: number;
             }>,
             elt: {
-              skill: string
-              value: number
+              skill: string;
+              value: number;
             }
           ) => {
             const foundSkillBonus = background.skillBonuses.find(
-              skillBonus =>
-                typeof skillBonus !== 'string'
-                && String(skillBonus.skill) === elt.skill
-                && skillBonus.value === elt.value
+              (skillBonus) =>
+                typeof skillBonus !== 'string' &&
+                String(skillBonus.skill) === elt.skill &&
+                skillBonus.value === elt.value
             );
             if (foundSkillBonus === undefined) {
               result.push(elt);
@@ -240,16 +225,15 @@ const update = (req: Request, res: Response): void => {
       const statBonusesToStay: string[] = [];
       let statBonusesToRemove: string[] = [];
       let statBonusesToAdd: Array<{
-        stat: string
-        value: number
+        stat: string;
+        value: number;
       }> = [];
 
       if (statBonuses !== null) {
         statBonusesToRemove = background.statBonuses.reduce(
           (result: string[], elt: HydratedIStatBonus) => {
             const foundStatBonus = statBonuses.find(
-              statBonus => statBonus.stat === String(elt.stat)
-                && statBonus.value === elt.value
+              (statBonus) => statBonus.stat === String(elt.stat) && statBonus.value === elt.value
             );
             if (foundStatBonus === undefined) {
               result.push(String(elt._id));
@@ -265,19 +249,19 @@ const update = (req: Request, res: Response): void => {
         statBonusesToAdd = statBonuses.reduce(
           (
             result: Array<{
-              stat: string
-              value: number
+              stat: string;
+              value: number;
             }>,
             elt: {
-              stat: string
-              value: number
+              stat: string;
+              value: number;
             }
           ) => {
             const foundStatBonus = background.statBonuses.find(
-              statBonus =>
-                typeof statBonus !== 'string'
-                && String(statBonus.stat) === elt.stat
-                && statBonus.value === elt.value
+              (statBonus) =>
+                typeof statBonus !== 'string' &&
+                String(statBonus.stat) === elt.stat &&
+                statBonus.value === elt.value
             );
             if (foundStatBonus === undefined) {
               result.push(elt);
@@ -292,16 +276,16 @@ const update = (req: Request, res: Response): void => {
       const charParamBonusesToStay: string[] = [];
       let charParamBonusesToRemove: string[] = [];
       let charParamBonusesToAdd: Array<{
-        charParam: string
-        value: number
+        charParam: string;
+        value: number;
       }> = [];
       if (charParamBonuses !== null) {
         charParamBonusesToRemove = background.charParamBonuses.reduce(
           (result: string[], elt: HydratedICharParamBonus) => {
             const foundCharParamBonus = charParamBonuses.find(
-              charParamBonus =>
-                charParamBonus.charParam === String(elt.charParam)
-                && charParamBonus.value === elt.value
+              (charParamBonus) =>
+                charParamBonus.charParam === String(elt.charParam) &&
+                charParamBonus.value === elt.value
             );
             if (foundCharParamBonus === undefined) {
               result.push(String(elt._id));
@@ -317,19 +301,19 @@ const update = (req: Request, res: Response): void => {
         charParamBonusesToAdd = charParamBonuses.reduce(
           (
             result: Array<{
-              charParam: string
-              value: number
+              charParam: string;
+              value: number;
             }>,
             elt: {
-              charParam: string
-              value: number
+              charParam: string;
+              value: number;
             }
           ) => {
             const foundCharParamBonus = background.charParamBonuses.find(
-              charParamBonus =>
-                typeof charParamBonus !== 'string'
-                && String(charParamBonus.charParam) === elt.charParam
-                && charParamBonus.value === elt.value
+              (charParamBonus) =>
+                typeof charParamBonus !== 'string' &&
+                String(charParamBonus.charParam) === elt.charParam &&
+                charParamBonus.value === elt.value
             );
             if (foundCharParamBonus === undefined) {
               result.push(elt);
@@ -342,12 +326,11 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(
-          background.i18n !== undefined
-          && background.i18n !== ''
+        const newIntl: InternationalizationType = {
+          ...(background.i18n !== undefined && background.i18n !== ''
             ? JSON.parse(background.i18n)
-            : {}
-        ) };
+            : {}),
+        };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -359,36 +342,32 @@ const update = (req: Request, res: Response): void => {
       curateSkillBonusIds({
         skillBonusesToRemove,
         skillBonusesToAdd,
-        skillBonusesToStay
+        skillBonusesToStay,
       })
         .then((skillBonusIds) => {
           if (skillBonusIds.length > 0) {
-            background.skillBonuses = skillBonusIds.map(
-              skillBonusId => String(skillBonusId)
-            );
+            background.skillBonuses = skillBonusIds.map((skillBonusId) => String(skillBonusId));
           } else if (skillBonuses !== null && skillBonuses.length === 0) {
             background.skillBonuses = [];
           }
           curateStatBonusIds({
             statBonusesToRemove,
             statBonusesToAdd,
-            statBonusesToStay
+            statBonusesToStay,
           })
             .then((statBonusIds) => {
               if (statBonusIds.length > 0) {
-                background.statBonuses = statBonusIds.map(
-                  statBonusId => String(statBonusId));
+                background.statBonuses = statBonusIds.map((statBonusId) => String(statBonusId));
               }
               curateCharParamBonusIds({
                 charParamBonusesToRemove,
                 charParamBonusesToAdd,
-                charParamBonusesToStay
+                charParamBonusesToStay,
               })
                 .then((charParamBonusIds) => {
                   if (charParamBonusIds.length > 0) {
-                    background.charParamBonuses = charParamBonusIds.map(
-                      charParamBonusId =>
-                        String(charParamBonusId)
+                    background.charParamBonuses = charParamBonusIds.map((charParamBonusId) =>
+                      String(charParamBonusId)
                     );
                   }
                   background
@@ -396,7 +375,7 @@ const update = (req: Request, res: Response): void => {
                     .then(() => {
                       res.send({
                         message: 'Background was updated successfully!',
-                        background
+                        background,
                       });
                     })
                     .catch((err: unknown) => {
@@ -437,15 +416,10 @@ const deleteBackgroundById = async (id?: string): Promise<boolean> =>
   });
 
 export type IBackgroundSent = HydratedDocument<
-  Omit<
-    IBackground,
-    | 'skillBonuses'
-    | 'statBonuses'
-    | 'charParamBonuses'
-  > & {
-    skillBonuses: HydratedISkillBonus[]
-    statBonuses: HydratedIStatBonus[]
-    charParamBonuses: HydratedICharParamBonus[]
+  Omit<IBackground, 'skillBonuses' | 'statBonuses' | 'charParamBonuses'> & {
+    skillBonuses: HydratedISkillBonus[];
+    statBonuses: HydratedIStatBonus[];
+    charParamBonuses: HydratedICharParamBonus[];
   }
 >;
 
@@ -454,32 +428,26 @@ const deleteBackground = (req: Request, res: Response): void => {
 
   findBackgroundById(id)
     .then((background: IBackgroundSent) => {
-      const skillBonusesToRemove = background.skillBonuses.map(
-        elt => String(elt._id)
-      );
-      const statBonusesToRemove = background.statBonuses.map(
-        elt => String(elt._id)
-      );
-      const charParamBonusesToRemove = background.charParamBonuses.map(
-        elt => String(elt._id)
-      );
+      const skillBonusesToRemove = background.skillBonuses.map((elt) => String(elt._id));
+      const statBonusesToRemove = background.statBonuses.map((elt) => String(elt._id));
+      const charParamBonusesToRemove = background.charParamBonuses.map((elt) => String(elt._id));
 
       curateSkillBonusIds({
         skillBonusesToRemove,
         skillBonusesToAdd: [],
-        skillBonusesToStay: []
+        skillBonusesToStay: [],
       })
         .then(() => {
           curateStatBonusIds({
             statBonusesToRemove,
             statBonusesToAdd: [],
-            statBonusesToStay: []
+            statBonusesToStay: [],
           })
             .then(() => {
               curateCharParamBonusIds({
                 charParamBonusesToRemove,
                 charParamBonusesToAdd: [],
-                charParamBonusesToStay: []
+                charParamBonusesToStay: [],
               })
                 .then(() => {
                   deleteBackgroundById(id)
@@ -508,12 +476,14 @@ const deleteBackground = (req: Request, res: Response): void => {
 };
 
 interface CuratedIBackground {
-  i18n?: InternationalizationType
-  background: FlattenMaps<Omit<IBackground, 'skillBonuses' | 'statBonuses' | 'charParamBonuses'>> & {
-    skillBonuses: HydratedISkillBonus[]
-    statBonuses: HydratedIStatBonus[]
-    charParamBonuses: HydratedICharParamBonus[]
-  }
+  i18n?: InternationalizationType;
+  background: FlattenMaps<
+    Omit<IBackground, 'skillBonuses' | 'statBonuses' | 'charParamBonuses'>
+  > & {
+    skillBonuses: HydratedISkillBonus[];
+    statBonuses: HydratedIStatBonus[];
+    charParamBonuses: HydratedICharParamBonus[];
+  };
 }
 
 const findSingle = (req: Request, res: Response): void => {
@@ -528,7 +498,7 @@ const findSingle = (req: Request, res: Response): void => {
       const background = backgroundSent.toJSON();
       const sentObj = {
         background,
-        i18n: curateI18n(backgroundSent.i18n)
+        i18n: curateI18n(backgroundSent.i18n),
       };
       res.send(sentObj);
     })
@@ -545,7 +515,7 @@ const findAll = (req: Request, res: Response): void => {
         const background = backgroundSent.toJSON();
         curatedBackgrounds.push({
           background,
-          i18n: curateI18n(backgroundSent.i18n)
+          i18n: curateI18n(backgroundSent.i18n),
         });
       });
 
@@ -554,6 +524,4 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export {
-  create, deleteBackground, findAll, findBackgroundById, findSingle, update
-};
+export { create, deleteBackground, findAll, findBackgroundById, findSingle, update };

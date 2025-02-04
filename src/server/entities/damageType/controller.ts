@@ -1,11 +1,7 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 
 import db from '../../models';
-import {
-  gemInvalidField, gemNotFound, gemServerError
-} from '../../utils/globalErrorMessage';
+import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
 import type { HydratedIDamageType } from './model';
 import type { InternationalizationType } from '../../utils/types';
@@ -45,9 +41,7 @@ const findDamageTypeById = async (id: string): Promise<HydratedIDamageType> =>
   });
 
 const create = (req: Request, res: Response): void => {
-  const {
-    title, summary, i18n = null
-  } = req.body;
+  const { title, summary, i18n = null } = req.body;
   if (title === undefined || summary === undefined) {
     res.status(400).send(gemInvalidField('Damage Type'));
 
@@ -56,7 +50,7 @@ const create = (req: Request, res: Response): void => {
 
   const damageType = new DamageType({
     title,
-    summary
+    summary,
   });
 
   if (i18n !== null) {
@@ -75,12 +69,15 @@ const create = (req: Request, res: Response): void => {
 
 const update = (req: Request, res: Response): void => {
   const {
-    id, title = null, summary = null, i18n
+    id,
+    title = null,
+    summary = null,
+    i18n,
   }: {
-    id?: string
-    title: string | null
-    summary: string | null
-    i18n: InternationalizationType | null
+    id?: string;
+    title: string | null;
+    summary: string | null;
+    i18n: InternationalizationType | null;
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Damage Type ID'));
@@ -97,12 +94,11 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(
-          damageType.i18n !== undefined
-          && damageType.i18n !== ''
+        const newIntl: InternationalizationType = {
+          ...(damageType.i18n !== undefined && damageType.i18n !== ''
             ? JSON.parse(damageType.i18n)
-            : {}
-        ) };
+            : {}),
+        };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -115,7 +111,8 @@ const update = (req: Request, res: Response): void => {
         .save()
         .then(() => {
           res.send({
-            message: 'Damage Type was updated successfully!', damageType
+            message: 'Damage Type was updated successfully!',
+            damageType,
           });
         })
         .catch((err: unknown) => {
@@ -155,8 +152,8 @@ const deleteDamageType = (req: Request, res: Response): void => {
 };
 
 interface CuratedIDamageType {
-  i18n?: InternationalizationType
-  damageType: HydratedIDamageType
+  i18n?: InternationalizationType;
+  damageType: HydratedIDamageType;
 }
 
 const findSingle = (req: Request, res: Response): void => {
@@ -170,7 +167,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((damageType) => {
       const sentObj = {
         damageType,
-        i18n: curateI18n(damageType.i18n)
+        i18n: curateI18n(damageType.i18n),
       };
       res.send(sentObj);
     })
@@ -187,7 +184,7 @@ const findAll = (req: Request, res: Response): void => {
       damageTypes.forEach((damageType) => {
         curatedDamageTypes.push({
           damageType,
-          i18n: curateI18n(damageType.i18n)
+          i18n: curateI18n(damageType.i18n),
         });
       });
 
@@ -196,11 +193,4 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export {
-  create,
-  deleteDamageType,
-  findAll,
-  findDamageTypeById,
-  findSingle,
-  update
-};
+export { create, deleteDamageType, findAll, findDamageTypeById, findSingle, update };

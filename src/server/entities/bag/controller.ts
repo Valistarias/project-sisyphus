@@ -1,12 +1,8 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 import type { FlattenMaps } from 'mongoose';
 
 import db from '../../models';
-import {
-  gemInvalidField, gemNotFound, gemServerError
-} from '../../utils/globalErrorMessage';
+import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
 import type { HydratedIBag, IBag } from './model';
 import type { InternationalizationType } from '../../utils/types';
@@ -16,7 +12,7 @@ import { curateI18n } from '../../utils';
 const { Bag } = db;
 
 interface findAllPayload {
-  starterKit?: string | Record<string, string[]>
+  starterKit?: string | Record<string, string[]>;
 }
 
 const findBags = async (options?: findAllPayload): Promise<HydratedIBag[]> =>
@@ -60,16 +56,16 @@ const create = (req: Request, res: Response): void => {
     itemType,
     itemModifiers,
     cost,
-    size
+    size,
   } = req.body;
   if (
-    title === undefined
-    || summary === undefined
-    || storableItemTypes === undefined
-    || rarity === undefined
-    || size === undefined
-    || itemType === undefined
-    || cost === undefined
+    title === undefined ||
+    summary === undefined ||
+    storableItemTypes === undefined ||
+    rarity === undefined ||
+    size === undefined ||
+    itemType === undefined ||
+    cost === undefined
   ) {
     res.status(400).send(gemInvalidField('Bag'));
 
@@ -85,7 +81,7 @@ const create = (req: Request, res: Response): void => {
     size,
     itemType,
     storableItemTypes,
-    itemModifiers
+    itemModifiers,
   });
 
   if (i18n !== null) {
@@ -114,19 +110,19 @@ const update = (req: Request, res: Response): void => {
     itemModifiers = null,
     cost = null,
     itemType = null,
-    size = null
+    size = null,
   }: {
-    id?: string
-    title: string | null
-    summary: string | null
-    i18n: InternationalizationType | null
-    storableItemTypes: string[] | null
-    rarity: string | null
-    itemType: string | null
-    starterKit?: 'always' | 'never' | 'option' | null
-    cost: number | null
-    itemModifiers?: string[] | null
-    size: number | null
+    id?: string;
+    title: string | null;
+    summary: string | null;
+    i18n: InternationalizationType | null;
+    storableItemTypes: string[] | null;
+    rarity: string | null;
+    itemType: string | null;
+    starterKit?: 'always' | 'never' | 'option' | null;
+    cost: number | null;
+    itemModifiers?: string[] | null;
+    size: number | null;
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Bag ID'));
@@ -165,11 +161,9 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(
-          bag.i18n !== undefined && bag.i18n !== ''
-            ? JSON.parse(bag.i18n)
-            : {}
-        ) };
+        const newIntl: InternationalizationType = {
+          ...(bag.i18n !== undefined && bag.i18n !== '' ? JSON.parse(bag.i18n) : {}),
+        };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -182,7 +176,8 @@ const update = (req: Request, res: Response): void => {
         .save()
         .then(() => {
           res.send({
-            message: 'Bag was updated successfully!', bag
+            message: 'Bag was updated successfully!',
+            bag,
           });
         })
         .catch((err: unknown) => {
@@ -229,8 +224,8 @@ const deleteBag = (req: Request, res: Response): void => {
 };
 
 export interface CuratedIBag {
-  i18n?: InternationalizationType
-  bag: FlattenMaps<IBag<string>>
+  i18n?: InternationalizationType;
+  bag: FlattenMaps<IBag<string>>;
 }
 
 const findSingle = (req: Request, res: Response): void => {
@@ -245,7 +240,7 @@ const findSingle = (req: Request, res: Response): void => {
       const bag = bagSent.toJSON();
       const sentObj = {
         bag,
-        i18n: curateI18n(bagSent.i18n)
+        i18n: curateI18n(bagSent.i18n),
       };
       res.send(sentObj);
     })
@@ -262,7 +257,7 @@ const findAll = (req: Request, res: Response): void => {
         const bag = bagSent.toJSON();
         curatedBags.push({
           bag,
-          i18n: curateI18n(bagSent.i18n)
+          i18n: curateI18n(bagSent.i18n),
         });
       });
 
@@ -279,7 +274,7 @@ const findAllStarter = (req: Request, res: Response): void => {
         const bag = bagSent.toJSON();
         curatedBags.push({
           bag,
-          i18n: curateI18n(bagSent.i18n)
+          i18n: curateI18n(bagSent.i18n),
         });
       });
 
@@ -288,6 +283,4 @@ const findAllStarter = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export {
-  create, deleteBag, findAll, findAllStarter, findBagById, findSingle, update
-};
+export { create, deleteBag, findAll, findAllStarter, findBagById, findSingle, update };

@@ -1,32 +1,20 @@
-import type {
-  Request, Response
-} from 'express';
-import type {
-  HydratedDocument, ObjectId
-} from 'mongoose';
+import type { Request, Response } from 'express';
+import type { HydratedDocument, ObjectId } from 'mongoose';
 
 import { v4 as uuidv4 } from 'uuid';
 
-import {
-  getUserFromToken, type IVerifyTokenRequest
-} from '../../middlewares/authJwt';
+import { getUserFromToken, type IVerifyTokenRequest } from '../../middlewares/authJwt';
 import db from '../../models';
-import {
-  gemInvalidField, gemNotFound, gemServerError
-} from '../../utils/globalErrorMessage';
+import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { deleteCampaignEventByCampaignId } from '../campaignEvent/controller';
 
 import type { ICharacter } from '../character';
-import type {
-  HydratedICompleteCampaign, HydratedISimpleCampaign
-} from './model';
+import type { HydratedICompleteCampaign, HydratedISimpleCampaign } from './model';
 import type { IUser } from '../user/model';
 
 const { Campaign } = db;
 
-const findCampaigns = async (
-  req: Request
-): Promise<HydratedICompleteCampaign[]> =>
+const findCampaigns = async (req: Request): Promise<HydratedICompleteCampaign[]> =>
   await new Promise((resolve, reject) => {
     getUserFromToken(req as IVerifyTokenRequest)
       .then((user) => {
@@ -41,7 +29,7 @@ const findCampaigns = async (
           .populate<{ players: Array<HydratedDocument<IUser>> }>('players')
           .populate<{ characters: ICharacter[] }>({
             path: 'characters',
-            select: '_id name campaign'
+            select: '_id name campaign',
           })
           .then((res: HydratedICompleteCampaign[]) => {
             resolve(res);
@@ -55,9 +43,7 @@ const findCampaigns = async (
       });
   });
 
-const findCampaignById = async (
-  id: string, req: Request
-): Promise<HydratedICompleteCampaign> =>
+const findCampaignById = async (id: string, req: Request): Promise<HydratedICompleteCampaign> =>
   await new Promise((resolve, reject) => {
     getUserFromToken(req as IVerifyTokenRequest)
       .then((user) => {
@@ -72,7 +58,7 @@ const findCampaignById = async (
           .populate<{ players: Array<HydratedDocument<IUser>> }>('players')
           .populate<{ characters: ICharacter[] }>({
             path: 'characters',
-            select: '_id name campaign'
+            select: '_id name campaign',
           })
           .then((res?: HydratedICompleteCampaign | null) => {
             if (res === undefined || res === null) {
@@ -90,9 +76,7 @@ const findCampaignById = async (
       });
   });
 
-const findCampaignByCode = async (
-  id: string, req: Request
-): Promise<HydratedISimpleCampaign> =>
+const findCampaignByCode = async (id: string, req: Request): Promise<HydratedISimpleCampaign> =>
   await new Promise((resolve, reject) => {
     getUserFromToken(req as IVerifyTokenRequest)
       .then((user) => {
@@ -136,14 +120,15 @@ const create = (req: Request, res: Response): void => {
       const campaign = new Campaign({
         name,
         owner: user._id,
-        code: uuidv4()
+        code: uuidv4(),
       });
 
       campaign
         .save()
         .then(() => {
           res.send({
-            message: 'Campaign was created successfully!', campaign
+            message: 'Campaign was created successfully!',
+            campaign,
           });
         })
         .catch((err: unknown) => {
@@ -154,9 +139,7 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const {
-    id, name = null
-  } = req.body;
+  const { id, name = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Campaign ID'));
 
@@ -171,7 +154,8 @@ const update = (req: Request, res: Response): void => {
         .save()
         .then(() => {
           res.send({
-            message: 'Campaign was updated successfully!', campaign
+            message: 'Campaign was updated successfully!',
+            campaign,
           });
         })
         .catch((err: unknown) => {
@@ -192,16 +176,14 @@ const generateCode = (req: Request, res: Response): void => {
     .then((user) => {
       findCampaignById(campaignId as string, req)
         .then((campaign) => {
-          if (
-            user !== null
-            && String(campaign.owner._id) === String(user._id)
-          ) {
+          if (user !== null && String(campaign.owner._id) === String(user._id)) {
             campaign.code = uuidv4();
             campaign
               .save()
               .then(() => {
                 res.send({
-                  message: 'Campaign code was changed successfully!', campaign
+                  message: 'Campaign code was changed successfully!',
+                  campaign,
                 });
               })
               .catch((err: unknown) => {
@@ -225,23 +207,19 @@ const register = (req: Request, res: Response): void => {
   }
 
   interface ICampaignPayload extends Omit<HydratedISimpleCampaign, 'players'> {
-    players: string[] | ObjectId[]
+    players: string[] | ObjectId[];
   }
 
   getUserFromToken(req as IVerifyTokenRequest)
     .then((user) => {
       findCampaignByCode(campaignCode as string, req)
         .then((campaign: ICampaignPayload) => {
-          const foundPlayer
-            = user !== null
-              ? Boolean(
-                  campaign.players.find(
-                    player => String(player) === String(user._id)
-                  )
-                )
+          const foundPlayer =
+            user !== null
+              ? Boolean(campaign.players.find((player) => String(player) === String(user._id)))
               : false;
           if (user !== null && !foundPlayer) {
-            const newArray = campaign.players.map(player => String(player));
+            const newArray = campaign.players.map((player) => String(player));
             newArray.push(String(user._id));
             campaign.players = newArray;
             campaign
@@ -249,7 +227,7 @@ const register = (req: Request, res: Response): void => {
               .then(() => {
                 res.send({
                   message: 'Campaign was updated successfully!',
-                  campaignId: campaign._id
+                  campaignId: campaign._id,
                 });
               })
               .catch((err: unknown) => {
@@ -273,20 +251,16 @@ const unregister = (req: Request, res: Response): void => {
   }
 
   interface ICampaignPayload extends Omit<HydratedICompleteCampaign, 'players'> {
-    players: string[] | IUser[]
+    players: string[] | IUser[];
   }
 
   getUserFromToken(req as IVerifyTokenRequest)
     .then((user) => {
       findCampaignById(campaignId as string, req)
         .then((campaign: ICampaignPayload) => {
-          const foundPlayer
-            = user !== null
-              ? Boolean(
-                  campaign.players.find(
-                    player => String(player) === String(user._id)
-                  )
-                )
+          const foundPlayer =
+            user !== null
+              ? Boolean(campaign.players.find((player) => String(player) === String(user._id)))
               : false;
           if (user !== null && foundPlayer) {
             const newArray: string[] = [];
@@ -344,8 +318,8 @@ const findSingle = (req: Request, res: Response): void => {
     return;
   }
   findCampaignById(campaignId, req)
-    .then(campaign => res.send(campaign))
-    .catch(err => res.status(404).send(err));
+    .then((campaign) => res.send(campaign))
+    .catch((err) => res.status(404).send(err));
 };
 
 const findByCode = (req: Request, res: Response): void => {
@@ -356,13 +330,13 @@ const findByCode = (req: Request, res: Response): void => {
     return;
   }
   findCampaignByCode(campaignCode, req)
-    .then(campaign => res.send(campaign))
-    .catch(err => res.status(404).send(err));
+    .then((campaign) => res.send(campaign))
+    .catch((err) => res.status(404).send(err));
 };
 
 const findAll = (req: Request, res: Response): void => {
   findCampaigns(req)
-    .then(campaigns => res.send(campaigns))
+    .then((campaigns) => res.send(campaigns))
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
@@ -375,5 +349,5 @@ export {
   generateCode,
   register,
   unregister,
-  update
+  update,
 };

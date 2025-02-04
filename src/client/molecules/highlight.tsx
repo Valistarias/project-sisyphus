@@ -1,18 +1,12 @@
-import React, {
-  useCallback, useMemo, useRef, useState, type FC, type ReactNode
-} from 'react';
+import React, { useCallback, useMemo, useRef, useState, type FC, type ReactNode } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import { useTranslation } from 'react-i18next';
 
-import {
-  useApi, useSystemAlerts
-} from '../providers';
+import { useApi, useSystemAlerts } from '../providers';
 
 import { Ap } from '../atoms';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../organisms';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../organisms';
 
 import type Entity from '../api/entities/entity';
 import type { ErrorResponseType, INotion } from '../types';
@@ -23,29 +17,24 @@ import './highlight.scss';
 
 interface IHighlight {
   /** The id of the selected element */
-  id: string
+  id: string;
   /** The type of element to highlight */
-  type: string
+  type: string;
   /** The children element to be displayed */
-  children: ReactNode
+  children: ReactNode;
 }
 
-const Highlight: FC<IHighlight> = ({
-  id, type, children
-}) => {
+const Highlight: FC<IHighlight> = ({ id, type, children }) => {
   const { api } = useApi();
   const { t } = useTranslation();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
 
-  const [highlightContent, setHighlightContent]
-  = useState<Record<string, unknown> | null>(null);
+  const [highlightContent, setHighlightContent] = useState<Record<string, unknown> | null>(null);
   const [isHighlightShown, setIsHighlightShown] = useState<boolean>(false);
 
   const textEditor = useEditor({
     extensions: completeRichTextElementExtentions,
-    editable: false
+    editable: false,
   });
 
   const loading = useMemo(() => <Ap>Loading</Ap>, []);
@@ -87,18 +76,11 @@ const Highlight: FC<IHighlight> = ({
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    sentOptions,
-    t,
-    type
-  ]);
+  }, [api, createAlert, getNewId, sentOptions, t, type]);
 
   const onOpenHighlight = useCallback(() => {
     if (!calledApi.current) {
@@ -122,23 +104,20 @@ const Highlight: FC<IHighlight> = ({
       <span className="highlight__text">{children}</span>
       <span
         className="highlight__info"
-        style={isHighlightShown
-          ? {
-              opacity: '1', pointerEvents: 'all'
-            }
-          : undefined}
+        style={
+          isHighlightShown
+            ? {
+                opacity: '1',
+                pointerEvents: 'all',
+              }
+            : undefined
+        }
       >
-        {contentHighlight === null
-          ? (
-              loading
-            )
-          : (
-              <RichTextElement
-                editor={textEditor}
-                rawStringContent={contentHighlight}
-                readOnly
-              />
-            )}
+        {contentHighlight === null ? (
+          loading
+        ) : (
+          <RichTextElement editor={textEditor} rawStringContent={contentHighlight} readOnly />
+        )}
       </span>
     </span>
   );

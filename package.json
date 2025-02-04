@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "build": "vite build",
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
-    "lint:fix": "eslint --fix . --report-unused-disable-directives --max-warnings 0"
+    "lint:fix": "prettier . --write & eslint --fix . --report-unused-disable-directives --max-warnings 0"
   },
   "repository": {
     "type": "git",
@@ -74,12 +74,14 @@
     "@vitejs/plugin-react": "^4.3.4",
     "eslint": "^9.18.0",
     "eslint-config-love": "^116.0.0",
+    "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-react": "^7.37.3",
     "eslint-plugin-react-hooks": "^5.1.0",
     "globals": "^15.14.0",
     "jiti": "^2.4.2",
     "nodemon": "^3.1.9",
+    "prettier": "^3.4.2",
     "sass": "^1.83.1",
     "stylelint": "^16.13.0",
     "stylelint-config-sass-guidelines": "^12.1.0",

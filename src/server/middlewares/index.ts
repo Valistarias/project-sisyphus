@@ -4,5 +4,5 @@ export {
   adminNeeded,
   generateVerificationMailToken,
   isAdmin,
-  type IVerifyTokenRequest
+  type IVerifyTokenRequest,
 } from './authJwt';

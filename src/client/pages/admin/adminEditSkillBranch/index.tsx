@@ -1,30 +1,16 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  useNavigate, useParams
-} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  useApi, useConfirmMessage, useSystemAlerts
-} from '../../../providers';
+import { useApi, useConfirmMessage, useSystemAlerts } from '../../../providers';
 
-import {
-  Aa, Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aa, Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type { ErrorResponseType, ICuratedSkillBranch } from '../../../types';
@@ -33,21 +19,16 @@ import type { InternationalizationType } from '../../../types/global';
 import './adminEditSkillBranch.scss';
 
 interface FormValues {
-  name: string
-  nameFr: string
+  name: string;
+  nameFr: string;
 }
 
 const AdminEditSkillBranch: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
-  const {
-    setConfirmContent,
-    removeConfirmEventListener,
-    addConfirmEventListener
-  } = useConfirmMessage();
+  const { createAlert, getNewId } = useSystemAlerts();
+  const { setConfirmContent, removeConfirmEventListener, addConfirmEventListener } =
+    useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -55,54 +36,46 @@ const AdminEditSkillBranch: FC = () => {
   const saveTimer = useRef<NodeJS.Timeout | null>(null);
   const silentSave = useRef(false);
 
-  const [skillBranchData, seSkillBranchData]
-    = useState<ICuratedSkillBranch | null>(null);
+  const [skillBranchData, seSkillBranchData] = useState<ICuratedSkillBranch | null>(null);
 
   const limitedMode = skillBranchData?.skillBranch.title === '_general';
 
   const [skillBranchText, seSkillBranchText] = useState('');
   const [skillBranchTextFr, seSkillBranchTextFr] = useState('');
 
-  const textEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const textFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const createDefaultData = useCallback(
-    (skillBranchData: ICuratedSkillBranch | null) => {
-      if (skillBranchData == null) {
-        return {};
-      }
-      const {
-        skillBranch, i18n
-      } = skillBranchData;
-      const defaultData: Partial<FormValues> = {};
-      defaultData.name = skillBranch.title;
-      if (i18n.fr !== undefined) {
-        defaultData.nameFr = i18n.fr.title ?? '';
-      }
+  const createDefaultData = useCallback((skillBranchData: ICuratedSkillBranch | null) => {
+    if (skillBranchData == null) {
+      return {};
+    }
+    const { skillBranch, i18n } = skillBranchData;
+    const defaultData: Partial<FormValues> = {};
+    defaultData.name = skillBranch.title;
+    if (i18n.fr !== undefined) {
+      defaultData.nameFr = i18n.fr.title ?? '';
+    }
 
-      return defaultData;
-    }, []);
+    return defaultData;
+  }, []);
 
   const {
     handleSubmit,
     setError,
     control,
     formState: { errors },
-    reset
-  } = useForm({ defaultValues: useMemo(
-    () => createDefaultData(skillBranchData),
-    [createDefaultData, skillBranchData]
-  ) });
+    reset,
+  } = useForm({
+    defaultValues: useMemo(
+      () => createDefaultData(skillBranchData),
+      [createDefaultData, skillBranchData]
+    ),
+  });
 
   const onSaveSkillBranch: SubmitHandler<FormValues> = useCallback(
-    ({
-      name, nameFr
-    }) => {
+    ({ name, nameFr }) => {
       if (textEditor === null || textFrEditor === null || api === undefined) {
         return;
       }
@@ -112,10 +85,12 @@ const AdminEditSkillBranch: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          text: htmlTextFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            text: htmlTextFr,
+          },
+        };
       }
 
       api.skillBranches
@@ -123,7 +98,7 @@ const AdminEditSkillBranch: FC = () => {
           id,
           title: name,
           summary: htmlText,
-          i18n
+          i18n,
         })
         .then((skillBranch) => {
           const newId = getNewId();
@@ -133,7 +108,7 @@ const AdminEditSkillBranch: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditSkillBranch.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
         })
         .catch(({ response }: ErrorResponseType) => {
@@ -141,26 +116,21 @@ const AdminEditSkillBranch: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skillBranchType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.skillBranchType.${data.sent}`), 'capitalize'),
+              }),
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skillBranchType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.skillBranchType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
     },
-    [
-      textEditor,
-      textFrEditor,
-      api,
-      id,
-      getNewId,
-      createAlert,
-      t,
-      setError
-    ]
+    [textEditor, textFrEditor, api, id, getNewId, createAlert, t, setError]
   );
 
   const onAskDelete = useCallback(() => {
@@ -172,18 +142,16 @@ const AdminEditSkillBranch: FC = () => {
         title: t('adminEditSkillBranch.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditSkillBranch.confirmDeletion.text', {
           ns: 'pages',
-          elt: skillBranchData?.skillBranch.title
+          elt: skillBranchData?.skillBranch.title,
         }),
-        confirmCta: t('adminEditSkillBranch.confirmDeletion.confirmCta', { ns: 'pages' })
+        confirmCta: t('adminEditSkillBranch.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
       (evtId: string) => {
-        const skillId
-          = typeof skillBranchData?.skillBranch.skill === 'string'
+        const skillId =
+          typeof skillBranchData?.skillBranch.skill === 'string'
             ? skillBranchData.skillBranch.skill
             : skillBranchData?.skillBranch.skill._id;
-        const confirmDelete = (
-          { detail }: { detail: ConfirmMessageDetailData }
-        ): void => {
+        const confirmDelete = ({ detail }: { detail: ConfirmMessageDetailData }): void => {
           if (detail.proceed) {
             api.skillBranches
               .delete({ id })
@@ -195,7 +163,7 @@ const AdminEditSkillBranch: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditSkillBranch.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  )
+                  ),
                 });
                 void navigate(`/admin/skill/${skillId}`);
               })
@@ -204,12 +172,16 @@ const AdminEditSkillBranch: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skillBranch.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize'),
+                    }),
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skillBranch.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize'),
+                    }),
                   });
                 }
               });
@@ -230,7 +202,7 @@ const AdminEditSkillBranch: FC = () => {
     getNewId,
     createAlert,
     navigate,
-    setError
+    setError,
   ]);
 
   useEffect(() => {
@@ -239,9 +211,7 @@ const AdminEditSkillBranch: FC = () => {
       api.skillBranches
         .get({ skillBranchId: id })
         .then((curatedSkillBranch) => {
-          const {
-            skillBranch, i18n
-          } = curatedSkillBranch;
+          const { skillBranch, i18n } = curatedSkillBranch;
           seSkillBranchData(curatedSkillBranch);
           seSkillBranchText(skillBranch.summary);
           if (i18n.fr !== undefined) {
@@ -256,17 +226,11 @@ const AdminEditSkillBranch: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    id,
-    t
-  ]);
+  }, [api, createAlert, getNewId, id, t]);
 
   // The Autosave
   useEffect(() => {
@@ -288,11 +252,7 @@ const AdminEditSkillBranch: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(skillBranchData));
-  }, [
-    skillBranchData,
-    reset,
-    createDefaultData
-  ]);
+  }, [skillBranchData, reset, createDefaultData]);
 
   return (
     <div className="adminEditSkillBranch">
@@ -321,11 +281,9 @@ const AdminEditSkillBranch: FC = () => {
             </Aa>
           </Ap>
         </div>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror className="adminEditSkillBranch__error">{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror className="adminEditSkillBranch__error">{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminEditSkillBranch__basics">
           <Input
             control={control}

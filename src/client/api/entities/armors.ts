@@ -5,11 +5,10 @@ import Entity from './entity';
 import type { IArmor, ICuratedArmor } from '../../types';
 
 interface IArmorPayload {
-  armorId: string
+  armorId: string;
 }
 
-export default class Armors
-  extends Entity<IArmorPayload, IArmor, ICuratedArmor> {
+export default class Armors extends Entity<IArmorPayload, IArmor, ICuratedArmor> {
   getStarters: () => Promise<ICuratedArmor[]>;
 
   constructor() {

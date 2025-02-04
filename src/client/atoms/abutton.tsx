@@ -1,11 +1,7 @@
 import React from 'react';
-import type {
-  FC, MouseEvent, ReactNode
-} from 'react';
+import type { FC, MouseEvent, ReactNode } from 'react';
 
-import {
-  Quark, type IQuarkProps
-} from '../quark';
+import { Quark, type IQuarkProps } from '../quark';
 
 import { classTrim } from '../utils';
 
@@ -13,15 +9,15 @@ import './abutton.scss';
 
 interface IAButton {
   /** When the button is clicked */
-  onClick?: (e: MouseEvent<HTMLElement>) => void
+  onClick?: (e: MouseEvent<HTMLElement>) => void;
   /** The childrens of the button element */
-  children?: ReactNode
+  children?: ReactNode;
   /** The type of the Button element */
-  type?: 'button' | 'submit'
+  type?: 'button' | 'submit';
   /** Is the button disabled ? */
-  disabled?: boolean
+  disabled?: boolean;
   /** When the button is right clicked */
-  onContextMenu?: (e: MouseEvent<HTMLElement>) => void
+  onContextMenu?: (e: MouseEvent<HTMLElement>) => void;
 }
 
 const Abutton: FC<IQuarkProps<IAButton>> = ({
@@ -32,7 +28,7 @@ const Abutton: FC<IQuarkProps<IAButton>> = ({
   disabled,
   onContextMenu,
   onMouseEnter,
-  onMouseLeave
+  onMouseLeave,
 }) => (
   <Quark
     quarkType="button"
@@ -51,6 +47,4 @@ const Abutton: FC<IQuarkProps<IAButton>> = ({
   </Quark>
 );
 
-export {
-  Abutton, type IAButton
-};
+export { Abutton, type IAButton };

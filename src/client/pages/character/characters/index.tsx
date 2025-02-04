@@ -5,20 +5,16 @@ import React, {
   useRef,
   useState,
   type FC,
-  type ReactNode
+  type ReactNode,
 } from 'react';
 
 import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
 
-import {
-  useApi, useSystemAlerts
-} from '../../../providers';
+import { useApi, useSystemAlerts } from '../../../providers';
 
 import holoBackground from '../../../assets/imgs/tvbg2.gif';
-import {
-  Ali, Ap, Atitle, Aul, Avideo
-} from '../../../atoms';
+import { Ali, Ap, Atitle, Aul, Avideo } from '../../../atoms';
 import { LinkButton } from '../../../molecules';
 import { Alert } from '../../../organisms';
 
@@ -31,9 +27,7 @@ import './characters.scss';
 const Characters: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
   // const { cyberFrames } = useGlobalVars();
 
   const [characters, setCharacters] = useState<ICharacter[]>([]);
@@ -58,16 +52,11 @@ const Characters: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    t
-  ]);
+  }, [api, createAlert, getNewId, t]);
 
   const characterList = useMemo(() => {
     if (characters.length === 0) {
@@ -81,13 +70,8 @@ const Characters: FC = () => {
       // TODO: add all parameters to this
       const { isReady } = character;
       let displayedName: string | undefined;
-      if (
-        character.nickName !== undefined
-        || character.firstName !== undefined
-      ) {
-        displayedName
-        = character.nickName
-          ?? `${character.firstName} ${character.lastName}`;
+      if (character.nickName !== undefined || character.firstName !== undefined) {
+        displayedName = character.nickName ?? `${character.firstName} ${character.lastName}`;
       }
       let status: string;
       if (!isReady) {
@@ -107,42 +91,38 @@ const Characters: FC = () => {
             style={{ backgroundImage: `url(${holoBackground})` }}
           >
             <Avideo className="characters__character-list__elt__img__animatedbg" video="logo" />
-            {isReady
-              ? (
-                  <LinkButton
-                    theme="text-only"
-                    className="characters__character-list__elt__img__edit"
-                    href={`/character/${character._id}/edit`}
-                  >
-                    {t('characters.editCharacter', { ns: 'pages' })}
-                  </LinkButton>
-                )
-              : null}
+            {isReady ? (
+              <LinkButton
+                theme="text-only"
+                className="characters__character-list__elt__img__edit"
+                href={`/character/${character._id}/edit`}
+              >
+                {t('characters.editCharacter', { ns: 'pages' })}
+              </LinkButton>
+            ) : null}
           </div>
           <div className="characters__character-list__elt__title">
             <Atitle className="characters__character-list__elt__title__text" level={3}>
               {displayedName ?? t(`terms.character.unknown`)}
             </Atitle>
             <Ap className="characters__character-list__elt__title__status">{status}</Ap>
-            {character.campaign !== undefined
-              ? (
-                  <Ap className="characters__character-list__elt__title__campaign">
-                    {`${i18next.format(t(`terms.campaign.title`), 'capitalize')}: ${character.campaign.name}`}
-                  </Ap>
-                )
-              : null}
+            {character.campaign !== undefined ? (
+              <Ap className="characters__character-list__elt__title__campaign">
+                {`${i18next.format(t(`terms.campaign.title`), 'capitalize')}: ${character.campaign.name}`}
+              </Ap>
+            ) : null}
           </div>
           <div className="characters__character-list__elt__buttons">
             <LinkButton
               className="characters__character-list__elt__buttons__main"
               theme="afterglow"
               href={
-                isReady
-                  ? `/character/${character._id}`
-                  : `/character/${character._id}/continue`
+                isReady ? `/character/${character._id}` : `/character/${character._id}/continue`
               }
             >
-              {t(isReady ? 'characters.openCharacter' : 'characters.continueCharacter', { ns: 'pages' })}
+              {t(isReady ? 'characters.openCharacter' : 'characters.continueCharacter', {
+                ns: 'pages',
+              })}
             </LinkButton>
           </div>
         </Ali>
@@ -161,13 +141,7 @@ const Characters: FC = () => {
       calledApi.current = true;
       characterReload();
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    characterReload,
-    t
-  ]);
+  }, [api, createAlert, getNewId, characterReload, t]);
 
   return (
     <div className="characters">

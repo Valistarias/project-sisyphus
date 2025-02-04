@@ -1,11 +1,7 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 
 import db from '../../models';
-import {
-  gemInvalidField, gemNotFound, gemServerError
-} from '../../utils/globalErrorMessage';
+import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
 import type { HydratedIArmorType } from './model';
 import type { InternationalizationType } from '../../utils/types';
@@ -45,9 +41,7 @@ const findArmorTypeById = async (id: string): Promise<HydratedIArmorType> =>
   });
 
 const create = (req: Request, res: Response): void => {
-  const {
-    title, summary, i18n = null
-  } = req.body;
+  const { title, summary, i18n = null } = req.body;
   if (title === undefined || summary === undefined) {
     res.status(400).send(gemInvalidField('Armor Type'));
 
@@ -56,7 +50,7 @@ const create = (req: Request, res: Response): void => {
 
   const armorType = new ArmorType({
     title,
-    summary
+    summary,
   });
 
   if (i18n !== null) {
@@ -75,12 +69,15 @@ const create = (req: Request, res: Response): void => {
 
 const update = (req: Request, res: Response): void => {
   const {
-    id, title = null, summary = null, i18n
+    id,
+    title = null,
+    summary = null,
+    i18n,
   }: {
-    id?: string
-    title: string | null
-    summary: string | null
-    i18n: InternationalizationType | null
+    id?: string;
+    title: string | null;
+    summary: string | null;
+    i18n: InternationalizationType | null;
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Armor Type ID'));
@@ -97,10 +94,11 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(
-          armorType.i18n !== undefined && armorType.i18n !== ''
+        const newIntl: InternationalizationType = {
+          ...(armorType.i18n !== undefined && armorType.i18n !== ''
             ? JSON.parse(armorType.i18n)
-            : {}) };
+            : {}),
+        };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -113,7 +111,8 @@ const update = (req: Request, res: Response): void => {
         .save()
         .then(() => {
           res.send({
-            message: 'Armor Type was updated successfully!', armorType
+            message: 'Armor Type was updated successfully!',
+            armorType,
           });
         })
         .catch((err: unknown) => {
@@ -153,8 +152,8 @@ const deleteArmorType = (req: Request, res: Response): void => {
 };
 
 interface CuratedIArmorType {
-  i18n?: InternationalizationType
-  armorType: HydratedIArmorType
+  i18n?: InternationalizationType;
+  armorType: HydratedIArmorType;
 }
 
 const findSingle = (req: Request, res: Response): void => {
@@ -168,7 +167,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((armorType) => {
       const sentObj = {
         armorType,
-        i18n: curateI18n(armorType.i18n)
+        i18n: curateI18n(armorType.i18n),
       };
       res.send(sentObj);
     })
@@ -185,7 +184,7 @@ const findAll = (req: Request, res: Response): void => {
       armorTypes.forEach((armorType) => {
         curatedArmorTypes.push({
           armorType,
-          i18n: curateI18n(armorType.i18n)
+          i18n: curateI18n(armorType.i18n),
         });
       });
 
@@ -194,6 +193,4 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export {
-  create, deleteArmorType, findAll, findArmorTypeById, findSingle, update
-};
+export { create, deleteArmorType, findAll, findArmorTypeById, findSingle, update };

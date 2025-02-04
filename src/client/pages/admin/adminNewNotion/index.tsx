@@ -1,38 +1,24 @@
-import React, {
-  useCallback, useEffect, useMemo, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  useLocation, useNavigate
-} from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import {
-  useApi, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input, SmartSelect, type ISingleValueSelect
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input, SmartSelect, type ISingleValueSelect } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import './adminNewNotion.scss';
 import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
 interface FormValues {
-  name: string
-  nameFr: string
-  type: string
+  name: string;
+  nameFr: string;
+  type: string;
 }
 
 const AdminNewNotions: FC = () => {
@@ -40,20 +26,14 @@ const AdminNewNotions: FC = () => {
   const { api } = useApi();
   const { search } = useLocation();
   const navigate = useNavigate();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
   const { ruleBooks } = useGlobalVars();
 
   const params = useMemo(() => new URLSearchParams(search), [search]);
 
-  const textEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const textFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const createDefaultData = useCallback(
     (params: URLSearchParams, ruleBooks: ISingleValueSelect[]) => {
@@ -61,7 +41,7 @@ const AdminNewNotions: FC = () => {
         return {};
       }
       const selectedfield = ruleBooks.find(
-        ruleBook => ruleBook.value === params.get('ruleBookId')
+        (ruleBook) => ruleBook.value === params.get('ruleBookId')
       );
       if (selectedfield !== undefined) {
         return { type: String(selectedfield.value) };
@@ -72,32 +52,32 @@ const AdminNewNotions: FC = () => {
     []
   );
 
-  const ruleBookSelect = useMemo(() => ruleBooks.map(({ ruleBook }) => ({
-    value: ruleBook._id,
-    // TODO : Handle Internationalization
-    label: ruleBook.title,
-    details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 })
-  })), [t, ruleBooks]);
+  const ruleBookSelect = useMemo(
+    () =>
+      ruleBooks.map(({ ruleBook }) => ({
+        value: ruleBook._id,
+        // TODO : Handle Internationalization
+        label: ruleBook.title,
+        details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 }),
+      })),
+    [t, ruleBooks]
+  );
 
   const {
     handleSubmit,
     setError,
     control,
     formState: { errors },
-    reset
-  } = useForm<FormValues>({ defaultValues: useMemo(
-    () => createDefaultData(params, ruleBookSelect),
-    [
-      createDefaultData,
-      params,
-      ruleBookSelect
-    ]
-  ) });
+    reset,
+  } = useForm<FormValues>({
+    defaultValues: useMemo(
+      () => createDefaultData(params, ruleBookSelect),
+      [createDefaultData, params, ruleBookSelect]
+    ),
+  });
 
   const onSaveNotion: SubmitHandler<FormValues> = useCallback(
-    ({
-      name, nameFr, type
-    }) => {
+    ({ name, nameFr, type }) => {
       if (textEditor === null || textFrEditor === null || api === undefined) {
         return;
       }
@@ -112,10 +92,12 @@ const AdminNewNotions: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          text: htmlTextFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            text: htmlTextFr,
+          },
+        };
       }
 
       api.notions
@@ -123,7 +105,7 @@ const AdminNewNotions: FC = () => {
           title: name,
           ruleBook: type,
           text: htmlText,
-          i18n
+          i18n,
         })
         .then((notion) => {
           const newId = getNewId();
@@ -133,7 +115,7 @@ const AdminNewNotions: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewNotion.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           void navigate(`/admin/notion/${notion._id}`);
         })
@@ -142,37 +124,27 @@ const AdminNewNotions: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.notionType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.notionType.${data.sent}`), 'capitalize'),
+              }),
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.notionType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.notionType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
     },
-    [
-      textEditor,
-      textFrEditor,
-      api,
-      getNewId,
-      createAlert,
-      t,
-      navigate,
-      setError
-    ]
+    [textEditor, textFrEditor, api, getNewId, createAlert, t, navigate, setError]
   );
 
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(params, ruleBookSelect));
-  }, [
-    params,
-    ruleBookSelect,
-    reset,
-    createDefaultData
-  ]);
+  }, [params, ruleBookSelect, reset, createDefaultData]);
 
   return (
     <div className="adminNewNotion">
@@ -184,11 +156,9 @@ const AdminNewNotions: FC = () => {
         className="adminNewNotion__content"
       >
         <Atitle level={1}>{t('adminNewNotion.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror>{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminNewNotion__basics">
           <Input
             control={control}

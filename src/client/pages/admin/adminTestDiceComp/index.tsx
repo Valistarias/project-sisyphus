@@ -1,30 +1,22 @@
-import React, {
-  useCallback, useMemo, useState, type FC
-} from 'react';
+import React, { useCallback, useMemo, useState, type FC } from 'react';
 
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { Atitle } from '../../../atoms';
-import {
-  Button, Input
-} from '../../../molecules';
+import { Button, Input } from '../../../molecules';
 
 import { regexDiceFormula } from '../../../utils';
 
 import './adminTestDiceComp.scss';
 
 interface FormValues {
-  diceFormula: string
+  diceFormula: string;
 }
 
 const AdminTestDiceComp: FC = () => {
   const { t } = useTranslation();
-  const {
-    control, handleSubmit
-  } = useForm();
+  const { control, handleSubmit } = useForm();
 
   const [formula, setFormula] = useState<string | null>(null);
 
@@ -34,16 +26,17 @@ const AdminTestDiceComp: FC = () => {
     }
     const scores: Record<
       string,
-      {
-        // rolls: number[][];
-        count: number
-        thisP?: number
-        orMoreP?: number
-        orLessP?: number
-      } | undefined
+      | {
+          // rolls: number[][];
+          count: number;
+          thisP?: number;
+          orMoreP?: number;
+          orLessP?: number;
+        }
+      | undefined
     > = {};
     const increments: number[] = [];
-    const [diceNumber, valueDice] = formula.split('d').map(val => Number(val));
+    const [diceNumber, valueDice] = formula.split('d').map((val) => Number(val));
     const variations = Math.pow(valueDice, diceNumber);
     for (let i = 0; i < diceNumber; i++) {
       increments.push(Math.pow(valueDice, i));
@@ -60,7 +53,7 @@ const AdminTestDiceComp: FC = () => {
       });
       scores[total] = {
         // rolls: [diceVal],
-        count: (scores[total]?.count ?? 0) + 1
+        count: (scores[total]?.count ?? 0) + 1,
       };
     }
 
@@ -70,34 +63,29 @@ const AdminTestDiceComp: FC = () => {
     const cleanScores: Record<
       string,
       {
-      // rolls: number[][];
-        count: number
-        thisP?: number
-        orMoreP?: number
-        orLessP?: number
+        // rolls: number[][];
+        count: number;
+        thisP?: number;
+        orMoreP?: number;
+        orLessP?: number;
       }
     > = {};
-    Object.keys(scores).forEach(
-      (scoreId) => {
-        if (scores[scoreId] !== undefined) {
-          cleanScores[scoreId] = scores[scoreId];
-        }
+    Object.keys(scores).forEach((scoreId) => {
+      if (scores[scoreId] !== undefined) {
+        cleanScores[scoreId] = scores[scoreId];
       }
-    );
+    });
 
     const possibleScores = Object.keys(cleanScores);
 
     // Probabilities
     possibleScores.forEach((possibleScore) => {
       const score = cleanScores[possibleScore].count;
-      cleanScores[possibleScore].thisP
-      = Math.round((score / variations) * 10000) / 100;
+      cleanScores[possibleScore].thisP = Math.round((score / variations) * 10000) / 100;
 
       orLessCount += score;
-      cleanScores[possibleScore].orLessP
-      = Math.round((orLessCount / variations) * 10000) / 100;
-      cleanScores[possibleScore].orMoreP
-      = Math.round((orMoreCount / variations) * 10000) / 100;
+      cleanScores[possibleScore].orLessP = Math.round((orLessCount / variations) * 10000) / 100;
+      cleanScores[possibleScore].orMoreP = Math.round((orMoreCount / variations) * 10000) / 100;
       orMoreCount -= score;
     });
 
@@ -105,7 +93,9 @@ const AdminTestDiceComp: FC = () => {
       <table className="adminTestDiceComp__table">
         <caption>
           {t('adminTestDiceComp.caption', {
-            ns: 'pages', formula, variations
+            ns: 'pages',
+            formula,
+            variations,
           })}
         </caption>
         <thead>
@@ -120,9 +110,7 @@ const AdminTestDiceComp: FC = () => {
         </thead>
         <tbody>
           {possibleScores.map((possibleScore, index) => {
-            const {
-              count, thisP, orMoreP, orLessP
-            } = cleanScores[possibleScore];
+            const { count, thisP, orMoreP, orLessP } = cleanScores[possibleScore];
 
             return (
               <tr key={index}>
@@ -162,18 +150,16 @@ const AdminTestDiceComp: FC = () => {
             required: t('diceFormula.required', { ns: 'fields' }),
             pattern: {
               value: regexDiceFormula,
-              message: t('diceFormula.pattern', { ns: 'fields' })
-            }
+              message: t('diceFormula.pattern', { ns: 'fields' }),
+            },
           }}
           label={t('diceFormula.label', { ns: 'fields' })}
         />
         <Button type="submit">{t('adminTestDiceComp.formCTA', { ns: 'pages' })}</Button>
       </form>
-      {formula != null
-        ? (
-            <div className="adminTestDiceComp__formula-results">{formulaScores}</div>
-          )
-        : null}
+      {formula != null ? (
+        <div className="adminTestDiceComp__formula-results">{formulaScores}</div>
+      ) : null}
     </div>
   );
 };

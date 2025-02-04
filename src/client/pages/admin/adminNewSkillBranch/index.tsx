@@ -1,30 +1,16 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  useLocation, useNavigate
-} from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import {
-  useApi, useSystemAlerts
-} from '../../../providers';
+import { useApi, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import type { ICuratedSkill } from '../../../types';
 import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
@@ -32,8 +18,8 @@ import type { ErrorResponseType, InternationalizationType } from '../../../types
 import './adminNewSkillBranch.scss';
 
 interface FormValues {
-  name: string
-  nameFr: string
+  name: string;
+  nameFr: string;
 }
 
 const AdminNewSkillBranch: FC = () => {
@@ -41,9 +27,7 @@ const AdminNewSkillBranch: FC = () => {
   const { api } = useApi();
   const { search } = useLocation();
   const navigate = useNavigate();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
 
   const params = useMemo(() => new URLSearchParams(search), [search]);
 
@@ -52,19 +36,15 @@ const AdminNewSkillBranch: FC = () => {
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
 
-  const introEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors }
+    formState: { errors },
   } = useForm();
 
   const getSkill = useCallback(() => {
@@ -84,27 +64,15 @@ const AdminNewSkillBranch: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    params,
-    t
-  ]);
+  }, [api, createAlert, getNewId, params, t]);
 
   const onSaveSkillBranch: SubmitHandler<FormValues> = useCallback(
-    ({
-      name, nameFr
-    }) => {
-      if (
-        introEditor === null
-        || introFrEditor === null
-        || api === undefined
-      ) {
+    ({ name, nameFr }) => {
+      if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
       let html: string | null = introEditor.getHTML();
@@ -116,10 +84,12 @@ const AdminNewSkillBranch: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          summary: htmlFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            summary: htmlFr,
+          },
+        };
       }
 
       api.skillBranches
@@ -127,7 +97,7 @@ const AdminNewSkillBranch: FC = () => {
           title: name,
           skill: params.get('skillId'),
           summary: html,
-          i18n
+          i18n,
         })
         .then((skillBranch) => {
           const newId = getNewId();
@@ -137,7 +107,7 @@ const AdminNewSkillBranch: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewSkillBranch.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           void navigate(`/admin/skillbranch/${skillBranch._id}`);
         })
@@ -146,27 +116,21 @@ const AdminNewSkillBranch: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skillBranchType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.skillBranchType.${data.sent}`), 'capitalize'),
+              }),
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skillBranchType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.skillBranchType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
     },
-    [
-      introEditor,
-      introFrEditor,
-      api,
-      params,
-      getNewId,
-      createAlert,
-      t,
-      navigate,
-      setError
-    ]
+    [introEditor, introFrEditor, api, params, getNewId, createAlert, t, navigate, setError]
   );
 
   useEffect(() => {
@@ -175,13 +139,7 @@ const AdminNewSkillBranch: FC = () => {
       calledApi.current = true;
       getSkill();
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    getSkill,
-    t
-  ]);
+  }, [api, createAlert, getNewId, getSkill, t]);
 
   return (
     <div className="adminNewSkillBranch">
@@ -200,11 +158,9 @@ const AdminNewSkillBranch: FC = () => {
             {`${t(`terms.skill.name`)}: ${skill?.skill.title}`}
           </Ap>
         </div>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror>{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminNewSkillBranch__basics">
           <Input
             control={control}

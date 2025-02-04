@@ -1,32 +1,23 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
-import {
-  gemInvalidField, gemNotFound, gemServerError
-} from '../../utils/globalErrorMessage';
+import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { curateDamageIds } from '../damage/controller';
 
 import type { InternationalizationType } from '../../utils/types';
 import type { INPC, HydratedIDamage, IDamage, HydratedINPC } from '../index';
-import type {
-  HydratedIProgram,
-  LeanIProgram
-} from './model';
+import type { HydratedIProgram, LeanIProgram } from './model';
 
 import { curateI18n } from '../../utils';
 
 const { Program } = db;
 
 interface findAllPayload {
-  starterKit?: string | Record<string, string[]>
+  starterKit?: string | Record<string, string[]>;
 }
 
-const findPrograms = async (
-  options?: findAllPayload
-): Promise<LeanIProgram[]> =>
+const findPrograms = async (options?: findAllPayload): Promise<LeanIProgram[]> =>
   await new Promise((resolve, reject) => {
     Program.find(options ?? {})
       .lean()
@@ -94,34 +85,34 @@ const create = (req: Request, res: Response): void => {
     aiSummoned,
     uses,
     radius,
-    damages
+    damages,
   }: {
-    title?: string
-    summary?: string
-    i18n?: InternationalizationType | null
-    ram?: number
-    rarity?: ObjectId
-    programScope?: ObjectId
-    itemType?: ObjectId
-    starterKit?: string
-    cost?: number
-    ai?: ObjectId
-    aiSummoned?: number
-    uses?: number
-    radius?: number
+    title?: string;
+    summary?: string;
+    i18n?: InternationalizationType | null;
+    ram?: number;
+    rarity?: ObjectId;
+    programScope?: ObjectId;
+    itemType?: ObjectId;
+    starterKit?: string;
+    cost?: number;
+    ai?: ObjectId;
+    aiSummoned?: number;
+    uses?: number;
+    radius?: number;
     damages?: Array<{
-      damageType: string
-      dices: string
-    }>
+      damageType: string;
+      dices: string;
+    }>;
   } = req.body;
   if (
-    title === undefined
-    || summary === undefined
-    || ram === undefined
-    || rarity === undefined
-    || programScope === undefined
-    || itemType === undefined
-    || cost === undefined
+    title === undefined ||
+    summary === undefined ||
+    ram === undefined ||
+    rarity === undefined ||
+    programScope === undefined ||
+    itemType === undefined ||
+    cost === undefined
   ) {
     res.status(400).send(gemInvalidField('Program'));
 
@@ -140,7 +131,7 @@ const create = (req: Request, res: Response): void => {
     programScope,
     starterKit,
     itemType,
-    uses
+    uses,
   });
 
   if (i18n !== null) {
@@ -150,11 +141,11 @@ const create = (req: Request, res: Response): void => {
   curateDamageIds({
     damagesToRemove: [],
     damagesToStay: [],
-    damagesToAdd: damages
+    damagesToAdd: damages,
   })
     .then((damageIds) => {
       if (damageIds.length > 0) {
-        program.damages = damageIds.map(damageId => String(damageId));
+        program.damages = damageIds.map((damageId) => String(damageId));
       }
       program
         .save()
@@ -186,26 +177,26 @@ const update = (req: Request, res: Response): void => {
     uses = null,
     radius = null,
     damages = null,
-    itemType = null
+    itemType = null,
   }: {
-    id?: string
-    title: string | null
-    summary: string | null
-    i18n: InternationalizationType | null
-    ram: number | null
-    rarity: string | null
-    programScope: string | null
-    itemType: string | null
-    starterKit?: 'always' | 'never' | 'option' | null
-    cost: number | null
-    ai?: string | null
-    aiSummoned?: number | null
-    uses: number | null
-    radius: number | null
+    id?: string;
+    title: string | null;
+    summary: string | null;
+    i18n: InternationalizationType | null;
+    ram: number | null;
+    rarity: string | null;
+    programScope: string | null;
+    itemType: string | null;
+    starterKit?: 'always' | 'never' | 'option' | null;
+    cost: number | null;
+    ai?: string | null;
+    aiSummoned?: number | null;
+    uses: number | null;
+    radius: number | null;
     damages?: Array<{
-      damageType: string
-      dices: string
-    }> | null
+      damageType: string;
+      dices: string;
+    }> | null;
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Program ID'));
@@ -255,42 +246,40 @@ const update = (req: Request, res: Response): void => {
       const damagesToStay: string[] = [];
       let damagesToRemove: string[] = [];
       let damagesToAdd: Array<{
-        damageType: string
-        dices: string
+        damageType: string;
+        dices: string;
       }> = [];
 
       if (damages !== null) {
-        damagesToRemove = program.damages.reduce(
-          (result: string[], elt: HydratedIDamage) => {
-            const foundDamage = damages.find(
-              damage => damage.damageType === String(elt.damageType)
-                && damage.dices === elt.dices
-            );
-            if (foundDamage === undefined) {
-              result.push(String(elt._id));
-            } else {
-              damagesToStay.push(String(elt._id));
-            }
+        damagesToRemove = program.damages.reduce((result: string[], elt: HydratedIDamage) => {
+          const foundDamage = damages.find(
+            (damage) => damage.damageType === String(elt.damageType) && damage.dices === elt.dices
+          );
+          if (foundDamage === undefined) {
+            result.push(String(elt._id));
+          } else {
+            damagesToStay.push(String(elt._id));
+          }
 
-            return result;
-          }, []);
+          return result;
+        }, []);
 
         damagesToAdd = damages.reduce(
           (
             result: Array<{
-              damageType: string
-              dices: string
+              damageType: string;
+              dices: string;
             }>,
             elt: {
-              damageType: string
-              dices: string
+              damageType: string;
+              dices: string;
             }
           ) => {
             const foundDamage = program.damages.find(
-              damage =>
-                typeof damage !== 'string'
-                && String(damage.damageType) === elt.damageType
-                && damage.dices === elt.dices
+              (damage) =>
+                typeof damage !== 'string' &&
+                String(damage.damageType) === elt.damageType &&
+                damage.dices === elt.dices
             );
             if (foundDamage === undefined) {
               result.push(elt);
@@ -303,11 +292,9 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(
-          program.i18n !== undefined
-          && program.i18n !== ''
-            ? JSON.parse(program.i18n)
-            : {}) };
+        const newIntl: InternationalizationType = {
+          ...(program.i18n !== undefined && program.i18n !== '' ? JSON.parse(program.i18n) : {}),
+        };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -319,13 +306,11 @@ const update = (req: Request, res: Response): void => {
       curateDamageIds({
         damagesToRemove,
         damagesToAdd,
-        damagesToStay
+        damagesToStay,
       })
         .then((damageIds) => {
           if (damageIds.length > 0) {
-            program.damages = damageIds.map(
-              skillBonusId => String(skillBonusId)
-            );
+            program.damages = damageIds.map((skillBonusId) => String(skillBonusId));
           } else if (damageIds.length === 0) {
             program.damages = [];
           }
@@ -333,7 +318,8 @@ const update = (req: Request, res: Response): void => {
             .save()
             .then(() => {
               res.send({
-                message: 'Program was updated successfully!', program
+                message: 'Program was updated successfully!',
+                program,
               });
             })
             .catch((err: unknown) => {
@@ -384,41 +370,36 @@ const deleteProgram = (req: Request, res: Response): void => {
 };
 
 export interface CuratedIProgramToSend {
-  program: Omit<
-    LeanIProgram
-    , 'damages' | 'ai'
-  > & {
-    damages: IDamage[]
+  program: Omit<LeanIProgram, 'damages' | 'ai'> & {
+    damages: IDamage[];
     ai?: {
-      nPC: INPC
-      i18n?: InternationalizationType
-    }
-  }
-  i18n?: InternationalizationType
+      nPC: INPC;
+      i18n?: InternationalizationType;
+    };
+  };
+  i18n?: InternationalizationType;
 }
 
-export const curateSingleProgram = (
-  programSent: LeanIProgram
-): CuratedIProgramToSend => {
-  let curatedAI: {
-    nPC: INPC
-    i18n?: InternationalizationType
-  } | undefined;
+export const curateSingleProgram = (programSent: LeanIProgram): CuratedIProgramToSend => {
+  let curatedAI:
+    | {
+        nPC: INPC;
+        i18n?: InternationalizationType;
+      }
+    | undefined;
   if (programSent.ai !== undefined) {
     curatedAI = {
       nPC: programSent.ai,
-      i18n: programSent.ai.i18n !== undefined
-        ? JSON.parse(programSent.ai.i18n)
-        : {}
+      i18n: programSent.ai.i18n !== undefined ? JSON.parse(programSent.ai.i18n) : {},
     };
   }
 
   return {
     program: {
       ...programSent,
-      ai: curatedAI
+      ai: curatedAI,
     },
-    i18n: curateI18n(programSent.i18n)
+    i18n: curateI18n(programSent.i18n),
   };
 };
 
@@ -465,12 +446,4 @@ const findAllStarter = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export {
-  create,
-  deleteProgram,
-  findAll,
-  findAllStarter,
-  findProgramById,
-  findSingle,
-  update
-};
+export { create, deleteProgram, findAll, findAllStarter, findProgramById, findSingle, update };

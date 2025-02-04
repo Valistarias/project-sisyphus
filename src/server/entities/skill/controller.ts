@@ -1,31 +1,26 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 
 import db from '../../models';
 import {
   gemDuplicate,
   gemInvalidField,
   gemNotFound,
-  gemServerError
+  gemServerError,
 } from '../../utils/globalErrorMessage';
 import { type CuratedINodeToSend, curateSingleNode } from '../node/controller';
-import {
-  createGeneralForSkillId,
-  deleteSkillBranchesBySkillId
-} from '../skillBranch/controller';
+import { createGeneralForSkillId, deleteSkillBranchesBySkillId } from '../skillBranch/controller';
 import { checkDuplicateStatFormulaId } from '../stat/controller';
 
 import type { InternationalizationType, Lean } from '../../utils/types';
 import type {
   HydratedINode,
-  HydratedIStat, ISkillBranch, IStat,
+  HydratedIStat,
+  ISkillBranch,
+  IStat,
   LeanINode,
-  LeanISkillBranch
+  LeanISkillBranch,
 } from '../index';
-import type {
-  HydratedISkill, LeanISkill
-} from './model';
+import type { HydratedISkill, LeanISkill } from './model';
 
 import { curateI18n } from '../../utils';
 
@@ -36,9 +31,13 @@ const findSkills = async (): Promise<LeanISkill[]> =>
     Skill.find()
       .lean()
       .populate<{ stat: IStat }>('stat')
-      .populate<{ branches: Array<Lean<ISkillBranch<string>> & {
-        nodes: LeanINode[]
-      }> }>({
+      .populate<{
+        branches: Array<
+          Lean<ISkillBranch<string>> & {
+            nodes: LeanINode[];
+          }
+        >;
+      }>({
         path: 'branches',
         select: '_id title skill summary i18n',
         populate: {
@@ -51,9 +50,9 @@ const findSkills = async (): Promise<LeanISkill[]> =>
             'skillBonuses',
             'skillBonuses',
             'statBonuses',
-            'charParamBonuses'
-          ]
-        }
+            'charParamBonuses',
+          ],
+        },
       })
       .then((res) => {
         if (res.length === 0) {
@@ -72,24 +71,28 @@ const findSkillById = async (id: string): Promise<LeanISkill> =>
     Skill.findById(id)
       .lean()
       .populate<{ stat: IStat }>('stat')
-      .populate<{ branches: Array<Lean<ISkillBranch<string>> & {
-        nodes: LeanINode[]
-      }> }>({
+      .populate<{
+        branches: Array<
+          Lean<ISkillBranch<string>> & {
+            nodes: LeanINode[];
+          }
+        >;
+      }>({
         path: 'branches',
         select: '_id title skill summary i18n',
         populate: {
           path: 'nodes',
           select:
-          '_id title summary icon i18n rank quote skillBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses',
+            '_id title summary icon i18n rank quote skillBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses',
           populate: [
             'effects',
             'actions',
             'skillBonuses',
             'skillBonuses',
             'statBonuses',
-            'charParamBonuses'
-          ]
-        }
+            'charParamBonuses',
+          ],
+        },
       })
       .then((res: LeanISkill | null) => {
         if (res === null) {
@@ -107,9 +110,13 @@ const findCompleteSkillById = async (id: string): Promise<HydratedISkill> =>
   await new Promise((resolve, reject) => {
     Skill.findById(id)
       .populate<{ stat: HydratedIStat }>('stat')
-      .populate<{ branches: Array<ISkillBranch<string> & {
-        nodes: HydratedINode[]
-      }> }>({
+      .populate<{
+        branches: Array<
+          ISkillBranch<string> & {
+            nodes: HydratedINode[];
+          }
+        >;
+      }>({
         path: 'branches',
         select: '_id title skill summary i18n',
         populate: {
@@ -122,9 +129,9 @@ const findCompleteSkillById = async (id: string): Promise<HydratedISkill> =>
             'skillBonuses',
             'skillBonuses',
             'statBonuses',
-            'charParamBonuses'
-          ]
-        }
+            'charParamBonuses',
+          ],
+        },
       })
       .then((res: HydratedISkill | null) => {
         if (res === null) {
@@ -190,19 +197,23 @@ const checkDuplicateFormulaId = async (
 
 const create = (req: Request, res: Response): void => {
   const {
-    title, summary, stat, i18n = null, formulaId
+    title,
+    summary,
+    stat,
+    i18n = null,
+    formulaId,
   }: {
-    title?: string
-    summary?: string
-    stat?: string
-    i18n?: InternationalizationType | null
-    formulaId?: string
+    title?: string;
+    summary?: string;
+    stat?: string;
+    i18n?: InternationalizationType | null;
+    formulaId?: string;
   } = req.body;
   if (
-    title === undefined
-    || summary === undefined
-    || stat === undefined
-    || formulaId === undefined
+    title === undefined ||
+    summary === undefined ||
+    stat === undefined ||
+    formulaId === undefined
   ) {
     res.status(400).send(gemInvalidField('Skill'));
 
@@ -216,7 +227,7 @@ const create = (req: Request, res: Response): void => {
           title,
           summary,
           formulaId,
-          stat
+          stat,
         });
 
         if (i18n !== null) {
@@ -248,14 +259,19 @@ const create = (req: Request, res: Response): void => {
 
 const update = (req: Request, res: Response): void => {
   const {
-    id, title = null, summary = null, stat = null, i18n, formulaId = null
+    id,
+    title = null,
+    summary = null,
+    stat = null,
+    i18n,
+    formulaId = null,
   }: {
-    id?: string
-    title: string | null
-    summary: string | null
-    stat: string | null
-    i18n: InternationalizationType | null
-    formulaId: string | null
+    id?: string;
+    title: string | null;
+    summary: string | null;
+    stat: string | null;
+    i18n: InternationalizationType | null;
+    formulaId: string | null;
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Skill ID'));
@@ -282,11 +298,9 @@ const update = (req: Request, res: Response): void => {
             }
 
             if (i18n !== null) {
-              const newIntl: InternationalizationType = { ...(
-                skill.i18n !== undefined
-                && skill.i18n !== ''
-                  ? JSON.parse(skill.i18n)
-                  : {}) };
+              const newIntl: InternationalizationType = {
+                ...(skill.i18n !== undefined && skill.i18n !== '' ? JSON.parse(skill.i18n) : {}),
+              };
 
               Object.keys(i18n).forEach((lang) => {
                 newIntl[lang] = i18n[lang];
@@ -299,7 +313,8 @@ const update = (req: Request, res: Response): void => {
               .save()
               .then(() => {
                 res.send({
-                  message: 'Skill was updated successfully!', skill
+                  message: 'Skill was updated successfully!',
+                  skill,
                 });
               })
               .catch((err: unknown) => {
@@ -352,43 +367,35 @@ const deleteSkill = (req: Request, res: Response): void => {
 };
 
 export interface CuratedISkillToSend {
-  skill: Omit<
-    LeanISkill, 'branches'
-  > & {
+  skill: Omit<LeanISkill, 'branches'> & {
     branches: Array<{
-      skillBranch:
-        Omit<
-          LeanISkillBranch, 'skill' | 'nodes'
-        > & {
-          skill: string
-          nodes: CuratedINodeToSend[]
-        }
-      i18n?: InternationalizationType
-    }>
-  }
-  i18n?: InternationalizationType
+      skillBranch: Omit<LeanISkillBranch, 'skill' | 'nodes'> & {
+        skill: string;
+        nodes: CuratedINodeToSend[];
+      };
+      i18n?: InternationalizationType;
+    }>;
+  };
+  i18n?: InternationalizationType;
 }
 
-const curateSingleSkill = (
-  skillSent: LeanISkill
-): CuratedISkillToSend => ({
+const curateSingleSkill = (skillSent: LeanISkill): CuratedISkillToSend => ({
   skill: {
     ...skillSent,
     branches: skillSent.branches.map((skillBranch) => {
-      const curatedNodes = skillBranch.nodes.length > 0
-        ? skillBranch.nodes.map(node => curateSingleNode(node))
-        : [];
+      const curatedNodes =
+        skillBranch.nodes.length > 0 ? skillBranch.nodes.map((node) => curateSingleNode(node)) : [];
 
       return {
         skillBranch: {
           ...skillBranch,
-          nodes: curatedNodes
+          nodes: curatedNodes,
         },
-        i18n: curateI18n(skillBranch.i18n)
+        i18n: curateI18n(skillBranch.i18n),
       };
-    })
+    }),
   },
-  i18n: curateI18n(skillSent.i18n)
+  i18n: curateI18n(skillSent.i18n),
 });
 
 const findSingle = (req: Request, res: Response): void => {
@@ -428,5 +435,5 @@ export {
   findAll,
   findSingle,
   findSkillById,
-  update
+  update,
 };

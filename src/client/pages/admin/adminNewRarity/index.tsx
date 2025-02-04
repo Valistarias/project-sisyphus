@@ -1,28 +1,16 @@
-import React, {
-  useCallback, useEffect, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  useApi, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import type { ErrorResponseType } from '../../../types';
 import type { InternationalizationType } from '../../../types/global';
@@ -30,41 +18,33 @@ import type { InternationalizationType } from '../../../types/global';
 import './adminNewRarity.scss';
 
 interface FormValues {
-  name: string
-  nameFr: string
+  name: string;
+  nameFr: string;
 }
 
 const AdminNewRarity: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const navigate = useNavigate();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
   const { reloadRarities } = useGlobalVars();
 
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
 
-  const introEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors }
+    formState: { errors },
   } = useForm();
 
   const onSaveRarity: SubmitHandler<FormValues> = useCallback(
-    ({
-      name, nameFr
-    }) => {
+    ({ name, nameFr }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -77,17 +57,19 @@ const AdminNewRarity: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          summary: htmlFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            summary: htmlFr,
+          },
+        };
       }
 
       api.rarities
         .create({
           title: name,
           summary: html,
-          i18n
+          i18n,
         })
         .then((rarity) => {
           const newId = getNewId();
@@ -97,7 +79,7 @@ const AdminNewRarity: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewRarity.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           reloadRarities();
           void navigate(`/admin/rarity/${rarity._id}`);
@@ -107,27 +89,19 @@ const AdminNewRarity: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`,
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
     },
-    [
-      introEditor,
-      introFrEditor,
-      api,
-      getNewId,
-      createAlert,
-      t,
-      reloadRarities,
-      navigate,
-      setError
-    ]
+    [introEditor, introFrEditor, api, getNewId, createAlert, t, reloadRarities, navigate, setError]
   );
 
   useEffect(() => {
@@ -135,12 +109,7 @@ const AdminNewRarity: FC = () => {
       setLoading(true);
       calledApi.current = true;
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    t
-  ]);
+  }, [api, createAlert, getNewId, t]);
 
   return (
     <div className="adminNewRarity">
@@ -152,11 +121,9 @@ const AdminNewRarity: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewRarity.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror>{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminNewRarity__basics">
           <Input
             control={control}

@@ -1,12 +1,8 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
-import {
-  gemInvalidField, gemNotFound, gemServerError
-} from '../../utils/globalErrorMessage';
+import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
 import type { HydratedIWeaponType } from './model';
 import type { InternationalizationType } from '../../utils/types';
@@ -52,14 +48,12 @@ const findWeaponTypeById = async (id: string): Promise<HydratedIWeaponType> =>
   });
 
 const create = (req: Request, res: Response): void => {
-  const {
-    title, summary, i18n = null, weaponStyle, icon, needTraining, itemType
-  } = req.body;
+  const { title, summary, i18n = null, weaponStyle, icon, needTraining, itemType } = req.body;
   if (
-    title === undefined
-    || weaponStyle === undefined
-    || itemType === undefined
-    || icon === undefined
+    title === undefined ||
+    weaponStyle === undefined ||
+    itemType === undefined ||
+    icon === undefined
   ) {
     res.status(400).send(gemInvalidField('Weapon Type'));
 
@@ -72,7 +66,7 @@ const create = (req: Request, res: Response): void => {
     icon,
     itemType,
     needTraining,
-    weaponStyle
+    weaponStyle,
   });
 
   if (i18n !== null) {
@@ -98,16 +92,16 @@ const update = (req: Request, res: Response): void => {
     icon = null,
     itemType = null,
     i18n,
-    needTraining = null
+    needTraining = null,
   }: {
-    id?: string
-    title: string | null
-    summary: string | null
-    icon: string | null
-    i18n: InternationalizationType | null
-    weaponStyle: ObjectId | null
-    itemType: ObjectId | null
-    needTraining: boolean | null
+    id?: string;
+    title: string | null;
+    summary: string | null;
+    icon: string | null;
+    i18n: InternationalizationType | null;
+    weaponStyle: ObjectId | null;
+    itemType: ObjectId | null;
+    needTraining: boolean | null;
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Weapon Type ID'));
@@ -136,11 +130,11 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(
-          weaponType.i18n !== undefined && weaponType.i18n !== ''
+        const newIntl: InternationalizationType = {
+          ...(weaponType.i18n !== undefined && weaponType.i18n !== ''
             ? JSON.parse(weaponType.i18n)
-            : {}
-        ) };
+            : {}),
+        };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -153,7 +147,8 @@ const update = (req: Request, res: Response): void => {
         .save()
         .then(() => {
           res.send({
-            message: 'Weapon Type was updated successfully!', weaponType
+            message: 'Weapon Type was updated successfully!',
+            weaponType,
           });
         })
         .catch((err: unknown) => {
@@ -193,8 +188,8 @@ const deleteWeaponType = (req: Request, res: Response): void => {
 };
 
 interface CuratedIWeaponType {
-  i18n?: InternationalizationType
-  weaponType: HydratedIWeaponType
+  i18n?: InternationalizationType;
+  weaponType: HydratedIWeaponType;
 }
 
 const findSingle = (req: Request, res: Response): void => {
@@ -208,7 +203,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((weaponType) => {
       const sentObj = {
         weaponType,
-        i18n: curateI18n(weaponType.i18n)
+        i18n: curateI18n(weaponType.i18n),
       };
       res.send(sentObj);
     })
@@ -225,7 +220,7 @@ const findAll = (req: Request, res: Response): void => {
       weaponTypes.forEach((weaponType) => {
         curatedWeaponTypes.push({
           weaponType,
-          i18n: curateI18n(weaponType.i18n)
+          i18n: curateI18n(weaponType.i18n),
         });
       });
 
@@ -234,6 +229,4 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export {
-  create, deleteWeaponType, findAll, findSingle, findWeaponTypeById, update
-};
+export { create, deleteWeaponType, findAll, findSingle, findWeaponTypeById, update };

@@ -1,34 +1,32 @@
-import {
-  Schema, model, type HydratedDocument, type Model, type ObjectId
-} from 'mongoose';
+import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
 import type { HydratedIEnnemyAttack } from '../index';
 
 interface INPC {
   /** The title of the NPC */
-  title: string
+  title: string;
   /** A summary of the NPC */
-  summary: string
+  summary: string;
   /** Is the NPC virtual */
-  virtual: boolean
+  virtual: boolean;
   /** The internationnal content, as a json, stringified */
-  i18n?: string
+  i18n?: string;
   /** The land speed of the NPC (in meter) */
-  speed: number
+  speed: number;
   /** The flight speed of the NPC (in meter) */
-  flightSpeed?: number
+  flightSpeed?: number;
   /** The swim speed of the NPC (in meter) */
-  swimSpeed?: number
+  swimSpeed?: number;
   /** The HP of the NPC */
-  hp: number
+  hp: number;
   /** The physical resistance of the NPC */
-  pr?: number
+  pr?: number;
   /** The ArtNet resistance of the NPC */
-  ar: number
+  ar: number;
   /** The attacks of the NPC */
-  attacks: string[] | ObjectId[]
+  attacks: string[] | ObjectId[];
   /** When the NPC was created */
-  createdAt: Date
+  createdAt: Date;
 }
 
 type BasicHydratedINPC = HydratedDocument<INPC>;
@@ -44,7 +42,7 @@ const nPCSchema = new Schema<INPC>({
   speed: Number,
   virtual: {
     type: Boolean,
-    default: false
+    default: false,
   },
   flightSpeed: Number,
   swimSpeed: Number,
@@ -54,17 +52,15 @@ const nPCSchema = new Schema<INPC>({
   attacks: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'EnnemyAttack'
-    }
+      ref: 'EnnemyAttack',
+    },
   ],
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 const NPCModel = (): Model<INPC> => model('NPC', nPCSchema);
 
-export {
-  NPCModel, type BasicHydratedINPC, type HydratedINPC, type INPC
-};
+export { NPCModel, type BasicHydratedINPC, type HydratedINPC, type INPC };

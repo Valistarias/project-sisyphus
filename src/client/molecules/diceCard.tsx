@@ -1,11 +1,7 @@
-import React, {
-  useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import holoBackground from '../assets/imgs/tvbg2.gif';
-import {
-  Aicon, Ap, type typeIcons
-} from '../atoms';
+import { Aicon, Ap, type typeIcons } from '../atoms';
 
 import type { TypeDice } from '../types';
 
@@ -15,13 +11,13 @@ import './diceCard.scss';
 
 interface IDiceCard {
   /** The type of dice displayed */
-  type: TypeDice
+  type: TypeDice;
   /** The number got */
-  value?: number | null
+  value?: number | null;
   /** The size of the card */
-  size?: 'xsmall' | 'small' | 'medium' | 'large' | 'single'
+  size?: 'xsmall' | 'small' | 'medium' | 'large' | 'single';
   /** Is the card to be skipped ? */
-  skip?: boolean
+  skip?: boolean;
 }
 
 // Number of ticks before the animation finishes
@@ -38,9 +34,7 @@ const _singleStepAnim = _totalStepAnim / totalTicks;
 // Score to attain for new random number displayed
 const randNumberTreshold = _totalStepAnim / displayedRandNumber;
 
-const DiceCard: FC<IDiceCard> = ({
-  type, value, size = 'medium', skip = false
-}) => {
+const DiceCard: FC<IDiceCard> = ({ type, value, size = 'medium', skip = false }) => {
   const [displayedValue, setDisplayedValue] = useState(0);
   const [animEnded, setAnimEnded] = useState(false);
 
@@ -62,13 +56,7 @@ const DiceCard: FC<IDiceCard> = ({
     }
 
     return displayedValue.toString();
-  }, [
-    displayedValue,
-    skip,
-    type,
-    value,
-    animEnded
-  ]);
+  }, [displayedValue, skip, type, value, animEnded]);
 
   useEffect(() => {
     if (value != null) {
@@ -112,14 +100,17 @@ const DiceCard: FC<IDiceCard> = ({
     }
   }, [skip]);
 
-  useEffect(() => () => {
-    if (intervalTick.current !== null) {
-      clearTimeout(intervalTick.current);
-      intervalTick.current = null;
-    }
-    tick.current = 0;
-    storedThreshold.current = 0;
-  }, []);
+  useEffect(
+    () => () => {
+      if (intervalTick.current !== null) {
+        clearTimeout(intervalTick.current);
+        intervalTick.current = null;
+      }
+      tick.current = 0;
+      storedThreshold.current = 0;
+    },
+    []
+  );
 
   return (
     <div

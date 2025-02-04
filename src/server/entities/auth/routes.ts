@@ -1,14 +1,8 @@
-import type {
-  Request, Response, Router
-} from 'express';
+import type { Request, Response, Router } from 'express';
 
-import {
-  type IVerifyTokenRequest, verifyToken, verifySignUp
-} from '../../middlewares';
+import { type IVerifyTokenRequest, verifyToken, verifySignUp } from '../../middlewares';
 
-import {
-  signUp, signIn, signOut, getLogged, updatePassword
-} from './controller';
+import { signUp, signIn, signOut, getLogged, updatePassword } from './controller';
 
 import type { IMailgunClient } from 'mailgun.js/Interfaces';
 
@@ -33,7 +27,7 @@ export default (app: Router, mg: IMailgunClient): void => {
     [
       (req: IVerifyTokenRequest, res: Response, next: () => void) => {
         verifyToken(req, res, next, true);
-      }
+      },
     ],
     getLogged
   );

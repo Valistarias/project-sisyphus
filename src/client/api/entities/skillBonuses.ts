@@ -3,11 +3,10 @@ import Entity from './entity';
 import type { ISkillBonus } from '../../types';
 
 interface ISkillBonusPayload {
-  skillBonusId: string
+  skillBonusId: string;
 }
 
-export default class SkillBonuses
-  extends Entity<ISkillBonusPayload, ISkillBonus, ISkillBonus> {
+export default class SkillBonuses extends Entity<ISkillBonusPayload, ISkillBonus, ISkillBonus> {
   constructor() {
     super('skillbonuses');
   }

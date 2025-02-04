@@ -11,20 +11,18 @@ import './searchBar.scss';
 
 interface ISearchBar {
   /** The placeholder when the searchbar is empty */
-  placeholder?: string
+  placeholder?: string;
   /** The search value */
-  search: string
+  search: string;
   /** The class of the searchBar element */
-  className?: string
+  className?: string;
   /** When the search bar changes */
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   /** When the search bar changes */
-  onClean: (e: React.MouseEvent<HTMLElement>) => void
+  onClean: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
-const SearchBar: FC<ISearchBar> = ({
-  search, placeholder, onClean, onChange, className
-}) => (
+const SearchBar: FC<ISearchBar> = ({ search, placeholder, onClean, onChange, className }) => (
   <div
     className={classTrim(`
       search-bar

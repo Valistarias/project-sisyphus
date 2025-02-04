@@ -1,52 +1,35 @@
-import React, {
-  useCallback, useMemo, useState, type FC, type ReactNode
-} from 'react';
+import React, { useCallback, useMemo, useState, type FC, type ReactNode } from 'react';
 
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../providers';
 
-import {
-  Ap, Atitle
-} from '../../atoms';
-import {
-  Button, NodeTree
-} from '../../molecules';
+import { Ap, Atitle } from '../../atoms';
+import { Button, NodeTree } from '../../molecules';
 import { RichTextElement } from '../richTextElement';
 
-import type {
-  ICuratedCyberFrame, ICuratedNode, ICyberFrameBranch
-} from '../../types';
+import type { ICuratedCyberFrame, ICuratedNode, ICyberFrameBranch } from '../../types';
 
-import {
-  classTrim, getCyberFrameLevelsByNodes
-} from '../../utils';
+import { classTrim, getCyberFrameLevelsByNodes } from '../../utils';
 
 import './characterCreation.scss';
 
 interface ICharacterCreationStep1 {
   /** When the user click send and the data is send perfectly */
-  onSubmitCyberFrame: (id: string) => void
+  onSubmitCyberFrame: (id: string) => void;
 }
 
-const CharacterCreationStep1: FC<ICharacterCreationStep1> = (
-  { onSubmitCyberFrame }
-) => {
+const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFrame }) => {
   const { t } = useTranslation();
-  const {
-    cyberFrames, character
-  } = useGlobalVars();
+  const { cyberFrames, character } = useGlobalVars();
 
-  const [openedCFrame, setOpenedCFrame]
-  = useState<ICuratedCyberFrame | null>(null);
+  const [openedCFrame, setOpenedCFrame] = useState<ICuratedCyberFrame | null>(null);
   const [detailsOpened, setDetailsOpened] = useState<boolean>(false);
 
   const onOpenDetails = useCallback(
     (id: string) => {
-      const foundCFrame = cyberFrames.find(
-        ({ cyberFrame }) => cyberFrame._id === id
-      );
+      const foundCFrame = cyberFrames.find(({ cyberFrame }) => cyberFrame._id === id);
       if (foundCFrame !== undefined) {
         setOpenedCFrame(foundCFrame);
       }
@@ -59,10 +42,7 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = (
       return null;
     }
 
-    return getCyberFrameLevelsByNodes(
-      character.nodes,
-      cyberFrames
-    )[0]?.cyberFrame;
+    return getCyberFrameLevelsByNodes(character.nodes, cyberFrames)[0]?.cyberFrame;
   }, [character, cyberFrames]);
 
   const detailsBlock = useMemo(() => {
@@ -73,14 +53,14 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = (
     const tempTree: Record<
       string,
       {
-        branch: ICyberFrameBranch
-        nodes: ICuratedNode[]
+        branch: ICyberFrameBranch;
+        nodes: ICuratedNode[];
       }
     > = {};
     cyberFrame.branches.forEach(({ cyberFrameBranch }) => {
       tempTree[cyberFrameBranch._id] = {
         branch: cyberFrameBranch,
-        nodes: cyberFrameBranch.nodes
+        nodes: cyberFrameBranch.nodes,
       };
     });
 
@@ -102,20 +82,18 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = (
             />
           </div>
           <div className="characterCreation-step1__detail-block__btns">
-            {chosenCyberFrame?.cyberFrame._id === cyberFrame._id
-              ? null
-              : (
-                  <Button
-                    theme="afterglow"
-                    size="large"
-                    onClick={() => {
-                      onSubmitCyberFrame(cyberFrame._id);
-                      setDetailsOpened(false);
-                    }}
-                  >
-                    {t('characterCreation.step1.chooseCta', { ns: 'components' })}
-                  </Button>
-                )}
+            {chosenCyberFrame?.cyberFrame._id === cyberFrame._id ? null : (
+              <Button
+                theme="afterglow"
+                size="large"
+                onClick={() => {
+                  onSubmitCyberFrame(cyberFrame._id);
+                  setDetailsOpened(false);
+                }}
+              >
+                {t('characterCreation.step1.chooseCta', { ns: 'components' })}
+              </Button>
+            )}
             <Button
               theme="text-only"
               size="large"
@@ -129,12 +107,7 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = (
         </div>
       </div>
     );
-  }, [
-    openedCFrame,
-    t,
-    chosenCyberFrame?.cyberFrame._id,
-    onSubmitCyberFrame
-  ]);
+  }, [openedCFrame, t, chosenCyberFrame?.cyberFrame._id, onSubmitCyberFrame]);
 
   const cyberFrameList = useMemo(() => {
     const cFrameElts: ReactNode[] = [];
@@ -153,13 +126,11 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = (
             <Atitle level={2} className="characterCreation-step1__cFrame__title__content">
               {cyberFrame.title}
             </Atitle>
-            {chosenCyberFrame?.cyberFrame._id === cyberFrame._id
-              ? (
-                  <Ap className="characterCreation-step1__cFrame__title__text">
-                    {t('characterCreation.step1.chosen', { ns: 'components' })}
-                  </Ap>
-                )
-              : null}
+            {chosenCyberFrame?.cyberFrame._id === cyberFrame._id ? (
+              <Ap className="characterCreation-step1__cFrame__title__text">
+                {t('characterCreation.step1.chosen', { ns: 'components' })}
+              </Ap>
+            ) : null}
           </div>
 
           <RichTextElement
@@ -188,7 +159,7 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = (
     detailsOpened,
     chosenCyberFrame?.cyberFrame._id,
     t,
-    onOpenDetails
+    onOpenDetails,
   ]);
 
   return (
@@ -200,11 +171,12 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = (
       initial={{ transform: 'skew(90deg, 0deg) scale3d(.2, .2, .2)' }}
       animate={{
         transform: 'skew(0, 0) scale3d(1, 1, 1)',
-        transitionEnd: { transform: 'none' }
+        transitionEnd: { transform: 'none' },
       }}
       exit={{ transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)' }}
       transition={{
-        ease: 'easeInOut', duration: 0.2
+        ease: 'easeInOut',
+        duration: 0.2,
       }}
     >
       <div className="characterCreation-step1__details">{detailsBlock}</div>

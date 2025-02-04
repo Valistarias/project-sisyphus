@@ -1,8 +1,6 @@
 import type { Router } from 'express';
 
-import {
-  adminNeeded, verifyToken
-} from '../../middlewares';
+import { adminNeeded, verifyToken } from '../../middlewares';
 
 import {
   changeRaritiesOrder,
@@ -10,7 +8,7 @@ import {
   deleteRarity,
   findAll,
   findSingle,
-  update
+  update,
 } from './controller';
 
 export default (app: Router): void => {

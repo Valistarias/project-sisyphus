@@ -1,14 +1,8 @@
 import React from 'react';
-import {
-  useMemo, useState, type FC
-} from 'react';
+import { useMemo, useState, type FC } from 'react';
 
-import {
-  AnimatePresence, motion
-} from 'framer-motion';
-import {
-  RouterProvider, createBrowserRouter, useLocation, useOutlet
-} from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
+import { RouterProvider, createBrowserRouter, useLocation, useOutlet } from 'react-router-dom';
 
 import { useGlobalVars } from './providers';
 
@@ -121,7 +115,7 @@ import {
   NewPassPage,
   RuleBookPage,
   RuleBooksPage,
-  SignupPage
+  SignupPage,
 } from './pages';
 
 // import { socket } from '../socket';
@@ -153,7 +147,8 @@ const RootContainer: FC = () => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{
-            ease: 'ease', duration: 0.3
+            ease: 'ease',
+            duration: 0.3,
           }}
 
           // className="app__content"
@@ -188,441 +183,441 @@ const App: FC = () => {
             // Unlogged
             {
               path: '/',
-              element: <HomePage />
+              element: <HomePage />,
             },
             {
               path: '/signup',
-              element: <SignupPage />
+              element: <SignupPage />,
             },
             {
               path: '/login',
-              element: <LoginPage />
+              element: <LoginPage />,
             },
             {
               path: '/reset/password',
-              element: <ForgotPassPage />
+              element: <ForgotPassPage />,
             },
             {
               path: '/reset/password/:userId/:token',
-              element: <NewPassPage />
+              element: <NewPassPage />,
             },
             // Logged
             {
               path: '/rulebooks',
-              element: <RuleBooksPage />
+              element: <RuleBooksPage />,
             },
             {
               path: '/rulebook/:id',
-              element: <RuleBookPage />
+              element: <RuleBookPage />,
             },
             {
               path: '/rulebook/:id/:chapterId',
-              element: <ChapterPage />
+              element: <ChapterPage />,
             },
             {
               path: '/campaigns',
-              element: <CampaignsPage />
+              element: <CampaignsPage />,
             },
             {
               path: '/campaign/new',
-              element: <NewCampaignPage />
+              element: <NewCampaignPage />,
             },
             {
               path: '/campaign/join/:id',
-              element: <JoinCampaignPage />
+              element: <JoinCampaignPage />,
             },
             {
               path: '/campaign/:id',
-              element: <CampaignPage />
+              element: <CampaignPage />,
             },
             {
               path: '/characters',
-              element: <CharactersPage />
+              element: <CharactersPage />,
             },
             {
               path: '/character/new',
-              element: <NewCharacterPage />
+              element: <NewCharacterPage />,
             },
             {
               path: '/character/:id/continue',
-              element: <NewCharacterPage />
+              element: <NewCharacterPage />,
             },
             {
               path: '/character/:id',
-              element: <CharacterPage />
+              element: <CharacterPage />,
             },
             {
               path: '/character/:id/edit',
-              element: <CharacterEditPage />
+              element: <CharacterEditPage />,
             },
             // Admin
             {
               path: '/admin',
-              element: <AdminPage />
+              element: <AdminPage />,
             },
             {
               path: '/admin/dicecomp',
-              element: <AdminTestDiceCompPage />
+              element: <AdminTestDiceCompPage />,
             },
             {
               path: '/admin/rulebooks',
-              element: <AdminRuleBooksPage />
+              element: <AdminRuleBooksPage />,
             },
             {
               path: '/admin/rulebook/new',
-              element: <AdminNewRuleBookPage />
+              element: <AdminNewRuleBookPage />,
             },
             {
               path: '/admin/rulebook/:id',
-              element: <AdminEditRuleBookPage />
+              element: <AdminEditRuleBookPage />,
             },
             {
               path: '/admin/notion/new',
-              element: <AdminNewNotionPage />
+              element: <AdminNewNotionPage />,
             },
             {
               path: '/admin/notion/:id',
-              element: <AdminEditNotionPage />
+              element: <AdminEditNotionPage />,
             },
             {
               path: '/admin/chapter/new',
-              element: <AdminNewChapterPage />
+              element: <AdminNewChapterPage />,
             },
             {
               path: '/admin/chapter/:id',
-              element: <AdminEditChapterPage />
+              element: <AdminEditChapterPage />,
             },
             {
               path: '/admin/page/new',
-              element: <AdminNewPage />
+              element: <AdminNewPage />,
             },
             {
               path: '/admin/page/:id',
-              element: <AdminEditPage />
+              element: <AdminEditPage />,
             },
             {
               path: '/admin/cyberframes',
-              element: <AdminCyberFramesPage />
+              element: <AdminCyberFramesPage />,
             },
             {
               path: '/admin/cyberframe/new',
-              element: <AdminNewCyberFramePage />
+              element: <AdminNewCyberFramePage />,
             },
             {
               path: '/admin/cyberframe/:id',
-              element: <AdminEditCyberFramePage />
+              element: <AdminEditCyberFramePage />,
             },
             {
               path: '/admin/stats',
-              element: <AdminStatsPage />
+              element: <AdminStatsPage />,
             },
             {
               path: '/admin/stat/new',
-              element: <AdminNewStatPage />
+              element: <AdminNewStatPage />,
             },
             {
               path: '/admin/stat/:id',
-              element: <AdminEditStatPage />
+              element: <AdminEditStatPage />,
             },
             {
               path: '/admin/skills',
-              element: <AdminSkillsPage />
+              element: <AdminSkillsPage />,
             },
             {
               path: '/admin/skill/new',
-              element: <AdminNewSkillPage />
+              element: <AdminNewSkillPage />,
             },
             {
               path: '/admin/skill/:id',
-              element: <AdminEditSkillPage />
+              element: <AdminEditSkillPage />,
             },
             {
               path: '/admin/charparams',
-              element: <AdminCharParamsPage />
+              element: <AdminCharParamsPage />,
             },
             {
               path: '/admin/charparam/new',
-              element: <AdminNewCharParamPage />
+              element: <AdminNewCharParamPage />,
             },
             {
               path: '/admin/charparam/:id',
-              element: <AdminEditCharParamPage />
+              element: <AdminEditCharParamPage />,
             },
             {
               path: '/admin/cyberframebranch/new',
-              element: <AdminNewCyberFrameBranchPage />
+              element: <AdminNewCyberFrameBranchPage />,
             },
             {
               path: '/admin/cyberframebranch/:id',
-              element: <AdminEditCyberFrameBranchPage />
+              element: <AdminEditCyberFrameBranchPage />,
             },
             {
               path: '/admin/skillbranch/new',
-              element: <AdminNewSkillBranchPage />
+              element: <AdminNewSkillBranchPage />,
             },
             {
               path: '/admin/skillbranch/:id',
-              element: <AdminEditSkillBranchPage />
+              element: <AdminEditSkillBranchPage />,
             },
             {
               path: '/admin/node/new',
-              element: <AdminNewNodePage />
+              element: <AdminNewNodePage />,
             },
             {
               path: '/admin/node/:id',
-              element: <AdminEditNodePage />
+              element: <AdminEditNodePage />,
             },
             {
               path: '/admin/itemmodifiers',
-              element: <AdminItemModifiersPage />
+              element: <AdminItemModifiersPage />,
             },
             {
               path: '/admin/itemmodifier/new',
-              element: <AdminNewItemModifierPage />
+              element: <AdminNewItemModifierPage />,
             },
             {
               path: '/admin/itemmodifier/:id',
-              element: <AdminEditItemModifierPage />
+              element: <AdminEditItemModifierPage />,
             },
             {
               path: '/admin/rarities',
-              element: <AdminRaritiesPage />
+              element: <AdminRaritiesPage />,
             },
             {
               path: '/admin/rarity/new',
-              element: <AdminNewRarityPage />
+              element: <AdminNewRarityPage />,
             },
             {
               path: '/admin/rarity/:id',
-              element: <AdminEditRarityPage />
+              element: <AdminEditRarityPage />,
             },
             {
               path: '/admin/weaponscopes',
-              element: <AdminWeaponScopesPage />
+              element: <AdminWeaponScopesPage />,
             },
             {
               path: '/admin/weaponscope/new',
-              element: <AdminNewWeaponScopePage />
+              element: <AdminNewWeaponScopePage />,
             },
             {
               path: '/admin/weaponscope/:id',
-              element: <AdminEditWeaponScopePage />
+              element: <AdminEditWeaponScopePage />,
             },
             {
               path: '/admin/weaponstyles',
-              element: <AdminWeaponStylesPage />
+              element: <AdminWeaponStylesPage />,
             },
             {
               path: '/admin/weaponstyle/new',
-              element: <AdminNewWeaponStylePage />
+              element: <AdminNewWeaponStylePage />,
             },
             {
               path: '/admin/weaponstyle/:id',
-              element: <AdminEditWeaponStylePage />
+              element: <AdminEditWeaponStylePage />,
             },
             {
               path: '/admin/weapontypes',
-              element: <AdminWeaponTypesPage />
+              element: <AdminWeaponTypesPage />,
             },
             {
               path: '/admin/weapontype/new',
-              element: <AdminNewWeaponTypePage />
+              element: <AdminNewWeaponTypePage />,
             },
             {
               path: '/admin/weapontype/:id',
-              element: <AdminEditWeaponTypePage />
+              element: <AdminEditWeaponTypePage />,
             },
             {
               path: '/admin/damagetypes',
-              element: <AdminDamageTypesPage />
+              element: <AdminDamageTypesPage />,
             },
             {
               path: '/admin/damagetype/new',
-              element: <AdminNewDamageTypePage />
+              element: <AdminNewDamageTypePage />,
             },
             {
               path: '/admin/damagetype/:id',
-              element: <AdminEditDamageTypePage />
+              element: <AdminEditDamageTypePage />,
             },
             {
               path: '/admin/weapons',
-              element: <AdminWeaponsPage />
+              element: <AdminWeaponsPage />,
             },
             {
               path: '/admin/weapon/new',
-              element: <AdminNewWeaponPage />
+              element: <AdminNewWeaponPage />,
             },
             {
               path: '/admin/weapon/:id',
-              element: <AdminEditWeaponPage />
+              element: <AdminEditWeaponPage />,
             },
             {
               path: '/admin/itemtypes',
-              element: <AdminItemTypesPage />
+              element: <AdminItemTypesPage />,
             },
             {
               path: '/admin/itemtype/new',
-              element: <AdminNewItemTypePage />
+              element: <AdminNewItemTypePage />,
             },
             {
               path: '/admin/itemtype/:id',
-              element: <AdminEditItemTypePage />
+              element: <AdminEditItemTypePage />,
             },
             {
               path: '/admin/bags',
-              element: <AdminBagsPage />
+              element: <AdminBagsPage />,
             },
             {
               path: '/admin/bag/new',
-              element: <AdminNewBagPage />
+              element: <AdminNewBagPage />,
             },
             {
               path: '/admin/bag/:id',
-              element: <AdminEditBagPage />
+              element: <AdminEditBagPage />,
             },
             {
               path: '/admin/ammos',
-              element: <AdminAmmosPage />
+              element: <AdminAmmosPage />,
             },
             {
               path: '/admin/ammo/new',
-              element: <AdminNewAmmoPage />
+              element: <AdminNewAmmoPage />,
             },
             {
               path: '/admin/ammo/:id',
-              element: <AdminEditAmmoPage />
+              element: <AdminEditAmmoPage />,
             },
             {
               path: '/admin/npcs',
-              element: <AdminNPCsPage />
+              element: <AdminNPCsPage />,
             },
             {
               path: '/admin/npc/new',
-              element: <AdminNewNPCPage />
+              element: <AdminNewNPCPage />,
             },
             {
               path: '/admin/npc/:id',
-              element: <AdminEditNPCPage />
+              element: <AdminEditNPCPage />,
             },
             {
               path: '/admin/programscopes',
-              element: <AdminProgramScopesPage />
+              element: <AdminProgramScopesPage />,
             },
             {
               path: '/admin/programscope/new',
-              element: <AdminNewProgramScopePage />
+              element: <AdminNewProgramScopePage />,
             },
             {
               path: '/admin/programscope/:id',
-              element: <AdminEditProgramScopePage />
+              element: <AdminEditProgramScopePage />,
             },
             {
               path: '/admin/programs',
-              element: <AdminProgramsPage />
+              element: <AdminProgramsPage />,
             },
             {
               path: '/admin/program/new',
-              element: <AdminNewProgramPage />
+              element: <AdminNewProgramPage />,
             },
             {
               path: '/admin/program/:id',
-              element: <AdminEditProgramPage />
+              element: <AdminEditProgramPage />,
             },
             {
               path: '/admin/bodyparts',
-              element: <AdminBodyPartsPage />
+              element: <AdminBodyPartsPage />,
             },
             {
               path: '/admin/bodypart/new',
-              element: <AdminNewBodyPartPage />
+              element: <AdminNewBodyPartPage />,
             },
             {
               path: '/admin/bodypart/:id',
-              element: <AdminEditBodyPartPage />
+              element: <AdminEditBodyPartPage />,
             },
             {
               path: '/admin/implants',
-              element: <AdminImplantsPage />
+              element: <AdminImplantsPage />,
             },
             {
               path: '/admin/implant/new',
-              element: <AdminNewImplantPage />
+              element: <AdminNewImplantPage />,
             },
             {
               path: '/admin/implant/:id',
-              element: <AdminEditImplantPage />
+              element: <AdminEditImplantPage />,
             },
             {
               path: '/admin/armortypes',
-              element: <AdminArmorTypesPage />
+              element: <AdminArmorTypesPage />,
             },
             {
               path: '/admin/armortype/new',
-              element: <AdminNewArmorTypePage />
+              element: <AdminNewArmorTypePage />,
             },
             {
               path: '/admin/armortype/:id',
-              element: <AdminEditArmorTypePage />
+              element: <AdminEditArmorTypePage />,
             },
             {
               path: '/admin/armors',
-              element: <AdminArmorsPage />
+              element: <AdminArmorsPage />,
             },
             {
               path: '/admin/armor/new',
-              element: <AdminNewArmorPage />
+              element: <AdminNewArmorPage />,
             },
             {
               path: '/admin/armor/:id',
-              element: <AdminEditArmorPage />
+              element: <AdminEditArmorPage />,
             },
             {
               path: '/admin/items',
-              element: <AdminItemsPage />
+              element: <AdminItemsPage />,
             },
             {
               path: '/admin/item/new',
-              element: <AdminNewItemPage />
+              element: <AdminNewItemPage />,
             },
             {
               path: '/admin/item/:id',
-              element: <AdminEditItemPage />
+              element: <AdminEditItemPage />,
             },
             {
               path: '/admin/tiptexts',
-              element: <AdminTipTextsPage />
+              element: <AdminTipTextsPage />,
             },
             {
               path: '/admin/tiptext/new',
-              element: <AdminNewTipTextPage />
+              element: <AdminNewTipTextPage />,
             },
             {
               path: '/admin/tiptext/:id',
-              element: <AdminEditTipTextPage />
+              element: <AdminEditTipTextPage />,
             },
             {
               path: '/admin/globalvalues',
-              element: <AdminGlobalValuesPage />
+              element: <AdminGlobalValuesPage />,
             },
             {
               path: '/admin/globalvalue/new',
-              element: <AdminNewGlobalValuePage />
+              element: <AdminNewGlobalValuePage />,
             },
             {
               path: '/admin/globalvalue/:id',
-              element: <AdminEditGlobalValuePage />
+              element: <AdminEditGlobalValuePage />,
             },
             {
               path: '/admin/backgrounds',
-              element: <AdminBackgroundsPage />
+              element: <AdminBackgroundsPage />,
             },
             {
               path: '/admin/background/new',
-              element: <AdminNewBackgroundPage />
+              element: <AdminNewBackgroundPage />,
             },
             {
               path: '/admin/background/:id',
-              element: <AdminEditBackgroundPage />
+              element: <AdminEditBackgroundPage />,
             },
             // {
             //   path: '/admin/skillbranch/:id',
@@ -631,10 +626,10 @@ const App: FC = () => {
             // All
             {
               path: '/*',
-              element: <ErrorPage />
-            }
-          ]
-        }
+              element: <ErrorPage />,
+            },
+          ],
+        },
       ]),
     []
   );

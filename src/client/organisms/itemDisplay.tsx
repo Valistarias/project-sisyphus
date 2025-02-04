@@ -1,6 +1,4 @@
-import React, {
-  useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useMemo, useRef, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -8,9 +6,7 @@ import { useGlobalVars } from '../providers';
 
 import { Ap } from '../atoms';
 import { PropDisplay } from '../molecules';
-import {
-  Quark, type IQuarkProps
-} from '../quark';
+import { Quark, type IQuarkProps } from '../quark';
 
 import { RichTextElement } from './richTextElement';
 
@@ -19,7 +15,7 @@ import type {
   ICuratedCharParam,
   ICuratedItem,
   ICuratedItemModifier,
-  ICuratedRarity
+  ICuratedRarity,
 } from '../types';
 import type { IItem } from '../types/items';
 
@@ -29,33 +25,29 @@ import './itemDisplay.scss';
 
 interface IItemDisplay {
   /** The item to be displayed */
-  item: ICuratedItem
+  item: ICuratedItem;
   /** The display mode */
-  mode?: 'basic' | 'hover'
+  mode?: 'basic' | 'hover';
 }
 
 interface ICompleteCharParamBonus extends Omit<ICharParamBonus, 'charParam'> {
-  charParam: ICuratedCharParam | undefined
+  charParam: ICuratedCharParam | undefined;
 }
 
 interface ICompleteItem
   extends Omit<IItem, 'itemType' | 'itemModifiers' | 'rarity' | 'charParamBonuses'> {
-  itemModifiers: ICuratedItemModifier[] | undefined
-  rarity: ICuratedRarity | undefined
-  charParamBonuses: ICompleteCharParamBonus[]
+  itemModifiers: ICuratedItemModifier[] | undefined;
+  rarity: ICuratedRarity | undefined;
+  charParamBonuses: ICompleteCharParamBonus[];
 }
 
 interface ICuratedCompleteItem extends Omit<ICuratedItem, 'item'> {
-  item: ICompleteItem
+  item: ICompleteItem;
 }
 
-const ItemDisplay: FC<IQuarkProps<IItemDisplay>> = ({
-  item, mode = 'basic'
-}) => {
+const ItemDisplay: FC<IQuarkProps<IItemDisplay>> = ({ item, mode = 'basic' }) => {
   const { t } = useTranslation();
-  const {
-    itemTypes, itemModifiers, rarities, charParams
-  } = useGlobalVars();
+  const { itemTypes, itemModifiers, rarities, charParams } = useGlobalVars();
 
   const [placement, setPlacement] = useState<string>('left');
   const domBlockContent = useRef<HTMLDivElement>(null);
@@ -64,37 +56,29 @@ const ItemDisplay: FC<IQuarkProps<IItemDisplay>> = ({
     if (itemTypes.length === 0) {
       return null;
     }
-    const {
-      item: itemObj, i18n
-    } = item;
+    const { item: itemObj, i18n } = item;
 
     return {
       item: {
         ...itemObj,
-        rarity: rarities.find(rarity => rarity.rarity._id === itemObj.rarity),
+        rarity: rarities.find((rarity) => rarity.rarity._id === itemObj.rarity),
         itemModifiers: itemObj.itemModifiers?.map(
-          itemModifierId =>
+          (itemModifierId) =>
             itemModifiers.find(
-              itemModifier => itemModifier.itemModifier._id === itemModifierId
+              (itemModifier) => itemModifier.itemModifier._id === itemModifierId
             ) ?? itemModifiers[0]
         ),
         charParamBonuses:
-          itemObj.charParamBonuses?.map(charParamBonus => ({
+          itemObj.charParamBonuses?.map((charParamBonus) => ({
             ...charParamBonus,
             charParam: charParams.find(
               ({ charParam }) => charParam._id === charParamBonus.charParam
-            )
-          })) ?? []
+            ),
+          })) ?? [],
       },
-      i18n
+      i18n,
     };
-  }, [
-    itemTypes,
-    item,
-    rarities,
-    itemModifiers,
-    charParams
-  ]);
+  }, [itemTypes, item, rarities, itemModifiers, charParams]);
 
   const handleMouseEnter = (): void => {
     if (mode === 'hover') {
@@ -131,7 +115,7 @@ const ItemDisplay: FC<IQuarkProps<IItemDisplay>> = ({
         title={item.title}
         type={t('itemTypeNames.itm')}
         itemModifiers={item.itemModifiers}
-        mainNode={(
+        mainNode={
           <div className="item-display__block__main">
             <RichTextElement
               className="item-display__block__main__text"
@@ -139,7 +123,7 @@ const ItemDisplay: FC<IQuarkProps<IItemDisplay>> = ({
               readOnly
             />
           </div>
-        )}
+        }
       />
     );
   }, [curateItem, t]);

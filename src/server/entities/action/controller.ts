@@ -1,18 +1,12 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
-import {
-  gemInvalidField, gemNotFound, gemServerError
-} from '../../utils/globalErrorMessage';
+import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
 import type { HydratedIAction } from './model';
 import type { InternationalizationType } from '../../utils/types';
-import type {
-  IActionDuration, IActionType, ISkill
-} from '../index';
+import type { IActionDuration, IActionType, ISkill } from '../index';
 
 import { curateI18n } from '../../utils';
 
@@ -55,19 +49,19 @@ const findActionById = async (id: string): Promise<HydratedIAction> =>
   });
 
 export interface ISentAction {
-  id?: string
-  title: string
-  summary: string
-  type: ObjectId
-  skill: ObjectId
-  duration: ObjectId
-  time?: string
-  damages?: string
-  offsetSkill?: string
-  uses?: number
-  isKarmic?: boolean
-  karmicCost?: number
-  i18n?: InternationalizationType
+  id?: string;
+  title: string;
+  summary: string;
+  type: ObjectId;
+  skill: ObjectId;
+  duration: ObjectId;
+  time?: string;
+  damages?: string;
+  offsetSkill?: string;
+  uses?: number;
+  isKarmic?: boolean;
+  karmicCost?: number;
+  i18n?: InternationalizationType;
 }
 
 const updateActions = (
@@ -93,7 +87,7 @@ const updateActions = (
     offsetSkill = null,
     damages = null,
     isKarmic = null,
-    karmicCost = null
+    karmicCost = null,
   } = elts[0];
 
   if (id === undefined) {
@@ -108,7 +102,7 @@ const updateActions = (
       offsetSkill: offsetSkill ?? undefined,
       damages: damages ?? undefined,
       isKarmic: isKarmic ?? undefined,
-      karmicCost: karmicCost ?? undefined
+      karmicCost: karmicCost ?? undefined,
     });
 
     if (i18n !== null) {
@@ -163,11 +157,9 @@ const updateActions = (
         }
 
         if (i18n !== null) {
-          const newIntl: InternationalizationType = { ...(
-            action.i18n !== undefined && action.i18n !== ''
-              ? JSON.parse(action.i18n)
-              : {}
-          ) };
+          const newIntl: InternationalizationType = {
+            ...(action.i18n !== undefined && action.i18n !== '' ? JSON.parse(action.i18n) : {}),
+          };
 
           Object.keys(i18n).forEach((lang) => {
             newIntl[lang] = i18n[lang];
@@ -195,10 +187,10 @@ const updateActions = (
 
 const smartUpdateActions = async ({
   actionsToRemove,
-  actionsToUpdate
+  actionsToUpdate,
 }: {
-  actionsToRemove: string[]
-  actionsToUpdate: ISentAction[]
+  actionsToRemove: string[];
+  actionsToUpdate: ISentAction[];
 }): Promise<string[]> =>
   await new Promise((resolve, reject) => {
     Action.deleteMany({ _id: { $in: actionsToRemove } })
@@ -229,13 +221,13 @@ const create = (req: Request, res: Response): void => {
     offsetSkill,
     damages,
     isKarmic = false,
-    karmicCost
+    karmicCost,
   } = req.body;
   if (
-    title === undefined
-    || summary === undefined
-    || type === undefined
-    || duration === undefined
+    title === undefined ||
+    summary === undefined ||
+    type === undefined ||
+    duration === undefined
   ) {
     res.status(400).send(gemInvalidField('Action'));
 
@@ -253,7 +245,7 @@ const create = (req: Request, res: Response): void => {
     offsetSkill,
     damages,
     isKarmic,
-    karmicCost
+    karmicCost,
   });
 
   if (i18n !== null) {
@@ -284,21 +276,21 @@ const update = (req: Request, res: Response): void => {
     offsetSkill = null,
     damages = null,
     isKarmic = null,
-    karmicCost = null
+    karmicCost = null,
   }: {
-    id?: string
-    title: string | null
-    summary: string | null
-    i18n: InternationalizationType | null
-    type: ObjectId | null
-    duration: ObjectId | null
-    time: string | null
-    skill: ObjectId | null
-    offsetSkill: string | null
-    uses: number | null
-    damages: string | null
-    isKarmic: boolean | null
-    karmicCost: number | null
+    id?: string;
+    title: string | null;
+    summary: string | null;
+    i18n: InternationalizationType | null;
+    type: ObjectId | null;
+    duration: ObjectId | null;
+    time: string | null;
+    skill: ObjectId | null;
+    offsetSkill: string | null;
+    uses: number | null;
+    damages: string | null;
+    isKarmic: boolean | null;
+    karmicCost: number | null;
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Action ID'));
@@ -342,11 +334,9 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(
-          action.i18n !== undefined && action.i18n !== ''
-            ? JSON.parse(action.i18n)
-            : {}
-        ) };
+        const newIntl: InternationalizationType = {
+          ...(action.i18n !== undefined && action.i18n !== '' ? JSON.parse(action.i18n) : {}),
+        };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -359,7 +349,8 @@ const update = (req: Request, res: Response): void => {
         .save()
         .then(() => {
           res.send({
-            message: 'Action was updated successfully!', action
+            message: 'Action was updated successfully!',
+            action,
           });
         })
         .catch((err: unknown) => {
@@ -399,8 +390,8 @@ const deleteAction = (req: Request, res: Response): void => {
 };
 
 interface CuratedIAction {
-  i18n?: InternationalizationType
-  action: HydratedIAction
+  i18n?: InternationalizationType;
+  action: HydratedIAction;
 }
 
 const findSingle = (req: Request, res: Response): void => {
@@ -414,7 +405,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((action) => {
       const sentObj = {
         action,
-        i18n: curateI18n(action.i18n)
+        i18n: curateI18n(action.i18n),
       };
       res.send(sentObj);
     })
@@ -431,7 +422,7 @@ const findAll = (req: Request, res: Response): void => {
       actions.forEach((action) => {
         curatedActions.push({
           action,
-          i18n: curateI18n(action.i18n)
+          i18n: curateI18n(action.i18n),
         });
       });
 
@@ -440,12 +431,4 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export {
-  create,
-  deleteAction,
-  findActionById,
-  findAll,
-  findSingle,
-  smartUpdateActions,
-  update
-};
+export { create, deleteAction, findActionById, findAll, findSingle, smartUpdateActions, update };

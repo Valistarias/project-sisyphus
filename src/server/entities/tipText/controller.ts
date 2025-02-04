@@ -1,13 +1,11 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 
 import db from '../../models';
 import {
   gemDuplicate,
   gemInvalidField,
   gemNotFound,
-  gemServerError
+  gemServerError,
 } from '../../utils/globalErrorMessage';
 
 import type { HydratedITipText } from './model';
@@ -89,13 +87,16 @@ const checkDuplicateTipId = async (
 
 const create = (req: Request, res: Response): void => {
   const {
-    title, summary, i18n = null, tipId
+    title,
+    summary,
+    i18n = null,
+    tipId,
   }: {
-    id?: string
-    title?: string
-    summary?: string
-    i18n?: InternationalizationType | null
-    tipId?: string
+    id?: string;
+    title?: string;
+    summary?: string;
+    i18n?: InternationalizationType | null;
+    tipId?: string;
   } = req.body;
   if (title === undefined || summary === undefined || tipId === undefined) {
     res.status(400).send(gemInvalidField('Item Modifier'));
@@ -109,7 +110,7 @@ const create = (req: Request, res: Response): void => {
         const tipText = new TipText({
           title,
           summary,
-          tipId
+          tipId,
         });
 
         if (i18n !== null) {
@@ -135,13 +136,17 @@ const create = (req: Request, res: Response): void => {
 
 const update = (req: Request, res: Response): void => {
   const {
-    id, title = null, summary = null, i18n, tipId = null
+    id,
+    title = null,
+    summary = null,
+    i18n,
+    tipId = null,
   }: {
-    id?: string
-    title: string | null
-    summary: string | null
-    i18n: InternationalizationType | null
-    tipId: string | null
+    id?: string;
+    title: string | null;
+    summary: string | null;
+    i18n: InternationalizationType | null;
+    tipId: string | null;
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Item Modifier ID'));
@@ -150,8 +155,7 @@ const update = (req: Request, res: Response): void => {
   }
   findTipTextById(id)
     .then((tipText) => {
-      const alreadyExistOnce = typeof tipId === 'string'
-        && tipId === tipText.tipId;
+      const alreadyExistOnce = typeof tipId === 'string' && tipId === tipText.tipId;
       checkDuplicateTipId(tipId, alreadyExistOnce)
         .then((response) => {
           if (typeof response === 'boolean') {
@@ -166,12 +170,11 @@ const update = (req: Request, res: Response): void => {
             }
 
             if (i18n !== null) {
-              const newIntl: InternationalizationType = { ...(
-                tipText.i18n !== undefined
-                && tipText.i18n !== ''
+              const newIntl: InternationalizationType = {
+                ...(tipText.i18n !== undefined && tipText.i18n !== ''
                   ? JSON.parse(tipText.i18n)
-                  : {}
-              ) };
+                  : {}),
+              };
 
               Object.keys(i18n).forEach((lang) => {
                 newIntl[lang] = i18n[lang];
@@ -184,7 +187,8 @@ const update = (req: Request, res: Response): void => {
               .save()
               .then(() => {
                 res.send({
-                  message: 'Item Modifier was updated successfully!', tipText
+                  message: 'Item Modifier was updated successfully!',
+                  tipText,
                 });
               })
               .catch((err: unknown) => {
@@ -231,8 +235,8 @@ const deleteTipText = (req: Request, res: Response): void => {
 };
 
 interface CuratedITipText {
-  i18n?: InternationalizationType
-  tipText: HydratedITipText
+  i18n?: InternationalizationType;
+  tipText: HydratedITipText;
 }
 
 const findSingle = (req: Request, res: Response): void => {
@@ -246,7 +250,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((tipText) => {
       const sentObj = {
         tipText,
-        i18n: curateI18n(tipText.i18n)
+        i18n: curateI18n(tipText.i18n),
       };
       res.send(sentObj);
     })
@@ -263,7 +267,7 @@ const findAll = (req: Request, res: Response): void => {
       tipTexts.forEach((tipText) => {
         curatedTipTexts.push({
           tipText,
-          i18n: curateI18n(tipText.i18n)
+          i18n: curateI18n(tipText.i18n),
         });
       });
 
@@ -279,5 +283,5 @@ export {
   findAll,
   findSingle,
   findTipTextById,
-  update
+  update,
 };

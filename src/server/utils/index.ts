@@ -13,8 +13,7 @@ const safeJsonParse = <T>(str: string): T | undefined => {
   }
 };
 
-export const curateI18n = (i18n?: string):
-  InternationalizationType | undefined => {
+export const curateI18n = (i18n?: string): InternationalizationType | undefined => {
   if (i18n === '' || i18n === undefined) {
     return {};
   }

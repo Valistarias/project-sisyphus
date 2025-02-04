@@ -28,7 +28,7 @@ export default class Entity<Payload, T, CuratedT> {
           });
       });
 
-    this.get = async payload =>
+    this.get = async (payload) =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/single/`, { params: payload })
@@ -40,7 +40,7 @@ export default class Entity<Payload, T, CuratedT> {
           });
       });
 
-    this.create = async payload =>
+    this.create = async (payload) =>
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/create/`, payload)
@@ -52,7 +52,7 @@ export default class Entity<Payload, T, CuratedT> {
           });
       });
 
-    this.update = async payload =>
+    this.update = async (payload) =>
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/update/`, payload)
@@ -64,7 +64,7 @@ export default class Entity<Payload, T, CuratedT> {
           });
       });
 
-    this.delete = async payload =>
+    this.delete = async (payload) =>
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/delete/`, payload)

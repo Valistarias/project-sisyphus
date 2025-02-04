@@ -1,13 +1,11 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 
 import db from '../../models';
 import {
   gemDuplicate,
   gemInvalidField,
   gemNotFound,
-  gemServerError
+  gemServerError,
 } from '../../utils/globalErrorMessage';
 import { checkDuplicateCharParamFormulaId } from '../charParam/controller';
 import { checkDuplicateSkillFormulaId } from '../skill/controller';
@@ -111,20 +109,24 @@ const checkDuplicateFormulaId = async (
 
 const create = (req: Request, res: Response): void => {
   const {
-    title, summary, short, i18n = null, formulaId
+    title,
+    summary,
+    short,
+    i18n = null,
+    formulaId,
   }: {
-    id?: string
-    title?: string
-    summary?: string
-    short?: string
-    i18n?: string | null
-    formulaId?: string
+    id?: string;
+    title?: string;
+    summary?: string;
+    short?: string;
+    i18n?: string | null;
+    formulaId?: string;
   } = req.body;
   if (
-    title === undefined
-    || summary === undefined
-    || short === undefined
-    || formulaId === undefined
+    title === undefined ||
+    summary === undefined ||
+    short === undefined ||
+    formulaId === undefined
   ) {
     res.status(400).send(gemInvalidField('Stat'));
 
@@ -138,7 +140,7 @@ const create = (req: Request, res: Response): void => {
           title,
           summary,
           short,
-          formulaId
+          formulaId,
         });
 
         if (i18n !== null) {
@@ -164,14 +166,19 @@ const create = (req: Request, res: Response): void => {
 
 const update = (req: Request, res: Response): void => {
   const {
-    id, title = null, summary = null, i18n, short = null, formulaId = null
+    id,
+    title = null,
+    summary = null,
+    i18n,
+    short = null,
+    formulaId = null,
   }: {
-    id?: string
-    title: string | null
-    summary: string | null
-    short: string | null
-    i18n: InternationalizationType | null
-    formulaId: string | null
+    id?: string;
+    title: string | null;
+    summary: string | null;
+    short: string | null;
+    i18n: InternationalizationType | null;
+    formulaId: string | null;
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Stat ID'));
@@ -180,9 +187,7 @@ const update = (req: Request, res: Response): void => {
   }
   findStatById(id)
     .then((stat) => {
-      const alreadyExistOnce
-      = typeof formulaId === 'string'
-        && formulaId === stat.formulaId;
+      const alreadyExistOnce = typeof formulaId === 'string' && formulaId === stat.formulaId;
       checkDuplicateFormulaId(formulaId, alreadyExistOnce)
         .then((response) => {
           if (typeof response === 'boolean') {
@@ -200,11 +205,9 @@ const update = (req: Request, res: Response): void => {
             }
 
             if (i18n !== null) {
-              const newIntl: InternationalizationType = { ...(
-                stat.i18n !== undefined
-                && stat.i18n !== ''
-                  ? JSON.parse(stat.i18n)
-                  : {}) };
+              const newIntl: InternationalizationType = {
+                ...(stat.i18n !== undefined && stat.i18n !== '' ? JSON.parse(stat.i18n) : {}),
+              };
 
               Object.keys(i18n).forEach((lang) => {
                 newIntl[lang] = i18n[lang];
@@ -217,7 +220,8 @@ const update = (req: Request, res: Response): void => {
               .save()
               .then(() => {
                 res.send({
-                  message: 'Stat was updated successfully!', stat
+                  message: 'Stat was updated successfully!',
+                  stat,
                 });
               })
               .catch((err: unknown) => {
@@ -264,8 +268,8 @@ const deleteStat = (req: Request, res: Response): void => {
 };
 
 interface CuratedIStat {
-  i18n?: InternationalizationType
-  stat: HydratedIStat
+  i18n?: InternationalizationType;
+  stat: HydratedIStat;
 }
 
 const findSingle = (req: Request, res: Response): void => {
@@ -279,7 +283,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((stat) => {
       const sentObj = {
         stat,
-        i18n: curateI18n(stat.i18n)
+        i18n: curateI18n(stat.i18n),
       };
       res.send(sentObj);
     })
@@ -296,7 +300,7 @@ const findAll = (req: Request, res: Response): void => {
       stats.forEach((stat) => {
         curatedStats.push({
           stat,
-          i18n: curateI18n(stat.i18n)
+          i18n: curateI18n(stat.i18n),
         });
       });
 
@@ -312,5 +316,5 @@ export {
   findAll,
   findSingle,
   findStatById,
-  update
+  update,
 };

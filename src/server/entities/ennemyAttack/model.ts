@@ -1,26 +1,24 @@
-import {
-  Schema, model, type HydratedDocument, type Model, type ObjectId
-} from 'mongoose';
+import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
 import type { IDamageType } from '../index';
 
 interface IEnnemyAttack {
   /** The title of the Ennemy Attack */
-  title: string
+  title: string;
   /** A summary of the Ennemy Attack */
-  summary: string
+  summary: string;
   /** The internationnal content, as a json, stringified */
-  i18n?: string
+  i18n?: string;
   /** The associated damageType */
-  damageType: ObjectId
+  damageType: ObjectId;
   /** The range of the attack */
-  weaponScope: ObjectId | string
+  weaponScope: ObjectId | string;
   /** The dices formula of the damage (ex: 2d6 + 1) */
-  dices: string
+  dices: string;
   /** The bonus to roll this attack */
-  bonusToHit?: number
+  bonusToHit?: number;
   /** When the Ennemy Attack was created */
-  createdAt: Date
+  createdAt: Date;
 }
 
 type HydratedIEnnemyAttack = HydratedDocument<
@@ -33,22 +31,20 @@ const ennemyAttackSchema = new Schema<IEnnemyAttack>({
   i18n: String,
   damageType: {
     type: Schema.Types.ObjectId,
-    ref: 'DamageType'
+    ref: 'DamageType',
   },
   weaponScope: {
     type: Schema.Types.ObjectId,
-    ref: 'WeaponScope'
+    ref: 'WeaponScope',
   },
   dices: String,
   bonusToHit: Number,
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 const EnnemyAttackModel = (): Model<IEnnemyAttack> => model('EnnemyAttack', ennemyAttackSchema);
 
-export {
-  EnnemyAttackModel, type HydratedIEnnemyAttack, type IEnnemyAttack
-};
+export { EnnemyAttackModel, type HydratedIEnnemyAttack, type IEnnemyAttack };

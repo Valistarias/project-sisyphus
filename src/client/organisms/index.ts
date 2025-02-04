@@ -7,7 +7,7 @@ import {
   CharacterHeader,
   CharacterSkills,
   CharacterStatus,
-  CharacterActionBoard
+  CharacterActionBoard,
 } from './character';
 import {
   CharCreationStep1,
@@ -16,11 +16,9 @@ import {
   CharCreationStep4,
   CharCreationStep5,
   CharCreationStep6,
-  CharCreationStep7
+  CharCreationStep7,
 } from './characterCreation';
-import {
-  DragList, type IDragElt
-} from './dragList';
+import { DragList, type IDragElt } from './dragList';
 import HeaderBar from './headerBar';
 import ImplantDisplay from './implantDisplay';
 import ItemDisplay from './itemDisplay';
@@ -28,7 +26,7 @@ import ProgramDisplay from './programDisplay';
 import {
   RichTextElement,
   basicRichTextElementExtentions,
-  completeRichTextElementExtentions
+  completeRichTextElementExtentions,
 } from './richTextElement';
 import WeaponDisplay from './weaponDisplay';
 
@@ -58,5 +56,5 @@ export {
   basicRichTextElementExtentions,
   completeRichTextElementExtentions,
   CharacterActionBoard,
-  type IDragElt
+  type IDragElt,
 };

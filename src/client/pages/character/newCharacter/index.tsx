@@ -1,26 +1,16 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { AnimatePresence } from 'framer-motion';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { TypeAnimation } from 'react-type-animation';
 
-import {
-  useApi, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
 import tvBackground from '../../../assets/imgs/tvbg2.gif';
-import {
-  Aicon, Ap, Atitle
-} from '../../../atoms';
-import {
-  Ariane, Button, Checkbox, type IArianeElt
-} from '../../../molecules';
+import { Aicon, Ap, Atitle } from '../../../atoms';
+import { Ariane, Button, Checkbox, type IArianeElt } from '../../../molecules';
 import {
   Alert,
   CharCreationStep1,
@@ -30,7 +20,7 @@ import {
   CharCreationStep5,
   CharCreationStep6,
   CharCreationStep7,
-  RichTextElement
+  RichTextElement,
 } from '../../../organisms';
 
 import { introSequence } from './introSequence';
@@ -43,7 +33,7 @@ import type {
   ICuratedImplant,
   ICuratedItem,
   ICuratedProgram,
-  ICuratedWeapon
+  ICuratedWeapon,
 } from '../../../types';
 
 import { classTrim } from '../../../utils';
@@ -51,15 +41,13 @@ import { classTrim } from '../../../utils';
 import './newCharacter.scss';
 
 interface ToolTipValues {
-  autoDisplay: boolean
+  autoDisplay: boolean;
 }
 
 const NewCharacter: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
   const {
     user,
     setUser,
@@ -70,7 +58,7 @@ const NewCharacter: FC = () => {
     resetCharacter,
     setCharacterFromId,
     charParams,
-    globalValues
+    globalValues,
   } = useGlobalVars();
   const { id } = useParams();
 
@@ -91,9 +79,7 @@ const NewCharacter: FC = () => {
   const [introState, setIntroState] = useState(0);
   const calledApi = useRef(false);
 
-  const {
-    handleSubmit: submitTips, control: toolTipControl
-  } = useForm();
+  const { handleSubmit: submitTips, control: toolTipControl } = useForm();
 
   const charCreationState = useMemo(() => {
     if (character !== null && character !== false) {
@@ -132,25 +118,19 @@ const NewCharacter: FC = () => {
   // TODO: Internationalization
   const relevantTipsData = useMemo(() => {
     if (
-      user !== null
-      && user.charCreationTips
-      && forcedCharState === null
-      && charCreationState !== 0
-      && charCreationState !== 7
+      user !== null &&
+      user.charCreationTips &&
+      forcedCharState === null &&
+      charCreationState !== 0 &&
+      charCreationState !== 7
     ) {
       setTooltipOpen(true);
     }
 
     return tipTexts.find(
-      ({ tipText }) =>
-        tipText.tipId === `tutoChar${forcedCharState ?? charCreationState}`
+      ({ tipText }) => tipText.tipId === `tutoChar${forcedCharState ?? charCreationState}`
     );
-  }, [
-    charCreationState,
-    forcedCharState,
-    tipTexts,
-    user
-  ]);
+  }, [charCreationState, forcedCharState, tipTexts, user]);
 
   const arianeData = useMemo<IArianeElt[]>(
     () =>
@@ -158,13 +138,9 @@ const NewCharacter: FC = () => {
         key: `${i + 1}`,
         label: t(`characterCreation.step${i + 1}.cat`, { ns: 'components' }),
         actual: i + 1 === (forcedCharState ?? charCreationState),
-        disabled: i + 1 > charCreationState
+        disabled: i + 1 > charCreationState,
       })),
-    [
-      t,
-      charCreationState,
-      forcedCharState
-    ]
+    [t, charCreationState, forcedCharState]
   );
 
   const getData = useCallback(() => {
@@ -183,7 +159,7 @@ const NewCharacter: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
       api.weapons
@@ -199,7 +175,7 @@ const NewCharacter: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
       api.programs
@@ -215,7 +191,7 @@ const NewCharacter: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
       api.items
@@ -231,7 +207,7 @@ const NewCharacter: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
       api.implants
@@ -247,7 +223,7 @@ const NewCharacter: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
       api.bags
@@ -263,7 +239,7 @@ const NewCharacter: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
       api.armors
@@ -279,16 +255,11 @@ const NewCharacter: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    getNewId,
-    createAlert,
-    t
-  ]);
+  }, [api, getNewId, createAlert, t]);
 
   const onSubmitCyberFrame = useCallback(
     (cyberFrameId: string) => {
@@ -301,11 +272,8 @@ const NewCharacter: FC = () => {
         if (firstCyberFrameNode !== undefined) {
           api.characters
             .addFirstCyberFrameNode({
-              characterId:
-                character !== false && character !== null
-                  ? character._id
-                  : undefined,
-              nodeId: firstCyberFrameNode.node._id
+              characterId: character !== false && character !== null ? character._id : undefined,
+              nodeId: firstCyberFrameNode.node._id,
             })
             .then((sentCharacter) => {
               if (character === null || character === false) {
@@ -322,7 +290,7 @@ const NewCharacter: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('newCharacter.successUpdateCyberFrame', { ns: 'pages' })}</Ap>
                     </Alert>
-                  )
+                  ),
                 });
               }
               setCharacter(sentCharacter);
@@ -336,36 +304,22 @@ const NewCharacter: FC = () => {
                   <Alert key={newId} id={newId} timer={5}>
                     <Ap>{data.message}</Ap>
                   </Alert>
-                )
+                ),
               });
             });
         }
       }
     },
-    [
-      api,
-      user,
-      cyberFrames,
-      character,
-      setCharacter,
-      getNewId,
-      createAlert,
-      t
-    ]
+    [api, user, cyberFrames, character, setCharacter, getNewId, createAlert, t]
   );
 
   const onSubmitBackground = useCallback(
     (backgroundId: string) => {
-      if (
-        api !== undefined
-        && user !== null
-        && character !== null
-        && character !== false
-      ) {
+      if (api !== undefined && user !== null && character !== null && character !== false) {
         api.characters
           .update({
             id: character._id,
-            backgroundId
+            backgroundId,
           })
           .then(() => {
             const newId = getNewId();
@@ -375,7 +329,7 @@ const NewCharacter: FC = () => {
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{t('newCharacter.successUpdatebackground', { ns: 'pages' })}</Ap>
                 </Alert>
-              )
+              ),
             });
             setCharacterFromId(character._id);
           })
@@ -388,40 +342,32 @@ const NewCharacter: FC = () => {
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{data.message}</Ap>
                 </Alert>
-              )
+              ),
             });
           });
       }
     },
-    [
-      api,
-      character,
-      createAlert,
-      getNewId,
-      setCharacterFromId,
-      t,
-      user
-    ]
+    [api, character, createAlert, getNewId, setCharacterFromId, t, user]
   );
 
   const onSubmitItems = useCallback(
     (items: {
-      weapons: string[]
-      armors: string[]
-      bags: string[]
-      items: string[]
-      programs: string[]
-      implants: string[]
-      money: number
+      weapons: string[];
+      armors: string[];
+      bags: string[];
+      items: string[];
+      programs: string[];
+      implants: string[];
+      money: number;
     }) => {
       if (
-        api !== undefined
-        && user !== null
-        && character !== null
-        && character !== false
-        && character.bodies !== undefined
+        api !== undefined &&
+        user !== null &&
+        character !== null &&
+        character !== false &&
+        character.bodies !== undefined
       ) {
-        const relevantBody = character.bodies.find(body => body.alive);
+        const relevantBody = character.bodies.find((body) => body.alive);
         if (relevantBody !== undefined) {
           setLoading(true);
           api.bodies
@@ -432,13 +378,13 @@ const NewCharacter: FC = () => {
               bags: items.bags,
               items: items.items,
               programs: items.programs,
-              implants: items.implants
+              implants: items.implants,
             })
             .then(() => {
               api.characters
                 .update({
                   id: character._id,
-                  money: items.money
+                  money: items.money,
                 })
                 .then(() => {
                   const newId = getNewId();
@@ -448,7 +394,7 @@ const NewCharacter: FC = () => {
                       <Alert key={newId} id={newId} timer={5}>
                         <Ap>{t('newCharacter.successUpdateItems', { ns: 'pages' })}</Ap>
                       </Alert>
-                    )
+                    ),
                   });
                   setCharacterFromId(character._id);
                 })
@@ -461,7 +407,7 @@ const NewCharacter: FC = () => {
                       <Alert key={newId} id={newId} timer={5}>
                         <Ap>{data.message}</Ap>
                       </Alert>
-                    )
+                    ),
                   });
                 });
             })
@@ -474,31 +420,18 @@ const NewCharacter: FC = () => {
                   <Alert key={newId} id={newId} timer={5}>
                     <Ap>{data.message}</Ap>
                   </Alert>
-                )
+                ),
               });
             });
         }
       }
     },
-    [
-      api,
-      character,
-      createAlert,
-      getNewId,
-      setCharacterFromId,
-      t,
-      user
-    ]
+    [api, character, createAlert, getNewId, setCharacterFromId, t, user]
   );
 
   const onSubmitSkills = useCallback(
     (nodeIds: string[]) => {
-      if (
-        api !== undefined
-        && user !== null
-        && character !== null
-        && character !== false
-      ) {
+      if (api !== undefined && user !== null && character !== null && character !== false) {
         let nodeToAdd: string[] = [];
         const nodeToRemove: string[] = [];
         if (character.nodes !== undefined && character.nodes.length > 1) {
@@ -524,7 +457,7 @@ const NewCharacter: FC = () => {
           .updateNodes({
             characterId: character._id,
             toAdd: nodeToAdd,
-            toRemove: nodeToRemove
+            toRemove: nodeToRemove,
           })
           .then((sentCharacter) => {
             const newId = getNewId();
@@ -534,7 +467,7 @@ const NewCharacter: FC = () => {
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{t('newCharacter.successUpdateSkills', { ns: 'pages' })}</Ap>
                 </Alert>
-              )
+              ),
             });
             setCharacter(sentCharacter);
           })
@@ -547,42 +480,29 @@ const NewCharacter: FC = () => {
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{data.message}</Ap>
                 </Alert>
-              )
+              ),
             });
           });
       }
     },
-    [
-      api,
-      character,
-      createAlert,
-      getNewId,
-      setCharacter,
-      t,
-      user
-    ]
+    [api, character, createAlert, getNewId, setCharacter, t, user]
   );
 
   const onSubmitStats = useCallback(
     (
       stats: Array<{
-        id: string
-        value: number
+        id: string;
+        value: number;
       }>
     ) => {
-      if (
-        api !== undefined
-        && user !== null
-        && character !== null
-        && character !== false
-      ) {
+      if (api !== undefined && user !== null && character !== null && character !== false) {
         if (character.bodies !== undefined && character.bodies.length !== 0) {
-          const relevantBody = character.bodies.find(body => body.alive);
+          const relevantBody = character.bodies.find((body) => body.alive);
           if (relevantBody !== undefined) {
             api.bodies
               .updateStats({
                 id: relevantBody._id,
-                stats
+                stats,
               })
               .then(() => {
                 setCharacterFromId(character._id);
@@ -593,7 +513,7 @@ const NewCharacter: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('newCharacter.successUpdateStats', { ns: 'pages' })}</Ap>
                     </Alert>
-                  )
+                  ),
                 });
               })
               .catch(({ response }: ErrorResponseType) => {
@@ -605,7 +525,7 @@ const NewCharacter: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{data.message}</Ap>
                     </Alert>
-                  )
+                  ),
                 });
               });
           }
@@ -624,7 +544,7 @@ const NewCharacter: FC = () => {
             .create({
               characterId: character._id,
               hp: hpVal,
-              stats
+              stats,
             })
             .then(() => {
               setCharacterFromId(character._id);
@@ -638,35 +558,18 @@ const NewCharacter: FC = () => {
                   <Alert key={newId} id={newId} timer={5}>
                     <Ap>{data.message}</Ap>
                   </Alert>
-                )
+                ),
               });
             });
         }
       }
     },
-    [
-      api,
-      user,
-      character,
-      setCharacterFromId,
-      getNewId,
-      createAlert,
-      t,
-      globalValues,
-      charParams
-    ]
+    [api, user, character, setCharacterFromId, getNewId, createAlert, t, globalValues, charParams]
   );
 
   const onSubmitIdentification = useCallback(
-    ({
-      firstName, lastName, nickName, gender, pronouns, bio
-    }) => {
-      if (
-        api !== undefined
-        && user !== null
-        && character !== null
-        && character !== false
-      ) {
+    ({ firstName, lastName, nickName, gender, pronouns, bio }) => {
+      if (api !== undefined && user !== null && character !== null && character !== false) {
         api.characters
           .update({
             id: character._id,
@@ -676,7 +579,7 @@ const NewCharacter: FC = () => {
             gender,
             pronouns,
             bio,
-            isReady: true
+            isReady: true,
           })
           .then(() => {
             setCharacterFromId(character._id);
@@ -690,19 +593,12 @@ const NewCharacter: FC = () => {
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{data.message}</Ap>
                 </Alert>
-              )
+              ),
             });
           });
       }
     },
-    [
-      api,
-      user,
-      character,
-      getNewId,
-      createAlert,
-      setCharacterFromId
-    ]
+    [api, user, character, getNewId, createAlert, setCharacterFromId]
   );
 
   const onSubmitTooltip: SubmitHandler<ToolTipValues> = useCallback(
@@ -713,26 +609,19 @@ const NewCharacter: FC = () => {
           api.users
             .update({
               id: user._id,
-              charCreationTips: false
+              charCreationTips: false,
             })
             .then((res) => {
               setUser(res);
             })
             .catch(({ response }: ErrorResponseType) => {
               const { data } = response;
-              console.error(
-                `serverErrors.${data.code}: `, t(`terms.user.${data.sent}`)
-              );
+              console.error(`serverErrors.${data.code}: `, t(`terms.user.${data.sent}`));
             });
         }
       }
     },
-    [
-      t,
-      api,
-      setUser,
-      user
-    ]
+    [t, api, setUser, user]
   );
 
   const onArianeClick = useCallback(
@@ -807,26 +696,16 @@ const NewCharacter: FC = () => {
     onSubmitBackground,
     backgrounds,
     onSubmitSkills,
-    onSubmitStats
+    onSubmitStats,
   ]);
 
   useEffect(() => {
-    if (
-      api !== undefined
-      && user !== null
-      && !calledApi.current
-      && id !== undefined
-    ) {
+    if (api !== undefined && user !== null && !calledApi.current && id !== undefined) {
       setLoading(true);
       setCharacterFromId(id);
       calledApi.current = true;
       getData();
-    } else if (
-      id === undefined
-      && api !== undefined
-      && user !== null
-      && !calledApi.current
-    ) {
+    } else if (id === undefined && api !== undefined && user !== null && !calledApi.current) {
       calledApi.current = true;
       getData();
     }
@@ -834,17 +713,7 @@ const NewCharacter: FC = () => {
     return () => {
       resetCharacter();
     };
-  }, [
-    api,
-    user,
-    createAlert,
-    getNewId,
-    getData,
-    t,
-    id,
-    resetCharacter,
-    setCharacterFromId
-  ]);
+  }, [api, user, createAlert, getNewId, getData, t, id, resetCharacter, setCharacterFromId]);
 
   useEffect(() => {
     if (!loading && introState === 2 && id === undefined) {
@@ -855,26 +724,20 @@ const NewCharacter: FC = () => {
         }, 1100);
       }, 2000);
     }
-  }, [
-    loading,
-    introState,
-    id
-  ]);
+  }, [loading, introState, id]);
 
   useEffect(() => {
     if ((character === false || character === null) && id !== undefined) {
       setLoading(true);
     } else if (
-      (id === undefined || (
-        character !== false && character !== null
-      ))
-      && backgrounds.length > 0
-      && weapons.length > 0
-      && programs.length > 0
-      && implants.length > 0
-      && items.length > 0
-      && bags.length > 0
-      && armors.length > 0
+      (id === undefined || (character !== false && character !== null)) &&
+      backgrounds.length > 0 &&
+      weapons.length > 0 &&
+      programs.length > 0 &&
+      implants.length > 0 &&
+      items.length > 0 &&
+      bags.length > 0 &&
+      armors.length > 0
     ) {
       setLoading(false);
       if (id !== undefined && character !== false && character !== null) {
@@ -890,7 +753,7 @@ const NewCharacter: FC = () => {
     implants.length,
     items.length,
     bags.length,
-    armors.length
+    armors.length,
   ]);
 
   return (
@@ -907,55 +770,47 @@ const NewCharacter: FC = () => {
     >
       <div
         className="newcharacter__loading"
-        style={
-          id === undefined ? { backgroundImage: `url(${tvBackground})` } : {}
-        }
+        style={id === undefined ? { backgroundImage: `url(${tvBackground})` } : {}}
       >
         <div
           className="newcharacter__loading__accent"
-          style={
-            id === undefined ? { backgroundImage: `url(${tvBackground})` } : {}
-          }
+          style={id === undefined ? { backgroundImage: `url(${tvBackground})` } : {}}
         />
         <div className="newcharacter__loading__main-block">
-          {!loading && id === undefined
-            ? (
-                <div className="newcharacter__loading__skip">
-                  <Button
-                    size="large"
-                    onClick={() => {
-                      setDisplayLoading(false);
-                    }}
-                  >
-                    {t('newCharacter.skipIntro', { ns: 'pages' })}
-                  </Button>
-                </div>
-              )
-            : null}
+          {!loading && id === undefined ? (
+            <div className="newcharacter__loading__skip">
+              <Button
+                size="large"
+                onClick={() => {
+                  setDisplayLoading(false);
+                }}
+              >
+                {t('newCharacter.skipIntro', { ns: 'pages' })}
+              </Button>
+            </div>
+          ) : null}
           <div className="newcharacter__loading__logo">
             <Aicon className="newcharacter__loading__logo__elt" type="Eidolon" size="unsized" />
           </div>
-          {id === undefined
-            ? (
-                <div className="newcharacter__loading__code">
-                  <Ap>
-                    <TypeAnimation
-                      className="newcharacter__loading__code__elt"
-                      sequence={[
-                        ...introSequence(),
-                        () => {
-                          setIntroState(2);
-                        }
-                      ]}
-                      speed={94}
-                      cursor={false}
-                      omitDeletionAnimation={true}
-                      style={{ whiteSpace: 'pre-line' }}
-                    />
-                  </Ap>
-                </div>
-              )
-            : null}
+          {id === undefined ? (
+            <div className="newcharacter__loading__code">
+              <Ap>
+                <TypeAnimation
+                  className="newcharacter__loading__code__elt"
+                  sequence={[
+                    ...introSequence(),
+                    () => {
+                      setIntroState(2);
+                    },
+                  ]}
+                  speed={94}
+                  cursor={false}
+                  omitDeletionAnimation={true}
+                  style={{ whiteSpace: 'pre-line' }}
+                />
+              </Ap>
+            </div>
+          ) : null}
         </div>
       </div>
       <form
@@ -981,15 +836,13 @@ const NewCharacter: FC = () => {
               </Button>
             </div>
           </div>
-          {user?.charCreationTips === true
-            ? (
-                <Checkbox
-                  inputName="autoDisplay"
-                  label={t('newCharacter.checkCloseTip', { ns: 'pages' })}
-                  control={toolTipControl}
-                />
-              )
-            : null}
+          {user?.charCreationTips === true ? (
+            <Checkbox
+              inputName="autoDisplay"
+              label={t('newCharacter.checkCloseTip', { ns: 'pages' })}
+              control={toolTipControl}
+            />
+          ) : null}
         </div>
       </form>
       <Button
@@ -998,7 +851,7 @@ const NewCharacter: FC = () => {
         theme="afterglow"
         className="newcharacter__tooltip-btn"
         onClick={() => {
-          setTooltipOpen(prev => !prev);
+          setTooltipOpen((prev) => !prev);
         }}
       />
       <Ariane isSteps data={arianeData} onArianeClick={onArianeClick} />

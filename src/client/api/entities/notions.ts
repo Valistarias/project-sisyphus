@@ -5,21 +5,20 @@ import Entity from './entity';
 import type { ICuratedNotion, INotion } from '../../types';
 
 interface INotionsPayload {
-  notionId: string
+  notionId: string;
 }
 
 interface IRulebookPayload {
-  ruleBookId?: string
+  ruleBookId?: string;
 }
 
-export default class Notions
-  extends Entity<INotionsPayload, INotion, ICuratedNotion> {
+export default class Notions extends Entity<INotionsPayload, INotion, ICuratedNotion> {
   getAllByRuleBook: (payload: IRulebookPayload) => Promise<ICuratedNotion[]>;
 
   constructor() {
     super('notions');
 
-    this.getAllByRuleBook = async payload =>
+    this.getAllByRuleBook = async (payload) =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/byrulebook/`, { params: payload })

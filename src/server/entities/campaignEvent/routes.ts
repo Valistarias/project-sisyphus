@@ -2,9 +2,7 @@ import type { Router } from 'express';
 
 import { verifyToken } from '../../middlewares';
 
-import {
-  create, findAllByCampaign, update
-} from './controller';
+import { create, findAllByCampaign, update } from './controller';
 
 export default (app: Router): void => {
   app.use((req, res, next) => {

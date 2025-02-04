@@ -3,11 +3,14 @@ import Entity from './entity';
 import type { ICuratedWeaponType, IWeaponType } from '../../types';
 
 interface IWeaponTypePayload {
-  weaponTypeId: string
+  weaponTypeId: string;
 }
 
-export default class WeaponTypes
-  extends Entity<IWeaponTypePayload, IWeaponType, ICuratedWeaponType> {
+export default class WeaponTypes extends Entity<
+  IWeaponTypePayload,
+  IWeaponType,
+  ICuratedWeaponType
+> {
   constructor() {
     super('weapontypes');
   }

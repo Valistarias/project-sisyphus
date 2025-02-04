@@ -1,11 +1,7 @@
-import React, {
-  useContext, useMemo, useState, type FC, type ReactNode
-} from 'react';
+import React, { useContext, useMemo, useState, type FC, type ReactNode } from 'react';
 
 import i18next from 'i18next';
-import {
-  I18nextProvider, initReactI18next
-} from 'react-i18next';
+import { I18nextProvider, initReactI18next } from 'react-i18next';
 
 import common_en from '../../i18n/en/common.json';
 import components_en from '../../i18n/en/components.json';
@@ -18,21 +14,16 @@ import pages_fr from '../../i18n/fr/pages.json';
 
 interface ILangContext {
   /** Is the provider loading */
-  loading: boolean
+  loading: boolean;
 }
 
 interface LangProviderProps {
   /** The childrens of the Providers element */
-  children: ReactNode
+  children: ReactNode;
 }
 
 void i18next.use(initReactI18next).init({
-  ns: [
-    'common',
-    'fields',
-    'pages',
-    'components'
-  ],
+  ns: ['common', 'fields', 'pages', 'components'],
   defaultNS: 'common',
   interpolation: {
     escapeValue: false,
@@ -42,7 +33,7 @@ void i18next.use(initReactI18next).init({
       if (format === 'capitalize') return `${value.charAt(0).toUpperCase()}${value.slice(1)}`;
 
       return value;
-    }
+    },
   },
   lng: 'en',
   resources: {
@@ -50,15 +41,15 @@ void i18next.use(initReactI18next).init({
       common: common_en,
       fields: fields_en,
       pages: pages_en,
-      components: components_en
+      components: components_en,
     },
     fr: {
       common: common_fr,
       fields: fields_fr,
       pages: pages_fr,
-      components: components_fr
-    }
-  }
+      components: components_fr,
+    },
+  },
 });
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- To avoid null values
@@ -67,10 +58,7 @@ const LangContext = React.createContext<ILangContext>({} as ILangContext);
 export const LangProvider: FC<LangProviderProps> = ({ children }) => {
   const [loading] = useState<boolean>(false);
 
-  const providerValues = useMemo(
-    () => ({ loading }),
-    [loading]
-  );
+  const providerValues = useMemo(() => ({ loading }), [loading]);
 
   return (
     <LangContext.Provider value={providerValues}>

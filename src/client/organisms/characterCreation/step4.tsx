@@ -1,15 +1,11 @@
-import React, {
-  useEffect, useMemo, useState, type FC
-} from 'react';
+import React, { useEffect, useMemo, useState, type FC } from 'react';
 
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../providers';
 
-import {
-  Abutton, Aicon, Ali, Ap, Atitle, Aul
-} from '../../atoms';
+import { Abutton, Aicon, Ali, Ap, Atitle, Aul } from '../../atoms';
 import { Button } from '../../molecules';
 import { RichTextElement } from '../richTextElement';
 
@@ -21,31 +17,28 @@ import './characterCreation.scss';
 
 interface ICharacterCreationStep4 {
   /** All the available backgrounds */
-  backgrounds: ICuratedBackground[]
+  backgrounds: ICuratedBackground[];
   /** When the user click send and the data is send perfectly */
-  onSubmitBackground: (id: string) => void
+  onSubmitBackground: (id: string) => void;
 }
 
 const CharacterCreationStep4: FC<ICharacterCreationStep4> = ({
   backgrounds,
-  onSubmitBackground
+  onSubmitBackground,
 }) => {
   const { t } = useTranslation();
-  const {
-    skills,
-    character
-  } = useGlobalVars();
+  const { skills, character } = useGlobalVars();
   const [selectedBg, setSelectedBg] = useState<ICuratedBackground | null>(null);
 
   const bonuses = useMemo(() => {
-    const bonuses = selectedBg?.background.skillBonuses?.map(skillBonus => ({
+    const bonuses = selectedBg?.background.skillBonuses?.map((skillBonus) => ({
       ...skillBonus,
-      skill: skills.find(skill => skill.skill._id === skillBonus.skill)
+      skill: skills.find((skill) => skill.skill._id === skillBonus.skill),
     }));
 
     return (
       <Aul noPoints className="characterCreation-step4__view__chosen-background__bonuses">
-        {bonuses?.map(bonus => (
+        {bonuses?.map((bonus) => (
           <Ali
             className="characterCreation-step4__view__chosen-background__bonuses__elt"
             key={bonus._id}
@@ -59,11 +52,11 @@ const CharacterCreationStep4: FC<ICharacterCreationStep4> = ({
 
   useEffect(() => {
     if (
-      backgrounds.length > 0
-      && character !== null
-      && character !== false
-      && character.background !== undefined
-      && selectedBg === null
+      backgrounds.length > 0 &&
+      character !== null &&
+      character !== false &&
+      character.background !== undefined &&
+      selectedBg === null
     ) {
       const findBg = backgrounds.find(
         ({ background }) => background._id === character.background?._id
@@ -76,11 +69,7 @@ const CharacterCreationStep4: FC<ICharacterCreationStep4> = ({
     } else if (backgrounds.length > 0 && selectedBg === null) {
       setSelectedBg(backgrounds[0]);
     }
-  }, [
-    backgrounds,
-    selectedBg,
-    character
-  ]);
+  }, [backgrounds, selectedBg, character]);
 
   return (
     <motion.div
@@ -90,11 +79,12 @@ const CharacterCreationStep4: FC<ICharacterCreationStep4> = ({
       initial={{ transform: 'skew(90deg, 0deg) scale3d(.2, .2, .2)' }}
       animate={{
         transform: 'skew(0, 0) scale3d(1, 1, 1)',
-        transitionEnd: { transform: 'none' }
+        transitionEnd: { transform: 'none' },
       }}
       exit={{ transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)' }}
       transition={{
-        ease: 'easeInOut', duration: 0.2
+        ease: 'easeInOut',
+        duration: 0.2,
       }}
     >
       <Ap className="characterCreation-step4__text">
@@ -106,7 +96,7 @@ const CharacterCreationStep4: FC<ICharacterCreationStep4> = ({
       <div className="characterCreation-step4__view">
         <Aul noPoints className="characterCreation-step4__view__list">
           <Ali className="characterCreation-step4__view__list__title">Choose one</Ali>
-          {backgrounds.map(background => (
+          {backgrounds.map((background) => (
             <Ali
               key={background.background._id}
               className={classTrim(`

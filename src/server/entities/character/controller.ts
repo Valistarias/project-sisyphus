@@ -1,17 +1,13 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 import type { HydratedDocument } from 'mongoose';
 
-import {
-  getUserFromToken, type IVerifyTokenRequest
-} from '../../middlewares/authJwt';
+import { getUserFromToken, type IVerifyTokenRequest } from '../../middlewares/authJwt';
 import db from '../../models';
 import {
   gemInvalidField,
   gemNotFound,
   gemServerError,
-  gemUnauthorizedGlobal
+  gemUnauthorizedGlobal,
 } from '../../utils/globalErrorMessage';
 import { curateSingleArmor, type CuratedIArmorToSend } from '../armor/controller';
 import { deleteBodiesRecursive } from '../body/controller';
@@ -24,7 +20,7 @@ import {
   createNodesByCharacter,
   deleteNodesByCharacter,
   deleteSpecificNodesByCharacter,
-  replaceCyberFrameNodeByCharacter
+  replaceCyberFrameNodeByCharacter,
 } from './node/controller';
 
 import type { HydratedICharacter } from './index';
@@ -41,7 +37,7 @@ import type {
   LeanIBodyImplant,
   LeanIBodyItem,
   LeanIBodyProgram,
-  LeanIBodyWeapon
+  LeanIBodyWeapon,
 } from '../body';
 import type { ICampaign } from '../campaign/model';
 import type { HydratedINode, LeanINode } from '../node/model';
@@ -52,9 +48,7 @@ import { curateI18n } from '../../utils';
 
 const { Character } = db;
 
-const findCharactersByPlayer = async (
-  req: Request
-): Promise<HydratedICharacter[]> =>
+const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[]> =>
   await new Promise((resolve, reject) => {
     getUserFromToken(req as IVerifyTokenRequest)
       .then((user) => {
@@ -74,8 +68,8 @@ const findCharactersByPlayer = async (
             populate: {
               path: 'node',
               select:
-                '_id title summary icon i18n rank quote cyberFrameBranch skillBranch effects actions skillBonuses statBonuses charParamBonuses'
-            }
+                '_id title summary icon i18n rank quote cyberFrameBranch skillBranch effects actions skillBonuses statBonuses charParamBonuses',
+            },
           })
           .populate<{ bodies: HydratedIBody[] }>({
             path: 'bodies',
@@ -83,37 +77,37 @@ const findCharactersByPlayer = async (
             populate: [
               {
                 path: 'stats',
-                select: '_id body stat value'
+                select: '_id body stat value',
               },
               {
                 path: 'ammos',
-                select: '_id body ammo bag qty'
+                select: '_id body ammo bag qty',
               },
               {
                 path: 'armors',
-                select: '_id body armor bag equiped'
+                select: '_id body armor bag equiped',
               },
               {
                 path: 'bags',
-                select: '_id body bag equiped'
+                select: '_id body bag equiped',
               },
               {
                 path: 'implants',
-                select: '_id body implant bag equiped'
+                select: '_id body implant bag equiped',
               },
               {
                 path: 'items',
-                select: '_id body item bag qty'
+                select: '_id body item bag qty',
               },
               {
                 path: 'programs',
-                select: '_id body program bag uses'
+                select: '_id body program bag uses',
               },
               {
                 path: 'weapons',
-                select: '_id body weapon bag ammo bullets'
-              }
-            ]
+                select: '_id body weapon bag ammo bullets',
+              },
+            ],
           })
           .populate<{ background: HydratedIBackground }>('background')
           .then((res: HydratedICharacter[]) => {
@@ -132,8 +126,8 @@ const findCompleteCharacterById = async (
   id: string,
   req: Request
 ): Promise<{
-  char: LeanICharacter
-  canEdit: boolean
+  char: LeanICharacter;
+  canEdit: boolean;
 }> =>
   await new Promise((resolve, reject) => {
     getUserFromToken(req as IVerifyTokenRequest)
@@ -155,14 +149,8 @@ const findCompleteCharacterById = async (
               path: 'node',
               select:
                 '_id title summary icon i18n rank quote cyberFrameBranch skillBranch effects actions skillBonuses statBonuses charParamBonuses',
-              populate: [
-                'effects',
-                'actions',
-                'skillBonuses',
-                'statBonuses',
-                'charParamBonuses'
-              ]
-            }
+              populate: ['effects', 'actions', 'skillBonuses', 'statBonuses', 'charParamBonuses'],
+            },
           })
           .populate<{ bodies: LeanIBody[] }>({
             path: 'bodies',
@@ -170,12 +158,12 @@ const findCompleteCharacterById = async (
             populate: [
               {
                 path: 'stats',
-                select: '_id body stat value'
+                select: '_id body stat value',
               },
               {
                 path: 'ammos',
                 select: '_id body ammo bag qty',
-                populate: ['ammo']
+                populate: ['ammo'],
               },
               {
                 path: 'armors',
@@ -183,21 +171,22 @@ const findCompleteCharacterById = async (
                 populate: [
                   {
                     path: 'armor',
-                    select: '_id title summary i18n rarity itemType itemModifiers armorType effects actions skillBonuses statBonuses charParamBonuses',
+                    select:
+                      '_id title summary i18n rarity itemType itemModifiers armorType effects actions skillBonuses statBonuses charParamBonuses',
                     populate: [
                       'effects',
                       'actions',
                       'skillBonuses',
                       'statBonuses',
-                      'charParamBonuses'
-                    ]
-                  }
-                ]
+                      'charParamBonuses',
+                    ],
+                  },
+                ],
               },
               {
                 path: 'bags',
                 select: '_id body bag equiped',
-                populate: ['bag']
+                populate: ['bag'],
               },
               {
                 path: 'implants',
@@ -205,16 +194,17 @@ const findCompleteCharacterById = async (
                 populate: [
                   {
                     path: 'implant',
-                    select: '_id title summary i18n rarity itemType itemModifiers bodyParts effects actions skillBonuses statBonuses charParamBonuses',
+                    select:
+                      '_id title summary i18n rarity itemType itemModifiers bodyParts effects actions skillBonuses statBonuses charParamBonuses',
                     populate: [
                       'effects',
                       'actions',
                       'skillBonuses',
                       'statBonuses',
-                      'charParamBonuses'
-                    ]
-                  }
-                ]
+                      'charParamBonuses',
+                    ],
+                  },
+                ],
               },
               {
                 path: 'items',
@@ -222,16 +212,17 @@ const findCompleteCharacterById = async (
                 populate: [
                   {
                     path: 'item',
-                    select: '_id title summary i18n rarity itemType itemModifiers effects actions skillBonuses statBonuses charParamBonuses',
+                    select:
+                      '_id title summary i18n rarity itemType itemModifiers effects actions skillBonuses statBonuses charParamBonuses',
                     populate: [
                       'effects',
                       'actions',
                       'skillBonuses',
                       'statBonuses',
-                      'charParamBonuses'
-                    ]
-                  }
-                ]
+                      'charParamBonuses',
+                    ],
+                  },
+                ],
               },
               {
                 path: 'programs',
@@ -239,13 +230,11 @@ const findCompleteCharacterById = async (
                 populate: [
                   {
                     path: 'program',
-                    select: '_id title summary i18n rarity itemType programScope uses ram radius ai aiSummoned damages',
-                    populate: [
-                      'ai',
-                      'damages'
-                    ]
-                  }
-                ]
+                    select:
+                      '_id title summary i18n rarity itemType programScope uses ram radius ai aiSummoned damages',
+                    populate: ['ai', 'damages'],
+                  },
+                ],
               },
               {
                 path: 'weapons',
@@ -253,25 +242,18 @@ const findCompleteCharacterById = async (
                 populate: [
                   {
                     path: 'weapon',
-                    select: '_id title summary quote i18n weaponType rarity weaponScope itemModifiers magasine ammoPerShot effects actions damages',
-                    populate: [
-                      'effects',
-                      'actions',
-                      'damages'
-                    ]
-                  }
-                ]
-              }
-            ]
+                    select:
+                      '_id title summary quote i18n weaponType rarity weaponScope itemModifiers magasine ammoPerShot effects actions damages',
+                    populate: ['effects', 'actions', 'damages'],
+                  },
+                ],
+              },
+            ],
           })
           .populate<{ background: Lean<IBackground> }>({
             path: 'background',
             select: '_id title summary i18n skillBonuses statBonuses charParamBonuses createdAt',
-            populate: [
-              'skillBonuses',
-              'statBonuses',
-              'charParamBonuses'
-            ]
+            populate: ['skillBonuses', 'statBonuses', 'charParamBonuses'],
           })
           .then((res?: LeanICharacter | null) => {
             if (res === undefined || res === null) {
@@ -279,7 +261,7 @@ const findCompleteCharacterById = async (
             } else {
               resolve({
                 char: res,
-                canEdit: String(res.player?._id) === String(user._id)
+                canEdit: String(res.player?._id) === String(user._id),
               });
             }
           })
@@ -296,8 +278,8 @@ const findCharacterById = async (
   id: string,
   req: Request
 ): Promise<{
-  char: HydratedICharacter
-  canEdit: boolean
+  char: HydratedICharacter;
+  canEdit: boolean;
 }> =>
   await new Promise((resolve, reject) => {
     getUserFromToken(req as IVerifyTokenRequest)
@@ -313,7 +295,7 @@ const findCharacterById = async (
           .populate<{ campaign: HydratedDocument<ICampaign> }>('campaign')
           .populate<{ nodes: HydratedINode[] }>({
             path: 'nodes',
-            select: '_id character node used'
+            select: '_id character node used',
           })
           .populate<{ bodies: HydratedIBody[] }>({
             path: 'bodies',
@@ -321,53 +303,49 @@ const findCharacterById = async (
             populate: [
               {
                 path: 'stats',
-                select: '_id body stat value'
+                select: '_id body stat value',
               },
               {
                 path: 'ammos',
-                select: '_id body ammo bag qty'
+                select: '_id body ammo bag qty',
               },
               {
                 path: 'armors',
-                select: '_id body armor bag equiped'
+                select: '_id body armor bag equiped',
               },
               {
                 path: 'bags',
-                select: '_id body bag equiped'
+                select: '_id body bag equiped',
               },
               {
                 path: 'implants',
-                select: '_id body implant bag equiped'
+                select: '_id body implant bag equiped',
               },
               {
                 path: 'items',
-                select: '_id body item bag qty'
+                select: '_id body item bag qty',
               },
               {
                 path: 'programs',
-                select: '_id body program bag uses'
+                select: '_id body program bag uses',
               },
               {
                 path: 'weapons',
-                select: '_id body weapon bag ammo bullets'
-              }
-            ]
+                select: '_id body weapon bag ammo bullets',
+              },
+            ],
           })
           .populate<{ background: HydratedIBackground }>('background')
           .then((res?: HydratedICharacter | null) => {
             if (res === null || res === undefined) {
               reject(gemNotFound('Character'));
             } else {
-              const canEdit: boolean
-                = String(
-                  res.player?._id
-                ) === String(user._id)
-                || String(
-                  res.createdBy._id
-                ) === String(user._id);
+              const canEdit: boolean =
+                String(res.player?._id) === String(user._id) ||
+                String(res.createdBy._id) === String(user._id);
               resolve({
                 char: res,
-                canEdit
+                canEdit,
               });
             }
           })
@@ -391,7 +369,7 @@ const addFirstCyberFrameNode = (req: Request, res: Response): void => {
     .then((characterIdSent) => {
       replaceCyberFrameNodeByCharacter({
         characterId: characterIdSent,
-        nodeIds: [nodeId]
+        nodeIds: [nodeId],
       })
         .then(() => {
           findCompleteCharacterById(characterIdSent, req)
@@ -418,7 +396,7 @@ const addNode = (req: Request, res: Response): void => {
     .then((characterIdSent) => {
       createNodesByCharacter({
         characterId: characterIdSent,
-        nodeIds: [nodeId]
+        nodeIds: [nodeId],
       })
         .then(() => {
           findCompleteCharacterById(characterIdSent, req)
@@ -435,9 +413,7 @@ const addNode = (req: Request, res: Response): void => {
 };
 
 const updateNodes = (req: Request, res: Response): void => {
-  const {
-    characterId, toAdd, toRemove
-  } = req.body;
+  const { characterId, toAdd, toRemove } = req.body;
   if (characterId === undefined) {
     res.status(400).send(gemInvalidField('Character'));
 
@@ -447,12 +423,12 @@ const updateNodes = (req: Request, res: Response): void => {
     .then((characterIdSent) => {
       deleteSpecificNodesByCharacter({
         characterId: characterIdSent,
-        nodeIds: toRemove
+        nodeIds: toRemove,
       })
         .then(() => {
           createNodesByCharacter({
             characterId: characterIdSent,
-            nodeIds: toAdd
+            nodeIds: toAdd,
           })
             .then(() => {
               findCompleteCharacterById(characterIdSent, req)
@@ -495,9 +471,7 @@ const createOrFindCharacter = async (req: Request): Promise<string> =>
         });
     } else {
       findCharacterById(characterId as string, req)
-        .then(({
-          char, canEdit
-        }) => {
+        .then(({ char, canEdit }) => {
           if (canEdit) {
             resolve(characterId as string);
           } else {
@@ -511,9 +485,7 @@ const createOrFindCharacter = async (req: Request): Promise<string> =>
   });
 
 const create = (req: Request, res: Response): void => {
-  const {
-    campaignId, player = null
-  } = req.body;
+  const { campaignId, player = null } = req.body;
   getUserFromToken(req as IVerifyTokenRequest)
     .then((user) => {
       if (user === null) {
@@ -521,9 +493,7 @@ const create = (req: Request, res: Response): void => {
 
         return;
       }
-      const character: HydratedICharacter = new Character(
-        { createdBy: user._id }
-      );
+      const character: HydratedICharacter = new Character({ createdBy: user._id });
 
       if (player !== null) {
         character.player = player;
@@ -537,7 +507,8 @@ const create = (req: Request, res: Response): void => {
         .save()
         .then(() => {
           res.send({
-            message: 'Character was created successfully!', characterId: character._id
+            message: 'Character was created successfully!',
+            characterId: character._id,
           });
         })
         .catch((err: unknown) => {
@@ -560,7 +531,7 @@ const updateInfos = (req: Request, res: Response): void => {
     gender = null,
     pronouns = null,
     bio = null,
-    isReady = null
+    isReady = null,
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Character ID'));
@@ -568,9 +539,7 @@ const updateInfos = (req: Request, res: Response): void => {
     return;
   }
   findCharacterById(id as string, req)
-    .then(({
-      char, canEdit
-    }) => {
+    .then(({ char, canEdit }) => {
       if (canEdit) {
         if (firstName !== null && firstName !== char.firstName) {
           char.firstName = firstName;
@@ -612,7 +581,8 @@ const updateInfos = (req: Request, res: Response): void => {
           .save()
           .then(() => {
             res.send({
-              message: 'Character was updated successfully!', char
+              message: 'Character was updated successfully!',
+              char,
             });
           })
           .catch((err: unknown) => {
@@ -636,16 +606,15 @@ const quitCampaign = (req: Request, res: Response): void => {
   }
 
   findCharacterById(characterId as string, req)
-    .then(({
-      char, canEdit
-    }) => {
+    .then(({ char, canEdit }) => {
       if (canEdit) {
         char.campaign = undefined;
         char
           .save()
           .then(() => {
             res.send({
-              message: 'Character was unlinked of his campaign!', char
+              message: 'Character was unlinked of his campaign!',
+              char,
             });
           })
           .catch((err: unknown) => {
@@ -666,9 +635,7 @@ const deleteCharacter = (req: Request, res: Response): void => {
     return;
   }
   findCharacterById(id, req)
-    .then(({
-      char, canEdit
-    }) => {
+    .then(({ char, canEdit }) => {
       if (canEdit) {
         const bodyIds: string[] = [];
         char.bodies?.forEach((body) => {
@@ -702,36 +669,48 @@ const deleteCharacter = (req: Request, res: Response): void => {
 
 type CuratedICharacterToSend = Omit<LeanICharacter, 'bodies'> & {
   bodies: Array<
-    Pick<LeanIBody, 'alive' | 'hp' | 'character' | 'stats'>
-    & {
-      ammos: Array<Omit<LeanIBodyAmmo, 'ammo'> & {
-        ammo: CuratedIAmmo
-      }>
-      armors: Array<Omit<LeanIBodyArmor, 'armor'> & {
-        armor: CuratedIArmorToSend
-      }>
-      bags: Array<Omit<LeanIBodyBag, 'bag'> & {
-        bag: CuratedIBag
-      }>
-      implants: Array<Omit<LeanIBodyImplant, 'implant'> & {
-        implant: CuratedIImplantToSend
-      }>
-      items: Array<Omit<LeanIBodyItem, 'item'> & {
-        item: CuratedIItemToSend
-      }>
-      programs: Array<Omit<LeanIBodyProgram, 'program'> & {
-        program: CuratedIProgramToSend
-      }>
-      weapons: Array<Omit<LeanIBodyWeapon, 'weapon'> & {
-        weapon: CuratedIWeaponToSend
-      }>
-    }>
+    Pick<LeanIBody, 'alive' | 'hp' | 'character' | 'stats'> & {
+      ammos: Array<
+        Omit<LeanIBodyAmmo, 'ammo'> & {
+          ammo: CuratedIAmmo;
+        }
+      >;
+      armors: Array<
+        Omit<LeanIBodyArmor, 'armor'> & {
+          armor: CuratedIArmorToSend;
+        }
+      >;
+      bags: Array<
+        Omit<LeanIBodyBag, 'bag'> & {
+          bag: CuratedIBag;
+        }
+      >;
+      implants: Array<
+        Omit<LeanIBodyImplant, 'implant'> & {
+          implant: CuratedIImplantToSend;
+        }
+      >;
+      items: Array<
+        Omit<LeanIBodyItem, 'item'> & {
+          item: CuratedIItemToSend;
+        }
+      >;
+      programs: Array<
+        Omit<LeanIBodyProgram, 'program'> & {
+          program: CuratedIProgramToSend;
+        }
+      >;
+      weapons: Array<
+        Omit<LeanIBodyWeapon, 'weapon'> & {
+          weapon: CuratedIWeaponToSend;
+        }
+      >;
+    }
+  >;
 };
 
-const curateSingleCharacter = (
-  characterSent: LeanICharacter
-): CuratedICharacterToSend => {
-  const curatedBodies = characterSent.bodies?.map(body => ({
+const curateSingleCharacter = (characterSent: LeanICharacter): CuratedICharacterToSend => {
+  const curatedBodies = characterSent.bodies?.map((body) => ({
     ...body,
     character: body.character.toString(),
     ammos: body.ammos.map((bodyAmmoSent) => {
@@ -741,13 +720,13 @@ const curateSingleCharacter = (
         ...bodyAmmoSent,
         ammo: {
           ammo,
-          i18n: curateI18n(ammo.i18n)
-        }
+          i18n: curateI18n(ammo.i18n),
+        },
       };
     }),
-    armors: body.armors.map(bodyArmorSent => ({
+    armors: body.armors.map((bodyArmorSent) => ({
       ...bodyArmorSent,
-      armor: curateSingleArmor(bodyArmorSent.armor)
+      armor: curateSingleArmor(bodyArmorSent.armor),
     })),
     bags: body.bags.map((bodyBagSent) => {
       const { bag } = bodyBagSent;
@@ -756,35 +735,31 @@ const curateSingleCharacter = (
         ...bodyBagSent,
         bag: {
           bag,
-          i18n: curateI18n(bag.i18n)
-        }
+          i18n: curateI18n(bag.i18n),
+        },
       };
     }),
-    implants: body.implants.map(
-      bodyImplantSent => ({
-        ...bodyImplantSent,
-        implant: curateSingleImplant(bodyImplantSent.implant)
-      })
-    ),
-    items: body.items.map(bodyItemSent => ({
-      ...bodyItemSent,
-      item: curateSingleItem(bodyItemSent.item)
+    implants: body.implants.map((bodyImplantSent) => ({
+      ...bodyImplantSent,
+      implant: curateSingleImplant(bodyImplantSent.implant),
     })),
-    programs: body.programs.map(
-      bodyProgramSent => ({
-        ...bodyProgramSent,
-        program: curateSingleProgram(bodyProgramSent.program)
-      })
-    ),
-    weapons: body.weapons.map(bodyWeaponSent => ({
+    items: body.items.map((bodyItemSent) => ({
+      ...bodyItemSent,
+      item: curateSingleItem(bodyItemSent.item),
+    })),
+    programs: body.programs.map((bodyProgramSent) => ({
+      ...bodyProgramSent,
+      program: curateSingleProgram(bodyProgramSent.program),
+    })),
+    weapons: body.weapons.map((bodyWeaponSent) => ({
       ...bodyWeaponSent,
-      weapon: curateSingleWeapon(bodyWeaponSent.weapon)
-    }))
+      weapon: curateSingleWeapon(bodyWeaponSent.weapon),
+    })),
   }));
 
   return {
     ...characterSent,
-    bodies: curatedBodies ?? []
+    bodies: curatedBodies ?? [],
   };
 };
 
@@ -796,8 +771,7 @@ const findSingle = (req: Request, res: Response): void => {
     return;
   }
   findCompleteCharacterById(characterId, req)
-    .then(
-      ({ char }) => res.send(curateSingleCharacter(char)))
+    .then(({ char }) => res.send(curateSingleCharacter(char)))
     .catch((err: unknown) => {
       res.status(404).send(err);
     });
@@ -805,7 +779,7 @@ const findSingle = (req: Request, res: Response): void => {
 
 const findAll = (req: Request, res: Response): void => {
   findCharactersByPlayer(req)
-    .then(characters => res.send(characters))
+    .then((characters) => res.send(characters))
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
@@ -819,5 +793,5 @@ export {
   findSingle,
   quitCampaign,
   updateInfos,
-  updateNodes
+  updateNodes,
 };

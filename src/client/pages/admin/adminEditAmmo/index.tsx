@@ -1,30 +1,16 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  useNavigate, useParams
-} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input, SmartSelect
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input, SmartSelect } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type { ErrorResponseType, ICuratedAmmo } from '../../../types';
@@ -35,31 +21,24 @@ import { classTrim } from '../../../utils';
 import './adminEditAmmo.scss';
 
 interface FormValues {
-  name: string
-  nameFr: string
-  weaponTypes: string[]
-  offsetToHit?: number
-  offsetDamage?: number
-  cost: number
-  rarity: string
-  itemModifiers: string[]
+  name: string;
+  nameFr: string;
+  weaponTypes: string[];
+  offsetToHit?: number;
+  offsetDamage?: number;
+  cost: number;
+  rarity: string;
+  itemModifiers: string[];
 }
 
 const AdminEditAmmo: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const {
-    setConfirmContent,
-    removeConfirmEventListener,
-    addConfirmEventListener
-  } = useConfirmMessage();
-  const {
-    itemModifiers, weaponTypes, rarities
-  } = useGlobalVars();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { setConfirmContent, removeConfirmEventListener, addConfirmEventListener } =
+    useConfirmMessage();
+  const { itemModifiers, weaponTypes, rarities } = useGlobalVars();
+  const { createAlert, getNewId } = useSystemAlerts();
   const navigate = useNavigate();
 
   const [displayInt, setDisplayInt] = useState(false);
@@ -71,21 +50,15 @@ const AdminEditAmmo: FC = () => {
   const [ammoText, setAmmoText] = useState('');
   const [ammoTextFr, setAmmoTextFr] = useState('');
 
-  const introEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const createDefaultData = useCallback((ammoData: ICuratedAmmo | null) => {
     if (ammoData == null) {
       return {};
     }
-    const {
-      ammo, i18n
-    } = ammoData;
+    const { ammo, i18n } = ammoData;
     const defaultData: Partial<FormValues> = {};
     defaultData.name = ammo.title;
     defaultData.cost = ammo.cost;
@@ -106,17 +79,17 @@ const AdminEditAmmo: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset
-  } = useForm({ defaultValues: useMemo(
-    () => createDefaultData(ammoData), [createDefaultData, ammoData]
-  ) });
+    reset,
+  } = useForm({
+    defaultValues: useMemo(() => createDefaultData(ammoData), [createDefaultData, ammoData]),
+  });
 
   // TODO: Internationalization
   const itemModifierList = useMemo(
     () =>
       itemModifiers.map(({ itemModifier }) => ({
         value: itemModifier._id,
-        label: itemModifier.title
+        label: itemModifier.title,
       })),
     [itemModifiers]
   );
@@ -125,7 +98,7 @@ const AdminEditAmmo: FC = () => {
     () =>
       rarities.map(({ rarity }) => ({
         value: rarity._id,
-        label: rarity.title
+        label: rarity.title,
       })),
     [rarities]
   );
@@ -134,27 +107,14 @@ const AdminEditAmmo: FC = () => {
     () =>
       weaponTypes.map(({ weaponType }) => ({
         value: weaponType._id,
-        label: weaponType.title
+        label: weaponType.title,
       })),
     [weaponTypes]
   );
 
   const onSaveAmmo: SubmitHandler<FormValues> = useCallback(
-    ({
-      name,
-      nameFr,
-      rarity,
-      cost,
-      weaponTypes,
-      itemModifiers,
-      offsetToHit,
-      offsetDamage
-    }) => {
-      if (
-        introEditor === null
-        || introFrEditor === null
-        || api === undefined
-      ) {
+    ({ name, nameFr, rarity, cost, weaponTypes, itemModifiers, offsetToHit, offsetDamage }) => {
+      if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
 
@@ -167,10 +127,12 @@ const AdminEditAmmo: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          summary: htmlFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            summary: htmlFr,
+          },
+        };
       }
 
       api.ammos
@@ -185,7 +147,7 @@ const AdminEditAmmo: FC = () => {
           cost: Number(cost),
           itemModifiers,
           summary: html,
-          i18n
+          i18n,
         })
         .then(() => {
           const newId = getNewId();
@@ -195,14 +157,16 @@ const AdminEditAmmo: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditAmmo.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
         })
         .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           setError('root.serverError', {
             type: 'server',
-            message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
+            message: t(`serverErrors.${data.code}`, {
+              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
+            }),
           });
         });
     },
@@ -215,7 +179,7 @@ const AdminEditAmmo: FC = () => {
       getNewId,
       createAlert,
       t,
-      setError
+      setError,
     ]
   );
 
@@ -228,14 +192,12 @@ const AdminEditAmmo: FC = () => {
         title: t('adminEditAmmo.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditAmmo.confirmDeletion.text', {
           ns: 'pages',
-          elt: ammoData.ammo.title
+          elt: ammoData.ammo.title,
         }),
-        confirmCta: t('adminEditAmmo.confirmDeletion.confirmCta', { ns: 'pages' })
+        confirmCta: t('adminEditAmmo.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
       (evtId: string) => {
-        const confirmDelete = (
-          { detail }: { detail: ConfirmMessageDetailData }
-        ): void => {
+        const confirmDelete = ({ detail }: { detail: ConfirmMessageDetailData }): void => {
           if (detail.proceed) {
             api.ammos
               .delete({ id })
@@ -247,7 +209,7 @@ const AdminEditAmmo: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditAmmo.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  )
+                  ),
                 });
                 void navigate(`/admin/ammos`);
               })
@@ -256,12 +218,16 @@ const AdminEditAmmo: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skillBranch.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize'),
+                    }),
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skillBranch.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize'),
+                    }),
                   });
                 }
               });
@@ -282,7 +248,7 @@ const AdminEditAmmo: FC = () => {
     getNewId,
     createAlert,
     navigate,
-    setError
+    setError,
   ]);
 
   useEffect(() => {
@@ -291,9 +257,7 @@ const AdminEditAmmo: FC = () => {
       api.ammos
         .get({ ammoId: id })
         .then((curatedAmmo) => {
-          const {
-            ammo, i18n
-          } = curatedAmmo;
+          const { ammo, i18n } = curatedAmmo;
           setAmmoData(curatedAmmo);
           setAmmoText(ammo.summary);
           if (i18n.fr !== undefined) {
@@ -308,26 +272,16 @@ const AdminEditAmmo: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    id,
-    t
-  ]);
+  }, [api, createAlert, getNewId, id, t]);
 
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(ammoData));
-  }, [
-    ammoData,
-    reset,
-    createDefaultData
-  ]);
+  }, [ammoData, reset, createDefaultData]);
 
   return (
     <div
@@ -351,11 +305,9 @@ const AdminEditAmmo: FC = () => {
             {t('adminEditAmmo.delete', { ns: 'pages' })}
           </Button>
         </div>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror>{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminEditAmmo__basics">
           <Input
             control={control}
@@ -439,7 +391,7 @@ const AdminEditAmmo: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt(prev => !prev);
+              setDisplayInt((prev) => !prev);
             }}
             className="adminEditAmmo__intl-title__btn"
           />

@@ -1,28 +1,16 @@
-import React, {
-  useCallback, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  useApi, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input, SmartSelect
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input, SmartSelect } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
@@ -31,41 +19,37 @@ import { classTrim } from '../../../utils';
 import './adminNewNPC.scss';
 
 interface FormValues {
-  name: string
-  nameFr: string
-  virtual: boolean
-  speed: number
-  flightSpeed?: number
-  swimSpeed?: number
-  hp: number
-  pr?: number
-  ar: number
-  icon: string
+  name: string;
+  nameFr: string;
+  virtual: boolean;
+  speed: number;
+  flightSpeed?: number;
+  swimSpeed?: number;
+  hp: number;
+  pr?: number;
+  ar: number;
+  icon: string;
   attacks?: Record<
     string,
     {
-      title: string
-      titleFr?: string
-      summary: string
-      summaryFr?: string
-      damageType: string
-      weaponScope: string
-      dices: string
-      bonusToHit?: number
+      title: string;
+      titleFr?: string;
+      summary: string;
+      summaryFr?: string;
+      damageType: string;
+      weaponScope: string;
+      dices: string;
+      bonusToHit?: number;
     }
-  >
+  >;
 }
 
 const AdminNewNPC: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const navigate = useNavigate();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
-  const {
-    damageTypes, weaponScopes
-  } = useGlobalVars();
+  const { createAlert, getNewId } = useSystemAlerts();
+  const { damageTypes, weaponScopes } = useGlobalVars();
 
   const [displayInt, setDisplayInt] = useState(false);
 
@@ -75,7 +59,7 @@ const AdminNewNPC: FC = () => {
       damageTypes.map(({ damageType }) => ({
         value: damageType._id,
         // TODO : Handle Internationalization
-        label: damageType.title
+        label: damageType.title,
       })),
     [damageTypes]
   );
@@ -87,37 +71,33 @@ const AdminNewNPC: FC = () => {
       weaponScopes.map(({ weaponScope }) => ({
         value: weaponScope._id,
         // TODO : Handle Internationalization
-        label: weaponScope.title
+        label: weaponScope.title,
       })),
     [weaponScopes]
   );
 
-  const introEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const {
     handleSubmit,
     setError,
     unregister,
     control,
-    formState: { errors }
+    formState: { errors },
   } = useForm<FormValues>({ defaultValues: { icon: 'default' } });
 
   const boolRange = useMemo(
     () => [
       {
         value: '1',
-        label: t('terms.general.yes')
+        label: t('terms.general.yes'),
       },
       {
         value: '0',
-        label: t('terms.general.no')
-      }
+        label: t('terms.general.no'),
+      },
     ],
     [t]
   );
@@ -133,9 +113,7 @@ const AdminNewNPC: FC = () => {
   }, []);
 
   const onSaveNPC: SubmitHandler<FormValues> = useCallback(
-    ({
-      name, nameFr, virtual, speed, flightSpeed, swimSpeed, hp, pr, ar, attacks
-    }) => {
+    ({ name, nameFr, virtual, speed, flightSpeed, swimSpeed, hp, pr, ar, attacks }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -143,28 +121,23 @@ const AdminNewNPC: FC = () => {
       const attacksArr = attacks !== undefined ? Object.values(attacks) : [];
 
       const curatedAttacks = attacksArr.map(
-        ({
-          title,
-          titleFr,
-          summary,
-          summaryFr,
-          damageType,
-          weaponScope,
-          dices,
-          bonusToHit
-        }) => ({
+        ({ title, titleFr, summary, summaryFr, damageType, weaponScope, dices, bonusToHit }) => ({
           title,
           summary,
           damageType,
           weaponScope,
           dices,
           bonusToHit,
-          i18n: { ...(titleFr !== undefined || summaryFr !== undefined
-            ? { fr: {
-                title: titleFr,
-                summary: summaryFr
-              } }
-            : {}) }
+          i18n: {
+            ...(titleFr !== undefined || summaryFr !== undefined
+              ? {
+                  fr: {
+                    title: titleFr,
+                    summary: summaryFr,
+                  },
+                }
+              : {}),
+          },
         })
       );
 
@@ -177,10 +150,12 @@ const AdminNewNPC: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          summary: htmlFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            summary: htmlFr,
+          },
+        };
       }
 
       api.nPCs
@@ -190,14 +165,12 @@ const AdminNewNPC: FC = () => {
           i18n,
           virtual: String(virtual) === '1',
           speed: Number(speed),
-          flightSpeed: flightSpeed !== undefined
-            ? Number(flightSpeed)
-            : undefined,
+          flightSpeed: flightSpeed !== undefined ? Number(flightSpeed) : undefined,
           swimSpeed: swimSpeed !== undefined ? Number(swimSpeed) : undefined,
           hp: Number(hp),
           pr: pr !== undefined ? Number(pr) : undefined,
           ar: Number(ar),
-          attacks: curatedAttacks
+          attacks: curatedAttacks,
         })
         .then((quote) => {
           const newId = getNewId();
@@ -207,7 +180,7 @@ const AdminNewNPC: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewNPC.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           void navigate(`/admin/npc/${quote._id}`);
         })
@@ -216,26 +189,21 @@ const AdminNewNPC: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
+              }),
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
     },
-    [
-      introEditor,
-      introFrEditor,
-      api,
-      setError,
-      t,
-      getNewId,
-      createAlert,
-      navigate
-    ]
+    [introEditor, introFrEditor, api, setError, t, getNewId, createAlert, navigate]
   );
 
   return (
@@ -255,11 +223,9 @@ const AdminNewNPC: FC = () => {
         <Atitle className="adminNewNPC__head" level={1}>
           {t('adminNewNPC.title', { ns: 'pages' })}
         </Atitle>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror>{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminNewNPC__basics">
           <Input
             control={control}
@@ -338,7 +304,7 @@ const AdminNewNPC: FC = () => {
         </div>
         <div className="adminNewNPC__bonuses">
           <div className="adminNewNPC__bonuses__elts">
-            {attackIds.map(attackId => (
+            {attackIds.map((attackId) => (
               <div className="adminNewNPC__bonus" key={`charParam-${attackId}`}>
                 <Atitle className="adminNewNPC__bonus__title" level={4}>
                   {t('adminNewNPC.attackTitle', { ns: 'pages' })}
@@ -409,7 +375,7 @@ const AdminNewNPC: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setAttackIds(prev =>
+                    setAttackIds((prev) =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== attackId) {
                           result.push(elt);
@@ -444,7 +410,7 @@ const AdminNewNPC: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt(prev => !prev);
+              setDisplayInt((prev) => !prev);
             }}
             className="adminNewNPC__intl-title__btn"
           />

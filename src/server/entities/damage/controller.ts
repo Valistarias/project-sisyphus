@@ -1,23 +1,13 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 import type { HydratedDocument } from 'mongoose';
 
 import db from '../../models';
-import {
-  gemInvalidField, gemNotFound, gemServerError
-} from '../../utils/globalErrorMessage';
+import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
-import type {
-  IDamageType, IWeapon
-} from '../index';
-import type {
-  HydratedIDamage, IDamage
-} from './model';
+import type { IDamageType, IWeapon } from '../index';
+import type { HydratedIDamage, IDamage } from './model';
 
-const {
-  Damage, Weapon
-} = db;
+const { Damage, Weapon } = db;
 
 const findDamages = async (): Promise<HydratedIDamage[]> =>
   await new Promise((resolve, reject) => {
@@ -53,8 +43,8 @@ const findDamageById = async (id: string): Promise<HydratedIDamage> =>
 
 const createReadDamage = (
   elts: Array<{
-    damageType: string
-    dices: string
+    damageType: string;
+    dices: string;
   }>,
   ids: string[],
   cb: (err: unknown, res?: string[]) => void
@@ -97,9 +87,7 @@ const createReadDamage = (
     });
 };
 
-const smartDeleteDamage = (
-  elts: string[],
-  cb: (err: unknown) => void): void => {
+const smartDeleteDamage = (elts: string[], cb: (err: unknown) => void): void => {
   if (elts.length === 0) {
     cb(null);
 
@@ -132,14 +120,14 @@ const smartDeleteDamage = (
 const curateDamageIds = async ({
   damagesToRemove,
   damagesToAdd,
-  damagesToStay
+  damagesToStay,
 }: {
-  damagesToRemove: string[]
+  damagesToRemove: string[];
   damagesToAdd?: Array<{
-    damageType: string
-    dices: string
-  }>
-  damagesToStay: string[]
+    damageType: string;
+    dices: string;
+  }>;
+  damagesToStay: string[];
 }): Promise<string[]> =>
   await new Promise((resolve, reject) => {
     smartDeleteDamage(damagesToRemove, (err: unknown) => {
@@ -162,9 +150,7 @@ const curateDamageIds = async ({
   });
 
 const create = (req: Request, res: Response): void => {
-  const {
-    damageType, dices
-  } = req.body;
+  const { damageType, dices } = req.body;
   if (damageType === undefined || dices === undefined) {
     res.status(400).send(gemInvalidField('Damage'));
 
@@ -173,7 +159,7 @@ const create = (req: Request, res: Response): void => {
 
   const damage = new Damage({
     damageType,
-    dices
+    dices,
   });
 
   damage
@@ -187,9 +173,7 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const {
-    id, damageType = null, dices = null
-  } = req.body;
+  const { id, damageType = null, dices = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Damage ID'));
 
@@ -208,7 +192,8 @@ const update = (req: Request, res: Response): void => {
         .save()
         .then(() => {
           res.send({
-            message: 'Damage was updated successfully!', damage
+            message: 'Damage was updated successfully!',
+            damage,
           });
         })
         .catch((err: unknown) => {
@@ -271,12 +256,4 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export {
-  create,
-  curateDamageIds,
-  deleteDamage,
-  findAll,
-  findDamageById,
-  findSingle,
-  update
-};
+export { create, curateDamageIds, deleteDamage, findAll, findDamageById, findSingle, update };

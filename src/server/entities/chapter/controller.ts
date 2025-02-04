@@ -1,25 +1,17 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 
 import { isAdmin, type IVerifyTokenRequest } from '../../middlewares';
 import db from '../../models';
-import {
-  gemInvalidField, gemNotFound, gemServerError
-} from '../../utils/globalErrorMessage';
+import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { deletePagesByChapterId } from '../page/controller';
 
 import type { HydratedIChapter } from './model';
 import type { InternationalizationType } from '../../utils/types';
-import type {
-  IChapterType, IPage, IRuleBook
-} from '../index';
+import type { IChapterType, IPage, IRuleBook } from '../index';
 
 import { curateI18n } from '../../utils';
 
-const {
-  Chapter, Page
-} = db;
+const { Chapter, Page } = db;
 
 const findChapters = async (): Promise<HydratedIChapter[]> =>
   await new Promise((resolve, reject) => {
@@ -29,7 +21,7 @@ const findChapters = async (): Promise<HydratedIChapter[]> =>
       .populate<{ pages: IPage[] }>({
         path: 'pages',
         select: '_id title chapter position',
-        options: { sort: { position: 'asc' } }
+        options: { sort: { position: 'asc' } },
       })
       .then((res: HydratedIChapter[]) => {
         if (res.length === 0) {
@@ -43,9 +35,7 @@ const findChapters = async (): Promise<HydratedIChapter[]> =>
       });
   });
 
-const findChaptersByRuleBook = async (
-  ruleBookId: string
-): Promise<HydratedIChapter[]> =>
+const findChaptersByRuleBook = async (ruleBookId: string): Promise<HydratedIChapter[]> =>
   await new Promise((resolve, reject) => {
     Chapter.find({ ruleBook: ruleBookId })
       .populate<{ type: IChapterType }>('type')
@@ -53,7 +43,7 @@ const findChaptersByRuleBook = async (
       .populate<{ pages: IPage[] }>({
         path: 'pages',
         select: '_id title chapter position',
-        options: { sort: { position: 'asc' } }
+        options: { sort: { position: 'asc' } },
       })
       .then((res?: HydratedIChapter[] | null) => {
         if (res === undefined || res === null) {
@@ -75,7 +65,7 @@ const findChapterById = async (id: string): Promise<HydratedIChapter> =>
       .populate<{ pages: IPage[] }>({
         path: 'pages',
         select: '_id title chapter position content i18n',
-        options: { sort: { position: 'asc' } }
+        options: { sort: { position: 'asc' } },
       })
       .then((res?: HydratedIChapter | null) => {
         if (res === undefined || res === null) {
@@ -90,9 +80,7 @@ const findChapterById = async (id: string): Promise<HydratedIChapter> =>
   });
 
 const create = (req: Request, res: Response): void => {
-  const {
-    title, summary, type, ruleBook, i18n = null
-  } = req.body;
+  const { title, summary, type, ruleBook, i18n = null } = req.body;
   if (title === undefined || summary === undefined || ruleBook === undefined) {
     res.status(400).send(gemInvalidField('Chapter'));
 
@@ -106,7 +94,7 @@ const create = (req: Request, res: Response): void => {
         summary,
         type,
         ruleBook,
-        position: chapters.length
+        position: chapters.length,
       });
 
       if (i18n !== null) {
@@ -127,12 +115,15 @@ const create = (req: Request, res: Response): void => {
 
 const update = (req: Request, res: Response): void => {
   const {
-    id, title = null, summary = null, i18n
+    id,
+    title = null,
+    summary = null,
+    i18n,
   }: {
-    id?: string
-    title: string | null
-    summary: string | null
-    i18n: InternationalizationType | null
+    id?: string;
+    title: string | null;
+    summary: string | null;
+    i18n: InternationalizationType | null;
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Chapter ID'));
@@ -149,11 +140,9 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(
-          chapter.i18n !== undefined
-          && chapter.i18n !== ''
-            ? JSON.parse(chapter.i18n)
-            : {}) };
+        const newIntl: InternationalizationType = {
+          ...(chapter.i18n !== undefined && chapter.i18n !== '' ? JSON.parse(chapter.i18n) : {}),
+        };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -166,7 +155,8 @@ const update = (req: Request, res: Response): void => {
         .save()
         .then(() => {
           res.send({
-            message: 'Chapter was updated successfully!', chapter
+            message: 'Chapter was updated successfully!',
+            chapter,
           });
         })
         .catch((err: unknown) => {
@@ -180,10 +170,11 @@ const update = (req: Request, res: Response): void => {
 
 const updateMultiplePagesPosition = (
   order: Array<{
-    id: string
-    position: number
+    id: string;
+    position: number;
   }>,
-  cb: (res: Error | null) => void): void => {
+  cb: (res: Error | null) => void
+): void => {
   Page.findOneAndUpdate({ _id: order[0].id }, { position: order[0].position })
     .then(() => {
       if (order.length > 1) {
@@ -200,13 +191,14 @@ const updateMultiplePagesPosition = (
 
 const changePagesOrder = (req: Request, res: Response): void => {
   const {
-    id, order
+    id,
+    order,
   }: {
-    id?: string
+    id?: string;
     order?: Array<{
-      id: string
-      position: number
-    }>
+      id: string;
+      position: number;
+    }>;
   } = req.body;
   if (id === undefined || order === undefined) {
     res.status(400).send(gemInvalidField('Chapter Reordering'));
@@ -290,8 +282,8 @@ const deleteChapter = (req: Request, res: Response): void => {
 };
 
 interface CuratedIChapter {
-  i18n?: InternationalizationType
-  chapter: HydratedIChapter
+  i18n?: InternationalizationType;
+  chapter: HydratedIChapter;
 }
 
 const findSingle = (req: IVerifyTokenRequest, res: Response): void => {
@@ -305,15 +297,12 @@ const findSingle = (req: IVerifyTokenRequest, res: Response): void => {
     .then((isUserAdmin) => {
       findChapterById(chapterId)
         .then((chapter) => {
-          if (
-            (chapter.ruleBook.archived || chapter.ruleBook.draft)
-            && !isUserAdmin
-          ) {
+          if ((chapter.ruleBook.archived || chapter.ruleBook.draft) && !isUserAdmin) {
             res.status(404).send();
           } else {
             const sentObj = {
               chapter,
-              i18n: curateI18n(chapter.i18n)
+              i18n: curateI18n(chapter.i18n),
             };
             res.send(sentObj);
           }
@@ -333,7 +322,7 @@ const findAll = (req: Request, res: Response): void => {
       chapters.forEach((chapter) => {
         curatedChapters.push({
           chapter,
-          i18n: curateI18n(chapter.i18n)
+          i18n: curateI18n(chapter.i18n),
         });
       });
 
@@ -356,7 +345,7 @@ const findAllByRuleBook = (req: Request, res: Response): void => {
       chapters.forEach((chapter) => {
         curatedChapters.push({
           chapter,
-          i18n: curateI18n(chapter.i18n)
+          i18n: curateI18n(chapter.i18n),
         });
       });
 
@@ -375,5 +364,5 @@ export {
   findChapterById,
   findChaptersByRuleBook,
   findSingle,
-  update
+  update,
 };

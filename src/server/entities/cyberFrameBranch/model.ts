@@ -1,38 +1,31 @@
-import {
-  Schema, model, type HydratedDocument, type Model, type ObjectId
-} from 'mongoose';
+import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
 import type { Lean } from '../../utils/types';
-import type {
-  HydratedICyberFrame,
-  HydratedINode,
-  ICyberFrame,
-  LeanINode
-} from '../index';
+import type { HydratedICyberFrame, HydratedINode, ICyberFrame, LeanINode } from '../index';
 
 interface ICyberFrameBranch<IdType> {
   /** The title of the cyberframe branch */
-  title: string
+  title: string;
   /** A summary of the cyberframe branch */
-  summary: string
+  summary: string;
   /** The internationnal content, as a json, stringified */
-  i18n?: string
+  i18n?: string;
   /** The associated cyberFrame */
-  cyberFrame: IdType
+  cyberFrame: IdType;
   /** When the cyberframe branch was created */
-  createdAt: Date
+  createdAt: Date;
 }
 
 type HydratedICyberFrameBranch = HydratedDocument<
   Omit<ICyberFrameBranch<string>, 'cyberFrame'> & {
-    cyberFrame: HydratedICyberFrame | ObjectId
-    nodes?: HydratedINode[]
+    cyberFrame: HydratedICyberFrame | ObjectId;
+    nodes?: HydratedINode[];
   }
 >;
 
 type LeanICyberFrameBranch = Omit<Lean<ICyberFrameBranch<string>>, 'cyberFrame'> & {
-  cyberFrame: ICyberFrame
-  nodes?: LeanINode[]
+  cyberFrame: ICyberFrame;
+  nodes?: LeanINode[];
 };
 
 const cyberFrameBranchSchema = new Schema<ICyberFrameBranch<ObjectId>>(
@@ -42,16 +35,16 @@ const cyberFrameBranchSchema = new Schema<ICyberFrameBranch<ObjectId>>(
     i18n: String,
     cyberFrame: {
       type: Schema.Types.ObjectId,
-      ref: 'CyberFrame'
+      ref: 'CyberFrame',
     },
     createdAt: {
       type: Date,
-      default: Date.now
-    }
+      default: Date.now,
+    },
   },
   {
     toJSON: { virtuals: true },
-    toObject: { virtuals: true }
+    toObject: { virtuals: true },
   }
 );
 
@@ -60,7 +53,7 @@ const cyberFrameBranchSchema = new Schema<ICyberFrameBranch<ObjectId>>(
 cyberFrameBranchSchema.virtual('nodes', {
   ref: 'Node',
   localField: '_id',
-  foreignField: 'cyberFrameBranch'
+  foreignField: 'cyberFrameBranch',
 });
 
 const CyberFrameBranchModel = (): Model<ICyberFrameBranch<ObjectId>> =>
@@ -70,5 +63,5 @@ export {
   CyberFrameBranchModel,
   type HydratedICyberFrameBranch,
   type ICyberFrameBranch,
-  type LeanICyberFrameBranch
+  type LeanICyberFrameBranch,
 };

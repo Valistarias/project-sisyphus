@@ -1,6 +1,4 @@
-import React, {
-  useRef, useState, type FC, type ReactNode
-} from 'react';
+import React, { useRef, useState, type FC, type ReactNode } from 'react';
 
 import { Quark } from '../quark';
 
@@ -12,12 +10,10 @@ import './hintButton.scss';
 
 export type IHintButton = ILinkButton & {
   /** The content of the hint */
-  hint: ReactNode
+  hint: ReactNode;
 };
 
-const HintButton: FC<IHintButton> = ({
-  className, hint, ...rest
-}) => {
+const HintButton: FC<IHintButton> = ({ className, hint, ...rest }) => {
   const [delayHandler, setDelayHandler] = useState<NodeJS.Timeout | null>(null);
   const [isHintOpen, setHintOpen] = useState<boolean>(false);
   const [placement, setPlacement] = useState<string>('top-left');
@@ -40,8 +36,8 @@ const HintButton: FC<IHintButton> = ({
       if (topBottom === 'top' && dimensions.bottom + dimensions.height + 30 < windowHeight) {
         topBottom = 'bottom';
       } else if (
-        topBottom === 'bottom'
-        && dimensions.bottom + dimensions.height + 30 > windowHeight
+        topBottom === 'bottom' &&
+        dimensions.bottom + dimensions.height + 30 > windowHeight
       ) {
         topBottom = 'top';
       }
@@ -71,11 +67,7 @@ const HintButton: FC<IHintButton> = ({
         ${className ?? ''}
       `)}
     >
-      <LinkButton
-        {...rest}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      />
+      <LinkButton {...rest} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
       <span className="hint-button__hint" ref={hintContent}>
         {hint}
       </span>

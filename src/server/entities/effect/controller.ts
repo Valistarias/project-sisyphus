@@ -1,11 +1,7 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 
 import db from '../../models';
-import {
-  gemInvalidField, gemNotFound, gemServerError
-} from '../../utils/globalErrorMessage';
+import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
 import type { InternationalizationType } from '../../utils/types';
 import type { IActionType } from '../index';
@@ -47,12 +43,12 @@ const findEffectById = async (id: string): Promise<HydratedIEffect> =>
       });
   });
 export interface ISentEffect {
-  id?: string
-  title: string | null
-  summary: string | null
-  formula?: string | null
-  type: string | null
-  i18n: InternationalizationType | null
+  id?: string;
+  title: string | null;
+  summary: string | null;
+  formula?: string | null;
+  type: string | null;
+  i18n: InternationalizationType | null;
 }
 
 const updateEffects = (
@@ -71,14 +67,14 @@ const updateEffects = (
     summary = null,
     type,
     i18n = null,
-    formula = null
+    formula = null,
   }: ISentEffect = elts[0];
   if (id === undefined) {
     const effect = new Effect({
       title: title ?? undefined,
       summary: summary ?? undefined,
       formula: formula ?? undefined,
-      type: type ?? undefined
+      type: type ?? undefined,
     });
 
     if (i18n !== null) {
@@ -112,12 +108,9 @@ const updateEffects = (
         }
 
         if (i18n !== null) {
-          const newIntl: InternationalizationType = { ...(
-            effect.i18n !== undefined
-            && effect.i18n !== ''
-              ? JSON.parse(effect.i18n)
-              : {}
-          ) };
+          const newIntl: InternationalizationType = {
+            ...(effect.i18n !== undefined && effect.i18n !== '' ? JSON.parse(effect.i18n) : {}),
+          };
 
           Object.keys(i18n).forEach((lang) => {
             newIntl[lang] = i18n[lang];
@@ -145,10 +138,10 @@ const updateEffects = (
 
 const smartUpdateEffects = async ({
   effectsToRemove,
-  effectsToUpdate
+  effectsToUpdate,
 }: {
-  effectsToRemove: string[]
-  effectsToUpdate: ISentEffect[]
+  effectsToRemove: string[];
+  effectsToUpdate: ISentEffect[];
 }): Promise<string[]> =>
   await new Promise((resolve, reject) => {
     Effect.deleteMany({ _id: { $in: effectsToRemove } })
@@ -167,9 +160,7 @@ const smartUpdateEffects = async ({
   });
 
 const create = (req: Request, res: Response): void => {
-  const {
-    title, summary, type, i18n = null, formula
-  } = req.body;
+  const { title, summary, type, i18n = null, formula } = req.body;
   if (title === undefined || summary === undefined || type === undefined) {
     res.status(400).send(gemInvalidField('Effect'));
 
@@ -180,7 +171,7 @@ const create = (req: Request, res: Response): void => {
     title,
     summary,
     formula,
-    type
+    type,
   });
 
   if (i18n !== null) {
@@ -199,7 +190,12 @@ const create = (req: Request, res: Response): void => {
 
 const update = (req: Request, res: Response): void => {
   const {
-    id, title = null, summary = null, i18n, formula = null, type = null
+    id,
+    title = null,
+    summary = null,
+    i18n,
+    formula = null,
+    type = null,
   }: ISentEffect = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Effect ID'));
@@ -222,12 +218,9 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(
-          effect.i18n !== undefined
-          && effect.i18n !== ''
-            ? JSON.parse(effect.i18n)
-            : {}
-        ) };
+        const newIntl: InternationalizationType = {
+          ...(effect.i18n !== undefined && effect.i18n !== '' ? JSON.parse(effect.i18n) : {}),
+        };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -240,7 +233,8 @@ const update = (req: Request, res: Response): void => {
         .save()
         .then(() => {
           res.send({
-            message: 'Effect was updated successfully!', effect
+            message: 'Effect was updated successfully!',
+            effect,
           });
         })
         .catch((err: unknown) => {
@@ -280,8 +274,8 @@ const deleteEffect = (req: Request, res: Response): void => {
 };
 
 export interface CuratedIEffect {
-  i18n?: InternationalizationType
-  effect: HydratedIEffect
+  i18n?: InternationalizationType;
+  effect: HydratedIEffect;
 }
 
 const findSingle = (req: Request, res: Response): void => {
@@ -295,7 +289,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((effect) => {
       const sentObj = {
         effect,
-        i18n: curateI18n(effect.i18n)
+        i18n: curateI18n(effect.i18n),
       };
       res.send(sentObj);
     })
@@ -312,7 +306,7 @@ const findAll = (req: Request, res: Response): void => {
       effects.forEach((effect) => {
         curatedEffects.push({
           effect,
-          i18n: curateI18n(effect.i18n)
+          i18n: curateI18n(effect.i18n),
         });
       });
 
@@ -321,12 +315,4 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export {
-  create,
-  deleteEffect,
-  findAll,
-  findEffectById,
-  findSingle,
-  smartUpdateEffects,
-  update
-};
+export { create, deleteEffect, findAll, findEffectById, findSingle, smartUpdateEffects, update };

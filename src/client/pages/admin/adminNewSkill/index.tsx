@@ -1,78 +1,60 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  useApi, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input, SmartSelect
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input, SmartSelect } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
 import './adminNewSkill.scss';
 
 interface FormValues {
-  name: string
-  nameFr: string
-  stat: string
-  formulaId: string
+  name: string;
+  nameFr: string;
+  stat: string;
+  formulaId: string;
 }
 
 const AdminNewSkill: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const navigate = useNavigate();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
-  const {
-    stats, reloadSkills
-  } = useGlobalVars();
+  const { createAlert, getNewId } = useSystemAlerts();
+  const { stats, reloadSkills } = useGlobalVars();
 
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
 
-  const introEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors }
+    formState: { errors },
   } = useForm();
 
-  const statList = useMemo(() => stats.map(({ stat }) => ({
-    value: stat._id,
-    label: stat.title
-  })), [stats]);
+  const statList = useMemo(
+    () =>
+      stats.map(({ stat }) => ({
+        value: stat._id,
+        label: stat.title,
+      })),
+    [stats]
+  );
 
   const onSaveSkill: SubmitHandler<FormValues> = useCallback(
-    ({
-      name, nameFr, stat, formulaId
-    }) => {
+    ({ name, nameFr, stat, formulaId }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -85,10 +67,12 @@ const AdminNewSkill: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          summary: htmlFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            summary: htmlFr,
+          },
+        };
       }
 
       api.skills
@@ -97,7 +81,7 @@ const AdminNewSkill: FC = () => {
           stat,
           formulaId,
           summary: html,
-          i18n
+          i18n,
         })
         .then((skill) => {
           const newId = getNewId();
@@ -107,7 +91,7 @@ const AdminNewSkill: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewSkill.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           reloadSkills();
           void navigate(`/admin/skill/${skill._id}`);
@@ -117,27 +101,19 @@ const AdminNewSkill: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`,
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
     },
-    [
-      introEditor,
-      introFrEditor,
-      api,
-      getNewId,
-      createAlert,
-      t,
-      reloadSkills,
-      navigate,
-      setError
-    ]
+    [introEditor, introFrEditor, api, getNewId, createAlert, t, reloadSkills, navigate, setError]
   );
 
   useEffect(() => {
@@ -145,12 +121,7 @@ const AdminNewSkill: FC = () => {
       setLoading(true);
       calledApi.current = true;
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    t
-  ]);
+  }, [api, createAlert, getNewId, t]);
 
   return (
     <div className="adminNewSkill">
@@ -162,11 +133,9 @@ const AdminNewSkill: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewSkill.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror>{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminNewSkill__basics">
           <Input
             control={control}
@@ -201,8 +170,8 @@ const AdminNewSkill: FC = () => {
               required: t('skillFormula.required', { ns: 'fields' }),
               pattern: {
                 value: /^([a-z]){2,3}$/,
-                message: t('skillFormula.format', { ns: 'fields' })
-              }
+                message: t('skillFormula.format', { ns: 'fields' }),
+              },
             }}
             label={t('skillFormula.label', { ns: 'fields' })}
           />

@@ -1,17 +1,15 @@
-import React, {
-  useContext, useEffect, useMemo, useState, type FC, type ReactNode
-} from 'react';
+import React, { useContext, useEffect, useMemo, useState, type FC, type ReactNode } from 'react';
 
 import { useGlobalVars } from './globalVars';
 
 interface IThemeContext {
   /** The chosen theme */
-  colorMode: string
+  colorMode: string;
 }
 
 interface ThemeProviderProps {
   /** The childrens of the Providers element */
-  children: ReactNode
+  children: ReactNode;
 }
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- To avoid null values
@@ -61,10 +59,7 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
     }
   }, [chosenScale]);
 
-  const providerValues = useMemo(
-    () => ({ colorMode }),
-    [colorMode]
-  );
+  const providerValues = useMemo(() => ({ colorMode }), [colorMode]);
 
   return (
     <ThemeContext.Provider value={providerValues}>

@@ -1,13 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unnecessary-condition -- There is only one type of video, for the moment */
 import React from 'react';
-import {
-  useMemo, type FC
-} from 'react';
+import { useMemo, type FC } from 'react';
 
 import LogoVideo from '../assets/videos/logo.webm';
-import {
-  Quark, type IQuarkProps
-} from '../quark';
+import { Quark, type IQuarkProps } from '../quark';
 
 import { classTrim } from '../utils';
 
@@ -17,14 +13,12 @@ type typeVideos = 'logo';
 
 interface IAvideo {
   /** The type of icon */
-  video: typeVideos
+  video: typeVideos;
   /** When the icon is clicked */
-  onClick?: (e: React.MouseEvent<HTMLElement>) => void
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
-const Avideo: FC<IQuarkProps<IAvideo>> = ({
-  video, className, onClick
-}) => {
+const Avideo: FC<IQuarkProps<IAvideo>> = ({ video, className, onClick }) => {
   const classes = useMemo<string>(
     () =>
       classTrim(`
@@ -54,6 +48,4 @@ const Avideo: FC<IQuarkProps<IAvideo>> = ({
   return icoDom;
 };
 
-export {
-  Avideo, type IAvideo, type typeVideos
-};
+export { Avideo, type IAvideo, type typeVideos };

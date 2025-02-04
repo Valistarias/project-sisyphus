@@ -1,35 +1,30 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  useNavigate, useParams
-} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
 
+import { Aerror, Ap, Atitle } from '../../../atoms';
 import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input, LinkButton, NodeTree, SmartSelect, type ISingleValueSelect
+  Button,
+  Input,
+  LinkButton,
+  NodeTree,
+  SmartSelect,
+  type ISingleValueSelect,
 } from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type {
   ErrorResponseType,
-  ICuratedCyberFrame, ICuratedNode, ICyberFrameBranch
+  ICuratedCyberFrame,
+  ICuratedNode,
+  ICyberFrameBranch,
 } from '../../../types';
 import type { InternationalizationType } from '../../../types/global';
 
@@ -38,27 +33,19 @@ import { classTrim } from '../../../utils';
 import './adminEditCyberFrame.scss';
 
 interface FormValues {
-  name: string
-  nameFr: string
-  ruleBook: string
+  name: string;
+  nameFr: string;
+  ruleBook: string;
 }
 
 const AdminEditCyberFrame: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
-  const {
-    setConfirmContent,
-    removeConfirmEventListener,
-    addConfirmEventListener
-  } = useConfirmMessage();
+  const { createAlert, getNewId } = useSystemAlerts();
+  const { setConfirmContent, removeConfirmEventListener, addConfirmEventListener } =
+    useConfirmMessage();
   const { id } = useParams();
-  const {
-    ruleBooks,
-    reloadCyberFrames
-  } = useGlobalVars();
+  const { ruleBooks, reloadCyberFrames } = useGlobalVars();
   const navigate = useNavigate();
 
   const calledApi = useRef(false);
@@ -67,61 +54,55 @@ const AdminEditCyberFrame: FC = () => {
 
   const [displayInt, setDisplayInt] = useState(false);
 
-  const [cyberFrameData, setCyberFrameData]
-  = useState<ICuratedCyberFrame | null>(null);
+  const [cyberFrameData, setCyberFrameData] = useState<ICuratedCyberFrame | null>(null);
 
   const [cyberFrameText, setCyberFrameText] = useState('');
   const [cyberFrameTextFr, setCyberFrameTextFr] = useState('');
 
-  const textEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const textFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const nodeTree = useMemo(() => {
     const branches = cyberFrameData?.cyberFrame.branches;
     const tempTree: Record<
       string,
       {
-        branch: ICyberFrameBranch
-        nodes: ICuratedNode[]
+        branch: ICyberFrameBranch;
+        nodes: ICuratedNode[];
       }
     > = {};
     branches?.forEach(({ cyberFrameBranch }) => {
       tempTree[cyberFrameBranch._id] = {
         branch: cyberFrameBranch,
-        nodes: cyberFrameBranch.nodes
+        nodes: cyberFrameBranch.nodes,
       };
     });
 
     return Object.values(tempTree);
   }, [cyberFrameData]);
 
-  const ruleBookSelect = useMemo(() => ruleBooks.map(({ ruleBook }) => ({
-    value: ruleBook._id,
-    // TODO : Handle Internationalization
-    label: ruleBook.title,
-    details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 })
-  })), [t, ruleBooks]);
+  const ruleBookSelect = useMemo(
+    () =>
+      ruleBooks.map(({ ruleBook }) => ({
+        value: ruleBook._id,
+        // TODO : Handle Internationalization
+        label: ruleBook.title,
+        details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 }),
+      })),
+    [t, ruleBooks]
+  );
 
   const createDefaultData = useCallback(
-    (
-      cyberFrameData: ICuratedCyberFrame | null,
-      ruleBookSelect: ISingleValueSelect[]
-    ) => {
+    (cyberFrameData: ICuratedCyberFrame | null, ruleBookSelect: ISingleValueSelect[]) => {
       if (cyberFrameData == null) {
         return {};
       }
-      const {
-        cyberFrame, i18n
-      } = cyberFrameData;
+      const { cyberFrame, i18n } = cyberFrameData;
       const defaultData: Partial<FormValues> = {};
       defaultData.name = cyberFrame.title;
       const selectedfield = ruleBookSelect.find(
-        singleSelect => singleSelect.value === cyberFrame.ruleBook._id
+        (singleSelect) => singleSelect.value === cyberFrame.ruleBook._id
       );
       if (selectedfield !== undefined) {
         defaultData.ruleBook = String(selectedfield.value);
@@ -140,29 +121,19 @@ const AdminEditCyberFrame: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset
-  } = useForm({ defaultValues: useMemo(
-    () => createDefaultData(cyberFrameData, ruleBookSelect),
-    [
-      createDefaultData,
-      cyberFrameData,
-      ruleBookSelect
-    ]
-  ) });
+    reset,
+  } = useForm({
+    defaultValues: useMemo(
+      () => createDefaultData(cyberFrameData, ruleBookSelect),
+      [createDefaultData, cyberFrameData, ruleBookSelect]
+    ),
+  });
 
-  const ruleBook = useMemo(
-    () => cyberFrameData?.cyberFrame.ruleBook, [cyberFrameData]
-  );
+  const ruleBook = useMemo(() => cyberFrameData?.cyberFrame.ruleBook, [cyberFrameData]);
 
   const onSaveCyberFrame: SubmitHandler<FormValues> = useCallback(
-    ({
-      name, nameFr, ruleBook
-    }) => {
-      if (
-        textEditor === null
-        || textFrEditor === null
-        || api === undefined
-      ) {
+    ({ name, nameFr, ruleBook }) => {
+      if (textEditor === null || textFrEditor === null || api === undefined) {
         return;
       }
       let htmlText: string | null = textEditor.getHTML();
@@ -176,10 +147,12 @@ const AdminEditCyberFrame: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          text: htmlTextFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            text: htmlTextFr,
+          },
+        };
       }
 
       api.cyberFrames
@@ -188,7 +161,7 @@ const AdminEditCyberFrame: FC = () => {
           title: name,
           ruleBook,
           summary: htmlText,
-          i18n
+          i18n,
         })
         .then(() => {
           const newId = getNewId();
@@ -198,7 +171,7 @@ const AdminEditCyberFrame: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditCyberFrame.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           reloadCyberFrames();
         })
@@ -207,27 +180,21 @@ const AdminEditCyberFrame: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.cyberFrameType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.cyberFrameType.${data.sent}`), 'capitalize'),
+              }),
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.cyberFrameType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.cyberFrameType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
     },
-    [
-      textEditor,
-      textFrEditor,
-      api,
-      id,
-      getNewId,
-      createAlert,
-      t,
-      reloadCyberFrames,
-      setError
-    ]
+    [textEditor, textFrEditor, api, id, getNewId, createAlert, t, reloadCyberFrames, setError]
   );
 
   const onAskDelete = useCallback(() => {
@@ -239,14 +206,12 @@ const AdminEditCyberFrame: FC = () => {
         title: t('adminEditCyberFrame.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditCyberFrame.confirmDeletion.text', {
           ns: 'pages',
-          elt: cyberFrameData?.cyberFrame.title
+          elt: cyberFrameData?.cyberFrame.title,
         }),
-        confirmCta: t('adminEditCyberFrame.confirmDeletion.confirmCta', { ns: 'pages' })
+        confirmCta: t('adminEditCyberFrame.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
       (evtId: string) => {
-        const confirmDelete = (
-          { detail }: { detail: ConfirmMessageDetailData }
-        ): void => {
+        const confirmDelete = ({ detail }: { detail: ConfirmMessageDetailData }): void => {
           if (detail.proceed) {
             api.cyberFrames
               .delete({ id })
@@ -258,7 +223,7 @@ const AdminEditCyberFrame: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditCyberFrame.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  )
+                  ),
                 });
                 reloadCyberFrames();
                 void navigate('/admin/cyberframes');
@@ -268,12 +233,16 @@ const AdminEditCyberFrame: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.cyberFrame.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.cyberFrame.name`), 'capitalize'),
+                    }),
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.cyberFrame.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.cyberFrame.name`), 'capitalize'),
+                    }),
                   });
                 }
               });
@@ -295,7 +264,7 @@ const AdminEditCyberFrame: FC = () => {
     createAlert,
     reloadCyberFrames,
     navigate,
-    setError
+    setError,
   ]);
 
   useEffect(() => {
@@ -304,9 +273,7 @@ const AdminEditCyberFrame: FC = () => {
       api.cyberFrames
         .get({ cyberFrameId: id })
         .then((curatedCyberFrame) => {
-          const {
-            cyberFrame, i18n
-          } = curatedCyberFrame;
+          const { cyberFrame, i18n } = curatedCyberFrame;
           setCyberFrameData(curatedCyberFrame);
           setCyberFrameText(cyberFrame.summary);
           if (i18n.fr !== undefined) {
@@ -321,17 +288,11 @@ const AdminEditCyberFrame: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    id,
-    t
-  ]);
+  }, [api, createAlert, getNewId, id, t]);
 
   // The Autosave
   useEffect(() => {
@@ -353,12 +314,7 @@ const AdminEditCyberFrame: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(cyberFrameData, ruleBookSelect));
-  }, [
-    cyberFrameData,
-    ruleBookSelect,
-    reset,
-    createDefaultData
-  ]);
+  }, [cyberFrameData, ruleBookSelect, reset, createDefaultData]);
 
   return (
     <div
@@ -381,11 +337,9 @@ const AdminEditCyberFrame: FC = () => {
           </Button>
         </div>
         <Atitle level={2}>{t('adminEditCyberFrame.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror className="adminEditCyberFrame__error">{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror className="adminEditCyberFrame__error">{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminEditCyberFrame__basics">
           <Input
             control={control}
@@ -428,7 +382,7 @@ const AdminEditCyberFrame: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt(prev => !prev);
+              setDisplayInt((prev) => !prev);
             }}
             className="adminEditCyberFrame__intl-title__btn"
           />

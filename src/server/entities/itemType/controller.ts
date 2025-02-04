@@ -1,6 +1,4 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 import type { HydratedDocument } from 'mongoose';
 
 import db from '../../models';
@@ -8,7 +6,7 @@ import {
   gemDuplicate,
   gemInvalidField,
   gemNotFound,
-  gemServerError
+  gemServerError,
 } from '../../utils/globalErrorMessage';
 
 import type { IItemType } from './model';
@@ -30,9 +28,7 @@ const findItemTypes = async (): Promise<Array<HydratedDocument<IItemType>>> =>
       });
   });
 
-const findItemTypeById = async (
-  id: string
-): Promise<HydratedDocument<IItemType>> =>
+const findItemTypeById = async (id: string): Promise<HydratedDocument<IItemType>> =>
   await new Promise((resolve, reject) => {
     ItemType.findById(id)
       .then((res) => {
@@ -56,7 +52,7 @@ const create = (req: Request, res: Response): void => {
   }
   findItemTypes()
     .then((items) => {
-      if (items.find(item => item.name === name) === undefined) {
+      if (items.find((item) => item.name === name) === undefined) {
         const itemType = new ItemType({ name });
 
         itemType
@@ -75,9 +71,7 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const {
-    id, name = null
-  } = req.body;
+  const { id, name = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('ItemType ID'));
 
@@ -85,7 +79,7 @@ const update = (req: Request, res: Response): void => {
   }
   findItemTypes()
     .then((items) => {
-      const actualItemType = items.find(item => String(item._id) === id);
+      const actualItemType = items.find((item) => String(item._id) === id);
       if (actualItemType !== undefined) {
         if (name !== null && name !== actualItemType.name) {
           actualItemType.name = name;
@@ -94,7 +88,8 @@ const update = (req: Request, res: Response): void => {
           .save()
           .then(() => {
             res.send({
-              message: 'ItemType was updated successfully!', actualItemType
+              message: 'ItemType was updated successfully!',
+              actualItemType,
             });
           })
           .catch((err: unknown) => {
@@ -131,16 +126,14 @@ const findSingle = (req: Request, res: Response): void => {
     return;
   }
   findItemTypeById(itemTypeId)
-    .then(item => res.send(item))
-    .catch(err => res.status(404).send(err));
+    .then((item) => res.send(item))
+    .catch((err) => res.status(404).send(err));
 };
 
 const findAll = (req: Request, res: Response): void => {
   findItemTypes()
-    .then(items => res.send(items))
+    .then((items) => res.send(items))
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export {
-  create, deleteItemType, findAll, findSingle, update
-};
+export { create, deleteItemType, findAll, findSingle, update };

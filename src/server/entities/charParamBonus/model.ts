@@ -1,16 +1,14 @@
-import {
-  Schema, model, type HydratedDocument, type Model, type ObjectId
-} from 'mongoose';
+import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
 import type { ICharParam } from '../index';
 
 interface ICharParamBonus {
   /** The associated charParam */
-  charParam: ObjectId
+  charParam: ObjectId;
   /** The value of the bonus */
-  value: number
+  value: number;
   /** When the charParam branch was created */
-  createdAt: Date
+  createdAt: Date;
 }
 
 type HydratedICharParamBonus = HydratedDocument<
@@ -20,18 +18,16 @@ type HydratedICharParamBonus = HydratedDocument<
 const charParamBonusSchema = new Schema<ICharParamBonus>({
   charParam: {
     type: Schema.Types.ObjectId,
-    ref: 'CharParam'
+    ref: 'CharParam',
   },
   value: Number,
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 const CharParamBonusModel = (): Model<ICharParamBonus> =>
   model('CharParamBonus', charParamBonusSchema);
 
-export {
-  CharParamBonusModel, type HydratedICharParamBonus, type ICharParamBonus
-};
+export { CharParamBonusModel, type HydratedICharParamBonus, type ICharParamBonus };

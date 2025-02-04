@@ -1,11 +1,7 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 
 import db from '../../models';
-import {
-  gemInvalidField, gemNotFound, gemServerError
-} from '../../utils/globalErrorMessage';
+import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { type ISentAction, smartUpdateActions } from '../action/controller';
 import { curateCharParamBonusIds } from '../charParamBonus/controller';
 import { type ISentEffect, smartUpdateEffects } from '../effect/controller';
@@ -23,7 +19,7 @@ import type {
   ICharParamBonus,
   IEffect,
   ISkillBonus,
-  IStatBonus
+  IStatBonus,
 } from '../index';
 import type { HydratedIImplant, LeanIImplant } from './model';
 
@@ -32,12 +28,10 @@ import { curateI18n } from '../../utils';
 const { Implant } = db;
 
 interface findAllPayload {
-  starterKit?: string | Record<string, string[]>
+  starterKit?: string | Record<string, string[]>;
 }
 
-const findImplants = async (
-  options?: findAllPayload
-): Promise<LeanIImplant[]> =>
+const findImplants = async (options?: findAllPayload): Promise<LeanIImplant[]> =>
   await new Promise((resolve, reject) => {
     Implant.find(options ?? {})
       .lean()
@@ -114,15 +108,15 @@ const create = (req: Request, res: Response): void => {
     actions,
     skillBonuses,
     statBonuses,
-    charParamBonuses
+    charParamBonuses,
   } = req.body;
   if (
-    title === undefined
-    || summary === undefined
-    || rarity === undefined
-    || cost === undefined
-    || itemType === undefined
-    || bodyParts === undefined
+    title === undefined ||
+    summary === undefined ||
+    rarity === undefined ||
+    cost === undefined ||
+    itemType === undefined ||
+    bodyParts === undefined
   ) {
     res.status(400).send(gemInvalidField('Implant'));
 
@@ -137,7 +131,7 @@ const create = (req: Request, res: Response): void => {
     cost,
     itemType,
     itemModifiers,
-    bodyParts
+    bodyParts,
   });
 
   if (i18n !== null) {
@@ -148,64 +142,55 @@ const create = (req: Request, res: Response): void => {
     skillBonusesToRemove: [],
     skillBonusesToStay: [],
     skillBonusesToAdd: skillBonuses as Array<{
-      skill: string
-      value: number
-    }>
+      skill: string;
+      value: number;
+    }>,
   })
     .then((skillBonusIds) => {
       if (skillBonusIds.length > 0) {
-        implant.skillBonuses = skillBonusIds.map(
-          skillBonusId => String(skillBonusId)
-        );
+        implant.skillBonuses = skillBonusIds.map((skillBonusId) => String(skillBonusId));
       }
       curateStatBonusIds({
         statBonusesToRemove: [],
         statBonusesToStay: [],
         statBonusesToAdd: statBonuses as Array<{
-          stat: string
-          value: number
-        }>
+          stat: string;
+          value: number;
+        }>,
       })
         .then((statBonusIds) => {
           if (statBonusIds.length > 0) {
-            implant.statBonuses = statBonusIds.map(
-              statBonusId => String(statBonusId)
-            );
+            implant.statBonuses = statBonusIds.map((statBonusId) => String(statBonusId));
           }
           curateCharParamBonusIds({
             charParamBonusesToRemove: [],
             charParamBonusesToStay: [],
             charParamBonusesToAdd: charParamBonuses as Array<{
-              charParam: string
-              value: number
-            }>
+              charParam: string;
+              value: number;
+            }>,
           })
             .then((charParamBonusIds) => {
               if (charParamBonusIds.length > 0) {
-                implant.charParamBonuses = charParamBonusIds.map(
-                  charParamBonusId =>
-                    String(charParamBonusId)
+                implant.charParamBonuses = charParamBonusIds.map((charParamBonusId) =>
+                  String(charParamBonusId)
                 );
               }
               smartUpdateEffects({
                 effectsToRemove: [],
-                effectsToUpdate: effects
+                effectsToUpdate: effects,
               })
                 .then((effectsIds) => {
                   if (effectsIds.length > 0) {
-                    implant.effects = effectsIds.map(
-                      effectsId => String(effectsId)
-                    );
+                    implant.effects = effectsIds.map((effectsId) => String(effectsId));
                   }
                   smartUpdateActions({
                     actionsToRemove: [],
-                    actionsToUpdate: actions
+                    actionsToUpdate: actions,
                   })
                     .then((actionsIds) => {
                       if (actionsIds.length > 0) {
-                        implant.actions = actionsIds.map(
-                          actionsId => String(actionsId)
-                        );
+                        implant.actions = actionsIds.map((actionsId) => String(actionsId));
                       }
                       implant
                         .save()
@@ -253,33 +238,33 @@ const update = (req: Request, res: Response): void => {
     actions = null,
     skillBonuses = null,
     statBonuses = null,
-    charParamBonuses = null
+    charParamBonuses = null,
   }: {
-    id?: string
-    title: string | null
-    summary: string | null
-    i18n: InternationalizationType | null
-    rarity: string | null
-    starterKit: 'always' | 'never' | 'option' | null
-    cost: number | null
-    itemType: string | null
-    itemModifiers: string[] | null
-    bodyParts: string[] | null
-    effects: ISentEffect[] | null
-    actions: ISentAction[] | null
+    id?: string;
+    title: string | null;
+    summary: string | null;
+    i18n: InternationalizationType | null;
+    rarity: string | null;
+    starterKit: 'always' | 'never' | 'option' | null;
+    cost: number | null;
+    itemType: string | null;
+    itemModifiers: string[] | null;
+    bodyParts: string[] | null;
+    effects: ISentEffect[] | null;
+    actions: ISentAction[] | null;
     skillBonuses: Array<{
-      skill: string
-      value: number
-    }> | null
+      skill: string;
+      value: number;
+    }> | null;
     statBonuses: Array<{
-      stat: string
-      value: number
-    }> | null
+      stat: string;
+      value: number;
+    }> | null;
     charParamBonuses: Array<{
-      charParam: string
-      value: number
-    }> | null
-    overrides: string[] | null
+      charParam: string;
+      value: number;
+    }> | null;
+    overrides: string[] | null;
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Implant ID'));
@@ -317,16 +302,16 @@ const update = (req: Request, res: Response): void => {
       const skillBonusesToStay: string[] = [];
       let skillBonusesToRemove: string[] = [];
       let skillBonusesToAdd: Array<{
-        skill: string
-        value: number
+        skill: string;
+        value: number;
       }> = [];
 
       if (skillBonuses !== null) {
         skillBonusesToRemove = implant.skillBonuses.reduce(
           (result: string[], elt: HydratedISkillBonus) => {
             const foundSkillBonus = skillBonuses.find(
-              skillBonus => skillBonus.skill === String(elt.skill)
-                && skillBonus.value === elt.value
+              (skillBonus) =>
+                skillBonus.skill === String(elt.skill) && skillBonus.value === elt.value
             );
             if (foundSkillBonus === undefined) {
               result.push(String(elt._id));
@@ -342,19 +327,19 @@ const update = (req: Request, res: Response): void => {
         skillBonusesToAdd = skillBonuses.reduce(
           (
             result: Array<{
-              skill: string
-              value: number
+              skill: string;
+              value: number;
             }>,
             elt: {
-              skill: string
-              value: number
+              skill: string;
+              value: number;
             }
           ) => {
             const foundSkillBonus = implant.skillBonuses.find(
-              skillBonus =>
-                typeof skillBonus !== 'string'
-                && String(skillBonus.skill) === elt.skill
-                && skillBonus.value === elt.value
+              (skillBonus) =>
+                typeof skillBonus !== 'string' &&
+                String(skillBonus.skill) === elt.skill &&
+                skillBonus.value === elt.value
             );
             if (foundSkillBonus === undefined) {
               result.push(elt);
@@ -369,16 +354,15 @@ const update = (req: Request, res: Response): void => {
       const statBonusesToStay: string[] = [];
       let statBonusesToRemove: string[] = [];
       let statBonusesToAdd: Array<{
-        stat: string
-        value: number
+        stat: string;
+        value: number;
       }> = [];
 
       if (statBonuses !== null) {
         statBonusesToRemove = implant.statBonuses.reduce(
           (result: string[], elt: HydratedIStatBonus) => {
             const foundStatBonus = statBonuses.find(
-              statBonus => statBonus.stat === String(elt.stat)
-                && statBonus.value === elt.value
+              (statBonus) => statBonus.stat === String(elt.stat) && statBonus.value === elt.value
             );
             if (foundStatBonus === undefined) {
               result.push(String(elt._id));
@@ -394,19 +378,19 @@ const update = (req: Request, res: Response): void => {
         statBonusesToAdd = statBonuses.reduce(
           (
             result: Array<{
-              stat: string
-              value: number
+              stat: string;
+              value: number;
             }>,
             elt: {
-              stat: string
-              value: number
+              stat: string;
+              value: number;
             }
           ) => {
             const foundStatBonus = implant.statBonuses.find(
-              statBonus =>
-                typeof statBonus !== 'string'
-                && String(statBonus.stat) === elt.stat
-                && statBonus.value === elt.value
+              (statBonus) =>
+                typeof statBonus !== 'string' &&
+                String(statBonus.stat) === elt.stat &&
+                statBonus.value === elt.value
             );
             if (foundStatBonus === undefined) {
               result.push(elt);
@@ -421,16 +405,16 @@ const update = (req: Request, res: Response): void => {
       const charParamBonusesToStay: string[] = [];
       let charParamBonusesToRemove: string[] = [];
       let charParamBonusesToAdd: Array<{
-        charParam: string
-        value: number
+        charParam: string;
+        value: number;
       }> = [];
       if (charParamBonuses !== null) {
         charParamBonusesToRemove = implant.charParamBonuses.reduce(
           (result: string[], elt: HydratedICharParamBonus) => {
             const foundCharParamBonus = charParamBonuses.find(
-              charParamBonus =>
-                charParamBonus.charParam === String(elt.charParam)
-                && charParamBonus.value === elt.value
+              (charParamBonus) =>
+                charParamBonus.charParam === String(elt.charParam) &&
+                charParamBonus.value === elt.value
             );
             if (foundCharParamBonus === undefined) {
               result.push(String(elt._id));
@@ -446,19 +430,19 @@ const update = (req: Request, res: Response): void => {
         charParamBonusesToAdd = charParamBonuses.reduce(
           (
             result: Array<{
-              charParam: string
-              value: number
+              charParam: string;
+              value: number;
             }>,
             elt: {
-              charParam: string
-              value: number
+              charParam: string;
+              value: number;
             }
           ) => {
             const foundCharParamBonus = implant.charParamBonuses.find(
-              charParamBonus =>
-                typeof charParamBonus !== 'string'
-                && String(charParamBonus.charParam) === elt.charParam
-                && charParamBonus.value === elt.value
+              (charParamBonus) =>
+                typeof charParamBonus !== 'string' &&
+                String(charParamBonus.charParam) === elt.charParam &&
+                charParamBonus.value === elt.value
             );
             if (foundCharParamBonus === undefined) {
               result.push(elt);
@@ -473,46 +457,37 @@ const update = (req: Request, res: Response): void => {
       let effectsToRemove: string[] = [];
 
       if (effects !== null) {
-        effectsToRemove = implant.effects.reduce(
-          (result: string[], elt: HydratedIEffect) => {
-            const foundEffect = effects.find(
-              effect => effect.id !== undefined
-                && String(effect.id) === String(elt._id)
-            );
-            if (foundEffect === undefined) {
-              result.push(String(elt._id));
-            }
+        effectsToRemove = implant.effects.reduce((result: string[], elt: HydratedIEffect) => {
+          const foundEffect = effects.find(
+            (effect) => effect.id !== undefined && String(effect.id) === String(elt._id)
+          );
+          if (foundEffect === undefined) {
+            result.push(String(elt._id));
+          }
 
-            return result;
-          }, []
-        );
+          return result;
+        }, []);
       }
 
       let actionsToRemove: string[] = [];
 
       if (actions !== null) {
-        actionsToRemove = implant.actions.reduce(
-          (result: string[], elt: HydratedIAction) => {
-            const foundAction = actions.find(
-              action => action.id !== undefined
-                && String(action.id) === String(elt._id)
-            );
-            if (foundAction === undefined) {
-              result.push(String(elt._id));
-            }
+        actionsToRemove = implant.actions.reduce((result: string[], elt: HydratedIAction) => {
+          const foundAction = actions.find(
+            (action) => action.id !== undefined && String(action.id) === String(elt._id)
+          );
+          if (foundAction === undefined) {
+            result.push(String(elt._id));
+          }
 
-            return result;
-          }, []
-        );
+          return result;
+        }, []);
       }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(
-          implant.i18n !== undefined
-          && implant.i18n !== ''
-            ? JSON.parse(implant.i18n)
-            : {}
-        ) };
+        const newIntl: InternationalizationType = {
+          ...(implant.i18n !== undefined && implant.i18n !== '' ? JSON.parse(implant.i18n) : {}),
+        };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -524,64 +499,56 @@ const update = (req: Request, res: Response): void => {
       curateSkillBonusIds({
         skillBonusesToRemove,
         skillBonusesToAdd,
-        skillBonusesToStay
+        skillBonusesToStay,
       })
         .then((skillBonusIds) => {
           if (skillBonusIds.length > 0) {
-            implant.skillBonuses = skillBonusIds.map(
-              skillBonusId => String(skillBonusId)
-            );
+            implant.skillBonuses = skillBonusIds.map((skillBonusId) => String(skillBonusId));
           } else if (skillBonuses !== null && skillBonuses.length === 0) {
             implant.skillBonuses = [];
           }
           curateStatBonusIds({
             statBonusesToRemove,
             statBonusesToAdd,
-            statBonusesToStay
+            statBonusesToStay,
           })
             .then((statBonusIds) => {
               if (statBonusIds.length > 0) {
-                implant.statBonuses = statBonusIds.map(
-                  statBonusId => String(statBonusId)
-                );
+                implant.statBonuses = statBonusIds.map((statBonusId) => String(statBonusId));
               }
               curateCharParamBonusIds({
                 charParamBonusesToRemove,
                 charParamBonusesToAdd,
-                charParamBonusesToStay
+                charParamBonusesToStay,
               })
                 .then((charParamBonusIds) => {
                   if (charParamBonusIds.length > 0) {
-                    implant.charParamBonuses = charParamBonusIds.map(
-                      charParamBonusId =>
-                        String(charParamBonusId)
+                    implant.charParamBonuses = charParamBonusIds.map((charParamBonusId) =>
+                      String(charParamBonusId)
                     );
                   }
                   smartUpdateEffects({
                     effectsToRemove,
-                    effectsToUpdate: effects ?? []
+                    effectsToUpdate: effects ?? [],
                   })
                     .then((effectsIds) => {
                       if (effectsIds.length > 0) {
-                        implant.effects = effectsIds.map(
-                          effectsId => String(effectsId)
-                        );
+                        implant.effects = effectsIds.map((effectsId) => String(effectsId));
                       }
                       smartUpdateActions({
                         actionsToRemove,
-                        actionsToUpdate: actions ?? []
+                        actionsToUpdate: actions ?? [],
                       })
                         .then((actionsIds) => {
                           if (actionsIds.length > 0) {
-                            implant.actions = actionsIds.map(
-                              actionsId => String(actionsId)
-                            );
+                            implant.actions = actionsIds.map((actionsId) => String(actionsId));
                           }
                           implant
                             .save()
                             .then(() => {
                               res.send({
-                                message: 'Implant was updated successfully!', implant
+                                message: 'Implant was updated successfully!',
+                                implant,
                               });
                             })
                             .catch((err: unknown) => {
@@ -633,137 +600,130 @@ const deleteImplant = (req: Request, res: Response): void => {
   const { id }: { id: string } = req.body;
 
   findCompleteImplantById(id)
-    .then((implant: Omit<HydratedIImplant,
-    | 'effects'
-    | 'actions'
-    | 'skillBonuses'
-    | 'statBonuses'
-    | 'charParamBonuses'
-    | 'skillBranch'
-    | 'cyberFrameBranch'
-    > & {
-      effects: HydratedIEffect[]
-      actions: HydratedIAction[]
-      skillBonuses: HydratedISkillBonus[]
-      statBonuses: HydratedIStatBonus[]
-      charParamBonuses: HydratedICharParamBonus[]
-    }) => {
-      const skillBonusesToRemove = implant.skillBonuses.map(
-        elt => String(elt._id)
-      );
-      const statBonusesToRemove = implant.statBonuses.map(
-        elt => String(elt._id)
-      );
-      const charParamBonusesToRemove = implant.charParamBonuses.map(
-        elt => String(elt._id)
-      );
-      const effectsToRemove = implant.effects.map(elt => String(elt._id));
-      const actionsToRemove = implant.actions.map(elt => String(elt._id));
+    .then(
+      (
+        implant: Omit<
+          HydratedIImplant,
+          | 'effects'
+          | 'actions'
+          | 'skillBonuses'
+          | 'statBonuses'
+          | 'charParamBonuses'
+          | 'skillBranch'
+          | 'cyberFrameBranch'
+        > & {
+          effects: HydratedIEffect[];
+          actions: HydratedIAction[];
+          skillBonuses: HydratedISkillBonus[];
+          statBonuses: HydratedIStatBonus[];
+          charParamBonuses: HydratedICharParamBonus[];
+        }
+      ) => {
+        const skillBonusesToRemove = implant.skillBonuses.map((elt) => String(elt._id));
+        const statBonusesToRemove = implant.statBonuses.map((elt) => String(elt._id));
+        const charParamBonusesToRemove = implant.charParamBonuses.map((elt) => String(elt._id));
+        const effectsToRemove = implant.effects.map((elt) => String(elt._id));
+        const actionsToRemove = implant.actions.map((elt) => String(elt._id));
 
-      curateSkillBonusIds({
-        skillBonusesToRemove,
-        skillBonusesToAdd: [],
-        skillBonusesToStay: []
-      })
-        .then(() => {
-          curateStatBonusIds({
-            statBonusesToRemove,
-            statBonusesToAdd: [],
-            statBonusesToStay: []
-          })
-            .then(() => {
-              curateCharParamBonusIds({
-                charParamBonusesToRemove,
-                charParamBonusesToAdd: [],
-                charParamBonusesToStay: []
-              })
-                .then(() => {
-                  smartUpdateEffects({
-                    effectsToRemove,
-                    effectsToUpdate: []
-                  })
-                    .then(() => {
-                      smartUpdateActions({
-                        actionsToRemove,
-                        actionsToUpdate: []
-                      })
-                        .then(() => {
-                          deleteImplantById(id)
-                            .then(() => {
-                              res.send({ message: 'Implant was deleted successfully!' });
-                            })
-                            .catch((err: unknown) => {
-                              res.status(500).send(gemServerError(err));
-                            });
-                        })
-                        .catch((err: unknown) => {
-                          res.status(500).send(gemServerError(err));
-                        });
-                    })
-                    .catch((err: unknown) => {
-                      res.status(500).send(gemServerError(err));
-                    });
-                })
-                .catch((err: unknown) => {
-                  res.status(500).send(gemServerError(err));
-                });
-            })
-            .catch((err: unknown) => {
-              res.status(500).send(gemServerError(err));
-            });
+        curateSkillBonusIds({
+          skillBonusesToRemove,
+          skillBonusesToAdd: [],
+          skillBonusesToStay: [],
         })
-        .catch((err: unknown) => {
-          res.status(500).send(gemServerError(err));
-        });
-    })
+          .then(() => {
+            curateStatBonusIds({
+              statBonusesToRemove,
+              statBonusesToAdd: [],
+              statBonusesToStay: [],
+            })
+              .then(() => {
+                curateCharParamBonusIds({
+                  charParamBonusesToRemove,
+                  charParamBonusesToAdd: [],
+                  charParamBonusesToStay: [],
+                })
+                  .then(() => {
+                    smartUpdateEffects({
+                      effectsToRemove,
+                      effectsToUpdate: [],
+                    })
+                      .then(() => {
+                        smartUpdateActions({
+                          actionsToRemove,
+                          actionsToUpdate: [],
+                        })
+                          .then(() => {
+                            deleteImplantById(id)
+                              .then(() => {
+                                res.send({ message: 'Implant was deleted successfully!' });
+                              })
+                              .catch((err: unknown) => {
+                                res.status(500).send(gemServerError(err));
+                              });
+                          })
+                          .catch((err: unknown) => {
+                            res.status(500).send(gemServerError(err));
+                          });
+                      })
+                      .catch((err: unknown) => {
+                        res.status(500).send(gemServerError(err));
+                      });
+                  })
+                  .catch((err: unknown) => {
+                    res.status(500).send(gemServerError(err));
+                  });
+              })
+              .catch((err: unknown) => {
+                res.status(500).send(gemServerError(err));
+              });
+          })
+          .catch((err: unknown) => {
+            res.status(500).send(gemServerError(err));
+          });
+      }
+    )
     .catch(() => {
       res.status(404).send(gemNotFound('Implant'));
     });
 };
 
 export interface CuratedIImplantToSend {
-  implant: Omit<
-    LeanIImplant,
-    | 'effects'
-    | 'actions'
-  > & {
+  implant: Omit<LeanIImplant, 'effects' | 'actions'> & {
     effects: Array<{
-      effect: IEffect
-      i18n?: InternationalizationType
-    }>
+      effect: IEffect;
+      i18n?: InternationalizationType;
+    }>;
     actions: Array<{
-      action: IAction
-      i18n?: InternationalizationType
-    }>
-  }
-  i18n?: InternationalizationType
+      action: IAction;
+      i18n?: InternationalizationType;
+    }>;
+  };
+  i18n?: InternationalizationType;
 }
 
-export const curateSingleImplant = (
-  implantSent: LeanIImplant
-): CuratedIImplantToSend => {
-  const curatedActions
-  = implantSent.actions.length > 0
-    ? implantSent.actions.map(action => ({
-        action,
-        i18n: curateI18n(action.i18n)
-      }))
-    : [];
-  const curatedEffects
-  = implantSent.effects.length > 0
-    ? implantSent.effects.map(effect => ({
-        effect,
-        i18n: curateI18n(effect.i18n)
-      }))
-    : [];
+export const curateSingleImplant = (implantSent: LeanIImplant): CuratedIImplantToSend => {
+  const curatedActions =
+    implantSent.actions.length > 0
+      ? implantSent.actions.map((action) => ({
+          action,
+          i18n: curateI18n(action.i18n),
+        }))
+      : [];
+  const curatedEffects =
+    implantSent.effects.length > 0
+      ? implantSent.effects.map((effect) => ({
+          effect,
+          i18n: curateI18n(effect.i18n),
+        }))
+      : [];
 
   return {
     implant: {
       ...implantSent,
       actions: curatedActions,
-      effects: curatedEffects
+      effects: curatedEffects,
     },
-    i18n: curateI18n(implantSent.i18n)
+    i18n: curateI18n(implantSent.i18n),
   };
 };
 
@@ -809,12 +769,4 @@ const findAllStarter = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export {
-  create,
-  deleteImplant,
-  findAll,
-  findAllStarter,
-  findImplantById,
-  findSingle,
-  update
-};
+export { create, deleteImplant, findAll, findAllStarter, findImplantById, findSingle, update };

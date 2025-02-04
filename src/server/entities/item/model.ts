@@ -1,6 +1,4 @@
-import {
-  Schema, model, type HydratedDocument, type Model, type ObjectId
-} from 'mongoose';
+import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
 import type { Lean } from '../../utils/types';
 import type {
@@ -13,62 +11,63 @@ import type {
   ICharParamBonus,
   IEffect,
   ISkillBonus,
-  IStatBonus
+  IStatBonus,
 } from '../index';
 
 interface IItem<IdType> {
   /** The title of the Item */
-  title: string
+  title: string;
   /** A summary of the Item */
-  summary: string
+  summary: string;
   /** The internationnal content, as a json, stringified */
-  i18n?: string
+  i18n?: string;
   /** The rarity of the Item */
-  rarity: IdType
+  rarity: IdType;
   /** Is this weapon in the starter kit ?
    * (always -> element included, never -> not included, option -> can be chosen with similar weapons) */
-  starterKit?: 'always' | 'never' | 'option'
+  starterKit?: 'always' | 'never' | 'option';
   /** The cost of the Item */
-  cost: number
+  cost: number;
   /** The type of item */
-  itemType: IdType
+  itemType: IdType;
   /** The item modifiers of the item */
-  itemModifiers?: IdType[]
+  itemModifiers?: IdType[];
   /** The effects related to the Item */
-  effects?: IdType[]
+  effects?: IdType[];
   /** The actions related to the Item */
-  actions?: IdType[]
+  actions?: IdType[];
   /** The skill bonuses related to the Item */
-  skillBonuses?: IdType[]
+  skillBonuses?: IdType[];
   /** The stat bonuses related to the Item */
-  statBonuses?: IdType[]
+  statBonuses?: IdType[];
   /** The charParam bonuses related to the Item */
-  charParamBonuses?: IdType[]
+  charParamBonuses?: IdType[];
   /** When the Item was created */
-  createdAt: Date
+  createdAt: Date;
 }
 
 type HydratedIItem = HydratedDocument<
-  Omit<IItem<string>, | 'effects'
-  | 'actions'
-  | 'skillBonuses'
-  | 'statBonuses'
-  | 'charParamBonuses'
+  Omit<
+    IItem<string>,
+    'effects' | 'actions' | 'skillBonuses' | 'statBonuses' | 'charParamBonuses'
   > & {
-    effects: HydratedIEffect[] | string[]
-    actions: HydratedIAction[] | string[]
-    skillBonuses: HydratedISkillBonus[] | string[]
-    statBonuses: HydratedIStatBonus[] | string[]
-    charParamBonuses: HydratedICharParamBonus[] | string[]
+    effects: HydratedIEffect[] | string[];
+    actions: HydratedIAction[] | string[];
+    skillBonuses: HydratedISkillBonus[] | string[];
+    statBonuses: HydratedIStatBonus[] | string[];
+    charParamBonuses: HydratedICharParamBonus[] | string[];
   }
 >;
 
-type LeanIItem = Omit<Lean<IItem<string>>, 'effects' | 'actions' | 'skillBonuses' | 'statBonuses' | 'charParamBonuses'> & {
-  effects: IEffect[]
-  actions: IAction[]
-  skillBonuses: ISkillBonus[]
-  statBonuses: IStatBonus[]
-  charParamBonuses: ICharParamBonus[]
+type LeanIItem = Omit<
+  Lean<IItem<string>>,
+  'effects' | 'actions' | 'skillBonuses' | 'statBonuses' | 'charParamBonuses'
+> & {
+  effects: IEffect[];
+  actions: IAction[];
+  skillBonuses: ISkillBonus[];
+  statBonuses: IStatBonus[];
+  charParamBonuses: ICharParamBonus[];
 };
 
 const itemSchema = new Schema<IItem<ObjectId>>({
@@ -78,63 +77,58 @@ const itemSchema = new Schema<IItem<ObjectId>>({
   cost: Number,
   itemType: {
     type: Schema.Types.ObjectId,
-    ref: 'ItemType'
+    ref: 'ItemType',
   },
   itemModifiers: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'ItemModifier'
-    }
+      ref: 'ItemModifier',
+    },
   ],
   rarity: {
     type: Schema.Types.ObjectId,
-    ref: 'Rarity'
+    ref: 'Rarity',
   },
   starterKit: {
     type: String,
-    default: 'never'
+    default: 'never',
   },
   effects: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'Effect'
-    }
+      ref: 'Effect',
+    },
   ],
   actions: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'Action'
-    }
+      ref: 'Action',
+    },
   ],
   skillBonuses: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'SkillBonus'
-    }
+      ref: 'SkillBonus',
+    },
   ],
   statBonuses: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'StatBonus'
-    }
+      ref: 'StatBonus',
+    },
   ],
   charParamBonuses: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'CharParamBonus'
-    }
+      ref: 'CharParamBonus',
+    },
   ],
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 const ItemModel = (): Model<IItem<ObjectId>> => model('Item', itemSchema);
 
-export {
-  ItemModel,
-  type HydratedIItem,
-  type IItem,
-  type LeanIItem
-};
+export { ItemModel, type HydratedIItem, type IItem, type LeanIItem };

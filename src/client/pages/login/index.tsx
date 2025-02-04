@@ -1,28 +1,15 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, type FC } from 'react';
 
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  useLocation, useNavigate
-} from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
-import {
-  useApi, useGlobalVars, useSystemAlerts
-} from '../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../providers';
 
 import tvBackground from '../../assets/imgs/tvbg2.gif';
-import {
-  Aerror, Ap, Avideo
-} from '../../atoms';
-import {
-  Button, Input,
-  LinkButton
-} from '../../molecules';
+import { Aerror, Ap, Avideo } from '../../atoms';
+import { Button, Input, LinkButton } from '../../molecules';
 import { Alert } from '../../organisms';
 
 import type { ErrorResponseType } from '../../types';
@@ -32,21 +19,17 @@ import { regexMail } from '../../utils';
 import './login.scss';
 
 interface FormValues {
-  mail: string
-  password: string
+  mail: string;
+  password: string;
 }
 
 const Login: FC = () => {
   const { api } = useApi();
   const { t } = useTranslation();
-  const {
-    setUser, reloadAll
-  } = useGlobalVars();
+  const { setUser, reloadAll } = useGlobalVars();
   const navigate = useNavigate();
   const { search } = useLocation();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
 
   const alertSent = useRef(false);
 
@@ -54,7 +37,7 @@ const Login: FC = () => {
     control,
     handleSubmit,
     setError,
-    formState: { errors }
+    formState: { errors },
   } = useForm();
 
   const params = useMemo(() => new URLSearchParams(search), [search]);
@@ -68,26 +51,19 @@ const Login: FC = () => {
           <Alert key={newId} id={newId} timer={5}>
             <Ap>{t('login.successRegister', { ns: 'pages' })}</Ap>
           </Alert>
-        )
+        ),
       });
       alertSent.current = true;
     }
-  }, [
-    params,
-    createAlert,
-    getNewId,
-    t
-  ]);
+  }, [params, createAlert, getNewId, t]);
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
-    ({
-      mail, password
-    }) => {
+    ({ mail, password }) => {
       if (api !== undefined) {
         api.auth
           .signin({
             mail,
-            password
+            password,
           })
           .then((data) => {
             setUser(data);
@@ -100,25 +76,22 @@ const Login: FC = () => {
             if (data.code === 'CYPU-102') {
               setError(data.sent as 'mail' | 'password', {
                 type: 'server',
-                message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize') })
+                message: t(`serverErrors.${data.code}`, {
+                  field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
+                }),
               });
             } else {
               setError('root.serverError', {
                 type: 'server',
-                message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize') })
+                message: t(`serverErrors.${data.code}`, {
+                  field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
+                }),
               });
             }
           });
       }
     },
-    [
-      api,
-      navigate,
-      setError,
-      setUser,
-      t,
-      reloadAll
-    ]
+    [api, navigate, setError, setUser, t, reloadAll]
   );
 
   return (
@@ -132,11 +105,9 @@ const Login: FC = () => {
           }}
           noValidate
         >
-          {errors.root?.serverError.message !== undefined
-            ? (
-                <Aerror>{errors.root.serverError.message}</Aerror>
-              )
-            : null}
+          {errors.root?.serverError.message !== undefined ? (
+            <Aerror>{errors.root.serverError.message}</Aerror>
+          ) : null}
           <Input
             control={control}
             inputName="mail"
@@ -145,8 +116,8 @@ const Login: FC = () => {
               required: t('mail.required', { ns: 'fields' }),
               pattern: {
                 value: regexMail,
-                message: t('mail.pattern', { ns: 'fields' })
-              }
+                message: t('mail.pattern', { ns: 'fields' }),
+              },
             }}
             label={t('mail.label', { ns: 'fields' })}
             autoComplete="username"

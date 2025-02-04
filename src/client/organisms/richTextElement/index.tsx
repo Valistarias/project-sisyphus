@@ -1,6 +1,4 @@
-import React, {
-  useEffect, type FC
-} from 'react';
+import React, { useEffect, type FC } from 'react';
 
 import Heading, { type Level } from '@tiptap/extension-heading';
 import Paragraph from '@tiptap/extension-paragraph';
@@ -8,9 +6,7 @@ import Table from '@tiptap/extension-table';
 import TableCell from '@tiptap/extension-table-cell';
 import TableHeader from '@tiptap/extension-table-header';
 import TableRow from '@tiptap/extension-table-row';
-import {
-  EditorContent, mergeAttributes, useEditor, type Editor
-} from '@tiptap/react';
+import { EditorContent, mergeAttributes, useEditor, type Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 
 import { Alabel } from '../../atoms';
@@ -35,54 +31,49 @@ const basicRichTextElementExtentions = [
     bold: { HTMLAttributes: { class: 'richTextElt--bold' } },
     italic: { HTMLAttributes: { class: 'richTextElt--italic' } },
     bulletList: { HTMLAttributes: { class: 'aul' } },
-    listItem: { HTMLAttributes: { class: 'ali' } }
+    listItem: { HTMLAttributes: { class: 'ali' } },
   }),
   Paragraph.configure({ HTMLAttributes: { class: 'ap' } }),
   Table.configure({ HTMLAttributes: { class: 'atable' } }),
   TableRow.configure({ HTMLAttributes: { class: 'atr' } }),
   TableHeader.configure({ HTMLAttributes: { class: 'ath' } }),
   TableCell.configure({ HTMLAttributes: { class: 'atd' } }),
-  Heading.configure({ levels: [
-    1,
-    2,
-    3
-  ] }).extend({ renderHTML({
-    node, HTMLAttributes
-  }) {
-    const hasLevel = this.options.levels.includes(node.attrs.level as Level);
-    const level = hasLevel ? node.attrs.level : this.options.levels[0];
+  Heading.configure({ levels: [1, 2, 3] }).extend({
+    renderHTML({ node, HTMLAttributes }) {
+      const hasLevel = this.options.levels.includes(node.attrs.level as Level);
+      const level = hasLevel ? node.attrs.level : this.options.levels[0];
 
-    return [
-      `h${level}`,
-      mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, { class: `atitle atitle--h${level}` }),
-      0
-    ];
-  } }),
-  ReactHighlight
+      return [
+        `h${level}`,
+        mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
+          class: `atitle atitle--h${level}`,
+        }),
+        0,
+      ];
+    },
+  }),
+  ReactHighlight,
 ];
 
-const completeRichTextElementExtentions = [
-  ...basicRichTextElementExtentions,
-  ReactComponentEmbed
-];
+const completeRichTextElementExtentions = [...basicRichTextElementExtentions, ReactComponentEmbed];
 
 interface IRichTextElement {
   /** The text Editor */
-  editor?: Editor | null
+  editor?: Editor | null;
   /** Is there raw content (stringified) to be displayed */
-  rawStringContent?: string
+  rawStringContent?: string;
   /** The title of the editor, if any */
-  label?: string
+  label?: string;
   /** Is the text element readOnly */
-  readOnly?: boolean
+  readOnly?: boolean;
   /** Is the text editor with all options ? */
-  complete?: boolean
+  complete?: boolean;
   /** Is the text editor small in height ? */
-  small?: boolean
+  small?: boolean;
   /** The RuleBookId, if there is one */
-  ruleBookId?: string
+  ruleBookId?: string;
   /** The classname of the text element */
-  className?: string
+  className?: string;
 }
 
 const RichTextElement: FC<IRichTextElement> = ({
@@ -93,11 +84,11 @@ const RichTextElement: FC<IRichTextElement> = ({
   complete = false,
   small = false,
   ruleBookId,
-  className
+  className,
 }) => {
   const basicEditor = useEditor({
     extensions: completeRichTextElementExtentions,
-    editable: !readOnly
+    editable: !readOnly,
   });
 
   useEffect(() => {
@@ -113,11 +104,7 @@ const RichTextElement: FC<IRichTextElement> = ({
         editor.commands.setContent(rawStringContent);
       }
     });
-  }, [
-    editor,
-    basicEditor,
-    rawStringContent
-  ]);
+  }, [editor, basicEditor, rawStringContent]);
 
   return (
     <div
@@ -129,16 +116,14 @@ const RichTextElement: FC<IRichTextElement> = ({
         `)}
     >
       {label !== undefined ? <Alabel>{label}</Alabel> : null}
-      {!readOnly
-        ? (
-            <MenuBar
-              editor={editor ?? undefined}
-              complete={complete}
-              ruleBookId={ruleBookId}
-              className="richTextElt__menu"
-            />
-          )
-        : null}
+      {!readOnly ? (
+        <MenuBar
+          editor={editor ?? undefined}
+          complete={complete}
+          ruleBookId={ruleBookId}
+          className="richTextElt__menu"
+        />
+      ) : null}
       <EditorContent
         editor={editor ?? basicEditor}
         className="richTextElt__editor"
@@ -151,8 +136,4 @@ const RichTextElement: FC<IRichTextElement> = ({
   );
 };
 
-export {
-  basicRichTextElementExtentions,
-  completeRichTextElementExtentions,
-  RichTextElement
-};
+export { basicRichTextElementExtentions, completeRichTextElementExtentions, RichTextElement };

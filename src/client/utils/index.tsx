@@ -1,8 +1,6 @@
 import { diacriticsMap } from './diacriticsMap';
 
-import type {
-  ICharacter, IGlobalValue, TypeDice
-} from '../types';
+import type { ICharacter, IGlobalValue, TypeDice } from '../types';
 
 export const degToRad = (degrees: number): number => degrees * (Math.PI / 180);
 
@@ -36,10 +34,7 @@ export const addSymbol = (val: number): string => {
   return String(val);
 };
 
-export const arraysEqual = (
-  a: string[] | null,
-  b: string[] | null
-): boolean => {
+export const arraysEqual = (a: string[] | null, b: string[] | null): boolean => {
   if (a === b) return true;
   if (a == null || b == null) return false;
   if (a.length !== b.length) return false;
@@ -64,7 +59,7 @@ export const romanize = (num: number): string | boolean => {
     IX: 9,
     V: 5,
     IV: 4,
-    I: 1
+    I: 1,
   };
   let roman = '';
   Object.keys(lookup).forEach((lookupKey) => {
@@ -95,89 +90,87 @@ export const isThereDuplicate = (elts: string[]): boolean => {
 };
 
 export interface IFormattedDate {
-  date: string
-  hour: string
+  date: string;
+  hour: string;
 }
 
 export const formatDate = (date: Date): IFormattedDate => ({
   date: `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`,
-  hour: `${date.getHours()}:${date.getMinutes()}`
+  hour: `${date.getHours()}:${date.getMinutes()}`,
 });
 
 export interface DiceRequest {
   /** The number of dices thrown */
-  qty: number
+  qty: number;
   /** The type of dice (as in the number of sides on the dice) */
-  type: TypeDice
+  type: TypeDice;
   /** The offset to be added to the roll */
-  offset: number
+  offset: number;
 }
 
 export interface DiceResult {
   /** The type of dice (as in the number of sides on the dice) */
-  type: TypeDice
+  type: TypeDice;
   /** All the results, in an array */
-  results: number[]
+  results: number[];
   /** All the results, summed up */
-  total: number
+  total: number;
   /** The best throw on this type */
-  best: number
+  best: number;
   /** The worst throw on this type */
-  worst: number
+  worst: number;
   /** The average value on the throws on this type */
-  average: number
+  average: number;
   /** The offset value on the result */
-  offset: number
+  offset: number;
 }
 
 interface TotalResult {
   /** All the results, summed up */
-  total: number
+  total: number;
   /** The best throw on this type */
-  best?: number
+  best?: number;
   /** The worst throw on this type */
-  worst?: number
+  worst?: number;
 }
 
 export const createBasicDiceRequest = (): DiceRequest[] => [
   {
     type: 20,
     qty: 0,
-    offset: 0
+    offset: 0,
   },
   {
     type: 12,
     qty: 0,
-    offset: 0
+    offset: 0,
   },
   {
     type: 10,
     qty: 0,
-    offset: 0
+    offset: 0,
   },
   {
     type: 8,
     qty: 0,
-    offset: 0
+    offset: 0,
   },
   {
     type: 6,
     qty: 0,
-    offset: 0
+    offset: 0,
   },
   {
     type: 4,
     qty: 0,
-    offset: 0
-  }
+    offset: 0,
+  },
 ];
 
 export const throwDices = (dices: DiceRequest[]): DiceResult[] => {
   const resultsThrows: DiceResult[] = [];
 
-  dices.forEach(({
-    qty, type, offset
-  }) => {
+  dices.forEach(({ qty, type, offset }) => {
     let total = 0;
     let best = 0;
     let worst = 0;
@@ -205,7 +198,7 @@ export const throwDices = (dices: DiceRequest[]): DiceResult[] => {
       best,
       worst,
       offset,
-      average: Math.floor((total / qty) * 10) / 10
+      average: Math.floor((total / qty) * 10) / 10,
     });
   });
 
@@ -218,7 +211,7 @@ export const diceResultToStr = (diceCats: DiceResult[] | null): string => {
   }
 
   let stringified = '';
-  const curatedCats = diceCats.filter(diceCat => diceCat.results.length > 0);
+  const curatedCats = diceCats.filter((diceCat) => diceCat.results.length > 0);
 
   curatedCats.forEach((diceCat, catIndex) => {
     const catRolls = diceCat.results;
@@ -242,16 +235,21 @@ export const diceResultToStr = (diceCats: DiceResult[] | null): string => {
 
 export const strToDiceResult = (text: string): DiceResult[] => {
   const basicMold = createBasicDiceRequest();
-  const catRollObj: Partial<Record<string, {
-    dices: number[]
-    offset: string
-  }>> = {};
+  const catRollObj: Partial<
+    Record<
+      string,
+      {
+        dices: number[];
+        offset: string;
+      }
+    >
+  > = {};
   text.split(';').forEach((catText) => {
     const [type, dicesText] = catText.split(':');
     const [dices, offset] = dicesText.split('+');
     catRollObj[Number(type)] = {
-      dices: dices.split(',').map(diceText => Number(diceText)),
-      offset
+      dices: dices.split(',').map((diceText) => Number(diceText)),
+      offset,
     };
   });
 
@@ -279,8 +277,7 @@ export const strToDiceResult = (text: string): DiceResult[] => {
       best,
       worst,
       offset: data?.offset !== undefined ? Number(data.offset) : 0,
-      average: Math.floor(
-        (total / (data !== undefined ? data.dices.length : 1)) * 10) / 10
+      average: Math.floor((total / (data !== undefined ? data.dices.length : 1)) * 10) / 10,
     };
   });
 };
@@ -289,11 +286,9 @@ export const calculateDices = (diceGroups: DiceResult[]): TotalResult => {
   let total = 0;
   const optionnalParams: Pick<DiceResult, 'best' | 'worst'> = {
     best: diceGroups[0].best,
-    worst: diceGroups[0].worst
+    worst: diceGroups[0].worst,
   };
-  diceGroups.forEach(({
-    results, best, worst, total: totalDice
-  }) => {
+  diceGroups.forEach(({ results, best, worst, total: totalDice }) => {
     if (results.length > 0) {
       total += totalDice;
       if (optionnalParams.best < best) {
@@ -307,11 +302,12 @@ export const calculateDices = (diceGroups: DiceResult[]): TotalResult => {
 
   return {
     total,
-    ...optionnalParams
+    ...optionnalParams,
   };
 };
 
-const applyFormula = (text: string, formula: string, char: ICharacter | null | false): string => 'TAKE FORMULA IN CONSIDERATION';
+const applyFormula = (text: string, formula: string, char: ICharacter | null | false): string =>
+  'TAKE FORMULA IN CONSIDERATION';
 
 export const curateStringFormula = (
   text: string,
@@ -323,11 +319,7 @@ export const curateStringFormula = (
     return text;
   }
   if (char === false || char === null) {
-    return [
-      splitted[0],
-      'X',
-      [splitted[1]]
-    ].join(' ');
+    return [splitted[0], 'X', [splitted[1]]].join(' ');
   }
 
   return applyFormula(text, formula, char);
@@ -344,11 +336,7 @@ export const curateStringDamage = (
     return text;
   }
   if (char === false || char === null) {
-    return [
-      splitted[0],
-      'X',
-      [splitted[1]]
-    ].join(' ');
+    return [splitted[0], 'X', [splitted[1]]].join(' ');
   }
 
   return applyFormula(text, `${damages}+${formula}`, char);
@@ -369,14 +357,10 @@ export const getValuesFromGlobalValues = (
 ): Record<string, number | undefined> => {
   const elt: Record<string, number> = {};
   namesSent.forEach((nameSent) => {
-    elt[nameSent] = Number(
-      globalValues.find(({ name }) => name === nameSent)?.value ?? 0
-    );
+    elt[nameSent] = Number(globalValues.find(({ name }) => name === nameSent)?.value ?? 0);
   });
 
   return elt;
 };
 
-export {
-  getCyberFrameLevelsByNodes, type ICyberFrameLevels
-} from './character';
+export { getCyberFrameLevelsByNodes, type ICyberFrameLevels } from './character';

@@ -1,11 +1,7 @@
 import React from 'react';
-import {
-  useRef, useState, type FC, type ReactNode
-} from 'react';
+import { useRef, useState, type FC, type ReactNode } from 'react';
 
-import {
-  Abutton, type IAButton
-} from '../atoms';
+import { Abutton, type IAButton } from '../atoms';
 
 import type { IQuarkProps } from '../quark';
 
@@ -15,19 +11,14 @@ import './clickableText.scss';
 
 interface IClickableText extends IQuarkProps<IAButton> {
   /** The clickable text */
-  text: string
+  text: string;
   /** When the clickable text is clicked */
-  onClick?: (e: React.MouseEvent<HTMLElement>) => void
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
   /** Helper/details attached to this text */
-  hint?: ReactNode
+  hint?: ReactNode;
 }
 
-const ClickableText: FC<IClickableText> = ({
-  text,
-  onClick,
-  className,
-  hint
-}) => {
+const ClickableText: FC<IClickableText> = ({ text, onClick, className, hint }) => {
   const [delayHandler, setDelayHandler] = useState<NodeJS.Timeout | null>(null);
   const [isHintOpen, setHintOpen] = useState<boolean>(false);
   const [placement, setPlacement] = useState<string>('top-left');
@@ -51,8 +42,8 @@ const ClickableText: FC<IClickableText> = ({
       if (topBottom === 'top' && dimensions.bottom + dimensions.height + 30 < windowHeight) {
         topBottom = 'bottom';
       } else if (
-        topBottom === 'bottom'
-        && dimensions.bottom + dimensions.height + 30 > windowHeight
+        topBottom === 'bottom' &&
+        dimensions.bottom + dimensions.height + 30 > windowHeight
       ) {
         topBottom = 'top';
       }
@@ -91,13 +82,11 @@ const ClickableText: FC<IClickableText> = ({
       >
         {text}
       </Abutton>
-      {hint !== undefined
-        ? (
-            <span className="clickable-text__hint" ref={hintContent}>
-              {hint}
-            </span>
-          )
-        : null}
+      {hint !== undefined ? (
+        <span className="clickable-text__hint" ref={hintContent}>
+          {hint}
+        </span>
+      ) : null}
     </div>
   );
 };

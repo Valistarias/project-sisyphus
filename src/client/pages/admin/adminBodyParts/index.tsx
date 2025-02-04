@@ -1,14 +1,10 @@
-import React, {
-  useMemo, type FC
-} from 'react';
+import React, { useMemo, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../../providers';
 
-import {
-  Ali, Atitle, Aul
-} from '../../../atoms';
+import { Ali, Atitle, Aul } from '../../../atoms';
 import { LinkButton } from '../../../molecules';
 
 import { classTrim } from '../../../utils';
@@ -51,7 +47,9 @@ const AdminBodyParts: FC = () => {
         <div className="adminBodyParts__body-parts">
           <Atitle level={2}>{t('adminBodyParts.list', { ns: 'pages' })}</Atitle>
           <div className="adminBodyParts__body-parts__list">{bodyPartsList}</div>
-          <LinkButton href="/admin/bodypart/new">{t('adminNewBodyPart.title', { ns: 'pages' })}</LinkButton>
+          <LinkButton href="/admin/bodypart/new">
+            {t('adminNewBodyPart.title', { ns: 'pages' })}
+          </LinkButton>
         </div>
       </div>
     </div>

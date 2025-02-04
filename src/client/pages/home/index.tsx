@@ -7,9 +7,7 @@ import { TypeAnimation } from 'react-type-animation';
 import { useGlobalVars } from '../../providers';
 
 import tvBackground from '../../assets/imgs/tvbg2.gif';
-import {
-  Ap, Atitle, Avideo
-} from '../../atoms';
+import { Ap, Atitle, Avideo } from '../../atoms';
 import { LinkButton } from '../../molecules';
 
 import { classTrim } from '../../utils';
@@ -53,7 +51,7 @@ const Home: FC = () => {
               'Live again, Die again, Die better',
               3000, // Waits 3s
               'A Tabletop RPG set in a strange future',
-              3000 // Waits 3s
+              3000, // Waits 3s
             ]}
             cursor={false}
             repeat={Infinity}
@@ -61,18 +59,16 @@ const Home: FC = () => {
             deletionSpeed={80}
           />
         </Ap>
-        {user?._id === undefined
-          ? (
-              <div className="home__intro__buttons">
-                <LinkButton size="large" theme="afterglow" href="/signup">
-                  {t('home.registerCta', { ns: 'pages' })}
-                </LinkButton>
-                <LinkButton size="large" theme="text-only" href="/login">
-                  {t('home.loginCta', { ns: 'pages' })}
-                </LinkButton>
-              </div>
-            )
-          : null}
+        {user?._id === undefined ? (
+          <div className="home__intro__buttons">
+            <LinkButton size="large" theme="afterglow" href="/signup">
+              {t('home.registerCta', { ns: 'pages' })}
+            </LinkButton>
+            <LinkButton size="large" theme="text-only" href="/login">
+              {t('home.loginCta', { ns: 'pages' })}
+            </LinkButton>
+          </div>
+        ) : null}
       </div>
 
       {/* <Button onClick={onAddAlert}>Add alert</Button> */}

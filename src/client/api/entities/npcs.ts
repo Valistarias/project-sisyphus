@@ -2,12 +2,10 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type {
-  ICuratedBasicNPC, ICuratedNPC, INPC
-} from '../../types';
+import type { ICuratedBasicNPC, ICuratedNPC, INPC } from '../../types';
 
 interface INPCPayload {
-  nPCId: string
+  nPCId: string;
 }
 
 export default class NPCs extends Entity<INPCPayload, INPC, ICuratedNPC> {

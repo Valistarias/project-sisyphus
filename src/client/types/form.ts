@@ -3,9 +3,9 @@ import type { Control } from 'react-hook-form';
 
 export interface IReactHookFormInputs {
   /** The control element from React Hook Form */
-  control: Control<any>
+  control: Control<any>;
   /** The rules dictating the necessary rules for the field to be valid */
-  rules?: Record<string, unknown>
+  rules?: Record<string, unknown>;
   /** The name of the controled element */
-  inputName: string
+  inputName: string;
 }

@@ -1,106 +1,84 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  useApi, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input, SmartSelect
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input, SmartSelect } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import './adminNewAmmo.scss';
 import type { ErrorResponseType } from '../../../types';
 import type { InternationalizationType } from '../../../types/global';
 
 interface FormValues {
-  name: string
-  nameFr: string
-  weaponTypes: string[]
-  offsetToHit?: number
-  offsetDamage?: number
-  cost: number
-  rarity: string
-  itemModifiers: string[]
+  name: string;
+  nameFr: string;
+  weaponTypes: string[];
+  offsetToHit?: number;
+  offsetDamage?: number;
+  cost: number;
+  rarity: string;
+  itemModifiers: string[];
 }
 
 const AdminNewAmmo: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const navigate = useNavigate();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
-  const {
-    itemModifiers, itemTypes, weaponTypes, rarities
-  } = useGlobalVars();
+  const { createAlert, getNewId } = useSystemAlerts();
+  const { itemModifiers, itemTypes, weaponTypes, rarities } = useGlobalVars();
 
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
 
-  const introEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors }
+    formState: { errors },
   } = useForm();
 
   // TODO: Internationalization
-  const itemModifierList = useMemo(() => itemModifiers.map(
-    ({ itemModifier }) => ({
-      value: itemModifier._id,
-      label: itemModifier.title
-    })), [itemModifiers]);
+  const itemModifierList = useMemo(
+    () =>
+      itemModifiers.map(({ itemModifier }) => ({
+        value: itemModifier._id,
+        label: itemModifier.title,
+      })),
+    [itemModifiers]
+  );
 
-  const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
-    value: rarity._id,
-    label: rarity.title
-  })), [rarities]);
+  const rarityList = useMemo(
+    () =>
+      rarities.map(({ rarity }) => ({
+        value: rarity._id,
+        label: rarity.title,
+      })),
+    [rarities]
+  );
 
-  const weaponList = useMemo(() => weaponTypes.map(({ weaponType }) => ({
-    value: weaponType._id,
-    label: weaponType.title
-  })), [weaponTypes]);
+  const weaponList = useMemo(
+    () =>
+      weaponTypes.map(({ weaponType }) => ({
+        value: weaponType._id,
+        label: weaponType.title,
+      })),
+    [weaponTypes]
+  );
 
   const onSaveAmmo: SubmitHandler<FormValues> = useCallback(
-    ({
-      name,
-      nameFr,
-      rarity,
-      cost,
-      weaponTypes,
-      itemModifiers,
-      offsetToHit,
-      offsetDamage
-    }) => {
-      if (
-        introEditor === null
-        || introFrEditor === null
-        || api === undefined
-      ) {
+    ({ name, nameFr, rarity, cost, weaponTypes, itemModifiers, offsetToHit, offsetDamage }) => {
+      if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
 
@@ -113,10 +91,12 @@ const AdminNewAmmo: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          summary: htmlFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            summary: htmlFr,
+          },
+        };
       }
 
       api.ammos
@@ -126,11 +106,11 @@ const AdminNewAmmo: FC = () => {
           rarity,
           offsetToHit,
           offsetDamage,
-          itemType: itemTypes.find(itemType => itemType.name === 'amo')?._id ?? undefined,
+          itemType: itemTypes.find((itemType) => itemType.name === 'amo')?._id ?? undefined,
           cost: Number(cost),
           itemModifiers,
           summary: html,
-          i18n
+          i18n,
         })
         .then((ammoType) => {
           const newId = getNewId();
@@ -140,7 +120,7 @@ const AdminNewAmmo: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewAmmo.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           void navigate(`/admin/ammo/${ammoType._id}`);
         })
@@ -148,21 +128,13 @@ const AdminNewAmmo: FC = () => {
           const { data } = response;
           setError('root.serverError', {
             type: 'server',
-            message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
+            message: t(`serverErrors.${data.code}`, {
+              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
+            }),
           });
         });
     },
-    [
-      introEditor,
-      introFrEditor,
-      api,
-      itemTypes,
-      getNewId,
-      createAlert,
-      t,
-      navigate,
-      setError
-    ]
+    [introEditor, introFrEditor, api, itemTypes, getNewId, createAlert, t, navigate, setError]
   );
 
   useEffect(() => {
@@ -170,12 +142,7 @@ const AdminNewAmmo: FC = () => {
       setLoading(true);
       calledApi.current = true;
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    t
-  ]);
+  }, [api, createAlert, getNewId, t]);
 
   return (
     <div className="adminNewAmmo">
@@ -187,11 +154,9 @@ const AdminNewAmmo: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewAmmo.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror>{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminNewAmmo__basics">
           <Input
             control={control}

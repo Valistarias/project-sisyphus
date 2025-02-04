@@ -5,11 +5,10 @@ import Entity from './entity';
 import type { ICuratedWeapon, IWeapon } from '../../types';
 
 interface IWeaponPayload {
-  weaponId: string
+  weaponId: string;
 }
 
-export default class Weapons
-  extends Entity<IWeaponPayload, IWeapon, ICuratedWeapon> {
+export default class Weapons extends Entity<IWeaponPayload, IWeapon, ICuratedWeapon> {
   getStarters: () => Promise<ICuratedWeapon[]>;
 
   constructor() {

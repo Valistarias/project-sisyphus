@@ -5,11 +5,10 @@ import Entity from './entity';
 import type { ICuratedImplant, IImplant } from '../../types';
 
 interface IImplantPayload {
-  implantId: string
+  implantId: string;
 }
 
-export default class Implants
-  extends Entity<IImplantPayload, IImplant, ICuratedImplant> {
+export default class Implants extends Entity<IImplantPayload, IImplant, ICuratedImplant> {
   getStarters: () => Promise<ICuratedImplant[]>;
 
   constructor() {

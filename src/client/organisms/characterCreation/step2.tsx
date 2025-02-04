@@ -1,70 +1,51 @@
-import React, {
-  useCallback, useMemo, type FC, type ReactNode
-} from 'react';
+import React, { useCallback, useMemo, type FC, type ReactNode } from 'react';
 
 import { motion } from 'framer-motion';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../providers';
 
-import {
-  Ap, Atitle
-} from '../../atoms';
-import {
-  Button, Helper, NumberSelect
-} from '../../molecules';
-import {
-  calculateStatMod, getActualBody
-} from '../../utils/character';
+import { Ap, Atitle } from '../../atoms';
+import { Button, Helper, NumberSelect } from '../../molecules';
+import { calculateStatMod, getActualBody } from '../../utils/character';
 import { RichTextElement } from '../richTextElement';
 
-import type {
-  ICharacter, ICuratedStat
-} from '../../types';
+import type { ICharacter, ICuratedStat } from '../../types';
 
 import {
   arrSum,
   classTrim,
   getCyberFrameLevelsByNodes,
-  getValuesFromGlobalValues
+  getValuesFromGlobalValues,
 } from '../../utils';
 
 import './characterCreation.scss';
 
 interface FormValues {
-  stats: Record<string, number>
+  stats: Record<string, number>;
 }
 
 export interface IStatBonuses {
-  bonus: number
-  source: string
-  sourceId: string
-  broad: boolean
+  bonus: number;
+  source: string;
+  sourceId: string;
+  broad: boolean;
 }
 
 interface ICharacterCreationStep2 {
   /** When the user click send and the data is send perfectly */
   onSubmitStats?: (
     stats: Array<{
-      id: string
-      value: number
+      id: string;
+      value: number;
     }>
-  ) => void
+  ) => void;
 }
 
-const CharacterCreationStep2: FC<ICharacterCreationStep2> = (
-  { onSubmitStats }
-) => {
+const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) => {
   const { t } = useTranslation();
-  const {
-    stats,
-    globalValues,
-    cyberFrames,
-    character
-  } = useGlobalVars();
+  const { stats, globalValues, cyberFrames, character } = useGlobalVars();
 
   const createDefaultData = useCallback(
     (stats: ICuratedStat[], character: ICharacter | null | false) => {
@@ -76,9 +57,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = (
         // const relevantBody = character.bodies?.find((body) => body.alive);
         const relevantBody = getActualBody(character);
         if (relevantBody.body !== undefined && !relevantBody.duplicate) {
-          relevantBody.body.stats.forEach(({
-            stat, value
-          }) => {
+          relevantBody.body.stats.forEach(({ stat, value }) => {
             if (defaultData.stats === undefined) {
               defaultData.stats = {};
             }
@@ -105,9 +84,9 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = (
     ({ stats }) => {
       if (onSubmitStats !== undefined) {
         onSubmitStats(
-          Object.keys(stats).map(statKey => ({
+          Object.keys(stats).map((statKey) => ({
             id: statKey,
-            value: stats[statKey]
+            value: stats[statKey],
           }))
         );
       }
@@ -115,21 +94,14 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = (
     [onSubmitStats]
   );
 
-  const {
-    handleSubmit, watch, control
-  } = useForm({ defaultValues: useMemo(
-    () => createDefaultData(stats, character),
-    [
-      createDefaultData,
-      stats,
-      character
-    ]
-  ) });
+  const { handleSubmit, watch, control } = useForm({
+    defaultValues: useMemo(
+      () => createDefaultData(stats, character),
+      [createDefaultData, stats, character]
+    ),
+  });
 
-  const {
-    baseStatPoints,
-    minStatAtCreation
-  } = useMemo(
+  const { baseStatPoints, minStatAtCreation } = useMemo(
     () => getValuesFromGlobalValues(['baseStatPoints', 'minStatAtCreation'], globalValues),
     [globalValues]
   );
@@ -141,36 +113,26 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = (
       return [];
     }
 
-    const nodesByCyberFrames = getCyberFrameLevelsByNodes(
-      character.nodes,
-      cyberFrames
-    );
+    const nodesByCyberFrames = getCyberFrameLevelsByNodes(character.nodes, cyberFrames);
 
     const statBonuses: Record<string, IStatBonuses> = {};
 
     // If only one source for the list, we'll be precise
     // If multiple sources for bonuses, we are borad in the phrasing
-    nodesByCyberFrames.forEach(({
-      cyberFrame, chosenNodes
-    }) => {
+    nodesByCyberFrames.forEach(({ cyberFrame, chosenNodes }) => {
       chosenNodes.forEach((node) => {
         if (node.statBonuses !== undefined && node.statBonuses.length > 0) {
           node.statBonuses.forEach((statBonus) => {
-            if ((
-              statBonuses[statBonus.stat] as IStatBonuses | undefined
-            ) === undefined) {
+            if ((statBonuses[statBonus.stat] as IStatBonuses | undefined) === undefined) {
               statBonuses[statBonus.stat] = {
                 bonus: statBonus.value,
                 source: cyberFrame.cyberFrame.title,
                 sourceId: cyberFrame.cyberFrame._id,
-                broad: false
+                broad: false,
               };
             } else {
               statBonuses[statBonus.stat].bonus += statBonus.value;
-              if (
-                statBonuses[statBonus.stat].sourceId
-                !== cyberFrame.cyberFrame._id
-              ) {
+              if (statBonuses[statBonus.stat].sourceId !== cyberFrame.cyberFrame._id) {
                 statBonuses[statBonus.stat].broad = true;
               }
             }
@@ -184,10 +146,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = (
 
   const watchedStats = watch('stats');
 
-  const pointSpent = arrSum(watchedStats !== undefined
-    ? Object.values(watchedStats)
-    : []
-  );
+  const pointSpent = arrSum(watchedStats !== undefined ? Object.values(watchedStats) : []);
   const pointsLeft = (baseStatPoints ?? 0) - pointSpent;
 
   const statSelectList = useCallback((): ReactNode[] => {
@@ -196,9 +155,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = (
     stats.forEach(({ stat }, index) => {
       const valStat = watch(`stats.${stat._id}`);
       const valMod = calculateStatMod(
-        Number(valStat + ((
-          bonusesByStat[stat._id] as IStatBonuses | undefined
-        )?.bonus ?? 0))
+        Number(valStat + ((bonusesByStat[stat._id] as IStatBonuses | undefined)?.bonus ?? 0))
       );
       const bonusByStat: IStatBonuses | undefined = bonusesByStat[stat._id];
 
@@ -219,22 +176,20 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = (
                 <RichTextElement rawStringContent={stat.summary} readOnly />
               </Helper>
             </Atitle>
-            {bonusByStat !== undefined
-              ? (
-                  <Ap className="characterCreation-step2__stats__content__bonus">
-                    {bonusByStat.broad
-                      ? t('characterCreation.step2.generalBonus', {
-                          ns: 'components',
-                          points: bonusByStat.bonus
-                        })
-                      : t('characterCreation.step2.cFrameBonus', {
-                          ns: 'components',
-                          points: bonusByStat.bonus,
-                          cFrameName: bonusByStat.source
-                        })}
-                  </Ap>
-                )
-              : null}
+            {bonusByStat !== undefined ? (
+              <Ap className="characterCreation-step2__stats__content__bonus">
+                {bonusByStat.broad
+                  ? t('characterCreation.step2.generalBonus', {
+                      ns: 'components',
+                      points: bonusByStat.bonus,
+                    })
+                  : t('characterCreation.step2.cFrameBonus', {
+                      ns: 'components',
+                      points: bonusByStat.bonus,
+                      cFrameName: bonusByStat.source,
+                    })}
+              </Ap>
+            ) : null}
             <Ap className="characterCreation-step2__stats__content__text">
               <span className="characterCreation-step2__stats__content__text__title">
                 {t(
@@ -261,10 +216,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = (
         </div>
       );
 
-      if (
-        statBlock.length === Math.trunc(stats.length / 2)
-        || index === stats.length - 1
-      ) {
+      if (statBlock.length === Math.trunc(stats.length / 2) || index === stats.length - 1) {
         cStatElts.push(
           <div key={`block-stat-${index}`} className="characterCreation-step2__stats__field-block">
             {statBlock}
@@ -276,9 +228,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = (
               <Ap className="characterCreation-step2__points__text">
                 {t('characterCreation.step2.pointsLeft', { ns: 'components' })}
               </Ap>
-              <Ap className="characterCreation-step2__points__value">
-                {pointsLeft}
-              </Ap>
+              <Ap className="characterCreation-step2__points__value">{pointsLeft}</Ap>
               <Button
                 type="submit"
                 className="characterCreation-step2__points__btn"
@@ -295,15 +245,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = (
     });
 
     return cStatElts;
-  }, [
-    bonusesByStat,
-    control,
-    minStatAtCreation,
-    pointsLeft,
-    stats,
-    t,
-    watch
-  ]);
+  }, [bonusesByStat, control, minStatAtCreation, pointsLeft, stats, t, watch]);
 
   return (
     <motion.div
@@ -313,11 +255,12 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = (
       initial={{ transform: 'skew(90deg, 0deg) scale3d(.2, .2, .2)' }}
       animate={{
         transform: 'skew(0, 0) scale3d(1, 1, 1)',
-        transitionEnd: { transform: 'none' }
+        transitionEnd: { transform: 'none' },
       }}
       exit={{ transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)' }}
       transition={{
-        ease: 'easeInOut', duration: 0.2
+        ease: 'easeInOut',
+        duration: 0.2,
       }}
     >
       <Ap className="characterCreation-step2__text">

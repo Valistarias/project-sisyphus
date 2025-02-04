@@ -1,14 +1,10 @@
-import React, {
-  useMemo, type FC
-} from 'react';
+import React, { useMemo, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../../providers';
 
-import {
-  Ali, Ap, Atitle, Aul
-} from '../../../atoms';
+import { Ali, Ap, Atitle, Aul } from '../../../atoms';
 import { LinkButton } from '../../../molecules';
 
 import AdminRuleBookTypes from './adminRuleBookTypes';
@@ -62,7 +58,9 @@ const AdminRuleBooks: FC = () => {
         <div className="adminRuleBooks__books">
           <Atitle level={2}>{t('adminRuleBooks.list', { ns: 'pages' })}</Atitle>
           <div className="adminRuleBooks__books__list">{ruleBookList}</div>
-          <LinkButton href="/admin/rulebook/new">{t('adminNewRuleBook.title', { ns: 'pages' })}</LinkButton>
+          <LinkButton href="/admin/rulebook/new">
+            {t('adminNewRuleBook.title', { ns: 'pages' })}
+          </LinkButton>
         </div>
         <AdminRuleBookTypes />
       </div>

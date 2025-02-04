@@ -1,64 +1,57 @@
-import {
-  Schema, model, type HydratedDocument, type Model, type ObjectId
-} from 'mongoose';
+import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
 import type { Lean } from '../../utils/types';
 import type { HydratedIDamage, IDamage } from '../damage/model';
-import type {
-  HydratedIAction,
-  HydratedIEffect,
-  IAction,
-  IEffect
-} from '../index';
+import type { HydratedIAction, HydratedIEffect, IAction, IEffect } from '../index';
 
 interface IWeapon<IdType> {
   /** The title of the weapon */
-  title: string
+  title: string;
   /** A summary of the weapon */
-  summary: string
+  summary: string;
   /** A quote or text, MTG style */
-  quote?: string
+  quote?: string;
   /** The internationnal content, as a json, stringified */
-  i18n?: string
+  i18n?: string;
   /** The associated weaponType */
-  weaponType: IdType
+  weaponType: IdType;
   /** The rarity of the weapon */
-  rarity: IdType
+  rarity: IdType;
   /** The range of the weapon */
-  weaponScope: IdType
+  weaponScope: IdType;
   /** The item modifiers of the weapon */
-  itemModifiers?: IdType[]
+  itemModifiers?: IdType[];
   /** The cost of the weapon */
-  cost: number
+  cost: number;
   /** The size of the magasine */
-  magasine?: number
+  magasine?: number;
   /** How many ammos are usef for each shot */
-  ammoPerShot?: number
+  ammoPerShot?: number;
   /** Is this weapon in the starter kit ?
    * (always -> element included, never -> not included, option -> can be chosen with similar weapons) */
-  starterKit?: 'always' | 'never' | 'option'
+  starterKit?: 'always' | 'never' | 'option';
   /** The effects related to the weapon */
-  effects?: IdType[]
+  effects?: IdType[];
   /** The actions related to the weapon */
-  actions?: IdType[]
+  actions?: IdType[];
   /** The damages of the weapon */
-  damages: IdType[]
+  damages: IdType[];
   /** When the weapon was created */
-  createdAt: Date
+  createdAt: Date;
 }
 
 type HydratedIWeapon = HydratedDocument<
   Omit<IWeapon<string>, 'effects' | 'actions' | 'damages'> & {
-    effects: HydratedIEffect[] | string[]
-    actions: HydratedIAction[] | string[]
-    damages: HydratedIDamage[] | string[]
+    effects: HydratedIEffect[] | string[];
+    actions: HydratedIAction[] | string[];
+    damages: HydratedIDamage[] | string[];
   }
 >;
 
 type LeanIWeapon = Omit<Lean<IWeapon<string>>, 'effects' | 'actions' | 'damages'> & {
-  effects: IEffect[]
-  actions: IAction[]
-  damages: IDamage[]
+  effects: IEffect[];
+  actions: IAction[];
+  damages: IDamage[];
 };
 
 const weaponSchema = new Schema<IWeapon<ObjectId>>({
@@ -68,55 +61,53 @@ const weaponSchema = new Schema<IWeapon<ObjectId>>({
   i18n: String,
   weaponType: {
     type: Schema.Types.ObjectId,
-    ref: 'WeaponType'
+    ref: 'WeaponType',
   },
   rarity: {
     type: Schema.Types.ObjectId,
-    ref: 'Rarity'
+    ref: 'Rarity',
   },
   weaponScope: {
     type: Schema.Types.ObjectId,
-    ref: 'WeaponScope'
+    ref: 'WeaponScope',
   },
   itemModifiers: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'ItemModifier'
-    }
+      ref: 'ItemModifier',
+    },
   ],
   cost: Number,
   magasine: Number,
   ammoPerShot: Number,
   starterKit: {
     type: String,
-    default: 'never'
+    default: 'never',
   },
   effects: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'Effect'
-    }
+      ref: 'Effect',
+    },
   ],
   actions: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'Action'
-    }
+      ref: 'Action',
+    },
   ],
   damages: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'Damage'
-    }
+      ref: 'Damage',
+    },
   ],
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 const WeaponModel = (): Model<IWeapon<ObjectId>> => model('Weapon', weaponSchema);
 
-export {
-  WeaponModel, type HydratedIWeapon, type IWeapon, type LeanIWeapon
-};
+export { WeaponModel, type HydratedIWeapon, type IWeapon, type LeanIWeapon };

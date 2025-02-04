@@ -1,69 +1,49 @@
-import React, {
-  useCallback, useEffect, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  useApi, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
 import './adminNewArmorType.scss';
 
 interface FormValues {
-  name: string
-  nameFr: string
+  name: string;
+  nameFr: string;
 }
 
 const AdminNewArmorType: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const navigate = useNavigate();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
   const { reloadArmorTypes } = useGlobalVars();
 
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
 
-  const introEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors }
+    formState: { errors },
   } = useForm();
 
   const onSaveArmorType: SubmitHandler<FormValues> = useCallback(
-    ({
-      name, nameFr
-    }) => {
+    ({ name, nameFr }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -76,17 +56,19 @@ const AdminNewArmorType: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          summary: htmlFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            summary: htmlFr,
+          },
+        };
       }
 
       api.armorTypes
         .create({
           title: name,
           summary: html,
-          i18n
+          i18n,
         })
         .then((armorType) => {
           const newId = getNewId();
@@ -96,7 +78,7 @@ const AdminNewArmorType: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewArmorType.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           reloadArmorTypes();
           void navigate(`/admin/armortype/${armorType._id}`);
@@ -106,12 +88,14 @@ const AdminNewArmorType: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`,
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
@@ -125,7 +109,7 @@ const AdminNewArmorType: FC = () => {
       t,
       reloadArmorTypes,
       navigate,
-      setError
+      setError,
     ]
   );
 
@@ -134,12 +118,7 @@ const AdminNewArmorType: FC = () => {
       setLoading(true);
       calledApi.current = true;
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    t
-  ]);
+  }, [api, createAlert, getNewId, t]);
 
   return (
     <div className="adminNewArmorType">
@@ -151,11 +130,9 @@ const AdminNewArmorType: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewArmorType.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror>{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminNewArmorType__basics">
           <Input
             control={control}

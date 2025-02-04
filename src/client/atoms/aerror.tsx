@@ -1,10 +1,6 @@
-import React, {
-  type FC, type ReactNode
-} from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
-import {
-  Quark, type IQuarkProps
-} from '../quark';
+import { Quark, type IQuarkProps } from '../quark';
 
 import { classTrim } from '../utils';
 
@@ -12,12 +8,10 @@ import './aerror.scss';
 
 interface IAerror {
   /** The childrens of the P element */
-  children: ReactNode
+  children: ReactNode;
 }
 
-const Aerror: FC<IQuarkProps<IAerror>> = ({
-  className, children
-}) => (
+const Aerror: FC<IQuarkProps<IAerror>> = ({ className, children }) => (
   <Quark
     quarkType="p"
     className={classTrim(`

@@ -1,18 +1,12 @@
-import React, {
-  useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useMemo, useRef, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../providers';
 
-import {
-  Ali, Ap, Atitle, Aul
-} from '../atoms';
+import { Ali, Ap, Atitle, Aul } from '../atoms';
 import { PropDisplay } from '../molecules';
-import {
-  Quark, type IQuarkProps
-} from '../quark';
+import { Quark, type IQuarkProps } from '../quark';
 
 import type {
   ICharParamBonus,
@@ -20,7 +14,7 @@ import type {
   ICuratedArmorType,
   ICuratedCharParam,
   ICuratedItemModifier,
-  ICuratedRarity
+  ICuratedRarity,
 } from '../types';
 import type { IArmor } from '../types/items';
 
@@ -30,34 +24,30 @@ import './armorDisplay.scss';
 
 interface IArmorDisplay {
   /** The armor to be displayed */
-  armor: ICuratedArmor
+  armor: ICuratedArmor;
   /** The display mode */
-  mode?: 'basic' | 'hover'
+  mode?: 'basic' | 'hover';
 }
 
 interface ICompleteCharParamBonus extends Omit<ICharParamBonus, 'charParam'> {
-  charParam: ICuratedCharParam | undefined
+  charParam: ICuratedCharParam | undefined;
 }
 
 interface ICompleteArmor
   extends Omit<IArmor, 'armorType' | 'itemModifiers' | 'rarity' | 'charParamBonuses'> {
-  armorType: ICuratedArmorType | undefined
-  itemModifiers: ICuratedItemModifier[] | undefined
-  rarity: ICuratedRarity | undefined
-  charParamBonuses: ICompleteCharParamBonus[]
+  armorType: ICuratedArmorType | undefined;
+  itemModifiers: ICuratedItemModifier[] | undefined;
+  rarity: ICuratedRarity | undefined;
+  charParamBonuses: ICompleteCharParamBonus[];
 }
 
 interface ICuratedCompleteArmor extends Omit<ICuratedArmor, 'armor'> {
-  armor: ICompleteArmor
+  armor: ICompleteArmor;
 }
 
-const ArmorDisplay: FC<IQuarkProps<IArmorDisplay>> = ({
-  armor, mode = 'basic'
-}) => {
+const ArmorDisplay: FC<IQuarkProps<IArmorDisplay>> = ({ armor, mode = 'basic' }) => {
   const { t } = useTranslation();
-  const {
-    armorTypes, itemModifiers, rarities, charParams
-  } = useGlobalVars();
+  const { armorTypes, itemModifiers, rarities, charParams } = useGlobalVars();
 
   const [placement, setPlacement] = useState<string>('left');
   const domBlockContent = useRef<HTMLDivElement>(null);
@@ -66,40 +56,30 @@ const ArmorDisplay: FC<IQuarkProps<IArmorDisplay>> = ({
     if (armorTypes.length === 0) {
       return null;
     }
-    const {
-      armor: armorObj, i18n
-    } = armor;
+    const { armor: armorObj, i18n } = armor;
 
     return {
       armor: {
         ...armorObj,
-        armorType: armorTypes.find(
-          armorType => armorType.armorType._id === armorObj.armorType
-        ),
-        rarity: rarities.find(rarity => rarity.rarity._id === armorObj.rarity),
+        armorType: armorTypes.find((armorType) => armorType.armorType._id === armorObj.armorType),
+        rarity: rarities.find((rarity) => rarity.rarity._id === armorObj.rarity),
         itemModifiers: armorObj.itemModifiers?.map(
-          itemModifierId =>
+          (itemModifierId) =>
             itemModifiers.find(
-              itemModifier => itemModifier.itemModifier._id === itemModifierId
+              (itemModifier) => itemModifier.itemModifier._id === itemModifierId
             ) ?? itemModifiers[0]
         ),
         charParamBonuses:
-          armorObj.charParamBonuses?.map(charParamBonus => ({
+          armorObj.charParamBonuses?.map((charParamBonus) => ({
             ...charParamBonus,
             charParam: charParams.find(
               ({ charParam }) => charParam._id === charParamBonus.charParam
-            )
-          })) ?? []
+            ),
+          })) ?? [],
       },
-      i18n
+      i18n,
     };
-  }, [
-    armorTypes,
-    armor,
-    rarities,
-    itemModifiers,
-    charParams
-  ]);
+  }, [armorTypes, armor, rarities, itemModifiers, charParams]);
 
   const handleMouseEnter = (): void => {
     if (mode === 'hover') {
@@ -137,20 +117,20 @@ const ArmorDisplay: FC<IQuarkProps<IArmorDisplay>> = ({
         title={armor.title}
         type={type?.armorType.title ?? ''}
         itemModifiers={armor.itemModifiers}
-        mainNode={(
+        mainNode={
           <div className="armor-display__block__main">
             <Atitle className="weapon-display__block__main__title" level={4}>
               {t('display.cat.bonuses', { ns: 'components' })}
             </Atitle>
             <Aul noPoints className="weapon-display__block__bonuses">
-              {armor.charParamBonuses.map(charParamBonus => (
+              {armor.charParamBonuses.map((charParamBonus) => (
                 <Ali key={charParamBonus._id} className="weapon-display__block__bonuses__elt">
                   {`+${charParamBonus.value} ${charParamBonus.charParam?.charParam.title}`}
                 </Ali>
               ))}
             </Aul>
           </div>
-        )}
+        }
       />
     );
   }, [curateArmor, t]);

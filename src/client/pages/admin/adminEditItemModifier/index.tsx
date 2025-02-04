@@ -1,31 +1,16 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  useNavigate, useParams
-} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input,
-  LinkButton
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input, LinkButton } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type { ICuratedItemModifier } from '../../../types';
@@ -36,23 +21,18 @@ import { classTrim } from '../../../utils';
 import './adminEditItemModifier.scss';
 
 interface FormValues {
-  name: string
-  nameFr: string
-  modifierId: string
+  name: string;
+  nameFr: string;
+  modifierId: string;
 }
 
 const AdminEditItemModifier: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
   const { reloadItemModifiers } = useGlobalVars();
-  const {
-    setConfirmContent,
-    removeConfirmEventListener,
-    addConfirmEventListener
-  } = useConfirmMessage();
+  const { setConfirmContent, removeConfirmEventListener, addConfirmEventListener } =
+    useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -62,58 +42,46 @@ const AdminEditItemModifier: FC = () => {
 
   const [displayInt, setDisplayInt] = useState(false);
 
-  const [itemModifierData, setItemModifierData]
-  = useState<ICuratedItemModifier | null>(null);
+  const [itemModifierData, setItemModifierData] = useState<ICuratedItemModifier | null>(null);
 
   const [itemModifierText, setItemModifierText] = useState('');
   const [itemModifierTextFr, setItemModifierTextFr] = useState('');
 
-  const textEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const textFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const createDefaultData = useCallback(
-    (itemModifierData: ICuratedItemModifier | null) => {
-      if (itemModifierData == null) {
-        return {};
-      }
-      const {
-        itemModifier, i18n
-      } = itemModifierData;
-      const defaultData: Partial<FormValues> = {};
-      defaultData.name = itemModifier.title;
-      defaultData.modifierId = itemModifier.modifierId;
-      if (i18n.fr !== undefined) {
-        defaultData.nameFr = i18n.fr.title ?? '';
-      }
+  const createDefaultData = useCallback((itemModifierData: ICuratedItemModifier | null) => {
+    if (itemModifierData == null) {
+      return {};
+    }
+    const { itemModifier, i18n } = itemModifierData;
+    const defaultData: Partial<FormValues> = {};
+    defaultData.name = itemModifier.title;
+    defaultData.modifierId = itemModifier.modifierId;
+    if (i18n.fr !== undefined) {
+      defaultData.nameFr = i18n.fr.title ?? '';
+    }
 
-      return defaultData;
-    }, []);
+    return defaultData;
+  }, []);
 
   const {
     handleSubmit,
     setError,
     control,
     formState: { errors },
-    reset
-  } = useForm({ defaultValues: useMemo(
-    () => createDefaultData(itemModifierData),
-    [createDefaultData, itemModifierData]
-  ) });
+    reset,
+  } = useForm({
+    defaultValues: useMemo(
+      () => createDefaultData(itemModifierData),
+      [createDefaultData, itemModifierData]
+    ),
+  });
 
   const onSaveItemModifier: SubmitHandler<FormValues> = useCallback(
-    ({
-      name, nameFr, modifierId
-    }) => {
-      if (
-        textEditor === null
-        || textFrEditor === null
-        || api === undefined
-      ) {
+    ({ name, nameFr, modifierId }) => {
+      if (textEditor === null || textFrEditor === null || api === undefined) {
         return;
       }
       let htmlText: string | null = textEditor.getHTML();
@@ -127,10 +95,12 @@ const AdminEditItemModifier: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          text: htmlTextFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            text: htmlTextFr,
+          },
+        };
       }
 
       api.itemModifiers
@@ -139,7 +109,7 @@ const AdminEditItemModifier: FC = () => {
           title: name,
           modifierId,
           summary: htmlText,
-          i18n
+          i18n,
         })
         .then((itemModifier) => {
           const newId = getNewId();
@@ -149,7 +119,7 @@ const AdminEditItemModifier: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditItemModifier.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           reloadItemModifiers();
         })
@@ -158,27 +128,19 @@ const AdminEditItemModifier: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`,
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
     },
-    [
-      textEditor,
-      textFrEditor,
-      api,
-      id,
-      getNewId,
-      createAlert,
-      t,
-      reloadItemModifiers,
-      setError
-    ]
+    [textEditor, textFrEditor, api, id, getNewId, createAlert, t, reloadItemModifiers, setError]
   );
 
   const onAskDelete = useCallback(() => {
@@ -190,14 +152,12 @@ const AdminEditItemModifier: FC = () => {
         title: t('adminEditItemModifier.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditItemModifier.confirmDeletion.text', {
           ns: 'pages',
-          elt: itemModifierData?.itemModifier.title
+          elt: itemModifierData?.itemModifier.title,
         }),
-        confirmCta: t('adminEditItemModifier.confirmDeletion.confirmCta', { ns: 'pages' })
+        confirmCta: t('adminEditItemModifier.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
       (evtId: string) => {
-        const confirmDelete = (
-          { detail }: { detail: ConfirmMessageDetailData }
-        ): void => {
+        const confirmDelete = ({ detail }: { detail: ConfirmMessageDetailData }): void => {
           if (detail.proceed) {
             api.itemModifiers
               .delete({ id })
@@ -209,7 +169,7 @@ const AdminEditItemModifier: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditItemModifier.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  )
+                  ),
                 });
                 reloadItemModifiers();
                 void navigate('/admin/itemmodifiers');
@@ -219,12 +179,16 @@ const AdminEditItemModifier: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.itemModifier.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.itemModifier.name`), 'capitalize'),
+                    }),
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.itemModifier.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.itemModifier.name`), 'capitalize'),
+                    }),
                   });
                 }
               });
@@ -246,7 +210,7 @@ const AdminEditItemModifier: FC = () => {
     createAlert,
     reloadItemModifiers,
     navigate,
-    setError
+    setError,
   ]);
 
   useEffect(() => {
@@ -255,9 +219,7 @@ const AdminEditItemModifier: FC = () => {
       api.itemModifiers
         .get({ itemModifierId: id })
         .then((curatedItemModifier) => {
-          const {
-            itemModifier, i18n
-          } = curatedItemModifier;
+          const { itemModifier, i18n } = curatedItemModifier;
           setItemModifierData(curatedItemModifier);
           setItemModifierText(itemModifier.summary);
           if (i18n.fr !== undefined) {
@@ -272,17 +234,11 @@ const AdminEditItemModifier: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    id,
-    t
-  ]);
+  }, [api, createAlert, getNewId, id, t]);
 
   // The Autosave
   useEffect(() => {
@@ -304,11 +260,7 @@ const AdminEditItemModifier: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(itemModifierData));
-  }, [
-    itemModifierData,
-    reset,
-    createDefaultData
-  ]);
+  }, [itemModifierData, reset, createDefaultData]);
 
   return (
     <div
@@ -338,13 +290,11 @@ const AdminEditItemModifier: FC = () => {
           {t('adminEditItemModifier.return', { ns: 'pages' })}
         </LinkButton>
         <Atitle level={2}>{t('adminEditItemModifier.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror className="adminEditItemModifier__error">
-                {errors.root.serverError.message}
-              </Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror className="adminEditItemModifier__error">
+            {errors.root.serverError.message}
+          </Aerror>
+        ) : null}
         <div className="adminEditItemModifier__basics">
           <Input
             control={control}
@@ -370,8 +320,8 @@ const AdminEditItemModifier: FC = () => {
               required: t('itemModifierFormula.required', { ns: 'fields' }),
               pattern: {
                 value: /^([a-z]){2,3}$/,
-                message: t('itemModifierFormula.format', { ns: 'fields' })
-              }
+                message: t('itemModifierFormula.format', { ns: 'fields' }),
+              },
             }}
             label={t('itemModifierFormula.label', { ns: 'fields' })}
           />
@@ -389,7 +339,7 @@ const AdminEditItemModifier: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt(prev => !prev);
+              setDisplayInt((prev) => !prev);
             }}
             className="adminEditItemModifier__intl-title__btn"
           />

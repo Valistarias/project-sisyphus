@@ -15,22 +15,20 @@ import './numDisplay.scss';
 interface INumDisplay {
   /** The text of the Display */
   text: {
-    title: string
-    short: string
-    summary?: string
-  }
-  value: string
+    title: string;
+    short: string;
+    summary?: string;
+  };
+  value: string;
   /** The stat element, if there is stat bonuses */
-  stat?: ICuratedStat
+  stat?: ICuratedStat;
   /** When the clickable zone is clicked */
-  onClick?: () => void
+  onClick?: () => void;
   /** The bonuses displayed in the hint */
-  bonuses?: ISourcePoints[]
+  bonuses?: ISourcePoints[];
 }
 
-const NumDisplay: FC<INumDisplay> = ({
-  text, stat, value, bonuses, onClick
-}) => (
+const NumDisplay: FC<INumDisplay> = ({ text, stat, value, bonuses, onClick }) => (
   <div className="num-display">
     <Ap className="num-display__title">{text.title.length < 12 ? text.title : text.short}</Ap>
     <ClickableText
@@ -38,11 +36,9 @@ const NumDisplay: FC<INumDisplay> = ({
       text={value}
       onClick={onClick ?? undefined}
       hint={
-        bonuses !== undefined && bonuses.length > 0
-          ? (
-              <DetailsBonuses bonuses={bonuses} stat={stat} />
-            )
-          : undefined
+        bonuses !== undefined && bonuses.length > 0 ? (
+          <DetailsBonuses bonuses={bonuses} stat={stat} />
+        ) : undefined
       }
     />
     <Helper size="small">

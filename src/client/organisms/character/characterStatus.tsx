@@ -1,6 +1,4 @@
-import React, {
-  useCallback, useMemo, type FC
-} from 'react';
+import React, { useCallback, useMemo, type FC } from 'react';
 
 import { useGlobalVars } from '../../providers';
 
@@ -8,22 +6,18 @@ import { NumDisplay } from '../../molecules';
 
 import type { TypeCampaignEvent } from '../../types';
 
-import {
-  addSymbol, classTrim, type DiceRequest
-} from '../../utils';
+import { addSymbol, classTrim, type DiceRequest } from '../../utils';
 
 import './characterStatus.scss';
 
 interface ICharacterStatus {
   /** The classname of the element */
-  className?: string
+  className?: string;
   /** The function sent to roll the dices */
-  onRollDices: (diceValues: DiceRequest[], id: TypeCampaignEvent) => void
+  onRollDices: (diceValues: DiceRequest[], id: TypeCampaignEvent) => void;
 }
 
-const CharacterStatus: FC<ICharacterStatus> = ({
-  className, onRollDices
-}) => {
+const CharacterStatus: FC<ICharacterStatus> = ({ className, onRollDices }) => {
   const { characterParams } = useGlobalVars();
 
   const onClickInit = useCallback(
@@ -33,8 +27,8 @@ const CharacterStatus: FC<ICharacterStatus> = ({
           {
             qty: 2,
             type: 8,
-            offset
-          }
+            offset,
+          },
         ],
         'init'
       );
@@ -42,39 +36,42 @@ const CharacterStatus: FC<ICharacterStatus> = ({
     [onRollDices]
   );
 
-  const charParamList = useMemo(() => (
-    <div className="char-status__char-params">
-      {characterParams?.map((charParam) => {
-        // TODO: Deal with i18n here
-        const {
-          title, summary, short
-        } = charParam.charParam;
+  const charParamList = useMemo(
+    () => (
+      <div className="char-status__char-params">
+        {characterParams?.map((charParam) => {
+          // TODO: Deal with i18n here
+          const { title, summary, short } = charParam.charParam;
 
-        return (
-          <NumDisplay
-            key={charParam.charParam._id}
-            stat={charParam.stat}
-            text={{
-              title, summary, short
-            }}
-            value={
-              charParam.charParam.formulaId === 'ini'
-                ? addSymbol(charParam.score.total)
-                : String(charParam.score.total)
-            }
-            bonuses={charParam.score.sources}
-            onClick={
-              charParam.charParam.formulaId === 'ini'
-                ? () => {
-                    onClickInit(charParam.score.total);
-                  }
-                : undefined
-            }
-          />
-        );
-      })}
-    </div>
-  ), [characterParams, onClickInit]);
+          return (
+            <NumDisplay
+              key={charParam.charParam._id}
+              stat={charParam.stat}
+              text={{
+                title,
+                summary,
+                short,
+              }}
+              value={
+                charParam.charParam.formulaId === 'ini'
+                  ? addSymbol(charParam.score.total)
+                  : String(charParam.score.total)
+              }
+              bonuses={charParam.score.sources}
+              onClick={
+                charParam.charParam.formulaId === 'ini'
+                  ? () => {
+                      onClickInit(charParam.score.total);
+                    }
+                  : undefined
+              }
+            />
+          );
+        })}
+      </div>
+    ),
+    [characterParams, onClickInit]
+  );
 
   return (
     <div

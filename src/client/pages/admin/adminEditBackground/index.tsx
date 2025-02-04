@@ -1,82 +1,59 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  useNavigate, useParams
-} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input, LinkButton, SmartSelect
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input, LinkButton, SmartSelect } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type { ErrorResponseType, ICuratedBackground } from '../../../types';
 import type { InternationalizationType } from '../../../types/global';
 
-import {
-  classTrim, isThereDuplicate
-} from '../../../utils';
+import { classTrim, isThereDuplicate } from '../../../utils';
 
 import './adminEditBackground.scss';
 
 interface FormValues {
-  name: string
-  nameFr: string
+  name: string;
+  nameFr: string;
   skillBonuses?: Record<
     string,
     {
-      skill: string
-      value: number
+      skill: string;
+      value: number;
     }
-  >
+  >;
   statBonuses?: Record<
     string,
     {
-      stat: string
-      value: number
+      stat: string;
+      value: number;
     }
-  >
+  >;
   charParamBonuses?: Record<
     string,
     {
-      charParam: string
-      value: number
+      charParam: string;
+      value: number;
     }
-  >
+  >;
 }
 
 const AdminEditBackground: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const {
-    setConfirmContent,
-    removeConfirmEventListener,
-    addConfirmEventListener
-  } = useConfirmMessage();
-  const {
-    skills, stats, charParams
-  } = useGlobalVars();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { setConfirmContent, removeConfirmEventListener, addConfirmEventListener } =
+    useConfirmMessage();
+  const { skills, stats, charParams } = useGlobalVars();
+  const { createAlert, getNewId } = useSystemAlerts();
   const navigate = useNavigate();
 
   const [displayInt, setDisplayInt] = useState(false);
@@ -87,7 +64,7 @@ const AdminEditBackground: FC = () => {
       skills.map(({ skill }) => ({
         value: skill._id,
         // TODO : Handle Internationalization
-        label: skill.title
+        label: skill.title,
       })),
     [skills]
   );
@@ -99,7 +76,7 @@ const AdminEditBackground: FC = () => {
       stats.map(({ stat }) => ({
         value: stat._id,
         // TODO : Handle Internationalization
-        label: stat.title
+        label: stat.title,
       })),
     [stats]
   );
@@ -110,7 +87,7 @@ const AdminEditBackground: FC = () => {
       charParams.map(({ charParam }) => ({
         value: charParam._id,
         // TODO : Handle Internationalization
-        label: charParam.title
+        label: charParam.title,
       })),
     [charParams]
   );
@@ -118,84 +95,76 @@ const AdminEditBackground: FC = () => {
 
   const calledApi = useRef(false);
 
-  const [backgroundData, setBackgroundData]
-  = useState<ICuratedBackground | null>(null);
+  const [backgroundData, setBackgroundData] = useState<ICuratedBackground | null>(null);
 
   const [backgroundText, setBackgroundText] = useState('');
   const [backgroundTextFr, setBackgroundTextFr] = useState('');
 
-  const introEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const createDefaultData = useCallback(
-    (backgroundData: ICuratedBackground | null) => {
-      if (backgroundData == null) {
-        return {};
+  const createDefaultData = useCallback((backgroundData: ICuratedBackground | null) => {
+    if (backgroundData == null) {
+      return {};
+    }
+    const { background, i18n } = backgroundData;
+    const defaultData: Partial<FormValues> = {};
+    defaultData.name = background.title;
+    if (i18n.fr !== undefined) {
+      defaultData.nameFr = i18n.fr.title ?? '';
+    }
+
+    // Init Bonus Skill
+    const tempSkillBonusId: number[] = [];
+    background.skillBonuses?.forEach((skillBonus) => {
+      if (defaultData.skillBonuses === undefined) {
+        defaultData.skillBonuses = {};
       }
-      const {
-        background, i18n
-      } = backgroundData;
-      const defaultData: Partial<FormValues> = {};
-      defaultData.name = background.title;
-      if (i18n.fr !== undefined) {
-        defaultData.nameFr = i18n.fr.title ?? '';
+      defaultData.skillBonuses[`skill-${idIncrement.current}`] = {
+        skill: skillBonus.skill,
+        value: skillBonus.value,
+      };
+
+      tempSkillBonusId.push(idIncrement.current);
+      idIncrement.current += 1;
+    });
+    setSkillBonusIds(tempSkillBonusId);
+
+    // Init Bonus Stat
+    const tempStatBonusId: number[] = [];
+    background.statBonuses?.forEach((statBonus) => {
+      if (defaultData.statBonuses === undefined) {
+        defaultData.statBonuses = {};
       }
+      defaultData.statBonuses[`stat-${idIncrement.current}`] = {
+        stat: statBonus.stat,
+        value: statBonus.value,
+      };
 
-      // Init Bonus Skill
-      const tempSkillBonusId: number[] = [];
-      background.skillBonuses?.forEach((skillBonus) => {
-        if (defaultData.skillBonuses === undefined) {
-          defaultData.skillBonuses = {};
-        }
-        defaultData.skillBonuses[`skill-${idIncrement.current}`] = {
-          skill: skillBonus.skill,
-          value: skillBonus.value
-        };
+      tempStatBonusId.push(idIncrement.current);
+      idIncrement.current += 1;
+    });
+    setStatBonusIds(tempStatBonusId);
 
-        tempSkillBonusId.push(idIncrement.current);
-        idIncrement.current += 1;
-      });
-      setSkillBonusIds(tempSkillBonusId);
+    // Init Bonus CharParam
+    const tempCharParamBonusId: number[] = [];
+    background.charParamBonuses?.forEach((charParamBonus) => {
+      if (defaultData.charParamBonuses === undefined) {
+        defaultData.charParamBonuses = {};
+      }
+      defaultData.charParamBonuses[`charParam-${idIncrement.current}`] = {
+        charParam: charParamBonus.charParam,
+        value: charParamBonus.value,
+      };
 
-      // Init Bonus Stat
-      const tempStatBonusId: number[] = [];
-      background.statBonuses?.forEach((statBonus) => {
-        if (defaultData.statBonuses === undefined) {
-          defaultData.statBonuses = {};
-        }
-        defaultData.statBonuses[`stat-${idIncrement.current}`] = {
-          stat: statBonus.stat,
-          value: statBonus.value
-        };
+      tempCharParamBonusId.push(idIncrement.current);
+      idIncrement.current += 1;
+    });
+    setCharParamBonusIds(tempCharParamBonusId);
 
-        tempStatBonusId.push(idIncrement.current);
-        idIncrement.current += 1;
-      });
-      setStatBonusIds(tempStatBonusId);
-
-      // Init Bonus CharParam
-      const tempCharParamBonusId: number[] = [];
-      background.charParamBonuses?.forEach((charParamBonus) => {
-        if (defaultData.charParamBonuses === undefined) {
-          defaultData.charParamBonuses = {};
-        }
-        defaultData.charParamBonuses[`charParam-${idIncrement.current}`] = {
-          charParam: charParamBonus.charParam,
-          value: charParamBonus.value
-        };
-
-        tempCharParamBonusId.push(idIncrement.current);
-        idIncrement.current += 1;
-      });
-      setCharParamBonusIds(tempCharParamBonusId);
-
-      return defaultData;
-    }, []);
+    return defaultData;
+  }, []);
 
   const {
     handleSubmit,
@@ -203,11 +172,13 @@ const AdminEditBackground: FC = () => {
     unregister,
     control,
     formState: { errors },
-    reset
-  } = useForm({ defaultValues: useMemo(
-    () => createDefaultData(backgroundData),
-    [createDefaultData, backgroundData]
-  ) });
+    reset,
+  } = useForm({
+    defaultValues: useMemo(
+      () => createDefaultData(backgroundData),
+      [createDefaultData, backgroundData]
+    ),
+  });
 
   const onAddSkillBonus = useCallback(() => {
     setSkillBonusIds((prev) => {
@@ -240,84 +211,68 @@ const AdminEditBackground: FC = () => {
   }, []);
 
   const onSaveBackground: SubmitHandler<FormValues> = useCallback(
-    ({
-      name, nameFr, ...elts
-    }) => {
+    ({ name, nameFr, ...elts }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
       // Check duplicate on skills
-      const skillBonuses = elts.skillBonuses !== undefined
-        ? Object.values(elts.skillBonuses)
-        : [];
+      const skillBonuses = elts.skillBonuses !== undefined ? Object.values(elts.skillBonuses) : [];
       let duplicateSkillBonuses = false;
       if (skillBonuses.length > 0) {
         duplicateSkillBonuses = isThereDuplicate(
-          skillBonuses.map(skillBonus => skillBonus.skill)
+          skillBonuses.map((skillBonus) => skillBonus.skill)
         );
       }
       if (duplicateSkillBonuses) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminEditBackground.errorDuplicateSkill', { ns: 'pages' })
+          message: t('adminEditBackground.errorDuplicateSkill', { ns: 'pages' }),
         });
 
         return;
       }
       // Check duplicate on stats
-      const statBonuses = elts.statBonuses !== undefined
-        ? Object.values(elts.statBonuses)
-        : [];
+      const statBonuses = elts.statBonuses !== undefined ? Object.values(elts.statBonuses) : [];
       let duplicateStatBonuses = false;
       if (statBonuses.length > 0) {
-        duplicateStatBonuses = isThereDuplicate(
-          statBonuses.map(statBonus => statBonus.stat)
-        );
+        duplicateStatBonuses = isThereDuplicate(statBonuses.map((statBonus) => statBonus.stat));
       }
       if (duplicateStatBonuses) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminEditBackground.errorDuplicateStat', { ns: 'pages' })
+          message: t('adminEditBackground.errorDuplicateStat', { ns: 'pages' }),
         });
 
         return;
       }
       // Check duplicate on character param
-      const charParamBonuses
-        = elts.charParamBonuses !== undefined
-          ? Object.values(elts.charParamBonuses)
-          : [];
+      const charParamBonuses =
+        elts.charParamBonuses !== undefined ? Object.values(elts.charParamBonuses) : [];
       let duplicateCharParamBonuses = false;
       if (charParamBonuses.length > 0) {
         duplicateCharParamBonuses = isThereDuplicate(
-          charParamBonuses.map(charParamBonus => charParamBonus.charParam)
+          charParamBonuses.map((charParamBonus) => charParamBonus.charParam)
         );
       }
       if (duplicateCharParamBonuses) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminEditBackground.errorDuplicateCharParam', { ns: 'pages' })
+          message: t('adminEditBackground.errorDuplicateCharParam', { ns: 'pages' }),
         });
 
         return;
       }
-      const curatedSkillBonuses = skillBonuses.map(({
-        skill, value
-      }) => ({
+      const curatedSkillBonuses = skillBonuses.map(({ skill, value }) => ({
         skill,
-        value: Number(value)
+        value: Number(value),
       }));
-      const curatedStatBonuses = statBonuses.map(({
-        stat, value
-      }) => ({
+      const curatedStatBonuses = statBonuses.map(({ stat, value }) => ({
         stat,
-        value: Number(value)
+        value: Number(value),
       }));
-      const curatedCharParamBonuses = charParamBonuses.map(({
-        charParam, value
-      }) => ({
+      const curatedCharParamBonuses = charParamBonuses.map(({ charParam, value }) => ({
         charParam,
-        value: Number(value)
+        value: Number(value),
       }));
 
       let html: string | null = introEditor.getHTML();
@@ -327,10 +282,12 @@ const AdminEditBackground: FC = () => {
       }
       let i18n: InternationalizationType | null = null;
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          summary: htmlFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            summary: htmlFr,
+          },
+        };
       }
       api.backgrounds
         .update({
@@ -340,7 +297,7 @@ const AdminEditBackground: FC = () => {
           i18n,
           skillBonuses: curatedSkillBonuses,
           statBonuses: curatedStatBonuses,
-          charParamBonuses: curatedCharParamBonuses
+          charParamBonuses: curatedCharParamBonuses,
         })
         .then((quote) => {
           const newId = getNewId();
@@ -350,7 +307,7 @@ const AdminEditBackground: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditBackground.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
         })
         .catch(({ response }: ErrorResponseType) => {
@@ -358,33 +315,25 @@ const AdminEditBackground: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
+              }),
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
     },
-    [
-      introEditor,
-      introFrEditor,
-      api,
-      id,
-      setError,
-      t,
-      getNewId,
-      createAlert
-    ]
+    [introEditor, introFrEditor, api, id, setError, t, getNewId, createAlert]
   );
 
   const onAskDelete = useCallback(() => {
-    if (
-      api === undefined
-      || backgroundData === null
-    ) {
+    if (api === undefined || backgroundData === null) {
       return;
     }
     setConfirmContent(
@@ -392,14 +341,12 @@ const AdminEditBackground: FC = () => {
         title: t('adminEditBackground.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditBackground.confirmDeletion.text', {
           ns: 'pages',
-          elt: backgroundData.background.title
+          elt: backgroundData.background.title,
         }),
-        confirmCta: t('adminEditBackground.confirmDeletion.confirmCta', { ns: 'pages' })
+        confirmCta: t('adminEditBackground.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
       (evtId: string) => {
-        const confirmDelete = (
-          { detail }: { detail: ConfirmMessageDetailData }
-        ): void => {
+        const confirmDelete = ({ detail }: { detail: ConfirmMessageDetailData }): void => {
           if (detail.proceed) {
             api.backgrounds
               .delete({ id })
@@ -411,7 +358,7 @@ const AdminEditBackground: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditBackground.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  )
+                  ),
                 });
                 void navigate('/admin/backgrounds');
               })
@@ -420,12 +367,16 @@ const AdminEditBackground: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skillBranch.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize'),
+                    }),
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skillBranch.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize'),
+                    }),
                   });
                 }
               });
@@ -446,7 +397,7 @@ const AdminEditBackground: FC = () => {
     getNewId,
     createAlert,
     navigate,
-    setError
+    setError,
   ]);
 
   useEffect(() => {
@@ -455,9 +406,7 @@ const AdminEditBackground: FC = () => {
       api.backgrounds
         .get({ backgroundId: id })
         .then((curatedBackground) => {
-          const {
-            background, i18n
-          } = curatedBackground;
+          const { background, i18n } = curatedBackground;
           setBackgroundData(curatedBackground);
           setBackgroundText(background.summary);
           if (i18n.fr !== undefined) {
@@ -472,26 +421,16 @@ const AdminEditBackground: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    id,
-    t
-  ]);
+  }, [api, createAlert, getNewId, id, t]);
 
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(backgroundData));
-  }, [
-    backgroundData,
-    reset,
-    createDefaultData
-  ]);
+  }, [backgroundData, reset, createDefaultData]);
 
   return (
     <div
@@ -515,14 +454,16 @@ const AdminEditBackground: FC = () => {
             {t('adminEditBackground.delete', { ns: 'pages' })}
           </Button>
         </div>
-        <LinkButton className="adminEditBackground__return-btn" href="/admin/backgrounds" size="small">
+        <LinkButton
+          className="adminEditBackground__return-btn"
+          href="/admin/backgrounds"
+          size="small"
+        >
           {t('adminEditBackground.return', { ns: 'pages' })}
         </LinkButton>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror>{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminEditBackground__basics">
           <Input
             control={control}
@@ -547,7 +488,7 @@ const AdminEditBackground: FC = () => {
         </Atitle>
         <div className="adminEditBackground__bonuses">
           <div className="adminEditBackground__bonuses__elts">
-            {skillBonusIds.map(skillBonusId => (
+            {skillBonusIds.map((skillBonusId) => (
               <div className="adminEditBackground__bonus" key={`skill-${skillBonusId}`}>
                 <Atitle className="adminEditBackground__bonus__title" level={4}>
                   {t('adminEditBackground.skillBonusTitle', { ns: 'pages' })}
@@ -574,7 +515,7 @@ const AdminEditBackground: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setSkillBonusIds(prev =>
+                    setSkillBonusIds((prev) =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== skillBonusId) {
                           result.push(elt);
@@ -589,7 +530,7 @@ const AdminEditBackground: FC = () => {
                 />
               </div>
             ))}
-            {statBonusIds.map(statBonusId => (
+            {statBonusIds.map((statBonusId) => (
               <div className="adminEditBackground__bonus" key={`stat-${statBonusId}`}>
                 <Atitle className="adminEditBackground__bonus__title" level={4}>
                   {t('adminEditBackground.statBonusTitle', { ns: 'pages' })}
@@ -616,7 +557,7 @@ const AdminEditBackground: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setStatBonusIds(prev =>
+                    setStatBonusIds((prev) =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== statBonusId) {
                           result.push(elt);
@@ -631,7 +572,7 @@ const AdminEditBackground: FC = () => {
                 />
               </div>
             ))}
-            {charParamBonusIds.map(charParamBonusId => (
+            {charParamBonusIds.map((charParamBonusId) => (
               <div className="adminEditBackground__bonus" key={`charParam-${charParamBonusId}`}>
                 <Atitle className="adminEditBackground__bonus__title" level={4}>
                   {t('adminEditBackground.charParamBonusTitle', { ns: 'pages' })}
@@ -658,7 +599,7 @@ const AdminEditBackground: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setCharParamBonusIds(prev =>
+                    setCharParamBonusIds((prev) =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== charParamBonusId) {
                           result.push(elt);
@@ -699,7 +640,7 @@ const AdminEditBackground: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt(prev => !prev);
+              setDisplayInt((prev) => !prev);
             }}
             className="adminEditBackground__intl-title__btn"
           />

@@ -1,35 +1,23 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  useNavigate, useParams
-} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
 import {
   Button,
   Input,
   LinkButton,
   NodeIconSelect,
   SmartSelect,
-  type ISingleValueSelect
+  type ISingleValueSelect,
 } from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type { ErrorResponseType, ICuratedWeaponType } from '../../../types';
@@ -40,28 +28,21 @@ import { classTrim } from '../../../utils';
 import './adminEditWeaponType.scss';
 
 interface FormValues {
-  name: string
-  nameFr: string
-  weaponStyle: string
-  itemType: string
-  icon: string
-  needTraining: string
+  name: string;
+  nameFr: string;
+  weaponStyle: string;
+  itemType: string;
+  icon: string;
+  needTraining: string;
 }
 
 const AdminEditWeaponType: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
-  const {
-    weaponStyles, itemTypes, reloadWeaponTypes
-  } = useGlobalVars();
-  const {
-    setConfirmContent,
-    removeConfirmEventListener,
-    addConfirmEventListener
-  } = useConfirmMessage();
+  const { createAlert, getNewId } = useSystemAlerts();
+  const { weaponStyles, itemTypes, reloadWeaponTypes } = useGlobalVars();
+  const { setConfirmContent, removeConfirmEventListener, addConfirmEventListener } =
+    useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -71,30 +52,25 @@ const AdminEditWeaponType: FC = () => {
 
   const [displayInt, setDisplayInt] = useState(false);
 
-  const [weaponTypeData, setWeaponTypeData]
-    = useState<ICuratedWeaponType | null>(null);
+  const [weaponTypeData, setWeaponTypeData] = useState<ICuratedWeaponType | null>(null);
 
   const [weaponTypeText, setWeaponTypeText] = useState('');
   const [weaponTypeTextFr, setWeaponTypeTextFr] = useState('');
 
-  const textEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const textFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const boolRange = useMemo(
     () => [
       {
         value: '1',
-        label: t('terms.general.yes')
+        label: t('terms.general.yes'),
       },
       {
         value: '0',
-        label: t('terms.general.no')
-      }
+        label: t('terms.general.no'),
+      },
     ],
     [t]
   );
@@ -104,21 +80,21 @@ const AdminEditWeaponType: FC = () => {
       weaponStyles.map(({ weaponStyle }) => ({
         value: weaponStyle._id,
         // TODO : Handle Internationalization
-        label: weaponStyle.title
+        label: weaponStyle.title,
       })),
     [weaponStyles]
   );
 
   const itemTypeList = useMemo(() => {
     const curatedList: Array<{
-      value: string
-      label: string
+      value: string;
+      label: string;
     }> = [];
     itemTypes.forEach((itemType) => {
       if (itemType.name === 'wep' || itemType.name === 'psm') {
         curatedList.push({
           value: itemType._id,
-          label: t(`itemTypeNames.${itemType.name}`)
+          label: t(`itemTypeNames.${itemType.name}`),
         });
       }
     });
@@ -135,21 +111,19 @@ const AdminEditWeaponType: FC = () => {
       if (weaponTypeData == null) {
         return {};
       }
-      const {
-        weaponType, i18n
-      } = weaponTypeData;
+      const { weaponType, i18n } = weaponTypeData;
       const defaultData: Partial<FormValues> = {};
       defaultData.name = weaponType.title;
       defaultData.icon = weaponType.icon;
       defaultData.needTraining = weaponType.needTraining ? '1' : '0';
       const selectedWeaponStyle = weaponStylesSelect.find(
-        weaponStyleType => weaponStyleType.value === weaponType.weaponStyle._id
+        (weaponStyleType) => weaponStyleType.value === weaponType.weaponStyle._id
       );
       if (selectedWeaponStyle !== undefined) {
         defaultData.weaponStyle = String(selectedWeaponStyle.value);
       }
       const selectedItemType = itemTypesSelect.find(
-        itemType => itemType.value === weaponType.itemType._id
+        (itemType) => itemType.value === weaponType.itemType._id
       );
       if (selectedItemType !== undefined) {
         defaultData.itemType = String(selectedItemType.value);
@@ -168,26 +142,17 @@ const AdminEditWeaponType: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset
-  } = useForm({ defaultValues: useMemo(
-    () => createDefaultData(weaponTypeData, weaponStyleSelect, itemTypeList),
-    [
-      createDefaultData,
-      weaponStyleSelect,
-      weaponTypeData,
-      itemTypeList
-    ]
-  ) });
+    reset,
+  } = useForm({
+    defaultValues: useMemo(
+      () => createDefaultData(weaponTypeData, weaponStyleSelect, itemTypeList),
+      [createDefaultData, weaponStyleSelect, weaponTypeData, itemTypeList]
+    ),
+  });
 
   const onSaveWeaponType: SubmitHandler<FormValues> = useCallback(
-    ({
-      name, nameFr, weaponStyle, icon, needTraining, itemType
-    }) => {
-      if (
-        textEditor === null
-        || textFrEditor === null
-        || api === undefined
-      ) {
+    ({ name, nameFr, weaponStyle, icon, needTraining, itemType }) => {
+      if (textEditor === null || textFrEditor === null || api === undefined) {
         return;
       }
       let htmlText: string | null = textEditor.getHTML();
@@ -201,10 +166,12 @@ const AdminEditWeaponType: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          text: htmlTextFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            text: htmlTextFr,
+          },
+        };
       }
 
       api.weaponTypes
@@ -216,7 +183,7 @@ const AdminEditWeaponType: FC = () => {
           itemType,
           needTraining: needTraining === '1',
           summary: htmlText,
-          i18n
+          i18n,
         })
         .then(() => {
           const newId = getNewId();
@@ -226,7 +193,7 @@ const AdminEditWeaponType: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditWeaponType.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           reloadWeaponTypes();
         })
@@ -235,27 +202,19 @@ const AdminEditWeaponType: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`,
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
     },
-    [
-      textEditor,
-      textFrEditor,
-      api,
-      id,
-      getNewId,
-      createAlert,
-      t,
-      reloadWeaponTypes,
-      setError
-    ]
+    [textEditor, textFrEditor, api, id, getNewId, createAlert, t, reloadWeaponTypes, setError]
   );
 
   const onAskDelete = useCallback(() => {
@@ -267,14 +226,12 @@ const AdminEditWeaponType: FC = () => {
         title: t('adminEditWeaponType.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditWeaponType.confirmDeletion.text', {
           ns: 'pages',
-          elt: weaponTypeData?.weaponType.title
+          elt: weaponTypeData?.weaponType.title,
         }),
-        confirmCta: t('adminEditWeaponType.confirmDeletion.confirmCta', { ns: 'pages' })
+        confirmCta: t('adminEditWeaponType.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
       (evtId: string) => {
-        const confirmDelete = (
-          { detail }: { detail: ConfirmMessageDetailData }
-        ): void => {
+        const confirmDelete = ({ detail }: { detail: ConfirmMessageDetailData }): void => {
           if (detail.proceed) {
             api.weaponTypes
               .delete({ id })
@@ -286,7 +243,7 @@ const AdminEditWeaponType: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditWeaponType.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  )
+                  ),
                 });
                 reloadWeaponTypes();
                 void navigate('/admin/weapontypes');
@@ -296,12 +253,16 @@ const AdminEditWeaponType: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.weaponType.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.weaponType.name`), 'capitalize'),
+                    }),
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.weaponType.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.weaponType.name`), 'capitalize'),
+                    }),
                   });
                 }
               });
@@ -323,7 +284,7 @@ const AdminEditWeaponType: FC = () => {
     createAlert,
     reloadWeaponTypes,
     navigate,
-    setError
+    setError,
   ]);
 
   useEffect(() => {
@@ -332,9 +293,7 @@ const AdminEditWeaponType: FC = () => {
       api.weaponTypes
         .get({ weaponTypeId: id })
         .then((curatedWeaponType) => {
-          const {
-            weaponType, i18n
-          } = curatedWeaponType;
+          const { weaponType, i18n } = curatedWeaponType;
           setWeaponTypeData(curatedWeaponType);
           setWeaponTypeText(weaponType.summary);
           if (i18n.fr !== undefined) {
@@ -349,17 +308,11 @@ const AdminEditWeaponType: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    id,
-    t
-  ]);
+  }, [api, createAlert, getNewId, id, t]);
 
   // The Autosave
   useEffect(() => {
@@ -381,13 +334,7 @@ const AdminEditWeaponType: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(weaponTypeData, weaponStyleSelect, itemTypeList));
-  }, [
-    weaponTypeData,
-    reset,
-    createDefaultData,
-    weaponStyleSelect,
-    itemTypeList
-  ]);
+  }, [weaponTypeData, reset, createDefaultData, weaponStyleSelect, itemTypeList]);
 
   return (
     <div
@@ -409,15 +356,17 @@ const AdminEditWeaponType: FC = () => {
             {t('adminEditWeaponType.delete', { ns: 'pages' })}
           </Button>
         </div>
-        <LinkButton className="adminEditWeaponType__return-btn" href="/admin/weapontypes" size="small">
+        <LinkButton
+          className="adminEditWeaponType__return-btn"
+          href="/admin/weapontypes"
+          size="small"
+        >
           {t('adminEditWeaponType.return', { ns: 'pages' })}
         </LinkButton>
         <Atitle level={2}>{t('adminEditWeaponType.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror className="adminEditWeaponType__error">{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror className="adminEditWeaponType__error">{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminEditWeaponType__visual">
           <NodeIconSelect
             label={t('iconWeaponType.label', { ns: 'fields' })}
@@ -483,7 +432,7 @@ const AdminEditWeaponType: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt(prev => !prev);
+              setDisplayInt((prev) => !prev);
             }}
             className="adminEditWeaponType__intl-title__btn"
           />

@@ -1,28 +1,16 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  useApi, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input, SmartSelect
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input, SmartSelect } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 import { possibleStarterKitValues } from '../../../types/items';
 
 import './adminNewBag.scss';
@@ -30,91 +18,77 @@ import type { ErrorResponseType } from '../../../types';
 import type { InternationalizationType } from '../../../types/global';
 
 interface FormValues {
-  name: string
-  nameFr: string
-  storableItemTypes: string[]
-  size: number
-  cost: number
-  rarity: string
-  starterKit: string
-  itemModifiers: string[]
+  name: string;
+  nameFr: string;
+  storableItemTypes: string[];
+  size: number;
+  cost: number;
+  rarity: string;
+  starterKit: string;
+  itemModifiers: string[];
 }
 
 const AdminNewBag: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const navigate = useNavigate();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
-  const {
-    itemModifiers, itemTypes, rarities
-  } = useGlobalVars();
+  const { createAlert, getNewId } = useSystemAlerts();
+  const { itemModifiers, itemTypes, rarities } = useGlobalVars();
 
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
 
-  const introEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors }
+    formState: { errors },
   } = useForm();
 
   // TODO: Internationalization
   const itemModifierList = useMemo(
-    () => itemModifiers.map(({ itemModifier }) => ({
-      value: itemModifier._id,
-      label: itemModifier.title
-    })), [itemModifiers]);
+    () =>
+      itemModifiers.map(({ itemModifier }) => ({
+        value: itemModifier._id,
+        label: itemModifier.title,
+      })),
+    [itemModifiers]
+  );
 
-  const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
-    value: rarity._id,
-    label: rarity.title
-  })), [rarities]);
+  const rarityList = useMemo(
+    () =>
+      rarities.map(({ rarity }) => ({
+        value: rarity._id,
+        label: rarity.title,
+      })),
+    [rarities]
+  );
 
   const itemTypeList = useMemo(
     () =>
-      itemTypes.map(itemType => ({
+      itemTypes.map((itemType) => ({
         value: itemType._id,
-        label: t(`itemTypeNames.${itemType.name}`)
+        label: t(`itemTypeNames.${itemType.name}`),
       })),
     [itemTypes, t]
   );
 
   const starterKitList = useMemo(
     () =>
-      possibleStarterKitValues.map(possibleStarterKitValue => ({
+      possibleStarterKitValues.map((possibleStarterKitValue) => ({
         value: possibleStarterKitValue,
-        label: t(`terms.starterKit.${possibleStarterKitValue}`)
+        label: t(`terms.starterKit.${possibleStarterKitValue}`),
       })),
     [t]
   );
 
   const onSaveBag: SubmitHandler<FormValues> = useCallback(
-    ({
-      name,
-      nameFr,
-      rarity,
-      cost,
-      storableItemTypes,
-      itemModifiers,
-      size,
-      starterKit
-    }) => {
-      if (
-        introEditor === null
-        || introFrEditor === null
-        || api === undefined
-      ) {
+    ({ name, nameFr, rarity, cost, storableItemTypes, itemModifiers, size, starterKit }) => {
+      if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
 
@@ -127,10 +101,12 @@ const AdminNewBag: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          summary: htmlFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            summary: htmlFr,
+          },
+        };
       }
 
       api.bags
@@ -140,11 +116,11 @@ const AdminNewBag: FC = () => {
           rarity,
           starterKit,
           size,
-          itemType: itemTypes.find(itemType => itemType.name === 'bag')?._id ?? undefined,
+          itemType: itemTypes.find((itemType) => itemType.name === 'bag')?._id ?? undefined,
           cost: Number(cost),
           itemModifiers,
           summary: html,
-          i18n
+          i18n,
         })
         .then((bagType) => {
           const newId = getNewId();
@@ -154,7 +130,7 @@ const AdminNewBag: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewBag.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           void navigate(`/admin/bag/${bagType._id}`);
         })
@@ -162,21 +138,13 @@ const AdminNewBag: FC = () => {
           const { data } = response;
           setError('root.serverError', {
             type: 'server',
-            message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
+            message: t(`serverErrors.${data.code}`, {
+              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
+            }),
           });
         });
     },
-    [
-      introEditor,
-      introFrEditor,
-      api,
-      itemTypes,
-      getNewId,
-      createAlert,
-      t,
-      navigate,
-      setError
-    ]
+    [introEditor, introFrEditor, api, itemTypes, getNewId, createAlert, t, navigate, setError]
   );
 
   useEffect(() => {
@@ -184,12 +152,7 @@ const AdminNewBag: FC = () => {
       setLoading(true);
       calledApi.current = true;
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    t
-  ]);
+  }, [api, createAlert, getNewId, t]);
 
   return (
     <div className="adminNewBag">
@@ -201,11 +164,9 @@ const AdminNewBag: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewBag.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror>{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminNewBag__basics">
           <Input
             control={control}

@@ -3,11 +3,10 @@ import Entity from './entity';
 import type { IArmorType, ICuratedArmorType } from '../../types';
 
 interface IArmorTypePayload {
-  armorTypeId: string
+  armorTypeId: string;
 }
 
-export default class ArmorTypes
-  extends Entity<IArmorTypePayload, IArmorType, ICuratedArmorType> {
+export default class ArmorTypes extends Entity<IArmorTypePayload, IArmorType, ICuratedArmorType> {
   constructor() {
     super('armortypes');
   }

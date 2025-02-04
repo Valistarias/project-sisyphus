@@ -1,10 +1,6 @@
-import type {
-  Request, Response, Router
-} from 'express';
+import type { Request, Response, Router } from 'express';
 
-import {
-  createToken, getUserMailByRequest
-} from './controller';
+import { createToken, getUserMailByRequest } from './controller';
 
 import type { IMailgunClient } from 'mailgun.js/Interfaces';
 

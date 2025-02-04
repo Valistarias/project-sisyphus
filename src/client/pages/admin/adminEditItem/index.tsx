@@ -1,126 +1,97 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  useNavigate, useParams
-} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input, LinkButton, SmartSelect
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input, LinkButton, SmartSelect } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 import { possibleStarterKitValues } from '../../../types/items';
 
 import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type { ICuratedItem } from '../../../types';
 import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
-import {
-  classTrim, isThereDuplicate
-} from '../../../utils';
+import { classTrim, isThereDuplicate } from '../../../utils';
 
 import './adminEditItem.scss';
 
 interface FormValues {
-  name: string
-  nameFr: string
-  cost: number
-  rarity: string
-  starterKit: string
-  itemModifiers: string[]
+  name: string;
+  nameFr: string;
+  cost: number;
+  rarity: string;
+  starterKit: string;
+  itemModifiers: string[];
   skillBonuses?: Record<
     string,
     {
-      skill: string
-      value: number
+      skill: string;
+      value: number;
     }
-  >
+  >;
   statBonuses?: Record<
     string,
     {
-      stat: string
-      value: number
+      stat: string;
+      value: number;
     }
-  >
+  >;
   charParamBonuses?: Record<
     string,
     {
-      charParam: string
-      value: number
+      charParam: string;
+      value: number;
     }
-  >
+  >;
   effects?: Record<
     string,
     {
-      id: string
-      title: string
-      titleFr?: string
-      summary: string
-      summaryFr?: string
-      type: string
-      formula?: string
+      id: string;
+      title: string;
+      titleFr?: string;
+      summary: string;
+      summaryFr?: string;
+      type: string;
+      formula?: string;
     }
-  >
+  >;
   actions?: Record<
     string,
     {
-      id: string
-      title: string
-      titleFr?: string
-      summary: string
-      summaryFr?: string
-      type: string
-      skill?: string
-      duration: string
-      time?: string
-      timeFr?: string
-      damages?: string
-      offsetSkill?: string
-      uses?: number
-      isKarmic?: string
-      karmicCost?: number
+      id: string;
+      title: string;
+      titleFr?: string;
+      summary: string;
+      summaryFr?: string;
+      type: string;
+      skill?: string;
+      duration: string;
+      time?: string;
+      timeFr?: string;
+      damages?: string;
+      offsetSkill?: string;
+      uses?: number;
+      isKarmic?: string;
+      karmicCost?: number;
     }
-  >
+  >;
 }
 
 const AdminEditItem: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const {
-    setConfirmContent,
-    removeConfirmEventListener,
-    addConfirmEventListener
-  } = useConfirmMessage();
-  const {
-    skills,
-    stats,
-    charParams,
-    actionTypes,
-    actionDurations,
-    rarities,
-    itemModifiers
-  }
-    = useGlobalVars();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { setConfirmContent, removeConfirmEventListener, addConfirmEventListener } =
+    useConfirmMessage();
+  const { skills, stats, charParams, actionTypes, actionDurations, rarities, itemModifiers } =
+    useGlobalVars();
+  const { createAlert, getNewId } = useSystemAlerts();
   const navigate = useNavigate();
 
   const [displayInt, setDisplayInt] = useState(false);
@@ -131,7 +102,7 @@ const AdminEditItem: FC = () => {
       skills.map(({ skill }) => ({
         value: skill._id,
         // TODO : Handle Internationalization
-        label: skill.title
+        label: skill.title,
       })),
     [skills]
   );
@@ -143,7 +114,7 @@ const AdminEditItem: FC = () => {
       stats.map(({ stat }) => ({
         value: stat._id,
         // TODO : Handle Internationalization
-        label: stat.title
+        label: stat.title,
       })),
     [stats]
   );
@@ -154,7 +125,7 @@ const AdminEditItem: FC = () => {
       charParams.map(({ charParam }) => ({
         value: charParam._id,
         // TODO : Handle Internationalization
-        label: charParam.title
+        label: charParam.title,
       })),
     [charParams]
   );
@@ -162,22 +133,18 @@ const AdminEditItem: FC = () => {
 
   const actionTypeSelect = useMemo(
     () =>
-      actionTypes.map(({
-        name, _id
-      }) => ({
+      actionTypes.map(({ name, _id }) => ({
         value: _id,
-        label: t(`terms.actionType.${name}`)
+        label: t(`terms.actionType.${name}`),
       })),
     [actionTypes, t]
   );
 
   const actionDurationSelect = useMemo(
     () =>
-      actionDurations.map(({
-        name, _id
-      }) => ({
+      actionDurations.map(({ name, _id }) => ({
         value: _id,
-        label: t(`terms.actionDuration.${name}`)
+        label: t(`terms.actionDuration.${name}`),
       })),
     [actionDurations, t]
   );
@@ -186,7 +153,7 @@ const AdminEditItem: FC = () => {
     () =>
       rarities.map(({ rarity }) => ({
         value: rarity._id,
-        label: rarity.title
+        label: rarity.title,
       })),
     [rarities]
   );
@@ -195,16 +162,16 @@ const AdminEditItem: FC = () => {
     () =>
       itemModifiers.map(({ itemModifier }) => ({
         value: itemModifier._id,
-        label: itemModifier.title
+        label: itemModifier.title,
       })),
     [itemModifiers]
   );
 
   const starterKitList = useMemo(
     () =>
-      possibleStarterKitValues.map(possibleStarterKitValue => ({
+      possibleStarterKitValues.map((possibleStarterKitValue) => ({
         value: possibleStarterKitValue,
-        label: t(`terms.starterKit.${possibleStarterKitValue}`)
+        label: t(`terms.starterKit.${possibleStarterKitValue}`),
       })),
     [t]
   );
@@ -219,21 +186,15 @@ const AdminEditItem: FC = () => {
   const [itemText, setItemText] = useState('');
   const [itemTextFr, setItemTextFr] = useState('');
 
-  const introEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const createDefaultData = useCallback((itemData: ICuratedItem | null) => {
     if (itemData == null) {
       return {};
     }
-    const {
-      item, i18n
-    } = itemData;
+    const { item, i18n } = itemData;
     const defaultData: Partial<FormValues> = {};
     defaultData.name = item.title;
     defaultData.cost = item.cost;
@@ -252,7 +213,7 @@ const AdminEditItem: FC = () => {
       }
       defaultData.skillBonuses[`skill-${idIncrement.current}`] = {
         skill: skillBonus.skill,
-        value: skillBonus.value
+        value: skillBonus.value,
       };
 
       tempSkillBonusId.push(idIncrement.current);
@@ -268,7 +229,7 @@ const AdminEditItem: FC = () => {
       }
       defaultData.statBonuses[`stat-${idIncrement.current}`] = {
         stat: statBonus.stat,
-        value: statBonus.value
+        value: statBonus.value,
       };
 
       tempStatBonusId.push(idIncrement.current);
@@ -284,7 +245,7 @@ const AdminEditItem: FC = () => {
       }
       defaultData.charParamBonuses[`charParam-${idIncrement.current}`] = {
         charParam: charParamBonus.charParam,
-        value: charParamBonus.value
+        value: charParamBonus.value,
       };
 
       tempCharParamBonusId.push(idIncrement.current);
@@ -306,22 +267,14 @@ const AdminEditItem: FC = () => {
         isKarmic: action.isKarmic ? '1' : '0',
         ...(action.skill !== undefined ? { skill: action.skill } : {}),
         ...(action.damages !== undefined ? { damages: action.damages } : {}),
-        ...(
-          action.offsetSkill !== undefined
-            ? { offsetSkill: action.offsetSkill }
-            : {}
-        ),
+        ...(action.offsetSkill !== undefined ? { offsetSkill: action.offsetSkill } : {}),
         ...(action.uses !== undefined ? { uses: action.uses } : {}),
-        ...(
-          action.karmicCost !== undefined
-            ? { karmicCost: action.karmicCost }
-            : {}
-        ),
+        ...(action.karmicCost !== undefined ? { karmicCost: action.karmicCost } : {}),
         ...(action.time !== undefined ? { time: action.time } : {}),
         summary: action.summary,
         titleFr: action.i18n.fr?.title,
         summaryFr: action.i18n.fr?.summary,
-        timeFr: action.i18n.fr?.time
+        timeFr: action.i18n.fr?.time,
       };
 
       tempActionId.push(idIncrement.current);
@@ -342,7 +295,7 @@ const AdminEditItem: FC = () => {
         formula: effect.formula,
         summary: effect.summary,
         titleFr: effect.i18n.fr?.title,
-        summaryFr: effect.i18n.fr?.summary
+        summaryFr: effect.i18n.fr?.summary,
       };
 
       tempEffectId.push(idIncrement.current);
@@ -359,21 +312,21 @@ const AdminEditItem: FC = () => {
     unregister,
     control,
     formState: { errors },
-    reset
-  } = useForm({ defaultValues: useMemo(
-    () => createDefaultData(itemData), [createDefaultData, itemData]
-  ) });
+    reset,
+  } = useForm({
+    defaultValues: useMemo(() => createDefaultData(itemData), [createDefaultData, itemData]),
+  });
 
   const boolRange = useMemo(
     () => [
       {
         value: '1',
-        label: t('terms.general.yes')
+        label: t('terms.general.yes'),
       },
       {
         value: '0',
-        label: t('terms.general.no')
-      }
+        label: t('terms.general.no'),
+      },
     ],
     [t]
   );
@@ -429,110 +382,88 @@ const AdminEditItem: FC = () => {
   }, []);
 
   const onSaveItem: SubmitHandler<FormValues> = useCallback(
-    ({
-      name,
-      nameFr,
-      cost,
-      rarity,
-      itemModifiers,
-      effects,
-      actions,
-      starterKit,
-      ...elts
-    }) => {
+    ({ name, nameFr, cost, rarity, itemModifiers, effects, actions, starterKit, ...elts }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
       // Check duplicate on skills
-      const skillBonuses = elts.skillBonuses !== undefined
-        ? Object.values(elts.skillBonuses)
-        : [];
+      const skillBonuses = elts.skillBonuses !== undefined ? Object.values(elts.skillBonuses) : [];
       let duplicateSkillBonuses = false;
       if (skillBonuses.length > 0) {
         duplicateSkillBonuses = isThereDuplicate(
-          skillBonuses.map(skillBonus => skillBonus.skill)
+          skillBonuses.map((skillBonus) => skillBonus.skill)
         );
       }
       if (duplicateSkillBonuses) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminEditItem.errorDuplicateSkill', { ns: 'pages' })
+          message: t('adminEditItem.errorDuplicateSkill', { ns: 'pages' }),
         });
 
         return;
       }
       // Check duplicate on stats
-      const statBonuses = elts.statBonuses !== undefined
-        ? Object.values(elts.statBonuses)
-        : [];
+      const statBonuses = elts.statBonuses !== undefined ? Object.values(elts.statBonuses) : [];
       let duplicateStatBonuses = false;
       if (statBonuses.length > 0) {
-        duplicateStatBonuses = isThereDuplicate(
-          statBonuses.map(statBonus => statBonus.stat)
-        );
+        duplicateStatBonuses = isThereDuplicate(statBonuses.map((statBonus) => statBonus.stat));
       }
       if (duplicateStatBonuses) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminEditItem.errorDuplicateStat', { ns: 'pages' })
+          message: t('adminEditItem.errorDuplicateStat', { ns: 'pages' }),
         });
 
         return;
       }
       // Check duplicate on character param
-      const charParamBonuses
-        = elts.charParamBonuses !== undefined
-          ? Object.values(elts.charParamBonuses)
-          : [];
+      const charParamBonuses =
+        elts.charParamBonuses !== undefined ? Object.values(elts.charParamBonuses) : [];
       let duplicateCharParamBonuses = false;
       if (charParamBonuses.length > 0) {
         duplicateCharParamBonuses = isThereDuplicate(
-          charParamBonuses.map(charParamBonus => charParamBonus.charParam)
+          charParamBonuses.map((charParamBonus) => charParamBonus.charParam)
         );
       }
       if (duplicateCharParamBonuses) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminEditItem.errorDuplicateCharParam', { ns: 'pages' })
+          message: t('adminEditItem.errorDuplicateCharParam', { ns: 'pages' }),
         });
 
         return;
       }
-      const curatedSkillBonuses = skillBonuses.map(({
-        skill, value
-      }) => ({
+      const curatedSkillBonuses = skillBonuses.map(({ skill, value }) => ({
         skill,
-        value: Number(value)
+        value: Number(value),
       }));
-      const curatedStatBonuses = statBonuses.map(({
-        stat, value
-      }) => ({
+      const curatedStatBonuses = statBonuses.map(({ stat, value }) => ({
         stat,
-        value: Number(value)
+        value: Number(value),
       }));
-      const curatedCharParamBonuses = charParamBonuses.map(({
-        charParam, value
-      }) => ({
+      const curatedCharParamBonuses = charParamBonuses.map(({ charParam, value }) => ({
         charParam,
-        value: Number(value)
+        value: Number(value),
       }));
 
       const effectsArr = effects !== undefined ? Object.values(effects) : [];
       const curatedEffects = effectsArr.map(
-        ({
-          id, formula, type, title, summary, titleFr, summaryFr
-        }) => ({
+        ({ id, formula, type, title, summary, titleFr, summaryFr }) => ({
           id,
           title,
           summary,
           formula,
           type,
-          i18n: { ...(titleFr !== undefined || summaryFr !== undefined
-            ? { fr: {
-                title: titleFr,
-                summary: summaryFr
-              } }
-            : {}) }
+          i18n: {
+            ...(titleFr !== undefined || summaryFr !== undefined
+              ? {
+                  fr: {
+                    title: titleFr,
+                    summary: summaryFr,
+                  },
+                }
+              : {}),
+          },
         })
       );
 
@@ -553,7 +484,7 @@ const AdminEditItem: FC = () => {
           uses,
           isKarmic,
           karmicCost,
-          summaryFr
+          summaryFr,
         }) => ({
           id,
           title,
@@ -567,16 +498,17 @@ const AdminEditItem: FC = () => {
           uses,
           time,
           type,
-          i18n: { ...(
-            titleFr !== undefined
-            || summaryFr !== undefined
-            || timeFr !== undefined
-              ? { fr: {
-                  title: titleFr,
-                  summary: summaryFr,
-                  time: timeFr
-                } }
-              : {}) }
+          i18n: {
+            ...(titleFr !== undefined || summaryFr !== undefined || timeFr !== undefined
+              ? {
+                  fr: {
+                    title: titleFr,
+                    summary: summaryFr,
+                    time: timeFr,
+                  },
+                }
+              : {}),
+          },
         })
       );
 
@@ -587,10 +519,12 @@ const AdminEditItem: FC = () => {
       }
       let i18n: InternationalizationType | null = null;
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          summary: htmlFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            summary: htmlFr,
+          },
+        };
       }
       api.items
         .update({
@@ -607,7 +541,7 @@ const AdminEditItem: FC = () => {
           statBonuses: curatedStatBonuses,
           charParamBonuses: curatedCharParamBonuses,
           effects: curatedEffects,
-          actions: curatedActions
+          actions: curatedActions,
         })
         .then((quote) => {
           const newId = getNewId();
@@ -617,7 +551,7 @@ const AdminEditItem: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditItem.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
         })
         .catch(({ response }: ErrorResponseType) => {
@@ -625,27 +559,21 @@ const AdminEditItem: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
+              }),
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
     },
-    [
-      introEditor,
-      introFrEditor,
-      api,
-      id,
-      itemData,
-      setError,
-      t,
-      getNewId,
-      createAlert
-    ]
+    [introEditor, introFrEditor, api, id, itemData, setError, t, getNewId, createAlert]
   );
 
   const onAskDelete = useCallback(() => {
@@ -657,14 +585,12 @@ const AdminEditItem: FC = () => {
         title: t('adminEditItem.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditItem.confirmDeletion.text', {
           ns: 'pages',
-          elt: itemData.item.title
+          elt: itemData.item.title,
         }),
-        confirmCta: t('adminEditItem.confirmDeletion.confirmCta', { ns: 'pages' })
+        confirmCta: t('adminEditItem.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
       (evtId: string) => {
-        const confirmDelete = (
-          { detail }: { detail: ConfirmMessageDetailData }
-        ): void => {
+        const confirmDelete = ({ detail }: { detail: ConfirmMessageDetailData }): void => {
           if (detail.proceed) {
             api.items
               .delete({ id })
@@ -676,7 +602,7 @@ const AdminEditItem: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditItem.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  )
+                  ),
                 });
                 void navigate('/admin/items');
               })
@@ -685,12 +611,16 @@ const AdminEditItem: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skillBranch.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize'),
+                    }),
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skillBranch.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize'),
+                    }),
                   });
                 }
               });
@@ -711,7 +641,7 @@ const AdminEditItem: FC = () => {
     getNewId,
     createAlert,
     navigate,
-    setError
+    setError,
   ]);
 
   useEffect(() => {
@@ -720,9 +650,7 @@ const AdminEditItem: FC = () => {
       api.items
         .get({ itemId: id })
         .then((curatedItem) => {
-          const {
-            item, i18n
-          } = curatedItem;
+          const { item, i18n } = curatedItem;
           setItemData(curatedItem);
           setItemText(item.summary);
           if (i18n.fr !== undefined) {
@@ -737,26 +665,16 @@ const AdminEditItem: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    id,
-    t
-  ]);
+  }, [api, createAlert, getNewId, id, t]);
 
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(itemData));
-  }, [
-    itemData,
-    reset,
-    createDefaultData
-  ]);
+  }, [itemData, reset, createDefaultData]);
 
   return (
     <div
@@ -783,11 +701,9 @@ const AdminEditItem: FC = () => {
         <LinkButton className="adminEditItem__return-btn" href="/admin/items" size="small">
           {t('adminEditItem.return', { ns: 'pages' })}
         </LinkButton>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror>{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminEditItem__basics">
           <Input
             control={control}
@@ -845,7 +761,7 @@ const AdminEditItem: FC = () => {
         </Atitle>
         <div className="adminEditItem__bonuses">
           <div className="adminEditItem__bonuses__elts">
-            {skillBonusIds.map(skillBonusId => (
+            {skillBonusIds.map((skillBonusId) => (
               <div className="adminEditItem__bonus" key={`skill-${skillBonusId}`}>
                 <Atitle className="adminEditItem__bonus__title" level={4}>
                   {t('adminEditItem.skillBonusTitle', { ns: 'pages' })}
@@ -872,7 +788,7 @@ const AdminEditItem: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setSkillBonusIds(prev =>
+                    setSkillBonusIds((prev) =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== skillBonusId) {
                           result.push(elt);
@@ -887,7 +803,7 @@ const AdminEditItem: FC = () => {
                 />
               </div>
             ))}
-            {statBonusIds.map(statBonusId => (
+            {statBonusIds.map((statBonusId) => (
               <div className="adminEditItem__bonus" key={`stat-${statBonusId}`}>
                 <Atitle className="adminEditItem__bonus__title" level={4}>
                   {t('adminEditItem.statBonusTitle', { ns: 'pages' })}
@@ -914,7 +830,7 @@ const AdminEditItem: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setStatBonusIds(prev =>
+                    setStatBonusIds((prev) =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== statBonusId) {
                           result.push(elt);
@@ -929,7 +845,7 @@ const AdminEditItem: FC = () => {
                 />
               </div>
             ))}
-            {charParamBonusIds.map(charParamBonusId => (
+            {charParamBonusIds.map((charParamBonusId) => (
               <div className="adminEditItem__bonus" key={`charParam-${charParamBonusId}`}>
                 <Atitle className="adminEditItem__bonus__title" level={4}>
                   {t('adminEditItem.charParamBonusTitle', { ns: 'pages' })}
@@ -956,7 +872,7 @@ const AdminEditItem: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setCharParamBonusIds(prev =>
+                    setCharParamBonusIds((prev) =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== charParamBonusId) {
                           result.push(elt);
@@ -971,7 +887,7 @@ const AdminEditItem: FC = () => {
                 />
               </div>
             ))}
-            {effectIds.map(effectId => (
+            {effectIds.map((effectId) => (
               <div className="adminEditItem__bonus" key={`charParam-${effectId}`}>
                 <Atitle className="adminEditItem__bonus__title" level={4}>
                   {t('adminEditItem.effectTitle', { ns: 'pages' })}
@@ -1027,7 +943,7 @@ const AdminEditItem: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setEffectIds(prev =>
+                    setEffectIds((prev) =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== effectId) {
                           result.push(elt);
@@ -1042,7 +958,7 @@ const AdminEditItem: FC = () => {
                 />
               </div>
             ))}
-            {actionIds.map(actionId => (
+            {actionIds.map((actionId) => (
               <div className="adminEditItem__bonus" key={`charParam-${actionId}`}>
                 <Atitle className="adminEditItem__bonus__title" level={4}>
                   {t('adminEditItem.actionTitle', { ns: 'pages' })}
@@ -1098,9 +1014,9 @@ const AdminEditItem: FC = () => {
                     options={[
                       {
                         value: '',
-                        label: ''
+                        label: '',
                       },
-                      ...skillSelect
+                      ...skillSelect,
                     ]}
                     className="adminEditItem__bonus__select adminEditItem__bonus__value--s"
                   />
@@ -1158,7 +1074,7 @@ const AdminEditItem: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setActionIds(prev =>
+                    setActionIds((prev) =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== actionId) {
                           result.push(elt);
@@ -1205,7 +1121,7 @@ const AdminEditItem: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt(prev => !prev);
+              setDisplayInt((prev) => !prev);
             }}
             className="adminEditItem__intl-title__btn"
           />

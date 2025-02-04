@@ -1,18 +1,12 @@
-import React, {
-  useCallback, useMemo, useState, type FC
-} from 'react';
+import React, { useCallback, useMemo, useState, type FC } from 'react';
 
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import {
-  useApi, useSystemAlerts
-} from '../../providers';
+import { useApi, useSystemAlerts } from '../../providers';
 
 import { Ap } from '../../atoms';
-import {
-  Button, Input, SmartSelect, type IGroupedOption
-} from '../../molecules';
+import { Button, Input, SmartSelect, type IGroupedOption } from '../../molecules';
 import { Alert } from '../index';
 
 import type { ICuratedNotion } from '../../types';
@@ -24,23 +18,19 @@ import './menuBar.scss';
 
 interface IMenuBar {
   /** The text Editor */
-  editor?: Editor | undefined
+  editor?: Editor | undefined;
   /** Is the text editor with all options ? */
-  complete: boolean
+  complete: boolean;
   /** The className of the menubar */
-  className?: string
+  className?: string;
   /** The RuleBookId, if there is one */
-  ruleBookId?: string
+  ruleBookId?: string;
 }
 
-export const MenuBar: FC<IMenuBar> = ({
-  editor, complete, className, ruleBookId
-}) => {
+export const MenuBar: FC<IMenuBar> = ({ editor, complete, className, ruleBookId }) => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
 
   const [notions, setNotions] = useState<ICuratedNotion[]>([]);
 
@@ -51,18 +41,15 @@ export const MenuBar: FC<IMenuBar> = ({
   // Highlight Tool
   const [highlightOpened, highlightOpen] = useState(false);
   const [textHighlight, setTextHighlight] = useState<string>('');
-  const [selectedHighlight, setSelectedHighlight]
-  = useState<string | null>(null);
+  const [selectedHighlight, setSelectedHighlight] = useState<string | null>(null);
 
-  const {
-    control
-  } = useForm();
+  const { control } = useForm();
 
   const embedSelectChoices = useMemo(
     () =>
       notions.map(({ notion }) => ({
         value: notion._id,
-        label: notion.title
+        label: notion.title,
       })),
     [notions]
   );
@@ -70,13 +57,13 @@ export const MenuBar: FC<IMenuBar> = ({
   const highlightSelectChoices = useMemo<IGroupedOption>(() => {
     const notionOptions = notions.map(({ notion }) => ({
       value: notion._id,
-      label: notion.title
+      label: notion.title,
     }));
 
     return {
       label: t('richTextElement.highlight.highlightNotionCat', { ns: 'components' }),
       cat: 'notions',
-      options: notionOptions
+      options: notionOptions,
     };
   }, [notions, t]);
 
@@ -103,18 +90,12 @@ export const MenuBar: FC<IMenuBar> = ({
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{t('serverErrors.CYPU-301')}</Ap>
                 </Alert>
-              )
+              ),
             });
             resolve(false);
           });
       }),
-    [
-      api,
-      createAlert,
-      getNewId,
-      ruleBookId,
-      t
-    ]
+    [api, createAlert, getNewId, ruleBookId, t]
   );
 
   const onEmbed = useCallback(() => {
@@ -147,7 +128,7 @@ export const MenuBar: FC<IMenuBar> = ({
       .chain()
       .insertContentAt(editor.state.selection.head, {
         type: 'reactComponentEmbed',
-        attrs: { notionId: selectedEmbed }
+        attrs: { notionId: selectedEmbed },
       })
       .focus()
       .run();
@@ -167,19 +148,14 @@ export const MenuBar: FC<IMenuBar> = ({
         attrs: {
           idElt: selectedHighlight,
           textElt: textHighlight !== '' ? textHighlight : null,
-          typeElt: highlightSelectChoices.cat
-        }
+          typeElt: highlightSelectChoices.cat,
+        },
       })
       .focus()
       .run();
     highlightOpen(false);
     setSelectedHighlight(null);
-  }, [
-    editor,
-    selectedHighlight,
-    textHighlight,
-    highlightSelectChoices
-  ]);
+  }, [editor, selectedHighlight, textHighlight, highlightSelectChoices]);
 
   if (editor === undefined) {
     return null;
@@ -229,27 +205,21 @@ export const MenuBar: FC<IMenuBar> = ({
           </Button>
           <Button
             size="small"
-            onClick={
-              () => editor.chain().focus().toggleHeading({ level: 1 }).run()
-            }
+            onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
             active={editor.isActive('heading', { level: 1 })}
           >
             {t('richTextElement.h1', { ns: 'components' })}
           </Button>
           <Button
             size="small"
-            onClick={
-              () => editor.chain().focus().toggleHeading({ level: 2 }).run()
-            }
+            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
             active={editor.isActive('heading', { level: 2 })}
           >
             {t('richTextElement.h2', { ns: 'components' })}
           </Button>
           <Button
             size="small"
-            onClick={
-              () => editor.chain().focus().toggleHeading({ level: 3 }).run()
-            }
+            onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
             active={editor.isActive('heading', { level: 3 })}
           >
             {t('richTextElement.h3', { ns: 'components' })}
@@ -269,9 +239,16 @@ export const MenuBar: FC<IMenuBar> = ({
           <Button
             size="small"
             onClick={() =>
-              editor.chain().focus().insertTable({
-                rows: 3, cols: 3, withHeaderRow: true
-              }).run()}
+              editor
+                .chain()
+                .focus()
+                .insertTable({
+                  rows: 3,
+                  cols: 3,
+                  withHeaderRow: true,
+                })
+                .run()
+            }
           >
             {t('richTextElement.table.new', { ns: 'components' })}
           </Button>
@@ -311,93 +288,89 @@ export const MenuBar: FC<IMenuBar> = ({
 
                   return true;
                 })
-                .run()}
+                .run()
+            }
             active={editor.isActive('reactComponentHighlight')}
           >
             {t('richTextElement.highlight.button', { ns: 'components' })}
           </Button>
-          {highlightOpened
-            ? (
-                <div className="menubar__categories__highlight__highlightbar">
-                  <SmartSelect
-                    inputName="category"
-                    control={control}
-                    options={highlightSelectChoices.options}
-                    onChange={(choice) => {
-                      setTextHighlight(choice.label);
-                      setSelectedHighlight(String(choice.value));
-                    }}
-                  />
-                  <Input
-                    inputName="highlight"
-                    control={control}
-                    type="text"
-                    placeholder={t('richTextElement.highlight.title', { ns: 'components' })}
-                    onChange={(e) => {
-                      setTextHighlight(e.target.value);
-                    }}
-                  />
-                  <Button onClick={onConfirmHighlightBar}>
-                    {t('richTextElement.highlight.confirm', { ns: 'components' })}
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      highlightOpen(false);
-                    }}
-                  >
-                    {t('richTextElement.highlight.abort', { ns: 'components' })}
-                  </Button>
-                </div>
-              )
-            : null}
+          {highlightOpened ? (
+            <div className="menubar__categories__highlight__highlightbar">
+              <SmartSelect
+                inputName="category"
+                control={control}
+                options={highlightSelectChoices.options}
+                onChange={(choice) => {
+                  setTextHighlight(choice.label);
+                  setSelectedHighlight(String(choice.value));
+                }}
+              />
+              <Input
+                inputName="highlight"
+                control={control}
+                type="text"
+                placeholder={t('richTextElement.highlight.title', { ns: 'components' })}
+                onChange={(e) => {
+                  setTextHighlight(e.target.value);
+                }}
+              />
+              <Button onClick={onConfirmHighlightBar}>
+                {t('richTextElement.highlight.confirm', { ns: 'components' })}
+              </Button>
+              <Button
+                onClick={() => {
+                  highlightOpen(false);
+                }}
+              >
+                {t('richTextElement.highlight.abort', { ns: 'components' })}
+              </Button>
+            </div>
+          ) : null}
         </div>
-        {complete
-          ? (
-              <div className="menubar__categories__embeds">
-                <Ap className="menubar__titles">
-                  {t('richTextElement.textEmbed', { ns: 'components' })}
-                </Ap>
-                <Button
-                  onClick={() =>
-                    editor
-                      .chain()
-                      .command(() => {
-                        onEmbed();
+        {complete ? (
+          <div className="menubar__categories__embeds">
+            <Ap className="menubar__titles">
+              {t('richTextElement.textEmbed', { ns: 'components' })}
+            </Ap>
+            <Button
+              onClick={() =>
+                editor
+                  .chain()
+                  .command(() => {
+                    onEmbed();
 
-                        return true;
-                      })
-                      .run()}
-                  active={editor.isActive('reactComponentEmbed')}
-                >
-                  {t('richTextElement.notion.button', { ns: 'components' })}
+                    return true;
+                  })
+                  .run()
+              }
+              active={editor.isActive('reactComponentEmbed')}
+            >
+              {t('richTextElement.notion.button', { ns: 'components' })}
+            </Button>
+            {embedBarOpened ? (
+              <div className="menubar__categories__embeds__embedbar">
+                <SmartSelect
+                  inputName="embed"
+                  control={control}
+                  options={embedSelectChoices}
+                  onChange={(e) => {
+                    setSelectedEmbed(String(e.value));
+                  }}
+                />
+                <Button onClick={onConfirmEmbedBar}>
+                  {t('richTextElement.notion.confirm', { ns: 'components' })}
                 </Button>
-                {embedBarOpened
-                  ? (
-                      <div className="menubar__categories__embeds__embedbar">
-                        <SmartSelect
-                          inputName="embed"
-                          control={control}
-                          options={embedSelectChoices}
-                          onChange={(e) => {
-                            setSelectedEmbed(String(e.value));
-                          }}
-                        />
-                        <Button onClick={onConfirmEmbedBar}>
-                          {t('richTextElement.notion.confirm', { ns: 'components' })}
-                        </Button>
-                        <Button
-                          onClick={() => {
-                            embedBarOpen(false);
-                          }}
-                        >
-                          {t('richTextElement.notion.abort', { ns: 'components' })}
-                        </Button>
-                      </div>
-                    )
-                  : null}
+                <Button
+                  onClick={() => {
+                    embedBarOpen(false);
+                  }}
+                >
+                  {t('richTextElement.notion.abort', { ns: 'components' })}
+                </Button>
               </div>
-            )
-          : null}
+            ) : null}
+          </div>
+        ) : null}
       </div>
     </div>
   );

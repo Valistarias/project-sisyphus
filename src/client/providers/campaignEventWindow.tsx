@@ -6,20 +6,16 @@ import React, {
   useRef,
   useState,
   type FC,
-  type ReactNode
+  type ReactNode,
 } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { Ap } from '../atoms';
-import {
-  Button, DiceCard
-} from '../molecules';
+import { Button, DiceCard } from '../molecules';
 import CustomEventEmitter from '../utils/eventEmitter';
 
-import type {
-  TypeCampaignEvent, TypeDice
-} from '../types';
+import type { TypeCampaignEvent, TypeDice } from '../types';
 
 import {
   calculateDices,
@@ -27,71 +23,57 @@ import {
   diceResultToStr,
   throwDices,
   type DiceRequest,
-  type DiceResult
+  type DiceResult,
 } from '../utils';
 
 import './campaignEventWindow.scss';
 
 export interface CampaignEventDetailData {
-  result: number
-  formula?: string
-  mode: string
+  result: number;
+  formula?: string;
+  mode: string;
 }
 
 interface ICampaignEventWindowContext {
   /** The function to launch a roll */
-  setToRoll: (dices: DiceRequest[], mode: TypeCampaignEvent) => void
+  setToRoll: (dices: DiceRequest[], mode: TypeCampaignEvent) => void;
   /** The event listener for when a new campaign event is called from dispatch */
-  addCampaignEventListener: (
-    cb: (res: { detail?: CampaignEventDetailData }) => void
-  ) => void
+  addCampaignEventListener: (cb: (res: { detail?: CampaignEventDetailData }) => void) => void;
   /** The event listener remover for when a new campaign event is called from dispatch */
-  removeCampaignEventListener: (
-    cb: (res: { detail?: CampaignEventDetailData }) => void
-  ) => void
+  removeCampaignEventListener: (cb: (res: { detail?: CampaignEventDetailData }) => void) => void;
   /** The event listener dispatch */
-  dispatchCampaignEvent: (data: {
-    result: number
-    formula?: string
-    mode: string
-  }) => void
+  dispatchCampaignEvent: (data: { result: number; formula?: string; mode: string }) => void;
 }
 
 interface CampaignEventWindowProviderProps {
   /** The childrens of the Providers element */
-  children: ReactNode
+  children: ReactNode;
 }
 
 interface DiceData {
   /** The ID of the dice element */
-  id: string
+  id: string;
   /** The type of dice */
-  type: TypeDice
+  type: TypeDice;
   /** The changed value over time */
-  value: number | null
+  value: number | null;
   /** The definitive value, to be used with timeout */
-  def: number
+  def: number;
 }
 
-const CampaignEventWindowContext
-  = React.createContext<ICampaignEventWindowContext>(
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- To avoid null values
-    {} as ICampaignEventWindowContext
-  );
+const CampaignEventWindowContext = React.createContext<ICampaignEventWindowContext>(
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions -- To avoid null values
+  {} as ICampaignEventWindowContext
+);
 
-export const CampaignEventWindowProvider:
-FC<CampaignEventWindowProviderProps> = (
-  { children }
-) => {
+export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> = ({ children }) => {
   const { t } = useTranslation();
-  const CampaignEvent = useMemo(() =>
-    new CustomEventEmitter<CampaignEventDetailData>(), []);
+  const CampaignEvent = useMemo(() => new CustomEventEmitter<CampaignEventDetailData>(), []);
 
   const [dicesToRoll, setDicesToRoll] = useState<DiceRequest[] | null>(null);
 
   const [isWindowOpened, setWindowOpened] = useState<boolean>(false);
-  const [isCampaignEventFinished, setRollEventFinished]
-    = useState<boolean>(false);
+  const [isCampaignEventFinished, setRollEventFinished] = useState<boolean>(false);
   const [diceValues, setDiceValues] = useState<DiceData[]>([]);
   const typeRoll = useRef<string>('free');
 
@@ -123,9 +105,7 @@ FC<CampaignEventWindowProviderProps> = (
       return [];
     }
 
-    return diceValues.map(({
-      id, type, value
-    }) => (
+    return diceValues.map(({ id, type, value }) => (
       <DiceCard key={id} type={type} value={value} size={cardMode} />
     ));
   }, [diceValues, cardMode]);
@@ -149,11 +129,10 @@ FC<CampaignEventWindowProviderProps> = (
     }
   }, [isCampaignEventFinished]);
 
-  const setToRoll = useCallback(
-    (dices: DiceRequest[], mode: TypeCampaignEvent) => {
-      setDicesToRoll(dices);
-      typeRoll.current = mode;
-    }, []);
+  const setToRoll = useCallback((dices: DiceRequest[], mode: TypeCampaignEvent) => {
+    setDicesToRoll(dices);
+    typeRoll.current = mode;
+  }, []);
 
   const providerValues = useMemo<ICampaignEventWindowContext>(
     () => ({
@@ -166,34 +145,30 @@ FC<CampaignEventWindowProviderProps> = (
       },
       dispatchCampaignEvent: (data: CampaignEventDetailData) => {
         CampaignEvent.dispatchEvent('addCampaignEvent', data);
-      }
+      },
     }),
     [setToRoll, CampaignEvent]
   );
 
-  const affectDiceValueAtIndex = useCallback(
-    (curatedDices: DiceData[], index: number) => {
-      const newCuratedDices = curatedDices.map((curatedDice, indexTab) => ({
-        ...curatedDice,
-        value: indexTab <= tick.current ? curatedDice.def : null
-      }));
-      setDiceValues([...newCuratedDices]);
-      tick.current += 1;
-    }, []);
+  const affectDiceValueAtIndex = useCallback((curatedDices: DiceData[], index: number) => {
+    const newCuratedDices = curatedDices.map((curatedDice, indexTab) => ({
+      ...curatedDice,
+      value: indexTab <= tick.current ? curatedDice.def : null,
+    }));
+    setDiceValues([...newCuratedDices]);
+    tick.current += 1;
+  }, []);
 
   const endRollTriggerEvent = useCallback(() => {
     endRollEvt.current = setTimeout(() => {
-      if (
-        endRollEvt.current !== null
-        && rollResults.current !== null
-      ) {
+      if (endRollEvt.current !== null && rollResults.current !== null) {
         clearTimeout(endRollEvt.current);
         endRollEvt.current = null;
         setRollEventFinished(true);
         CampaignEvent.dispatchEvent('addCampaignEvent', {
           result: calculateDices(rollResults.current).total,
           formula: diceResultToStr(rollResults.current),
-          mode: typeRoll.current
+          mode: typeRoll.current,
         });
       }
     }, 1000);
@@ -213,29 +188,27 @@ FC<CampaignEventWindowProviderProps> = (
           </Ap>
           <Ap className="roll-window__window__results__value">{dataDices.total.toString()}</Ap>
         </div>
-        {dataDices.best != null && dataDices.worst != null
-          ? (
-              <>
-                <div className="roll-window__window__results__line" />
-                <div className="roll-window__window__results__info">
-                  <div className="roll-window__window__results__info__block">
-                    <Ap className="roll-window__window__results__title">
-                      {t('rollWindow.best', { ns: 'components' })}
-                    </Ap>
-                    <Ap className="roll-window__window__results__value">{dataDices.best.toString()}</Ap>
-                  </div>
-                  <div className="roll-window__window__results__info__block">
-                    <Ap className="roll-window__window__results__title">
-                      {t('rollWindow.worst', { ns: 'components' })}
-                    </Ap>
-                    <Ap className="roll-window__window__results__value">
-                      {dataDices.worst.toString()}
-                    </Ap>
-                  </div>
-                </div>
-              </>
-            )
-          : null}
+        {dataDices.best != null && dataDices.worst != null ? (
+          <>
+            <div className="roll-window__window__results__line" />
+            <div className="roll-window__window__results__info">
+              <div className="roll-window__window__results__info__block">
+                <Ap className="roll-window__window__results__title">
+                  {t('rollWindow.best', { ns: 'components' })}
+                </Ap>
+                <Ap className="roll-window__window__results__value">{dataDices.best.toString()}</Ap>
+              </div>
+              <div className="roll-window__window__results__info__block">
+                <Ap className="roll-window__window__results__title">
+                  {t('rollWindow.worst', { ns: 'components' })}
+                </Ap>
+                <Ap className="roll-window__window__results__value">
+                  {dataDices.worst.toString()}
+                </Ap>
+              </div>
+            </div>
+          </>
+        ) : null}
       </div>
     );
   }, [diceCards, t]);
@@ -258,7 +231,7 @@ FC<CampaignEventWindowProviderProps> = (
             id: `${typeDiceRes.type}${index}`,
             type: typeDiceRes.type,
             value: null,
-            def: diceRes
+            def: diceRes,
           });
         });
       });
@@ -272,10 +245,7 @@ FC<CampaignEventWindowProviderProps> = (
           intervalEvt.current = setInterval(
             () => {
               affectDiceValueAtIndex(curatedDices, tick.current);
-              if (
-                curatedDices.length <= tick.current
-                && intervalEvt.current !== null
-              ) {
+              if (curatedDices.length <= tick.current && intervalEvt.current !== null) {
                 clearTimeout(intervalEvt.current);
                 tick.current = 0;
                 // Last timeout based on animation duration on css
@@ -290,11 +260,7 @@ FC<CampaignEventWindowProviderProps> = (
         }
       }, 100);
     }
-  }, [
-    dicesToRoll,
-    affectDiceValueAtIndex,
-    endRollTriggerEvent
-  ]);
+  }, [dicesToRoll, affectDiceValueAtIndex, endRollTriggerEvent]);
 
   return (
     <CampaignEventWindowContext.Provider value={providerValues}>

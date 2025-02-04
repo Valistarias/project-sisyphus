@@ -1,28 +1,20 @@
-import React, {
-  useCallback, useEffect, useMemo, type FC, type ReactNode
-} from 'react';
+import React, { useCallback, useEffect, useMemo, type FC, type ReactNode } from 'react';
 
 import { motion } from 'framer-motion';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../providers';
 
-import {
-  Ap, Atitle
-} from '../../atoms';
-import {
-  Button, Checkbox
-} from '../../molecules';
+import { Ap, Atitle } from '../../atoms';
+import { Button, Checkbox } from '../../molecules';
 import {
   ArmorDisplay,
   BagDisplay,
   ImplantDisplay,
   ItemDisplay,
   ProgramDisplay,
-  WeaponDisplay
+  WeaponDisplay,
 } from '../index';
 
 import type {
@@ -33,49 +25,47 @@ import type {
   ICuratedImplant,
   ICuratedItem,
   ICuratedProgram,
-  ICuratedWeapon
+  ICuratedWeapon,
 } from '../../types';
 
-import {
-  classTrim, countTrueInArray, getValuesFromGlobalValues
-} from '../../utils';
+import { classTrim, countTrueInArray, getValuesFromGlobalValues } from '../../utils';
 
 import './characterCreation.scss';
 
 interface FormValues {
-  weapons: Record<string, boolean>
-  armors: Record<string, boolean>
-  bags: Record<string, boolean>
-  items: Record<string, boolean>
-  programs: Record<string, boolean>
-  implants: Record<string, boolean>
+  weapons: Record<string, boolean>;
+  armors: Record<string, boolean>;
+  bags: Record<string, boolean>;
+  items: Record<string, boolean>;
+  programs: Record<string, boolean>;
+  implants: Record<string, boolean>;
 }
 
 interface ICharacterCreationStep5 {
   /** Is the form loading ? */
-  loading: boolean
+  loading: boolean;
   /** All the available weapons to be used in character creation */
-  weapons: ICuratedWeapon[]
+  weapons: ICuratedWeapon[];
   /** All the available programs to be used in character creation */
-  programs: ICuratedProgram[]
+  programs: ICuratedProgram[];
   /** All the available items to be used in character creation */
-  items: ICuratedItem[]
+  items: ICuratedItem[];
   /** All the available implants to be used in character creation */
-  implants: ICuratedImplant[]
+  implants: ICuratedImplant[];
   /** All the available bags to be used in character creation */
-  bags: ICuratedBag[]
+  bags: ICuratedBag[];
   /** All the available armors to be used in character creation */
-  armors: ICuratedArmor[]
+  armors: ICuratedArmor[];
   /** When the user click send and the data is send perfectly */
   onSubmitItems?: (items: {
-    weapons: string[]
-    armors: string[]
-    bags: string[]
-    items: string[]
-    programs: string[]
-    implants: string[]
-    money: number
-  }) => void
+    weapons: string[];
+    armors: string[];
+    bags: string[];
+    items: string[];
+    programs: string[];
+    implants: string[];
+    money: number;
+  }) => void;
 }
 
 const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
@@ -86,12 +76,10 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
   implants,
   bags,
   armors,
-  onSubmitItems
+  onSubmitItems,
 }) => {
   const { t } = useTranslation();
-  const {
-    globalValues, character
-  } = useGlobalVars();
+  const { globalValues, character } = useGlobalVars();
 
   const createDefaultData = useCallback(
     ({
@@ -101,26 +89,22 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
       items,
       programs,
       implants,
-      character
+      character,
     }: {
-      weapons: ICuratedWeapon[]
-      armors: ICuratedArmor[]
-      bags: ICuratedBag[]
-      items: ICuratedItem[]
-      programs: ICuratedProgram[]
-      implants: ICuratedImplant[]
-      character: false | ICharacter | null
+      weapons: ICuratedWeapon[];
+      armors: ICuratedArmor[];
+      bags: ICuratedBag[];
+      items: ICuratedItem[];
+      programs: ICuratedProgram[];
+      implants: ICuratedImplant[];
+      character: false | ICharacter | null;
     }) => {
       if (weapons.length === 0) {
         return {};
       }
       let relevantBody: IBody | undefined;
-      if (
-        character !== null
-        && character !== false
-        && character.bodies !== undefined
-      ) {
-        relevantBody = character.bodies.find(body => body.alive);
+      if (character !== null && character !== false && character.bodies !== undefined) {
+        relevantBody = character.bodies.find((body) => body.alive);
       }
       const defaultData: Partial<FormValues> = {};
       weapons.forEach(({ weapon }) => {
@@ -129,10 +113,9 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         }
         defaultData.weapons[weapon._id] = weapon.starterKit === 'always';
         if (relevantBody?.weapons?.length !== 0) {
-          defaultData.weapons[weapon._id]
-            = relevantBody?.weapons?.find(
-              bodyWeapon => bodyWeapon.weapon === weapon._id
-            ) !== undefined;
+          defaultData.weapons[weapon._id] =
+            relevantBody?.weapons?.find((bodyWeapon) => bodyWeapon.weapon === weapon._id) !==
+            undefined;
         }
       });
 
@@ -142,10 +125,8 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         }
         defaultData.armors[armor._id] = armor.starterKit === 'always';
         if (relevantBody?.armors?.length !== 0) {
-          defaultData.armors[armor._id]
-            = relevantBody?.armors?.find(
-              bodyArmor => bodyArmor.armor === armor._id
-            ) !== undefined;
+          defaultData.armors[armor._id] =
+            relevantBody?.armors?.find((bodyArmor) => bodyArmor.armor === armor._id) !== undefined;
         }
       });
 
@@ -155,10 +136,8 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         }
         defaultData.bags[bag._id] = bag.starterKit === 'always';
         if (relevantBody?.bags?.length !== 0) {
-          defaultData.bags[bag._id]
-            = relevantBody?.bags?.find(
-              bodyBag => bodyBag.bag === bag._id
-            ) !== undefined;
+          defaultData.bags[bag._id] =
+            relevantBody?.bags?.find((bodyBag) => bodyBag.bag === bag._id) !== undefined;
         }
       });
 
@@ -168,10 +147,8 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         }
         defaultData.items[item._id] = item.starterKit === 'always';
         if (relevantBody?.items?.length !== 0) {
-          defaultData.items[item._id]
-            = relevantBody?.items?.find(
-              bodyItem => bodyItem.item === item._id
-            ) !== undefined;
+          defaultData.items[item._id] =
+            relevantBody?.items?.find((bodyItem) => bodyItem.item === item._id) !== undefined;
         }
       });
 
@@ -181,10 +158,9 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         }
         defaultData.programs[program._id] = program.starterKit === 'always';
         if (relevantBody?.programs?.length !== 0) {
-          defaultData.programs[program._id]
-            = relevantBody?.programs?.find(
-              bodyProgram => bodyProgram.program === program._id
-            ) !== undefined;
+          defaultData.programs[program._id] =
+            relevantBody?.programs?.find((bodyProgram) => bodyProgram.program === program._id) !==
+            undefined;
         }
       });
 
@@ -194,10 +170,9 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         }
         defaultData.implants[implant._id] = implant.starterKit === 'always';
         if (relevantBody?.implants?.length !== 0) {
-          defaultData.implants[implant._id]
-            = relevantBody?.implants?.find(
-              bodyImplant => bodyImplant.implant === implant._id
-            ) !== undefined;
+          defaultData.implants[implant._id] =
+            relevantBody?.implants?.find((bodyImplant) => bodyImplant.implant === implant._id) !==
+            undefined;
         }
       });
 
@@ -206,29 +181,21 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
     []
   );
 
-  const {
-    handleSubmit, watch, control, reset
-  } = useForm<FormValues>({ defaultValues: useMemo(
-    () => createDefaultData({
-      weapons,
-      armors,
-      bags,
-      items,
-      programs,
-      implants,
-      character
-    }),
-    [
-      createDefaultData,
-      weapons,
-      armors,
-      bags,
-      items,
-      programs,
-      implants,
-      character
-    ]
-  ) });
+  const { handleSubmit, watch, control, reset } = useForm<FormValues>({
+    defaultValues: useMemo(
+      () =>
+        createDefaultData({
+          weapons,
+          armors,
+          bags,
+          items,
+          programs,
+          implants,
+          character,
+        }),
+      [createDefaultData, weapons, armors, bags, items, programs, implants, character]
+    ),
+  });
 
   const {
     nbOptionnalWeaponCharCreate,
@@ -237,7 +204,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
     nbOptionnalItemCharCreate,
     nbOptionnalOtherCharCreate,
     starterMoney,
-    starterMoneyNoItem
+    starterMoneyNoItem,
   } = useMemo(
     () =>
       getValuesFromGlobalValues(
@@ -248,7 +215,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
           'nbOptionnalItemCharCreate',
           'nbOptionnalOtherCharCreate',
           'starterMoney',
-          'starterMoneyNoItem'
+          'starterMoneyNoItem',
         ],
         globalValues
       ),
@@ -264,15 +231,13 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         items: [],
         programs: [],
         implants: [],
-        money: starterMoneyNoItem ?? 0
+        money: starterMoneyNoItem ?? 0,
       });
     }
   }, [onSubmitItems, starterMoneyNoItem]);
 
   const onSaveItems: SubmitHandler<FormValues> = useCallback(
-    ({
-      weapons, armors, bags, items, programs, implants
-    }) => {
+    ({ weapons, armors, bags, items, programs, implants }) => {
       if (onSubmitItems !== undefined) {
         const weaponIds: string[] = [];
         Object.keys(weapons).forEach((weaponId) => {
@@ -317,7 +282,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
           items: itemIds,
           programs: programIds,
           implants: implantIds,
-          money: starterMoney ?? 0
+          money: starterMoney ?? 0,
         });
       }
     },
@@ -347,7 +312,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         </Atitle>
         <div className="characterCreation-step5__choices__main__weapons__cat">
           <Atitle level={4}>{t('characterCreation.step5.included', { ns: 'components' })}</Atitle>
-          {included.map(includedWeapon => (
+          {included.map((includedWeapon) => (
             <WeaponDisplay key={includedWeapon.weapon._id} weapon={includedWeapon} mode="hover" />
           ))}
         </div>
@@ -355,10 +320,10 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
           <Atitle level={4}>
             {t('characterCreation.step5.choose', {
               ns: 'components',
-              qty: (nbOptionnalWeaponCharCreate ?? 0) - included.length
+              qty: (nbOptionnalWeaponCharCreate ?? 0) - included.length,
             })}
           </Atitle>
-          {optionnal.map(optionnalWeapon => (
+          {optionnal.map((optionnalWeapon) => (
             <Checkbox
               inputName={`weapons.${optionnalWeapon.weapon._id}`}
               className="characterCreation-step5__choices__main__weapon-input"
@@ -366,8 +331,8 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
               key={optionnalWeapon.weapon._id}
               label={<WeaponDisplay weapon={optionnalWeapon} mode="hover" />}
               disabled={
-                countSelected >= (nbOptionnalWeaponCharCreate ?? 0)
-                && !weaponSelected[optionnalWeapon.weapon._id]
+                countSelected >= (nbOptionnalWeaponCharCreate ?? 0) &&
+                !weaponSelected[optionnalWeapon.weapon._id]
               }
             />
           ))}
@@ -397,42 +362,38 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         <Atitle className="characterCreation-step5__choices__main__armors__title" level={3}>
           {t('itemTypeNames.shi', { count: nbOptionnalArmorCharCreate })}
         </Atitle>
-        {included.length > 0
-          ? (
-              <div className="characterCreation-step5__choices__main__armors__cat">
-                <Atitle level={4}>{t('characterCreation.step5.included', { ns: 'components' })}</Atitle>
-                {included.map(includedArmor => (
-                  <ArmorDisplay key={includedArmor.armor._id} armor={includedArmor} mode="hover" />
-                ))}
-              </div>
-            )
-          : null}
+        {included.length > 0 ? (
+          <div className="characterCreation-step5__choices__main__armors__cat">
+            <Atitle level={4}>{t('characterCreation.step5.included', { ns: 'components' })}</Atitle>
+            {included.map((includedArmor) => (
+              <ArmorDisplay key={includedArmor.armor._id} armor={includedArmor} mode="hover" />
+            ))}
+          </div>
+        ) : null}
 
-        {optionnal.length > 0
-          ? (
-              <div className="characterCreation-step5__choices__main__armors__cat">
-                <Atitle level={4}>
-                  {t('characterCreation.step5.choose', {
-                    ns: 'components',
-                    qty: (nbOptionnalArmorCharCreate ?? 0) - included.length
-                  })}
-                </Atitle>
-                {optionnal.map(optionnalArmor => (
-                  <Checkbox
-                    inputName={`armors.${optionnalArmor.armor._id}`}
-                    className="characterCreation-step5__choices__main__armor-input"
-                    control={control}
-                    key={optionnalArmor.armor._id}
-                    disabled={
-                      countSelected >= (nbOptionnalArmorCharCreate ?? 0)
-                      && !armorSelected[optionnalArmor.armor._id]
-                    }
-                    label={<ArmorDisplay armor={optionnalArmor} mode="hover" />}
-                  />
-                ))}
-              </div>
-            )
-          : null}
+        {optionnal.length > 0 ? (
+          <div className="characterCreation-step5__choices__main__armors__cat">
+            <Atitle level={4}>
+              {t('characterCreation.step5.choose', {
+                ns: 'components',
+                qty: (nbOptionnalArmorCharCreate ?? 0) - included.length,
+              })}
+            </Atitle>
+            {optionnal.map((optionnalArmor) => (
+              <Checkbox
+                inputName={`armors.${optionnalArmor.armor._id}`}
+                className="characterCreation-step5__choices__main__armor-input"
+                control={control}
+                key={optionnalArmor.armor._id}
+                disabled={
+                  countSelected >= (nbOptionnalArmorCharCreate ?? 0) &&
+                  !armorSelected[optionnalArmor.armor._id]
+                }
+                label={<ArmorDisplay armor={optionnalArmor} mode="hover" />}
+              />
+            ))}
+          </div>
+        ) : null}
       </div>
     );
   };
@@ -458,42 +419,38 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         <Atitle className="characterCreation-step5__choices__main__bags__title" level={3}>
           {t('itemTypeNames.bag', { count: nbOptionnalBagCharCreate })}
         </Atitle>
-        {included.length > 0
-          ? (
-              <div className="characterCreation-step5__choices__main__bags__cat">
-                <Atitle level={4}>{t('characterCreation.step5.included', { ns: 'components' })}</Atitle>
-                {included.map(includedBag => (
-                  <BagDisplay key={includedBag.bag._id} bag={includedBag} mode="hover" />
-                ))}
-              </div>
-            )
-          : null}
+        {included.length > 0 ? (
+          <div className="characterCreation-step5__choices__main__bags__cat">
+            <Atitle level={4}>{t('characterCreation.step5.included', { ns: 'components' })}</Atitle>
+            {included.map((includedBag) => (
+              <BagDisplay key={includedBag.bag._id} bag={includedBag} mode="hover" />
+            ))}
+          </div>
+        ) : null}
 
-        {optionnal.length > 0
-          ? (
-              <div className="characterCreation-step5__choices__main__bags__cat">
-                <Atitle level={4}>
-                  {t('characterCreation.step5.choose', {
-                    ns: 'components',
-                    qty: (nbOptionnalBagCharCreate ?? 0) - included.length
-                  })}
-                </Atitle>
-                {optionnal.map(optionnalBag => (
-                  <Checkbox
-                    inputName={`bags.${optionnalBag.bag._id}`}
-                    className="characterCreation-step5__choices__main__bag-input"
-                    control={control}
-                    key={optionnalBag.bag._id}
-                    disabled={
-                      countSelected >= (nbOptionnalBagCharCreate ?? 0)
-                      && !bagSelected[optionnalBag.bag._id]
-                    }
-                    label={<BagDisplay bag={optionnalBag} mode="hover" />}
-                  />
-                ))}
-              </div>
-            )
-          : null}
+        {optionnal.length > 0 ? (
+          <div className="characterCreation-step5__choices__main__bags__cat">
+            <Atitle level={4}>
+              {t('characterCreation.step5.choose', {
+                ns: 'components',
+                qty: (nbOptionnalBagCharCreate ?? 0) - included.length,
+              })}
+            </Atitle>
+            {optionnal.map((optionnalBag) => (
+              <Checkbox
+                inputName={`bags.${optionnalBag.bag._id}`}
+                className="characterCreation-step5__choices__main__bag-input"
+                control={control}
+                key={optionnalBag.bag._id}
+                disabled={
+                  countSelected >= (nbOptionnalBagCharCreate ?? 0) &&
+                  !bagSelected[optionnalBag.bag._id]
+                }
+                label={<BagDisplay bag={optionnalBag} mode="hover" />}
+              />
+            ))}
+          </div>
+        ) : null}
       </div>
     );
   };
@@ -519,42 +476,38 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         <Atitle className="characterCreation-step5__choices__main__items__title" level={3}>
           {t('itemTypeNames.itm', { count: nbOptionnalItemCharCreate })}
         </Atitle>
-        {included.length > 0
-          ? (
-              <div className="characterCreation-step5__choices__main__items__cat">
-                <Atitle level={4}>{t('characterCreation.step5.included', { ns: 'components' })}</Atitle>
-                {included.map(includedItem => (
-                  <ItemDisplay key={includedItem.item._id} item={includedItem} mode="hover" />
-                ))}
-              </div>
-            )
-          : null}
+        {included.length > 0 ? (
+          <div className="characterCreation-step5__choices__main__items__cat">
+            <Atitle level={4}>{t('characterCreation.step5.included', { ns: 'components' })}</Atitle>
+            {included.map((includedItem) => (
+              <ItemDisplay key={includedItem.item._id} item={includedItem} mode="hover" />
+            ))}
+          </div>
+        ) : null}
 
-        {optionnal.length > 0
-          ? (
-              <div className="characterCreation-step5__choices__main__items__cat">
-                <Atitle level={4}>
-                  {t('characterCreation.step5.choose', {
-                    ns: 'components',
-                    qty: (nbOptionnalItemCharCreate ?? 0) - included.length
-                  })}
-                </Atitle>
-                {optionnal.map(optionnalItem => (
-                  <Checkbox
-                    inputName={`items.${optionnalItem.item._id}`}
-                    className="characterCreation-step5__choices__main__item-input"
-                    control={control}
-                    key={optionnalItem.item._id}
-                    disabled={
-                      countSelected >= (nbOptionnalItemCharCreate ?? 0)
-                      && !itemSelected[optionnalItem.item._id]
-                    }
-                    label={<ItemDisplay item={optionnalItem} mode="hover" />}
-                  />
-                ))}
-              </div>
-            )
-          : null}
+        {optionnal.length > 0 ? (
+          <div className="characterCreation-step5__choices__main__items__cat">
+            <Atitle level={4}>
+              {t('characterCreation.step5.choose', {
+                ns: 'components',
+                qty: (nbOptionnalItemCharCreate ?? 0) - included.length,
+              })}
+            </Atitle>
+            {optionnal.map((optionnalItem) => (
+              <Checkbox
+                inputName={`items.${optionnalItem.item._id}`}
+                className="characterCreation-step5__choices__main__item-input"
+                control={control}
+                key={optionnalItem.item._id}
+                disabled={
+                  countSelected >= (nbOptionnalItemCharCreate ?? 0) &&
+                  !itemSelected[optionnalItem.item._id]
+                }
+                label={<ItemDisplay item={optionnalItem} mode="hover" />}
+              />
+            ))}
+          </div>
+        ) : null}
       </div>
     );
   };
@@ -567,9 +520,9 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
     const optionnalImplants: ICuratedImplant[] = [];
     const programSelected = watch('programs');
     const implantSelected = watch('implants');
-    const countSelected
-      = countTrueInArray(Object.values(programSelected))
-        + countTrueInArray(Object.values(implantSelected));
+    const countSelected =
+      countTrueInArray(Object.values(programSelected)) +
+      countTrueInArray(Object.values(implantSelected));
     programs.forEach((program) => {
       if (program.program.starterKit !== 'always') {
         optionnalPrograms.push(program);
@@ -589,49 +542,45 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         <Atitle level={4}>
           {t('characterCreation.step5.choose', {
             ns: 'components',
-            qty: nbOptionnalOtherCharCreate
+            qty: nbOptionnalOtherCharCreate,
           })}
         </Atitle>
-        {optionnalPrograms.length > 0
-          ? (
-              <div className="characterCreation-step5__choices__main__specialized__cat">
-                <Atitle level={4}>{t('itemTypeNames.pro', { count: optionnalPrograms.length })}</Atitle>
-                {optionnalPrograms.map(optionnalProgram => (
-                  <Checkbox
-                    inputName={`programs.${optionnalProgram.program._id}`}
-                    className="characterCreation-step5__choices__main__specialized-input"
-                    control={control}
-                    key={optionnalProgram.program._id}
-                    disabled={
-                      countSelected >= (nbOptionnalOtherCharCreate ?? 0)
-                      && !programSelected[optionnalProgram.program._id]
-                    }
-                    label={<ProgramDisplay program={optionnalProgram} mode="hover" />}
-                  />
-                ))}
-              </div>
-            )
-          : null}
-        {optionnalImplants.length > 0
-          ? (
-              <div className="characterCreation-step5__choices__main__specialized__cat">
-                <Atitle level={4}>{t('itemTypeNames.imp', { count: optionnalImplants.length })}</Atitle>
-                {optionnalImplants.map(optionnalImplant => (
-                  <Checkbox
-                    inputName={`implants.${optionnalImplant.implant._id}`}
-                    className="characterCreation-step5__choices__main__specialized-input"
-                    control={control}
-                    key={optionnalImplant.implant._id}
-                    disabled={
-                      countSelected >= (nbOptionnalOtherCharCreate ?? 0)
-                      && !implantSelected[optionnalImplant.implant._id]
-                    }
-                    label={<ImplantDisplay implant={optionnalImplant} mode="hover" />}
-                  />
-                ))}
-              </div>
-            )
-          : null}
+        {optionnalPrograms.length > 0 ? (
+          <div className="characterCreation-step5__choices__main__specialized__cat">
+            <Atitle level={4}>{t('itemTypeNames.pro', { count: optionnalPrograms.length })}</Atitle>
+            {optionnalPrograms.map((optionnalProgram) => (
+              <Checkbox
+                inputName={`programs.${optionnalProgram.program._id}`}
+                className="characterCreation-step5__choices__main__specialized-input"
+                control={control}
+                key={optionnalProgram.program._id}
+                disabled={
+                  countSelected >= (nbOptionnalOtherCharCreate ?? 0) &&
+                  !programSelected[optionnalProgram.program._id]
+                }
+                label={<ProgramDisplay program={optionnalProgram} mode="hover" />}
+              />
+            ))}
+          </div>
+        ) : null}
+        {optionnalImplants.length > 0 ? (
+          <div className="characterCreation-step5__choices__main__specialized__cat">
+            <Atitle level={4}>{t('itemTypeNames.imp', { count: optionnalImplants.length })}</Atitle>
+            {optionnalImplants.map((optionnalImplant) => (
+              <Checkbox
+                inputName={`implants.${optionnalImplant.implant._id}`}
+                className="characterCreation-step5__choices__main__specialized-input"
+                control={control}
+                key={optionnalImplant.implant._id}
+                disabled={
+                  countSelected >= (nbOptionnalOtherCharCreate ?? 0) &&
+                  !implantSelected[optionnalImplant.implant._id]
+                }
+                label={<ImplantDisplay implant={optionnalImplant} mode="hover" />}
+              />
+            ))}
+          </div>
+        ) : null}
       </div>
     );
   };
@@ -639,44 +588,32 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
   const elts: FormValues = watch();
   let canSubmitList = false;
   const nbChosenArmors = countTrueInArray(Object.values(elts.armors));
-  const nbChosenPrograms = countTrueInArray(
-    Object.values(elts.programs)
-  );
+  const nbChosenPrograms = countTrueInArray(Object.values(elts.programs));
   const nbChosenItems = countTrueInArray(Object.values(elts.items));
-  const nbChosenImplants = countTrueInArray(
-    Object.values(elts.implants)
-  );
+  const nbChosenImplants = countTrueInArray(Object.values(elts.implants));
   const nbChosenBags = countTrueInArray(Object.values(elts.bags));
   const nbChosenWeapons = countTrueInArray(Object.values(elts.weapons));
 
-  canSubmitList
-      = nbChosenArmors === nbOptionnalArmorCharCreate
-        && nbChosenPrograms + nbChosenImplants === nbOptionnalOtherCharCreate
-        && nbChosenItems === nbOptionnalItemCharCreate
-        && nbChosenBags === nbOptionnalBagCharCreate
-        && nbChosenWeapons === nbOptionnalWeaponCharCreate;
+  canSubmitList =
+    nbChosenArmors === nbOptionnalArmorCharCreate &&
+    nbChosenPrograms + nbChosenImplants === nbOptionnalOtherCharCreate &&
+    nbChosenItems === nbOptionnalItemCharCreate &&
+    nbChosenBags === nbOptionnalBagCharCreate &&
+    nbChosenWeapons === nbOptionnalWeaponCharCreate;
 
   useEffect(() => {
-    reset(createDefaultData({
-      weapons,
-      armors,
-      bags,
-      items,
-      programs,
-      implants,
-      character
-    }));
-  }, [
-    character,
-    reset,
-    createDefaultData,
-    weapons,
-    armors,
-    bags,
-    items,
-    programs,
-    implants
-  ]);
+    reset(
+      createDefaultData({
+        weapons,
+        armors,
+        bags,
+        items,
+        programs,
+        implants,
+        character,
+      })
+    );
+  }, [character, reset, createDefaultData, weapons, armors, bags, items, programs, implants]);
 
   return (
     <motion.div
@@ -686,11 +623,12 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
       initial={{ transform: 'skew(90deg, 0deg) scale3d(.2, .2, .2)' }}
       animate={{
         transform: 'skew(0, 0) scale3d(1, 1, 1)',
-        transitionEnd: { transform: 'none' }
+        transitionEnd: { transform: 'none' },
       }}
       exit={{ transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)' }}
       transition={{
-        ease: 'easeInOut', duration: 0.2
+        ease: 'easeInOut',
+        duration: 0.2,
       }}
     >
       <Ap className="characterCreation-step5__text">
@@ -727,7 +665,8 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
                 theme={!canSubmitList || loading ? 'text-only' : 'afterglow'}
               >
                 {t('characterCreation.step5.next', {
-                  ns: 'components', money: starterMoney
+                  ns: 'components',
+                  money: starterMoney,
                 })}
               </Button>
               <Ap className="characterCreation-step5__choices__main__btns__or">
@@ -742,7 +681,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
               >
                 {t('characterCreation.step5.nextOnlyCash', {
                   ns: 'components',
-                  money: starterMoneyNoItem
+                  money: starterMoneyNoItem,
                 })}
               </Button>
             </div>

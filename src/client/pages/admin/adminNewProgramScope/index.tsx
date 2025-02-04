@@ -1,28 +1,16 @@
-import React, {
-  useCallback, useEffect, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  useApi, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import type { ErrorResponseType } from '../../../types';
 import type { InternationalizationType } from '../../../types/global';
@@ -30,47 +18,35 @@ import type { InternationalizationType } from '../../../types/global';
 import './adminNewProgramScope.scss';
 
 interface FormValues {
-  name: string
-  nameFr: string
-  scopeId: string
+  name: string;
+  nameFr: string;
+  scopeId: string;
 }
 
 const AdminNewProgramScope: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const navigate = useNavigate();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
   const { reloadProgramScopes } = useGlobalVars();
 
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
 
-  const introEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors }
+    formState: { errors },
   } = useForm();
 
   const onSaveProgramScope: SubmitHandler<FormValues> = useCallback(
-    ({
-      name, nameFr, scopeId
-    }) => {
-      if (
-        introEditor === null
-        || introFrEditor === null
-        || api === undefined
-      ) {
+    ({ name, nameFr, scopeId }) => {
+      if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
       let html: string | null = introEditor.getHTML();
@@ -82,10 +58,12 @@ const AdminNewProgramScope: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          summary: htmlFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            summary: htmlFr,
+          },
+        };
       }
 
       api.programScopes
@@ -93,7 +71,7 @@ const AdminNewProgramScope: FC = () => {
           title: name,
           summary: html,
           scopeId,
-          i18n
+          i18n,
         })
         .then((programScope) => {
           const newId = getNewId();
@@ -103,7 +81,7 @@ const AdminNewProgramScope: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewProgramScope.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           reloadProgramScopes();
           void navigate(`/admin/programscope/${programScope._id}`);
@@ -113,12 +91,14 @@ const AdminNewProgramScope: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`,
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
@@ -132,7 +112,7 @@ const AdminNewProgramScope: FC = () => {
       t,
       reloadProgramScopes,
       navigate,
-      setError
+      setError,
     ]
   );
 
@@ -141,12 +121,7 @@ const AdminNewProgramScope: FC = () => {
       setLoading(true);
       calledApi.current = true;
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    t
-  ]);
+  }, [api, createAlert, getNewId, t]);
 
   return (
     <div className="adminNewProgramScope">
@@ -158,11 +133,9 @@ const AdminNewProgramScope: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewProgramScope.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror>{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminNewProgramScope__basics">
           <Input
             control={control}
@@ -189,8 +162,8 @@ const AdminNewProgramScope: FC = () => {
               required: t('programScopeFormula.required', { ns: 'fields' }),
               pattern: {
                 value: /^([a-z]){2,3}$/,
-                message: t('programScopeFormula.format', { ns: 'fields' })
-              }
+                message: t('programScopeFormula.format', { ns: 'fields' }),
+              },
             }}
             label={t('programScopeFormula.label', { ns: 'fields' })}
           />

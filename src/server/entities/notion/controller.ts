@@ -1,17 +1,11 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 import type { HydratedDocument, ObjectId } from 'mongoose';
 
 import db from '../../models';
-import {
-  gemInvalidField, gemNotFound, gemServerError
-} from '../../utils/globalErrorMessage';
+import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { findRuleBookById } from '../ruleBook/controller';
 
-import type {
-  HydratedNotion, INotion
-} from './model';
+import type { HydratedNotion, INotion } from './model';
 import type { InternationalizationType } from '../../utils/types';
 import type { HydratedIRuleBook, IRuleBookType } from '../index';
 
@@ -25,7 +19,7 @@ const findNotions = async (): Promise<HydratedNotion[]> =>
       .populate<{ ruleBook: HydratedIRuleBook }>({
         path: 'ruleBook',
         select: '_id title type',
-        populate: 'type'
+        populate: 'type',
       })
       .then((res: HydratedNotion[]) => {
         if (res.length === 0) {
@@ -55,9 +49,7 @@ const findNotionById = async (id: string): Promise<HydratedDocument<INotion>> =>
   });
 
 const create = (req: Request, res: Response): void => {
-  const {
-    title, text, ruleBook, i18n = null
-  } = req.body;
+  const { title, text, ruleBook, i18n = null } = req.body;
   if (title === undefined || text === undefined || ruleBook === undefined) {
     res.status(400).send(gemInvalidField('Notion'));
 
@@ -66,7 +58,7 @@ const create = (req: Request, res: Response): void => {
   const notion = new Notion({
     title,
     text,
-    ruleBook
+    ruleBook,
   });
 
   if (i18n !== null) {
@@ -85,13 +77,17 @@ const create = (req: Request, res: Response): void => {
 
 const update = (req: Request, res: Response): void => {
   const {
-    id, title = null, text = null, ruleBook = null, i18n = null
+    id,
+    title = null,
+    text = null,
+    ruleBook = null,
+    i18n = null,
   }: {
-    id?: string
-    title: string | null
-    text: string | null
-    i18n: InternationalizationType | null
-    ruleBook: ObjectId | null
+    id?: string;
+    title: string | null;
+    text: string | null;
+    i18n: InternationalizationType | null;
+    ruleBook: ObjectId | null;
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Notion ID'));
@@ -110,11 +106,9 @@ const update = (req: Request, res: Response): void => {
         notion.ruleBook = ruleBook;
       }
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(
-          notion.i18n !== undefined
-            ? JSON.parse(notion.i18n)
-            : {}
-        ) };
+        const newIntl: InternationalizationType = {
+          ...(notion.i18n !== undefined ? JSON.parse(notion.i18n) : {}),
+        };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -126,7 +120,8 @@ const update = (req: Request, res: Response): void => {
         .save()
         .then(() => {
           res.send({
-            message: 'Notion was updated successfully!', notion
+            message: 'Notion was updated successfully!',
+            notion,
           });
         })
         .catch((err: unknown) => {
@@ -154,9 +149,7 @@ const deleteNotion = (req: Request, res: Response): void => {
     });
 };
 
-const deleteNotionsByRuleBookId = async (
-  ruleBookId?: string
-): Promise<boolean> =>
+const deleteNotionsByRuleBookId = async (ruleBookId?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (ruleBookId === undefined) {
       reject(gemInvalidField('Rulebook ID'));
@@ -183,7 +176,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((notion) => {
       const sentObj = {
         notion,
-        i18n: curateI18n(notion.i18n)
+        i18n: curateI18n(notion.i18n),
       };
       res.send(sentObj);
     })
@@ -191,8 +184,10 @@ const findSingle = (req: Request, res: Response): void => {
 };
 
 const findAllByRuleBook = (req: Request, res: Response): void => {
-  const { ruleBookId }: {
-    ruleBookId?: string
+  const {
+    ruleBookId,
+  }: {
+    ruleBookId?: string;
   } = req.query;
   const aggregatedNotions: Array<HydratedNotion | INotion> = [];
 
@@ -221,11 +216,4 @@ const findAllByRuleBook = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export {
-  create,
-  deleteNotion,
-  deleteNotionsByRuleBookId,
-  findAllByRuleBook,
-  findSingle,
-  update
-};
+export { create, deleteNotion, deleteNotionsByRuleBookId, findAllByRuleBook, findSingle, update };

@@ -9,7 +9,7 @@ import {
   findSingle,
   resetItems,
   update,
-  updateStats
+  updateStats,
 } from './controller';
 
 export default (app: Router): void => {

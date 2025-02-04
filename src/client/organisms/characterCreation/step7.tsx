@@ -1,6 +1,4 @@
-import React, {
-  useMemo, useState, type FC
-} from 'react';
+import React, { useMemo, useState, type FC } from 'react';
 
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -13,17 +11,13 @@ import { LinkButton } from '../../molecules';
 
 import type { ICuratedCyberFrame } from '../../types';
 
-import {
-  classTrim, getCyberFrameLevelsByNodes
-} from '../../utils';
+import { classTrim, getCyberFrameLevelsByNodes } from '../../utils';
 
 import './characterCreation.scss';
 
 const CharacterCreationStep7: FC = () => {
   const { t } = useTranslation();
-  const {
-    character, cyberFrames
-  } = useGlobalVars();
+  const { character, cyberFrames } = useGlobalVars();
 
   const [displayNext, setDisplayNext] = useState<boolean>(false);
 
@@ -32,9 +26,7 @@ const CharacterCreationStep7: FC = () => {
       return null;
     }
 
-    return getCyberFrameLevelsByNodes(
-      character.nodes, cyberFrames
-    )[0]?.cyberFrame;
+    return getCyberFrameLevelsByNodes(character.nodes, cyberFrames)[0]?.cyberFrame;
   }, [character, cyberFrames]);
 
   let name = '';
@@ -53,11 +45,12 @@ const CharacterCreationStep7: FC = () => {
       initial={{ opacity: 0 }}
       animate={{
         opacity: 1,
-        transitionEnd: { transform: 'none' }
+        transitionEnd: { transform: 'none' },
       }}
       exit={{ opacity: 0 }}
       transition={{
-        ease: 'easeInOut', duration: 0.2
+        ease: 'easeInOut',
+        duration: 0.2,
       }}
     >
       <div className="characterCreation-step7__logo">
@@ -68,35 +61,46 @@ const CharacterCreationStep7: FC = () => {
         sequence={[
           1000,
           t('characterCreation.step7.text.name', {
-            ns: 'components', name
+            ns: 'components',
+            name,
           }),
           500,
           `${t('characterCreation.step7.text.name', {
-            ns: 'components', name
+            ns: 'components',
+            name,
           })}\n${t('characterCreation.step7.text.cyberFrame', {
-            ns: 'components', cyberFrame: chosenCyberFrame?.cyberFrame.title
+            ns: 'components',
+            cyberFrame: chosenCyberFrame?.cyberFrame.title,
           })}`,
           1000,
           `${t('characterCreation.step7.text.name', {
-            ns: 'components', name
+            ns: 'components',
+            name,
           })}\n${t('characterCreation.step7.text.cyberFrame', {
-            ns: 'components', cyberFrame: chosenCyberFrame?.cyberFrame.title
+            ns: 'components',
+            cyberFrame: chosenCyberFrame?.cyberFrame.title,
           })}\n${t('characterCreation.step7.text.cyberFrameR', { ns: 'components' })}`,
           300,
           `${t('characterCreation.step7.text.name', {
-            ns: 'components', name
+            ns: 'components',
+            name,
           })}\n${t('characterCreation.step7.text.cyberFrame', {
-            ns: 'components', cyberFrame: chosenCyberFrame?.cyberFrame.title
+            ns: 'components',
+            cyberFrame: chosenCyberFrame?.cyberFrame.title,
           })}\n${t('characterCreation.step7.text.cyberFrameR', { ns: 'components' })}\n${t('characterCreation.step7.text.psa', { ns: 'components' })}`,
           () => {
             setDisplayNext(true);
-          }
+          },
         ]}
         speed={70}
         omitDeletionAnimation={true}
         style={{ whiteSpace: 'pre-line' }}
       />
-      <LinkButton className="characterCreation-step7__next-btn" href={`/character/${id}`} size="large">
+      <LinkButton
+        className="characterCreation-step7__next-btn"
+        href={`/character/${id}`}
+        size="large"
+      >
         {t('characterCreation.step7.text.next', { ns: 'components' })}
       </LinkButton>
     </motion.div>

@@ -1,19 +1,11 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import {
-  useNavigate, useParams
-} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  useApi, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Ap, Atitle
-} from '../../../atoms';
+import { Ap, Atitle } from '../../../atoms';
 import { Button, LinkButton } from '../../../molecules';
 import { Alert } from '../../../organisms';
 import { ErrorPage } from '../../index';
@@ -25,9 +17,7 @@ import './joinCampaign.scss';
 const JoinCampaign: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
   const { id } = useParams();
   const { user } = useGlobalVars();
   const navigate = useNavigate();
@@ -52,7 +42,7 @@ const JoinCampaign: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('joinCampaign.successJoin', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           void navigate(`/campaign/${campaignId}`);
         })
@@ -64,18 +54,11 @@ const JoinCampaign: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    id,
-    getNewId,
-    createAlert,
-    t,
-    navigate
-  ]);
+  }, [api, id, getNewId, createAlert, t, navigate]);
 
   const messageDom = useMemo(() => {
     if (campaign === null || user === null) {
@@ -91,9 +74,7 @@ const JoinCampaign: FC = () => {
         </>
       );
     }
-    if (
-      campaign.players.find(player => player._id === user._id) !== undefined
-    ) {
+    if (campaign.players.find((player) => player._id === user._id) !== undefined) {
       return (
         <>
           <Ap>{t('joinCampaign.alreadyPlayer', { ns: 'pages' })}</Ap>
@@ -111,12 +92,7 @@ const JoinCampaign: FC = () => {
         <Button onClick={onJoinCampaign}>{t('joinCampaign.joinCTA', { ns: 'pages' })}</Button>
       </>
     );
-  }, [
-    campaign,
-    onJoinCampaign,
-    t,
-    user
-  ]);
+  }, [campaign, onJoinCampaign, t, user]);
 
   useEffect(() => {
     if (api !== undefined && !calledApi.current && id !== undefined) {
@@ -140,18 +116,12 @@ const JoinCampaign: FC = () => {
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{t('serverErrors.CYPU-301')}</Ap>
                 </Alert>
-              )
+              ),
             });
           }
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    t,
-    id
-  ]);
+  }, [api, createAlert, getNewId, t, id]);
 
   if (loading) {
     return null;

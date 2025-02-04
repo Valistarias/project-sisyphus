@@ -3,11 +3,11 @@ import db from '../../../models';
 const { BodyItem } = db;
 
 const replaceItemByBody = async (req: {
-  bodyId: string
+  bodyId: string;
   items: Array<{
-    id: string
-    qty: number
-  }>
+    id: string;
+    qty: number;
+  }>;
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { bodyId } = req;
@@ -27,23 +27,19 @@ const replaceItemByBody = async (req: {
   });
 
 const createItemsByBody = async (req: {
-  bodyId: string
+  bodyId: string;
   items: Array<{
-    id: string
-    qty: number
-  }>
+    id: string;
+    qty: number;
+  }>;
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    const {
-      bodyId, items
-    } = req;
+    const { bodyId, items } = req;
     BodyItem.create(
-      items.map(({
-        id, qty
-      }) => ({
+      items.map(({ id, qty }) => ({
         body: bodyId,
         item: id,
-        qty
+        qty,
       }))
     )
       .then(() => {
@@ -55,18 +51,16 @@ const createItemsByBody = async (req: {
   });
 
 const updateItemByBody = async (req: {
-  bodyId: string
-  itemId: string
-  qty?: number
-  bag?: string
+  bodyId: string;
+  itemId: string;
+  qty?: number;
+  bag?: string;
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    const {
-      bodyId, itemId, qty = null, bag = null
-    } = req;
+    const { bodyId, itemId, qty = null, bag = null } = req;
     const updateObj: {
-      bag?: string
-      qty?: number
+      bag?: string;
+      qty?: number;
     } = {};
     if (qty !== null) {
       updateObj.qty = qty;
@@ -77,7 +71,7 @@ const updateItemByBody = async (req: {
     BodyItem.findOneAndUpdate(
       {
         body: bodyId,
-        item: itemId
+        item: itemId,
       },
       updateObj
     )
@@ -100,6 +94,4 @@ const deleteItemsByBody = async (bodyId: string): Promise<boolean> =>
       });
   });
 
-export {
-  createItemsByBody, deleteItemsByBody, replaceItemByBody, updateItemByBody
-};
+export { createItemsByBody, deleteItemsByBody, replaceItemByBody, updateItemByBody };

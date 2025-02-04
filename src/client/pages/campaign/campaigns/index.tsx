@@ -1,16 +1,10 @@
-import React, {
-  useCallback, useMemo, type FC
-} from 'react';
+import React, { useCallback, useMemo, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import {
-  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Ali, Ap, Atitle, Aul
-} from '../../../atoms';
+import { Ali, Ap, Atitle, Aul } from '../../../atoms';
 import { Button, LinkButton } from '../../../molecules';
 import { Alert } from '../../../organisms';
 
@@ -24,17 +18,10 @@ import './campaigns.scss';
 const Campaigns: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
-  const {
-    user, campaigns, reloadCampaigns
-  } = useGlobalVars();
-  const {
-    setConfirmContent,
-    removeConfirmEventListener,
-    addConfirmEventListener
-  } = useConfirmMessage();
+  const { createAlert, getNewId } = useSystemAlerts();
+  const { user, campaigns, reloadCampaigns } = useGlobalVars();
+  const { setConfirmContent, removeConfirmEventListener, addConfirmEventListener } =
+    useConfirmMessage();
 
   const onDeleteCampaign = useCallback(
     (id: string, name: string) => {
@@ -45,15 +32,14 @@ const Campaigns: FC = () => {
         {
           title: t('campaigns.confirmDelete.title', { ns: 'pages' }),
           text: t('campaigns.confirmDelete.text', {
-            ns: 'pages', elt: name
+            ns: 'pages',
+            elt: name,
           }),
           confirmCta: t('campaigns.confirmDelete.confirmCta', { ns: 'pages' }),
-          theme: 'error'
+          theme: 'error',
         },
         (evtId: string) => {
-          const confirmDelete = (
-            { detail }: { detail: ConfirmMessageDetailData }
-          ): void => {
+          const confirmDelete = ({ detail }: { detail: ConfirmMessageDetailData }): void => {
             if (detail.proceed) {
               api.campaigns
                 .delete({ id })
@@ -65,7 +51,7 @@ const Campaigns: FC = () => {
                       <Alert key={newId} id={newId} timer={5}>
                         <Ap>{t('campaigns.successDelete', { ns: 'pages' })}</Ap>
                       </Alert>
-                    )
+                    ),
                   });
                   reloadCampaigns();
                 })
@@ -77,7 +63,7 @@ const Campaigns: FC = () => {
                       <Alert key={newId} id={newId} timer={5}>
                         <Ap>{t('serverErrors.CYPU-301')}</Ap>
                       </Alert>
-                    )
+                    ),
                   });
                 });
             }
@@ -95,7 +81,7 @@ const Campaigns: FC = () => {
       removeConfirmEventListener,
       getNewId,
       createAlert,
-      reloadCampaigns
+      reloadCampaigns,
     ]
   );
 
@@ -128,19 +114,17 @@ const Campaigns: FC = () => {
             <LinkButton href={`/campaign/${campaign._id}`}>
               {t('campaigns.openCampaign', { ns: 'pages' })}
             </LinkButton>
-            {isOwner
-              ? (
-                  <Button
-                    theme="text-only"
-                    color="error"
-                    onClick={() => {
-                      onDeleteCampaign(campaign._id, campaign.name);
-                    }}
-                  >
-                    {t('campaigns.deleteCampaign', { ns: 'pages' })}
-                  </Button>
-                )
-              : null}
+            {isOwner ? (
+              <Button
+                theme="text-only"
+                color="error"
+                onClick={() => {
+                  onDeleteCampaign(campaign._id, campaign.name);
+                }}
+              >
+                {t('campaigns.deleteCampaign', { ns: 'pages' })}
+              </Button>
+            ) : null}
           </div>
         </Ali>
       );
@@ -151,12 +135,7 @@ const Campaigns: FC = () => {
         {campaignList}
       </Aul>
     );
-  }, [
-    campaigns,
-    onDeleteCampaign,
-    t,
-    user?._id
-  ]);
+  }, [campaigns, onDeleteCampaign, t, user?._id]);
 
   return (
     <div className="campaigns">

@@ -1,28 +1,16 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  useApi, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input, SmartSelect
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input, SmartSelect } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 import { possibleStarterKitValues } from '../../../types/items';
 
 import type { ErrorResponseType, ICuratedBasicNPC } from '../../../types';
@@ -33,36 +21,32 @@ import { isThereDuplicate } from '../../../utils';
 import './adminNewProgram.scss';
 
 interface FormValues {
-  name: string
-  nameFr: string
-  programScope: string
-  starterKit: string
-  uses?: number
-  radius?: number
-  ram: number
-  cost: number
-  rarity: string
-  ai: string
-  aiSummoned?: number
+  name: string;
+  nameFr: string;
+  programScope: string;
+  starterKit: string;
+  uses?: number;
+  radius?: number;
+  ram: number;
+  cost: number;
+  rarity: string;
+  ai: string;
+  aiSummoned?: number;
   damages?: Record<
     string,
     {
-      damageType: string
-      dices: string
+      damageType: string;
+      dices: string;
     }
-  >
+  >;
 }
 
 const AdminNewProgram: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const navigate = useNavigate();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
-  const {
-    programScopes, rarities, itemTypes, damageTypes
-  } = useGlobalVars();
+  const { createAlert, getNewId } = useSystemAlerts();
+  const { programScopes, rarities, itemTypes, damageTypes } = useGlobalVars();
 
   const [, setLoading] = useState(true);
   const [nPCs, setNPCs] = useState<ICuratedBasicNPC[]>([]);
@@ -71,51 +55,62 @@ const AdminNewProgram: FC = () => {
   const idIncrement = useRef(0);
   const [damagesIds, setDamagesIds] = useState<number[]>([]);
 
-  const introEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const {
     handleSubmit,
     setError,
     control,
     formState: { errors },
-    unregister
+    unregister,
   } = useForm();
 
   // TODO: Internationalization
   const programScopeList = useMemo(
-    () => programScopes.map(({ programScope }) => ({
-      value: programScope._id,
-      label: programScope.title
-    })), [programScopes]);
+    () =>
+      programScopes.map(({ programScope }) => ({
+        value: programScope._id,
+        label: programScope.title,
+      })),
+    [programScopes]
+  );
 
-  const damageTypeList = useMemo(() => damageTypes.map(({ damageType }) => ({
-    value: damageType._id,
-    label: damageType.title
-  })), [damageTypes]);
+  const damageTypeList = useMemo(
+    () =>
+      damageTypes.map(({ damageType }) => ({
+        value: damageType._id,
+        label: damageType.title,
+      })),
+    [damageTypes]
+  );
 
-  const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
-    value: rarity._id,
-    label: rarity.title
-  })), [rarities]);
+  const rarityList = useMemo(
+    () =>
+      rarities.map(({ rarity }) => ({
+        value: rarity._id,
+        label: rarity.title,
+      })),
+    [rarities]
+  );
 
-  const aiList = useMemo(() => nPCs
-    .filter(({ nPC }) => nPC.virtual)
-    .map(({ nPC }) => ({
-      value: nPC._id,
-      label: nPC.title
-    })), [nPCs]);
+  const aiList = useMemo(
+    () =>
+      nPCs
+        .filter(({ nPC }) => nPC.virtual)
+        .map(({ nPC }) => ({
+          value: nPC._id,
+          label: nPC.title,
+        })),
+    [nPCs]
+  );
 
   const starterKitList = useMemo(
     () =>
-      possibleStarterKitValues.map(possibleStarterKitValue => ({
+      possibleStarterKitValues.map((possibleStarterKitValue) => ({
         value: possibleStarterKitValue,
-        label: t(`terms.starterKit.${possibleStarterKitValue}`)
+        label: t(`terms.starterKit.${possibleStarterKitValue}`),
       })),
     [t]
   );
@@ -145,16 +140,11 @@ const AdminNewProgram: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    t
-  ]);
+  }, [api, createAlert, getNewId, t]);
 
   const onSaveProgram: SubmitHandler<FormValues> = useCallback(
     ({
@@ -169,13 +159,9 @@ const AdminNewProgram: FC = () => {
       ai,
       aiSummoned,
       damages,
-      starterKit
+      starterKit,
     }) => {
-      if (
-        introEditor === null
-        || introFrEditor === null
-        || api === undefined
-      ) {
+      if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
 
@@ -183,24 +169,20 @@ const AdminNewProgram: FC = () => {
       const sortedDamages = damages !== undefined ? Object.values(damages) : [];
       let duplicateDamages = false;
       if (sortedDamages.length > 0) {
-        duplicateDamages = isThereDuplicate(
-          sortedDamages.map(damage => damage.damageType)
-        );
+        duplicateDamages = isThereDuplicate(sortedDamages.map((damage) => damage.damageType));
       }
       if (duplicateDamages) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminNewNode.errorDuplicateCharParam', { ns: 'pages' })
+          message: t('adminNewNode.errorDuplicateCharParam', { ns: 'pages' }),
         });
 
         return;
       }
 
-      const curatedDamages = sortedDamages.map(({
-        damageType, dices
-      }) => ({
+      const curatedDamages = sortedDamages.map(({ damageType, dices }) => ({
         damageType,
-        dices
+        dices,
       }));
 
       let html: string | null = introEditor.getHTML();
@@ -212,10 +194,12 @@ const AdminNewProgram: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          summary: htmlFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            summary: htmlFr,
+          },
+        };
       }
 
       api.programs
@@ -228,12 +212,12 @@ const AdminNewProgram: FC = () => {
           cost: Number(cost),
           ram: Number(ram),
           summary: html,
-          itemType: itemTypes.find(itemType => itemType.name === 'pro')?._id ?? undefined,
+          itemType: itemTypes.find((itemType) => itemType.name === 'pro')?._id ?? undefined,
           uses: uses !== undefined ? Number(uses) : undefined,
           radius: radius !== undefined ? Number(radius) : undefined,
           aiSummoned: aiSummoned !== undefined ? Number(aiSummoned) : undefined,
           i18n,
-          damages: curatedDamages
+          damages: curatedDamages,
         })
         .then((programType) => {
           const newId = getNewId();
@@ -243,7 +227,7 @@ const AdminNewProgram: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewProgram.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           void navigate(`/admin/program/${programType._id}`);
         })
@@ -251,21 +235,13 @@ const AdminNewProgram: FC = () => {
           const { data } = response;
           setError('root.serverError', {
             type: 'server',
-            message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
+            message: t(`serverErrors.${data.code}`, {
+              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
+            }),
           });
         });
     },
-    [
-      introEditor,
-      introFrEditor,
-      itemTypes,
-      api,
-      getNewId,
-      createAlert,
-      t,
-      navigate,
-      setError
-    ]
+    [introEditor, introFrEditor, itemTypes, api, getNewId, createAlert, t, navigate, setError]
   );
 
   useEffect(() => {
@@ -274,13 +250,7 @@ const AdminNewProgram: FC = () => {
       calledApi.current = true;
       getData();
     }
-  }, [
-    api,
-    createAlert,
-    getData,
-    getNewId,
-    t
-  ]);
+  }, [api, createAlert, getData, getNewId, t]);
 
   return (
     <div className="adminNewProgram">
@@ -292,11 +262,9 @@ const AdminNewProgram: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewProgram.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror>{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminNewProgram__basics">
           <Input
             control={control}
@@ -389,7 +357,7 @@ const AdminNewProgram: FC = () => {
         </Atitle>
         <div className="adminNewProgram__bonuses">
           <div className="adminNewProgram__bonuses__elts">
-            {damagesIds.map(damagesId => (
+            {damagesIds.map((damagesId) => (
               <div className="adminNewProgram__bonus" key={`damage-${damagesId}`}>
                 <Atitle className="adminNewProgram__bonus__title" level={4}>
                   {t('adminNewProgram.damageTitle', { ns: 'pages' })}
@@ -416,7 +384,7 @@ const AdminNewProgram: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setDamagesIds(prev =>
+                    setDamagesIds((prev) =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== damagesId) {
                           result.push(elt);

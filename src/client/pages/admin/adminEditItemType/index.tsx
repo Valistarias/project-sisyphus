@@ -1,26 +1,14 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  useNavigate, useParams
-} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input
-} from '../../../molecules';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input } from '../../../molecules';
 import { Alert } from '../../../organisms';
 
 import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
@@ -29,21 +17,16 @@ import type { ErrorResponseType, IItemType } from '../../../types';
 import './adminEditItemType.scss';
 
 interface FormValues {
-  name: string
+  name: string;
 }
 
 const AdminEditItemType: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
   const { reloadItemTypes } = useGlobalVars();
-  const {
-    setConfirmContent,
-    removeConfirmEventListener,
-    addConfirmEventListener
-  } = useConfirmMessage();
+  const { setConfirmContent, removeConfirmEventListener, addConfirmEventListener } =
+    useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -68,11 +51,13 @@ const AdminEditItemType: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset
-  } = useForm({ defaultValues: useMemo(
-    () => createDefaultData(itemTypeData),
-    [createDefaultData, itemTypeData]
-  ) });
+    reset,
+  } = useForm({
+    defaultValues: useMemo(
+      () => createDefaultData(itemTypeData),
+      [createDefaultData, itemTypeData]
+    ),
+  });
 
   const onSaveItemType: SubmitHandler<FormValues> = useCallback(
     ({ name }) => {
@@ -83,7 +68,7 @@ const AdminEditItemType: FC = () => {
       api.itemTypes
         .update({
           id,
-          name
+          name,
         })
         .then(() => {
           const newId = getNewId();
@@ -93,7 +78,7 @@ const AdminEditItemType: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditItemType.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           reloadItemTypes();
         })
@@ -102,25 +87,19 @@ const AdminEditItemType: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`,
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
     },
-    [
-      api,
-      id,
-      getNewId,
-      createAlert,
-      t,
-      reloadItemTypes,
-      setError
-    ]
+    [api, id, getNewId, createAlert, t, reloadItemTypes, setError]
   );
 
   const onAskDelete = useCallback(() => {
@@ -132,14 +111,12 @@ const AdminEditItemType: FC = () => {
         title: t('adminEditItemType.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditItemType.confirmDeletion.text', {
           ns: 'pages',
-          elt: itemTypeData?.name
+          elt: itemTypeData?.name,
         }),
-        confirmCta: t('adminEditItemType.confirmDeletion.confirmCta', { ns: 'pages' })
+        confirmCta: t('adminEditItemType.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
       (evtId: string) => {
-        const confirmDelete = (
-          { detail }: { detail: ConfirmMessageDetailData }
-        ): void => {
+        const confirmDelete = ({ detail }: { detail: ConfirmMessageDetailData }): void => {
           if (detail.proceed) {
             api.itemTypes
               .delete({ id })
@@ -151,7 +128,7 @@ const AdminEditItemType: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditItemType.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  )
+                  ),
                 });
                 reloadItemTypes();
                 void navigate('/admin/itemtypes');
@@ -161,12 +138,16 @@ const AdminEditItemType: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.itemType.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.itemType.name`), 'capitalize'),
+                    }),
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.itemType.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.itemType.name`), 'capitalize'),
+                    }),
                   });
                 }
               });
@@ -188,7 +169,7 @@ const AdminEditItemType: FC = () => {
     createAlert,
     reloadItemTypes,
     navigate,
-    setError
+    setError,
   ]);
 
   useEffect(() => {
@@ -207,17 +188,11 @@ const AdminEditItemType: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    id,
-    t
-  ]);
+  }, [api, createAlert, getNewId, id, t]);
 
   // The Autosave
   useEffect(() => {
@@ -239,11 +214,7 @@ const AdminEditItemType: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(itemTypeData));
-  }, [
-    itemTypeData,
-    reset,
-    createDefaultData
-  ]);
+  }, [itemTypeData, reset, createDefaultData]);
 
   return (
     <div className="adminEditItemType">
@@ -261,11 +232,9 @@ const AdminEditItemType: FC = () => {
           </Button>
         </div>
         <Atitle level={2}>{t('adminEditItemType.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror className="adminEditItemType__error">{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror className="adminEditItemType__error">{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminEditItemType__basics">
           <Input
             control={control}
@@ -275,8 +244,8 @@ const AdminEditItemType: FC = () => {
               required: t('nameItemType.required', { ns: 'fields' }),
               pattern: {
                 value: /^([a-z]){2,3}$/,
-                message: t('nameItemType.format', { ns: 'fields' })
-              }
+                message: t('nameItemType.format', { ns: 'fields' }),
+              },
             }}
             label={t('nameItemType.label', { ns: 'fields' })}
             className="adminEditItemType__basics__name"

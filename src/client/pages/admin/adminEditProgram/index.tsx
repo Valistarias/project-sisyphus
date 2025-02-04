@@ -1,81 +1,55 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  useNavigate, useParams
-} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input, LinkButton, SmartSelect
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input, LinkButton, SmartSelect } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 import { possibleStarterKitValues } from '../../../types/items';
 
 import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
-import type {
-  ErrorResponseType,
-  ICuratedBasicNPC, ICuratedProgram
-} from '../../../types';
+import type { ErrorResponseType, ICuratedBasicNPC, ICuratedProgram } from '../../../types';
 import type { InternationalizationType } from '../../../types/global';
 
-import {
-  classTrim, isThereDuplicate
-} from '../../../utils';
+import { classTrim, isThereDuplicate } from '../../../utils';
 
 import './adminEditProgram.scss';
 
 interface FormValues {
-  name: string
-  nameFr: string
-  programScope: string
-  uses?: number
-  radius?: number
-  ram: number
-  cost: number
-  rarity: string
-  starterKit: string
-  ai: string
-  aiSummoned?: number
+  name: string;
+  nameFr: string;
+  programScope: string;
+  uses?: number;
+  radius?: number;
+  ram: number;
+  cost: number;
+  rarity: string;
+  starterKit: string;
+  ai: string;
+  aiSummoned?: number;
   damages?: Record<
     string,
     {
-      damageType: string
-      dices: string
+      damageType: string;
+      dices: string;
     }
-  >
+  >;
 }
 
 const AdminEditProgram: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { id } = useParams();
-  const {
-    setConfirmContent,
-    removeConfirmEventListener,
-    addConfirmEventListener
-  } = useConfirmMessage();
-  const {
-    programScopes, rarities, damageTypes
-  } = useGlobalVars();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { setConfirmContent, removeConfirmEventListener, addConfirmEventListener } =
+    useConfirmMessage();
+  const { programScopes, rarities, damageTypes } = useGlobalVars();
+  const { createAlert, getNewId } = useSystemAlerts();
   const navigate = useNavigate();
 
   const [displayInt, setDisplayInt] = useState(false);
@@ -91,55 +65,48 @@ const AdminEditProgram: FC = () => {
   const [programText, setProgramText] = useState('');
   const [programTextFr, setProgramTextFr] = useState('');
 
-  const introEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const createDefaultData = useCallback(
-    (programData: ICuratedProgram | null) => {
-      if (programData == null) {
-        return {};
+  const createDefaultData = useCallback((programData: ICuratedProgram | null) => {
+    if (programData == null) {
+      return {};
+    }
+    const { program, i18n } = programData;
+    const defaultData: Partial<FormValues> = {};
+    defaultData.name = program.title;
+    defaultData.programScope = program.programScope;
+    defaultData.uses = program.uses;
+    defaultData.radius = program.radius;
+    defaultData.ram = program.ram;
+    defaultData.cost = program.cost;
+    defaultData.rarity = program.rarity;
+    defaultData.ai = program.ai?.nPC._id;
+    defaultData.aiSummoned = program.aiSummoned;
+    defaultData.starterKit = program.starterKit ?? 'never';
+    if (i18n.fr !== undefined) {
+      defaultData.nameFr = i18n.fr.title ?? '';
+    }
+
+    // Init Bonus Skill
+    const damageIds: number[] = [];
+    program.damages?.forEach((damage) => {
+      if (defaultData.damages === undefined) {
+        defaultData.damages = {};
       }
-      const {
-        program, i18n
-      } = programData;
-      const defaultData: Partial<FormValues> = {};
-      defaultData.name = program.title;
-      defaultData.programScope = program.programScope;
-      defaultData.uses = program.uses;
-      defaultData.radius = program.radius;
-      defaultData.ram = program.ram;
-      defaultData.cost = program.cost;
-      defaultData.rarity = program.rarity;
-      defaultData.ai = program.ai?.nPC._id;
-      defaultData.aiSummoned = program.aiSummoned;
-      defaultData.starterKit = program.starterKit ?? 'never';
-      if (i18n.fr !== undefined) {
-        defaultData.nameFr = i18n.fr.title ?? '';
-      }
+      defaultData.damages[`damage-${idIncrement.current}`] = {
+        damageType: damage.damageType,
+        dices: damage.dices,
+      };
 
-      // Init Bonus Skill
-      const damageIds: number[] = [];
-      program.damages?.forEach((damage) => {
-        if (defaultData.damages === undefined) {
-          defaultData.damages = {};
-        }
-        defaultData.damages[`damage-${idIncrement.current}`] = {
-          damageType: damage.damageType,
-          dices: damage.dices
-        };
+      damageIds.push(idIncrement.current);
+      idIncrement.current += 1;
+    });
+    setDamagesIds(damageIds);
 
-        damageIds.push(idIncrement.current);
-        idIncrement.current += 1;
-      });
-      setDamagesIds(damageIds);
-
-      return defaultData;
-    }, []);
+    return defaultData;
+  }, []);
 
   const {
     handleSubmit,
@@ -147,40 +114,55 @@ const AdminEditProgram: FC = () => {
     unregister,
     control,
     formState: { errors },
-    reset
-  } = useForm({ defaultValues: useMemo(
-    () => createDefaultData(programData), [createDefaultData, programData]
-  ) });
+    reset,
+  } = useForm({
+    defaultValues: useMemo(() => createDefaultData(programData), [createDefaultData, programData]),
+  });
 
   // TODO: Internationalization
   const programScopeList = useMemo(
-    () => programScopes.map(({ programScope }) => ({
-      value: programScope._id,
-      label: programScope.title
-    })), [programScopes]);
+    () =>
+      programScopes.map(({ programScope }) => ({
+        value: programScope._id,
+        label: programScope.title,
+      })),
+    [programScopes]
+  );
 
-  const damageTypeList = useMemo(() => damageTypes.map(({ damageType }) => ({
-    value: damageType._id,
-    label: damageType.title
-  })), [damageTypes]);
+  const damageTypeList = useMemo(
+    () =>
+      damageTypes.map(({ damageType }) => ({
+        value: damageType._id,
+        label: damageType.title,
+      })),
+    [damageTypes]
+  );
 
-  const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
-    value: rarity._id,
-    label: rarity.title
-  })), [rarities]);
+  const rarityList = useMemo(
+    () =>
+      rarities.map(({ rarity }) => ({
+        value: rarity._id,
+        label: rarity.title,
+      })),
+    [rarities]
+  );
 
-  const aiList = useMemo(() => nPCs
-    .filter(({ nPC }) => nPC.virtual)
-    .map(({ nPC }) => ({
-      value: nPC._id,
-      label: nPC.title
-    })), [nPCs]);
+  const aiList = useMemo(
+    () =>
+      nPCs
+        .filter(({ nPC }) => nPC.virtual)
+        .map(({ nPC }) => ({
+          value: nPC._id,
+          label: nPC.title,
+        })),
+    [nPCs]
+  );
 
   const starterKitList = useMemo(
     () =>
-      possibleStarterKitValues.map(possibleStarterKitValue => ({
+      possibleStarterKitValues.map((possibleStarterKitValue) => ({
         value: possibleStarterKitValue,
-        label: t(`terms.starterKit.${possibleStarterKitValue}`)
+        label: t(`terms.starterKit.${possibleStarterKitValue}`),
       })),
     [t]
   );
@@ -208,13 +190,9 @@ const AdminEditProgram: FC = () => {
       ai,
       aiSummoned,
       damages,
-      starterKit
+      starterKit,
     }) => {
-      if (
-        introEditor === null
-        || introFrEditor === null
-        || api === undefined
-      ) {
+      if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
 
@@ -222,24 +200,20 @@ const AdminEditProgram: FC = () => {
       const sortedDamages = damages !== undefined ? Object.values(damages) : [];
       let duplicateDamages = false;
       if (sortedDamages.length > 0) {
-        duplicateDamages = isThereDuplicate(
-          sortedDamages.map(damage => damage.damageType)
-        );
+        duplicateDamages = isThereDuplicate(sortedDamages.map((damage) => damage.damageType));
       }
       if (duplicateDamages) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminNewNode.errorDuplicateCharParam', { ns: 'pages' })
+          message: t('adminNewNode.errorDuplicateCharParam', { ns: 'pages' }),
         });
 
         return;
       }
 
-      const curatedDamages = sortedDamages.map(({
-        damageType, dices
-      }) => ({
+      const curatedDamages = sortedDamages.map(({ damageType, dices }) => ({
         damageType,
-        dices
+        dices,
       }));
 
       let html: string | null = introEditor.getHTML();
@@ -251,10 +225,12 @@ const AdminEditProgram: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          summary: htmlFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            summary: htmlFr,
+          },
+        };
       }
 
       api.programs
@@ -273,7 +249,7 @@ const AdminEditProgram: FC = () => {
           radius: radius !== undefined ? Number(radius) : undefined,
           aiSummoned: aiSummoned !== undefined ? Number(aiSummoned) : undefined,
           i18n,
-          damages: curatedDamages
+          damages: curatedDamages,
         })
         .then(() => {
           const newId = getNewId();
@@ -283,14 +259,16 @@ const AdminEditProgram: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditProgram.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
         })
         .catch(({ response }: ErrorResponseType) => {
           const { data } = response;
           setError('root.serverError', {
             type: 'server',
-            message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
+            message: t(`serverErrors.${data.code}`, {
+              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
+            }),
           });
         });
     },
@@ -303,7 +281,7 @@ const AdminEditProgram: FC = () => {
       setError,
       t,
       getNewId,
-      createAlert
+      createAlert,
     ]
   );
 
@@ -316,14 +294,12 @@ const AdminEditProgram: FC = () => {
         title: t('adminEditProgram.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditProgram.confirmDeletion.text', {
           ns: 'pages',
-          elt: programData.program.title
+          elt: programData.program.title,
         }),
-        confirmCta: t('adminEditProgram.confirmDeletion.confirmCta', { ns: 'pages' })
+        confirmCta: t('adminEditProgram.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
       (evtId: string) => {
-        const confirmDelete = (
-          { detail }: { detail: ConfirmMessageDetailData }
-        ): void => {
+        const confirmDelete = ({ detail }: { detail: ConfirmMessageDetailData }): void => {
           if (detail.proceed) {
             api.programs
               .delete({ id })
@@ -335,7 +311,7 @@ const AdminEditProgram: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditProgram.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  )
+                  ),
                 });
                 void navigate(`/admin/programs`);
               })
@@ -344,12 +320,16 @@ const AdminEditProgram: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skillBranch.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize'),
+                    }),
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skillBranch.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.skillBranch.name`), 'capitalize'),
+                    }),
                   });
                 }
               });
@@ -370,7 +350,7 @@ const AdminEditProgram: FC = () => {
     getNewId,
     createAlert,
     navigate,
-    setError
+    setError,
   ]);
 
   useEffect(() => {
@@ -379,9 +359,7 @@ const AdminEditProgram: FC = () => {
       api.programs
         .get({ programId: id })
         .then((curatedProgram) => {
-          const {
-            program, i18n
-          } = curatedProgram;
+          const { program, i18n } = curatedProgram;
           setProgramData(curatedProgram);
           setProgramText(program.summary);
           if (i18n.fr !== undefined) {
@@ -396,7 +374,7 @@ const AdminEditProgram: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
       api.nPCs
@@ -412,26 +390,16 @@ const AdminEditProgram: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    id,
-    t
-  ]);
+  }, [api, createAlert, getNewId, id, t]);
 
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(programData));
-  }, [
-    programData,
-    reset,
-    createDefaultData
-  ]);
+  }, [programData, reset, createDefaultData]);
 
   return (
     <div
@@ -458,11 +426,9 @@ const AdminEditProgram: FC = () => {
         <LinkButton className="adminEditProgram__return-btn" href="/admin/programs" size="small">
           {t('adminEditProgram.return', { ns: 'pages' })}
         </LinkButton>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror>{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminEditProgram__basics">
           <Input
             control={control}
@@ -555,7 +521,7 @@ const AdminEditProgram: FC = () => {
         </Atitle>
         <div className="adminEditProgram__bonuses">
           <div className="adminEditProgram__bonuses__elts">
-            {damagesIds.map(damagesId => (
+            {damagesIds.map((damagesId) => (
               <div className="adminEditProgram__bonus" key={`damage-${damagesId}`}>
                 <Atitle className="adminEditProgram__bonus__title" level={4}>
                   {t('adminEditProgram.damageTitle', { ns: 'pages' })}
@@ -582,7 +548,7 @@ const AdminEditProgram: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setDamagesIds(prev =>
+                    setDamagesIds((prev) =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== damagesId) {
                           result.push(elt);
@@ -617,7 +583,7 @@ const AdminEditProgram: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt(prev => !prev);
+              setDisplayInt((prev) => !prev);
             }}
             className="adminEditProgram__intl-title__btn"
           />

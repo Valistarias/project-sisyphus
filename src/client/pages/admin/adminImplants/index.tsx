@@ -1,16 +1,10 @@
-import React, {
-  useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import {
-  useApi, useSystemAlerts
-} from '../../../providers';
+import { useApi, useSystemAlerts } from '../../../providers';
 
-import {
-  Ali, Ap, Atitle, Aul
-} from '../../../atoms';
+import { Ali, Ap, Atitle, Aul } from '../../../atoms';
 import { LinkButton } from '../../../molecules';
 import { Alert } from '../../../organisms';
 
@@ -23,9 +17,7 @@ import './adminImplants.scss';
 const AdminImplants: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
 
   const calledApi = useRef(false);
 
@@ -72,16 +64,11 @@ const AdminImplants: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    t
-  ]);
+  }, [api, createAlert, getNewId, t]);
 
   return (
     <div className="adminImplants">
@@ -90,7 +77,9 @@ const AdminImplants: FC = () => {
         <div className="adminImplants__implants">
           <Atitle level={2}>{t('adminImplants.list', { ns: 'pages' })}</Atitle>
           <div className="adminImplants__implants__list">{implantsList}</div>
-          <LinkButton href="/admin/implant/new">{t('adminNewImplant.title', { ns: 'pages' })}</LinkButton>
+          <LinkButton href="/admin/implant/new">
+            {t('adminNewImplant.title', { ns: 'pages' })}
+          </LinkButton>
         </div>
       </div>
     </div>

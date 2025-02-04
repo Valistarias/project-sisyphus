@@ -183,5 +183,5 @@ export {
   AdminWeaponScopesPage,
   AdminWeaponsPage,
   AdminWeaponStylesPage,
-  AdminWeaponTypesPage
+  AdminWeaponTypesPage,
 };

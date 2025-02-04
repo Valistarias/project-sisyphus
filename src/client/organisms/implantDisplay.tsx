@@ -1,25 +1,19 @@
-import React, {
-  useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useMemo, useRef, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../providers';
 
-import {
-  Ali, Ap, Atitle, Aul
-} from '../atoms';
+import { Ali, Ap, Atitle, Aul } from '../atoms';
 import { PropDisplay } from '../molecules';
-import {
-  Quark, type IQuarkProps
-} from '../quark';
+import { Quark, type IQuarkProps } from '../quark';
 
 import type {
   ICharParamBonus,
   ICuratedCharParam,
   ICuratedImplant,
   ICuratedItemModifier,
-  ICuratedRarity
+  ICuratedRarity,
 } from '../types';
 import type { IImplant } from '../types/items';
 
@@ -29,32 +23,28 @@ import './implantDisplay.scss';
 
 interface IImplantDisplay {
   /** The implant to be displayed */
-  implant: ICuratedImplant
+  implant: ICuratedImplant;
   /** The display mode */
-  mode?: 'basic' | 'hover'
+  mode?: 'basic' | 'hover';
 }
 
 interface ICompleteCharParamBonus extends Omit<ICharParamBonus, 'charParam'> {
-  charParam: ICuratedCharParam | undefined
+  charParam: ICuratedCharParam | undefined;
 }
 
 interface ICompleteImplant extends Omit<IImplant, 'itemModifiers' | 'rarity' | 'charParamBonuses'> {
-  itemModifiers: ICuratedItemModifier[] | undefined
-  rarity: ICuratedRarity | undefined
-  charParamBonuses: ICompleteCharParamBonus[]
+  itemModifiers: ICuratedItemModifier[] | undefined;
+  rarity: ICuratedRarity | undefined;
+  charParamBonuses: ICompleteCharParamBonus[];
 }
 
 interface ICuratedCompleteImplant extends Omit<ICuratedImplant, 'implant'> {
-  implant: ICompleteImplant
+  implant: ICompleteImplant;
 }
 
-const ImplantDisplay: FC<IQuarkProps<IImplantDisplay>> = ({
-  implant, mode = 'basic'
-}) => {
+const ImplantDisplay: FC<IQuarkProps<IImplantDisplay>> = ({ implant, mode = 'basic' }) => {
   const { t } = useTranslation();
-  const {
-    bodyParts: sentBodyparts, itemModifiers, rarities, charParams
-  } = useGlobalVars();
+  const { bodyParts: sentBodyparts, itemModifiers, rarities, charParams } = useGlobalVars();
 
   const [placement, setPlacement] = useState<string>('left');
   const domBlockContent = useRef<HTMLDivElement>(null);
@@ -63,46 +53,34 @@ const ImplantDisplay: FC<IQuarkProps<IImplantDisplay>> = ({
     if (sentBodyparts.length === 0) {
       return null;
     }
-    const {
-      implant: implantObj, i18n
-    } = implant;
+    const { implant: implantObj, i18n } = implant;
 
     return {
       implant: {
         ...implantObj,
         bodyParts: implantObj.bodyParts.map(
-          bodyPartId =>
-            sentBodyparts.find(
-              ({ bodyPart }) =>
-                bodyPart._id === bodyPartId)?.bodyPart.title
-                ?? sentBodyparts[0].bodyPart.title
+          (bodyPartId) =>
+            sentBodyparts.find(({ bodyPart }) => bodyPart._id === bodyPartId)?.bodyPart.title ??
+            sentBodyparts[0].bodyPart.title
         ),
-        rarity: rarities.find(
-          rarity => rarity.rarity._id === implantObj.rarity
-        ),
+        rarity: rarities.find((rarity) => rarity.rarity._id === implantObj.rarity),
         itemModifiers: implantObj.itemModifiers?.map(
-          itemModifierId =>
+          (itemModifierId) =>
             itemModifiers.find(
-              itemModifier => itemModifier.itemModifier._id === itemModifierId
+              (itemModifier) => itemModifier.itemModifier._id === itemModifierId
             ) ?? itemModifiers[0]
         ),
         charParamBonuses:
-          implantObj.charParamBonuses?.map(charParamBonus => ({
+          implantObj.charParamBonuses?.map((charParamBonus) => ({
             ...charParamBonus,
             charParam: charParams.find(
               ({ charParam }) => charParam._id === charParamBonus.charParam
-            )
-          })) ?? []
+            ),
+          })) ?? [],
       },
-      i18n
+      i18n,
     };
-  }, [
-    sentBodyparts,
-    implant,
-    rarities,
-    itemModifiers,
-    charParams
-  ]);
+  }, [sentBodyparts, implant, rarities, itemModifiers, charParams]);
 
   const handleMouseEnter = (): void => {
     if (mode === 'hover') {
@@ -143,22 +121,20 @@ const ImplantDisplay: FC<IQuarkProps<IImplantDisplay>> = ({
         type={t('itemTypeNames.imp')}
         itemModifiers={implant.itemModifiers}
         mainNode={
-          implant.charParamBonuses.length > 0
-            ? (
-                <div className="implant-display__block__main">
-                  <Atitle className="weapon-display__block__main__title" level={4}>
-                    {t('display.cat.bonuses', { ns: 'components' })}
-                  </Atitle>
-                  <Aul noPoints className="weapon-display__block__bonuses">
-                    {implant.charParamBonuses.map(charParamBonus => (
-                      <Ali key={charParamBonus._id} className="weapon-display__block__bonuses__elt">
-                        {`+${charParamBonus.value} ${charParamBonus.charParam?.charParam.title}`}
-                      </Ali>
-                    ))}
-                  </Aul>
-                </div>
-              )
-            : undefined
+          implant.charParamBonuses.length > 0 ? (
+            <div className="implant-display__block__main">
+              <Atitle className="weapon-display__block__main__title" level={4}>
+                {t('display.cat.bonuses', { ns: 'components' })}
+              </Atitle>
+              <Aul noPoints className="weapon-display__block__bonuses">
+                {implant.charParamBonuses.map((charParamBonus) => (
+                  <Ali key={charParamBonus._id} className="weapon-display__block__bonuses__elt">
+                    {`+${charParamBonus.value} ${charParamBonus.charParam?.charParam.title}`}
+                  </Ali>
+                ))}
+              </Aul>
+            </div>
+          ) : undefined
         }
         effects={implant.effects}
       />

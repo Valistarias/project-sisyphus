@@ -1,14 +1,10 @@
-import React, {
-  useMemo, type FC
-} from 'react';
+import React, { useMemo, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../../providers';
 
-import {
-  Ali, Atitle, Aul
-} from '../../../atoms';
+import { Ali, Atitle, Aul } from '../../../atoms';
 import { LinkButton } from '../../../molecules';
 
 import { classTrim } from '../../../utils';
@@ -27,7 +23,7 @@ const AdminGlobalValues: FC = () => {
 
     return (
       <Aul className="adminGlobalValues__global-value-list" noPoints>
-        {globalValues.map(globalValue => (
+        {globalValues.map((globalValue) => (
           <Ali
             className={classTrim(`
               adminGlobalValues__global-value-list__elt

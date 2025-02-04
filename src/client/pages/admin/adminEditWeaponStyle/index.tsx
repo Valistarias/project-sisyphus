@@ -1,30 +1,22 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  useNavigate, useParams
-} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
 
+import { Aerror, Ap, Atitle } from '../../../atoms';
 import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input, LinkButton, SmartSelect, type ISingleValueSelect
+  Button,
+  Input,
+  LinkButton,
+  SmartSelect,
+  type ISingleValueSelect,
 } from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type { ErrorResponseType, ICuratedWeaponStyle } from '../../../types';
@@ -35,25 +27,18 @@ import { classTrim } from '../../../utils';
 import './adminEditWeaponStyle.scss';
 
 interface FormValues {
-  name: string
-  nameFr: string
-  skill: string
+  name: string;
+  nameFr: string;
+  skill: string;
 }
 
 const AdminEditWeaponStyle: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
-  const {
-    skills, reloadWeaponStyles
-  } = useGlobalVars();
-  const {
-    setConfirmContent,
-    removeConfirmEventListener,
-    addConfirmEventListener
-  } = useConfirmMessage();
+  const { createAlert, getNewId } = useSystemAlerts();
+  const { skills, reloadWeaponStyles } = useGlobalVars();
+  const { setConfirmContent, removeConfirmEventListener, addConfirmEventListener } =
+    useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -63,46 +48,34 @@ const AdminEditWeaponStyle: FC = () => {
 
   const [displayInt, setDisplayInt] = useState(false);
 
-  const [weaponStyleData, setWeaponStyleData]
-  = useState<ICuratedWeaponStyle | null>(null);
+  const [weaponStyleData, setWeaponStyleData] = useState<ICuratedWeaponStyle | null>(null);
 
   const [weaponStyleText, setWeaponStyleText] = useState('');
   const [weaponStyleTextFr, setWeaponStyleTextFr] = useState('');
 
-  const textEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const textFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const skillSelect = useMemo<ISingleValueSelect[]>(
     () =>
       skills.map(({ skill }) => ({
         value: skill._id,
         // TODO : Handle Internationalization
-        label: skill.title
+        label: skill.title,
       })),
     [skills]
   );
 
   const createDefaultData = useCallback(
-    (
-      weaponStyleData: ICuratedWeaponStyle | null,
-      skills: ISingleValueSelect[]
-    ) => {
+    (weaponStyleData: ICuratedWeaponStyle | null, skills: ISingleValueSelect[]) => {
       if (weaponStyleData == null) {
         return {};
       }
-      const {
-        weaponStyle, i18n
-      } = weaponStyleData;
+      const { weaponStyle, i18n } = weaponStyleData;
       const defaultData: Partial<FormValues> = {};
       defaultData.name = weaponStyle.title;
-      const selectedfield = skills.find(
-        skillType => skillType.value === weaponStyle.skill._id
-      );
+      const selectedfield = skills.find((skillType) => skillType.value === weaponStyle.skill._id);
       if (selectedfield !== undefined) {
         defaultData.skill = String(selectedfield.value);
       }
@@ -120,25 +93,17 @@ const AdminEditWeaponStyle: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset
-  } = useForm({ defaultValues: useMemo(
-    () => createDefaultData(weaponStyleData, skillSelect),
-    [
-      createDefaultData,
-      skillSelect,
-      weaponStyleData
-    ]
-  ) });
+    reset,
+  } = useForm({
+    defaultValues: useMemo(
+      () => createDefaultData(weaponStyleData, skillSelect),
+      [createDefaultData, skillSelect, weaponStyleData]
+    ),
+  });
 
   const onSaveWeaponStyle: SubmitHandler<FormValues> = useCallback(
-    ({
-      name, nameFr, skill
-    }) => {
-      if (
-        textEditor === null
-        || textFrEditor === null
-        || api === undefined
-      ) {
+    ({ name, nameFr, skill }) => {
+      if (textEditor === null || textFrEditor === null || api === undefined) {
         return;
       }
       let htmlText: string | null = textEditor.getHTML();
@@ -152,10 +117,12 @@ const AdminEditWeaponStyle: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          text: htmlTextFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            text: htmlTextFr,
+          },
+        };
       }
 
       api.weaponStyles
@@ -164,7 +131,7 @@ const AdminEditWeaponStyle: FC = () => {
           title: name,
           skill,
           summary: htmlText,
-          i18n
+          i18n,
         })
         .then(() => {
           const newId = getNewId();
@@ -174,7 +141,7 @@ const AdminEditWeaponStyle: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditWeaponStyle.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           reloadWeaponStyles();
         })
@@ -183,27 +150,19 @@ const AdminEditWeaponStyle: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`,
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
     },
-    [
-      textEditor,
-      textFrEditor,
-      api,
-      id,
-      getNewId,
-      createAlert,
-      t,
-      reloadWeaponStyles,
-      setError
-    ]
+    [textEditor, textFrEditor, api, id, getNewId, createAlert, t, reloadWeaponStyles, setError]
   );
 
   const onAskDelete = useCallback(() => {
@@ -215,14 +174,12 @@ const AdminEditWeaponStyle: FC = () => {
         title: t('adminEditWeaponStyle.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditWeaponStyle.confirmDeletion.text', {
           ns: 'pages',
-          elt: weaponStyleData?.weaponStyle.title
+          elt: weaponStyleData?.weaponStyle.title,
         }),
-        confirmCta: t('adminEditWeaponStyle.confirmDeletion.confirmCta', { ns: 'pages' })
+        confirmCta: t('adminEditWeaponStyle.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
       (evtId: string) => {
-        const confirmDelete = (
-          { detail }: { detail: ConfirmMessageDetailData }
-        ): void => {
+        const confirmDelete = ({ detail }: { detail: ConfirmMessageDetailData }): void => {
           if (detail.proceed) {
             api.weaponStyles
               .delete({ id })
@@ -234,7 +191,7 @@ const AdminEditWeaponStyle: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditWeaponStyle.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  )
+                  ),
                 });
                 reloadWeaponStyles();
                 void navigate('/admin/weaponstyles');
@@ -244,12 +201,16 @@ const AdminEditWeaponStyle: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.weaponStyle.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.weaponStyle.name`), 'capitalize'),
+                    }),
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.weaponStyle.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.weaponStyle.name`), 'capitalize'),
+                    }),
                   });
                 }
               });
@@ -271,7 +232,7 @@ const AdminEditWeaponStyle: FC = () => {
     createAlert,
     reloadWeaponStyles,
     navigate,
-    setError
+    setError,
   ]);
 
   useEffect(() => {
@@ -280,9 +241,7 @@ const AdminEditWeaponStyle: FC = () => {
       api.weaponStyles
         .get({ weaponStyleId: id })
         .then((curatedWeaponStyle) => {
-          const {
-            weaponStyle, i18n
-          } = curatedWeaponStyle;
+          const { weaponStyle, i18n } = curatedWeaponStyle;
           setWeaponStyleData(curatedWeaponStyle);
           setWeaponStyleText(weaponStyle.summary);
           if (i18n.fr !== undefined) {
@@ -297,17 +256,11 @@ const AdminEditWeaponStyle: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    id,
-    t
-  ]);
+  }, [api, createAlert, getNewId, id, t]);
 
   // The Autosave
   useEffect(() => {
@@ -329,12 +282,7 @@ const AdminEditWeaponStyle: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(weaponStyleData, skillSelect));
-  }, [
-    weaponStyleData,
-    reset,
-    createDefaultData,
-    skillSelect
-  ]);
+  }, [weaponStyleData, reset, createDefaultData, skillSelect]);
 
   return (
     <div
@@ -364,11 +312,9 @@ const AdminEditWeaponStyle: FC = () => {
           {t('adminEditWeaponStyle.return', { ns: 'pages' })}
         </LinkButton>
         <Atitle level={2}>{t('adminEditWeaponStyle.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror className="adminEditWeaponStyle__error">{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror className="adminEditWeaponStyle__error">{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminEditWeaponStyle__basics">
           <Input
             control={control}
@@ -408,7 +354,7 @@ const AdminEditWeaponStyle: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt(prev => !prev);
+              setDisplayInt((prev) => !prev);
             }}
             className="adminEditWeaponStyle__intl-title__btn"
           />

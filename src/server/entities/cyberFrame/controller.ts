@@ -1,26 +1,23 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 
 import db from '../../models';
-import {
-  gemInvalidField, gemNotFound, gemServerError
-} from '../../utils/globalErrorMessage';
+import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import {
   createGeneralForCyberFrameId,
-  deleteCyberFrameBranchesByCyberFrameId
+  deleteCyberFrameBranchesByCyberFrameId,
 } from '../cyberFrameBranch/controller';
 import { type CuratedINodeToSend, curateSingleNode } from '../node/controller';
 
 import type { InternationalizationType, Lean } from '../../utils/types';
 import type {
-  HydratedINode, HydratedIRuleBook, ICyberFrameBranch, IRuleBook,
+  HydratedINode,
+  HydratedIRuleBook,
+  ICyberFrameBranch,
+  IRuleBook,
   LeanICyberFrameBranch,
-  LeanINode
+  LeanINode,
 } from '../index';
-import type {
-  HydratedICyberFrame, LeanICyberFrame
-} from './model';
+import type { HydratedICyberFrame, LeanICyberFrame } from './model';
 
 import { curateI18n } from '../../utils';
 
@@ -31,9 +28,13 @@ const findCyberFrames = async (): Promise<LeanICyberFrame[]> =>
     CyberFrame.find()
       .lean()
       .populate<{ ruleBook: IRuleBook }>('ruleBook')
-      .populate<{ branches: Array<Lean<ICyberFrameBranch<string>> & {
-        nodes: LeanINode[]
-      }> }>({
+      .populate<{
+        branches: Array<
+          Lean<ICyberFrameBranch<string>> & {
+            nodes: LeanINode[];
+          }
+        >;
+      }>({
         path: 'branches',
         select: '_id title skill summary i18n',
         populate: {
@@ -46,9 +47,9 @@ const findCyberFrames = async (): Promise<LeanICyberFrame[]> =>
             'skillBonuses',
             'skillBonuses',
             'statBonuses',
-            'charParamBonuses'
-          ]
-        }
+            'charParamBonuses',
+          ],
+        },
       })
       .then((res: LeanICyberFrame[]) => {
         if (res.length === 0) {
@@ -67,24 +68,28 @@ const findCyberFrameById = async (id: string): Promise<LeanICyberFrame> =>
     CyberFrame.findById(id)
       .lean()
       .populate<{ ruleBook: IRuleBook }>('ruleBook')
-      .populate<{ branches: Array<Lean<ICyberFrameBranch<string>> & {
-        nodes: LeanINode[]
-      }> }>({
+      .populate<{
+        branches: Array<
+          Lean<ICyberFrameBranch<string>> & {
+            nodes: LeanINode[];
+          }
+        >;
+      }>({
         path: 'branches',
         select: '_id title skill summary i18n',
         populate: {
           path: 'nodes',
           select:
-          '_id title summary icon i18n rank quote skillBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses',
+            '_id title summary icon i18n rank quote skillBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses',
           populate: [
             'effects',
             'actions',
             'skillBonuses',
             'skillBonuses',
             'statBonuses',
-            'charParamBonuses'
-          ]
-        }
+            'charParamBonuses',
+          ],
+        },
       })
       .then((res?: LeanICyberFrame | null) => {
         if (res === undefined || res === null) {
@@ -98,30 +103,32 @@ const findCyberFrameById = async (id: string): Promise<LeanICyberFrame> =>
       });
   });
 
-const findCompleteCyberFrameById = async (
-  id: string
-): Promise<HydratedICyberFrame> =>
+const findCompleteCyberFrameById = async (id: string): Promise<HydratedICyberFrame> =>
   await new Promise((resolve, reject) => {
     CyberFrame.findById(id)
       .populate<{ ruleBook: HydratedIRuleBook }>('ruleBook')
-      .populate<{ branches: Array<ICyberFrameBranch<string> & {
-        nodes: HydratedINode[]
-      }> }>({
+      .populate<{
+        branches: Array<
+          ICyberFrameBranch<string> & {
+            nodes: HydratedINode[];
+          }
+        >;
+      }>({
         path: 'branches',
         select: '_id title cyberFrame summary i18n',
         populate: {
           path: 'nodes',
           select:
-              '_id title summary icon i18n rank quote cyberFrameBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses',
+            '_id title summary icon i18n rank quote cyberFrameBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses',
           populate: [
             'effects',
             'actions',
             'skillBonuses',
             'skillBonuses',
             'statBonuses',
-            'charParamBonuses'
-          ]
-        }
+            'charParamBonuses',
+          ],
+        },
       })
       .then((res?: HydratedICyberFrame | null) => {
         if (res === undefined || res === null) {
@@ -136,9 +143,7 @@ const findCompleteCyberFrameById = async (
   });
 
 const create = (req: Request, res: Response): void => {
-  const {
-    title, summary, i18n = null, ruleBook
-  } = req.body;
+  const { title, summary, i18n = null, ruleBook } = req.body;
   if (title === undefined || summary === undefined || ruleBook === undefined) {
     res.status(400).send(gemInvalidField('CyberFrame'));
 
@@ -148,7 +153,7 @@ const create = (req: Request, res: Response): void => {
   const cyberFrame = new CyberFrame({
     title,
     summary,
-    ruleBook
+    ruleBook,
   });
 
   if (i18n !== null) {
@@ -173,13 +178,17 @@ const create = (req: Request, res: Response): void => {
 
 const update = (req: Request, res: Response): void => {
   const {
-    id, title = null, summary = null, ruleBook = null, i18n
+    id,
+    title = null,
+    summary = null,
+    ruleBook = null,
+    i18n,
   }: {
-    id?: string
-    title: string | null
-    summary: string | null
-    ruleBook: string | null
-    i18n: InternationalizationType | null
+    id?: string;
+    title: string | null;
+    summary: string | null;
+    ruleBook: string | null;
+    i18n: InternationalizationType | null;
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('CyberFrame ID'));
@@ -199,12 +208,11 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(
-          cyberFrame.i18n !== undefined
-          && cyberFrame.i18n !== ''
+        const newIntl: InternationalizationType = {
+          ...(cyberFrame.i18n !== undefined && cyberFrame.i18n !== ''
             ? JSON.parse(cyberFrame.i18n)
-            : {}
-        ) };
+            : {}),
+        };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -217,7 +225,8 @@ const update = (req: Request, res: Response): void => {
         .save()
         .then(() => {
           res.send({
-            message: 'CyberFrame was updated successfully!', cyberFrame
+            message: 'CyberFrame was updated successfully!',
+            cyberFrame,
           });
         })
         .catch((err: unknown) => {
@@ -263,43 +272,37 @@ const deleteCyberFrame = (req: Request, res: Response): void => {
 };
 
 export interface CuratedICyberFrameToSend {
-  cyberFrame: Omit<
-    LeanICyberFrame, 'branches'
-  > & {
+  cyberFrame: Omit<LeanICyberFrame, 'branches'> & {
     branches: Array<{
-      cyberFrameBranch:
-        Omit<
-          LeanICyberFrameBranch, 'cyberFrame' | 'nodes'
-        > & {
-          cyberFrame: string
-          nodes: CuratedINodeToSend[]
-        }
-      i18n?: InternationalizationType
-    }>
-  }
-  i18n?: InternationalizationType
+      cyberFrameBranch: Omit<LeanICyberFrameBranch, 'cyberFrame' | 'nodes'> & {
+        cyberFrame: string;
+        nodes: CuratedINodeToSend[];
+      };
+      i18n?: InternationalizationType;
+    }>;
+  };
+  i18n?: InternationalizationType;
 }
 
-const curateSingleCyberFrame = (
-  cyberFrameSent: LeanICyberFrame
-): CuratedICyberFrameToSend => ({
+const curateSingleCyberFrame = (cyberFrameSent: LeanICyberFrame): CuratedICyberFrameToSend => ({
   cyberFrame: {
     ...cyberFrameSent,
     branches: cyberFrameSent.branches.map((cyberFrameBranch) => {
-      const curatedNodes = cyberFrameBranch.nodes.length > 0
-        ? cyberFrameBranch.nodes.map(node => curateSingleNode(node))
-        : [];
+      const curatedNodes =
+        cyberFrameBranch.nodes.length > 0
+          ? cyberFrameBranch.nodes.map((node) => curateSingleNode(node))
+          : [];
 
       return {
         cyberFrameBranch: {
           ...cyberFrameBranch,
-          nodes: curatedNodes
+          nodes: curatedNodes,
         },
-        i18n: curateI18n(cyberFrameBranch.i18n)
+        i18n: curateI18n(cyberFrameBranch.i18n),
       };
-    })
+    }),
   },
-  i18n: curateI18n(cyberFrameSent.i18n)
+  i18n: curateI18n(cyberFrameSent.i18n),
 });
 
 const findSingle = (req: Request, res: Response): void => {
@@ -332,6 +335,4 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export {
-  create, deleteCyberFrame, findAll, findCyberFrameById, findSingle, update
-};
+export { create, deleteCyberFrame, findAll, findCyberFrameById, findSingle, update };

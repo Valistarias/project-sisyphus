@@ -2,12 +2,8 @@ import React, { type FC } from 'react';
 
 import { Controller } from 'react-hook-form';
 
-import {
-  Aerror, Ap
-} from '../atoms';
-import {
-  Quark, type IQuarkProps
-} from '../quark';
+import { Aerror, Ap } from '../atoms';
+import { Quark, type IQuarkProps } from '../quark';
 
 import Button from './button';
 
@@ -19,13 +15,13 @@ import './numberSelect.scss';
 
 interface INumberSelect extends IReactHookFormInputs {
   /** The minimim value the stat can go */
-  minimum?: number
+  minimum?: number;
   /** The maximum value the stat can go */
-  maximum?: number
+  maximum?: number;
   /** Can you add more value (got the priority over maximum prop) */
-  maxed?: boolean
+  maxed?: boolean;
   /** The offset of the indicated value */
-  offset?: number
+  offset?: number;
 }
 
 const NumberSelect: FC<IQuarkProps<INumberSelect>> = ({
@@ -36,7 +32,7 @@ const NumberSelect: FC<IQuarkProps<INumberSelect>> = ({
   minimum = 0,
   maximum,
   offset,
-  maxed = false
+  maxed = false,
 }) => (
   <Quark
     quarkType="div"
@@ -49,11 +45,7 @@ const NumberSelect: FC<IQuarkProps<INumberSelect>> = ({
       control={control}
       name={inputName}
       rules={rules}
-      render={({
-        field: {
-          onChange, value, name
-        }, fieldState: { error }
-      }) => (
+      render={({ field: { onChange, value, name }, fieldState: { error } }) => (
         <>
           <Button
             className={classTrim(`
@@ -78,11 +70,9 @@ const NumberSelect: FC<IQuarkProps<INumberSelect>> = ({
               onChange(value - 1);
             }}
           />
-          {error?.message !== undefined
-            ? (
-                <Aerror className="nodeiconselect__error">{error.message}</Aerror>
-              )
-            : null}
+          {error?.message !== undefined ? (
+            <Aerror className="nodeiconselect__error">{error.message}</Aerror>
+          ) : null}
         </>
       )}
     />

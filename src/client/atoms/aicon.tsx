@@ -1,7 +1,5 @@
 import React from 'react';
-import {
-  useMemo, type FC
-} from 'react';
+import { useMemo, type FC } from 'react';
 
 import Add from '../assets/icons/add.svg?react';
 import Arrow from '../assets/icons/arrow.svg?react';
@@ -21,9 +19,7 @@ import Main from '../assets/icons/logo.svg?react';
 import Minus from '../assets/icons/minus.svg?react';
 import Question from '../assets/icons/question.svg?react';
 import Search from '../assets/icons/search.svg?react';
-import {
-  Quark, type IQuarkProps
-} from '../quark';
+import { Quark, type IQuarkProps } from '../quark';
 
 import { classTrim } from '../utils';
 
@@ -47,18 +43,18 @@ const icons = {
   Main,
   Minus,
   Question,
-  Search
+  Search,
 };
 
 type typeIcons = keyof typeof icons;
 
 interface IAicon {
   /** The size of the icon */
-  size?: 'small' | 'medium' | 'large' | 'unsized'
+  size?: 'small' | 'medium' | 'large' | 'unsized';
   /** The type of icon */
-  type: typeIcons
+  type: typeIcons;
   /** When the icon is clicked */
-  onClick?: (e: React.MouseEvent<HTMLElement>) => void
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
 const Aicon: FC<IQuarkProps<IAicon>> = ({
@@ -67,19 +63,15 @@ const Aicon: FC<IQuarkProps<IAicon>> = ({
   className,
   onClick,
   onMouseEnter,
-  onMouseLeave
+  onMouseLeave,
 }) => {
   const params = useMemo(
     () => ({
       onClick,
       onMouseEnter,
-      onMouseLeave
+      onMouseLeave,
     }),
-    [
-      onClick,
-      onMouseEnter,
-      onMouseLeave
-    ]
+    [onClick, onMouseEnter, onMouseLeave]
   );
 
   return (
@@ -95,6 +87,4 @@ const Aicon: FC<IQuarkProps<IAicon>> = ({
   );
 };
 
-export {
-  Aicon, type IAicon, type typeIcons
-};
+export { Aicon, type IAicon, type typeIcons };

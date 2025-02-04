@@ -1,23 +1,13 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
-import {
-  gemInvalidField, gemNotFound, gemServerError
-} from '../../utils/globalErrorMessage';
+import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
-import type {
-  INode, IStat
-} from '../index';
-import type {
-  HydratedIStatBonus
-} from './model';
+import type { INode, IStat } from '../index';
+import type { HydratedIStatBonus } from './model';
 
-const {
-  StatBonus, Node
-} = db;
+const { StatBonus, Node } = db;
 
 const findStatBonuses = async (): Promise<HydratedIStatBonus[]> =>
   await new Promise((resolve, reject) => {
@@ -53,8 +43,8 @@ const findStatBonusById = async (id: string): Promise<HydratedIStatBonus> =>
 
 const createReadStatBonus = (
   elts: Array<{
-    stat: string
-    value: number
+    stat: string;
+    value: number;
   }>,
   ids: string[],
   cb: (err: unknown, res?: string[]) => void
@@ -97,9 +87,7 @@ const createReadStatBonus = (
     });
 };
 
-const smartDeleteStatBonus = (
-  elts: string[],
-  cb: (err: unknown) => void): void => {
+const smartDeleteStatBonus = (elts: string[], cb: (err: unknown) => void): void => {
   if (elts.length === 0) {
     cb(null);
 
@@ -132,38 +120,33 @@ const smartDeleteStatBonus = (
 const curateStatBonusIds = async ({
   statBonusesToRemove,
   statBonusesToAdd,
-  statBonusesToStay
+  statBonusesToStay,
 }: {
-  statBonusesToRemove: string[]
+  statBonusesToRemove: string[];
   statBonusesToAdd: Array<{
-    stat: string
-    value: number
-  }>
-  statBonusesToStay: string[]
+    stat: string;
+    value: number;
+  }>;
+  statBonusesToStay: string[];
 }): Promise<string[]> =>
   await new Promise((resolve, reject) => {
     smartDeleteStatBonus(statBonusesToRemove, (err: unknown) => {
       if (err !== null) {
         reject(err);
       } else {
-        createReadStatBonus(
-          statBonusesToAdd,
-          [],
-          (err: unknown, res?: string[]) => {
-            if (err !== null) {
-              reject(err);
-            } else {
-              resolve([...statBonusesToStay, ...(res ?? [])]);
-            }
-          });
+        createReadStatBonus(statBonusesToAdd, [], (err: unknown, res?: string[]) => {
+          if (err !== null) {
+            reject(err);
+          } else {
+            resolve([...statBonusesToStay, ...(res ?? [])]);
+          }
+        });
       }
     });
   });
 
 const create = (req: Request, res: Response): void => {
-  const {
-    stat, value
-  } = req.body;
+  const { stat, value } = req.body;
   if (stat === undefined || value === undefined) {
     res.status(400).send(gemInvalidField('StatBonus'));
 
@@ -172,7 +155,7 @@ const create = (req: Request, res: Response): void => {
 
   const statBonus = new StatBonus({
     stat,
-    value
+    value,
   });
 
   statBonus
@@ -187,11 +170,13 @@ const create = (req: Request, res: Response): void => {
 
 const update = (req: Request, res: Response): void => {
   const {
-    id, stat = null, value = null
+    id,
+    stat = null,
+    value = null,
   }: {
-    id?: string
-    stat: ObjectId | null
-    value: number | null
+    id?: string;
+    stat: ObjectId | null;
+    value: number | null;
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('StatBonus ID'));
@@ -211,7 +196,8 @@ const update = (req: Request, res: Response): void => {
         .save()
         .then(() => {
           res.send({
-            message: 'Stat bonus was updated successfully!', statBonus
+            message: 'Stat bonus was updated successfully!',
+            statBonus,
           });
         })
         .catch((err: unknown) => {
@@ -281,5 +267,5 @@ export {
   findAll,
   findSingle,
   findStatBonusById,
-  update
+  update,
 };

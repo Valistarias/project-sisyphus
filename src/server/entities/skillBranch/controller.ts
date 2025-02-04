@@ -1,6 +1,4 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
@@ -8,15 +6,12 @@ import {
   gemForbidden,
   gemInvalidField,
   gemNotFound,
-  gemServerError
+  gemServerError,
 } from '../../utils/globalErrorMessage';
 
 import type { InternationalizationType } from '../../utils/types';
 import type { HydratedINode, HydratedISkill, INode, ISkill, LeanINode } from '../index';
-import type {
-  HydratedISkillBranch,
-  LeanISkillBranch
-} from './model';
+import type { HydratedISkillBranch, LeanISkillBranch } from './model';
 
 import { curateI18n } from '../../utils';
 
@@ -30,13 +25,7 @@ const findSkillBranches = async (): Promise<LeanISkillBranch[]> =>
       .populate<{ nodes: Array<INode<string>> }>({
         path: 'nodes',
         select: '_id title summary icon',
-        populate: [
-          'effects',
-          'actions',
-          'skillBonuses',
-          'statBonuses',
-          'charParamBonuses'
-        ]
+        populate: ['effects', 'actions', 'skillBonuses', 'statBonuses', 'charParamBonuses'],
       })
       .then((res: LeanISkillBranch[]) => {
         if (res.length === 0) {
@@ -50,9 +39,7 @@ const findSkillBranches = async (): Promise<LeanISkillBranch[]> =>
       });
   });
 
-const findSkillBranchesBySkill = async (
-  skillId: string
-): Promise<LeanISkillBranch[]> =>
+const findSkillBranchesBySkill = async (skillId: string): Promise<LeanISkillBranch[]> =>
   await new Promise((resolve, reject) => {
     SkillBranch.find({ skill: skillId })
       .lean()
@@ -60,13 +47,7 @@ const findSkillBranchesBySkill = async (
       .populate<{ nodes: Array<INode<string>> }>({
         path: 'nodes',
         select: '_id title summary icon',
-        populate: [
-          'effects',
-          'actions',
-          'skillBonuses',
-          'statBonuses',
-          'charParamBonuses'
-        ]
+        populate: ['effects', 'actions', 'skillBonuses', 'statBonuses', 'charParamBonuses'],
       })
       .then((res?: LeanISkillBranch[] | null) => {
         if (res === undefined || res === null) {
@@ -88,13 +69,7 @@ const findSkillBranchById = async (id: string): Promise<LeanISkillBranch> =>
       .populate<{ nodes: Array<INode<string>> }>({
         path: 'nodes',
         select: '_id title summary icon',
-        populate: [
-          'effects',
-          'actions',
-          'skillBonuses',
-          'statBonuses',
-          'charParamBonuses'
-        ]
+        populate: ['effects', 'actions', 'skillBonuses', 'statBonuses', 'charParamBonuses'],
       })
       .then((res?: LeanISkillBranch | null) => {
         if (res === undefined || res === null) {
@@ -108,15 +83,13 @@ const findSkillBranchById = async (id: string): Promise<LeanISkillBranch> =>
       });
   });
 
-const findCompleteSkillBranchById = async (
-  id: string
-): Promise<HydratedISkillBranch> =>
+const findCompleteSkillBranchById = async (id: string): Promise<HydratedISkillBranch> =>
   await new Promise((resolve, reject) => {
     SkillBranch.findById(id)
       .populate<{ skill: HydratedISkill }>('skill')
       .populate<{ nodes: HydratedINode[] }>({
         path: 'nodes',
-        select: '_id title summary icon'
+        select: '_id title summary icon',
       })
       .then((res?: HydratedISkillBranch | null) => {
         if (res === undefined || res === null) {
@@ -131,9 +104,7 @@ const findCompleteSkillBranchById = async (
   });
 
 const create = (req: Request, res: Response): void => {
-  const {
-    title, summary, skill, i18n = null
-  } = req.body;
+  const { title, summary, skill, i18n = null } = req.body;
   if (title === undefined || summary === undefined || skill === undefined) {
     res.status(400).send(gemInvalidField('SkillBranch'));
 
@@ -148,7 +119,7 @@ const create = (req: Request, res: Response): void => {
   const skillBranch: HydratedISkillBranch = new SkillBranch({
     title,
     summary,
-    skill
+    skill,
   });
 
   if (i18n !== null) {
@@ -175,7 +146,7 @@ const createGeneralForSkillId = async (id?: string): Promise<boolean> =>
     const skillBranch: HydratedISkillBranch = new SkillBranch({
       title: '_general',
       summary: '',
-      skill: id
+      skill: id,
     });
     skillBranch
       .save()
@@ -189,13 +160,17 @@ const createGeneralForSkillId = async (id?: string): Promise<boolean> =>
 
 const update = (req: Request, res: Response): void => {
   const {
-    id, title = null, summary = null, skill = null, i18n
+    id,
+    title = null,
+    summary = null,
+    skill = null,
+    i18n,
   }: {
-    id?: string
-    title: string | null
-    summary: string | null
-    i18n: InternationalizationType | null
-    skill: ObjectId | null
+    id?: string;
+    title: string | null;
+    summary: string | null;
+    i18n: InternationalizationType | null;
+    skill: ObjectId | null;
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('SkillBranch ID'));
@@ -225,11 +200,11 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(
-          skillBranch.i18n !== undefined
-          && skillBranch.i18n !== ''
+        const newIntl: InternationalizationType = {
+          ...(skillBranch.i18n !== undefined && skillBranch.i18n !== ''
             ? JSON.parse(skillBranch.i18n)
-            : {}) };
+            : {}),
+        };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -242,7 +217,8 @@ const update = (req: Request, res: Response): void => {
         .save()
         .then(() => {
           res.send({
-            message: 'Skill branch was updated successfully!', skillBranch
+            message: 'Skill branch was updated successfully!',
+            skillBranch,
           });
         })
         .catch((err: unknown) => {
@@ -291,9 +267,7 @@ const deleteSkillBranch = (req: Request, res: Response): void => {
     });
 };
 
-const deleteSkillBranchesBySkillId = async (
-  skillId?: string
-): Promise<boolean> =>
+const deleteSkillBranchesBySkillId = async (skillId?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (skillId === undefined) {
       resolve(true);
@@ -310,48 +284,36 @@ const deleteSkillBranchesBySkillId = async (
   });
 
 interface CuratedISkillBranchToSend {
-  skillBranch:
-    Omit<
-      LeanISkillBranch
-      , 'skill'
-    > & {
-      skill: ISkill
-      nodes?: LeanINode[]
-    }
-  i18n?: InternationalizationType
+  skillBranch: Omit<LeanISkillBranch, 'skill'> & {
+    skill: ISkill;
+    nodes?: LeanINode[];
+  };
+  i18n?: InternationalizationType;
 }
 
-const curateSingleSkillBranch = (
-  skillBranchSent: LeanISkillBranch
-): CuratedISkillBranchToSend => {
-  const curatedNodes = skillBranchSent.nodes?.length !== undefined
-    && skillBranchSent.nodes.length > 0
-    ? skillBranchSent.nodes.map(node => ({
-        ...node,
-        ...(
-          node.i18n !== undefined
-            ? { i18n: JSON.parse(node.i18n) }
-            : {}
-        )
-      }))
-    : [];
+const curateSingleSkillBranch = (skillBranchSent: LeanISkillBranch): CuratedISkillBranchToSend => {
+  const curatedNodes =
+    skillBranchSent.nodes?.length !== undefined && skillBranchSent.nodes.length > 0
+      ? skillBranchSent.nodes.map((node) => ({
+          ...node,
+          ...(node.i18n !== undefined ? { i18n: JSON.parse(node.i18n) } : {}),
+        }))
+      : [];
 
   const curatedSkill = {
     ...skillBranchSent.skill,
-    ...(
-      skillBranchSent.skill.i18n !== undefined
-        ? { i18n: JSON.parse(skillBranchSent.skill.i18n) }
-        : {}
-    )
+    ...(skillBranchSent.skill.i18n !== undefined
+      ? { i18n: JSON.parse(skillBranchSent.skill.i18n) }
+      : {}),
   };
 
   return {
     skillBranch: {
       ...skillBranchSent,
       nodes: curatedNodes,
-      skill: curatedSkill
+      skill: curatedSkill,
     },
-    i18n: curateI18n(skillBranchSent.i18n)
+    i18n: curateI18n(skillBranchSent.i18n),
   };
 };
 
@@ -415,5 +377,5 @@ export {
   findSingle,
   findSkillBranchById,
   findSkillBranchesBySkill,
-  update
+  update,
 };

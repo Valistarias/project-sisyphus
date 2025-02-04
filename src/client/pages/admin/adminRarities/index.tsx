@@ -1,20 +1,12 @@
-import React, {
-  useCallback, useMemo, useState, type FC
-} from 'react';
+import React, { useCallback, useMemo, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import {
-  useApi, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Ap, Atitle
-} from '../../../atoms';
+import { Ap, Atitle } from '../../../atoms';
 import { Button, LinkButton } from '../../../molecules';
-import {
-  Alert, DragList, type IDragElt
-} from '../../../organisms';
+import { Alert, DragList, type IDragElt } from '../../../organisms';
 
 import type { ErrorResponseType } from '../../../types';
 
@@ -25,9 +17,7 @@ import './adminRarities.scss';
 const AdminRarities: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
   const { rarities } = useGlobalVars();
 
   const [initialOrder, setInitialOrder] = useState<string[]>([]);
@@ -47,8 +37,8 @@ const AdminRarities: FC = () => {
         titleLevel: 3,
         button: {
           href: `/admin/rarity/${rarity._id}`,
-          content: t('adminRarities.editRarity', { ns: 'pages' })
-        }
+          content: t('adminRarities.editRarity', { ns: 'pages' }),
+        },
       };
     });
 
@@ -92,10 +82,12 @@ const AdminRarities: FC = () => {
     }
 
     api.rarities
-      .changeRaritiesOrder({ order: raritiesOrder.map((chapter, index) => ({
-        id: chapter,
-        position: index
-      })) })
+      .changeRaritiesOrder({
+        order: raritiesOrder.map((chapter, index) => ({
+          id: chapter,
+          position: index,
+        })),
+      })
       .then(() => {
         const newId = getNewId();
         createAlert({
@@ -104,21 +96,14 @@ const AdminRarities: FC = () => {
             <Alert key={newId} id={newId} timer={5}>
               <Ap>{t('adminEditRuleBook.successUpdate', { ns: 'pages' })}</Ap>
             </Alert>
-          )
+          ),
         });
         setInitialOrder(raritiesOrder);
       })
       .catch(({ response }: ErrorResponseType) => {
         console.error(response);
       });
-  }, [
-    raritiesOrder,
-    initialOrder,
-    api,
-    getNewId,
-    createAlert,
-    t
-  ]);
+  }, [raritiesOrder, initialOrder, api, getNewId, createAlert, t]);
 
   return (
     <div className="adminRarities">
@@ -126,13 +111,11 @@ const AdminRarities: FC = () => {
       <div className="adminRarities__content">
         <div className="adminRarities__rarities">
           <Atitle level={2}>{t('adminRarities.list', { ns: 'pages' })}</Atitle>
-          {rarities.length !== 0
-            ? (
-                <Ap className="adminRarities__rarities__sub">
-                  {t('adminRarities.listText', { ns: 'pages' })}
-                </Ap>
-              )
-            : null}
+          {rarities.length !== 0 ? (
+            <Ap className="adminRarities__rarities__sub">
+              {t('adminRarities.listText', { ns: 'pages' })}
+            </Ap>
+          ) : null}
           <div className="adminRarities__rarities__list">
             {/* {raritiesList} */}
             <DragList
@@ -143,14 +126,14 @@ const AdminRarities: FC = () => {
             />
           </div>
           <div className="adminRarities__rarities__btns">
-            {rarities.length !== 0
-              ? (
-                  <Button onClick={onUpdateOrder}>
-                    {t('adminRarities.updateOrder', { ns: 'pages' })}
-                  </Button>
-                )
-              : null}
-            <LinkButton href="/admin/rarity/new">{t('adminNewRarity.title', { ns: 'pages' })}</LinkButton>
+            {rarities.length !== 0 ? (
+              <Button onClick={onUpdateOrder}>
+                {t('adminRarities.updateOrder', { ns: 'pages' })}
+              </Button>
+            ) : null}
+            <LinkButton href="/admin/rarity/new">
+              {t('adminNewRarity.title', { ns: 'pages' })}
+            </LinkButton>
           </div>
         </div>
       </div>

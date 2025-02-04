@@ -1,10 +1,6 @@
-import React, {
-  type FC, type ReactNode
-} from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
-import {
-  Quark, type IQuarkProps
-} from '../quark';
+import { Quark, type IQuarkProps } from '../quark';
 
 import { classTrim } from '../utils';
 
@@ -12,14 +8,12 @@ import './athead.scss';
 
 interface IAthead {
   /** The class of the Table Head element */
-  className?: string
+  className?: string;
   /** The childrens of the Table Head element */
-  children: ReactNode
+  children: ReactNode;
 }
 
-const AThead: FC<IQuarkProps<IAthead>> = ({
-  className, children
-}) => (
+const AThead: FC<IQuarkProps<IAthead>> = ({ className, children }) => (
   <Quark
     quarkType="thead"
     className={classTrim(`

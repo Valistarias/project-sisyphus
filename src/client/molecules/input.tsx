@@ -1,17 +1,8 @@
-import React, {
-  type ChangeEvent,
-  useState, type FC,
-  type MouseEvent
-} from 'react';
+import React, { type ChangeEvent, useState, type FC, type MouseEvent } from 'react';
 
 import { Controller } from 'react-hook-form';
 
-import {
-  Aerror,
-  Ainput,
-  Alabel,
-  Atextarea
-} from '../atoms';
+import { Aerror, Ainput, Alabel, Atextarea } from '../atoms';
 
 import type { IReactHookFormInputs } from '../types/form';
 
@@ -21,27 +12,27 @@ import './input.scss';
 
 interface IInput extends IReactHookFormInputs {
   /** The type of input */
-  type?: 'text' | 'password' | 'email' | 'number' | 'textarea'
+  type?: 'text' | 'password' | 'email' | 'number' | 'textarea';
   /** The size of the input */
-  size?: 'medium' | 'small'
+  size?: 'medium' | 'small';
   /** Is the input inline ? */
-  inline?: boolean
+  inline?: boolean;
   /** The class of the Textarea element */
-  className?: string
+  className?: string;
   /** The placeholder of the Textarea element */
-  placeholder?: string
+  placeholder?: string;
   /** The label, if any */
-  label?: string
+  label?: string;
   /** Is the field editable */
-  readOnly?: boolean
+  readOnly?: boolean;
   /** Triggered when the selected field is changing */
-  onChange?: (val: ChangeEvent<HTMLTextAreaElement>) => void
+  onChange?: (val: ChangeEvent<HTMLTextAreaElement>) => void;
   /** Is the field hidden */
-  hidden?: boolean
+  hidden?: boolean;
   /** Allow the user's password manager to automatically enter the password */
-  autoComplete?: string
+  autoComplete?: string;
   /** When the user select elsewhere of the input */
-  onBlur?: (val: MouseEvent) => void
+  onBlur?: (val: MouseEvent) => void;
 }
 
 const Input: FC<IInput> = ({
@@ -58,7 +49,7 @@ const Input: FC<IInput> = ({
   readOnly,
   hidden,
   autoComplete,
-  onBlur
+  onBlur,
 }) => {
   const [isFocus, setFocus] = useState(false);
 
@@ -75,78 +66,70 @@ const Input: FC<IInput> = ({
         name={inputName}
         rules={rules}
         render={({
-          field: {
-            onChange, onBlur: onControllerBlur, value, name, ref
-          },
-          fieldState: { error }
+          field: { onChange, onBlur: onControllerBlur, value, name, ref },
+          fieldState: { error },
         }) => (
           <>
-            {label !== undefined
-              ? (
-                  <Alabel className="input__label" htmlFor={name}>
-                    {label}
-                  </Alabel>
-                )
-              : null}
+            {label !== undefined ? (
+              <Alabel className="input__label" htmlFor={name}>
+                {label}
+              </Alabel>
+            ) : null}
             <div className="input__decor">
-              {type === 'textarea'
-                ? (
-                    <Atextarea
-                      readOnly={readOnly}
-                      size={size}
-                      hidden={hidden}
-                      placeholder={placeholder}
-                      className="input__field"
-                      autoComplete={autoComplete ?? undefined}
-                      onChange={(e) => {
-                        onChange(e);
-                        if (exteriorChange !== undefined) {
-                          exteriorChange(e);
-                        }
-                      }}
-                      value={value ?? ''}
-                      onFocus={() => {
-                        setFocus(true);
-                      }}
-                      onBlur={(e) => {
-                        setFocus(false);
-                        onControllerBlur();
-                        if (onBlur !== undefined) {
-                          onBlur(e);
-                        }
-                      }}
-                    />
-                  )
-                : (
-                    <Ainput
-                      type={type}
-                      size={size}
-                      inline={inline}
-                      readOnly={readOnly}
-                      hidden={hidden}
-                      placeholder={placeholder}
-                      className="input__field"
-                      autoComplete={autoComplete ?? undefined}
-                      onChange={onChange}
-                      value={value ?? ''}
-                      onFocus={() => {
-                        setFocus(true);
-                      }}
-                      onBlur={(e) => {
-                        setFocus(false);
-                        onControllerBlur();
-                        if (onBlur !== undefined) {
-                          onBlur(e);
-                        }
-                      }}
-                    />
-                  )}
+              {type === 'textarea' ? (
+                <Atextarea
+                  readOnly={readOnly}
+                  size={size}
+                  hidden={hidden}
+                  placeholder={placeholder}
+                  className="input__field"
+                  autoComplete={autoComplete ?? undefined}
+                  onChange={(e) => {
+                    onChange(e);
+                    if (exteriorChange !== undefined) {
+                      exteriorChange(e);
+                    }
+                  }}
+                  value={value ?? ''}
+                  onFocus={() => {
+                    setFocus(true);
+                  }}
+                  onBlur={(e) => {
+                    setFocus(false);
+                    onControllerBlur();
+                    if (onBlur !== undefined) {
+                      onBlur(e);
+                    }
+                  }}
+                />
+              ) : (
+                <Ainput
+                  type={type}
+                  size={size}
+                  inline={inline}
+                  readOnly={readOnly}
+                  hidden={hidden}
+                  placeholder={placeholder}
+                  className="input__field"
+                  autoComplete={autoComplete ?? undefined}
+                  onChange={onChange}
+                  value={value ?? ''}
+                  onFocus={() => {
+                    setFocus(true);
+                  }}
+                  onBlur={(e) => {
+                    setFocus(false);
+                    onControllerBlur();
+                    if (onBlur !== undefined) {
+                      onBlur(e);
+                    }
+                  }}
+                />
+              )}
             </div>
-            {error?.message !== undefined
-              ? (
-                  <Aerror className="input__error">{error.message}</Aerror>
-                )
-              : null}
+            {error?.message !== undefined ? (
+              <Aerror className="input__error">{error.message}</Aerror>
+            ) : null}
           </>
         )}
       />

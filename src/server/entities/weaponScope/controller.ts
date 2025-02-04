@@ -1,13 +1,11 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 
 import db from '../../models';
 import {
   gemDuplicate,
   gemInvalidField,
   gemNotFound,
-  gemServerError
+  gemServerError,
 } from '../../utils/globalErrorMessage';
 
 import type { HydratedIWeaponScope } from './model';
@@ -89,18 +87,17 @@ const checkDuplicateScopeId = async (
 
 const create = (req: Request, res: Response): void => {
   const {
-    title, summary, i18n = null, scopeId
+    title,
+    summary,
+    i18n = null,
+    scopeId,
   }: {
-    title?: string
-    summary?: string
-    i18n?: InternationalizationType | null
-    scopeId?: string
+    title?: string;
+    summary?: string;
+    i18n?: InternationalizationType | null;
+    scopeId?: string;
   } = req.body;
-  if (
-    title === undefined
-    || summary === undefined
-    || scopeId === undefined
-  ) {
+  if (title === undefined || summary === undefined || scopeId === undefined) {
     res.status(400).send(gemInvalidField('Weapon Scope'));
 
     return;
@@ -112,7 +109,7 @@ const create = (req: Request, res: Response): void => {
         const weaponScope = new WeaponScope({
           title,
           summary,
-          scopeId
+          scopeId,
         });
 
         if (i18n !== null) {
@@ -142,13 +139,13 @@ const update = (req: Request, res: Response): void => {
     title = null,
     summary = null,
     i18n,
-    scopeId = null
+    scopeId = null,
   }: {
-    id?: string
-    title: string | null
-    summary: string | null
-    i18n: InternationalizationType | null
-    scopeId: string | null
+    id?: string;
+    title: string | null;
+    summary: string | null;
+    i18n: InternationalizationType | null;
+    scopeId: string | null;
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Weapon Scope ID'));
@@ -157,8 +154,7 @@ const update = (req: Request, res: Response): void => {
   }
   findWeaponScopeById(id)
     .then((weaponScope) => {
-      const alreadyExistOnce = typeof scopeId === 'string'
-        && scopeId === weaponScope.scopeId;
+      const alreadyExistOnce = typeof scopeId === 'string' && scopeId === weaponScope.scopeId;
       checkDuplicateScopeId(scopeId, alreadyExistOnce)
         .then((response) => {
           if (typeof response === 'boolean') {
@@ -173,12 +169,11 @@ const update = (req: Request, res: Response): void => {
             }
 
             if (i18n !== null) {
-              const newIntl: InternationalizationType = { ...(
-                weaponScope.i18n !== undefined
-                && weaponScope.i18n !== ''
+              const newIntl: InternationalizationType = {
+                ...(weaponScope.i18n !== undefined && weaponScope.i18n !== ''
                   ? JSON.parse(weaponScope.i18n)
-                  : {}
-              ) };
+                  : {}),
+              };
 
               Object.keys(i18n).forEach((lang) => {
                 newIntl[lang] = i18n[lang];
@@ -191,7 +186,8 @@ const update = (req: Request, res: Response): void => {
               .save()
               .then(() => {
                 res.send({
-                  message: 'Weapon Scope was updated successfully!', weaponScope
+                  message: 'Weapon Scope was updated successfully!',
+                  weaponScope,
                 });
               })
               .catch((err: unknown) => {
@@ -238,8 +234,8 @@ const deleteWeaponScope = (req: Request, res: Response): void => {
 };
 
 interface CuratedIWeaponScope {
-  i18n?: InternationalizationType
-  weaponScope: HydratedIWeaponScope
+  i18n?: InternationalizationType;
+  weaponScope: HydratedIWeaponScope;
 }
 
 const findSingle = (req: Request, res: Response): void => {
@@ -253,7 +249,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((weaponScope) => {
       const sentObj = {
         weaponScope,
-        i18n: curateI18n(weaponScope.i18n)
+        i18n: curateI18n(weaponScope.i18n),
       };
       res.send(sentObj);
     })
@@ -270,7 +266,7 @@ const findAll = (req: Request, res: Response): void => {
       weaponScopes.forEach((weaponScope) => {
         curatedWeaponScopes.push({
           weaponScope,
-          i18n: curateI18n(weaponScope.i18n)
+          i18n: curateI18n(weaponScope.i18n),
         });
       });
 
@@ -286,5 +282,5 @@ export {
   findAll,
   findSingle,
   findWeaponScopeById,
-  update
+  update,
 };

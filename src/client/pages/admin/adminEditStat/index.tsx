@@ -1,30 +1,16 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  useNavigate, useParams
-} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type { ErrorResponseType, ICuratedStat } from '../../../types';
@@ -33,25 +19,20 @@ import type { InternationalizationType } from '../../../types/global';
 import './adminEditStat.scss';
 
 interface FormValues {
-  name: string
-  short: string
-  nameFr: string
-  shortFr: string
-  formulaId: string
+  name: string;
+  short: string;
+  nameFr: string;
+  shortFr: string;
+  formulaId: string;
 }
 
 const AdminEditStat: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
   const { reloadStats } = useGlobalVars();
-  const {
-    setConfirmContent,
-    removeConfirmEventListener,
-    addConfirmEventListener
-  } = useConfirmMessage();
+  const { setConfirmContent, removeConfirmEventListener, addConfirmEventListener } =
+    useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -64,21 +45,15 @@ const AdminEditStat: FC = () => {
   const [statText, setStatText] = useState('');
   const [statTextFr, setStatTextFr] = useState('');
 
-  const textEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const textFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const createDefaultData = useCallback((statData: ICuratedStat | null) => {
     if (statData == null) {
       return {};
     }
-    const {
-      stat, i18n
-    } = statData;
+    const { stat, i18n } = statData;
     const defaultData: Partial<FormValues> = {};
     defaultData.name = stat.title;
     defaultData.short = stat.short;
@@ -96,20 +71,14 @@ const AdminEditStat: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset
-  } = useForm({ defaultValues: useMemo(
-    () => createDefaultData(statData), [createDefaultData, statData]
-  ) });
+    reset,
+  } = useForm({
+    defaultValues: useMemo(() => createDefaultData(statData), [createDefaultData, statData]),
+  });
 
   const onSaveStat: SubmitHandler<FormValues> = useCallback(
-    ({
-      name, nameFr, short, shortFr, formulaId
-    }) => {
-      if (
-        textEditor === null
-        || textFrEditor === null
-        || api === undefined
-      ) {
+    ({ name, nameFr, short, shortFr, formulaId }) => {
+      if (textEditor === null || textFrEditor === null || api === undefined) {
         return;
       }
       let htmlText: string | null = textEditor.getHTML();
@@ -123,11 +92,13 @@ const AdminEditStat: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          short: shortFr,
-          text: htmlTextFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            short: shortFr,
+            text: htmlTextFr,
+          },
+        };
       }
 
       api.stats
@@ -137,7 +108,7 @@ const AdminEditStat: FC = () => {
           short,
           formulaId,
           summary: htmlText,
-          i18n
+          i18n,
         })
         .then((stat) => {
           const newId = getNewId();
@@ -147,7 +118,7 @@ const AdminEditStat: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditStat.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           reloadStats();
         })
@@ -156,27 +127,19 @@ const AdminEditStat: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`,
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
     },
-    [
-      textEditor,
-      textFrEditor,
-      api,
-      id,
-      getNewId,
-      createAlert,
-      t,
-      reloadStats,
-      setError
-    ]
+    [textEditor, textFrEditor, api, id, getNewId, createAlert, t, reloadStats, setError]
   );
 
   const onAskDelete = useCallback(() => {
@@ -188,14 +151,12 @@ const AdminEditStat: FC = () => {
         title: t('adminEditStat.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditStat.confirmDeletion.text', {
           ns: 'pages',
-          elt: statData?.stat.title
+          elt: statData?.stat.title,
         }),
-        confirmCta: t('adminEditStat.confirmDeletion.confirmCta', { ns: 'pages' })
+        confirmCta: t('adminEditStat.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
       (evtId: string) => {
-        const confirmDelete = (
-          { detail }: { detail: ConfirmMessageDetailData }
-        ): void => {
+        const confirmDelete = ({ detail }: { detail: ConfirmMessageDetailData }): void => {
           if (detail.proceed) {
             api.stats
               .delete({ id })
@@ -207,7 +168,7 @@ const AdminEditStat: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditStat.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  )
+                  ),
                 });
                 reloadStats();
                 void navigate('/admin/stats');
@@ -217,12 +178,16 @@ const AdminEditStat: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.stat.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.stat.name`), 'capitalize'),
+                    }),
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.stat.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.stat.name`), 'capitalize'),
+                    }),
                   });
                 }
               });
@@ -244,7 +209,7 @@ const AdminEditStat: FC = () => {
     createAlert,
     reloadStats,
     navigate,
-    setError
+    setError,
   ]);
 
   useEffect(() => {
@@ -253,9 +218,7 @@ const AdminEditStat: FC = () => {
       api.stats
         .get({ statId: id })
         .then((curatedStat) => {
-          const {
-            stat, i18n
-          } = curatedStat;
+          const { stat, i18n } = curatedStat;
           setStatData(curatedStat);
           setStatText(stat.summary);
           if (i18n.fr !== undefined) {
@@ -270,17 +233,11 @@ const AdminEditStat: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    id,
-    t
-  ]);
+  }, [api, createAlert, getNewId, id, t]);
 
   // The Autosave
   useEffect(() => {
@@ -302,11 +259,7 @@ const AdminEditStat: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(statData));
-  }, [
-    statData,
-    reset,
-    createDefaultData
-  ]);
+  }, [statData, reset, createDefaultData]);
 
   return (
     <div className="adminEditStat">
@@ -323,11 +276,9 @@ const AdminEditStat: FC = () => {
             {t('adminEditStat.delete', { ns: 'pages' })}
           </Button>
         </div>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror className="adminEditStat__error">{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror className="adminEditStat__error">{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminEditStat__basics">
           <Input
             control={control}
@@ -361,8 +312,8 @@ const AdminEditStat: FC = () => {
               required: t('statFormula.required', { ns: 'fields' }),
               pattern: {
                 value: /^([a-z]){2,3}$/,
-                message: t('statFormula.format', { ns: 'fields' })
-              }
+                message: t('statFormula.format', { ns: 'fields' }),
+              },
             }}
             label={t('statFormula.label', { ns: 'fields' })}
           />

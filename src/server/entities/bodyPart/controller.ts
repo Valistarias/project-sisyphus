@@ -1,13 +1,11 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 
 import db from '../../models';
 import {
   gemDuplicate,
   gemInvalidField,
   gemNotFound,
-  gemServerError
+  gemServerError,
 } from '../../utils/globalErrorMessage';
 
 import type { HydratedIBodyPart } from './model';
@@ -88,15 +86,8 @@ const checkDuplicatePartId = async (
   });
 
 const create = (req: Request, res: Response): void => {
-  const {
-    title, summary, i18n = null, partId, limit
-  } = req.body;
-  if (
-    title === undefined
-    || summary === undefined
-    || partId === undefined
-    || limit === undefined
-  ) {
+  const { title, summary, i18n = null, partId, limit } = req.body;
+  if (title === undefined || summary === undefined || partId === undefined || limit === undefined) {
     res.status(400).send(gemInvalidField('Body Part'));
 
     return;
@@ -109,7 +100,7 @@ const create = (req: Request, res: Response): void => {
           title,
           summary,
           partId,
-          limit
+          limit,
         });
 
         if (i18n !== null) {
@@ -135,14 +126,19 @@ const create = (req: Request, res: Response): void => {
 
 const update = (req: Request, res: Response): void => {
   const {
-    id, title = null, summary = null, i18n, partId = null, limit = null
+    id,
+    title = null,
+    summary = null,
+    i18n,
+    partId = null,
+    limit = null,
   }: {
-    id?: string
-    title: string | null
-    summary: string | null
-    i18n: InternationalizationType | null
-    partId: string | null
-    limit: number | null
+    id?: string;
+    title: string | null;
+    summary: string | null;
+    i18n: InternationalizationType | null;
+    partId: string | null;
+    limit: number | null;
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Body Part ID'));
@@ -169,12 +165,11 @@ const update = (req: Request, res: Response): void => {
             }
 
             if (i18n !== null) {
-              const newIntl: InternationalizationType = { ...(
-                bodyPart.i18n !== undefined
-                && bodyPart.i18n !== ''
+              const newIntl: InternationalizationType = {
+                ...(bodyPart.i18n !== undefined && bodyPart.i18n !== ''
                   ? JSON.parse(bodyPart.i18n)
-                  : {}
-              ) };
+                  : {}),
+              };
 
               Object.keys(i18n).forEach((lang) => {
                 newIntl[lang] = i18n[lang];
@@ -187,7 +182,8 @@ const update = (req: Request, res: Response): void => {
               .save()
               .then(() => {
                 res.send({
-                  message: 'Body Part was updated successfully!', bodyPart
+                  message: 'Body Part was updated successfully!',
+                  bodyPart,
                 });
               })
               .catch((err: unknown) => {
@@ -234,8 +230,8 @@ const deleteBodyPart = (req: Request, res: Response): void => {
 };
 
 interface CuratedIBodyPart {
-  i18n?: InternationalizationType
-  bodyPart: HydratedIBodyPart
+  i18n?: InternationalizationType;
+  bodyPart: HydratedIBodyPart;
 }
 
 const findSingle = (req: Request, res: Response): void => {
@@ -249,7 +245,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((bodyPart) => {
       const sentObj = {
         bodyPart,
-        i18n: curateI18n(bodyPart.i18n)
+        i18n: curateI18n(bodyPart.i18n),
       };
       res.send(sentObj);
     })
@@ -266,7 +262,7 @@ const findAll = (req: Request, res: Response): void => {
       bodyParts.forEach((bodyPart) => {
         curatedBodyParts.push({
           bodyPart,
-          i18n: curateI18n(bodyPart.i18n)
+          i18n: curateI18n(bodyPart.i18n),
         });
       });
 
@@ -282,5 +278,5 @@ export {
   findAll,
   findBodyPartById,
   findSingle,
-  update
+  update,
 };

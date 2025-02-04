@@ -1,27 +1,14 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  useNavigate, useParams
-} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input,
-  LinkButton
-} from '../../../molecules';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input, LinkButton } from '../../../molecules';
 import { Alert } from '../../../organisms';
 
 import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
@@ -30,57 +17,50 @@ import type { ErrorResponseType, IGlobalValue } from '../../../types';
 import './adminEditGlobalValue.scss';
 
 interface FormValues {
-  name: string
-  value: string
+  name: string;
+  value: string;
 }
 
 const AdminEditGlobalValue: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
   const { reloadGlobalValues } = useGlobalVars();
-  const {
-    setConfirmContent,
-    removeConfirmEventListener,
-    addConfirmEventListener
-  } = useConfirmMessage();
+  const { setConfirmContent, removeConfirmEventListener, addConfirmEventListener } =
+    useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
   const calledApi = useRef(false);
 
-  const [globalValueData, setGlobalValueData]
-  = useState<IGlobalValue | null>(null);
+  const [globalValueData, setGlobalValueData] = useState<IGlobalValue | null>(null);
 
-  const createDefaultData = useCallback(
-    (globalValueData: IGlobalValue | null) => {
-      if (globalValueData == null) {
-        return {};
-      }
-      const defaultData: Partial<FormValues> = {};
-      defaultData.name = globalValueData.name;
-      defaultData.value = globalValueData.value;
+  const createDefaultData = useCallback((globalValueData: IGlobalValue | null) => {
+    if (globalValueData == null) {
+      return {};
+    }
+    const defaultData: Partial<FormValues> = {};
+    defaultData.name = globalValueData.name;
+    defaultData.value = globalValueData.value;
 
-      return defaultData;
-    }, []);
+    return defaultData;
+  }, []);
 
   const {
     handleSubmit,
     setError,
     control,
     formState: { errors },
-    reset
-  } = useForm({ defaultValues: useMemo(
-    () => createDefaultData(globalValueData),
-    [createDefaultData, globalValueData]
-  ) });
+    reset,
+  } = useForm({
+    defaultValues: useMemo(
+      () => createDefaultData(globalValueData),
+      [createDefaultData, globalValueData]
+    ),
+  });
 
   const onSaveGlobalValue: SubmitHandler<FormValues> = useCallback(
-    ({
-      name, value
-    }) => {
+    ({ name, value }) => {
       if (api === undefined) {
         return;
       }
@@ -89,7 +69,7 @@ const AdminEditGlobalValue: FC = () => {
         .update({
           id,
           name,
-          value
+          value,
         })
         .then(() => {
           const newId = getNewId();
@@ -99,7 +79,7 @@ const AdminEditGlobalValue: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditGlobalValue.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           reloadGlobalValues();
         })
@@ -108,25 +88,19 @@ const AdminEditGlobalValue: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`,
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
     },
-    [
-      api,
-      id,
-      getNewId,
-      createAlert,
-      t,
-      reloadGlobalValues,
-      setError
-    ]
+    [api, id, getNewId, createAlert, t, reloadGlobalValues, setError]
   );
 
   const onAskDelete = useCallback(() => {
@@ -138,14 +112,12 @@ const AdminEditGlobalValue: FC = () => {
         title: t('adminEditGlobalValue.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditGlobalValue.confirmDeletion.text', {
           ns: 'pages',
-          elt: globalValueData?.name
+          elt: globalValueData?.name,
         }),
-        confirmCta: t('adminEditGlobalValue.confirmDeletion.confirmCta', { ns: 'pages' })
+        confirmCta: t('adminEditGlobalValue.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
       (evtId: string) => {
-        const confirmDelete = (
-          { detail }: { detail: ConfirmMessageDetailData }
-        ): void => {
+        const confirmDelete = ({ detail }: { detail: ConfirmMessageDetailData }): void => {
           if (detail.proceed) {
             api.globalValues
               .delete({ id })
@@ -157,7 +129,7 @@ const AdminEditGlobalValue: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditGlobalValue.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  )
+                  ),
                 });
                 reloadGlobalValues();
                 void navigate('/admin/globalvalues');
@@ -167,12 +139,16 @@ const AdminEditGlobalValue: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.globalValue.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.globalValue.name`), 'capitalize'),
+                    }),
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.globalValue.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.globalValue.name`), 'capitalize'),
+                    }),
                   });
                 }
               });
@@ -194,7 +170,7 @@ const AdminEditGlobalValue: FC = () => {
     createAlert,
     reloadGlobalValues,
     navigate,
-    setError
+    setError,
   ]);
 
   useEffect(() => {
@@ -213,26 +189,16 @@ const AdminEditGlobalValue: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    id,
-    t
-  ]);
+  }, [api, createAlert, getNewId, id, t]);
 
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(globalValueData));
-  }, [
-    globalValueData,
-    reset,
-    createDefaultData
-  ]);
+  }, [globalValueData, reset, createDefaultData]);
 
   return (
     <div className="adminEditGlobalValue">
@@ -257,11 +223,9 @@ const AdminEditGlobalValue: FC = () => {
           {t('adminEditGlobalValue.return', { ns: 'pages' })}
         </LinkButton>
         <Atitle level={2}>{t('adminEditGlobalValue.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror className="adminEditGlobalValue__error">{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror className="adminEditGlobalValue__error">{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminEditGlobalValue__basics">
           <Input
             control={control}

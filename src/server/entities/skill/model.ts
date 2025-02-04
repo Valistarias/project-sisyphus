@@ -1,41 +1,39 @@
-import {
-  Schema, model, type HydratedDocument, type Model, type ObjectId
-} from 'mongoose';
+import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
 import type { Lean } from '../../utils/types';
-import type {
-  HydratedINode,
-  ISkillBranch, IStat,
-  LeanINode
-} from '../index';
+import type { HydratedINode, ISkillBranch, IStat, LeanINode } from '../index';
 
 interface ISkill {
   /** The title of the skill */
-  title: string
+  title: string;
   /** A summary of the skill */
-  summary: string
+  summary: string;
   /** A 3 letter string used for the formulas */
-  formulaId: string
+  formulaId: string;
   /** The internationnal content, as a json, stringified */
-  i18n?: string
+  i18n?: string;
   /** The associated stat */
-  stat: ObjectId
+  stat: ObjectId;
   /** When the skill was created */
-  createdAt: Date
+  createdAt: Date;
 }
 
 type LeanISkill = Omit<ISkill, 'stat'> & {
-  stat: IStat
-  branches: Array<Lean<ISkillBranch<string>> & {
-    nodes: LeanINode[]
-  }>
+  stat: IStat;
+  branches: Array<
+    Lean<ISkillBranch<string>> & {
+      nodes: LeanINode[];
+    }
+  >;
 };
 
 type HydratedISkill = HydratedDocument<Omit<ISkill, 'stat'>> & {
-  stat: IStat | string
-  branches: Array<ISkillBranch<string> & {
-    nodes: HydratedINode[]
-  }>
+  stat: IStat | string;
+  branches: Array<
+    ISkillBranch<string> & {
+      nodes: HydratedINode[];
+    }
+  >;
 };
 
 const skillSchema = new Schema<ISkill>(
@@ -46,16 +44,16 @@ const skillSchema = new Schema<ISkill>(
     i18n: String,
     stat: {
       type: Schema.Types.ObjectId,
-      ref: 'Stat'
+      ref: 'Stat',
     },
     createdAt: {
       type: Date,
-      default: Date.now
-    }
+      default: Date.now,
+    },
   },
   {
     toJSON: { virtuals: true },
-    toObject: { virtuals: true }
+    toObject: { virtuals: true },
   }
 );
 
@@ -64,11 +62,9 @@ const skillSchema = new Schema<ISkill>(
 skillSchema.virtual('branches', {
   ref: 'SkillBranch',
   localField: '_id',
-  foreignField: 'skill'
+  foreignField: 'skill',
 });
 
 const SkillModel = (): Model<ISkill> => model('Skill', skillSchema);
 
-export {
-  SkillModel, type HydratedISkill, type ISkill, type LeanISkill
-};
+export { SkillModel, type HydratedISkill, type ISkill, type LeanISkill };

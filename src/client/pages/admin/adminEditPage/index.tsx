@@ -1,30 +1,16 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  useNavigate, useParams
-} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  useApi, useConfirmMessage, useSystemAlerts
-} from '../../../providers';
+import { useApi, useConfirmMessage, useSystemAlerts } from '../../../providers';
 
-import {
-  Aa, Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aa, Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type { ErrorResponseType, ICuratedPage } from '../../../types';
@@ -35,22 +21,17 @@ import { formatDate } from '../../../utils';
 import './adminEditPage.scss';
 
 interface FormValues {
-  name: string
-  nameFr: string
+  name: string;
+  nameFr: string;
 }
 
 const AdminEditPages: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
   const { id } = useParams();
-  const {
-    setConfirmContent,
-    removeConfirmEventListener,
-    addConfirmEventListener
-  } = useConfirmMessage();
+  const { setConfirmContent, removeConfirmEventListener, addConfirmEventListener } =
+    useConfirmMessage();
   const navigate = useNavigate();
 
   const calledApi = useRef<string | null>(null);
@@ -64,21 +45,15 @@ const AdminEditPages: FC = () => {
   const [pageContent, setPageContent] = useState('');
   const [pageContentFr, setPageContentFr] = useState('');
 
-  const introEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const createDefaultData = useCallback((pageData: ICuratedPage | null) => {
     if (pageData == null) {
       return {};
     }
-    const {
-      page, i18n
-    } = pageData;
+    const { page, i18n } = pageData;
     const defaultData: Partial<FormValues> = {};
     defaultData.name = page.title;
     if (i18n.fr !== undefined) {
@@ -93,18 +68,16 @@ const AdminEditPages: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset
-  } = useForm({ defaultValues: useMemo(
-    () => createDefaultData(pageData), [createDefaultData, pageData]
-  ) });
+    reset,
+  } = useForm({
+    defaultValues: useMemo(() => createDefaultData(pageData), [createDefaultData, pageData]),
+  });
 
   const ruleBook = useMemo(() => pageData?.page.chapter.ruleBook, [pageData]);
   const chapter = useMemo(() => pageData?.page.chapter, [pageData]);
 
   const onSavePage: SubmitHandler<FormValues> = useCallback(
-    ({
-      name, nameFr
-    }) => {
+    ({ name, nameFr }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -117,10 +90,12 @@ const AdminEditPages: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          content: htmlFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            content: htmlFr,
+          },
+        };
       }
 
       api.pages
@@ -128,7 +103,7 @@ const AdminEditPages: FC = () => {
           id,
           title: name,
           content: html,
-          i18n
+          i18n,
         })
         .then(() => {
           if (!silentSave.current) {
@@ -139,7 +114,7 @@ const AdminEditPages: FC = () => {
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{t('adminEditPage.successUpdate', { ns: 'pages' })}</Ap>
                 </Alert>
-              )
+              ),
             });
           } else {
             const date = formatDate(new Date(Date.now()));
@@ -147,7 +122,7 @@ const AdminEditPages: FC = () => {
               t('autosave', {
                 date: date.date,
                 hour: date.hour,
-                ns: 'components'
+                ns: 'components',
               })
             );
           }
@@ -158,26 +133,21 @@ const AdminEditPages: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize'),
+              }),
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
     },
-    [
-      introEditor,
-      introFrEditor,
-      api,
-      id,
-      getNewId,
-      createAlert,
-      t,
-      setError
-    ]
+    [introEditor, introFrEditor, api, id, getNewId, createAlert, t, setError]
   );
 
   const onAskDelete = useCallback(() => {
@@ -188,14 +158,13 @@ const AdminEditPages: FC = () => {
       {
         title: t('adminEditPage.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditPage.confirmDeletion.text', {
-          ns: 'pages', elt: chapter.title
+          ns: 'pages',
+          elt: chapter.title,
         }),
-        confirmCta: t('adminEditPage.confirmDeletion.confirmCta', { ns: 'pages' })
+        confirmCta: t('adminEditPage.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
       (evtId: string) => {
-        const confirmDelete = (
-          { detail }: { detail: ConfirmMessageDetailData }
-        ): void => {
+        const confirmDelete = ({ detail }: { detail: ConfirmMessageDetailData }): void => {
           if (detail.proceed) {
             api.pages
               .delete({ id })
@@ -207,7 +176,7 @@ const AdminEditPages: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditPage.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  )
+                  ),
                 });
                 void navigate(`/admin/chapter/${chapter._id}`);
               })
@@ -216,12 +185,16 @@ const AdminEditPages: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize'),
+                    }),
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.pageType.${data.sent}`), 'capitalize'),
+                    }),
                   });
                 }
               });
@@ -242,7 +215,7 @@ const AdminEditPages: FC = () => {
     getNewId,
     createAlert,
     navigate,
-    setError
+    setError,
   ]);
 
   useEffect(() => {
@@ -251,9 +224,7 @@ const AdminEditPages: FC = () => {
       api.pages
         .get({ pageId: id })
         .then((curatedPage) => {
-          const {
-            page, i18n
-          } = curatedPage;
+          const { page, i18n } = curatedPage;
           setPageData(curatedPage);
 
           setPageContent(page.content);
@@ -269,17 +240,11 @@ const AdminEditPages: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    id,
-    t
-  ]);
+  }, [api, createAlert, getNewId, id, t]);
 
   // The Autosave
   useEffect(() => {
@@ -301,11 +266,7 @@ const AdminEditPages: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(pageData));
-  }, [
-    pageData,
-    reset,
-    createDefaultData
-  ]);
+  }, [pageData, reset, createDefaultData]);
 
   return (
     <div className="adminEditPage">
@@ -334,11 +295,9 @@ const AdminEditPages: FC = () => {
           noValidate
           className="adminEditPage__content__left"
         >
-          {errors.root?.serverError.message !== undefined
-            ? (
-                <Aerror>{errors.root.serverError.message}</Aerror>
-              )
-            : null}
+          {errors.root?.serverError.message !== undefined ? (
+            <Aerror>{errors.root.serverError.message}</Aerror>
+          ) : null}
           <div className="adminEditPage__basics">
             <Input
               control={control}

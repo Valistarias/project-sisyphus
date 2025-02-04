@@ -1,42 +1,36 @@
-import {
-  Schema, model, type HydratedDocument, type Model, type ObjectId
-} from 'mongoose';
+import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
 import type { HydratedIStat } from '../../stat/model';
 
 interface IBodyStat {
   /** When the body was created */
-  createdAt: Date
+  createdAt: Date;
   /** The body targeted */
-  body: ObjectId
+  body: ObjectId;
   /** The linked Stat */
-  stat: ObjectId
+  stat: ObjectId;
   /** What is the actual value of this stat */
-  value: number
+  value: number;
 }
 
-type HydratedIBodyStat = HydratedDocument<
-  Omit<IBodyStat, 'stat'> & { stat: HydratedIStat }
->;
+type HydratedIBodyStat = HydratedDocument<Omit<IBodyStat, 'stat'> & { stat: HydratedIStat }>;
 
 const BodyStatSchema = new Schema<IBodyStat>({
   body: {
     type: Schema.Types.ObjectId,
-    ref: 'Body'
+    ref: 'Body',
   },
   stat: {
     type: Schema.Types.ObjectId,
-    ref: 'Stat'
+    ref: 'Stat',
   },
   value: Number,
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 const BodyStatModel = (): Model<IBodyStat> => model('BodyStat', BodyStatSchema);
 
-export {
-  BodyStatModel, type HydratedIBodyStat, type IBodyStat
-};
+export { BodyStatModel, type HydratedIBodyStat, type IBodyStat };

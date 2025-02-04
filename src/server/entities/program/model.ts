@@ -1,59 +1,52 @@
-import {
-  Schema, model, type HydratedDocument, type Model, type ObjectId
-} from 'mongoose';
+import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
 import type { Lean } from '../../utils/types';
-import type {
-  HydratedIDamage,
-  HydratedINPC,
-  IDamage,
-  INPC
-} from '../index';
+import type { HydratedIDamage, HydratedINPC, IDamage, INPC } from '../index';
 
 interface IProgram<IdType> {
   /** The title of the program */
-  title: string
+  title: string;
   /** A summary of the program */
-  summary: string
+  summary: string;
   /** The internationnal content, as a json, stringified */
-  i18n?: string
+  i18n?: string;
   /** The rarity of the program */
-  rarity: IdType
+  rarity: IdType;
   /** Is this weapon in the starter kit ?
    * (always -> element included, never -> not included, option -> can be chosen with similar weapons) */
-  starterKit?: 'always' | 'never' | 'option'
+  starterKit?: 'always' | 'never' | 'option';
   /** The type of item */
-  itemType: IdType
+  itemType: IdType;
   /** The type of program, as his range or type */
-  programScope: IdType
+  programScope: IdType;
   /** How many times the program is usable before detroying itseld (undefined | 0 = no limits) */
-  uses: number
+  uses: number;
   /** How many RAM it costs */
-  ram: number
+  ram: number;
   /** How many meters it blasts (in meter) */
-  radius?: number
+  radius?: number;
   /** The cost of the program */
-  cost: number
+  cost: number;
   /** The summon of the program */
-  ai?: IdType
+  ai?: IdType;
   /** How many AIs the program summons */
-  aiSummoned?: number
+  aiSummoned?: number;
   /** The damages of the program */
-  damages?: IdType[]
+  damages?: IdType[];
   /** When the program was created */
-  createdAt: Date
+  createdAt: Date;
 }
 
 type HydratedIProgram = HydratedDocument<
   Omit<IProgram<string>, 'damages' | 'ai'> & {
-    damages: HydratedIDamage[] | string[]
-    ai?: HydratedINPC | string
+    damages: HydratedIDamage[] | string[];
+    ai?: HydratedINPC | string;
   }
 >;
 
 type LeanIProgram = Omit<Lean<IProgram<string>>, 'damages' | 'ai'> & {
-  damages: IDamage[]
-  ai?: INPC
+  damages: IDamage[];
+  ai?: INPC;
 };
 
 const programSchema = new Schema<IProgram<ObjectId>>({
@@ -65,40 +58,38 @@ const programSchema = new Schema<IProgram<ObjectId>>({
   i18n: String,
   rarity: {
     type: Schema.Types.ObjectId,
-    ref: 'Rarity'
+    ref: 'Rarity',
   },
   starterKit: {
     type: String,
-    default: 'never'
+    default: 'never',
   },
   itemType: {
     type: Schema.Types.ObjectId,
-    ref: 'ItemType'
+    ref: 'ItemType',
   },
   programScope: {
     type: Schema.Types.ObjectId,
-    ref: 'ProgramScope'
+    ref: 'ProgramScope',
   },
   ai: {
     type: Schema.Types.ObjectId,
-    ref: 'NPC'
+    ref: 'NPC',
   },
   damages: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'Damage'
-    }
+      ref: 'Damage',
+    },
   ],
   uses: Number,
   cost: Number,
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 const ProgramModel = (): Model<IProgram<ObjectId>> => model('Program', programSchema);
 
-export {
-  ProgramModel, type HydratedIProgram, type IProgram, type LeanIProgram
-};
+export { ProgramModel, type HydratedIProgram, type IProgram, type LeanIProgram };

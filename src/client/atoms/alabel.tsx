@@ -1,10 +1,6 @@
-import React, {
-  type FC, type ReactNode
-} from 'react';
+import React, { type FC, type ReactNode } from 'react';
 
-import {
-  Quark, type IQuarkProps
-} from '../quark';
+import { Quark, type IQuarkProps } from '../quark';
 
 import { classTrim } from '../utils';
 
@@ -12,14 +8,12 @@ import './alabel.scss';
 
 interface IALabel {
   /** Is the label connected to any field */
-  htmlFor?: string
+  htmlFor?: string;
   /** The childrens of the P element */
-  children: ReactNode
+  children: ReactNode;
 }
 
-const ALabel: FC<IQuarkProps<IALabel>> = ({
-  className, children, htmlFor
-}) => (
+const ALabel: FC<IQuarkProps<IALabel>> = ({ className, children, htmlFor }) => (
   <Quark
     quarkType="label"
     htmlFor={htmlFor}

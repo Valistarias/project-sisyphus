@@ -1,8 +1,6 @@
 import type { Router } from 'express';
 
-import {
-  adminNeeded, verifyToken
-} from '../../middlewares';
+import { adminNeeded, verifyToken } from '../../middlewares';
 
 import {
   create,
@@ -10,7 +8,7 @@ import {
   findAll,
   findAllByFrame,
   findSingle,
-  update
+  update,
 } from './controller';
 
 export default (app: Router): void => {

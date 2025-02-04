@@ -1,31 +1,16 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  useNavigate, useParams
-} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input,
-  LinkButton
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input, LinkButton } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type { ErrorResponseType, ICuratedCharParam } from '../../../types';
@@ -34,25 +19,20 @@ import type { InternationalizationType } from '../../../types/global';
 import './adminEditCharParam.scss';
 
 interface FormValues {
-  name: string
-  short: string
-  nameFr: string
-  shortFr: string
-  formulaId: string
+  name: string;
+  short: string;
+  nameFr: string;
+  shortFr: string;
+  formulaId: string;
 }
 
 const AdminEditCharParam: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
   const { reloadCharParams } = useGlobalVars();
-  const {
-    setConfirmContent,
-    removeConfirmEventListener,
-    addConfirmEventListener
-  } = useConfirmMessage();
+  const { setConfirmContent, removeConfirmEventListener, addConfirmEventListener } =
+    useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -60,60 +40,48 @@ const AdminEditCharParam: FC = () => {
   const saveTimer = useRef<NodeJS.Timeout | null>(null);
   const silentSave = useRef(false);
 
-  const [charParamData, setCharParamData]
-  = useState<ICuratedCharParam | null>(null);
+  const [charParamData, setCharParamData] = useState<ICuratedCharParam | null>(null);
 
   const [charParamText, setCharParamText] = useState('');
   const [charParamTextFr, setCharParamTextFr] = useState('');
 
-  const textEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const textFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const createDefaultData = useCallback(
-    (charParamData: ICuratedCharParam | null) => {
-      if (charParamData == null) {
-        return {};
-      }
-      const {
-        charParam, i18n
-      } = charParamData;
-      const defaultData: Partial<FormValues> = {};
-      defaultData.name = charParam.title;
-      defaultData.short = charParam.short;
-      defaultData.formulaId = charParam.formulaId;
-      if (i18n.fr !== undefined) {
-        defaultData.nameFr = i18n.fr.title ?? '';
-        defaultData.shortFr = i18n.fr.short ?? '';
-      }
+  const createDefaultData = useCallback((charParamData: ICuratedCharParam | null) => {
+    if (charParamData == null) {
+      return {};
+    }
+    const { charParam, i18n } = charParamData;
+    const defaultData: Partial<FormValues> = {};
+    defaultData.name = charParam.title;
+    defaultData.short = charParam.short;
+    defaultData.formulaId = charParam.formulaId;
+    if (i18n.fr !== undefined) {
+      defaultData.nameFr = i18n.fr.title ?? '';
+      defaultData.shortFr = i18n.fr.short ?? '';
+    }
 
-      return defaultData;
-    }, []);
+    return defaultData;
+  }, []);
 
   const {
     handleSubmit,
     setError,
     control,
     formState: { errors },
-    reset
-  } = useForm({ defaultValues: useMemo(
-    () => createDefaultData(charParamData),
-    [createDefaultData, charParamData]
-  ) });
+    reset,
+  } = useForm({
+    defaultValues: useMemo(
+      () => createDefaultData(charParamData),
+      [createDefaultData, charParamData]
+    ),
+  });
 
   const onSaveCharParam: SubmitHandler<FormValues> = useCallback(
-    ({
-      name, nameFr, short, shortFr, formulaId
-    }) => {
-      if (
-        textEditor === null
-        || textFrEditor === null
-        || api === undefined
-      ) {
+    ({ name, nameFr, short, shortFr, formulaId }) => {
+      if (textEditor === null || textFrEditor === null || api === undefined) {
         return;
       }
       let htmlText: string | null = textEditor.getHTML();
@@ -127,11 +95,13 @@ const AdminEditCharParam: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          short: shortFr,
-          text: htmlTextFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            short: shortFr,
+            text: htmlTextFr,
+          },
+        };
       }
 
       api.charParams
@@ -141,7 +111,7 @@ const AdminEditCharParam: FC = () => {
           short,
           formulaId,
           summary: htmlText,
-          i18n
+          i18n,
         })
         .then((charParam) => {
           const newId = getNewId();
@@ -151,7 +121,7 @@ const AdminEditCharParam: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditCharParam.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           reloadCharParams();
         })
@@ -160,27 +130,19 @@ const AdminEditCharParam: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`,
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
     },
-    [
-      textEditor,
-      textFrEditor,
-      api,
-      id,
-      getNewId,
-      createAlert,
-      t,
-      reloadCharParams,
-      setError
-    ]
+    [textEditor, textFrEditor, api, id, getNewId, createAlert, t, reloadCharParams, setError]
   );
 
   const onAskDelete = useCallback(() => {
@@ -192,14 +154,12 @@ const AdminEditCharParam: FC = () => {
         title: t('adminEditCharParam.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditCharParam.confirmDeletion.text', {
           ns: 'pages',
-          elt: charParamData?.charParam.title
+          elt: charParamData?.charParam.title,
         }),
-        confirmCta: t('adminEditCharParam.confirmDeletion.confirmCta', { ns: 'pages' })
+        confirmCta: t('adminEditCharParam.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
       (evtId: string) => {
-        const confirmDelete = (
-          { detail }: { detail: ConfirmMessageDetailData }
-        ): void => {
+        const confirmDelete = ({ detail }: { detail: ConfirmMessageDetailData }): void => {
           if (detail.proceed) {
             api.charParams
               .delete({ id })
@@ -211,7 +171,7 @@ const AdminEditCharParam: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditCharParam.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  )
+                  ),
                 });
                 reloadCharParams();
                 void navigate('/admin/charparams');
@@ -221,12 +181,16 @@ const AdminEditCharParam: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charParam.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.charParam.name`), 'capitalize'),
+                    }),
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charParam.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.charParam.name`), 'capitalize'),
+                    }),
                   });
                 }
               });
@@ -248,7 +212,7 @@ const AdminEditCharParam: FC = () => {
     createAlert,
     reloadCharParams,
     navigate,
-    setError
+    setError,
   ]);
 
   useEffect(() => {
@@ -257,9 +221,7 @@ const AdminEditCharParam: FC = () => {
       api.charParams
         .get({ charParamId: id })
         .then((curatedCharParam) => {
-          const {
-            charParam, i18n
-          } = curatedCharParam;
+          const { charParam, i18n } = curatedCharParam;
           setCharParamData(curatedCharParam);
           setCharParamText(charParam.summary);
           if (i18n.fr !== undefined) {
@@ -274,17 +236,11 @@ const AdminEditCharParam: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    id,
-    t
-  ]);
+  }, [api, createAlert, getNewId, id, t]);
 
   // The Autosave
   useEffect(() => {
@@ -306,11 +262,7 @@ const AdminEditCharParam: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(charParamData));
-  }, [
-    charParamData,
-    reset,
-    createDefaultData
-  ]);
+  }, [charParamData, reset, createDefaultData]);
 
   return (
     <div className="adminEditCharParam">
@@ -327,14 +279,16 @@ const AdminEditCharParam: FC = () => {
             {t('adminEditCharParam.delete', { ns: 'pages' })}
           </Button>
         </div>
-        <LinkButton className="adminEditCharParam__return-btn" href="/admin/charparams" size="small">
+        <LinkButton
+          className="adminEditCharParam__return-btn"
+          href="/admin/charparams"
+          size="small"
+        >
           {t('adminEditCharParam.return', { ns: 'pages' })}
         </LinkButton>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror className="adminEditCharParam__error">{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror className="adminEditCharParam__error">{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminEditCharParam__basics">
           <Input
             control={control}
@@ -368,8 +322,8 @@ const AdminEditCharParam: FC = () => {
               required: t('charParamFormula.required', { ns: 'fields' }),
               pattern: {
                 value: /^([a-z]){2,3}$/,
-                message: t('charParamFormula.format', { ns: 'fields' })
-              }
+                message: t('charParamFormula.format', { ns: 'fields' }),
+              },
             }}
             label={t('charParamFormula.label', { ns: 'fields' })}
           />

@@ -1,22 +1,12 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 
 import db from '../../models';
-import {
-  gemInvalidField, gemNotFound, gemServerError
-} from '../../utils/globalErrorMessage';
+import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
-import type {
-  ICharParam, INode
-} from '../index';
-import type {
-  HydratedICharParamBonus
-} from './model';
+import type { ICharParam, INode } from '../index';
+import type { HydratedICharParamBonus } from './model';
 
-const {
-  CharParamBonus, Node
-} = db;
+const { CharParamBonus, Node } = db;
 
 const findCharParamBonuses = async (): Promise<HydratedICharParamBonus[]> =>
   await new Promise((resolve, reject) => {
@@ -34,9 +24,7 @@ const findCharParamBonuses = async (): Promise<HydratedICharParamBonus[]> =>
       });
   });
 
-const findCharParamBonusById = async (
-  id: string
-): Promise<HydratedICharParamBonus> =>
+const findCharParamBonusById = async (id: string): Promise<HydratedICharParamBonus> =>
   await new Promise((resolve, reject) => {
     CharParamBonus.findById(id)
       .populate<{ charParam: ICharParam }>('charParam')
@@ -54,8 +42,8 @@ const findCharParamBonusById = async (
 
 const createReadCharParamBonus = (
   elts: Array<{
-    charParam: string
-    value: number
+    charParam: string;
+    value: number;
   }>,
   ids: string[],
   cb: (err: unknown, res?: string[]) => void
@@ -98,9 +86,7 @@ const createReadCharParamBonus = (
     });
 };
 
-const smartDeleteCharParamBonus = (
-  elts: string[],
-  cb: (err: unknown) => void): void => {
+const smartDeleteCharParamBonus = (elts: string[], cb: (err: unknown) => void): void => {
   if (elts.length === 0) {
     cb(null);
 
@@ -133,39 +119,33 @@ const smartDeleteCharParamBonus = (
 const curateCharParamBonusIds = async ({
   charParamBonusesToRemove,
   charParamBonusesToAdd,
-  charParamBonusesToStay
+  charParamBonusesToStay,
 }: {
-  charParamBonusesToRemove: string[]
+  charParamBonusesToRemove: string[];
   charParamBonusesToAdd: Array<{
-    charParam: string
-    value: number
-  }>
-  charParamBonusesToStay: string[]
+    charParam: string;
+    value: number;
+  }>;
+  charParamBonusesToStay: string[];
 }): Promise<string[]> =>
   await new Promise((resolve, reject) => {
     smartDeleteCharParamBonus(charParamBonusesToRemove, (err: unknown) => {
       if (err !== null) {
         reject(err);
       } else {
-        createReadCharParamBonus(
-          charParamBonusesToAdd,
-          [],
-          (err: unknown, res?: string[]) => {
-            if (err !== null) {
-              reject(err);
-            } else {
-              resolve([...charParamBonusesToStay, ...(res ?? [])]);
-            }
+        createReadCharParamBonus(charParamBonusesToAdd, [], (err: unknown, res?: string[]) => {
+          if (err !== null) {
+            reject(err);
+          } else {
+            resolve([...charParamBonusesToStay, ...(res ?? [])]);
           }
-        );
+        });
       }
     });
   });
 
 const create = (req: Request, res: Response): void => {
-  const {
-    charParam, value
-  } = req.body;
+  const { charParam, value } = req.body;
   if (charParam === undefined || value === undefined) {
     res.status(400).send(gemInvalidField('CharParamBonus'));
 
@@ -174,7 +154,7 @@ const create = (req: Request, res: Response): void => {
 
   const charParamBonus = new CharParamBonus({
     charParam,
-    value
+    value,
   });
 
   charParamBonus
@@ -188,9 +168,7 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const {
-    id, charParam = null, value = null
-  } = req.body;
+  const { id, charParam = null, value = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('CharParamBonus ID'));
 
@@ -209,7 +187,8 @@ const update = (req: Request, res: Response): void => {
         .save()
         .then(() => {
           res.send({
-            message: 'CharParam bonus was updated successfully!', charParamBonus
+            message: 'CharParam bonus was updated successfully!',
+            charParamBonus,
           });
         })
         .catch((err: unknown) => {
@@ -279,5 +258,5 @@ export {
   findAll,
   findCharParamBonusById,
   findSingle,
-  update
+  update,
 };

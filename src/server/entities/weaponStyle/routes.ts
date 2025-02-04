@@ -1,12 +1,8 @@
 import type { Router } from 'express';
 
-import {
-  adminNeeded, verifyToken
-} from '../../middlewares';
+import { adminNeeded, verifyToken } from '../../middlewares';
 
-import {
-  create, deleteWeaponStyle, findAll, findSingle, update
-} from './controller';
+import { create, deleteWeaponStyle, findAll, findSingle, update } from './controller';
 
 export default (app: Router): void => {
   app.use((req, res, next) => {
@@ -22,9 +18,5 @@ export default (app: Router): void => {
 
   app.post('/weaponstyles/update', [verifyToken, adminNeeded], update);
 
-  app.post(
-    '/weaponstyles/delete',
-    [verifyToken, adminNeeded],
-    deleteWeaponStyle
-  );
+  app.post('/weaponstyles/delete', [verifyToken, adminNeeded], deleteWeaponStyle);
 };

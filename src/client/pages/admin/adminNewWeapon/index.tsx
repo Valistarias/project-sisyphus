@@ -1,28 +1,16 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  useApi, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input, SmartSelect
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input, SmartSelect } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 import { possibleStarterKitValues } from '../../../types/items';
 
 import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
@@ -32,64 +20,62 @@ import { isThereDuplicate } from '../../../utils';
 import './adminNewWeapon.scss';
 
 interface FormValues {
-  name: string
-  nameFr: string
-  quote: string
-  quoteFr: string
-  starterKit: string
-  weaponType: string
-  weaponScope: string
-  magasine?: number
-  ammoPerShot?: number
-  cost: number
-  rarity: string
-  itemModifiers: string[]
+  name: string;
+  nameFr: string;
+  quote: string;
+  quoteFr: string;
+  starterKit: string;
+  weaponType: string;
+  weaponScope: string;
+  magasine?: number;
+  ammoPerShot?: number;
+  cost: number;
+  rarity: string;
+  itemModifiers: string[];
   damages?: Record<
     string,
     {
-      damageType: string
-      dices: string
+      damageType: string;
+      dices: string;
     }
-  >
+  >;
   effects?: Record<
     string,
     {
-      title: string
-      titleFr?: string
-      summary: string
-      summaryFr?: string
-      type: string
-      formula?: string
+      title: string;
+      titleFr?: string;
+      summary: string;
+      summaryFr?: string;
+      type: string;
+      formula?: string;
     }
-  >
+  >;
   actions?: Record<
     string,
     {
-      title: string
-      titleFr?: string
-      summary: string
-      summaryFr?: string
-      type: string
-      skill: string
-      duration: string
-      time?: string
-      timeFr?: string
-      damages?: string
-      offsetSkill?: string
-      uses?: number
-      isKarmic?: boolean
-      karmicCost?: number
+      title: string;
+      titleFr?: string;
+      summary: string;
+      summaryFr?: string;
+      type: string;
+      skill: string;
+      duration: string;
+      time?: string;
+      timeFr?: string;
+      damages?: string;
+      offsetSkill?: string;
+      uses?: number;
+      isKarmic?: boolean;
+      karmicCost?: number;
     }
-  >
+  >;
 }
 
 const AdminNewWeapon: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const navigate = useNavigate();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
   const {
     weaponTypes,
     weaponScopes,
@@ -98,7 +84,7 @@ const AdminNewWeapon: FC = () => {
     damageTypes,
     actionTypes,
     actionDurations,
-    skills
+    skills,
   } = useGlobalVars();
 
   const [, setLoading] = useState(true);
@@ -109,77 +95,87 @@ const AdminNewWeapon: FC = () => {
   const [effectIds, setEffectIds] = useState<number[]>([]);
   const [actionIds, setActionIds] = useState<number[]>([]);
 
-  const introEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const {
     handleSubmit,
     setError,
     control,
     formState: { errors },
-    unregister
+    unregister,
   } = useForm();
 
   // TODO: Internationalization
-  const weaponTypeList = useMemo(() => weaponTypes.map(({ weaponType }) => ({
-    value: weaponType._id,
-    label: weaponType.title
-  })), [weaponTypes]);
+  const weaponTypeList = useMemo(
+    () =>
+      weaponTypes.map(({ weaponType }) => ({
+        value: weaponType._id,
+        label: weaponType.title,
+      })),
+    [weaponTypes]
+  );
 
-  const weaponScopeList = useMemo(() => weaponScopes.map(({ weaponScope }) => ({
-    value: weaponScope._id,
-    label: weaponScope.title
-  })), [weaponScopes]);
+  const weaponScopeList = useMemo(
+    () =>
+      weaponScopes.map(({ weaponScope }) => ({
+        value: weaponScope._id,
+        label: weaponScope.title,
+      })),
+    [weaponScopes]
+  );
 
-  const damageTypeList = useMemo(() => damageTypes.map(({ damageType }) => ({
-    value: damageType._id,
-    label: damageType.title
-  })), [damageTypes]);
+  const damageTypeList = useMemo(
+    () =>
+      damageTypes.map(({ damageType }) => ({
+        value: damageType._id,
+        label: damageType.title,
+      })),
+    [damageTypes]
+  );
 
   const itemModifierList = useMemo(
-    () => itemModifiers.map(({ itemModifier }
-    ) => ({
-      value: itemModifier._id,
-      label: itemModifier.title
-    })), [itemModifiers]);
+    () =>
+      itemModifiers.map(({ itemModifier }) => ({
+        value: itemModifier._id,
+        label: itemModifier.title,
+      })),
+    [itemModifiers]
+  );
 
-  const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
-    value: rarity._id,
-    label: rarity.title
-  })), [rarities]);
+  const rarityList = useMemo(
+    () =>
+      rarities.map(({ rarity }) => ({
+        value: rarity._id,
+        label: rarity.title,
+      })),
+    [rarities]
+  );
 
   const actionTypeSelect = useMemo(
     () =>
-      actionTypes.map(({
-        name, _id
-      }) => ({
+      actionTypes.map(({ name, _id }) => ({
         value: _id,
-        label: t(`terms.actionType.${name}`)
+        label: t(`terms.actionType.${name}`),
       })),
     [actionTypes, t]
   );
 
   const starterKitList = useMemo(
     () =>
-      possibleStarterKitValues.map(possibleStarterKitValue => ({
+      possibleStarterKitValues.map((possibleStarterKitValue) => ({
         value: possibleStarterKitValue,
-        label: t(`terms.starterKit.${possibleStarterKitValue}`)
+        label: t(`terms.starterKit.${possibleStarterKitValue}`),
       })),
     [t]
   );
 
   const actionDurationSelect = useMemo(
     () =>
-      actionDurations.map(({
-        name, _id
-      }) => ({
+      actionDurations.map(({ name, _id }) => ({
         value: _id,
-        label: t(`terms.actionDuration.${name}`)
+        label: t(`terms.actionDuration.${name}`),
       })),
     [actionDurations, t]
   );
@@ -189,7 +185,7 @@ const AdminNewWeapon: FC = () => {
       skills.map(({ skill }) => ({
         value: skill._id,
         // TODO : Handle Internationalization
-        label: skill.title
+        label: skill.title,
       })),
     [skills]
   );
@@ -198,12 +194,12 @@ const AdminNewWeapon: FC = () => {
     () => [
       {
         value: '1',
-        label: t('terms.general.yes')
+        label: t('terms.general.yes'),
       },
       {
         value: '0',
-        label: t('terms.general.no')
-      }
+        label: t('terms.general.no'),
+      },
     ],
     [t]
   );
@@ -254,13 +250,9 @@ const AdminNewWeapon: FC = () => {
       ammoPerShot,
       damages,
       effects,
-      actions
+      actions,
     }) => {
-      if (
-        introEditor === null
-        || introFrEditor === null
-        || api === undefined
-      ) {
+      if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
 
@@ -268,41 +260,39 @@ const AdminNewWeapon: FC = () => {
       const sortedDamages = damages !== undefined ? Object.values(damages) : [];
       let duplicateDamages = false;
       if (sortedDamages.length > 0) {
-        duplicateDamages = isThereDuplicate(
-          sortedDamages.map(damage => damage.damageType)
-        );
+        duplicateDamages = isThereDuplicate(sortedDamages.map((damage) => damage.damageType));
       }
       if (duplicateDamages) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminNewNode.errorDuplicateCharParam', { ns: 'pages' })
+          message: t('adminNewNode.errorDuplicateCharParam', { ns: 'pages' }),
         });
 
         return;
       }
 
-      const curatedDamages = sortedDamages.map(({
-        damageType, dices
-      }) => ({
+      const curatedDamages = sortedDamages.map(({ damageType, dices }) => ({
         damageType,
-        dices
+        dices,
       }));
 
       const effectsArr = effects !== undefined ? Object.values(effects) : [];
       const curatedEffects = effectsArr.map(
-        ({
-          formula, type, title, summary, titleFr, summaryFr
-        }) => ({
+        ({ formula, type, title, summary, titleFr, summaryFr }) => ({
           title,
           summary,
           formula,
           type,
-          i18n: { ...(titleFr !== undefined || summaryFr !== undefined
-            ? { fr: {
-                title: titleFr,
-                summary: summaryFr
-              } }
-            : {}) }
+          i18n: {
+            ...(titleFr !== undefined || summaryFr !== undefined
+              ? {
+                  fr: {
+                    title: titleFr,
+                    summary: summaryFr,
+                  },
+                }
+              : {}),
+          },
         })
       );
 
@@ -323,7 +313,7 @@ const AdminNewWeapon: FC = () => {
           uses,
           isKarmic,
           karmicCost,
-          summaryFr
+          summaryFr,
         }) => ({
           title,
           summary,
@@ -336,16 +326,17 @@ const AdminNewWeapon: FC = () => {
           uses,
           isKarmic: String(isKarmic) === '1',
           karmicCost,
-          i18n: { ...(
-            titleFr !== undefined
-            || summaryFr !== undefined
-            || timeFr !== undefined
-              ? { fr: {
-                  title: titleFr,
-                  summary: summaryFr,
-                  time: timeFr
-                } }
-              : {}) }
+          i18n: {
+            ...(titleFr !== undefined || summaryFr !== undefined || timeFr !== undefined
+              ? {
+                  fr: {
+                    title: titleFr,
+                    summary: summaryFr,
+                    time: timeFr,
+                  },
+                }
+              : {}),
+          },
         })
       );
 
@@ -358,11 +349,13 @@ const AdminNewWeapon: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          summary: htmlFr,
-          quote: quoteFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            summary: htmlFr,
+            quote: quoteFr,
+          },
+        };
       }
 
       api.weapons
@@ -376,14 +369,12 @@ const AdminNewWeapon: FC = () => {
           starterKit,
           summary: html,
           magasine: magasine !== undefined ? Number(magasine) : undefined,
-          ammoPerShot: ammoPerShot !== undefined
-            ? Number(ammoPerShot)
-            : undefined,
+          ammoPerShot: ammoPerShot !== undefined ? Number(ammoPerShot) : undefined,
           i18n,
           quote,
           damages: curatedDamages,
           effects: curatedEffects,
-          actions: curatedActions
+          actions: curatedActions,
         })
         .then((weaponType) => {
           const newId = getNewId();
@@ -393,7 +384,7 @@ const AdminNewWeapon: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewWeapon.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           void navigate(`/admin/weapon/${weaponType._id}`);
         })
@@ -401,20 +392,13 @@ const AdminNewWeapon: FC = () => {
           const { data } = response;
           setError('root.serverError', {
             type: 'server',
-            message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
+            message: t(`serverErrors.${data.code}`, {
+              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
+            }),
           });
         });
     },
-    [
-      introEditor,
-      introFrEditor,
-      api,
-      getNewId,
-      createAlert,
-      t,
-      navigate,
-      setError
-    ]
+    [introEditor, introFrEditor, api, getNewId, createAlert, t, navigate, setError]
   );
 
   useEffect(() => {
@@ -422,12 +406,7 @@ const AdminNewWeapon: FC = () => {
       setLoading(true);
       calledApi.current = true;
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    t
-  ]);
+  }, [api, createAlert, getNewId, t]);
 
   return (
     <div className="adminNewWeapon">
@@ -439,11 +418,9 @@ const AdminNewWeapon: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewWeapon.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror>{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminNewWeapon__basics">
           <Input
             control={control}
@@ -539,7 +516,7 @@ const AdminNewWeapon: FC = () => {
         </Atitle>
         <div className="adminNewWeapon__bonuses">
           <div className="adminNewWeapon__bonuses__elts">
-            {damagesIds.map(damagesId => (
+            {damagesIds.map((damagesId) => (
               <div className="adminNewWeapon__bonus" key={`damage-${damagesId}`}>
                 <Atitle className="adminNewWeapon__bonus__title" level={4}>
                   {t('adminNewWeapon.damageTitle', { ns: 'pages' })}
@@ -566,7 +543,7 @@ const AdminNewWeapon: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setDamagesIds(prev =>
+                    setDamagesIds((prev) =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== damagesId) {
                           result.push(elt);
@@ -581,7 +558,7 @@ const AdminNewWeapon: FC = () => {
                 />
               </div>
             ))}
-            {effectIds.map(effectId => (
+            {effectIds.map((effectId) => (
               <div className="adminNewWeapon__bonus" key={`charParam-${effectId}`}>
                 <Atitle className="adminNewWeapon__bonus__title" level={4}>
                   {t('adminNewWeapon.effectTitle', { ns: 'pages' })}
@@ -637,7 +614,7 @@ const AdminNewWeapon: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setEffectIds(prev =>
+                    setEffectIds((prev) =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== effectId) {
                           result.push(elt);
@@ -652,7 +629,7 @@ const AdminNewWeapon: FC = () => {
                 />
               </div>
             ))}
-            {actionIds.map(actionId => (
+            {actionIds.map((actionId) => (
               <div className="adminNewWeapon__bonus" key={`charParam-${actionId}`}>
                 <Atitle className="adminNewWeapon__bonus__title" level={4}>
                   {t('adminNewWeapon.actionTitle', { ns: 'pages' })}
@@ -708,9 +685,9 @@ const AdminNewWeapon: FC = () => {
                     options={[
                       {
                         value: '',
-                        label: ''
+                        label: '',
                       },
-                      ...skillSelect
+                      ...skillSelect,
                     ]}
                     className="adminNewWeapon__bonus__select adminNewWeapon__bonus__value--s"
                   />
@@ -768,7 +745,7 @@ const AdminNewWeapon: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setActionIds(prev =>
+                    setActionIds((prev) =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== actionId) {
                           result.push(elt);

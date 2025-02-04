@@ -1,25 +1,15 @@
-import React, {
-  useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useMemo, useRef, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../providers';
 
-import {
-  Ali, Ap, Atitle, Aul
-} from '../atoms';
+import { Ali, Ap, Atitle, Aul } from '../atoms';
 import { PropDisplay } from '../molecules';
-import {
-  Quark, type IQuarkProps
-} from '../quark';
+import { Quark, type IQuarkProps } from '../quark';
 
-import type {
-  ICuratedProgram, ICuratedProgramScope, ICuratedRarity
-} from '../types';
-import type {
-  ICuratedDamageType, IDamage, IProgram
-} from '../types/items';
+import type { ICuratedProgram, ICuratedProgramScope, ICuratedRarity } from '../types';
+import type { ICuratedDamageType, IDamage, IProgram } from '../types/items';
 
 import { classTrim } from '../utils';
 
@@ -27,32 +17,28 @@ import './programDisplay.scss';
 
 interface IProgramDisplay {
   /** The program to be displayed */
-  program: ICuratedProgram
+  program: ICuratedProgram;
   /** The display mode */
-  mode?: 'basic' | 'hover'
+  mode?: 'basic' | 'hover';
 }
 
 interface ICompleteDamage extends Omit<IDamage, 'damageType'> {
-  damageType: ICuratedDamageType | undefined
+  damageType: ICuratedDamageType | undefined;
 }
 
 interface ICompleteProgram extends Omit<IProgram, 'programScope' | 'rarity' | 'damages'> {
-  programScope: ICuratedProgramScope | undefined
-  rarity: ICuratedRarity | undefined
-  damages: ICompleteDamage[]
+  programScope: ICuratedProgramScope | undefined;
+  rarity: ICuratedRarity | undefined;
+  damages: ICompleteDamage[];
 }
 
 interface ICuratedCompleteProgram extends Omit<ICuratedProgram, 'program'> {
-  program: ICompleteProgram
+  program: ICompleteProgram;
 }
 
-const ProgramDisplay: FC<IQuarkProps<IProgramDisplay>> = ({
-  program, mode = 'basic'
-}) => {
+const ProgramDisplay: FC<IQuarkProps<IProgramDisplay>> = ({ program, mode = 'basic' }) => {
   const { t } = useTranslation();
-  const {
-    programScopes, rarities, damageTypes
-  } = useGlobalVars();
+  const { programScopes, rarities, damageTypes } = useGlobalVars();
 
   const [placement, setPlacement] = useState<string>('left');
   const domBlockContent = useRef<HTMLDivElement>(null);
@@ -61,37 +47,26 @@ const ProgramDisplay: FC<IQuarkProps<IProgramDisplay>> = ({
     if (programScopes.length === 0) {
       return null;
     }
-    const {
-      program: programObj, i18n
-    } = program;
+    const { program: programObj, i18n } = program;
 
     return {
       program: {
         ...programObj,
         programScope: programScopes.find(
-          programScope =>
-            programScope.programScope._id === programObj.programScope
+          (programScope) => programScope.programScope._id === programObj.programScope
         ),
-        rarity: rarities.find(
-          rarity => rarity.rarity._id === programObj.rarity
-        ),
+        rarity: rarities.find((rarity) => rarity.rarity._id === programObj.rarity),
         damages:
-          programObj.damages?.map(programDamage => ({
+          programObj.damages?.map((programDamage) => ({
             ...programDamage,
             damageType: damageTypes.find(
-              damageType =>
-                damageType.damageType._id === programDamage.damageType
-            )
-          })) ?? []
+              (damageType) => damageType.damageType._id === programDamage.damageType
+            ),
+          })) ?? [],
       },
-      i18n
+      i18n,
     };
-  }, [
-    programScopes,
-    program,
-    rarities,
-    damageTypes
-  ]);
+  }, [programScopes, program, rarities, damageTypes]);
 
   const handleMouseEnter = (): void => {
     if (mode === 'hover') {
@@ -129,13 +104,13 @@ const ProgramDisplay: FC<IQuarkProps<IProgramDisplay>> = ({
         title={program.title}
         subTitle={`${scope?.programScope.title}${program.radius !== undefined ? ` (${program.radius}m)` : ''}`}
         type={t('itemTypeNames.pro')}
-        mainNode={(
+        mainNode={
           <div className="program-display__block__main">
             <Atitle className="program-display__block__main__title" level={4}>
               {t('display.cat.damages', { ns: 'components' })}
             </Atitle>
             <Aul noPoints className="program-display__block__damages">
-              {program.damages.map(damage => (
+              {program.damages.map((damage) => (
                 <Ali key={damage._id} className="program-display__block__damages__elt">
                   {damage.dices}
                   <span className="program-display__block__damages__elt__type">{`(${damage.damageType?.damageType.title})`}</span>
@@ -143,7 +118,7 @@ const ProgramDisplay: FC<IQuarkProps<IProgramDisplay>> = ({
               ))}
             </Aul>
           </div>
-        )}
+        }
       />
     );
   }, [curatedProgram, t]);

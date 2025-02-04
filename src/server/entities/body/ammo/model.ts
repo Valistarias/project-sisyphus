@@ -1,20 +1,18 @@
-import {
-  Schema, model, type HydratedDocument, type Model, type ObjectId
-} from 'mongoose';
+import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
 import type { HydratedIAmmo, IAmmo } from '../../ammo/model';
 
 interface IBodyAmmo<IdType> {
   /** When the body was created */
-  createdAt: Date
+  createdAt: Date;
   /** The body targeted */
-  body: IdType
+  body: IdType;
   /** The linked Ammo */
-  ammo: IdType
+  ammo: IdType;
   /** The bag that store this ammo */
-  bag: IdType
+  bag: IdType;
   /** How many ammos the player have */
-  qty: number
+  qty: number;
 }
 
 type LeanIBodyAmmo = Omit<IBodyAmmo<string>, 'ammo'> & { ammo: IAmmo<string> };
@@ -26,28 +24,26 @@ type HydratedIBodyAmmo = HydratedDocument<
 const BodyAmmoSchema = new Schema<IBodyAmmo<ObjectId>>({
   body: {
     type: Schema.Types.ObjectId,
-    ref: 'Body'
+    ref: 'Body',
   },
   ammo: {
     type: Schema.Types.ObjectId,
-    ref: 'Ammo'
+    ref: 'Ammo',
   },
   bag: {
     type: Schema.Types.ObjectId,
-    ref: 'BodyBag'
+    ref: 'BodyBag',
   },
   qty: {
     type: Number,
-    default: 1
+    default: 1,
   },
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 const BodyAmmoModel = (): Model<IBodyAmmo<ObjectId>> => model('BodyAmmo', BodyAmmoSchema);
 
-export {
-  BodyAmmoModel, type HydratedIBodyAmmo, type IBodyAmmo, type LeanIBodyAmmo
-};
+export { BodyAmmoModel, type HydratedIBodyAmmo, type IBodyAmmo, type LeanIBodyAmmo };

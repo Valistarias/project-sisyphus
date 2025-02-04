@@ -181,5 +181,5 @@ export const introSequence = (): Array<string | number> => [
   'Elysium.SatelliteSystem Booting Up...\nnew Data.Repository [NEW USER]\n[NEW USER].Elysium.Chip.DeathProtocol Initialize......\nElysium.Chip Transfert Booting up\nElysium.Chip Transfert --- 84%\nElysium.Chip Transfert ERROR 404: Unable to Connect\nElysium.SatelliteSystem Rerouting\nElysium.Chip Transfert --- 77%\nElysium.Chip Transfert ERROR 404: Unable to Connect\nEIDOLON.PRIME.OVERRIDE\nFOUNDERS.DATAPACK.2095AP7.BOOTING\nUnzipping - 12%\nUnzipping - 32%\nUnzipping - 51%\nUnzipping - 89%\nUnzipping - 100%\nFOUNDERS.DATAPACK.2095AP7.USERDATA.RECUPERATION = TRUE\nElysium.Chip Transfert COMPLETE\nEidolon.System Karma Credits Evaluation - 100%\nEidolon.System Prime Judgement - 100%\nOlympia.Input Initialize\nEidolon.System Secondary Judgement - 100%\nElysium.System Positive = TRUE\nPCP.OPS contact = TRUE\nETA contact = TRUE\nnew User.GUI Initialize\nElysium.System WelcomeProtocol Initializing...\n \n \n \n \n \n \n \n \n \n \n \n \n \n ',
   '',
   1000,
-  '-- Welcome to Elysium, new Soul. --\nMay Eidolon and Olympia\'s favour guide you to a life of perpetual Heaven.'
+  "-- Welcome to Elysium, new Soul. --\nMay Eidolon and Olympia's favour guide you to a life of perpetual Heaven.",
 ];

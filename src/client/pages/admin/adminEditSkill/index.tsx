@@ -1,36 +1,26 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  useNavigate, useParams
-} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
 
+import { Aerror, Ap, Atitle } from '../../../atoms';
 import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input, LinkButton, NodeTree, SmartSelect, type ISingleValueSelect
+  Button,
+  Input,
+  LinkButton,
+  NodeTree,
+  SmartSelect,
+  type ISingleValueSelect,
 } from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
-import type {
-  ErrorResponseType,
-  ICuratedNode, ICuratedSkill, ISkillBranch
-} from '../../../types';
+import type { ErrorResponseType, ICuratedNode, ICuratedSkill, ISkillBranch } from '../../../types';
 import type { InternationalizationType } from '../../../types/global';
 
 import { classTrim } from '../../../utils';
@@ -38,26 +28,19 @@ import { classTrim } from '../../../utils';
 import './adminEditSkill.scss';
 
 interface FormValues {
-  name: string
-  nameFr: string
-  stat: string
-  formulaId: string
+  name: string;
+  nameFr: string;
+  stat: string;
+  formulaId: string;
 }
 
 const AdminEditSkill: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
-  const {
-    stats, reloadSkills
-  } = useGlobalVars();
-  const {
-    setConfirmContent,
-    removeConfirmEventListener,
-    addConfirmEventListener
-  } = useConfirmMessage();
+  const { createAlert, getNewId } = useSystemAlerts();
+  const { stats, reloadSkills } = useGlobalVars();
+  const { setConfirmContent, removeConfirmEventListener, addConfirmEventListener } =
+    useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -72,27 +55,23 @@ const AdminEditSkill: FC = () => {
   const [skillText, setSkillText] = useState('');
   const [skillTextFr, setSkillTextFr] = useState('');
 
-  const textEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const textFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const nodeTree = useMemo(() => {
     const branches = skillData?.skill.branches;
     const tempTree: Record<
       string,
       {
-        branch: ISkillBranch
-        nodes: ICuratedNode[]
+        branch: ISkillBranch;
+        nodes: ICuratedNode[];
       }
     > = {};
     branches?.forEach(({ skillBranch }) => {
       tempTree[skillBranch._id] = {
         branch: skillBranch,
-        nodes: skillBranch.nodes
+        nodes: skillBranch.nodes,
       };
     });
 
@@ -104,7 +83,7 @@ const AdminEditSkill: FC = () => {
       stats.map(({ stat }) => ({
         value: stat._id,
         // TODO : Handle Internationalization
-        label: stat.title
+        label: stat.title,
       })),
     [stats]
   );
@@ -114,15 +93,11 @@ const AdminEditSkill: FC = () => {
       if (skillData == null) {
         return {};
       }
-      const {
-        skill, i18n
-      } = skillData;
+      const { skill, i18n } = skillData;
       const defaultData: Partial<FormValues> = {};
       defaultData.name = skill.title;
       defaultData.formulaId = skill.formulaId;
-      const selectedfield = stats.find(
-        statType => statType.value === skill.stat._id
-      );
+      const selectedfield = stats.find((statType) => statType.value === skill.stat._id);
       if (selectedfield !== undefined) {
         defaultData.stat = String(selectedfield.value);
       }
@@ -140,25 +115,17 @@ const AdminEditSkill: FC = () => {
     setError,
     control,
     formState: { errors },
-    reset
-  } = useForm({ defaultValues: useMemo(
-    () => createDefaultData(skillData, statSelect),
-    [
-      createDefaultData,
-      statSelect,
-      skillData
-    ]
-  ) });
+    reset,
+  } = useForm({
+    defaultValues: useMemo(
+      () => createDefaultData(skillData, statSelect),
+      [createDefaultData, statSelect, skillData]
+    ),
+  });
 
   const onSaveSkill: SubmitHandler<FormValues> = useCallback(
-    ({
-      name, nameFr, stat, formulaId
-    }) => {
-      if (
-        textEditor === null
-        || textFrEditor === null
-        || api === undefined
-      ) {
+    ({ name, nameFr, stat, formulaId }) => {
+      if (textEditor === null || textFrEditor === null || api === undefined) {
         return;
       }
       let htmlText: string | null = textEditor.getHTML();
@@ -172,10 +139,12 @@ const AdminEditSkill: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          text: htmlTextFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            text: htmlTextFr,
+          },
+        };
       }
 
       api.skills
@@ -185,7 +154,7 @@ const AdminEditSkill: FC = () => {
           stat,
           formulaId,
           summary: htmlText,
-          i18n
+          i18n,
         })
         .then((skill) => {
           const newId = getNewId();
@@ -195,7 +164,7 @@ const AdminEditSkill: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditSkill.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           reloadSkills();
         })
@@ -204,27 +173,19 @@ const AdminEditSkill: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`,
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
     },
-    [
-      textEditor,
-      textFrEditor,
-      api,
-      id,
-      getNewId,
-      createAlert,
-      t,
-      reloadSkills,
-      setError
-    ]
+    [textEditor, textFrEditor, api, id, getNewId, createAlert, t, reloadSkills, setError]
   );
 
   const onAskDelete = useCallback(() => {
@@ -236,14 +197,12 @@ const AdminEditSkill: FC = () => {
         title: t('adminEditSkill.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditSkill.confirmDeletion.text', {
           ns: 'pages',
-          elt: skillData?.skill.title
+          elt: skillData?.skill.title,
         }),
-        confirmCta: t('adminEditSkill.confirmDeletion.confirmCta', { ns: 'pages' })
+        confirmCta: t('adminEditSkill.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
       (evtId: string) => {
-        const confirmDelete = (
-          { detail }: { detail: ConfirmMessageDetailData }
-        ): void => {
+        const confirmDelete = ({ detail }: { detail: ConfirmMessageDetailData }): void => {
           if (detail.proceed) {
             api.skills
               .delete({ id })
@@ -255,7 +214,7 @@ const AdminEditSkill: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditSkill.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  )
+                  ),
                 });
                 reloadSkills();
                 void navigate('/admin/skills');
@@ -265,12 +224,16 @@ const AdminEditSkill: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skill.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.skill.name`), 'capitalize'),
+                    }),
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.skill.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.skill.name`), 'capitalize'),
+                    }),
                   });
                 }
               });
@@ -292,7 +255,7 @@ const AdminEditSkill: FC = () => {
     createAlert,
     reloadSkills,
     navigate,
-    setError
+    setError,
   ]);
 
   useEffect(() => {
@@ -301,9 +264,7 @@ const AdminEditSkill: FC = () => {
       api.skills
         .get({ skillId: id })
         .then((curatedSkill) => {
-          const {
-            skill, i18n
-          } = curatedSkill;
+          const { skill, i18n } = curatedSkill;
           setSkillData(curatedSkill);
           setSkillText(skill.summary);
           if (i18n.fr !== undefined) {
@@ -318,17 +279,11 @@ const AdminEditSkill: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    id,
-    t
-  ]);
+  }, [api, createAlert, getNewId, id, t]);
 
   // The Autosave
   useEffect(() => {
@@ -350,12 +305,7 @@ const AdminEditSkill: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(skillData, statSelect));
-  }, [
-    skillData,
-    reset,
-    createDefaultData,
-    statSelect
-  ]);
+  }, [skillData, reset, createDefaultData, statSelect]);
 
   return (
     <div
@@ -381,11 +331,9 @@ const AdminEditSkill: FC = () => {
           {t('adminEditSkill.return', { ns: 'pages' })}
         </LinkButton>
         <Atitle level={2}>{t('adminEditSkill.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror className="adminEditSkill__error">{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror className="adminEditSkill__error">{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminEditSkill__basics">
           <Input
             control={control}
@@ -419,8 +367,8 @@ const AdminEditSkill: FC = () => {
               required: t('skillFormula.required', { ns: 'fields' }),
               pattern: {
                 value: /^([a-z]){2,3}$/,
-                message: t('skillFormula.format', { ns: 'fields' })
-              }
+                message: t('skillFormula.format', { ns: 'fields' }),
+              },
             }}
             label={t('skillFormula.label', { ns: 'fields' })}
           />
@@ -438,7 +386,7 @@ const AdminEditSkill: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt(prev => !prev);
+              setDisplayInt((prev) => !prev);
             }}
             className="adminEditSkill__intl-title__btn"
           />

@@ -1,18 +1,16 @@
-import {
-  Schema, model, type HydratedDocument, type Model
-} from 'mongoose';
+import { Schema, model, type HydratedDocument, type Model } from 'mongoose';
 
 interface IRarity {
   /** The title of the rarity */
-  title: string
+  title: string;
   /** A summary of the rarity */
-  summary: string
+  summary: string;
   /** The position of this rarity, in reference with others */
-  position: number
+  position: number;
   /** The internationnal content, as a json, stringified */
-  i18n?: string
+  i18n?: string;
   /** When the rarity was created */
-  createdAt: Date
+  createdAt: Date;
 }
 
 type HydratedIRarity = HydratedDocument<IRarity>;
@@ -24,12 +22,10 @@ const userSchema = new Schema<IRarity>({
   i18n: String,
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 const RarityModel = (): Model<IRarity> => model('Rarity', userSchema);
 
-export {
-  RarityModel, type HydratedIRarity, type IRarity
-};
+export { RarityModel, type HydratedIRarity, type IRarity };

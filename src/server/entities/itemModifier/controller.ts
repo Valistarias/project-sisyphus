@@ -1,13 +1,11 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 
 import db from '../../models';
 import {
   gemDuplicate,
   gemInvalidField,
   gemNotFound,
-  gemServerError
+  gemServerError,
 } from '../../utils/globalErrorMessage';
 
 import type { HydratedIItemModifier } from './model';
@@ -32,9 +30,7 @@ const findItemModifiers = async (): Promise<HydratedIItemModifier[]> =>
       });
   });
 
-const findItemModifierById = async (
-  id: string
-): Promise<HydratedIItemModifier> =>
+const findItemModifierById = async (id: string): Promise<HydratedIItemModifier> =>
   await new Promise((resolve, reject) => {
     ItemModifier.findById(id)
       .then((res?: HydratedIItemModifier | null) => {
@@ -90,14 +86,8 @@ const checkDuplicateModifierId = async (
   });
 
 const create = (req: Request, res: Response): void => {
-  const {
-    title, summary, i18n = null, modifierId
-  } = req.body;
-  if (
-    title === undefined
-    || summary === undefined
-    || modifierId === undefined
-  ) {
+  const { title, summary, i18n = null, modifierId } = req.body;
+  if (title === undefined || summary === undefined || modifierId === undefined) {
     res.status(400).send(gemInvalidField('Item Modifier'));
 
     return;
@@ -109,7 +99,7 @@ const create = (req: Request, res: Response): void => {
         const itemModifier = new ItemModifier({
           title,
           summary,
-          modifierId
+          modifierId,
         });
 
         if (i18n !== null) {
@@ -135,13 +125,17 @@ const create = (req: Request, res: Response): void => {
 
 const update = (req: Request, res: Response): void => {
   const {
-    id, title = null, summary = null, i18n, modifierId = null
+    id,
+    title = null,
+    summary = null,
+    i18n,
+    modifierId = null,
   }: {
-    id?: string
-    title: string | null
-    summary: string | null
-    i18n: InternationalizationType | null
-    modifierId: string | null
+    id?: string;
+    title: string | null;
+    summary: string | null;
+    i18n: InternationalizationType | null;
+    modifierId: string | null;
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Item Modifier ID'));
@@ -150,8 +144,8 @@ const update = (req: Request, res: Response): void => {
   }
   findItemModifierById(id)
     .then((itemModifier) => {
-      const alreadyExistOnce
-        = typeof modifierId === 'string' && modifierId === itemModifier.modifierId;
+      const alreadyExistOnce =
+        typeof modifierId === 'string' && modifierId === itemModifier.modifierId;
       checkDuplicateModifierId(modifierId, alreadyExistOnce)
         .then((response) => {
           if (typeof response === 'boolean') {
@@ -166,12 +160,11 @@ const update = (req: Request, res: Response): void => {
             }
 
             if (i18n !== null) {
-              const newIntl: InternationalizationType = { ...(
-                itemModifier.i18n !== undefined
-                && itemModifier.i18n !== ''
+              const newIntl: InternationalizationType = {
+                ...(itemModifier.i18n !== undefined && itemModifier.i18n !== ''
                   ? JSON.parse(itemModifier.i18n)
-                  : {}
-              ) };
+                  : {}),
+              };
 
               Object.keys(i18n).forEach((lang) => {
                 newIntl[lang] = i18n[lang];
@@ -184,7 +177,8 @@ const update = (req: Request, res: Response): void => {
               .save()
               .then(() => {
                 res.send({
-                  message: 'Item Modifier was updated successfully!', itemModifier
+                  message: 'Item Modifier was updated successfully!',
+                  itemModifier,
                 });
               })
               .catch((err: unknown) => {
@@ -231,8 +225,8 @@ const deleteItemModifier = (req: Request, res: Response): void => {
 };
 
 interface CuratedIItemModifier {
-  i18n?: InternationalizationType
-  itemModifier: HydratedIItemModifier
+  i18n?: InternationalizationType;
+  itemModifier: HydratedIItemModifier;
 }
 
 const findSingle = (req: Request, res: Response): void => {
@@ -246,7 +240,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((itemModifier) => {
       const sentObj = {
         itemModifier,
-        i18n: curateI18n(itemModifier.i18n)
+        i18n: curateI18n(itemModifier.i18n),
       };
       res.send(sentObj);
     })
@@ -263,7 +257,7 @@ const findAll = (req: Request, res: Response): void => {
       itemModifiers.forEach((itemModifier) => {
         curatedItemModifiers.push({
           itemModifier,
-          i18n: curateI18n(itemModifier.i18n)
+          i18n: curateI18n(itemModifier.i18n),
         });
       });
 
@@ -279,5 +273,5 @@ export {
   findAll,
   findItemModifierById,
   findSingle,
-  update
+  update,
 };

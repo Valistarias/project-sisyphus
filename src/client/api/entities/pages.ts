@@ -5,11 +5,11 @@ import Entity from './entity';
 import type { ICuratedPage, IPage } from '../../types';
 
 interface IPagesPayload {
-  pageId: string
+  pageId: string;
 }
 
 interface IChapterPayload {
-  chapterId: string
+  chapterId: string;
 }
 
 export default class Pages extends Entity<IPagesPayload, IPage, ICuratedPage> {
@@ -18,7 +18,7 @@ export default class Pages extends Entity<IPagesPayload, IPage, ICuratedPage> {
   constructor() {
     super('pages');
 
-    this.getAllByChapter = async payload =>
+    this.getAllByChapter = async (payload) =>
       await new Promise((resolve, reject) => {
         axios
           .get(`${this.url}/pagesbychapterid/`, { params: payload })

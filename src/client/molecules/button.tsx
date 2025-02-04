@@ -1,9 +1,7 @@
 import React from 'react';
 import type { FC } from 'react';
 
-import {
-  Abutton, Aicon, type IAButton, type typeIcons
-} from '../atoms';
+import { Abutton, Aicon, type IAButton, type typeIcons } from '../atoms';
 
 import type { IQuarkProps } from '../quark';
 
@@ -13,28 +11,28 @@ import './button.scss';
 
 export type IButton = IQuarkProps<IAButton> & {
   /** The theme of the button */
-  theme?: 'solid' | 'line' | 'line-alt' | 'afterglow' | 'text-only' | 'text-only-alt' | 'bland'
+  theme?: 'solid' | 'line' | 'line-alt' | 'afterglow' | 'text-only' | 'text-only-alt' | 'bland';
   /** The main color of the button */
-  color?: 'primary' | 'secondary' | 'tertiary' | 'error'
+  color?: 'primary' | 'secondary' | 'tertiary' | 'error';
   /** The size of the button */
-  size?: 'xlarge' | 'large' | 'medium' | 'small'
+  size?: 'xlarge' | 'large' | 'medium' | 'small';
   /** Similar to disabled, but without the opacity */
-  unclickable?: boolean
+  unclickable?: boolean;
   /** Is the button activated by any means ? */
-  active?: boolean
+  active?: boolean;
 } & (
-  | {
-    /** The icon of the button */
-    icon: typeIcons
-    /** The children (if any) of the button */
-    children?: IAButton['children']
-  }
-  | {
-    /** The icon (if any) of the button */
-    icon?: typeIcons
-    /** The children of the button */
-    children: IAButton['children']
-  }
+    | {
+        /** The icon of the button */
+        icon: typeIcons;
+        /** The children (if any) of the button */
+        children?: IAButton['children'];
+      }
+    | {
+        /** The icon (if any) of the button */
+        icon?: typeIcons;
+        /** The children of the button */
+        children: IAButton['children'];
+      }
   );
 
 const Button: FC<IButton> = ({
@@ -51,7 +49,7 @@ const Button: FC<IButton> = ({
   onClick,
   onContextMenu,
   onMouseEnter,
-  onMouseLeave
+  onMouseLeave,
 }) => (
   <Abutton
     className={classTrim(`

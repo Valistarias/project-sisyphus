@@ -1,69 +1,49 @@
-import React, {
-  useCallback, type FC
-} from 'react';
+import React, { useCallback, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  useApi, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import './adminNewCharParam.scss';
 import type { ErrorResponseType } from '../../../types';
 import type { InternationalizationType } from '../../../types/global';
 
 interface FormValues {
-  name: string
-  short: string
-  nameFr: string
-  shortFr: string
-  formulaId: string
+  name: string;
+  short: string;
+  nameFr: string;
+  shortFr: string;
+  formulaId: string;
 }
 
 const AdminNewCharParam: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const navigate = useNavigate();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
   const { reloadCharParams } = useGlobalVars();
 
-  const introEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors }
+    formState: { errors },
   } = useForm();
 
   const onSaveCharParam: SubmitHandler<FormValues> = useCallback(
-    ({
-      name, nameFr, short, shortFr, formulaId
-    }) => {
+    ({ name, nameFr, short, shortFr, formulaId }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -76,11 +56,13 @@ const AdminNewCharParam: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          short: shortFr,
-          summary: htmlFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            short: shortFr,
+            summary: htmlFr,
+          },
+        };
       }
 
       api.charParams
@@ -89,7 +71,7 @@ const AdminNewCharParam: FC = () => {
           formulaId,
           short,
           summary: html,
-          i18n
+          i18n,
         })
         .then((charParams) => {
           const newId = getNewId();
@@ -99,7 +81,7 @@ const AdminNewCharParam: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewCharParam.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           reloadCharParams();
           void navigate(`/admin/charparam/${charParams._id}`);
@@ -109,12 +91,14 @@ const AdminNewCharParam: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`,
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
@@ -128,7 +112,7 @@ const AdminNewCharParam: FC = () => {
       t,
       reloadCharParams,
       navigate,
-      setError
+      setError,
     ]
   );
 
@@ -142,11 +126,9 @@ const AdminNewCharParam: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewCharParam.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror>{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminNewCharParam__basics">
           <Input
             control={control}
@@ -181,8 +163,8 @@ const AdminNewCharParam: FC = () => {
               required: t('charParamFormula.required', { ns: 'fields' }),
               pattern: {
                 value: /^([a-z]){2,3}$/,
-                message: t('charParamFormula.format', { ns: 'fields' })
-              }
+                message: t('charParamFormula.format', { ns: 'fields' }),
+              },
             }}
             label={t('charParamFormula.label', { ns: 'fields' })}
           />

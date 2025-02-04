@@ -1,42 +1,24 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 import type { HydratedDocument } from 'mongoose';
 
-import {
-  getUserFromToken, type IVerifyTokenRequest
-} from '../../middlewares/authJwt';
+import { getUserFromToken, type IVerifyTokenRequest } from '../../middlewares/authJwt';
 import db from '../../models';
 import {
   gemInvalidField,
   gemNotFound,
   gemServerError,
-  gemUnauthorizedGlobal
+  gemUnauthorizedGlobal,
 } from '../../utils/globalErrorMessage';
 import { findCharacterById } from '../character/controller';
 
 import { deleteAmmosByBody } from './ammo/controller';
-import {
-  deleteArmorsByBody, replaceArmorByBody
-} from './armor/controller';
-import {
-  deleteBagsByBody, replaceBagByBody
-} from './bag/controller';
-import {
-  deleteImplantsByBody, replaceImplantByBody
-} from './implant/controller';
-import {
-  deleteItemsByBody, replaceItemByBody
-} from './item/controller';
-import {
-  deleteProgramsByBody, replaceProgramByBody
-} from './program/controller';
-import {
-  createStatsByBody, deleteStatsByBody, replaceStatByBody
-} from './stat/controller';
-import {
-  deleteWeaponsByBody, replaceWeaponByBody
-} from './weapon/controller';
+import { deleteArmorsByBody, replaceArmorByBody } from './armor/controller';
+import { deleteBagsByBody, replaceBagByBody } from './bag/controller';
+import { deleteImplantsByBody, replaceImplantByBody } from './implant/controller';
+import { deleteItemsByBody, replaceItemByBody } from './item/controller';
+import { deleteProgramsByBody, replaceProgramByBody } from './program/controller';
+import { createStatsByBody, deleteStatsByBody, replaceStatByBody } from './stat/controller';
+import { deleteWeaponsByBody, replaceWeaponByBody } from './weapon/controller';
 
 import type { ICharacter } from '../character';
 import type {
@@ -48,7 +30,7 @@ import type {
   HydratedIBodyItem,
   HydratedIBodyProgram,
   HydratedIBodyStat,
-  HydratedIBodyWeapon
+  HydratedIBodyWeapon,
 } from './index';
 
 const { Body } = db;
@@ -68,35 +50,35 @@ const findBodiesByCharacter = async (req: Request): Promise<HydratedIBody[]> =>
           .populate<{ character: HydratedDocument<ICharacter<string>> }>('character')
           .populate<{ stats: HydratedIBodyStat[] }>({
             path: 'stats',
-            select: '_id body stat value'
+            select: '_id body stat value',
           })
           .populate<{ ammos: HydratedIBodyAmmo[] }>({
             path: 'ammos',
-            select: '_id body ammo bag qty'
+            select: '_id body ammo bag qty',
           })
           .populate<{ armors: HydratedIBodyArmor[] }>({
             path: 'armors',
-            select: '_id body armor bag equiped'
+            select: '_id body armor bag equiped',
           })
           .populate<{ bags: HydratedIBodyBag[] }>({
             path: 'bags',
-            select: '_id body bag equiped'
+            select: '_id body bag equiped',
           })
           .populate<{ implants: HydratedIBodyImplant[] }>({
             path: 'implants',
-            select: '_id body implant bag equiped'
+            select: '_id body implant bag equiped',
           })
           .populate<{ items: HydratedIBodyItem[] }>({
             path: 'items',
-            select: '_id body item bag qty'
+            select: '_id body item bag qty',
           })
           .populate<{ programs: HydratedIBodyProgram[] }>({
             path: 'programs',
-            select: '_id body program bag uses'
+            select: '_id body program bag uses',
           })
           .populate<{ weapons: HydratedIBodyWeapon[] }>({
             path: 'weapons',
-            select: '_id body weapon bag ammo bullets'
+            select: '_id body weapon bag ammo bullets',
           })
           .then((res: HydratedIBody[]) => {
             if (res.length === 0) {
@@ -118,8 +100,8 @@ const findBodyById = async (
   id: string,
   req: Request
 ): Promise<{
-  body: HydratedIBody
-  canEdit: boolean
+  body: HydratedIBody;
+  canEdit: boolean;
 }> =>
   await new Promise((resolve, reject) => {
     getUserFromToken(req as IVerifyTokenRequest)
@@ -133,35 +115,35 @@ const findBodyById = async (
           .populate<{ character: HydratedDocument<ICharacter<string>> }>('character')
           .populate<{ stats: HydratedIBodyStat[] }>({
             path: 'stats',
-            select: '_id body stat value'
+            select: '_id body stat value',
           })
           .populate<{ ammos: HydratedIBodyAmmo[] }>({
             path: 'ammos',
-            select: '_id body ammo bag qty'
+            select: '_id body ammo bag qty',
           })
           .populate<{ armors: HydratedIBodyArmor[] }>({
             path: 'armors',
-            select: '_id body armor bag equiped'
+            select: '_id body armor bag equiped',
           })
           .populate<{ bags: HydratedIBodyBag[] }>({
             path: 'bags',
-            select: '_id body bag equiped'
+            select: '_id body bag equiped',
           })
           .populate<{ implants: HydratedIBodyImplant[] }>({
             path: 'implants',
-            select: '_id body implant bag equiped'
+            select: '_id body implant bag equiped',
           })
           .populate<{ items: HydratedIBodyItem[] }>({
             path: 'items',
-            select: '_id body item bag qty'
+            select: '_id body item bag qty',
           })
           .populate<{ programs: HydratedIBodyProgram[] }>({
             path: 'programs',
-            select: '_id body program bag uses'
+            select: '_id body program bag uses',
           })
           .populate<{ weapons: HydratedIBodyWeapon[] }>({
             path: 'weapons',
-            select: '_id body weapon bag ammo bullets'
+            select: '_id body weapon bag ammo bullets',
           })
           .then((res?: HydratedIBody | null) => {
             if (res === null || res === undefined) {
@@ -170,9 +152,9 @@ const findBodyById = async (
               resolve({
                 body: res,
                 canEdit:
-                  String(res.character.player) === String(user._id)
-                  || (res.character.player === undefined
-                    && String(res.character.createdBy) === String(user._id))
+                  String(res.character.player) === String(user._id) ||
+                  (res.character.player === undefined &&
+                    String(res.character.createdBy) === String(user._id)),
               });
             }
           })
@@ -187,14 +169,16 @@ const findBodyById = async (
 
 const create = (req: Request, res: Response): void => {
   const {
-    characterId, hp, stats
+    characterId,
+    hp,
+    stats,
   }: {
-    characterId?: string
-    hp?: number
+    characterId?: string;
+    hp?: number;
     stats: Array<{
-      id: string
-      value: number
-    }>
+      id: string;
+      value: number;
+    }>;
   } = req.body;
   getUserFromToken(req as IVerifyTokenRequest)
     .then((user) => {
@@ -204,24 +188,24 @@ const create = (req: Request, res: Response): void => {
         return;
       }
       findCharacterById(characterId, req)
-        .then(({
-          char, canEdit
-        }) => {
+        .then(({ char, canEdit }) => {
           if (canEdit) {
             const body: HydratedIBody = new Body({
               character: characterId,
-              hp
+              hp,
             });
 
             body
               .save()
               .then(() => {
                 createStatsByBody({
-                  bodyId: body._id.toString(), stats
+                  bodyId: body._id.toString(),
+                  stats,
                 })
                   .then(() => {
                     res.send({
-                      message: 'Body was created successfully!', bodyId: body._id
+                      message: 'Body was created successfully!',
+                      bodyId: body._id,
                     });
                   })
                   .catch((err: unknown) => {
@@ -243,18 +227,14 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const {
-    id, hp = null, alive = null
-  } = req.body;
+  const { id, hp = null, alive = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Body ID'));
 
     return;
   }
   findBodyById(id as string, req)
-    .then(({
-      body, canEdit
-    }) => {
+    .then(({ body, canEdit }) => {
       if (canEdit) {
         if (hp !== null && hp !== body.hp) {
           body.hp = hp;
@@ -266,7 +246,8 @@ const update = (req: Request, res: Response): void => {
           .save()
           .then(() => {
             res.send({
-              message: 'Body was updated successfully!', body
+              message: 'Body was updated successfully!',
+              body,
             });
           })
           .catch((err: unknown) => {
@@ -280,25 +261,23 @@ const update = (req: Request, res: Response): void => {
 };
 
 const updateStats = (req: Request, res: Response): void => {
-  const {
-    id, stats
-  } = req.body;
+  const { id, stats } = req.body;
   if (id === undefined || stats === undefined) {
     res.status(400).send(gemInvalidField('Body ID'));
 
     return;
   }
   findBodyById(id as string, req)
-    .then(({
-      body, canEdit
-    }) => {
+    .then(({ body, canEdit }) => {
       if (canEdit) {
         replaceStatByBody({
-          bodyId: id, stats
+          bodyId: id,
+          stats,
         })
           .then(() => {
             res.send({
-              message: 'Body was updated successfully!', body
+              message: 'Body was updated successfully!',
+              body,
             });
           })
           .catch((err: unknown) => {
@@ -319,15 +298,15 @@ const resetItems = (req: Request, res: Response): void => {
     bags = [],
     items = [],
     programs = [],
-    implants = []
+    implants = [],
   }: {
-    id?: string
-    weapons: string[]
-    armors: string[]
-    bags: string[]
-    items: string[]
-    programs: string[]
-    implants: string[]
+    id?: string;
+    weapons: string[];
+    armors: string[];
+    bags: string[];
+    items: string[];
+    programs: string[];
+    implants: string[];
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Body ID'));
@@ -335,41 +314,46 @@ const resetItems = (req: Request, res: Response): void => {
     return;
   }
   findBodyById(id, req)
-    .then(({
-      body, canEdit
-    }) => {
+    .then(({ body, canEdit }) => {
       if (canEdit) {
         deleteAmmosByBody(id)
           .then(() => {
             replaceArmorByBody({
-              bodyId: id, armorIds: armors
+              bodyId: id,
+              armorIds: armors,
             })
               .then(() => {
                 replaceBagByBody({
-                  bodyId: id, bagIds: bags
+                  bodyId: id,
+                  bagIds: bags,
                 })
                   .then(() => {
                     replaceImplantByBody({
-                      bodyId: id, implantIds: implants
+                      bodyId: id,
+                      implantIds: implants,
                     })
                       .then(() => {
                         replaceItemByBody({
                           bodyId: id,
                           items: items.map((itemId: string) => ({
-                            id: itemId, qty: 1
-                          }))
+                            id: itemId,
+                            qty: 1,
+                          })),
                         })
                           .then(() => {
                             replaceProgramByBody({
-                              bodyId: id, programIds: programs
+                              bodyId: id,
+                              programIds: programs,
                             })
                               .then(() => {
                                 replaceWeaponByBody({
-                                  bodyId: id, weaponIds: weapons
+                                  bodyId: id,
+                                  weaponIds: weapons,
                                 })
                                   .then(() => {
                                     res.send({
-                                      message: 'Body was updated successfully!', body
+                                      message: 'Body was updated successfully!',
+                                      body,
                                     });
                                   })
                                   .catch((err: unknown) => {
@@ -486,9 +470,7 @@ const deleteBody = (req: Request, res: Response): void => {
     });
 };
 
-const deleteBodiesAndItemsByBodyId = (
-  bodies: string[],
-  cb: (res: Error | null) => void): void => {
+const deleteBodiesAndItemsByBodyId = (bodies: string[], cb: (res: Error | null) => void): void => {
   deleteBodyById(bodies[0])
     .then(() => {
       if (bodies.length > 1) {
@@ -533,7 +515,7 @@ const findSingle = (req: Request, res: Response): void => {
 
 const findAll = (req: Request, res: Response): void => {
   findBodiesByCharacter(req)
-    .then(bodies => res.send(bodies))
+    .then((bodies) => res.send(bodies))
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
@@ -545,5 +527,5 @@ export {
   findSingle,
   resetItems,
   update,
-  updateStats
+  updateStats,
 };

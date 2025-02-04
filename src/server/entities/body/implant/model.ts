@@ -1,20 +1,18 @@
-import {
-  Schema, model, type HydratedDocument, type Model, type ObjectId
-} from 'mongoose';
+import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
 import type { HydratedIImplant, LeanIImplant } from '../../implant/model';
 
 interface IBodyImplant {
   /** When the body was created */
-  createdAt: Date
+  createdAt: Date;
   /** The body targeted */
-  body: ObjectId
+  body: ObjectId;
   /** The linked Implant */
-  implant: ObjectId
+  implant: ObjectId;
   /** The bag that store this implant */
-  bag: ObjectId
+  bag: ObjectId;
   /** at what part the implant is equiped ? */
-  equiped: ObjectId
+  equiped: ObjectId;
 }
 
 type LeanIBodyImplant = Omit<IBodyImplant, 'implant'> & { implant: LeanIImplant };
@@ -26,31 +24,26 @@ type HydratedIBodyImplant = HydratedDocument<
 const BodyImplantSchema = new Schema<IBodyImplant>({
   body: {
     type: Schema.Types.ObjectId,
-    ref: 'Body'
+    ref: 'Body',
   },
   implant: {
     type: Schema.Types.ObjectId,
-    ref: 'Implant'
+    ref: 'Implant',
   },
   bag: {
     type: Schema.Types.ObjectId,
-    ref: 'BodyBag'
+    ref: 'BodyBag',
   },
   equiped: {
     type: Schema.Types.ObjectId,
-    ref: 'BodyPart'
+    ref: 'BodyPart',
   },
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 const BodyImplantModel = (): Model<IBodyImplant> => model('BodyImplant', BodyImplantSchema);
 
-export {
-  BodyImplantModel,
-  type HydratedIBodyImplant,
-  type IBodyImplant,
-  type LeanIBodyImplant
-};
+export { BodyImplantModel, type HydratedIBodyImplant, type IBodyImplant, type LeanIBodyImplant };

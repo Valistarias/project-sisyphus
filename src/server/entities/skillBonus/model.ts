@@ -1,16 +1,14 @@
-import {
-  Schema, model, type HydratedDocument, type Model, type ObjectId
-} from 'mongoose';
+import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
 import type { ISkill } from '../index';
 
 interface ISkillBonus {
   /** The associated skill */
-  skill: ObjectId
+  skill: ObjectId;
   /** The value of the bonus */
-  value: number
+  value: number;
   /** When the skill branch was created */
-  createdAt: Date
+  createdAt: Date;
 }
 
 type HydratedISkillBonus = HydratedDocument<
@@ -20,17 +18,15 @@ type HydratedISkillBonus = HydratedDocument<
 const skillBonusSchema = new Schema<ISkillBonus>({
   skill: {
     type: Schema.Types.ObjectId,
-    ref: 'Skill'
+    ref: 'Skill',
   },
   value: Number,
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 const SkillBonusModel = (): Model<ISkillBonus> => model('SkillBonus', skillBonusSchema);
 
-export {
-  SkillBonusModel, type HydratedISkillBonus, type ISkillBonus
-};
+export { SkillBonusModel, type HydratedISkillBonus, type ISkillBonus };

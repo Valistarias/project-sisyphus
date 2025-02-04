@@ -1,6 +1,4 @@
-import {
-  Schema, model, type HydratedDocument, type Model, type ObjectId
-} from 'mongoose';
+import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
 import type { ICharacter } from '../../character';
 import type { HydratedIBodyAmmo, LeanIBodyAmmo } from '../ammo/model';
@@ -14,54 +12,54 @@ import type { HydratedIBodyWeapon, LeanIBodyWeapon } from '../weapon/model';
 
 interface IBody<IdType> {
   /** Is this body alive */
-  alive: boolean
+  alive: boolean;
   /** The body HP */
-  hp: number
+  hp: number;
   /** The character associated to this body */
-  character: IdType
+  character: IdType;
   /** When the body was created */
-  createdAt: Date
+  createdAt: Date;
 }
 
 type LeanIBody = IBody<string> & {
-  stats: IBodyStat[]
-  ammos: LeanIBodyAmmo[]
-  armors: LeanIBodyArmor[]
-  bags: LeanIBodyBag[]
-  implants: LeanIBodyImplant[]
-  items: LeanIBodyItem[]
-  programs: LeanIBodyProgram[]
-  weapons: LeanIBodyWeapon[]
+  stats: IBodyStat[];
+  ammos: LeanIBodyAmmo[];
+  armors: LeanIBodyArmor[];
+  bags: LeanIBodyBag[];
+  implants: LeanIBodyImplant[];
+  items: LeanIBodyItem[];
+  programs: LeanIBodyProgram[];
+  weapons: LeanIBodyWeapon[];
 };
 
 type HydratedIBody = HydratedDocument<
   Omit<IBody<string>, 'character'> & {
-    character: HydratedDocument<ICharacter<string>>
-    stats: HydratedIBodyStat[]
-    ammos: HydratedIBodyAmmo[]
-    armors: HydratedIBodyArmor[]
-    bags: HydratedIBodyBag[]
-    implants: HydratedIBodyImplant[]
-    items: HydratedIBodyItem[]
-    programs: HydratedIBodyProgram[]
-    weapons: HydratedIBodyWeapon[]
+    character: HydratedDocument<ICharacter<string>>;
+    stats: HydratedIBodyStat[];
+    ammos: HydratedIBodyAmmo[];
+    armors: HydratedIBodyArmor[];
+    bags: HydratedIBodyBag[];
+    implants: HydratedIBodyImplant[];
+    items: HydratedIBodyItem[];
+    programs: HydratedIBodyProgram[];
+    weapons: HydratedIBodyWeapon[];
   }
 >;
 
 const bodySchema = new Schema<IBody<ObjectId>>({
   alive: {
     type: Boolean,
-    default: true
+    default: true,
   },
   hp: Number,
   character: {
     type: Schema.Types.ObjectId,
-    ref: 'Character'
+    ref: 'Character',
   },
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 // Virtuals -------------------------
@@ -69,53 +67,51 @@ const bodySchema = new Schema<IBody<ObjectId>>({
 bodySchema.virtual('stats', {
   ref: 'BodyStat',
   localField: '_id',
-  foreignField: 'body'
+  foreignField: 'body',
 });
 
 bodySchema.virtual('ammos', {
   ref: 'BodyAmmo',
   localField: '_id',
-  foreignField: 'body'
+  foreignField: 'body',
 });
 
 bodySchema.virtual('armors', {
   ref: 'BodyArmor',
   localField: '_id',
-  foreignField: 'body'
+  foreignField: 'body',
 });
 
 bodySchema.virtual('bags', {
   ref: 'BodyBag',
   localField: '_id',
-  foreignField: 'body'
+  foreignField: 'body',
 });
 
 bodySchema.virtual('implants', {
   ref: 'BodyImplant',
   localField: '_id',
-  foreignField: 'body'
+  foreignField: 'body',
 });
 
 bodySchema.virtual('items', {
   ref: 'BodyItem',
   localField: '_id',
-  foreignField: 'body'
+  foreignField: 'body',
 });
 
 bodySchema.virtual('programs', {
   ref: 'BodyProgram',
   localField: '_id',
-  foreignField: 'body'
+  foreignField: 'body',
 });
 
 bodySchema.virtual('weapons', {
   ref: 'BodyWeapon',
   localField: '_id',
-  foreignField: 'body'
+  foreignField: 'body',
 });
 
 const BodyModel = (): Model<IBody<ObjectId>> => model('Body', bodySchema);
 
-export {
-  BodyModel, type HydratedIBody, type IBody, type LeanIBody
-};
+export { BodyModel, type HydratedIBody, type IBody, type LeanIBody };

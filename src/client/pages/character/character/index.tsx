@@ -1,19 +1,15 @@
-import React, {
-  useEffect, useRef, useState, type FC
-} from 'react';
+import React, { useEffect, useRef, useState, type FC } from 'react';
 
 import { useParams } from 'react-router-dom';
 
-import {
-  useApi, useCampaignEventWindow, useGlobalVars
-} from '../../../providers';
+import { useApi, useCampaignEventWindow, useGlobalVars } from '../../../providers';
 
 import {
   CampaignEventTab,
   CharacterHeader,
   CharacterSkills,
   CharacterStatus,
-  CharacterActionBoard
+  CharacterActionBoard,
 } from '../../../organisms';
 import { ErrorPage } from '../../index';
 
@@ -25,9 +21,7 @@ import type { DiceRequest } from '../../../utils';
 import './character.scss';
 
 const Character: FC = () => {
-  const {
-    character, setCharacterFromId, resetCharacter
-  } = useGlobalVars();
+  const { character, setCharacterFromId, resetCharacter } = useGlobalVars();
   const { api } = useApi();
   const { id } = useParams();
   const { setToRoll } = useCampaignEventWindow();
@@ -37,9 +31,7 @@ const Character: FC = () => {
   const calledApi = useRef(false);
 
   useEffect(() => {
-    if (
-      !calledApi.current && id !== undefined
-    ) {
+    if (!calledApi.current && id !== undefined) {
       setCharacterFromId(id);
       calledApi.current = true;
     }
@@ -47,12 +39,7 @@ const Character: FC = () => {
     return () => {
       resetCharacter();
     };
-  }, [
-    api,
-    id,
-    setCharacterFromId,
-    resetCharacter
-  ]);
+  }, [api, id, setCharacterFromId, resetCharacter]);
 
   if (character === false) {
     return <ErrorPage />;
@@ -73,7 +60,7 @@ const Character: FC = () => {
       />
       <CharacterHeader
         onClickEventTab={() => {
-          setEventTabOpen(prev => !prev);
+          setEventTabOpen((prev) => !prev);
         }}
         isEventTabOpen={eventTabOpen}
       />

@@ -1,46 +1,30 @@
-import React, {
-  useCallback, useEffect, type FC
-} from 'react';
+import React, { useCallback, useEffect, type FC } from 'react';
 
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  useNavigate, useParams
-} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  useApi, useSystemAlerts
-} from '../../providers';
+import { useApi, useSystemAlerts } from '../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../atoms';
-import {
-  Button, Input
-} from '../../molecules';
+import { Aerror, Ap, Atitle } from '../../atoms';
+import { Button, Input } from '../../molecules';
 import { Alert } from '../../organisms';
 
 import './newPass.scss';
 import type { ErrorResponseType } from '../../types';
 
 interface FormValues {
-  mail: string
-  password: string
-  confirmPassword: string
+  mail: string;
+  password: string;
+  confirmPassword: string;
 }
 
 const NewPassword: FC = () => {
   const { api } = useApi();
   const { t } = useTranslation();
-  const {
-    userId, token
-  } = useParams();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { userId, token } = useParams();
+  const { createAlert, getNewId } = useSystemAlerts();
   const navigate = useNavigate();
 
   const {
@@ -49,20 +33,18 @@ const NewPassword: FC = () => {
     handleSubmit,
     setValue,
     setError,
-    formState: { errors }
+    formState: { errors },
   } = useForm();
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
-    ({
-      password, confirmPassword
-    }) => {
+    ({ password, confirmPassword }) => {
       if (api !== undefined && userId !== undefined && token !== undefined) {
         api.auth
           .passUpdate({
             userId,
             token,
             pass: password,
-            confirmPass: confirmPassword
+            confirmPass: confirmPassword,
           })
           .then(() => {
             const newId = getNewId();
@@ -72,7 +54,7 @@ const NewPassword: FC = () => {
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{t('newPass.success', { ns: 'pages' })}</Ap>
                 </Alert>
-              )
+              ),
             });
             void navigate('/login');
           })
@@ -80,21 +62,14 @@ const NewPassword: FC = () => {
             const { data } = response;
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
+              }),
             });
           });
       }
     },
-    [
-      api,
-      createAlert,
-      getNewId,
-      navigate,
-      setError,
-      t,
-      token,
-      userId
-    ]
+    [api, createAlert, getNewId, navigate, setError, t, token, userId]
   );
 
   useEffect(() => {
@@ -102,7 +77,7 @@ const NewPassword: FC = () => {
       api.mailToken
         .getMail({
           userId,
-          token
+          token,
         })
         .then((mail) => {
           setValue('mail', mail);
@@ -111,13 +86,7 @@ const NewPassword: FC = () => {
           void navigate('/');
         });
     }
-  }, [
-    userId,
-    token,
-    api,
-    setValue,
-    navigate
-  ]);
+  }, [userId, token, api, setValue, navigate]);
 
   return (
     <div className="new-pass">
@@ -129,11 +98,9 @@ const NewPassword: FC = () => {
         }}
         noValidate
       >
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror>{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <Input
           type="email"
           control={control}
@@ -160,7 +127,7 @@ const NewPassword: FC = () => {
               if (watch('password') !== val) {
                 return t('confirmPassword.validate', { ns: 'fields' });
               }
-            }
+            },
           }}
           label={t('confirmPassword.label', { ns: 'fields' })}
           autoComplete="new-password"

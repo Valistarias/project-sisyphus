@@ -1,45 +1,35 @@
 import React from 'react';
-import {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import {
-  useApi, useCampaignEventWindow, useSocket, useSystemAlerts
-} from '../providers';
+import { useApi, useCampaignEventWindow, useSocket, useSystemAlerts } from '../providers';
 
 import holoBackground from '../assets/imgs/tvbg2.gif';
-import {
-  Aicon, Ap, Avideo, type typeIcons
-} from '../atoms';
+import { Aicon, Ap, Avideo, type typeIcons } from '../atoms';
 import { Button } from '../molecules';
 
 import Alert from './alert';
 import CampaignEventLine from './campaignEventLine';
 
 import type { CampaignEventDetailData } from '../providers/campaignEventWindow';
-import type {
-  ICampaignEvent, ICharacter
-} from '../types';
+import type { ICampaignEvent, ICharacter } from '../types';
 
-import {
-  classTrim, createBasicDiceRequest, type DiceRequest
-} from '../utils';
+import { classTrim, createBasicDiceRequest, type DiceRequest } from '../utils';
 
 import './campaignEventTab.scss';
 
 interface ICampaignEventTab {
   /** The campaign that the rolls are displayed */
-  campaignId?: string
+  campaignId?: string;
   /** The character used for rolling */
-  character?: ICharacter
+  character?: ICharacter;
   /** The function sent to roll the dices */
-  onRollDices: (diceValues: DiceRequest[]) => void
+  onRollDices: (diceValues: DiceRequest[]) => void;
   /** Is the tab open ? */
-  isTabOpen: boolean
+  isTabOpen: boolean;
   /** When the close button is clicked */
-  onClose: (e: React.MouseEvent<HTMLElement>) => void
+  onClose: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
 const CampaignEventTab: FC<ICampaignEventTab> = ({
@@ -47,13 +37,11 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
   onRollDices,
   campaignId,
   character,
-  onClose
+  onClose,
 }) => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
   const { socket } = useSocket();
   const campaignEvt = useCampaignEventWindow();
 
@@ -61,14 +49,10 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
   // const [isOpen, setOpen] = useState(false);
   // const [notFound, setNotFound] = useState(false);
 
-  const [diceValues, setDiceValues]
-  = useState<DiceRequest[]>(createBasicDiceRequest());
-  const [dataPrevCampaignEvents, setDataPrevCampaignEvents]
-  = useState<ICampaignEvent[]>([]);
+  const [diceValues, setDiceValues] = useState<DiceRequest[]>(createBasicDiceRequest());
+  const [dataPrevCampaignEvents, setDataPrevCampaignEvents] = useState<ICampaignEvent[]>([]);
 
-  const canCampaignEvent = useMemo(
-    () => diceValues.some(({ qty }) => qty > 0), [diceValues]
-  );
+  const canCampaignEvent = useMemo(() => diceValues.some(({ qty }) => qty > 0), [diceValues]);
 
   const calledApi = useRef(false);
   const initEvt = useRef(false);
@@ -87,12 +71,12 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
           if (type === 'remove' && diceObj.qty > 0) {
             return {
               ...diceObj,
-              qty: diceObj.qty - 1
+              qty: diceObj.qty - 1,
             };
           } else if (type === 'add') {
             return {
               ...diceObj,
-              qty: diceObj.qty + 1
+              qty: diceObj.qty + 1,
             };
           }
         }
@@ -116,9 +100,7 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
   const diceElts = useMemo(
     () =>
       diceValues.map(({ type: typeDiceNumber }) => {
-        const diceElt = diceValues.find(
-          diceValue => diceValue.type === typeDiceNumber
-        );
+        const diceElt = diceValues.find((diceValue) => diceValue.type === typeDiceNumber);
         if (diceElt != null) {
           return (
             <Button
@@ -154,22 +136,24 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
     [changeDice, diceValues]
   );
 
-  const logCampaignEvents = useMemo(() => dataPrevCampaignEvents.map(({
-    _id, character, createdAt, formula, result, type
-  }) => {
-    const authorName = `${character.firstName !== undefined ? `${character.firstName} ` : ''}${character.nickName !== undefined ? `"${character.nickName}" ` : ''}${character.lastName ?? ''}`;
+  const logCampaignEvents = useMemo(
+    () =>
+      dataPrevCampaignEvents.map(({ _id, character, createdAt, formula, result, type }) => {
+        const authorName = `${character.firstName !== undefined ? `${character.firstName} ` : ''}${character.nickName !== undefined ? `"${character.nickName}" ` : ''}${character.lastName ?? ''}`;
 
-    return (
-      <CampaignEventLine
-        key={_id}
-        authorName={authorName.trim()}
-        result={result}
-        formula={formula}
-        type={type}
-        createdAt={new Date(createdAt)}
-      />
-    );
-  }), [dataPrevCampaignEvents]);
+        return (
+          <CampaignEventLine
+            key={_id}
+            authorName={authorName.trim()}
+            result={result}
+            formula={formula}
+            type={type}
+            createdAt={new Date(createdAt)}
+          />
+        );
+      }),
+    [dataPrevCampaignEvents]
+  );
 
   const reloadCampaignEvents = useCallback(
     (campaignId: string) => {
@@ -177,7 +161,7 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
         api.campaignEvents
           .getAllByCampaign({
             campaignId,
-            offset: 0
+            offset: 0,
           })
           .then((sentCampaignEvents) => {
             setDataPrevCampaignEvents(sentCampaignEvents);
@@ -190,33 +174,20 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{t('serverErrors.CYPU-301')}</Ap>
                 </Alert>
-              )
+              ),
             });
           });
       }
     },
-    [
-      api,
-      createAlert,
-      getNewId,
-      t
-    ]
+    [api, createAlert, getNewId, t]
   );
 
   const onLogScroll = useCallback(() => {
     if (scrollRef.current !== null) {
-      const totalHeight
-      = scrollRef.current.scrollTop
-        + scrollRef.current.clientHeight;
-      if (
-        totalHeight >= scrollRef.current.scrollHeight
-        && !lockedScroll.current
-      ) {
+      const totalHeight = scrollRef.current.scrollTop + scrollRef.current.clientHeight;
+      if (totalHeight >= scrollRef.current.scrollHeight && !lockedScroll.current) {
         lockedScroll.current = true;
-      } else if (
-        totalHeight < scrollRef.current.scrollHeight
-        && lockedScroll.current
-      ) {
+      } else if (totalHeight < scrollRef.current.scrollHeight && lockedScroll.current) {
         lockedScroll.current = false;
       }
 
@@ -225,7 +196,7 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
           api.campaignEvents
             .getAllByCampaign({
               campaignId,
-              offset: dataPrevCampaignEvents.length
+              offset: dataPrevCampaignEvents.length,
             })
             .then((sentCampaignEvents) => {
               const indexedTotHeight = scrollRef.current?.scrollHeight;
@@ -235,14 +206,8 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
                 return next;
               });
               setTimeout(function () {
-                if (
-                  scrollRef.current !== null
-                  && indexedTotHeight !== undefined
-                ) {
-                  scrollRef.current.scrollTo(
-                    0,
-                    scrollRef.current.scrollHeight - indexedTotHeight
-                  );
+                if (scrollRef.current !== null && indexedTotHeight !== undefined) {
+                  scrollRef.current.scrollTo(0, scrollRef.current.scrollHeight - indexedTotHeight);
                 }
               }, 0);
             })
@@ -254,39 +219,25 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
                   <Alert key={newId} id={newId} timer={5}>
                     <Ap>{t('serverErrors.CYPU-301')}</Ap>
                   </Alert>
-                )
+                ),
               });
             });
         }
       }
     }
-  }, [
-    api,
-    campaignId,
-    createAlert,
-    dataPrevCampaignEvents,
-    getNewId,
-    t
-  ]);
+  }, [api, campaignId, createAlert, dataPrevCampaignEvents, getNewId, t]);
 
   useEffect(() => {
     if (
-      api !== undefined
-      && !calledApi.current
-      && scrollRef.current !== null
-      && campaignId !== undefined
+      api !== undefined &&
+      !calledApi.current &&
+      scrollRef.current !== null &&
+      campaignId !== undefined
     ) {
       calledApi.current = true;
       reloadCampaignEvents(campaignId);
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    t,
-    reloadCampaignEvents,
-    campaignId
-  ]);
+  }, [api, createAlert, getNewId, t, reloadCampaignEvents, campaignId]);
 
   useEffect(() => {
     calledApi.current &&= false;
@@ -321,43 +272,35 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
         socket.emit('exitRoom', campaignId);
       }
     };
-  }, [
-    addCampaignEventToTab,
-    campaignId,
-    socket
-  ]);
+  }, [addCampaignEventToTab, campaignId, socket]);
 
   useEffect(() => {
-    const addCampaignEvent = (
-      { detail }: { detail?: CampaignEventDetailData }
-    ): void => {
+    const addCampaignEvent = ({ detail }: { detail?: CampaignEventDetailData }): void => {
       if (
-        api !== undefined
-        && detail !== undefined
-        && campaignId !== undefined
-        && charRef.current !== undefined
-        && socket !== null
+        api !== undefined &&
+        detail !== undefined &&
+        campaignId !== undefined &&
+        charRef.current !== undefined &&
+        socket !== null
       ) {
-        const {
-          result, formula, mode
-        } = detail;
+        const { result, formula, mode } = detail;
         api.campaignEvents
           .create({
             result,
             formula,
             character: charRef.current._id,
             campaign: campaignId,
-            type: mode
+            type: mode,
           })
           .then((data) => {
             if (charRef.current !== undefined) {
               const dataCampaignEvent = {
                 ...data,
-                character: charRef.current
+                character: charRef.current,
               };
               socket.emit('newCampaignEvent', {
                 room: campaignId,
-                data: dataCampaignEvent
+                data: dataCampaignEvent,
               });
               addCampaignEventToTab(dataCampaignEvent);
             }
@@ -370,16 +313,13 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>{t('serverErrors.CYPU-301')}</Ap>
                 </Alert>
-              )
+              ),
             });
           });
       }
     };
 
-    if (
-      !initEvt.current && api !== undefined
-      && socket !== null && campaignId !== undefined
-    ) {
+    if (!initEvt.current && api !== undefined && socket !== null && campaignId !== undefined) {
       initEvt.current = true;
       campaignEvt.addCampaignEventListener(addCampaignEvent);
     }
@@ -389,16 +329,7 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
         campaignEvt.removeCampaignEventListener(addCampaignEvent);
       }
     };
-  }, [
-    campaignEvt,
-    addCampaignEventToTab,
-    api,
-    campaignId,
-    createAlert,
-    getNewId,
-    socket,
-    t
-  ]);
+  }, [campaignEvt, addCampaignEventToTab, api, campaignId, createAlert, getNewId, socket, t]);
 
   useEffect(() => {
     if (isTabOpen) {
@@ -452,13 +383,11 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
             ref={scrollRef}
             onScroll={onLogScroll}
           >
-            {campaignId === undefined
-              ? (
-                  <p className="campaign-event-tab__log__table__no-canmpaign">
-                    {t('campaignEventTab.noCampaign', { ns: 'components' })}
-                  </p>
-                )
-              : null}
+            {campaignId === undefined ? (
+              <p className="campaign-event-tab__log__table__no-canmpaign">
+                {t('campaignEventTab.noCampaign', { ns: 'components' })}
+              </p>
+            ) : null}
             {logCampaignEvents}
           </div>
           <Avideo className="campaign-event-tab__log__animatedbg" video="logo" />

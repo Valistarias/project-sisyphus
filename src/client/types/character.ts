@@ -1,241 +1,245 @@
 import type { ICampaign } from './campaign';
+import type { InternationalizationType, IUser } from './global';
 import type {
-  InternationalizationType, IUser
-} from './global';
-import type { ICuratedAmmo, ICuratedArmor, ICuratedBag, ICuratedImplant, ICuratedItem, ICuratedProgram, ICuratedWeapon } from './items';
-import type {
-  IBackground, INode
-} from './rules';
+  ICuratedAmmo,
+  ICuratedArmor,
+  ICuratedBag,
+  ICuratedImplant,
+  ICuratedItem,
+  ICuratedProgram,
+  ICuratedWeapon,
+} from './items';
+import type { IBackground, INode } from './rules';
 
 // Body Stat ------------------------------------
 export interface IBodyStat {
   /** The ID of the body stat */
-  _id: string
+  _id: string;
   /** The body targeted */
-  body: string
+  body: string;
   /** The linked Stat */
-  stat: string
+  stat: string;
   /** What is the actual value of this stat */
-  value: number
+  value: number;
   /** When the body was created */
-  createdAt: Date
+  createdAt: Date;
 }
 
 // Body Ammo ------------------------------------
 export interface IBodyAmmo {
   /** The ID of the body stat */
-  _id: string
+  _id: string;
   /** The body targeted */
-  body: string
+  body: string;
   /** The linked Ammo */
-  ammo: ICuratedAmmo
+  ammo: ICuratedAmmo;
   /** The bag that store this ammo */
-  bag: string
+  bag: string;
   /** How many ammos the player have */
-  qty: number
+  qty: number;
   /** When the body was created */
-  createdAt: Date
+  createdAt: Date;
 }
 
 // Body Armor ------------------------------------
 export interface IBodyArmor {
   /** The ID of the body stat */
-  _id: string
+  _id: string;
   /** The body targeted */
-  body: string
+  body: string;
   /** The linked Armor */
-  armor: ICuratedArmor
+  armor: ICuratedArmor;
   /** The bag that store this armor */
-  bag: string
+  bag: string;
   /** Is the armor equiped ? */
-  equiped: boolean
+  equiped: boolean;
   /** When the body was created */
-  createdAt: Date
+  createdAt: Date;
 }
 
 // Body Bag ------------------------------------
 export interface IBodyBag {
   /** The ID of the body stat */
-  _id: string
+  _id: string;
   /** The body targeted */
-  body: string
+  body: string;
   /** The linked Bag */
-  bag: ICuratedBag
+  bag: ICuratedBag;
   /** Is the bag equiped ? */
-  equiped: boolean
+  equiped: boolean;
   /** When the body was created */
-  createdAt: Date
+  createdAt: Date;
 }
 
 // Body Implant ------------------------------------
 export interface IBodyImplant {
   /** The ID of the body stat */
-  _id: string
+  _id: string;
   /** The body targeted */
-  body: string
+  body: string;
   /** The linked Implant */
-  implant: ICuratedImplant
+  implant: ICuratedImplant;
   /** The bag that store this implant */
-  bag: string
+  bag: string;
   /** at what part the implant is equiped ? */
-  equiped: string
+  equiped: string;
   /** When the body was created */
-  createdAt: Date
+  createdAt: Date;
 }
 
 // Body Item ------------------------------------
 export interface IBodyItem {
   /** The ID of the body stat */
-  _id: string
+  _id: string;
   /** The body targeted */
-  body: string
+  body: string;
   /** The linked Item */
-  item: ICuratedItem
+  item: ICuratedItem;
   /** The bag that store this item */
-  bag: string
+  bag: string;
   /** How many items the player have */
-  qty: number
+  qty: number;
   /** When the body was created */
-  createdAt: Date
+  createdAt: Date;
 }
 
 // Body Program ------------------------------------
 export interface IBodyProgram {
   /** The ID of the body stat */
-  _id: string
+  _id: string;
   /** The body targeted */
-  body: string
+  body: string;
   /** The linked Program */
-  program: ICuratedProgram
+  program: ICuratedProgram;
   /** The bag that store this program */
-  bag: string
+  bag: string;
   /** How many times the progam was used in the day */
-  uses: number
+  uses: number;
   /** When the body was created */
-  createdAt: Date
+  createdAt: Date;
 }
 
 // Body Weapon ------------------------------------
 export interface IBodyWeapon {
   /** The ID of the body stat */
-  _id: string
+  _id: string;
   /** The body targeted */
-  body: string
+  body: string;
   /** The linked Weapon */
-  weapon: ICuratedWeapon
+  weapon: ICuratedWeapon;
   /** The type of ammo */
-  ammo: string
+  ammo: string;
   /** The bag that store this weapon */
-  bag: string
+  bag: string;
   /** The bullets in the chamber */
-  bullets: number
+  bullets: number;
   /** When the body was created */
-  createdAt: Date
+  createdAt: Date;
 }
 
 // Body ------------------------------------
 export interface IBody {
   /** The ID of the body */
-  _id: string
+  _id: string;
   /** Is this body alive */
-  alive: boolean
+  alive: boolean;
   /** The body HP */
-  hp: number
+  hp: number;
   /** The character associated to this body */
-  character: string
+  character: string;
   /** The associated stats to this body */
-  stats: IBodyStat[]
+  stats: IBodyStat[];
   /** The associated ammos to this body */
-  ammos?: IBodyAmmo[]
+  ammos?: IBodyAmmo[];
   /** The associated armors to this body */
-  armors?: IBodyArmor[]
+  armors?: IBodyArmor[];
   /** The associated bags to this body */
-  bags?: IBodyBag[]
+  bags?: IBodyBag[];
   /** The associated implants to this body */
-  implants?: IBodyImplant[]
+  implants?: IBodyImplant[];
   /** The associated items to this body */
-  items?: IBodyItem[]
+  items?: IBodyItem[];
   /** The associated programs to this body */
-  programs?: IBodyProgram[]
+  programs?: IBodyProgram[];
   /** The associated weapons to this body */
-  weapons?: IBodyWeapon[]
+  weapons?: IBodyWeapon[];
   /** When the body was created */
-  createdAt: Date
+  createdAt: Date;
 }
 
 // Character Nodes ------------------------------------
 export interface ICharacterNode {
   /** The ID of the character node */
-  _id: string
+  _id: string;
   /** When the character was created */
-  createdAt: Date
+  createdAt: Date;
   /** The targeted character */
-  character: ICharacter
+  character: ICharacter;
   /** The linked Node */
-  node: INode
+  node: INode;
   /** How many time this node was used */
-  used?: number
+  used?: number;
 }
 
 // Character ------------------------------------
 export interface ICharacter {
   /** The ID of the character */
-  _id: string
+  _id: string;
   /** The first name of the character */
-  firstName?: string
+  firstName?: string;
   /** The last name of the character */
-  lastName?: string
+  lastName?: string;
   /** The nickname of the character */
-  nickName?: string
+  nickName?: string;
   /** The gender of the character */
-  gender?: string
+  gender?: string;
   /** The pronouns of the character */
-  pronouns?: string
+  pronouns?: string;
   /** The bio of the character */
-  bio?: string
+  bio?: string;
   /** The money of the character */
-  money?: number
+  money?: number;
   /** The karma of the character */
-  karma?: number
+  karma?: number;
   /** The level of the character */
-  level?: number
+  level?: number;
   /** Is the character fully finished in the character editor ? */
-  isReady: boolean
+  isReady: boolean;
   /** The owner of the character */
-  player?: IUser
+  player?: IUser;
   /** The creator of the character */
-  createdBy: IUser
+  createdBy: IUser;
   /** The players of the character */
-  campaign?: ICampaign
+  campaign?: ICampaign;
   /** The nodes of the character */
-  nodes?: ICharacterNode[]
+  nodes?: ICharacterNode[];
   /** All the bodies used by this character */
-  bodies?: IBody[]
+  bodies?: IBody[];
   /** The background of the character */
-  background?: IBackground
+  background?: IBackground;
   /** When the character was created */
-  createdAt: Date
+  createdAt: Date;
 }
 
 // Body Part ------------------------------------
 export interface IBodyPart {
   /** The ID of the body part */
-  _id: string
+  _id: string;
   /** The title of the body part */
-  title: string
+  title: string;
   /** A summary of the body part */
-  summary: string
+  summary: string;
   /** A 3 letter string used for displaying properly */
-  partId: string
+  partId: string;
   /** How many implants a user can have on this body part */
-  limit: number
+  limit: number;
   /** When the body part was created */
-  createdAt: Date
+  createdAt: Date;
   /** The internationalization */
-  i18n: InternationalizationType
+  i18n: InternationalizationType;
 }
 
 export interface ICuratedBodyPart {
-  i18n: InternationalizationType
-  bodyPart: IBodyPart
+  i18n: InternationalizationType;
+  bodyPart: IBodyPart;
 }

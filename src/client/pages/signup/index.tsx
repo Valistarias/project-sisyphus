@@ -1,25 +1,14 @@
-import React, {
-  useCallback, type FC
-} from 'react';
+import React, { useCallback, type FC } from 'react';
 
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  useApi, useSystemAlerts
-} from '../../providers';
+import { useApi, useSystemAlerts } from '../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../atoms';
-import {
-  Button, Input,
-  LinkButton
-} from '../../molecules';
+import { Aerror, Ap, Atitle } from '../../atoms';
+import { Button, Input, LinkButton } from '../../molecules';
 import { Alert } from '../../organisms';
 
 import type { ErrorResponseType } from '../../types/global';
@@ -29,38 +18,34 @@ import { regexMail } from '../../utils';
 import './signup.scss';
 
 interface FormValues {
-  username: string
-  mail: string
-  password: string
-  confirmPassword: string
+  username: string;
+  mail: string;
+  password: string;
+  confirmPassword: string;
 }
 
 const Signup: FC = () => {
   const { api } = useApi();
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
 
   const {
     control,
     handleSubmit,
     watch,
     setError,
-    formState: { errors }
+    formState: { errors },
   } = useForm();
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
-    ({
-      username, mail, password
-    }) => {
+    ({ username, mail, password }) => {
       if (api !== undefined) {
         api.auth
           .signup({
             username,
             mail,
-            password
+            password,
           })
           .then(() => {
             const newId = getNewId();
@@ -70,11 +55,12 @@ const Signup: FC = () => {
                 <Alert key={newId} id={newId} timer={5}>
                   <Ap>
                     {t('signup.successSent', {
-                      ns: 'pages', mail
+                      ns: 'pages',
+                      mail,
                     })}
                   </Ap>
                 </Alert>
-              )
+              ),
             });
             void navigate('/');
           })
@@ -83,25 +69,22 @@ const Signup: FC = () => {
             if (data.code === 'CYPU-104') {
               setError(data.sent ?? '', {
                 type: 'server',
-                message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize') })
+                message: t(`serverErrors.${data.code}`, {
+                  field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
+                }),
               });
             } else {
               setError('root.serverError', {
                 type: 'server',
-                message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize') })
+                message: t(`serverErrors.${data.code}`, {
+                  field: i18next.format(t(`terms.user.${data.sent}`), 'capitalize'),
+                }),
               });
             }
           });
       }
     },
-    [
-      api,
-      createAlert,
-      getNewId,
-      navigate,
-      setError,
-      t
-    ]
+    [api, createAlert, getNewId, navigate, setError, t]
   );
 
   return (
@@ -115,11 +98,9 @@ const Signup: FC = () => {
           }}
           noValidate
         >
-          {errors.root?.serverError.message !== undefined
-            ? (
-                <Aerror>{errors.root.serverError.message}</Aerror>
-              )
-            : null}
+          {errors.root?.serverError.message !== undefined ? (
+            <Aerror>{errors.root.serverError.message}</Aerror>
+          ) : null}
           <Input
             control={control}
             inputName="username"
@@ -135,8 +116,8 @@ const Signup: FC = () => {
               required: t('mail.required', { ns: 'fields' }),
               pattern: {
                 value: regexMail,
-                message: t('mail.pattern', { ns: 'fields' })
-              }
+                message: t('mail.pattern', { ns: 'fields' }),
+              },
             }}
             label={t('mail.label', { ns: 'fields' })}
             autoComplete="email"
@@ -159,7 +140,7 @@ const Signup: FC = () => {
                 if (watch('password') !== val) {
                   return t('confirmPassword.validate', { ns: 'fields' });
                 }
-              }
+              },
             }}
             label={t('confirmPassword.label', { ns: 'fields' })}
             autoComplete="new-password"

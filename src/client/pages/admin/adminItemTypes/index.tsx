@@ -1,14 +1,10 @@
-import React, {
-  useMemo, type FC
-} from 'react';
+import React, { useMemo, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../../providers';
 
-import {
-  Ali, Atitle, Aul
-} from '../../../atoms';
+import { Ali, Atitle, Aul } from '../../../atoms';
 import { LinkButton } from '../../../molecules';
 
 import { classTrim } from '../../../utils';
@@ -27,7 +23,7 @@ const AdminItemTypes: FC = () => {
 
     return (
       <Aul className="adminItemTypes__item-type-list" noPoints>
-        {itemTypes.map(itemType => (
+        {itemTypes.map((itemType) => (
           <Ali
             className={classTrim(`
               adminItemTypes__item-type-list__elt
@@ -51,7 +47,9 @@ const AdminItemTypes: FC = () => {
         <div className="adminItemTypes__item-types">
           <Atitle level={2}>{t('adminItemTypes.list', { ns: 'pages' })}</Atitle>
           <div className="adminItemTypes__item-types__list">{itemTypesList}</div>
-          <LinkButton href="/admin/itemtype/new">{t('adminNewItemType.title', { ns: 'pages' })}</LinkButton>
+          <LinkButton href="/admin/itemtype/new">
+            {t('adminNewItemType.title', { ns: 'pages' })}
+          </LinkButton>
         </div>
       </div>
     </div>

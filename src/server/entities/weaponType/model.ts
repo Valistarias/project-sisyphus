@@ -1,33 +1,31 @@
-import {
-  Schema, model, type HydratedDocument, type Model, type ObjectId
-} from 'mongoose';
+import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
 import type { IItemType } from '../itemType/model';
 import type { IWeaponStyle } from '../weaponStyle/model';
 
 interface IWeaponType {
   /** The title of the weapon style */
-  title: string
+  title: string;
   /** A summary of the weapon style */
-  summary: string
+  summary: string;
   /** The associated weapon style */
-  weaponStyle: ObjectId
+  weaponStyle: ObjectId;
   /** The type of item */
-  itemType: ObjectId
+  itemType: ObjectId;
   /** The icon of the weapon */
-  icon: string
+  icon: string;
   /** Is this weapon type needs training to be used ? */
-  needTraining: boolean
+  needTraining: boolean;
   /** The internationnal content, as a json, stringified */
-  i18n?: string
+  i18n?: string;
   /** When the weapon style was created */
-  createdAt: Date
+  createdAt: Date;
 }
 
 type HydratedIWeaponType = HydratedDocument<
   Omit<IWeaponType, 'weaponStyle' | 'itemType'> & {
-    weaponStyle: IWeaponStyle | ObjectId
-    itemType: IItemType | ObjectId
+    weaponStyle: IWeaponStyle | ObjectId;
+    itemType: IItemType | ObjectId;
   }
 >;
 
@@ -37,26 +35,23 @@ const userSchema = new Schema<IWeaponType>({
   icon: String,
   needTraining: {
     type: Boolean,
-    default: false
+    default: false,
   },
   weaponStyle: {
     type: Schema.Types.ObjectId,
-    ref: 'WeaponStyle'
+    ref: 'WeaponStyle',
   },
   itemType: {
     type: Schema.Types.ObjectId,
-    ref: 'ItemType'
+    ref: 'ItemType',
   },
   i18n: String,
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
-const WeaponTypeModel = (): Model<IWeaponType> =>
-  model('WeaponType', userSchema);
+const WeaponTypeModel = (): Model<IWeaponType> => model('WeaponType', userSchema);
 
-export {
-  WeaponTypeModel, type HydratedIWeaponType, type IWeaponType
-};
+export { WeaponTypeModel, type HydratedIWeaponType, type IWeaponType };

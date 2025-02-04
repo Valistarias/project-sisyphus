@@ -10,7 +10,7 @@ import {
   findSingle,
   quitCampaign,
   updateInfos,
-  updateNodes
+  updateNodes,
 } from './controller';
 
 export default (app: Router): void => {

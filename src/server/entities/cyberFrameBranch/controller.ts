@@ -1,6 +1,4 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
@@ -8,15 +6,12 @@ import {
   gemForbidden,
   gemInvalidField,
   gemNotFound,
-  gemServerError
+  gemServerError,
 } from '../../utils/globalErrorMessage';
 
 import type { InternationalizationType } from '../../utils/types';
 import type { HydratedINode, ICyberFrame, INode, LeanINode } from '../index';
-import type {
-  HydratedICyberFrameBranch,
-  LeanICyberFrameBranch
-} from './model';
+import type { HydratedICyberFrameBranch, LeanICyberFrameBranch } from './model';
 
 import { curateI18n } from '../../utils';
 
@@ -30,13 +25,7 @@ const findCyberFrameBranches = async (): Promise<LeanICyberFrameBranch[]> =>
       .populate<{ nodes: Array<INode<string>> }>({
         path: 'nodes',
         select: '_id title summary icon',
-        populate: [
-          'effects',
-          'actions',
-          'skillBonuses',
-          'statBonuses',
-          'charParamBonuses'
-        ]
+        populate: ['effects', 'actions', 'skillBonuses', 'statBonuses', 'charParamBonuses'],
       })
       .then((res: LeanICyberFrameBranch[]) => {
         if (res.length === 0) {
@@ -60,13 +49,7 @@ const findCyberFrameBranchesByFrame = async (
       .populate<{ nodes: Array<INode<string>> }>({
         path: 'nodes',
         select: '_id title summary icon',
-        populate: [
-          'effects',
-          'actions',
-          'skillBonuses',
-          'statBonuses',
-          'charParamBonuses'
-        ]
+        populate: ['effects', 'actions', 'skillBonuses', 'statBonuses', 'charParamBonuses'],
       })
       .then((res?: LeanICyberFrameBranch[] | null) => {
         if (res === undefined || res === null) {
@@ -80,15 +63,13 @@ const findCyberFrameBranchesByFrame = async (
       });
   });
 
-const findCompleteCyberFrameBranchById = async (
-  id: string
-): Promise<HydratedICyberFrameBranch> =>
+const findCompleteCyberFrameBranchById = async (id: string): Promise<HydratedICyberFrameBranch> =>
   await new Promise((resolve, reject) => {
     CyberFrameBranch.findById(id)
       .populate<{ cyberFrame: ICyberFrame }>('cyberFrame')
       .populate<{ nodes: HydratedINode[] }>({
         path: 'nodes',
-        select: '_id title summary icon'
+        select: '_id title summary icon',
       })
       .then((res) => {
         if (res === null) {
@@ -102,9 +83,7 @@ const findCompleteCyberFrameBranchById = async (
       });
   });
 
-const findCyberFrameBranchById = async (
-  id: string
-): Promise<LeanICyberFrameBranch> =>
+const findCyberFrameBranchById = async (id: string): Promise<LeanICyberFrameBranch> =>
   await new Promise((resolve, reject) => {
     CyberFrameBranch.findById(id)
       .lean()
@@ -112,13 +91,7 @@ const findCyberFrameBranchById = async (
       .populate<{ nodes: Array<INode<string>> }>({
         path: 'nodes',
         select: '_id title summary icon',
-        populate: [
-          'effects',
-          'actions',
-          'skillBonuses',
-          'statBonuses',
-          'charParamBonuses'
-        ]
+        populate: ['effects', 'actions', 'skillBonuses', 'statBonuses', 'charParamBonuses'],
       })
       .then((res) => {
         if (res === null) {
@@ -134,19 +107,18 @@ const findCyberFrameBranchById = async (
 
 const create = (req: Request, res: Response): void => {
   const {
-    title, summary, cyberFrame, i18n = null
+    title,
+    summary,
+    cyberFrame,
+    i18n = null,
   }: {
-    id?: string
-    title?: string
-    summary?: string
-    cyberFrame?: ObjectId
-    i18n: InternationalizationType | null
+    id?: string;
+    title?: string;
+    summary?: string;
+    cyberFrame?: ObjectId;
+    i18n: InternationalizationType | null;
   } = req.body;
-  if (
-    title === undefined
-    || summary === undefined
-    || cyberFrame === undefined
-  ) {
+  if (title === undefined || summary === undefined || cyberFrame === undefined) {
     res.status(400).send(gemInvalidField('CyberFrameBranch'));
 
     return;
@@ -160,7 +132,7 @@ const create = (req: Request, res: Response): void => {
   const cyberFrameBranch: HydratedICyberFrameBranch = new CyberFrameBranch({
     title,
     summary,
-    cyberFrame
+    cyberFrame,
   });
 
   if (i18n !== null) {
@@ -187,7 +159,7 @@ const createGeneralForCyberFrameId = async (id?: string): Promise<boolean> =>
     const cyberFrameBranch: HydratedICyberFrameBranch = new CyberFrameBranch({
       title: '_general',
       summary: '',
-      cyberFrame: id
+      cyberFrame: id,
     });
     cyberFrameBranch
       .save()
@@ -201,13 +173,17 @@ const createGeneralForCyberFrameId = async (id?: string): Promise<boolean> =>
 
 const update = (req: Request, res: Response): void => {
   const {
-    id, title = null, summary = null, cyberFrame = null, i18n
+    id,
+    title = null,
+    summary = null,
+    cyberFrame = null,
+    i18n,
   }: {
-    id?: string
-    title: string | null
-    summary: string | null
-    i18n: InternationalizationType | null
-    cyberFrame: ObjectId | null
+    id?: string;
+    title: string | null;
+    summary: string | null;
+    i18n: InternationalizationType | null;
+    cyberFrame: ObjectId | null;
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('CyberFrameBranch ID'));
@@ -237,12 +213,11 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(
-          cyberFrameBranch.i18n !== undefined
-          && cyberFrameBranch.i18n !== ''
+        const newIntl: InternationalizationType = {
+          ...(cyberFrameBranch.i18n !== undefined && cyberFrameBranch.i18n !== ''
             ? JSON.parse(cyberFrameBranch.i18n)
-            : {}
-        ) };
+            : {}),
+        };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -255,7 +230,8 @@ const update = (req: Request, res: Response): void => {
         .save()
         .then(() => {
           res.send({
-            message: 'CyberFrame branch was updated successfully!', cyberFrameBranch
+            message: 'CyberFrame branch was updated successfully!',
+            cyberFrameBranch,
           });
         })
         .catch((err: unknown) => {
@@ -304,9 +280,7 @@ const deleteCyberFrameBranch = (req: Request, res: Response): void => {
     });
 };
 
-const deleteCyberFrameBranchesByCyberFrameId = async (
-  cyberFrameId?: string
-): Promise<boolean> =>
+const deleteCyberFrameBranchesByCyberFrameId = async (cyberFrameId?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (cyberFrameId === undefined) {
       resolve(true);
@@ -323,48 +297,38 @@ const deleteCyberFrameBranchesByCyberFrameId = async (
   });
 
 interface CuratedICyberFrameBranchToSend {
-  cyberFrameBranch:
-    Omit<
-      LeanICyberFrameBranch
-      , 'cyberFrame'
-    > & {
-      cyberFrame: ICyberFrame
-      nodes?: LeanINode[]
-    }
-  i18n?: InternationalizationType
+  cyberFrameBranch: Omit<LeanICyberFrameBranch, 'cyberFrame'> & {
+    cyberFrame: ICyberFrame;
+    nodes?: LeanINode[];
+  };
+  i18n?: InternationalizationType;
 }
 
 const curateSingleCyberFrameBranch = (
   cyberFrameBranchSent: LeanICyberFrameBranch
 ): CuratedICyberFrameBranchToSend => {
-  const curatedNodes = cyberFrameBranchSent.nodes?.length !== undefined
-    && cyberFrameBranchSent.nodes.length > 0
-    ? cyberFrameBranchSent.nodes.map(node => ({
-        ...node,
-        ...(
-          node.i18n !== undefined
-            ? { i18n: JSON.parse(node.i18n) }
-            : {}
-        )
-      }))
-    : [];
+  const curatedNodes =
+    cyberFrameBranchSent.nodes?.length !== undefined && cyberFrameBranchSent.nodes.length > 0
+      ? cyberFrameBranchSent.nodes.map((node) => ({
+          ...node,
+          ...(node.i18n !== undefined ? { i18n: JSON.parse(node.i18n) } : {}),
+        }))
+      : [];
 
   const curatedCyberFrame = {
     ...cyberFrameBranchSent.cyberFrame,
-    ...(
-      cyberFrameBranchSent.cyberFrame.i18n !== undefined
-        ? { i18n: JSON.parse(cyberFrameBranchSent.cyberFrame.i18n) }
-        : {}
-    )
+    ...(cyberFrameBranchSent.cyberFrame.i18n !== undefined
+      ? { i18n: JSON.parse(cyberFrameBranchSent.cyberFrame.i18n) }
+      : {}),
   };
 
   return {
     cyberFrameBranch: {
       ...cyberFrameBranchSent,
       nodes: curatedNodes,
-      cyberFrame: curatedCyberFrame
+      cyberFrame: curatedCyberFrame,
     },
-    i18n: curateI18n(cyberFrameBranchSent.i18n)
+    i18n: curateI18n(cyberFrameBranchSent.i18n),
   };
 };
 
@@ -390,9 +354,7 @@ const findAll = (req: Request, res: Response): void => {
       const curatedCyberFrameBranches: CuratedICyberFrameBranchToSend[] = [];
 
       cyberFrameBranches.forEach((cyberFrameBranch) => {
-        curatedCyberFrameBranches.push(
-          curateSingleCyberFrameBranch(cyberFrameBranch)
-        );
+        curatedCyberFrameBranches.push(curateSingleCyberFrameBranch(cyberFrameBranch));
       });
 
       res.send(curatedCyberFrameBranches);
@@ -412,9 +374,7 @@ const findAllByFrame = (req: Request, res: Response): void => {
       const curatedCyberFrameBranches: CuratedICyberFrameBranchToSend[] = [];
 
       cyberFrameBranches.forEach((cyberFrameBranch) => {
-        curatedCyberFrameBranches.push(
-          curateSingleCyberFrameBranch(cyberFrameBranch)
-        );
+        curatedCyberFrameBranches.push(curateSingleCyberFrameBranch(cyberFrameBranch));
       });
 
       res.send(curatedCyberFrameBranches);
@@ -432,5 +392,5 @@ export {
   findCyberFrameBranchById,
   findCyberFrameBranchesByFrame,
   findSingle,
-  update
+  update,
 };

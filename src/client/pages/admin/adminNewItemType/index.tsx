@@ -1,40 +1,28 @@
-import React, {
-  useCallback, useEffect, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useRef, useState, type FC } from 'react';
 
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  useApi, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input
-} from '../../../molecules';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input } from '../../../molecules';
 import { Alert } from '../../../organisms';
 
 import './adminNewItemType.scss';
 import type { ErrorResponseType } from '../../../types';
 
 interface FormValues {
-  name: string
+  name: string;
 }
 
 const AdminNewItemType: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const navigate = useNavigate();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
   const { reloadItemTypes } = useGlobalVars();
 
   const [, setLoading] = useState(true);
@@ -44,7 +32,7 @@ const AdminNewItemType: FC = () => {
     handleSubmit,
     setError,
     control,
-    formState: { errors }
+    formState: { errors },
   } = useForm();
 
   const onSaveItemType: SubmitHandler<FormValues> = useCallback(
@@ -63,7 +51,7 @@ const AdminNewItemType: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewItemType.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           reloadItemTypes();
           void navigate(`/admin/itemtype/${itemType._id}`);
@@ -72,19 +60,13 @@ const AdminNewItemType: FC = () => {
           const { data } = response;
           setError('root.serverError', {
             type: 'server',
-            message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
+            message: t(`serverErrors.${data.code}`, {
+              field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
+            }),
           });
         });
     },
-    [
-      api,
-      getNewId,
-      createAlert,
-      t,
-      reloadItemTypes,
-      navigate,
-      setError
-    ]
+    [api, getNewId, createAlert, t, reloadItemTypes, navigate, setError]
   );
 
   useEffect(() => {
@@ -92,12 +74,7 @@ const AdminNewItemType: FC = () => {
       setLoading(true);
       calledApi.current = true;
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    t
-  ]);
+  }, [api, createAlert, getNewId, t]);
 
   return (
     <div className="adminNewItemType">
@@ -109,11 +86,9 @@ const AdminNewItemType: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewItemType.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror>{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminNewItemType__basics">
           <Input
             control={control}
@@ -123,8 +98,8 @@ const AdminNewItemType: FC = () => {
               required: t('nameItemType.required', { ns: 'fields' }),
               pattern: {
                 value: /^([a-z]){2,3}$/,
-                message: t('nameItemType.format', { ns: 'fields' })
-              }
+                message: t('nameItemType.format', { ns: 'fields' }),
+              },
             }}
             label={t('nameItemType.label', { ns: 'fields' })}
             className="adminNewItemType__basics__name"

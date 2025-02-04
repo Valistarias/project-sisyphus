@@ -1,18 +1,16 @@
-import {
-  Schema, model, type HydratedDocument, type Model
-} from 'mongoose';
+import { Schema, model, type HydratedDocument, type Model } from 'mongoose';
 
 interface ITipText {
   /** The title of the tip text */
-  title: string
+  title: string;
   /** A summary of the tip text */
-  summary: string
+  summary: string;
   /** A string used for identifying and displaying the right tip */
-  tipId: string
+  tipId: string;
   /** The internationnal content, as a json, stringified */
-  i18n?: string
+  i18n?: string;
   /** When the tip text was created */
-  createdAt: Date
+  createdAt: Date;
 }
 
 type HydratedITipText = HydratedDocument<ITipText>;
@@ -24,12 +22,10 @@ const tipTextSchema = new Schema<ITipText>({
   i18n: String,
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 const TipTextModel = (): Model<ITipText> => model('TipText', tipTextSchema);
 
-export {
-  TipTextModel, type HydratedITipText, type ITipText
-};
+export { TipTextModel, type HydratedITipText, type ITipText };

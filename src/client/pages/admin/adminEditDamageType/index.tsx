@@ -1,31 +1,16 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  useNavigate, useParams
-} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input,
-  LinkButton
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input, LinkButton } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type { ErrorResponseType, ICuratedDamageType } from '../../../types';
@@ -36,22 +21,17 @@ import { classTrim } from '../../../utils';
 import './adminEditDamageType.scss';
 
 interface FormValues {
-  name: string
-  nameFr: string
+  name: string;
+  nameFr: string;
 }
 
 const AdminEditDamageType: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
   const { reloadDamageTypes } = useGlobalVars();
-  const {
-    setConfirmContent,
-    removeConfirmEventListener,
-    addConfirmEventListener
-  } = useConfirmMessage();
+  const { setConfirmContent, removeConfirmEventListener, addConfirmEventListener } =
+    useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -61,57 +41,45 @@ const AdminEditDamageType: FC = () => {
 
   const [displayInt, setDisplayInt] = useState(false);
 
-  const [damageTypeData, setDamageTypeData]
-  = useState<ICuratedDamageType | null>(null);
+  const [damageTypeData, setDamageTypeData] = useState<ICuratedDamageType | null>(null);
 
   const [damageTypeText, setDamageTypeText] = useState('');
   const [damageTypeTextFr, setDamageTypeTextFr] = useState('');
 
-  const textEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const textFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const createDefaultData = useCallback(
-    (damageTypeData: ICuratedDamageType | null) => {
-      if (damageTypeData == null) {
-        return {};
-      }
-      const {
-        damageType, i18n
-      } = damageTypeData;
-      const defaultData: Partial<FormValues> = {};
-      defaultData.name = damageType.title;
-      if (i18n.fr !== undefined) {
-        defaultData.nameFr = i18n.fr.title ?? '';
-      }
+  const createDefaultData = useCallback((damageTypeData: ICuratedDamageType | null) => {
+    if (damageTypeData == null) {
+      return {};
+    }
+    const { damageType, i18n } = damageTypeData;
+    const defaultData: Partial<FormValues> = {};
+    defaultData.name = damageType.title;
+    if (i18n.fr !== undefined) {
+      defaultData.nameFr = i18n.fr.title ?? '';
+    }
 
-      return defaultData;
-    }, []);
+    return defaultData;
+  }, []);
 
   const {
     handleSubmit,
     setError,
     control,
     formState: { errors },
-    reset
-  } = useForm({ defaultValues: useMemo(
-    () => createDefaultData(damageTypeData),
-    [createDefaultData, damageTypeData]
-  ) });
+    reset,
+  } = useForm({
+    defaultValues: useMemo(
+      () => createDefaultData(damageTypeData),
+      [createDefaultData, damageTypeData]
+    ),
+  });
 
   const onSaveDamageType: SubmitHandler<FormValues> = useCallback(
-    ({
-      name, nameFr
-    }) => {
-      if (
-        textEditor === null
-        || textFrEditor === null
-        || api === undefined
-      ) {
+    ({ name, nameFr }) => {
+      if (textEditor === null || textFrEditor === null || api === undefined) {
         return;
       }
       let htmlText: string | null = textEditor.getHTML();
@@ -125,10 +93,12 @@ const AdminEditDamageType: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          text: htmlTextFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            text: htmlTextFr,
+          },
+        };
       }
 
       api.damageTypes
@@ -136,7 +106,7 @@ const AdminEditDamageType: FC = () => {
           id,
           title: name,
           summary: htmlText,
-          i18n
+          i18n,
         })
         .then((damageType) => {
           const newId = getNewId();
@@ -146,7 +116,7 @@ const AdminEditDamageType: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditDamageType.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           reloadDamageTypes();
         })
@@ -155,27 +125,19 @@ const AdminEditDamageType: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`,
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
     },
-    [
-      textEditor,
-      textFrEditor,
-      api,
-      id,
-      getNewId,
-      createAlert,
-      t,
-      reloadDamageTypes,
-      setError
-    ]
+    [textEditor, textFrEditor, api, id, getNewId, createAlert, t, reloadDamageTypes, setError]
   );
 
   const onAskDelete = useCallback(() => {
@@ -187,14 +149,12 @@ const AdminEditDamageType: FC = () => {
         title: t('adminEditDamageType.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditDamageType.confirmDeletion.text', {
           ns: 'pages',
-          elt: damageTypeData?.damageType.title
+          elt: damageTypeData?.damageType.title,
         }),
-        confirmCta: t('adminEditDamageType.confirmDeletion.confirmCta', { ns: 'pages' })
+        confirmCta: t('adminEditDamageType.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
       (evtId: string) => {
-        const confirmDelete = (
-          { detail }: { detail: ConfirmMessageDetailData }
-        ): void => {
+        const confirmDelete = ({ detail }: { detail: ConfirmMessageDetailData }): void => {
           if (detail.proceed) {
             api.damageTypes
               .delete({ id })
@@ -206,7 +166,7 @@ const AdminEditDamageType: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditDamageType.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  )
+                  ),
                 });
                 reloadDamageTypes();
                 void navigate('/admin/damagetypes');
@@ -216,12 +176,16 @@ const AdminEditDamageType: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.damageType.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.damageType.name`), 'capitalize'),
+                    }),
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.damageType.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.damageType.name`), 'capitalize'),
+                    }),
                   });
                 }
               });
@@ -243,7 +207,7 @@ const AdminEditDamageType: FC = () => {
     createAlert,
     reloadDamageTypes,
     navigate,
-    setError
+    setError,
   ]);
 
   useEffect(() => {
@@ -252,9 +216,7 @@ const AdminEditDamageType: FC = () => {
       api.damageTypes
         .get({ damageTypeId: id })
         .then((curatedDamageType) => {
-          const {
-            damageType, i18n
-          } = curatedDamageType;
+          const { damageType, i18n } = curatedDamageType;
           setDamageTypeData(curatedDamageType);
           setDamageTypeText(damageType.summary);
           if (i18n.fr !== undefined) {
@@ -269,17 +231,11 @@ const AdminEditDamageType: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    id,
-    t
-  ]);
+  }, [api, createAlert, getNewId, id, t]);
 
   // The Autosave
   useEffect(() => {
@@ -301,11 +257,7 @@ const AdminEditDamageType: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(damageTypeData));
-  }, [
-    damageTypeData,
-    reset,
-    createDefaultData
-  ]);
+  }, [damageTypeData, reset, createDefaultData]);
 
   return (
     <div
@@ -327,15 +279,17 @@ const AdminEditDamageType: FC = () => {
             {t('adminEditDamageType.delete', { ns: 'pages' })}
           </Button>
         </div>
-        <LinkButton className="adminEditDamageType__return-btn" href="/admin/damagetypes" size="small">
+        <LinkButton
+          className="adminEditDamageType__return-btn"
+          href="/admin/damagetypes"
+          size="small"
+        >
           {t('adminEditDamageType.return', { ns: 'pages' })}
         </LinkButton>
         <Atitle level={2}>{t('adminEditDamageType.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror className="adminEditDamageType__error">{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror className="adminEditDamageType__error">{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminEditDamageType__basics">
           <Input
             control={control}
@@ -367,7 +321,7 @@ const AdminEditDamageType: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt(prev => !prev);
+              setDisplayInt((prev) => !prev);
             }}
             className="adminEditDamageType__intl-title__btn"
           />

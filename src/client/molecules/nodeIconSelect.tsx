@@ -1,20 +1,12 @@
 import React from 'react';
-import {
-  useCallback, useEffect, useState, type FC
-} from 'react';
+import { useCallback, useEffect, useState, type FC } from 'react';
 
 import { Controller } from 'react-hook-form';
 
 import holoBackground from '../assets/imgs/tvbg2.gif';
-import {
-  Abutton, Aerror, Aicon, Alabel, AnodeIcon
-} from '../atoms';
-import {
-  Quark, type IQuarkProps
-} from '../quark';
-import {
-  possibleNodeIcons, type TypeNodeIcons
-} from '../types/rules';
+import { Abutton, Aerror, Aicon, Alabel, AnodeIcon } from '../atoms';
+import { Quark, type IQuarkProps } from '../quark';
+import { possibleNodeIcons, type TypeNodeIcons } from '../types/rules';
 
 import type { IReactHookFormInputs } from '../types';
 
@@ -24,21 +16,25 @@ import './nodeIconSelect.scss';
 
 interface INodeIconSelect extends IReactHookFormInputs {
   /** The label, if any */
-  label?: string
+  label?: string;
 }
 
 const defaultNodeIcon: TypeNodeIcons = 'default';
 
 const NodeIconSelect: FC<IQuarkProps<INodeIconSelect>> = ({
-  className, inputName, rules, control, label
+  className,
+  inputName,
+  rules,
+  control,
+  label,
 }) => {
   // const [selected, setSelected] = useState<TypeNodeIcons>(defaultNodeIcon);
   const [isOpen, setOpenMenu] = useState(false);
 
   const closeMenu = useCallback((e: MouseEvent) => {
     if (
-      e.target !== null
-      && !(e.target as Element).classList.contains('nodeiconselect__list__visual')
+      e.target !== null &&
+      !(e.target as Element).classList.contains('nodeiconselect__list__visual')
     ) {
       setOpenMenu(false);
     }
@@ -65,25 +61,19 @@ const NodeIconSelect: FC<IQuarkProps<INodeIconSelect>> = ({
         control={control}
         name={inputName}
         rules={rules}
-        render={({
-          field: {
-            onChange, value, name
-          }, fieldState: { error }
-        }) => (
+        render={({ field: { onChange, value, name }, fieldState: { error } }) => (
           <>
-            {label !== undefined
-              ? (
-                  <Alabel className="nodeiconselect__label" htmlFor={name}>
-                    {label}
-                  </Alabel>
-                )
-              : null}
+            {label !== undefined ? (
+              <Alabel className="nodeiconselect__label" htmlFor={name}>
+                {label}
+              </Alabel>
+            ) : null}
             <Abutton
               className="nodeiconselect__display"
               onClick={(e) => {
                 e.stopPropagation();
                 e.preventDefault();
-                setOpenMenu(prev => !prev);
+                setOpenMenu((prev) => !prev);
               }}
             >
               <AnodeIcon className="nodeiconselect__display__visual" type={value} />
@@ -93,7 +83,7 @@ const NodeIconSelect: FC<IQuarkProps<INodeIconSelect>> = ({
               className="nodeiconselect__list"
               style={{ backgroundImage: `url(${holoBackground})` }}
             >
-              {possibleNodeIcons.map(possibleNodeIcon => (
+              {possibleNodeIcons.map((possibleNodeIcon) => (
                 <Abutton
                   key={possibleNodeIcon}
                   className="nodeiconselect__list__elt"
@@ -111,11 +101,9 @@ const NodeIconSelect: FC<IQuarkProps<INodeIconSelect>> = ({
                 </Abutton>
               ))}
             </div>
-            {error?.message !== undefined
-              ? (
-                  <Aerror className="nodeiconselect__error">{error.message}</Aerror>
-                )
-              : null}
+            {error?.message !== undefined ? (
+              <Aerror className="nodeiconselect__error">{error.message}</Aerror>
+            ) : null}
           </>
         )}
       />
@@ -123,6 +111,4 @@ const NodeIconSelect: FC<IQuarkProps<INodeIconSelect>> = ({
   );
 };
 
-export {
-  defaultNodeIcon, NodeIconSelect
-};
+export { defaultNodeIcon, NodeIconSelect };

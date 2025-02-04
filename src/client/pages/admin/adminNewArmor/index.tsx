@@ -1,106 +1,90 @@
-import React, {
-  useCallback, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  useApi, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input, SmartSelect
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input, SmartSelect } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 import { possibleStarterKitValues } from '../../../types/items';
 
 import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
-import {
-  classTrim, isThereDuplicate
-} from '../../../utils';
+import { classTrim, isThereDuplicate } from '../../../utils';
 
 import './adminNewArmor.scss';
 
 interface FormValues {
-  name: string
-  nameFr: string
-  cost: number
-  rarity: string
-  starterKit: string
-  armorType: string
-  itemModifiers: string[]
+  name: string;
+  nameFr: string;
+  cost: number;
+  rarity: string;
+  starterKit: string;
+  armorType: string;
+  itemModifiers: string[];
   skillBonuses?: Record<
     string,
     {
-      skill: string
-      value: number
+      skill: string;
+      value: number;
     }
-  >
+  >;
   statBonuses?: Record<
     string,
     {
-      stat: string
-      value: number
+      stat: string;
+      value: number;
     }
-  >
+  >;
   charParamBonuses?: Record<
     string,
     {
-      charParam: string
-      value: number
+      charParam: string;
+      value: number;
     }
-  >
+  >;
   effects?: Record<
     string,
     {
-      title: string
-      titleFr?: string
-      summary: string
-      summaryFr?: string
-      type: string
-      formula?: string
+      title: string;
+      titleFr?: string;
+      summary: string;
+      summaryFr?: string;
+      type: string;
+      formula?: string;
     }
-  >
+  >;
   actions?: Record<
     string,
     {
-      title: string
-      titleFr?: string
-      summary: string
-      summaryFr?: string
-      type: string
-      skill: string
-      duration: string
-      time?: string
-      timeFr?: string
-      damages?: string
-      offsetSkill?: string
-      uses?: number
-      isKarmic?: boolean
-      karmicCost?: number
+      title: string;
+      titleFr?: string;
+      summary: string;
+      summaryFr?: string;
+      type: string;
+      skill: string;
+      duration: string;
+      time?: string;
+      timeFr?: string;
+      damages?: string;
+      offsetSkill?: string;
+      uses?: number;
+      isKarmic?: boolean;
+      karmicCost?: number;
     }
-  >
+  >;
 }
 
 const AdminNewArmor: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const navigate = useNavigate();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
   const {
     skills,
     stats,
@@ -110,7 +94,7 @@ const AdminNewArmor: FC = () => {
     armorTypes,
     rarities,
     itemTypes,
-    itemModifiers
+    itemModifiers,
   } = useGlobalVars();
 
   const [displayInt, setDisplayInt] = useState(false);
@@ -121,7 +105,7 @@ const AdminNewArmor: FC = () => {
       skills.map(({ skill }) => ({
         value: skill._id,
         // TODO : Handle Internationalization
-        label: skill.title
+        label: skill.title,
       })),
     [skills]
   );
@@ -133,7 +117,7 @@ const AdminNewArmor: FC = () => {
       stats.map(({ stat }) => ({
         value: stat._id,
         // TODO : Handle Internationalization
-        label: stat.title
+        label: stat.title,
       })),
     [stats]
   );
@@ -144,7 +128,7 @@ const AdminNewArmor: FC = () => {
       charParams.map(({ charParam }) => ({
         value: charParam._id,
         // TODO : Handle Internationalization
-        label: charParam.title
+        label: charParam.title,
       })),
     [charParams]
   );
@@ -152,22 +136,18 @@ const AdminNewArmor: FC = () => {
 
   const actionTypeSelect = useMemo(
     () =>
-      actionTypes.map(({
-        name, _id
-      }) => ({
+      actionTypes.map(({ name, _id }) => ({
         value: _id,
-        label: t(`terms.actionType.${name}`)
+        label: t(`terms.actionType.${name}`),
       })),
     [actionTypes, t]
   );
 
   const actionDurationSelect = useMemo(
     () =>
-      actionDurations.map(({
-        name, _id
-      }) => ({
+      actionDurations.map(({ name, _id }) => ({
         value: _id,
-        label: t(`terms.actionDuration.${name}`)
+        label: t(`terms.actionDuration.${name}`),
       })),
     [actionDurations, t]
   );
@@ -176,27 +156,34 @@ const AdminNewArmor: FC = () => {
     () =>
       armorTypes.map(({ armorType }) => ({
         value: armorType._id,
-        label: armorType.title
+        label: armorType.title,
       })),
     [armorTypes]
   );
 
-  const rarityList = useMemo(() => rarities.map(({ rarity }) => ({
-    value: rarity._id,
-    label: rarity.title
-  })), [rarities]);
+  const rarityList = useMemo(
+    () =>
+      rarities.map(({ rarity }) => ({
+        value: rarity._id,
+        label: rarity.title,
+      })),
+    [rarities]
+  );
 
-  const itemModifierList = useMemo(() => itemModifiers.map(
-    ({ itemModifier }) => ({
-      value: itemModifier._id,
-      label: itemModifier.title
-    })), [itemModifiers]);
+  const itemModifierList = useMemo(
+    () =>
+      itemModifiers.map(({ itemModifier }) => ({
+        value: itemModifier._id,
+        label: itemModifier.title,
+      })),
+    [itemModifiers]
+  );
 
   const starterKitList = useMemo(
     () =>
-      possibleStarterKitValues.map(possibleStarterKitValue => ({
+      possibleStarterKitValues.map((possibleStarterKitValue) => ({
         value: possibleStarterKitValue,
-        label: t(`terms.starterKit.${possibleStarterKitValue}`)
+        label: t(`terms.starterKit.${possibleStarterKitValue}`),
       })),
     [t]
   );
@@ -205,32 +192,28 @@ const AdminNewArmor: FC = () => {
 
   const [actionIds, setActionIds] = useState<number[]>([]);
 
-  const introEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const {
     handleSubmit,
     setError,
     unregister,
     control,
-    formState: { errors }
-  } = useForm<FormValues>({ defaultValues: { } });
+    formState: { errors },
+  } = useForm<FormValues>({ defaultValues: {} });
 
   const boolRange = useMemo(
     () => [
       {
         value: '1',
-        label: t('terms.general.yes')
+        label: t('terms.general.yes'),
       },
       {
         value: '0',
-        label: t('terms.general.no')
-      }
+        label: t('terms.general.no'),
+      },
     ],
     [t]
   );
@@ -303,97 +286,85 @@ const AdminNewArmor: FC = () => {
       }
 
       // Check duplicate on skills
-      const skillBonuses = elts.skillBonuses !== undefined
-        ? Object.values(elts.skillBonuses)
-        : [];
+      const skillBonuses = elts.skillBonuses !== undefined ? Object.values(elts.skillBonuses) : [];
       let duplicateSkillBonuses = false;
       if (skillBonuses.length > 0) {
         duplicateSkillBonuses = isThereDuplicate(
-          skillBonuses.map(skillBonus => skillBonus.skill)
+          skillBonuses.map((skillBonus) => skillBonus.skill)
         );
       }
       if (duplicateSkillBonuses) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminNewArmor.errorDuplicateSkill', { ns: 'pages' })
+          message: t('adminNewArmor.errorDuplicateSkill', { ns: 'pages' }),
         });
 
         return;
       }
 
       // Check duplicate on stats
-      const statBonuses = elts.statBonuses !== undefined
-        ? Object.values(elts.statBonuses)
-        : [];
+      const statBonuses = elts.statBonuses !== undefined ? Object.values(elts.statBonuses) : [];
       let duplicateStatBonuses = false;
       if (statBonuses.length > 0) {
-        duplicateStatBonuses = isThereDuplicate(
-          statBonuses.map(statBonus => statBonus.stat)
-        );
+        duplicateStatBonuses = isThereDuplicate(statBonuses.map((statBonus) => statBonus.stat));
       }
       if (duplicateStatBonuses) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminNewArmor.errorDuplicateStat', { ns: 'pages' })
+          message: t('adminNewArmor.errorDuplicateStat', { ns: 'pages' }),
         });
 
         return;
       }
 
       // Check duplicate on character param
-      const charParamBonuses
-        = elts.charParamBonuses !== undefined
-          ? Object.values(elts.charParamBonuses)
-          : [];
+      const charParamBonuses =
+        elts.charParamBonuses !== undefined ? Object.values(elts.charParamBonuses) : [];
       let duplicateCharParamBonuses = false;
       if (charParamBonuses.length > 0) {
         duplicateCharParamBonuses = isThereDuplicate(
-          charParamBonuses.map(charParamBonus => charParamBonus.charParam)
+          charParamBonuses.map((charParamBonus) => charParamBonus.charParam)
         );
       }
       if (duplicateCharParamBonuses) {
         setError('root.serverError', {
           type: 'duplicate',
-          message: t('adminNewArmor.errorDuplicateCharParam', { ns: 'pages' })
+          message: t('adminNewArmor.errorDuplicateCharParam', { ns: 'pages' }),
         });
 
         return;
       }
 
-      const curatedSkillBonuses = skillBonuses.map(({
-        skill, value
-      }) => ({
+      const curatedSkillBonuses = skillBonuses.map(({ skill, value }) => ({
         skill,
-        value: Number(value)
+        value: Number(value),
       }));
-      const curatedStatBonuses = statBonuses.map(({
-        stat, value
-      }) => ({
+      const curatedStatBonuses = statBonuses.map(({ stat, value }) => ({
         stat,
-        value: Number(value)
+        value: Number(value),
       }));
-      const curatedCharParamBonuses = charParamBonuses.map(({
-        charParam, value
-      }) => ({
+      const curatedCharParamBonuses = charParamBonuses.map(({ charParam, value }) => ({
         charParam,
-        value: Number(value)
+        value: Number(value),
       }));
 
       const effectsArr = effects !== undefined ? Object.values(effects) : [];
       const curatedEffects = effectsArr.map(
-        ({
-          formula, type, title, summary, titleFr, summaryFr
-        }) => ({
+        ({ formula, type, title, summary, titleFr, summaryFr }) => ({
           title,
           summary,
           formula,
           type,
-          i18n: { ...(titleFr !== undefined || summaryFr !== undefined
-            ? { fr: {
-                title: titleFr,
-                summary: summaryFr
-              } }
-            : {}) }
+          i18n: {
+            ...(titleFr !== undefined || summaryFr !== undefined
+              ? {
+                  fr: {
+                    title: titleFr,
+                    summary: summaryFr,
+                  },
+                }
+              : {}),
+          },
         })
       );
 
@@ -414,7 +385,7 @@ const AdminNewArmor: FC = () => {
           uses,
           isKarmic,
           karmicCost,
-          summaryFr
+          summaryFr,
         }) => ({
           title,
           summary,
@@ -427,16 +398,17 @@ const AdminNewArmor: FC = () => {
           uses,
           isKarmic: String(isKarmic) === '1',
           karmicCost,
-          i18n: { ...(
-            titleFr !== undefined
-            || summaryFr !== undefined
-            || timeFr !== undefined
-              ? { fr: {
-                  title: titleFr,
-                  summary: summaryFr,
-                  time: timeFr
-                } }
-              : {}) }
+          i18n: {
+            ...(titleFr !== undefined || summaryFr !== undefined || timeFr !== undefined
+              ? {
+                  fr: {
+                    title: titleFr,
+                    summary: summaryFr,
+                    time: timeFr,
+                  },
+                }
+              : {}),
+          },
         })
       );
 
@@ -449,10 +421,12 @@ const AdminNewArmor: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          summary: htmlFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            summary: htmlFr,
+          },
+        };
       }
 
       api.armors
@@ -462,7 +436,7 @@ const AdminNewArmor: FC = () => {
           rarity,
           starterKit,
           summary: html,
-          itemType: itemTypes.find(itemType => itemType.name === 'shi')?._id ?? undefined,
+          itemType: itemTypes.find((itemType) => itemType.name === 'shi')?._id ?? undefined,
           itemModifiers,
           armorType,
           i18n,
@@ -470,7 +444,7 @@ const AdminNewArmor: FC = () => {
           statBonuses: curatedStatBonuses,
           charParamBonuses: curatedCharParamBonuses,
           effects: curatedEffects,
-          actions: curatedActions
+          actions: curatedActions,
         })
         .then((quote) => {
           const newId = getNewId();
@@ -480,7 +454,7 @@ const AdminNewArmor: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewArmor.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           void navigate(`/admin/armor/${quote._id}`);
         })
@@ -489,27 +463,21 @@ const AdminNewArmor: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
+              }),
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.quoteType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
     },
-    [
-      introEditor,
-      introFrEditor,
-      api,
-      itemTypes,
-      setError,
-      t,
-      getNewId,
-      createAlert,
-      navigate
-    ]
+    [introEditor, introFrEditor, api, itemTypes, setError, t, getNewId, createAlert, navigate]
   );
 
   return (
@@ -529,11 +497,9 @@ const AdminNewArmor: FC = () => {
         <Atitle className="adminNewArmor__head" level={1}>
           {t('adminNewArmor.title', { ns: 'pages' })}
         </Atitle>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror>{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminNewArmor__basics">
           <Input
             control={control}
@@ -602,7 +568,7 @@ const AdminNewArmor: FC = () => {
         </Atitle>
         <div className="adminNewArmor__bonuses">
           <div className="adminNewArmor__bonuses__elts">
-            {skillBonusIds.map(skillBonusId => (
+            {skillBonusIds.map((skillBonusId) => (
               <div className="adminNewArmor__bonus" key={`skill-${skillBonusId}`}>
                 <Atitle className="adminNewArmor__bonus__title" level={4}>
                   {t('adminNewArmor.skillBonusTitle', { ns: 'pages' })}
@@ -629,7 +595,7 @@ const AdminNewArmor: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setSkillBonusIds(prev =>
+                    setSkillBonusIds((prev) =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== skillBonusId) {
                           result.push(elt);
@@ -644,7 +610,7 @@ const AdminNewArmor: FC = () => {
                 />
               </div>
             ))}
-            {statBonusIds.map(statBonusId => (
+            {statBonusIds.map((statBonusId) => (
               <div className="adminNewArmor__bonus" key={`stat-${statBonusId}`}>
                 <Atitle className="adminNewArmor__bonus__title" level={4}>
                   {t('adminNewArmor.statBonusTitle', { ns: 'pages' })}
@@ -671,7 +637,7 @@ const AdminNewArmor: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setStatBonusIds(prev =>
+                    setStatBonusIds((prev) =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== statBonusId) {
                           result.push(elt);
@@ -686,7 +652,7 @@ const AdminNewArmor: FC = () => {
                 />
               </div>
             ))}
-            {charParamBonusIds.map(charParamBonusId => (
+            {charParamBonusIds.map((charParamBonusId) => (
               <div className="adminNewArmor__bonus" key={`charParam-${charParamBonusId}`}>
                 <Atitle className="adminNewArmor__bonus__title" level={4}>
                   {t('adminNewArmor.charParamBonusTitle', { ns: 'pages' })}
@@ -694,9 +660,7 @@ const AdminNewArmor: FC = () => {
                 <div className="adminNewArmor__bonus__fields">
                   <SmartSelect
                     control={control}
-                    inputName={
-                      `charParamBonuses.charParam-${charParamBonusId}.charParam`
-                    }
+                    inputName={`charParamBonuses.charParam-${charParamBonusId}.charParam`}
                     rules={{ required: t('charParamBonusStat.required', { ns: 'fields' }) }}
                     label={t('charParamBonusStat.label', { ns: 'fields' })}
                     options={charParamSelect}
@@ -704,9 +668,7 @@ const AdminNewArmor: FC = () => {
                   />
                   <Input
                     control={control}
-                    inputName={
-                      `charParamBonuses.charParam-${charParamBonusId}.value`
-                    }
+                    inputName={`charParamBonuses.charParam-${charParamBonusId}.value`}
                     type="number"
                     rules={{ required: t('charParamBonusValue.required', { ns: 'fields' }) }}
                     label={t('charParamBonusValue.label', { ns: 'fields' })}
@@ -717,7 +679,7 @@ const AdminNewArmor: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setCharParamBonusIds(prev =>
+                    setCharParamBonusIds((prev) =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== charParamBonusId) {
                           result.push(elt);
@@ -726,15 +688,13 @@ const AdminNewArmor: FC = () => {
                         return result;
                       }, [])
                     );
-                    unregister(
-                      `charParamBonuses.charParam-${charParamBonusId}`
-                    );
+                    unregister(`charParamBonuses.charParam-${charParamBonusId}`);
                   }}
                   className="adminNewArmor__bonus__button"
                 />
               </div>
             ))}
-            {effectIds.map(effectId => (
+            {effectIds.map((effectId) => (
               <div className="adminNewArmor__bonus" key={`charParam-${effectId}`}>
                 <Atitle className="adminNewArmor__bonus__title" level={4}>
                   {t('adminNewArmor.effectTitle', { ns: 'pages' })}
@@ -790,7 +750,7 @@ const AdminNewArmor: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setEffectIds(prev =>
+                    setEffectIds((prev) =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== effectId) {
                           result.push(elt);
@@ -805,7 +765,7 @@ const AdminNewArmor: FC = () => {
                 />
               </div>
             ))}
-            {actionIds.map(actionId => (
+            {actionIds.map((actionId) => (
               <div className="adminNewArmor__bonus" key={`charParam-${actionId}`}>
                 <Atitle className="adminNewArmor__bonus__title" level={4}>
                   {t('adminNewArmor.actionTitle', { ns: 'pages' })}
@@ -861,9 +821,9 @@ const AdminNewArmor: FC = () => {
                     options={[
                       {
                         value: '',
-                        label: ''
+                        label: '',
                       },
-                      ...skillSelect
+                      ...skillSelect,
                     ]}
                     className="adminNewArmor__bonus__select adminNewArmor__bonus__value--s"
                   />
@@ -921,7 +881,7 @@ const AdminNewArmor: FC = () => {
                   icon="Delete"
                   theme="afterglow"
                   onClick={() => {
-                    setActionIds(prev =>
+                    setActionIds((prev) =>
                       prev.reduce((result: number[], elt) => {
                         if (elt !== actionId) {
                           result.push(elt);
@@ -968,7 +928,7 @@ const AdminNewArmor: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt(prev => !prev);
+              setDisplayInt((prev) => !prev);
             }}
             className="adminNewArmor__intl-title__btn"
           />

@@ -1,75 +1,57 @@
-import React, {
-  useCallback, useMemo, type FC
-} from 'react';
+import React, { useCallback, useMemo, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  useApi, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input, SmartSelect
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input, SmartSelect } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import './adminNewCyberFrame.scss';
 import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
 interface FormValues {
-  name: string
-  nameFr: string
-  ruleBook: string
+  name: string;
+  nameFr: string;
+  ruleBook: string;
 }
 
 const AdminNewCyberFrame: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const navigate = useNavigate();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
-  const {
-    ruleBooks, reloadCyberFrames
-  } = useGlobalVars();
+  const { createAlert, getNewId } = useSystemAlerts();
+  const { ruleBooks, reloadCyberFrames } = useGlobalVars();
 
-  const introEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors }
+    formState: { errors },
   } = useForm();
 
-  const ruleBookSelect = useMemo(() => ruleBooks.map(({ ruleBook }) => ({
-    value: ruleBook._id,
-    // TODO : Handle Internationalization
-    label: ruleBook.title,
-    details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 })
-  })), [t, ruleBooks]);
+  const ruleBookSelect = useMemo(
+    () =>
+      ruleBooks.map(({ ruleBook }) => ({
+        value: ruleBook._id,
+        // TODO : Handle Internationalization
+        label: ruleBook.title,
+        details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 }),
+      })),
+    [t, ruleBooks]
+  );
 
   const onSaveCyberFrame: SubmitHandler<FormValues> = useCallback(
-    ({
-      name, nameFr, ruleBook
-    }) => {
+    ({ name, nameFr, ruleBook }) => {
       if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
@@ -82,10 +64,12 @@ const AdminNewCyberFrame: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          summary: htmlFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            summary: htmlFr,
+          },
+        };
       }
 
       api.cyberFrames
@@ -93,7 +77,7 @@ const AdminNewCyberFrame: FC = () => {
           title: name,
           ruleBook,
           summary: html,
-          i18n
+          i18n,
         })
         .then((cyberFrame) => {
           const newId = getNewId();
@@ -103,7 +87,7 @@ const AdminNewCyberFrame: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewCyberFrame.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           reloadCyberFrames();
           void navigate(`/admin/cyberframe/${cyberFrame._id}`);
@@ -113,12 +97,16 @@ const AdminNewCyberFrame: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.cyberFrameType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.cyberFrameType.${data.sent}`), 'capitalize'),
+              }),
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.cyberFrameType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.cyberFrameType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
@@ -132,7 +120,7 @@ const AdminNewCyberFrame: FC = () => {
       t,
       reloadCyberFrames,
       navigate,
-      setError
+      setError,
     ]
   );
 
@@ -146,11 +134,9 @@ const AdminNewCyberFrame: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewCyberFrame.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror>{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminNewCyberFrame__basics">
           <Input
             control={control}

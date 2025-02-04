@@ -1,20 +1,18 @@
-import {
-  Schema, model, type HydratedDocument, type Model
-} from 'mongoose';
+import { Schema, model, type HydratedDocument, type Model } from 'mongoose';
 
 interface IBodyPart {
   /** The title of the body part */
-  title: string
+  title: string;
   /** A summary of the body part */
-  summary: string
+  summary: string;
   /** A 3 letter string used for displaying properly */
-  partId: string
+  partId: string;
   /** How many implants a user can have on this body part */
-  limit: number
+  limit: number;
   /** The internationnal content, as a json, stringified */
-  i18n?: string
+  i18n?: string;
   /** When the body part was created */
-  createdAt: Date
+  createdAt: Date;
 }
 
 type HydratedIBodyPart = HydratedDocument<IBodyPart>;
@@ -27,12 +25,10 @@ const bodyPart = new Schema<IBodyPart>({
   i18n: String,
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 const BodyPartModel = (): Model<IBodyPart> => model('BodyPart', bodyPart);
 
-export {
-  BodyPartModel, type HydratedIBodyPart, type IBodyPart
-};
+export { BodyPartModel, type HydratedIBodyPart, type IBodyPart };

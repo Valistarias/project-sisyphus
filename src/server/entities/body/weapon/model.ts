@@ -1,64 +1,57 @@
-import {
-  Schema, model, type HydratedDocument, type Model, type ObjectId
-} from 'mongoose';
+import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
 import type { HydratedIWeapon, LeanIWeapon } from '../../weapon/model';
 
 interface IBodyWeapon {
   /** When the body was created */
-  createdAt: Date
+  createdAt: Date;
   /** The body targeted */
-  body: ObjectId
+  body: ObjectId;
   /** The linked Weapon */
-  weapon: ObjectId
+  weapon: ObjectId;
   /** The type of ammo */
-  ammo: ObjectId
+  ammo: ObjectId;
   /** The bag that store this weapon */
-  bag: ObjectId
+  bag: ObjectId;
   /** The bullets in the chamber */
-  bullets: number
+  bullets: number;
 }
 
 type LeanIBodyWeapon = Omit<IBodyWeapon, 'weapon'> & { weapon: LeanIWeapon };
 
 type HydratedIBodyWeapon = HydratedDocument<
   Omit<IBodyWeapon, 'weapon'> & {
-    weapon: HydratedIWeapon
+    weapon: HydratedIWeapon;
   }
 >;
 
 const BodyWeaponSchema = new Schema<IBodyWeapon>({
   body: {
     type: Schema.Types.ObjectId,
-    ref: 'Body'
+    ref: 'Body',
   },
   weapon: {
     type: Schema.Types.ObjectId,
-    ref: 'Weapon'
+    ref: 'Weapon',
   },
   ammo: {
     type: Schema.Types.ObjectId,
-    ref: 'Ammo'
+    ref: 'Ammo',
   },
   bag: {
     type: Schema.Types.ObjectId,
-    ref: 'BodyBag'
+    ref: 'BodyBag',
   },
   bullets: {
     type: Number,
-    default: 0
+    default: 0,
   },
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 const BodyWeaponModel = (): Model<IBodyWeapon> => model('BodyWeapon', BodyWeaponSchema);
 
-export {
-  BodyWeaponModel,
-  type HydratedIBodyWeapon,
-  type IBodyWeapon,
-  type LeanIBodyWeapon
-};
+export { BodyWeaponModel, type HydratedIBodyWeapon, type IBodyWeapon, type LeanIBodyWeapon };

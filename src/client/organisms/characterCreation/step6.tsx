@@ -1,23 +1,15 @@
-import React, {
-  useCallback, useEffect, useMemo, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import { motion } from 'framer-motion';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../providers';
 
 import { Ap } from '../../atoms';
-import {
-  Button, Input, SmartSelect
-} from '../../molecules';
-import {
-  RichTextElement, basicRichTextElementExtentions
-} from '../richTextElement';
+import { Button, Input, SmartSelect } from '../../molecules';
+import { RichTextElement, basicRichTextElementExtentions } from '../richTextElement';
 
 import type { ICharacter } from '../../types';
 
@@ -28,73 +20,66 @@ import './characterCreation.scss';
 interface ICharacterCreationStep6 {
   /** When the user click send and the data is send perfectly */
   onSubmitIdentification: (elt: {
-    firstName: string
-    lastName: string
-    nickName?: string
-    gender: string
-    pronouns?: string
-    bio?: string
-  }) => void
+    firstName: string;
+    lastName: string;
+    nickName?: string;
+    gender: string;
+    pronouns?: string;
+    bio?: string;
+  }) => void;
 }
 
 interface FormValues {
-  firstName: string
-  lastName: string
-  nickName: string
-  gender: string
-  pronouns: string
+  firstName: string;
+  lastName: string;
+  nickName: string;
+  gender: string;
+  pronouns: string;
 }
 
-const CharacterCreationStep6: FC<ICharacterCreationStep6> = (
-  { onSubmitIdentification }
-) => {
+const CharacterCreationStep6: FC<ICharacterCreationStep6> = ({ onSubmitIdentification }) => {
   const { t } = useTranslation();
   const { character } = useGlobalVars();
 
   const bioEditor = useEditor({ extensions: basicRichTextElementExtentions });
 
-  const createDefaultData = useCallback(
-    (character: false | ICharacter | null) => {
-      if (character === false || character === null) {
-        return {};
-      }
-      const defaultData: Partial<FormValues> = {};
+  const createDefaultData = useCallback((character: false | ICharacter | null) => {
+    if (character === false || character === null) {
+      return {};
+    }
+    const defaultData: Partial<FormValues> = {};
 
-      return defaultData;
-    }, []);
+    return defaultData;
+  }, []);
 
-  const {
-    handleSubmit, control, reset
-  } = useForm<FormValues>({ defaultValues: useMemo(
-    () => createDefaultData(character), [createDefaultData, character]
-  ) });
+  const { handleSubmit, control, reset } = useForm<FormValues>({
+    defaultValues: useMemo(() => createDefaultData(character), [createDefaultData, character]),
+  });
 
   const genderRange = useMemo(
     () => [
       {
         value: 'M',
-        label: t('terms.gender.male')
+        label: t('terms.gender.male'),
       },
       {
         value: 'F',
-        label: t('terms.gender.female')
+        label: t('terms.gender.female'),
       },
       {
         value: 'N',
-        label: t('terms.gender.neutral')
+        label: t('terms.gender.neutral'),
       },
       {
         value: 'O',
-        label: t('terms.gender.other')
-      }
+        label: t('terms.gender.other'),
+      },
     ],
     [t]
   );
 
   const onSaveIdentification: SubmitHandler<FormValues> = useCallback(
-    ({
-      firstName, lastName, nickName, gender, pronouns
-    }) => {
+    ({ firstName, lastName, nickName, gender, pronouns }) => {
       if (bioEditor === null) {
         return;
       }
@@ -109,7 +94,7 @@ const CharacterCreationStep6: FC<ICharacterCreationStep6> = (
         nickName,
         gender,
         pronouns,
-        bio: html ?? undefined
+        bio: html ?? undefined,
       });
     },
     [bioEditor, onSubmitIdentification]
@@ -117,11 +102,7 @@ const CharacterCreationStep6: FC<ICharacterCreationStep6> = (
 
   useEffect(() => {
     reset(createDefaultData(character));
-  }, [
-    character,
-    reset,
-    createDefaultData
-  ]);
+  }, [character, reset, createDefaultData]);
 
   return (
     <motion.div
@@ -131,11 +112,12 @@ const CharacterCreationStep6: FC<ICharacterCreationStep6> = (
       initial={{ transform: 'skew(90deg, 0deg) scale3d(.2, .2, .2)' }}
       animate={{
         transform: 'skew(0, 0) scale3d(1, 1, 1)',
-        transitionEnd: { transform: 'none' }
+        transitionEnd: { transform: 'none' },
       }}
       exit={{ transform: 'skew(-90deg, 0deg) scale3d(.2, .2, .2)' }}
       transition={{
-        ease: 'easeInOut', duration: 0.2
+        ease: 'easeInOut',
+        duration: 0.2,
       }}
     >
       <Ap className="characterCreation-step6__text">

@@ -1,14 +1,10 @@
 import React from 'react';
-import {
-  useRef, useState, type FC, type ReactNode
-} from 'react';
+import { useRef, useState, type FC, type ReactNode } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { Aicon } from '../atoms';
-import {
-  Quark, type IQuarkProps
-} from '../quark';
+import { Quark, type IQuarkProps } from '../quark';
 
 import { classTrim } from '../utils';
 
@@ -16,17 +12,20 @@ import './helper.scss';
 
 interface IHelper {
   /** The content of the helper */
-  children: ReactNode
+  children: ReactNode;
   /** The size of the helper */
-  size?: 'medium' | 'small'
+  size?: 'medium' | 'small';
   /** The theme of the helper */
-  theme?: 'solid' | 'text-only'
+  theme?: 'solid' | 'text-only';
   /** When the helper is clicked */
-  onClick?: (e: React.MouseEvent<HTMLElement>) => void
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
 const Helper: FC<IQuarkProps<IHelper>> = ({
-  children, size = 'medium', theme = 'solid', onClick
+  children,
+  size = 'medium',
+  theme = 'solid',
+  onClick,
 }) => {
   const { t } = useTranslation();
 
@@ -52,8 +51,8 @@ const Helper: FC<IQuarkProps<IHelper>> = ({
       if (topBottom === 'top' && dimensions.bottom + dimensions.height + 30 < windowHeight) {
         topBottom = 'bottom';
       } else if (
-        topBottom === 'bottom'
-        && dimensions.bottom + dimensions.height + 30 > windowHeight
+        topBottom === 'bottom' &&
+        dimensions.bottom + dimensions.height + 30 > windowHeight
       ) {
         topBottom = 'top';
       }
@@ -100,11 +99,9 @@ const Helper: FC<IQuarkProps<IHelper>> = ({
       />
       <span className="helper__content" ref={domHelperContent}>
         {children}
-        {onClick !== undefined
-          ? (
-              <span className="helper__content__info">{t('helper.more', { ns: 'components' })}</span>
-            )
-          : null}
+        {onClick !== undefined ? (
+          <span className="helper__content__info">{t('helper.more', { ns: 'components' })}</span>
+        ) : null}
       </span>
     </Quark>
   );

@@ -1,30 +1,16 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  useNavigate, useParams
-} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input, SmartSelect, type ISingleValueSelect
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input, SmartSelect, type ISingleValueSelect } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type { ErrorResponseType, ICuratedNotion } from '../../../types';
@@ -33,22 +19,17 @@ import type { InternationalizationType } from '../../../types/global';
 import './adminEditNotion.scss';
 
 interface FormValues {
-  name: string
-  nameFr: string
-  type: string
+  name: string;
+  nameFr: string;
+  type: string;
 }
 
 const AdminEditNotions: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
-  const {
-    setConfirmContent,
-    removeConfirmEventListener,
-    addConfirmEventListener
-  } = useConfirmMessage();
+  const { createAlert, getNewId } = useSystemAlerts();
+  const { setConfirmContent, removeConfirmEventListener, addConfirmEventListener } =
+    useConfirmMessage();
   const { id } = useParams();
   const { ruleBooks } = useGlobalVars();
   const navigate = useNavigate();
@@ -62,27 +43,19 @@ const AdminEditNotions: FC = () => {
   const [notionText, setNotionText] = useState('');
   const [notionTextFr, setNotionTextFr] = useState('');
 
-  const textEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const textFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const createDefaultData = useCallback(
     (notionData: ICuratedNotion | null, ruleBooks: ISingleValueSelect[]) => {
       if (notionData == null) {
         return {};
       }
-      const {
-        notion, i18n
-      } = notionData;
+      const { notion, i18n } = notionData;
       const defaultData: Partial<FormValues> = {};
       defaultData.name = notion.title;
-      const selectedfield = ruleBooks.find(
-        notionType => notionType.value === notion.ruleBook
-      );
+      const selectedfield = ruleBooks.find((notionType) => notionType.value === notion.ruleBook);
       if (selectedfield !== undefined) {
         defaultData.type = String(selectedfield.value);
       }
@@ -95,39 +68,35 @@ const AdminEditNotions: FC = () => {
     []
   );
 
-  const ruleBookSelect = useMemo(() => ruleBooks.map(({ ruleBook }) => ({
-    value: ruleBook._id,
-    // TODO : Handle Internationalization
-    label: ruleBook.title,
-    details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 })
-  })), [t, ruleBooks]);
+  const ruleBookSelect = useMemo(
+    () =>
+      ruleBooks.map(({ ruleBook }) => ({
+        value: ruleBook._id,
+        // TODO : Handle Internationalization
+        label: ruleBook.title,
+        details: t(`ruleBookTypeNames.${ruleBook.type.name}`, { count: 1 }),
+      })),
+    [t, ruleBooks]
+  );
 
   const {
     handleSubmit,
     setError,
     control,
     formState: { errors },
-    reset
-  } = useForm({ defaultValues: useMemo(
-    () => createDefaultData(notionData, ruleBookSelect),
-    [
-      createDefaultData,
-      notionData,
-      ruleBookSelect
-    ]
-  ) });
+    reset,
+  } = useForm({
+    defaultValues: useMemo(
+      () => createDefaultData(notionData, ruleBookSelect),
+      [createDefaultData, notionData, ruleBookSelect]
+    ),
+  });
 
   const ruleBook = useMemo(() => notionData?.notion.ruleBook, [notionData]);
 
   const onSaveNotion: SubmitHandler<FormValues> = useCallback(
-    ({
-      name, nameFr, type
-    }) => {
-      if (
-        textEditor === null
-        || textFrEditor === null
-        || api === undefined
-      ) {
+    ({ name, nameFr, type }) => {
+      if (textEditor === null || textFrEditor === null || api === undefined) {
         return;
       }
       let htmlText: string | null = textEditor.getHTML();
@@ -141,10 +110,12 @@ const AdminEditNotions: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          text: htmlTextFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            text: htmlTextFr,
+          },
+        };
       }
 
       api.notions
@@ -153,7 +124,7 @@ const AdminEditNotions: FC = () => {
           title: name,
           ruleBook: type,
           text: htmlText,
-          i18n
+          i18n,
         })
         .then((rulebook) => {
           const newId = getNewId();
@@ -163,7 +134,7 @@ const AdminEditNotions: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditNotion.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
         })
         .catch(({ response }: ErrorResponseType) => {
@@ -171,26 +142,21 @@ const AdminEditNotions: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.notionType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.notionType.${data.sent}`), 'capitalize'),
+              }),
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.notionType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.notionType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
     },
-    [
-      textEditor,
-      textFrEditor,
-      api,
-      id,
-      getNewId,
-      createAlert,
-      t,
-      setError
-    ]
+    [textEditor, textFrEditor, api, id, getNewId, createAlert, t, setError]
   );
 
   const onAskDelete = useCallback(() => {
@@ -202,14 +168,12 @@ const AdminEditNotions: FC = () => {
         title: t('adminEditNotion.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditNotion.confirmDeletion.text', {
           ns: 'pages',
-          elt: notionData?.notion.title
+          elt: notionData?.notion.title,
         }),
-        confirmCta: t('adminEditNotion.confirmDeletion.confirmCta', { ns: 'pages' })
+        confirmCta: t('adminEditNotion.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
       (evtId: string) => {
-        const confirmDelete = (
-          { detail }: { detail: ConfirmMessageDetailData }
-        ): void => {
+        const confirmDelete = ({ detail }: { detail: ConfirmMessageDetailData }): void => {
           if (detail.proceed) {
             api.notions
               .delete({ id })
@@ -221,7 +185,7 @@ const AdminEditNotions: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditNotion.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  )
+                  ),
                 });
                 void navigate('/admin/rulebooks');
               })
@@ -230,12 +194,16 @@ const AdminEditNotions: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
+                    }),
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.ruleBookType.${data.sent}`), 'capitalize'),
+                    }),
                   });
                 }
               });
@@ -256,7 +224,7 @@ const AdminEditNotions: FC = () => {
     getNewId,
     createAlert,
     navigate,
-    setError
+    setError,
   ]);
 
   useEffect(() => {
@@ -265,9 +233,7 @@ const AdminEditNotions: FC = () => {
       api.notions
         .get({ notionId: id })
         .then((curatedNotion) => {
-          const {
-            notion, i18n
-          } = curatedNotion;
+          const { notion, i18n } = curatedNotion;
           setNotionData(curatedNotion);
           setNotionText(notion.text);
           if (i18n.fr !== undefined) {
@@ -282,18 +248,11 @@ const AdminEditNotions: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    ruleBooks,
-    id,
-    t
-  ]);
+  }, [api, createAlert, getNewId, ruleBooks, id, t]);
 
   // The Autosave
   useEffect(() => {
@@ -315,12 +274,7 @@ const AdminEditNotions: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(notionData, ruleBookSelect));
-  }, [
-    notionData,
-    ruleBookSelect,
-    reset,
-    createDefaultData
-  ]);
+  }, [notionData, ruleBookSelect, reset, createDefaultData]);
 
   return (
     <div className="adminEditNotion">
@@ -337,11 +291,9 @@ const AdminEditNotions: FC = () => {
             {t('adminEditNotion.delete', { ns: 'pages' })}
           </Button>
         </div>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror className="adminEditNotion__error">{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror className="adminEditNotion__error">{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminEditNotion__basics">
           <Input
             control={control}

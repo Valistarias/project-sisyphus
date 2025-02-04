@@ -1,31 +1,29 @@
-import {
-  Schema, model, type HydratedDocument, type Model, type ObjectId
-} from 'mongoose';
+import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
 interface IBag<IdType> {
   /** The title of the bag */
-  title: string
+  title: string;
   /** A summary of the bag */
-  summary: string
+  summary: string;
   /** The internationnal content, as a json, stringified */
-  i18n?: string
+  i18n?: string;
   /** The rarity of the bag */
-  rarity: IdType
+  rarity: IdType;
   /** Is this weapon in the starter kit ?
    * (always -> element included, never -> not included, option -> can be chosen with similar weapons) */
-  starterKit?: 'always' | 'never' | 'option'
+  starterKit?: 'always' | 'never' | 'option';
   /** The type of item */
-  itemType: IdType
+  itemType: IdType;
   /** The range of the item storable in the bag */
-  storableItemTypes: IdType[]
+  storableItemTypes: IdType[];
   /** The item modifiers of the bag */
-  itemModifiers?: IdType[]
+  itemModifiers?: IdType[];
   /** How many item it can store */
-  size: number
+  size: number;
   /** The cost of the bag */
-  cost: number
+  cost: number;
   /** When the bag was created */
-  createdAt: Date
+  createdAt: Date;
 }
 
 type HydratedIBag = HydratedDocument<IBag<string>>;
@@ -37,37 +35,35 @@ const bagSchema = new Schema<IBag<ObjectId>>({
   i18n: String,
   rarity: {
     type: Schema.Types.ObjectId,
-    ref: 'Rarity'
+    ref: 'Rarity',
   },
   starterKit: {
     type: String,
-    default: 'never'
+    default: 'never',
   },
   itemType: {
     type: Schema.Types.ObjectId,
-    ref: 'ItemType'
+    ref: 'ItemType',
   },
   storableItemTypes: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'ItemType'
-    }
+      ref: 'ItemType',
+    },
   ],
   itemModifiers: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'ItemModifier'
-    }
+      ref: 'ItemModifier',
+    },
   ],
   cost: Number,
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 const BagModel = (): Model<IBag<ObjectId>> => model('Bag', bagSchema);
 
-export {
-  BagModel, type HydratedIBag, type IBag
-};
+export { BagModel, type HydratedIBag, type IBag };

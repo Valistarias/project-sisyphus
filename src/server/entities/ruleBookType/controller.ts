@@ -1,6 +1,4 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 import type { HydratedDocument } from 'mongoose';
 
 import db from '../../models';
@@ -8,15 +6,14 @@ import {
   gemDuplicate,
   gemInvalidField,
   gemNotFound,
-  gemServerError
+  gemServerError,
 } from '../../utils/globalErrorMessage';
 
 import type { HydratedIRuleBookType, IRuleBookType } from './model';
 
 const { RuleBookType } = db;
 
-const findRuleBookTypes
-= async (): Promise<HydratedIRuleBookType[]> =>
+const findRuleBookTypes = async (): Promise<HydratedIRuleBookType[]> =>
   await new Promise((resolve, reject) => {
     RuleBookType.find()
       .then((res: HydratedIRuleBookType[]) => {
@@ -31,9 +28,7 @@ const findRuleBookTypes
       });
   });
 
-const findRuleBookTypeById = async (
-  id: string
-): Promise<HydratedDocument<IRuleBookType>> =>
+const findRuleBookTypeById = async (id: string): Promise<HydratedDocument<IRuleBookType>> =>
   await new Promise((resolve, reject) => {
     RuleBookType.findById(id)
       .then((res) => {
@@ -57,7 +52,7 @@ const create = (req: Request, res: Response): void => {
   }
   findRuleBookTypes()
     .then((ruleBooks) => {
-      if (ruleBooks.find(ruleBook => ruleBook.name === name) === undefined) {
+      if (ruleBooks.find((ruleBook) => ruleBook.name === name) === undefined) {
         const ruleBookType = new RuleBookType({ name });
 
         ruleBookType
@@ -76,9 +71,7 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const {
-    id, name = null
-  } = req.body;
+  const { id, name = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('RuleBookType ID'));
 
@@ -86,9 +79,7 @@ const update = (req: Request, res: Response): void => {
   }
   findRuleBookTypes()
     .then((ruleBooks) => {
-      const actualRuleBookType = ruleBooks.find(
-        ruleBook => String(ruleBook._id) === id
-      );
+      const actualRuleBookType = ruleBooks.find((ruleBook) => String(ruleBook._id) === id);
       if (actualRuleBookType !== undefined) {
         if (name !== null && name !== actualRuleBookType.name) {
           actualRuleBookType.name = name;
@@ -97,7 +88,8 @@ const update = (req: Request, res: Response): void => {
           .save()
           .then(() => {
             res.send({
-              message: 'RuleBookType was updated successfully!', actualRuleBookType
+              message: 'RuleBookType was updated successfully!',
+              actualRuleBookType,
             });
           })
           .catch((err: unknown) => {
@@ -134,16 +126,14 @@ const findSingle = (req: Request, res: Response): void => {
     return;
   }
   findRuleBookTypeById(ruleBookTypeId)
-    .then(ruleBook => res.send(ruleBook))
+    .then((ruleBook) => res.send(ruleBook))
     .catch((err: unknown) => res.status(404).send(err));
 };
 
 const findAll = (req: Request, res: Response): void => {
   findRuleBookTypes()
-    .then(ruleBooks => res.send(ruleBooks))
+    .then((ruleBooks) => res.send(ruleBooks))
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export {
-  create, deleteRuleBookType, findAll, findSingle, update
-};
+export { create, deleteRuleBookType, findAll, findSingle, update };

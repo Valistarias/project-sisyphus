@@ -1,6 +1,4 @@
-import {
-  Ariane, type IArianeElt
-} from './ariane';
+import { Ariane, type IArianeElt } from './ariane';
 import Button from './button';
 import Checkbox from './checkbox';
 import ClickableText from './clickableText';
@@ -14,17 +12,13 @@ import HintButton from './hintButton';
 import Input from './input';
 import LinkButton from './linkButton';
 import Node from './node';
-import {
-  NodeIconSelect, defaultNodeIcon
-} from './nodeIconSelect';
+import { NodeIconSelect, defaultNodeIcon } from './nodeIconSelect';
 import NodeTree from './nodeTree';
 import NumberSelect from './numberSelect';
 import NumDisplay from './numDisplay';
 import PropDisplay from './propDisplay';
 import SearchBar from './searchBar';
-import {
-  SmartSelect, type IGroupedOption, type ISingleValueSelect
-} from './select';
+import { SmartSelect, type IGroupedOption, type ISingleValueSelect } from './select';
 import SkillDisplay from './skillDisplay';
 import TabsWindow from './tabsWindow';
 
@@ -55,5 +49,5 @@ export {
   defaultNodeIcon,
   type IArianeElt,
   type IGroupedOption,
-  type ISingleValueSelect
+  type ISingleValueSelect,
 };

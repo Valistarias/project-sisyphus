@@ -1,21 +1,17 @@
-import {
-  Schema, model, type Model
-} from 'mongoose';
+import { Schema, model, type Model } from 'mongoose';
 
 interface IGlobalValue {
   /** A string as name of the global value (never displayed as is, used for data) */
-  name: string
+  name: string;
   /** The value of the parameter */
-  value: string
+  value: string;
 }
 
 const GlobalValueSchema = new Schema<IGlobalValue>({
   name: String,
-  value: String
+  value: String,
 });
 
 const GlobalValueModel = (): Model<IGlobalValue> => model('GlobalValue', GlobalValueSchema);
 
-export {
-  GlobalValueModel, type IGlobalValue
-};
+export { GlobalValueModel, type IGlobalValue };

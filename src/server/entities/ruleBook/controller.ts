@@ -1,35 +1,21 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 import type { ObjectId } from 'mongoose';
 
 import { isAdmin, type IVerifyTokenRequest } from '../../middlewares';
 import db from '../../models';
-import {
-  gemInvalidField, gemNotFound, gemServerError
-} from '../../utils/globalErrorMessage';
+import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { deleteChaptersRecursive } from '../chapter/controller';
 import { deleteNotionsByRuleBookId } from '../notion/controller';
 
-import type {
-  BasicHydratedIRuleBook, HydratedIRuleBook
-} from './model';
+import type { BasicHydratedIRuleBook, HydratedIRuleBook } from './model';
 import type { InternationalizationType } from '../../utils/types';
-import type {
-  HydratedIChapter, INotion, IRuleBookType
-} from '../index';
+import type { HydratedIChapter, INotion, IRuleBookType } from '../index';
 
 import { curateI18n } from '../../utils';
 
-const {
-  RuleBook, Chapter
-} = db;
+const { RuleBook, Chapter } = db;
 
-const ruleBookOrder = [
-  'core',
-  'addon',
-  'adventure'
-];
+const ruleBookOrder = ['core', 'addon', 'adventure'];
 
 const findRuleBooks = async (): Promise<BasicHydratedIRuleBook[]> =>
   await new Promise((resolve, reject) => {
@@ -53,7 +39,7 @@ const findRuleBookById = async (id: string): Promise<HydratedIRuleBook> =>
       .populate<{ type: IRuleBookType }>('type')
       .populate<{ notions: INotion[] }>({
         path: 'notions',
-        select: '_id title ruleBook'
+        select: '_id title ruleBook',
       })
       .populate<{ chapters: HydratedIChapter[] }>({
         path: 'chapters',
@@ -62,11 +48,11 @@ const findRuleBookById = async (id: string): Promise<HydratedIRuleBook> =>
           {
             path: 'pages',
             select: '_id title chapter position',
-            options: { sort: { position: 'asc' } }
+            options: { sort: { position: 'asc' } },
           },
-          'type'
+          'type',
         ],
-        options: { sort: { position: 'asc' } }
+        options: { sort: { position: 'asc' } },
       })
       .then((res?: HydratedIRuleBook | null) => {
         if (res === undefined || res === null) {
@@ -81,9 +67,7 @@ const findRuleBookById = async (id: string): Promise<HydratedIRuleBook> =>
   });
 
 const create = (req: Request, res: Response): void => {
-  const {
-    title, summary, type, i18n = null
-  } = req.body;
+  const { title, summary, type, i18n = null } = req.body;
   if (title === undefined || summary === undefined) {
     res.status(400).send(gemInvalidField('RuleBook'));
 
@@ -92,7 +76,7 @@ const create = (req: Request, res: Response): void => {
   const ruleBook = new RuleBook({
     title,
     summary,
-    type
+    type,
   });
 
   if (i18n !== null) {
@@ -111,14 +95,19 @@ const create = (req: Request, res: Response): void => {
 
 const update = (req: Request, res: Response): void => {
   const {
-    id, title = null, type = null, summary = null, draft = null, i18n
+    id,
+    title = null,
+    type = null,
+    summary = null,
+    draft = null,
+    i18n,
   }: {
-    id?: string
-    title: string | null
-    summary: string | null
-    type: ObjectId | null
-    i18n: InternationalizationType | null
-    draft: boolean | null
+    id?: string;
+    title: string | null;
+    summary: string | null;
+    type: ObjectId | null;
+    i18n: InternationalizationType | null;
+    draft: boolean | null;
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('RuleBook ID'));
@@ -141,12 +130,9 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(
-          ruleBook.i18n != null
-          && ruleBook.i18n !== ''
-            ? JSON.parse(ruleBook.i18n)
-            : {}
-        ) };
+        const newIntl: InternationalizationType = {
+          ...(ruleBook.i18n != null && ruleBook.i18n !== '' ? JSON.parse(ruleBook.i18n) : {}),
+        };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -159,7 +145,8 @@ const update = (req: Request, res: Response): void => {
         .save()
         .then(() => {
           res.send({
-            message: 'RuleBook was updated successfully!', ruleBook
+            message: 'RuleBook was updated successfully!',
+            ruleBook,
           });
         })
         .catch((err: unknown) => {
@@ -173,10 +160,11 @@ const update = (req: Request, res: Response): void => {
 
 const archive = (req: Request, res: Response): void => {
   const {
-    id, archived = null
+    id,
+    archived = null,
   }: {
-    id?: string
-    archived: boolean | null
+    id?: string;
+    archived: boolean | null;
   } = req.body;
   if (id === undefined || archived === null) {
     res.status(400).send(gemInvalidField('RuleBook ID'));
@@ -191,7 +179,8 @@ const archive = (req: Request, res: Response): void => {
         .save()
         .then(() => {
           res.send({
-            message: 'RuleBook was updated successfully!', ruleBook
+            message: 'RuleBook was updated successfully!',
+            ruleBook,
           });
         })
         .catch((err: unknown) => {
@@ -205,14 +194,12 @@ const archive = (req: Request, res: Response): void => {
 
 const updateMultipleChaptersPosition = (
   order: Array<{
-    id: string
-    position: number
+    id: string;
+    position: number;
   }>,
-  cb: (res: Error | null) => void): void => {
-  Chapter.findOneAndUpdate(
-    { _id: order[0].id },
-    { position: order[0].position }
-  )
+  cb: (res: Error | null) => void
+): void => {
+  Chapter.findOneAndUpdate({ _id: order[0].id }, { position: order[0].position })
     .then(() => {
       if (order.length > 1) {
         order.shift();
@@ -228,13 +215,14 @@ const updateMultipleChaptersPosition = (
 
 const changeChaptersOrder = (req: Request, res: Response): void => {
   const {
-    id, order
+    id,
+    order,
   }: {
-    id?: string
+    id?: string;
     order?: Array<{
-      id: string
-      position: number
-    }>
+      id: string;
+      position: number;
+    }>;
   } = req.body;
   if (id === undefined || order === undefined) {
     res.status(400).send(gemInvalidField('RuleBook Reordering'));
@@ -261,9 +249,7 @@ const deleteRuleBook = (req: Request, res: Response): void => {
     .then((ruleBook) => {
       deleteNotionsByRuleBookId(id)
         .then(() => {
-          deleteChaptersRecursive(ruleBook.chapters.map(
-            chapter => String(chapter._id)
-          ))
+          deleteChaptersRecursive(ruleBook.chapters.map((chapter) => String(chapter._id)))
             .then(() => {
               RuleBook.findByIdAndDelete(id)
                 .then(() => {
@@ -287,8 +273,8 @@ const deleteRuleBook = (req: Request, res: Response): void => {
 };
 
 interface CuratedIRuleBook {
-  i18n?: InternationalizationType
-  ruleBook: BasicHydratedIRuleBook
+  i18n?: InternationalizationType;
+  ruleBook: BasicHydratedIRuleBook;
 }
 
 const findSingle = (req: IVerifyTokenRequest, res: Response): void => {
@@ -307,7 +293,7 @@ const findSingle = (req: IVerifyTokenRequest, res: Response): void => {
           } else {
             const sentObj = {
               ruleBook,
-              i18n: curateI18n(ruleBook.i18n)
+              i18n: curateI18n(ruleBook.i18n),
             };
             res.send(sentObj);
           }
@@ -327,9 +313,7 @@ const findAll = (req: IVerifyTokenRequest, res: Response): void => {
           const curatedRuleBooks: CuratedIRuleBook[] = [];
 
           if (!isUserAdmin) {
-            ruleBooks = ruleBooks.filter(
-              ruleBook => !ruleBook.archived && !ruleBook.draft
-            );
+            ruleBooks = ruleBooks.filter((ruleBook) => !ruleBook.archived && !ruleBook.draft);
           }
 
           // Sorting by state first (draft, archived)
@@ -357,13 +341,13 @@ const findAll = (req: IVerifyTokenRequest, res: Response): void => {
               }
 
               if (
-                ruleBookOrder.findIndex(el => el === rb1.type.name)
-                > ruleBookOrder.findIndex(el => el === rb2.type.name)
+                ruleBookOrder.findIndex((el) => el === rb1.type.name) >
+                ruleBookOrder.findIndex((el) => el === rb2.type.name)
               ) {
                 return 1;
               } else if (
-                ruleBookOrder.findIndex(el => el === rb1.type.name)
-                < ruleBookOrder.findIndex(el => el === rb2.type.name)
+                ruleBookOrder.findIndex((el) => el === rb1.type.name) <
+                ruleBookOrder.findIndex((el) => el === rb2.type.name)
               ) {
                 return -1;
               }
@@ -373,7 +357,7 @@ const findAll = (req: IVerifyTokenRequest, res: Response): void => {
             .forEach((ruleBook) => {
               curatedRuleBooks.push({
                 ruleBook,
-                i18n: curateI18n(ruleBook.i18n)
+                i18n: curateI18n(ruleBook.i18n),
               });
             });
 
@@ -392,5 +376,5 @@ export {
   findAll,
   findRuleBookById,
   findSingle,
-  update
+  update,
 };

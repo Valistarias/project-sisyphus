@@ -1,6 +1,4 @@
-import React, {
-  useMemo, useState, type FC
-} from 'react';
+import React, { useMemo, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -10,27 +8,23 @@ import holoBackground from '../assets/imgs/tvbg2.gif';
 import { Ap } from '../atoms';
 import DiceCard from '../molecules/diceCard';
 
-import type {
-  TypeCampaignEvent, TypeDice
-} from '../types';
+import type { TypeCampaignEvent, TypeDice } from '../types';
 
-import {
-  addSymbol, classTrim, strToDiceResult
-} from '../utils';
+import { addSymbol, classTrim, strToDiceResult } from '../utils';
 
 import './campaignEventLine.scss';
 
 interface ICampaignEventResult {
   /** The total result of the dice roll */
-  result: number
+  result: number;
   /** The name of the author of the dice roll */
-  authorName: string
+  authorName: string;
   /** The formula of each die */
-  formula?: string
+  formula?: string;
   /** When the die was rolled */
-  createdAt: Date
+  createdAt: Date;
   /** The type of the roll */
-  type: TypeCampaignEvent
+  type: TypeCampaignEvent;
 }
 
 const CampaignEventResult: FC<ICampaignEventResult> = ({
@@ -38,12 +32,10 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
   authorName,
   formula,
   createdAt,
-  type
+  type,
 }) => {
   const { t } = useTranslation();
-  const {
-    skills, stats
-  } = useGlobalVars();
+  const { skills, stats } = useGlobalVars();
 
   const [isOpen, setOpen] = useState(false);
 
@@ -52,9 +44,9 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
       return null;
     }
     const dicesToUse: Array<{
-      id: number
-      type: TypeDice
-      value: number
+      id: number;
+      type: TypeDice;
+      value: number;
     }> = [];
     let idDie = 0;
     let totalOffset = 0;
@@ -64,7 +56,7 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
           dicesToUse.push({
             id: idDie,
             type: diceCat.type,
-            value: result
+            value: result,
           });
           idDie += 1;
         });
@@ -74,16 +66,12 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
 
     return (
       <>
-        {dicesToUse.map(({
-          id, type, value
-        }, index) => (
+        {dicesToUse.map(({ id, type, value }, index) => (
           <DiceCard key={id} type={type} value={value} size="xsmall" skip />
         ))}
-        {totalOffset !== 0
-          ? (
-              <Ap className="campaign-event-line__info__content__offset">{addSymbol(totalOffset)}</Ap>
-            )
-          : null}
+        {totalOffset !== 0 ? (
+          <Ap className="campaign-event-line__info__content__offset">{addSymbol(totalOffset)}</Ap>
+        ) : null}
       </>
     );
   }, [formula]);
@@ -136,12 +124,7 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
         {t(`campaignEventResults.type.${type}.line2`, { ns: 'components' })}
       </Ap>
     );
-  }, [
-    t,
-    type,
-    skills,
-    stats
-  ]);
+  }, [t, type, skills, stats]);
 
   const resultText = useMemo(() => {
     if (type === 'hpLoss') {
@@ -152,11 +135,7 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
     }
 
     return result.toString();
-  }, [
-    result,
-    t,
-    type
-  ]);
+  }, [result, t, type]);
 
   return (
     <div
@@ -177,7 +156,7 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
           <Ap className="campaign-event-line__result__content__character">{authorName}</Ap>
           <Ap
             onClick={() => {
-              setOpen(prev => !prev);
+              setOpen((prev) => !prev);
             }}
             className="campaign-event-line__result__content__score"
           >
@@ -185,14 +164,12 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
           </Ap>
         </div>
       </div>
-      {isOpen && detailScores !== null
-        ? (
-            <div className="campaign-event-line__info">
-              <div className="campaign-event-line__info__arrow" />
-              <div className="campaign-event-line__info__content">{detailScores}</div>
-            </div>
-          )
-        : null}
+      {isOpen && detailScores !== null ? (
+        <div className="campaign-event-line__info">
+          <div className="campaign-event-line__info__arrow" />
+          <div className="campaign-event-line__info__content">{detailScores}</div>
+        </div>
+      ) : null}
     </div>
   );
 };

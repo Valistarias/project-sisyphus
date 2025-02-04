@@ -1,12 +1,8 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 import type { HydratedDocument } from 'mongoose';
 
 import bcrypt from 'bcryptjs';
-import jwt, {
-  type JwtPayload, type Secret
-} from 'jsonwebtoken';
+import jwt, { type JwtPayload, type Secret } from 'jsonwebtoken';
 
 import config from '../../config/db.config';
 import db from '../../models';
@@ -15,38 +11,34 @@ import {
   gemNotAllowed,
   gemNotFound,
   gemServerError,
-  gemUnverifiedUser
+  gemUnverifiedUser,
 } from '../../utils/globalErrorMessage';
 import { removeToken } from '../mailToken/controller';
 import { findUserById } from '../user/controller';
 
-import type {
-  HydratedIUser, IRole, IUser
-} from '../index';
+import type { HydratedIUser, IRole, IUser } from '../index';
 import type { IMailgunClient } from 'mailgun.js/Interfaces';
 
-const {
-  User, Role
-} = db;
+const { User, Role } = db;
 
 interface IVerifyTokenRequest extends Request {
-  userId: string
-  session: { token: string }
+  userId: string;
+  session: { token: string };
 }
 
 interface ISigninRequest extends Request {
-  session: { token: string } | null
+  session: { token: string } | null;
 }
 
 const signUp = (req: Request, res: Response, mg: IMailgunClient): void => {
   const {
     username,
     mail,
-    password
+    password,
   }: {
-    username: string
-    mail: string
-    password: string
+    username: string;
+    mail: string;
+    password: string;
   } = req.body;
   const user = new User({
     username,
@@ -54,7 +46,7 @@ const signUp = (req: Request, res: Response, mg: IMailgunClient): void => {
     password: bcrypt.hashSync(password, 8),
     lang: 'en',
     theme: 'dark',
-    scale: 1
+    scale: 1,
   });
 
   user
@@ -78,8 +70,7 @@ const signUp = (req: Request, res: Response, mg: IMailgunClient): void => {
                   to: ['mallet.victor.france@gmail.com'],
                   subject: 'Project Sisyphus - Registration',
                   text: 'Click to confirm your email!',
-                  html:
-                    `Click <a href = '${url}'>here</a> to confirm your email.`
+                  html: `Click <a href = '${url}'>here</a> to confirm your email.`,
                 })
                 .then(() => {
                   res.send({ message: 'User was registered successfully!' });
@@ -117,10 +108,10 @@ const registerRoleByName = async (): Promise<string[]> =>
 const signIn = (req: ISigninRequest, res: Response): void => {
   const {
     mail,
-    password
+    password,
   }: {
-    mail: string
-    password: string
+    mail: string;
+    password: string;
   } = req.body;
   User.findOne({ mail })
     .populate<{ roles: IRole[] }>('roles', '-__v')
@@ -166,7 +157,7 @@ const signIn = (req: ISigninRequest, res: Response): void => {
 
 const signOut = (req: ISigninRequest, res: Response): void => {
   req.session = null;
-  res.status(200).send({ message: 'You\'ve been signed out!' });
+  res.status(200).send({ message: "You've been signed out!" });
 };
 
 const verifyTokenSingIn = async (token: string): Promise<boolean> =>
@@ -219,9 +210,7 @@ const getLogged = (req: IVerifyTokenRequest, res: Response): void => {
 };
 
 const updatePassword = (req: Request, res: Response): void => {
-  const {
-    userId, pass, confirmPass
-  } = req.body;
+  const { userId, pass, confirmPass } = req.body;
   if (pass !== confirmPass || pass === undefined || confirmPass === undefined) {
     res.status(404).send(gemNotFound('Password'));
   } else {
@@ -237,7 +226,8 @@ const updatePassword = (req: Request, res: Response): void => {
                 .save()
                 .then(() => {
                   res.send({
-                    message: 'User was updated successfully!', user
+                    message: 'User was updated successfully!',
+                    user,
                   });
                 })
                 .catch((err: unknown) => {
@@ -255,6 +245,4 @@ const updatePassword = (req: Request, res: Response): void => {
   }
 };
 
-export {
-  getLogged, signIn, signOut, signUp, updatePassword, verifyTokenSingIn
-};
+export { getLogged, signIn, signOut, signUp, updatePassword, verifyTokenSingIn };

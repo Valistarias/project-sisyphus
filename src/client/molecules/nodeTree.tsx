@@ -1,26 +1,16 @@
 import React from 'react';
-import {
-  useMemo, type FC
-} from 'react';
+import { useMemo, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { Ap } from '../atoms';
-import {
-  Quark, type IQuarkProps
-} from '../quark';
+import { Quark, type IQuarkProps } from '../quark';
 
-import {
-  LinkButton, Node
-} from './index';
+import { LinkButton, Node } from './index';
 
-import type {
-  ICuratedNode, ICyberFrameBranch, ISkillBranch
-} from '../types';
+import type { ICuratedNode, ICyberFrameBranch, ISkillBranch } from '../types';
 
-import {
-  classTrim, romanize
-} from '../utils';
+import { classTrim, romanize } from '../utils';
 
 import './nodeTree.scss';
 
@@ -29,22 +19,23 @@ const specBeginRank = 3;
 
 interface INodeTree {
   /** Is the Tree in admin mode ? */
-  isAdmin?: boolean
+  isAdmin?: boolean;
   /** The tree to be displayed */
   tree: Array<{
-    branch: ISkillBranch | ICyberFrameBranch
-    nodes: ICuratedNode[]
-  }>
+    branch: ISkillBranch | ICyberFrameBranch;
+    nodes: ICuratedNode[];
+  }>;
   /** When a node is clicked */
-  onNodeClick?: (id: string) => void
+  onNodeClick?: (id: string) => void;
 }
 
 const NodeTree: FC<IQuarkProps<INodeTree>> = ({
-  tree, onNodeClick = () => undefined, isAdmin = false, className
+  tree,
+  onNodeClick = () => undefined,
+  isAdmin = false,
+  className,
 }) => {
-  const {
-    t, i18n: translationI18nData
-  } = useTranslation();
+  const { t, i18n: translationI18nData } = useTranslation();
 
   const specializationBranches = useMemo(
     () => tree.filter(({ branch }) => branch.title !== '_general'),
@@ -59,11 +50,9 @@ const NodeTree: FC<IQuarkProps<INodeTree>> = ({
   const rankLinesSpec = useMemo(() => {
     const lines: React.JSX.Element[] = [];
     for (let i = ranks; i >= specBeginRank; i--) {
-      const relatedNodes = specializationBranches.map(({
-        branch, nodes
-      }) => ({
+      const relatedNodes = specializationBranches.map(({ branch, nodes }) => ({
         branch,
-        nodes: nodes.filter(({ node }) => node.rank === i)
+        nodes: nodes.filter(({ node }) => node.rank === i),
       }));
       const roman = romanize(i);
       lines.push(
@@ -76,18 +65,15 @@ const NodeTree: FC<IQuarkProps<INodeTree>> = ({
           `)}
         >
           <div className="node-tree__rank node-tree__cell">{roman}</div>
-          {relatedNodes.map(({
-            branch, nodes
-          }, indexNode) => (
+          {relatedNodes.map(({ branch, nodes }, indexNode) => (
             <div className="node-tree__cell node-tree__cell--node" key={branch._id}>
-              {nodes.map(node => (
+              {nodes.map((node) => (
                 <Node
                   key={node.node._id}
                   node={node}
                   size="small"
                   menuDirection={
-                    relatedNodes.length !== 1
-                    && relatedNodes.length === indexNode + 1
+                    relatedNodes.length !== 1 && relatedNodes.length === indexNode + 1
                       ? 'left'
                       : 'right'
                   }
@@ -109,9 +95,7 @@ const NodeTree: FC<IQuarkProps<INodeTree>> = ({
   const rankLinesGeneral = useMemo(() => {
     const lines: React.JSX.Element[] = [];
     for (let i = specBeginRank - 1; i >= 1; i--) {
-      const relatedNodes = generalBranch?.nodes.filter(
-        ({ node }) => node.rank === i
-      ) ?? [];
+      const relatedNodes = generalBranch?.nodes.filter(({ node }) => node.rank === i) ?? [];
       const roman = romanize(i);
       lines.push(
         <div
@@ -130,8 +114,7 @@ const NodeTree: FC<IQuarkProps<INodeTree>> = ({
                 node={node}
                 size="small"
                 menuDirection={
-                  relatedNodes.length !== 1
-                  && relatedNodes.length === indexNode + 1
+                  relatedNodes.length !== 1 && relatedNodes.length === indexNode + 1
                     ? 'left'
                     : 'right'
                 }
@@ -175,16 +158,14 @@ const NodeTree: FC<IQuarkProps<INodeTree>> = ({
                 <Ap lang={translationI18nData.language} className="node-tree__cell__title">
                   {branch.title}
                 </Ap>
-                {isAdmin
-                  ? (
-                      <LinkButton
-                        href={`/admin/${(branch as ISkillBranch | undefined)?.skill !== undefined ? 'skillbranch' : 'cyberframebranch'}/${branch._id}`}
-                        size="small"
-                      >
-                        {t('terms.general.edit')}
-                      </LinkButton>
-                    )
-                  : null}
+                {isAdmin ? (
+                  <LinkButton
+                    href={`/admin/${(branch as ISkillBranch | undefined)?.skill !== undefined ? 'skillbranch' : 'cyberframebranch'}/${branch._id}`}
+                    size="small"
+                  >
+                    {t('terms.general.edit')}
+                  </LinkButton>
+                ) : null}
               </div>
             ))}
           </div>

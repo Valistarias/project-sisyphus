@@ -5,11 +5,10 @@ import Entity from './entity';
 import type { ICuratedProgram, IProgram } from '../../types';
 
 interface IProgramPayload {
-  programId: string
+  programId: string;
 }
 
-export default class Programs
-  extends Entity<IProgramPayload, IProgram, ICuratedProgram> {
+export default class Programs extends Entity<IProgramPayload, IProgram, ICuratedProgram> {
   getStarters: () => Promise<ICuratedProgram[]>;
 
   constructor() {

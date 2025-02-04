@@ -116,135 +116,133 @@ import {
   type IWeapon,
   type IWeaponScope,
   type IWeaponStyle,
-  type IWeaponType
+  type IWeaponType,
 } from './entities';
-import {
-  BodyItemModel, type IBodyItem
-} from './entities/body';
+import { BodyItemModel, type IBodyItem } from './entities/body';
 
 mongoose.Promise = global.Promise;
 
 interface DBType {
   /** The User Model */
-  User: mongoose.Model<IUser>
+  User: mongoose.Model<IUser>;
   /** The Role Model */
-  Role: mongoose.Model<IRole>
+  Role: mongoose.Model<IRole>;
   /** The Bag Model */
-  Bag: mongoose.Model<IBag>
+  Bag: mongoose.Model<IBag>;
   /** The Notion Model */
-  Notion: mongoose.Model<INotion>
+  Notion: mongoose.Model<INotion>;
   /** The RuleBook Model */
-  RuleBook: mongoose.Model<IRuleBook>
+  RuleBook: mongoose.Model<IRuleBook>;
   /** The RuleBook Types Model */
-  RuleBookType: mongoose.Model<IRuleBookType>
+  RuleBookType: mongoose.Model<IRuleBookType>;
   /** The Chapter Model */
-  Chapter: mongoose.Model<IChapter>
+  Chapter: mongoose.Model<IChapter>;
   /** The Chapter Types Model */
-  ChapterType: mongoose.Model<IChapterType>
+  ChapterType: mongoose.Model<IChapterType>;
   /** The Page Model */
-  Page: mongoose.Model<IPage>
+  Page: mongoose.Model<IPage>;
   /** The Campaign Model */
-  Campaign: mongoose.Model<ICampaign>
+  Campaign: mongoose.Model<ICampaign>;
   /** The Character Model */
-  Character: mongoose.Model<ICharacter>
+  Character: mongoose.Model<ICharacter>;
   /** The Background Model */
-  Background: mongoose.Model<IBackground>
+  Background: mongoose.Model<IBackground>;
   /** The CharacterNode Model */
-  CharacterNode: mongoose.Model<ICharacterNode>
+  CharacterNode: mongoose.Model<ICharacterNode>;
   /** The Body Model */
-  Body: mongoose.Model<IBody>
+  Body: mongoose.Model<IBody>;
   /** The BodyStat Model */
-  BodyStat: mongoose.Model<IBodyStat>
+  BodyStat: mongoose.Model<IBodyStat>;
   /** The BodyAmmo Model */
-  BodyAmmo: mongoose.Model<IBodyAmmo>
+  BodyAmmo: mongoose.Model<IBodyAmmo>;
   /** The BodyItem Model */
-  BodyItem: mongoose.Model<IBodyItem>
+  BodyItem: mongoose.Model<IBodyItem>;
   /** The BodyArmor Model */
-  BodyArmor: mongoose.Model<IBodyArmor>
+  BodyArmor: mongoose.Model<IBodyArmor>;
   /** The BodyBag Model */
-  BodyBag: mongoose.Model<IBodyBag>
+  BodyBag: mongoose.Model<IBodyBag>;
   /** The BodyImplant Model */
-  BodyImplant: mongoose.Model<IBodyImplant>
+  BodyImplant: mongoose.Model<IBodyImplant>;
   /** The BodyProgram Model */
-  BodyProgram: mongoose.Model<IBodyProgram>
+  BodyProgram: mongoose.Model<IBodyProgram>;
   /** The BodyWeapon Model */
-  BodyWeapon: mongoose.Model<IBodyWeapon>
+  BodyWeapon: mongoose.Model<IBodyWeapon>;
   /** The Body Part Model */
-  BodyPart: mongoose.Model<IBodyPart>
+  BodyPart: mongoose.Model<IBodyPart>;
   /** The CampaignEvent Model */
-  CampaignEvent: mongoose.Model<ICampaignEvent>
+  CampaignEvent: mongoose.Model<ICampaignEvent>;
   /** The Mail Token Model (for forgotten password) */
-  MailToken: mongoose.Model<IMailToken>
+  MailToken: mongoose.Model<IMailToken>;
   /** The Action Model */
-  Action: mongoose.Model<IAction>
+  Action: mongoose.Model<IAction>;
   /** The Action Type Model */
-  ActionType: mongoose.Model<IActionType>
+  ActionType: mongoose.Model<IActionType>;
   /** The Action Duration Model */
-  ActionDuration: mongoose.Model<IActionDuration>
+  ActionDuration: mongoose.Model<IActionDuration>;
   /** The Effect Model */
-  Effect: mongoose.Model<IEffect>
+  Effect: mongoose.Model<IEffect>;
   /** The GlobalValue Model */
-  GlobalValue: mongoose.Model<IGlobalValue>
+  GlobalValue: mongoose.Model<IGlobalValue>;
   /** The Stat Model */
-  Stat: mongoose.Model<IStat>
+  Stat: mongoose.Model<IStat>;
   /** The Tip Text Model */
-  TipText: mongoose.Model<ITipText>
+  TipText: mongoose.Model<ITipText>;
   /** The Stat bonus Model */
-  StatBonus: mongoose.Model<IStatBonus>
+  StatBonus: mongoose.Model<IStatBonus>;
   /** The Skill Model */
-  Skill: mongoose.Model<ISkill>
+  Skill: mongoose.Model<ISkill>;
   /** The Skill branch Model */
-  SkillBranch: mongoose.Model<ISkillBranch>
+  SkillBranch: mongoose.Model<ISkillBranch>;
   /** The Skill bonus Model */
-  SkillBonus: mongoose.Model<ISkillBonus>
+  SkillBonus: mongoose.Model<ISkillBonus>;
   /** The CharParam Model */
-  CharParam: mongoose.Model<ICharParam>
+  CharParam: mongoose.Model<ICharParam>;
   /** The CharParamBonus Model */
-  CharParamBonus: mongoose.Model<ICharParamBonus>
+  CharParamBonus: mongoose.Model<ICharParamBonus>;
   /** The CyberFrame Model */
-  CyberFrame: mongoose.Model<ICyberFrame>
+  CyberFrame: mongoose.Model<ICyberFrame>;
   /** The CyberFramebranch Model */
-  CyberFrameBranch: mongoose.Model<ICyberFrameBranch>
+  CyberFrameBranch: mongoose.Model<ICyberFrameBranch>;
   /** The Node Model */
-  Node: mongoose.Model<INode>
+  Node: mongoose.Model<INode>;
   /** The ItemType Model */
-  ItemType: mongoose.Model<IItemType>
+  ItemType: mongoose.Model<IItemType>;
   /** The ItemModifier Model */
-  ItemModifier: mongoose.Model<IItemModifier>
+  ItemModifier: mongoose.Model<IItemModifier>;
   /** The Rarity model */
-  Rarity: mongoose.Model<IRarity>
+  Rarity: mongoose.Model<IRarity>;
   /** The WeaponStyle model */
-  Ammo: mongoose.Model<IAmmo>
+  Ammo: mongoose.Model<IAmmo>;
   /** The WeaponScope model */
-  WeaponScope: mongoose.Model<IWeaponScope>
+  WeaponScope: mongoose.Model<IWeaponScope>;
   /** The WeaponStyle model */
-  WeaponStyle: mongoose.Model<IWeaponStyle>
+  WeaponStyle: mongoose.Model<IWeaponStyle>;
   /** The WeaponType model */
-  WeaponType: mongoose.Model<IWeaponType>
+  WeaponType: mongoose.Model<IWeaponType>;
   /** The Weapon model */
-  Weapon: mongoose.Model<IWeapon>
+  Weapon: mongoose.Model<IWeapon>;
   /** The Damage model */
-  Damage: mongoose.Model<IDamage>
+  Damage: mongoose.Model<IDamage>;
   /** The Program Scope model */
-  ProgramScope: mongoose.Model<IProgramScope>
+  ProgramScope: mongoose.Model<IProgramScope>;
   /** The Program model */
-  Program: mongoose.Model<IProgram>
+  Program: mongoose.Model<IProgram>;
   /** The NPC model */
-  NPC: mongoose.Model<INPC>
+  NPC: mongoose.Model<INPC>;
   /** The EnnemyAttack model */
-  EnnemyAttack: mongoose.Model<IEnnemyAttack>
+  EnnemyAttack: mongoose.Model<IEnnemyAttack>;
   /** The Damage Type model */
-  DamageType: mongoose.Model<IDamageType>
+  DamageType: mongoose.Model<IDamageType>;
   /** The Damage Type model */
-  Implant: mongoose.Model<IImplant>
+  Implant: mongoose.Model<IImplant>;
   /** The Armor Type model */
-  ArmorType: mongoose.Model<IArmorType>
+  ArmorType: mongoose.Model<IArmorType>;
   /** The Armor model */
-  Armor: mongoose.Model<IArmor>
+  Armor: mongoose.Model<IArmor>;
   /** The Item model */
-  Item: mongoose.Model<IItem>
+  Item: mongoose.Model<IItem>;
   /** The possible Roles */
-  ROLES: string[]
+  ROLES: string[];
 }
 
 const db: DBType = {
@@ -314,7 +312,7 @@ const db: DBType = {
   Item: ItemModel(),
   // NPC models
   EnnemyAttack: EnnemyAttackModel(),
-  NPC: NPCModel()
+  NPC: NPCModel(),
 };
 
 export default db;

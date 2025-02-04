@@ -1,13 +1,11 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 
 import db from '../../models';
 import {
   gemDuplicate,
   gemInvalidField,
   gemNotFound,
-  gemServerError
+  gemServerError,
 } from '../../utils/globalErrorMessage';
 import { checkDuplicateSkillFormulaId } from '../skill/controller';
 import { checkDuplicateStatFormulaId } from '../stat/controller';
@@ -110,14 +108,12 @@ const checkDuplicateFormulaId = async (
   });
 
 const create = (req: Request, res: Response): void => {
-  const {
-    title, summary, short, i18n = null, formulaId
-  } = req.body;
+  const { title, summary, short, i18n = null, formulaId } = req.body;
   if (
-    title === undefined
-    || summary === undefined
-    || short === undefined
-    || formulaId === undefined
+    title === undefined ||
+    summary === undefined ||
+    short === undefined ||
+    formulaId === undefined
   ) {
     res.status(400).send(gemInvalidField('CharParam'));
 
@@ -130,7 +126,7 @@ const create = (req: Request, res: Response): void => {
           title,
           summary,
           formulaId,
-          short
+          short,
         });
 
         if (i18n !== null) {
@@ -156,14 +152,19 @@ const create = (req: Request, res: Response): void => {
 
 const update = (req: Request, res: Response): void => {
   const {
-    id, title = null, summary = null, i18n, short = null, formulaId = null
+    id,
+    title = null,
+    summary = null,
+    i18n,
+    short = null,
+    formulaId = null,
   }: {
-    id?: string
-    title: string | null
-    summary: string | null
-    short: string | null
-    i18n: InternationalizationType | null
-    formulaId: string | null
+    id?: string;
+    title: string | null;
+    summary: string | null;
+    short: string | null;
+    i18n: InternationalizationType | null;
+    formulaId: string | null;
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('CharParam ID'));
@@ -190,11 +191,11 @@ const update = (req: Request, res: Response): void => {
             }
 
             if (i18n !== null) {
-              const newIntl: InternationalizationType = { ...(
-                charParam.i18n !== undefined && charParam.i18n !== ''
+              const newIntl: InternationalizationType = {
+                ...(charParam.i18n !== undefined && charParam.i18n !== ''
                   ? JSON.parse(charParam.i18n)
-                  : {}
-              ) };
+                  : {}),
+              };
 
               Object.keys(i18n).forEach((lang) => {
                 newIntl[lang] = i18n[lang];
@@ -207,7 +208,8 @@ const update = (req: Request, res: Response): void => {
               .save()
               .then(() => {
                 res.send({
-                  message: 'CharParam was updated successfully!', charParam
+                  message: 'CharParam was updated successfully!',
+                  charParam,
                 });
               })
               .catch((err: unknown) => {
@@ -254,8 +256,8 @@ const deleteCharParam = (req: Request, res: Response): void => {
 };
 
 interface CuratedICharParam {
-  i18n?: InternationalizationType
-  charParam: HydratedICharParam
+  i18n?: InternationalizationType;
+  charParam: HydratedICharParam;
 }
 
 const findSingle = (req: Request, res: Response): void => {
@@ -269,7 +271,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((charParam) => {
       const sentObj = {
         charParam,
-        i18n: curateI18n(charParam.i18n)
+        i18n: curateI18n(charParam.i18n),
       };
       res.send(sentObj);
     })
@@ -286,7 +288,7 @@ const findAll = (req: Request, res: Response): void => {
       charParams.forEach((charParam) => {
         curatedCharParams.push({
           charParam,
-          i18n: curateI18n(charParam.i18n)
+          i18n: curateI18n(charParam.i18n),
         });
       });
 
@@ -302,5 +304,5 @@ export {
   findAll,
   findCharParamById,
   findSingle,
-  update
+  update,
 };

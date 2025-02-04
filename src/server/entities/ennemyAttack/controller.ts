@@ -1,12 +1,8 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 import type { ObjectId } from 'mongoose';
 
 import db from '../../models';
-import {
-  gemInvalidField, gemNotFound, gemServerError
-} from '../../utils/globalErrorMessage';
+import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
 import type { HydratedIEnnemyAttack } from './model';
 import type { InternationalizationType } from '../../utils/types';
@@ -32,9 +28,7 @@ const findEnnemyAttacks = async (): Promise<HydratedIEnnemyAttack[]> =>
       });
   });
 
-const findEnnemyAttackById = async (
-  id: string
-): Promise<HydratedIEnnemyAttack> =>
+const findEnnemyAttackById = async (id: string): Promise<HydratedIEnnemyAttack> =>
   await new Promise((resolve, reject) => {
     EnnemyAttack.findById(id)
       .populate<{ damageType: IDamageType }>('damageType')
@@ -51,14 +45,14 @@ const findEnnemyAttackById = async (
   });
 
 export interface ISentEnnemyAttack {
-  id?: string
-  title: string | null
-  summary: string | null
-  i18n: InternationalizationType | null
-  damageType: ObjectId | null
-  weaponScope: ObjectId | null
-  dices: string | null
-  bonusToHit: number | null
+  id?: string;
+  title: string | null;
+  summary: string | null;
+  i18n: InternationalizationType | null;
+  damageType: ObjectId | null;
+  weaponScope: ObjectId | null;
+  dices: string | null;
+  bonusToHit: number | null;
 }
 
 const updateEnnemyAttacks = (
@@ -79,7 +73,7 @@ const updateEnnemyAttacks = (
     damageType = null,
     weaponScope = null,
     dices = null,
-    bonusToHit = null
+    bonusToHit = null,
   } = elts[0];
   if (id === undefined) {
     const ennemyAttack = new EnnemyAttack({
@@ -88,7 +82,7 @@ const updateEnnemyAttacks = (
       damageType,
       weaponScope,
       dices,
-      bonusToHit
+      bonusToHit,
     });
 
     if (i18n !== null) {
@@ -128,12 +122,11 @@ const updateEnnemyAttacks = (
         }
 
         if (i18n !== null) {
-          const newIntl: InternationalizationType = { ...(
-            ennemyAttack.i18n !== undefined
-            && ennemyAttack.i18n !== ''
+          const newIntl: InternationalizationType = {
+            ...(ennemyAttack.i18n !== undefined && ennemyAttack.i18n !== ''
               ? JSON.parse(ennemyAttack.i18n)
-              : {}
-          ) };
+              : {}),
+          };
 
           Object.keys(i18n).forEach((lang) => {
             newIntl[lang] = i18n[lang];
@@ -161,25 +154,21 @@ const updateEnnemyAttacks = (
 
 const smartUpdateAttacks = async ({
   attacksToRemove,
-  attacksToUpdate
+  attacksToUpdate,
 }: {
-  attacksToRemove: string[]
-  attacksToUpdate: ISentEnnemyAttack[]
+  attacksToRemove: string[];
+  attacksToUpdate: ISentEnnemyAttack[];
 }): Promise<string[]> =>
   await new Promise((resolve, reject) => {
     EnnemyAttack.deleteMany({ _id: { $in: attacksToRemove } })
       .then(() => {
-        updateEnnemyAttacks(
-          attacksToUpdate,
-          [],
-          (err: unknown, ids?: string[]) => {
-            if (err !== null) {
-              reject(err);
-            } else {
-              resolve(ids ?? []);
-            }
+        updateEnnemyAttacks(attacksToUpdate, [], (err: unknown, ids?: string[]) => {
+          if (err !== null) {
+            reject(err);
+          } else {
+            resolve(ids ?? []);
           }
-        );
+        });
       })
       .catch((err: unknown) => {
         reject(err);
@@ -187,15 +176,13 @@ const smartUpdateAttacks = async ({
   });
 
 const create = (req: Request, res: Response): void => {
-  const {
-    title, summary, i18n = null, damageType, dices, weaponScope, bonusToHit
-  } = req.body;
+  const { title, summary, i18n = null, damageType, dices, weaponScope, bonusToHit } = req.body;
   if (
-    title === undefined
-    || summary === undefined
-    || damageType === undefined
-    || weaponScope === undefined
-    || dices === undefined
+    title === undefined ||
+    summary === undefined ||
+    damageType === undefined ||
+    weaponScope === undefined ||
+    dices === undefined
   ) {
     res.status(400).send(gemInvalidField('EnnemyAttack'));
 
@@ -208,7 +195,7 @@ const create = (req: Request, res: Response): void => {
     damageType,
     weaponScope,
     dices,
-    bonusToHit
+    bonusToHit,
   });
 
   if (i18n !== null) {
@@ -234,7 +221,7 @@ const update = (req: Request, res: Response): void => {
     damageType = null,
     dices = null,
     weaponScope = null,
-    bonusToHit = null
+    bonusToHit = null,
   }: ISentEnnemyAttack = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('EnnemyAttack ID'));
@@ -263,11 +250,11 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(
-          ennemyAttack.i18n !== undefined
-          && ennemyAttack.i18n !== ''
+        const newIntl: InternationalizationType = {
+          ...(ennemyAttack.i18n !== undefined && ennemyAttack.i18n !== ''
             ? JSON.parse(ennemyAttack.i18n)
-            : {}) };
+            : {}),
+        };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -280,7 +267,8 @@ const update = (req: Request, res: Response): void => {
         .save()
         .then(() => {
           res.send({
-            message: 'EnnemyAttack was updated successfully!', ennemyAttack
+            message: 'EnnemyAttack was updated successfully!',
+            ennemyAttack,
           });
         })
         .catch((err: unknown) => {
@@ -320,8 +308,8 @@ const deleteEnnemyAttack = (req: Request, res: Response): void => {
 };
 
 interface CuratedIEnnemyAttack {
-  i18n?: InternationalizationType
-  ennemyAttack: HydratedIEnnemyAttack
+  i18n?: InternationalizationType;
+  ennemyAttack: HydratedIEnnemyAttack;
 }
 
 const findSingle = (req: Request, res: Response): void => {
@@ -335,7 +323,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((ennemyAttack) => {
       const sentObj = {
         ennemyAttack,
-        i18n: curateI18n(ennemyAttack.i18n)
+        i18n: curateI18n(ennemyAttack.i18n),
       };
       res.send(sentObj);
     })
@@ -352,7 +340,7 @@ const findAll = (req: Request, res: Response): void => {
       ennemyAttacks.forEach((ennemyAttack) => {
         curatedEnnemyAttacks.push({
           ennemyAttack,
-          i18n: curateI18n(ennemyAttack.i18n)
+          i18n: curateI18n(ennemyAttack.i18n),
         });
       });
 
@@ -368,5 +356,5 @@ export {
   findEnnemyAttackById,
   findSingle,
   smartUpdateAttacks,
-  update
+  update,
 };

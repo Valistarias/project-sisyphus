@@ -1,11 +1,7 @@
-import type {
-  Request, Response
-} from 'express';
+import type { Request, Response } from 'express';
 
 import db from '../../models';
-import {
-  gemInvalidField, gemNotFound, gemServerError
-} from '../../utils/globalErrorMessage';
+import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
 import type { HydratedIPage } from './model';
 import type { InternationalizationType } from '../../utils/types';
@@ -20,7 +16,7 @@ const findPages = async (): Promise<HydratedIPage[]> =>
     Page.find()
       .populate<{ chapter: HydratedIChapter }>({
         path: 'chapter',
-        populate: 'ruleBook'
+        populate: 'ruleBook',
       })
       .then((res: HydratedIPage[]) => {
         if (res.length === 0) {
@@ -34,14 +30,12 @@ const findPages = async (): Promise<HydratedIPage[]> =>
       });
   });
 
-const findPagesByChapter = async (
-  chapterId: string
-): Promise<HydratedIPage[]> =>
+const findPagesByChapter = async (chapterId: string): Promise<HydratedIPage[]> =>
   await new Promise((resolve, reject) => {
     Page.find({ chapter: chapterId })
       .populate<{ chapter: HydratedIChapter }>({
         path: 'chapter',
-        populate: 'ruleBook'
+        populate: 'ruleBook',
       })
       .then((res?: HydratedIPage[] | null) => {
         if (res === undefined || res === null) {
@@ -60,7 +54,7 @@ const findPageById = async (id: string): Promise<HydratedIPage> =>
     Page.findById(id)
       .populate<{ chapter: HydratedIChapter }>({
         path: 'chapter',
-        populate: 'ruleBook'
+        populate: 'ruleBook',
       })
       .then((res?: HydratedIPage | null) => {
         if (res === undefined || res === null) {
@@ -76,12 +70,15 @@ const findPageById = async (id: string): Promise<HydratedIPage> =>
 
 const create = (req: Request, res: Response): void => {
   const {
-    title, content, chapter, i18n = null
+    title,
+    content,
+    chapter,
+    i18n = null,
   }: {
-    title?: string
-    content?: string
-    i18n?: InternationalizationType | null
-    chapter?: string
+    title?: string;
+    content?: string;
+    i18n?: InternationalizationType | null;
+    chapter?: string;
   } = req.body;
   if (title === undefined || content === undefined || chapter === undefined) {
     res.status(400).send(gemInvalidField('Page'));
@@ -95,7 +92,7 @@ const create = (req: Request, res: Response): void => {
         title,
         content,
         chapter,
-        position: pages.length
+        position: pages.length,
       });
 
       if (i18n !== null) {
@@ -116,13 +113,16 @@ const create = (req: Request, res: Response): void => {
 
 const update = (req: Request, res: Response): void => {
   const {
-    id, title = null, content = null, i18n
+    id,
+    title = null,
+    content = null,
+    i18n,
   }: {
-    id?: string
-    title: string | null
-    content: string | null
-    i18n: InternationalizationType | null
-    chapter: string | null
+    id?: string;
+    title: string | null;
+    content: string | null;
+    i18n: InternationalizationType | null;
+    chapter: string | null;
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Page ID'));
@@ -139,11 +139,9 @@ const update = (req: Request, res: Response): void => {
       }
 
       if (i18n !== null) {
-        const newIntl: InternationalizationType = { ...(
-          page.i18n !== undefined
-          && page.i18n !== ''
-            ? JSON.parse(page.i18n)
-            : {}) };
+        const newIntl: InternationalizationType = {
+          ...(page.i18n !== undefined && page.i18n !== '' ? JSON.parse(page.i18n) : {}),
+        };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
@@ -156,7 +154,8 @@ const update = (req: Request, res: Response): void => {
         .save()
         .then(() => {
           res.send({
-            message: 'Page was updated successfully!', page
+            message: 'Page was updated successfully!',
+            page,
           });
         })
         .catch((err: unknown) => {
@@ -201,8 +200,8 @@ const deletePagesByChapterId = async (chapterId?: string): Promise<boolean> =>
   });
 
 interface CuratedIPage {
-  i18n?: InternationalizationType
-  page: HydratedIPage
+  i18n?: InternationalizationType;
+  page: HydratedIPage;
 }
 
 const findSingle = (req: Request, res: Response): void => {
@@ -216,7 +215,7 @@ const findSingle = (req: Request, res: Response): void => {
     .then((page) => {
       const sentObj = {
         page,
-        i18n: curateI18n(page.i18n)
+        i18n: curateI18n(page.i18n),
       };
       res.send(sentObj);
     })
@@ -233,7 +232,7 @@ const findAll = (req: Request, res: Response): void => {
       pages.forEach((page) => {
         curatedPages.push({
           page,
-          i18n: curateI18n(page.i18n)
+          i18n: curateI18n(page.i18n),
         });
       });
 
@@ -256,7 +255,7 @@ const findAllByChapter = (req: Request, res: Response): void => {
       pages.forEach((page) => {
         curatedChapters.push({
           page,
-          i18n: curateI18n(page.i18n)
+          i18n: curateI18n(page.i18n),
         });
       });
 
@@ -274,5 +273,5 @@ export {
   findPageById,
   findPagesByChapter,
   findSingle,
-  update
+  update,
 };

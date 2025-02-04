@@ -48,7 +48,7 @@ import {
   WeaponScopes,
   WeaponStyles,
   WeaponTypes,
-  Weapons
+  Weapons,
 } from './entities/index';
 
 export default class Api {

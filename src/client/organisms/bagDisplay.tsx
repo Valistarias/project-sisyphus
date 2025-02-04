@@ -1,6 +1,4 @@
-import React, {
-  useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useMemo, useRef, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -8,13 +6,9 @@ import { useGlobalVars } from '../providers';
 
 import { Ap } from '../atoms';
 import { PropDisplay } from '../molecules';
-import {
-  Quark, type IQuarkProps
-} from '../quark';
+import { Quark, type IQuarkProps } from '../quark';
 
-import type {
-  ICuratedBag, ICuratedItemModifier, ICuratedRarity
-} from '../types';
+import type { ICuratedBag, ICuratedItemModifier, ICuratedRarity } from '../types';
 import type { IBag } from '../types/items';
 
 import { classTrim } from '../utils';
@@ -23,29 +17,24 @@ import './bagDisplay.scss';
 
 interface IBagDisplay {
   /** The bag to be displayed */
-  bag?: ICuratedBag
+  bag?: ICuratedBag;
   /** The display mode */
-  mode?: 'basic' | 'hover'
+  mode?: 'basic' | 'hover';
 }
 
 interface ICompleteBag
   extends Omit<IBag, 'bagType' | 'itemModifiers' | 'rarity' | 'charParamBonuses'> {
-  itemModifiers: ICuratedItemModifier[] | undefined
-  rarity: ICuratedRarity | undefined
+  itemModifiers: ICuratedItemModifier[] | undefined;
+  rarity: ICuratedRarity | undefined;
 }
 
 interface ICuratedCompleteBag extends Omit<ICuratedBag, 'bag'> {
-  bag: ICompleteBag
+  bag: ICompleteBag;
 }
 
-const BagDisplay: FC<IQuarkProps<IBagDisplay>> = ({
-  bag,
-  mode = 'basic'
-}) => {
+const BagDisplay: FC<IQuarkProps<IBagDisplay>> = ({ bag, mode = 'basic' }) => {
   const { t } = useTranslation();
-  const {
-    itemModifiers, rarities, itemTypes
-  } = useGlobalVars();
+  const { itemModifiers, rarities, itemTypes } = useGlobalVars();
 
   const [placement, setPlacement] = useState<string>('left');
   const domBlockContent = useRef<HTMLDivElement>(null);
@@ -54,38 +43,28 @@ const BagDisplay: FC<IQuarkProps<IBagDisplay>> = ({
     if (bag === undefined) {
       return null;
     }
-    const {
-      bag: bagObj, i18n
-    } = bag;
+    const { bag: bagObj, i18n } = bag;
 
     return {
       bag: {
         ...bagObj,
-        rarity: rarities.find(rarity => rarity.rarity._id === bagObj.rarity),
+        rarity: rarities.find((rarity) => rarity.rarity._id === bagObj.rarity),
         itemModifiers: bagObj.itemModifiers?.map(
-          itemModifierId =>
+          (itemModifierId) =>
             itemModifiers.find(
-              itemModifier => itemModifier.itemModifier._id === itemModifierId
+              (itemModifier) => itemModifier.itemModifier._id === itemModifierId
             ) ?? itemModifiers[0]
         ),
         storableItemTypes: bagObj.storableItemTypes.map((itemTypeId) => {
-          const elt
-            = itemTypes.find(
-              itemType => itemType._id === itemTypeId
-            )?.name ?? itemTypes[0].name;
+          const elt =
+            itemTypes.find((itemType) => itemType._id === itemTypeId)?.name ?? itemTypes[0].name;
 
           return t(`itemTypeNames.${elt}`);
-        })
+        }),
       },
-      i18n
+      i18n,
     };
-  }, [
-    bag,
-    rarities,
-    itemModifiers,
-    itemTypes,
-    t
-  ]);
+  }, [bag, rarities, itemModifiers, itemTypes, t]);
 
   const handleMouseEnter = (): void => {
     if (mode === 'hover') {
@@ -113,8 +92,8 @@ const BagDisplay: FC<IQuarkProps<IBagDisplay>> = ({
     const { bag } = curateBag;
     const { rarity } = bag;
 
-    const listItemTypes
-      = bag.storableItemTypes.length === itemTypes.length
+    const listItemTypes =
+      bag.storableItemTypes.length === itemTypes.length
         ? t('display.bag.all', { ns: 'components' })
         : bag.storableItemTypes.join(', ');
 
@@ -127,27 +106,25 @@ const BagDisplay: FC<IQuarkProps<IBagDisplay>> = ({
         title={bag.title}
         type={t('itemTypeNames.bag')}
         itemModifiers={bag.itemModifiers}
-        mainNode={(
+        mainNode={
           <div className="bag-display__block__main">
             <Ap className="bag-display__block__main__text">
               {t('display.bag.text', {
-                ns: 'components', list: listItemTypes
+                ns: 'components',
+                list: listItemTypes,
               })}
             </Ap>
             <Ap className="bag-display__block__main__sub">
               {t('display.bag.qty', {
-                ns: 'components', qty: bag.size
+                ns: 'components',
+                qty: bag.size,
               })}
             </Ap>
           </div>
-        )}
+        }
       />
     );
-  }, [
-    curateBag,
-    itemTypes,
-    t
-  ]);
+  }, [curateBag, itemTypes, t]);
 
   if (mode === 'hover') {
     return (

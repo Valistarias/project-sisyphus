@@ -1,31 +1,16 @@
-import React, {
-  useCallback, useEffect, useMemo, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import {
-  useNavigate, useParams
-} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import {
-  useApi, useConfirmMessage, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input,
-  LinkButton
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input, LinkButton } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
 import type { ErrorResponseType, ICuratedTipText } from '../../../types';
@@ -36,23 +21,18 @@ import { classTrim } from '../../../utils';
 import './adminEditTipText.scss';
 
 interface FormValues {
-  name: string
-  nameFr: string
-  tipId: string
+  name: string;
+  nameFr: string;
+  tipId: string;
 }
 
 const AdminEditTipText: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
   const { reloadTipTexts } = useGlobalVars();
-  const {
-    setConfirmContent,
-    removeConfirmEventListener,
-    addConfirmEventListener
-  } = useConfirmMessage();
+  const { setConfirmContent, removeConfirmEventListener, addConfirmEventListener } =
+    useConfirmMessage();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -67,51 +47,38 @@ const AdminEditTipText: FC = () => {
   const [tipTextText, setTipTextText] = useState('');
   const [tipTextTextFr, setTipTextTextFr] = useState('');
 
-  const textEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const textFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const createDefaultData = useCallback(
-    (tipTextData: ICuratedTipText | null) => {
-      if (tipTextData == null) {
-        return {};
-      }
-      const {
-        tipText, i18n
-      } = tipTextData;
-      const defaultData: Partial<FormValues> = {};
-      defaultData.name = tipText.title;
-      defaultData.tipId = tipText.tipId;
-      if (i18n.fr !== undefined) {
-        defaultData.nameFr = i18n.fr.title ?? '';
-      }
+  const createDefaultData = useCallback((tipTextData: ICuratedTipText | null) => {
+    if (tipTextData == null) {
+      return {};
+    }
+    const { tipText, i18n } = tipTextData;
+    const defaultData: Partial<FormValues> = {};
+    defaultData.name = tipText.title;
+    defaultData.tipId = tipText.tipId;
+    if (i18n.fr !== undefined) {
+      defaultData.nameFr = i18n.fr.title ?? '';
+    }
 
-      return defaultData;
-    }, []);
+    return defaultData;
+  }, []);
 
   const {
     handleSubmit,
     setError,
     control,
     formState: { errors },
-    reset
-  } = useForm({ defaultValues: useMemo(
-    () => createDefaultData(tipTextData), [createDefaultData, tipTextData]
-  ) });
+    reset,
+  } = useForm({
+    defaultValues: useMemo(() => createDefaultData(tipTextData), [createDefaultData, tipTextData]),
+  });
 
   const onSaveTipText: SubmitHandler<FormValues> = useCallback(
-    ({
-      name, nameFr, tipId
-    }) => {
-      if (
-        textEditor === null
-        || textFrEditor === null
-        || api === undefined
-      ) {
+    ({ name, nameFr, tipId }) => {
+      if (textEditor === null || textFrEditor === null || api === undefined) {
         return;
       }
       let htmlText: string | null = textEditor.getHTML();
@@ -125,10 +92,12 @@ const AdminEditTipText: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlTextFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          text: htmlTextFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            text: htmlTextFr,
+          },
+        };
       }
 
       api.tipTexts
@@ -137,7 +106,7 @@ const AdminEditTipText: FC = () => {
           title: name,
           tipId,
           summary: htmlText,
-          i18n
+          i18n,
         })
         .then((tipText) => {
           const newId = getNewId();
@@ -147,7 +116,7 @@ const AdminEditTipText: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminEditTipText.successUpdate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           reloadTipTexts();
         })
@@ -156,27 +125,19 @@ const AdminEditTipText: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`,
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
     },
-    [
-      textEditor,
-      textFrEditor,
-      api,
-      id,
-      getNewId,
-      createAlert,
-      t,
-      reloadTipTexts,
-      setError
-    ]
+    [textEditor, textFrEditor, api, id, getNewId, createAlert, t, reloadTipTexts, setError]
   );
 
   const onAskDelete = useCallback(() => {
@@ -188,14 +149,12 @@ const AdminEditTipText: FC = () => {
         title: t('adminEditTipText.confirmDeletion.title', { ns: 'pages' }),
         text: t('adminEditTipText.confirmDeletion.text', {
           ns: 'pages',
-          elt: tipTextData?.tipText.title
+          elt: tipTextData?.tipText.title,
         }),
-        confirmCta: t('adminEditTipText.confirmDeletion.confirmCta', { ns: 'pages' })
+        confirmCta: t('adminEditTipText.confirmDeletion.confirmCta', { ns: 'pages' }),
       },
       (evtId: string) => {
-        const confirmDelete = (
-          { detail }: { detail: ConfirmMessageDetailData }
-        ): void => {
+        const confirmDelete = ({ detail }: { detail: ConfirmMessageDetailData }): void => {
           if (detail.proceed) {
             api.tipTexts
               .delete({ id })
@@ -207,7 +166,7 @@ const AdminEditTipText: FC = () => {
                     <Alert key={newId} id={newId} timer={5}>
                       <Ap>{t('adminEditTipText.successDelete', { ns: 'pages' })}</Ap>
                     </Alert>
-                  )
+                  ),
                 });
                 reloadTipTexts();
                 void navigate('/admin/tiptexts');
@@ -217,12 +176,16 @@ const AdminEditTipText: FC = () => {
                 if (data.code === 'CYPU-104') {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.tipText.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.tipText.name`), 'capitalize'),
+                    }),
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
-                    message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.tipText.name`), 'capitalize') })
+                    message: t(`serverErrors.${data.code}`, {
+                      field: i18next.format(t(`terms.tipText.name`), 'capitalize'),
+                    }),
                   });
                 }
               });
@@ -244,7 +207,7 @@ const AdminEditTipText: FC = () => {
     createAlert,
     reloadTipTexts,
     navigate,
-    setError
+    setError,
   ]);
 
   useEffect(() => {
@@ -253,9 +216,7 @@ const AdminEditTipText: FC = () => {
       api.tipTexts
         .get({ tipTextId: id })
         .then((curatedTipText) => {
-          const {
-            tipText, i18n
-          } = curatedTipText;
+          const { tipText, i18n } = curatedTipText;
           setTipTextData(curatedTipText);
           setTipTextText(tipText.summary);
           if (i18n.fr !== undefined) {
@@ -270,17 +231,11 @@ const AdminEditTipText: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('serverErrors.CYPU-301')}</Ap>
               </Alert>
-            )
+            ),
           });
         });
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    id,
-    t
-  ]);
+  }, [api, createAlert, getNewId, id, t]);
 
   // The Autosave
   useEffect(() => {
@@ -302,11 +257,7 @@ const AdminEditTipText: FC = () => {
   // To affect default data
   useEffect(() => {
     reset(createDefaultData(tipTextData));
-  }, [
-    tipTextData,
-    reset,
-    createDefaultData
-  ]);
+  }, [tipTextData, reset, createDefaultData]);
 
   return (
     <div
@@ -332,11 +283,9 @@ const AdminEditTipText: FC = () => {
           {t('adminEditTipText.return', { ns: 'pages' })}
         </LinkButton>
         <Atitle level={2}>{t('adminEditTipText.edit', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror className="adminEditTipText__error">{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror className="adminEditTipText__error">{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminEditTipText__basics">
           <Input
             control={control}
@@ -375,7 +324,7 @@ const AdminEditTipText: FC = () => {
             icon="Arrow"
             theme="afterglow"
             onClick={() => {
-              setDisplayInt(prev => !prev);
+              setDisplayInt((prev) => !prev);
             }}
             className="adminEditTipText__intl-title__btn"
           />

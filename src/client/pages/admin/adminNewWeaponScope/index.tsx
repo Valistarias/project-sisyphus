@@ -1,74 +1,50 @@
-import React, {
-  useCallback, useEffect, useRef, useState, type FC
-} from 'react';
+import React, { useCallback, useEffect, useRef, useState, type FC } from 'react';
 
 import { useEditor } from '@tiptap/react';
 import i18next from 'i18next';
-import {
-  useForm, type SubmitHandler
-} from 'react-hook-form';
+import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import {
-  useApi, useGlobalVars, useSystemAlerts
-} from '../../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
-import {
-  Aerror, Ap, Atitle
-} from '../../../atoms';
-import {
-  Button, Input
-} from '../../../molecules';
-import {
-  Alert, RichTextElement, completeRichTextElementExtentions
-} from '../../../organisms';
+import { Aerror, Ap, Atitle } from '../../../atoms';
+import { Button, Input } from '../../../molecules';
+import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import './adminNewWeaponScope.scss';
 import type { ErrorResponseType, InternationalizationType } from '../../../types/global';
 
 interface FormValues {
-  name: string
-  nameFr: string
-  scopeId: string
+  name: string;
+  nameFr: string;
+  scopeId: string;
 }
 
 const AdminNewWeaponScope: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const navigate = useNavigate();
-  const {
-    createAlert, getNewId
-  } = useSystemAlerts();
+  const { createAlert, getNewId } = useSystemAlerts();
   const { reloadWeaponScopes } = useGlobalVars();
 
   const [, setLoading] = useState(true);
   const calledApi = useRef(false);
 
-  const introEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
-  const introFrEditor = useEditor(
-    { extensions: completeRichTextElementExtentions }
-  );
+  const introFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const {
     handleSubmit,
     setError,
     control,
-    formState: { errors }
+    formState: { errors },
   } = useForm();
 
   const onSaveWeaponScope: SubmitHandler<FormValues> = useCallback(
-    ({
-      name, nameFr, scopeId
-    }) => {
-      if (
-        introEditor === null
-        || introFrEditor === null
-        || api === undefined
-      ) {
+    ({ name, nameFr, scopeId }) => {
+      if (introEditor === null || introFrEditor === null || api === undefined) {
         return;
       }
       let html: string | null = introEditor.getHTML();
@@ -80,10 +56,12 @@ const AdminNewWeaponScope: FC = () => {
       let i18n: InternationalizationType | null = null;
 
       if (nameFr !== '' || htmlFr !== '<p class="ap"></p>') {
-        i18n = { fr: {
-          title: nameFr,
-          summary: htmlFr
-        } };
+        i18n = {
+          fr: {
+            title: nameFr,
+            summary: htmlFr,
+          },
+        };
       }
 
       api.weaponScopes
@@ -91,7 +69,7 @@ const AdminNewWeaponScope: FC = () => {
           title: name,
           summary: html,
           scopeId,
-          i18n
+          i18n,
         })
         .then((weaponScope) => {
           const newId = getNewId();
@@ -101,7 +79,7 @@ const AdminNewWeaponScope: FC = () => {
               <Alert key={newId} id={newId} timer={5}>
                 <Ap>{t('adminNewWeaponScope.successCreate', { ns: 'pages' })}</Ap>
               </Alert>
-            )
+            ),
           });
           reloadWeaponScopes();
           void navigate(`/admin/weaponscope/${weaponScope._id}`);
@@ -111,12 +89,14 @@ const AdminNewWeaponScope: FC = () => {
           if (data.code === 'CYPU-104') {
             setError('root.serverError', {
               type: 'server',
-              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`
+              message: `${t(`serverErrors.${data.code}`, { field: 'Formula Id' })} by ${data.sent}`,
             });
           } else {
             setError('root.serverError', {
               type: 'server',
-              message: t(`serverErrors.${data.code}`, { field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize') })
+              message: t(`serverErrors.${data.code}`, {
+                field: i18next.format(t(`terms.charparamsType.${data.sent}`), 'capitalize'),
+              }),
             });
           }
         });
@@ -130,7 +110,7 @@ const AdminNewWeaponScope: FC = () => {
       t,
       reloadWeaponScopes,
       navigate,
-      setError
+      setError,
     ]
   );
 
@@ -139,12 +119,7 @@ const AdminNewWeaponScope: FC = () => {
       setLoading(true);
       calledApi.current = true;
     }
-  }, [
-    api,
-    createAlert,
-    getNewId,
-    t
-  ]);
+  }, [api, createAlert, getNewId, t]);
 
   return (
     <div className="adminNewWeaponScope">
@@ -156,11 +131,9 @@ const AdminNewWeaponScope: FC = () => {
         noValidate
       >
         <Atitle level={1}>{t('adminNewWeaponScope.title', { ns: 'pages' })}</Atitle>
-        {errors.root?.serverError.message !== undefined
-          ? (
-              <Aerror>{errors.root.serverError.message}</Aerror>
-            )
-          : null}
+        {errors.root?.serverError.message !== undefined ? (
+          <Aerror>{errors.root.serverError.message}</Aerror>
+        ) : null}
         <div className="adminNewWeaponScope__basics">
           <Input
             control={control}
@@ -187,8 +160,8 @@ const AdminNewWeaponScope: FC = () => {
               required: t('weaponScopeFormula.required', { ns: 'fields' }),
               pattern: {
                 value: /^([a-z]){2,3}$/,
-                message: t('weaponScopeFormula.format', { ns: 'fields' })
-              }
+                message: t('weaponScopeFormula.format', { ns: 'fields' }),
+              },
             }}
             label={t('weaponScopeFormula.label', { ns: 'fields' })}
           />

@@ -5,23 +5,23 @@ import Entity from './entity';
 import type { IBody } from '../../types';
 
 interface IUpdateStatsPayload {
-  id: string
+  id: string;
   stats: Array<{
-    id: string
-    value: number
-  }>
+    id: string;
+    value: number;
+  }>;
 }
 interface IResetItemsPayload {
-  id: string
-  weapons: string[]
-  armors: string[]
-  bags: string[]
-  items: string[]
-  programs: string[]
-  implants: string[]
+  id: string;
+  weapons: string[];
+  armors: string[];
+  bags: string[];
+  items: string[];
+  programs: string[];
+  implants: string[];
 }
 interface IBodyPayload {
-  characterId: string
+  characterId: string;
 }
 
 export default class Bodys extends Entity<IBodyPayload, IBody, IBody> {
@@ -31,7 +31,7 @@ export default class Bodys extends Entity<IBodyPayload, IBody, IBody> {
   constructor() {
     super('bodies');
 
-    this.updateStats = async payload =>
+    this.updateStats = async (payload) =>
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/updatestats/`, payload)
@@ -43,7 +43,7 @@ export default class Bodys extends Entity<IBodyPayload, IBody, IBody> {
           });
       });
 
-    this.resetItems = async payload =>
+    this.resetItems = async (payload) =>
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/resetitems/`, payload)
