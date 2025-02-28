@@ -1,5 +1,5 @@
 import CharacterActionBoard from './characterActionBoard';
-import CharacterActionTab from './characterActionTab';
+import CharacterActionList from './characterActionList';
 import CharacterHeader from './characterHeader';
 import CharacterSkills from './characterSkills';
 import CharacterStatus from './characterStatus';
@@ -9,5 +9,5 @@ export {
   CharacterSkills,
   CharacterStatus,
   CharacterActionBoard,
-  CharacterActionTab,
+  CharacterActionList,
 };

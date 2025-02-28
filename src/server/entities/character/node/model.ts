@@ -1,6 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import type { INode } from '../../node/model';
+import type { INode, LeanINode } from '../../node/model';
 
 interface ICharacterNode {
   /** When the character was created */
@@ -13,8 +13,12 @@ interface ICharacterNode {
   used?: number;
 }
 
+type LeanICharacterNode = Omit<ICharacterNode, 'node'> & {
+  node: LeanINode;
+};
+
 type HydratedICharacterNode = HydratedDocument<
-  Omit<ICharacterNode, 'node'> & { node: HydratedDocument<INode> }
+  Omit<ICharacterNode, 'node'> & { node: HydratedDocument<INode<string>> }
 >;
 
 const CharacterNodeSchema = new Schema<ICharacterNode>({
@@ -35,4 +39,9 @@ const CharacterNodeSchema = new Schema<ICharacterNode>({
 
 const CharacterNodeModel = (): Model<ICharacterNode> => model('CharacterNode', CharacterNodeSchema);
 
-export { CharacterNodeModel, type HydratedICharacterNode, type ICharacterNode };
+export {
+  CharacterNodeModel,
+  type HydratedICharacterNode,
+  type LeanICharacterNode,
+  type ICharacterNode,
+};

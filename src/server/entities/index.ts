@@ -56,6 +56,7 @@ export {
   type HydratedICharacterNode,
   type ICharacter,
   type ICharacterNode,
+  type LeanICharacterNode,
 } from './character';
 export { CharParamModel, type HydratedICharParam, type ICharParam } from './charParam/model';
 export {

@@ -81,7 +81,7 @@ const getCharacterHpValues = (
   }
 
   character.nodes?.forEach(({ node }) => {
-    node.charParamBonuses?.forEach((charParamBonus) => {
+    node.charParamBonuses.forEach((charParamBonus) => {
       if (charParamBonus.charParam === hpParamId) {
         totalHpValue += charParamBonus.value;
       }
@@ -227,7 +227,7 @@ const curateCharacterSkills = (
           undefined
       );
     }
-    node.skillBonuses?.forEach((skillBonus) => {
+    node.skillBonuses.forEach((skillBonus) => {
       const actualSkillNode = skillNodesById[skillBonus.skill];
       skillNodesById[skillBonus.skill] = {
         total: (actualSkillNode?.total ?? 0) + skillBonus.value,
@@ -244,7 +244,7 @@ const curateCharacterSkills = (
         ],
       };
     });
-    node.statBonuses?.forEach((statBonus) => {
+    node.statBonuses.forEach((statBonus) => {
       statNodesById[statBonus.stat].total += statBonus.value;
       statNodesById[statBonus.stat].sources.push({
         value: statBonus.value,
@@ -411,7 +411,7 @@ const curateCharacterParams = ({
           undefined
       );
     }
-    node.charParamBonuses?.forEach((charParamBonus) => {
+    node.charParamBonuses.forEach((charParamBonus) => {
       if (
         (charParamsById[charParamBonus.charParam] as ICuratedCharParamWithScore | undefined) !==
         undefined

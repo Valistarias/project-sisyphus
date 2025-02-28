@@ -4,8 +4,8 @@ import type { Lean } from '../../../utils/types';
 import type { HydratedIBackground, IBackground } from '../../background/model';
 import type { HydratedIBody, LeanIBody } from '../../body';
 import type { ICampaign } from '../../campaign/model';
-import type { HydratedINode, LeanINode } from '../../node/model';
 import type { IUser } from '../../user/model';
+import type { HydratedICharacterNode, LeanICharacterNode } from '../node/model';
 
 interface ICharacter<IdType> {
   /** The first name of the character */
@@ -47,7 +47,7 @@ type LeanICharacter = Omit<
   player?: Lean<IUser>;
   createdBy: Lean<IUser>;
   campaign?: Lean<ICampaign>;
-  nodes?: Array<Lean<LeanINode>>;
+  nodes?: LeanICharacterNode[];
   bodies?: LeanIBody[];
   background?: Lean<IBackground>;
 };
@@ -57,7 +57,7 @@ type HydratedICharacter = HydratedDocument<
     player?: HydratedDocument<IUser>;
     createdBy: HydratedDocument<IUser>;
     campaign?: HydratedDocument<ICampaign>;
-    nodes?: HydratedINode[];
+    nodes?: HydratedICharacterNode[];
     bodies?: HydratedIBody[];
     background?: HydratedIBackground;
   }

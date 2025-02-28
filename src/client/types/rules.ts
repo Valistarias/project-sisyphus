@@ -347,15 +347,15 @@ export interface INode {
   /** The position/rank where the node is located */
   rank: number;
   /** The effects related to the node */
-  effects?: ICuratedEffect[];
+  effects: ICuratedEffect[];
   /** The actions related to the node */
-  actions?: ICuratedAction[];
+  actions: ICuratedAction[];
   /** The skill bonuses related to the node */
-  skillBonuses?: ISkillBonus[];
+  skillBonuses: ISkillBonus[];
   /** The stat bonuses related to the node */
-  statBonuses?: IStatBonus[];
+  statBonuses: IStatBonus[];
   /** The charParam bonuses related to the node */
-  charParamBonuses?: ICharParamBonus[];
+  charParamBonuses: ICharParamBonus[];
   /** The overriden nodes by this one (to upgrade a previous node) */
   overrides?: string[];
   /** When the Node was created */

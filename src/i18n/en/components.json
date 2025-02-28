@@ -199,5 +199,10 @@
       "inventory": "Inventory"
     },
     "open": "Dices & Timeline"
+  },
+  "characterActionList": {
+    "nodes": {
+      "title": "Nodes"
+    }
   }
 }

@@ -20,7 +20,7 @@ type HydratedICompleteCampaign = HydratedDocument<
   Omit<ICampaign, 'owner' | 'players' | 'characters'> & {
     owner: HydratedDocument<IUser>;
     players: Array<HydratedDocument<IUser>>;
-    characters: ICharacter[];
+    characters: Array<ICharacter<string>>;
   }
 >;
 

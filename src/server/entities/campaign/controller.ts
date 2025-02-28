@@ -27,7 +27,7 @@ const findCampaigns = async (req: Request): Promise<HydratedICompleteCampaign[]>
           .or([{ owner: user._id }, { players: user._id }])
           .populate<{ owner: HydratedDocument<IUser> }>('owner')
           .populate<{ players: Array<HydratedDocument<IUser>> }>('players')
-          .populate<{ characters: ICharacter[] }>({
+          .populate<{ characters: Array<ICharacter<string>> }>({
             path: 'characters',
             select: '_id name campaign',
           })
@@ -56,7 +56,7 @@ const findCampaignById = async (id: string, req: Request): Promise<HydratedIComp
           .or([{ owner: user._id }, { players: user._id }])
           .populate<{ owner: HydratedDocument<IUser> }>('owner')
           .populate<{ players: Array<HydratedDocument<IUser>> }>('players')
-          .populate<{ characters: ICharacter[] }>({
+          .populate<{ characters: Array<ICharacter<string>> }>({
             path: 'characters',
             select: '_id name campaign',
           })

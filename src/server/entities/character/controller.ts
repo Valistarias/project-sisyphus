@@ -13,6 +13,7 @@ import { curateSingleArmor, type CuratedIArmorToSend } from '../armor/controller
 import { deleteBodiesRecursive } from '../body/controller';
 import { curateSingleImplant, type CuratedIImplantToSend } from '../implant/controller';
 import { curateSingleItem, type CuratedIItemToSend } from '../item/controller';
+import { type CuratedINodeToSend, curateSingleNode } from '../node/controller';
 import { curateSingleProgram, type CuratedIProgramToSend } from '../program/controller';
 import { curateSingleWeapon, type CuratedIWeaponToSend } from '../weapon/controller';
 
@@ -667,7 +668,7 @@ const deleteCharacter = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-type CuratedICharacterToSend = Omit<LeanICharacter, 'bodies'> & {
+type CuratedICharacterToSend = Omit<LeanICharacter, 'bodies' | 'nodes'> & {
   bodies: Array<
     Pick<LeanIBody, 'alive' | 'hp' | 'character' | 'stats'> & {
       ammos: Array<
@@ -707,6 +708,7 @@ type CuratedICharacterToSend = Omit<LeanICharacter, 'bodies'> & {
       >;
     }
   >;
+  nodes: CuratedINodeToSend[];
 };
 
 const curateSingleCharacter = (characterSent: LeanICharacter): CuratedICharacterToSend => {
@@ -757,9 +759,12 @@ const curateSingleCharacter = (characterSent: LeanICharacter): CuratedICharacter
     })),
   }));
 
+  const curatedNodes = characterSent.nodes?.map((nodeSent) => curateSingleNode(nodeSent.node));
+
   return {
     ...characterSent,
     bodies: curatedBodies ?? [],
+    nodes: curatedNodes ?? [],
   };
 };
 

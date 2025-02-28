@@ -2,30 +2,25 @@ import React, { useMemo, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { useGlobalVars } from '../../providers';
-
 import { TabsWindow } from '../../molecules';
 
-import CharacterActionTab from './characterActionTab';
+import CharacterActionList from './characterActionList';
 
 import { classTrim } from '../../utils';
 
 import './characterActionBoard.scss';
 
 const CharacterActionBoard: FC = () => {
-  const { character } = useGlobalVars();
   const { t } = useTranslation();
 
   const [displayedTab, setDisplayedTab] = useState<string | null>(null);
-
-  console.log('character', character);
 
   const tabs = useMemo(
     () => [
       {
         label: t('characterActionBoard.tabs.actions', { ns: 'components' }),
         id: 'actions',
-        content: <CharacterActionTab />,
+        content: <CharacterActionList />,
       },
       {
         label: t('characterActionBoard.tabs.programs', { ns: 'components' }),
