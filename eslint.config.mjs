@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument
+  -- For eslint purposes, specifically the hooks element
+*/
 /* eslint-disable @typescript-eslint/no-unsafe-member-access
   -- For eslint purposes, specifically the hooks element
   */
@@ -16,20 +19,20 @@ export default tseslint.config(
     ignores: ['**/node_modules/**', '**/dist/**', 'vite-env.d.ts'],
   },
   {
-    extends: [
-      js.configs.recommended,
-      ...tseslint.configs.recommended,
-      love,
-      stylistic.configs['recommended-flat'],
-      pluginReact.configs.flat?.recommended,
-      eslintConfigPrettier,
-    ],
     languageOptions: {
       globals: {
         ...globals.browser,
         ...globals.node,
       },
     },
+  },
+  js.configs.recommended,
+  tseslint.configs.recommended,
+  love,
+  stylistic.configs['recommended-flat'],
+  pluginReact.configs.flat?.recommended,
+  eslintConfigPrettier,
+  {
     plugins: { 'react-hooks': reactHooks },
     rules: { ...reactHooks.configs.recommended.rules },
   },

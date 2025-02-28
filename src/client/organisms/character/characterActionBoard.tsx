@@ -1,10 +1,12 @@
-import React, { useEffect, useMemo, useState, type FC } from 'react';
+import React, { useMemo, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../providers';
 
 import { TabsWindow } from '../../molecules';
+
+import CharacterActionTab from './characterActionTab';
 
 import { classTrim } from '../../utils';
 
@@ -23,7 +25,7 @@ const CharacterActionBoard: FC = () => {
       {
         label: t('characterActionBoard.tabs.actions', { ns: 'components' }),
         id: 'actions',
-        content: <p>This is test 1</p>,
+        content: <CharacterActionTab />,
       },
       {
         label: t('characterActionBoard.tabs.programs', { ns: 'components' }),
