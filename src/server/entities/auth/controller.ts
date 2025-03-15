@@ -17,7 +17,7 @@ import { removeToken } from '../mailToken/controller';
 import { findUserById } from '../user/controller';
 
 import type { HydratedIUser, IRole, IUser } from '../index';
-import type { IMailgunClient } from 'mailgun.js/Interfaces';
+import type { Interfaces } from 'mailgun.js/definitions';
 
 const { User, Role } = db;
 
@@ -30,7 +30,7 @@ interface ISigninRequest extends Request {
   session: { token: string } | null;
 }
 
-const signUp = (req: Request, res: Response, mg: IMailgunClient): void => {
+const signUp = (req: Request, res: Response, mg: Interfaces.IMailgunClient): void => {
   const { username, mail, password }: { username: string; mail: string; password: string } =
     req.body;
   const salt = bcrypt.genSaltSync(8);

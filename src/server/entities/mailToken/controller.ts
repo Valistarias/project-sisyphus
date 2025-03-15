@@ -7,11 +7,11 @@ import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
 import type { IUser } from '../user/model';
-import type { IMailgunClient } from 'mailgun.js/Interfaces';
+import type { Interfaces } from 'mailgun.js/definitions';
 
 const { User, MailToken } = db;
 
-const createToken = (req: Request, res: Response, mg: IMailgunClient): void => {
+const createToken = (req: Request, res: Response, mg: Interfaces.IMailgunClient): void => {
   const { mail = null } = req.body;
   if (mail === undefined) {
     res.status(400).send(gemInvalidField('mail'));
