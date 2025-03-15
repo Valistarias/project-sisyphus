@@ -66,7 +66,9 @@ const update = (req: Request, res: Response): void => {
 
           return;
         }
-        user.password = bcrypt.hashSync(newPass, 8);
+        const salt = bcrypt.genSaltSync(8);
+
+        user.password = bcrypt.hashSync(newPass, salt);
       }
       if (theme !== null) {
         user.theme = theme;

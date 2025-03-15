@@ -31,19 +31,14 @@ interface ISigninRequest extends Request {
 }
 
 const signUp = (req: Request, res: Response, mg: IMailgunClient): void => {
-  const {
-    username,
-    mail,
-    password,
-  }: {
-    username: string;
-    mail: string;
-    password: string;
-  } = req.body;
+  const { username, mail, password }: { username: string; mail: string; password: string } =
+    req.body;
+  const salt = bcrypt.genSaltSync(8);
+
   const user = new User({
     username,
     mail,
-    password: bcrypt.hashSync(password, 8),
+    password: bcrypt.hashSync(password, salt),
     lang: 'en',
     theme: 'dark',
     scale: 1,
@@ -106,13 +101,7 @@ const registerRoleByName = async (): Promise<string[]> =>
   });
 
 const signIn = (req: ISigninRequest, res: Response): void => {
-  const {
-    mail,
-    password,
-  }: {
-    mail: string;
-    password: string;
-  } = req.body;
+  const { mail, password }: { mail: string; password: string } = req.body;
   User.findOne({ mail })
     .populate<{ roles: IRole[] }>('roles', '-__v')
     .then((user?: HydratedIUser | null) => {
@@ -225,10 +214,7 @@ const updatePassword = (req: Request, res: Response): void => {
               user
                 .save()
                 .then(() => {
-                  res.send({
-                    message: 'User was updated successfully!',
-                    user,
-                  });
+                  res.send({ message: 'User was updated successfully!', user });
                 })
                 .catch((err: unknown) => {
                   res.status(500).send(gemServerError(err));
