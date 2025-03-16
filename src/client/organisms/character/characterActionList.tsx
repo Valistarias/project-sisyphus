@@ -15,14 +15,14 @@ import { classTrim } from '../../utils';
 
 import './characterActionList.scss';
 
+const displayingOrder = ['action', 'free', 'long'];
+
 const CharacterActionList: FC = () => {
   const { t } = useTranslation();
-  const { character, actionTypes, actionDurations } = useGlobalVars();
+  const { character, actionTypes, actionDurations, basicActions } = useGlobalVars();
 
-  const curatedActionList = useMemo<{
-    nodeActions: ICuratedAction[];
-  }>(() => {
-    const curatedNodeActions: ICuratedAction[] = [];
+  const curatedActionList = useMemo<Record<string, ICuratedAction[]>>(() => {
+    const curatedNodeActions: Record<string, ICuratedAction[]> = {};
 
     if (
       character !== null &&
@@ -32,18 +32,35 @@ const CharacterActionList: FC = () => {
     ) {
       character.nodes?.forEach(({ node }) => {
         if (node.actions.length !== 0) {
-          const cleanNodeAction = node.actions.map((action) =>
-            curateCharacterAction({ action, actionTypes, actionDurations })
-          );
-          curatedNodeActions.push(...cleanNodeAction);
+          node.actions.forEach((action) => {
+            const curatedAction = curateCharacterAction({ action, actionTypes, actionDurations });
+
+            if (
+              (curatedNodeActions[curatedAction.action.duration] as
+                | ICuratedAction[]
+                | undefined) === undefined
+            ) {
+              curatedNodeActions[curatedAction.action.duration] = [];
+            }
+            curatedNodeActions[curatedAction.action.duration].push(curatedAction);
+          });
         }
       });
     }
 
-    return {
-      nodeActions: curatedNodeActions,
-    };
-  }, [character, actionTypes, actionDurations]);
+    basicActions.forEach((action) => {
+      const curatedAction = curateCharacterAction({ action, actionTypes, actionDurations });
+      if (
+        (curatedNodeActions[curatedAction.action.duration] as ICuratedAction[] | undefined) ===
+        undefined
+      ) {
+        curatedNodeActions[curatedAction.action.duration] = [];
+      }
+      curatedNodeActions[curatedAction.action.duration].push(curatedAction);
+    });
+
+    return curatedNodeActions;
+  }, [character, actionTypes, actionDurations, basicActions]);
 
   return (
     <div
@@ -51,19 +68,21 @@ const CharacterActionList: FC = () => {
       char-action-list
     `)}
     >
-      {curatedActionList.nodeActions.length > 0 && (
-        <div className="char-action-list__nodes">
-          <Atitle level={3} className="char-action-list__nodes__title">
-            {t('characterActionList.nodes.title', { ns: 'components' })}
-          </Atitle>
-          <Aul noPoints className="char-action-list__nodes__list">
-            {curatedActionList.nodeActions.map((nodeAction) => (
-              <Ali key={nodeAction.action._id} className="char-action-list__nodes__list__elt">
-                <CharacterAction action={nodeAction} />
-              </Ali>
-            ))}
-          </Aul>
-        </div>
+      {displayingOrder.map((eltOrder) =>
+        (curatedActionList[eltOrder] as ICuratedAction[] | undefined) !== undefined ? (
+          <div className="char-action-list__nodes" key={eltOrder}>
+            <Atitle level={3} className="char-action-list__nodes__title">
+              {t(`terms.actionDuration.${eltOrder}`)}
+            </Atitle>
+            <Aul noPoints className="char-action-list__nodes__list">
+              {curatedActionList[eltOrder].map((nodeAction) => (
+                <Ali key={nodeAction.action._id} className="char-action-list__nodes__list__elt">
+                  <CharacterAction action={nodeAction} />
+                </Ali>
+              ))}
+            </Aul>
+          </div>
+        ) : null
       )}
     </div>
   );
