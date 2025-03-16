@@ -1,23 +1,25 @@
 import type { Request, Response } from 'express';
-import type { ObjectId } from 'mongoose';
+import type { HydratedDocument } from 'mongoose';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
 import type { HydratedIAction } from './model';
 import type { InternationalizationType } from '../../utils/types';
-import type { IActionDuration, IActionType, ISkill } from '../index';
+import type { ISkill } from '../index';
 
 import { curateI18n } from '../../utils';
 
 const { Action } = db;
 
-const findActions = async (): Promise<HydratedIAction[]> =>
+interface findAllPayload {
+  isBasic?: boolean;
+}
+
+const findActions = async (options?: findAllPayload): Promise<HydratedIAction[]> =>
   await new Promise((resolve, reject) => {
-    Action.find()
-      .populate<{ type: IActionType }>('type')
-      .populate<{ duration: IActionDuration }>('duration')
-      .populate<{ skill: ISkill }>('skill')
+    Action.find(options ?? {})
+      .populate<{ skill: HydratedDocument<ISkill> }>('skill')
       .then((res: HydratedIAction[]) => {
         if (res.length === 0) {
           reject(gemNotFound('Actions'));
@@ -33,9 +35,7 @@ const findActions = async (): Promise<HydratedIAction[]> =>
 const findActionById = async (id: string): Promise<HydratedIAction> =>
   await new Promise((resolve, reject) => {
     Action.findById(id)
-      .populate<{ type: IActionType }>('type')
-      .populate<{ duration: IActionDuration }>('duration')
-      .populate<{ skill: ISkill }>('skill')
+      .populate<{ skill: HydratedDocument<ISkill> }>('skill')
       .then((res?: HydratedIAction | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Action'));
@@ -52,9 +52,9 @@ export interface ISentAction {
   id?: string;
   title: string;
   summary: string;
-  type: ObjectId;
-  skill: ObjectId;
-  duration: ObjectId;
+  type: string;
+  skill: string;
+  duration: string;
   time?: string;
   damages?: string;
   offsetSkill?: string;
@@ -91,7 +91,7 @@ const updateActions = (
   } = elts[0];
 
   if (id === undefined) {
-    const action = new Action({
+    const action: HydratedIAction = new Action({
       title: title ?? undefined,
       summary: summary ?? undefined,
       type: type ?? undefined,
@@ -208,6 +208,7 @@ const smartUpdateActions = async ({
       });
   });
 
+// Only used for basic actions, used for all characters
 const create = (req: Request, res: Response): void => {
   const {
     title,
@@ -222,19 +223,21 @@ const create = (req: Request, res: Response): void => {
     damages,
     isKarmic = false,
     karmicCost,
+    isBasic,
   } = req.body;
   if (
     title === undefined ||
     summary === undefined ||
     type === undefined ||
-    duration === undefined
+    duration === undefined ||
+    isBasic !== true
   ) {
     res.status(400).send(gemInvalidField('Action'));
 
     return;
   }
 
-  const action = new Action({
+  const action: HydratedIAction = new Action({
     title,
     summary,
     type,
@@ -246,6 +249,7 @@ const create = (req: Request, res: Response): void => {
     damages,
     isKarmic,
     karmicCost,
+    isBasic,
   });
 
   if (i18n !== null) {
@@ -282,10 +286,10 @@ const update = (req: Request, res: Response): void => {
     title: string | null;
     summary: string | null;
     i18n: InternationalizationType | null;
-    type: ObjectId | null;
-    duration: ObjectId | null;
+    type: string | null;
+    duration: string | null;
     time: string | null;
-    skill: ObjectId | null;
+    skill: string | null;
     offsetSkill: string | null;
     uses: number | null;
     damages: string | null;
@@ -431,4 +435,30 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteAction, findActionById, findAll, findSingle, smartUpdateActions, update };
+const findAllBasics = (req: Request, res: Response): void => {
+  findActions({ isBasic: true })
+    .then((actions) => {
+      const curatedActions: CuratedIAction[] = [];
+
+      actions.forEach((action) => {
+        curatedActions.push({
+          action,
+          i18n: curateI18n(action.i18n),
+        });
+      });
+
+      res.send(curatedActions);
+    })
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
+};
+
+export {
+  create,
+  deleteAction,
+  findActionById,
+  findAll,
+  findAllBasics,
+  findSingle,
+  smartUpdateActions,
+  update,
+};

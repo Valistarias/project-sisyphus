@@ -36,7 +36,7 @@ const findItems = async (options?: findAllPayload): Promise<LeanIItem[]> =>
     Item.find(options ?? {})
       .lean()
       .populate<{ effects: IEffect[] }>('effects')
-      .populate<{ actions: IAction[] }>('actions')
+      .populate<{ actions: Array<IAction<string>> }>('actions')
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
@@ -77,7 +77,7 @@ const findItemById = async (id: string): Promise<LeanIItem> =>
     Item.findById(id)
       .lean()
       .populate<{ effects: IEffect[] }>('effects')
-      .populate<{ actions: IAction[] }>('actions')
+      .populate<{ actions: Array<IAction<string>> }>('actions')
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
@@ -121,7 +121,7 @@ const create = (req: Request, res: Response): void => {
     return;
   }
 
-  const item: HydratedIItem = new Item({
+  const item = new Item({
     title,
     summary,
     rarity,
@@ -680,7 +680,7 @@ export interface CuratedIItemToSend {
       i18n?: InternationalizationType;
     }>;
     actions: Array<{
-      action: IAction;
+      action: IAction<string>;
       i18n?: InternationalizationType;
     }>;
   };

@@ -50,7 +50,7 @@ type HydratedIWeapon = HydratedDocument<
 
 type LeanIWeapon = Omit<Lean<IWeapon<string>>, 'effects' | 'actions' | 'damages'> & {
   effects: IEffect[];
-  actions: IAction[];
+  actions: Array<IAction<string>>;
   damages: IDamage[];
 };
 

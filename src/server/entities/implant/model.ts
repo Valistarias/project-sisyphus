@@ -72,7 +72,7 @@ type LeanIImplant = Omit<
   'effects' | 'actions' | 'skillBonuses' | 'statBonuses' | 'charParamBonuses'
 > & {
   effects: IEffect[];
-  actions: IAction[];
+  actions: Array<IAction<string>>;
   skillBonuses: ISkillBonus[];
   statBonuses: IStatBonus[];
   charParamBonuses: ICharParamBonus[];

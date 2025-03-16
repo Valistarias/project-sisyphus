@@ -9,7 +9,7 @@ import {
   CharacterHeader,
   CharacterSkills,
   CharacterStatus,
-  CharacterActionBoard,
+  CharacterBoard,
 } from '../../../organisms';
 import { ErrorPage } from '../../index';
 
@@ -78,7 +78,7 @@ const Character: FC = () => {
                 setToRoll(dices, id);
               }}
             />
-            <CharacterActionBoard />
+            <CharacterBoard />
           </div>
         </div>
       </div>

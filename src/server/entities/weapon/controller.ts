@@ -31,7 +31,7 @@ const findWeapons = async (options?: findAllPayload): Promise<LeanIWeapon[]> =>
     Weapon.find(options ?? {})
       .lean()
       .populate<{ effects: IEffect[] }>('effects')
-      .populate<{ actions: IAction[] }>('actions')
+      .populate<{ actions: Array<IAction<string>> }>('actions')
       .populate<{ damages: IDamage[] }>('damages')
       .then((res: LeanIWeapon[]) => {
         if (res.length === 0) {
@@ -68,7 +68,7 @@ const findWeaponById = async (id: string): Promise<LeanIWeapon> =>
     Weapon.findById(id)
       .lean()
       .populate<{ effects: IEffect[] }>('effects')
-      .populate<{ actions: IAction[] }>('actions')
+      .populate<{ actions: Array<IAction<string>> }>('actions')
       .populate<{ damages: IDamage[] }>('damages')
       .then((res?: LeanIWeapon | null) => {
         if (res === undefined || res === null) {
@@ -133,7 +133,7 @@ const create = (req: Request, res: Response): void => {
     return;
   }
 
-  const weapon: HydratedIWeapon = new Weapon({
+  const weapon = new Weapon({
     title,
     summary,
     quote,
@@ -507,7 +507,7 @@ export interface CuratedIWeaponToSend {
       i18n?: InternationalizationType;
     }>;
     actions: Array<{
-      action: IAction;
+      action: IAction<string>;
       i18n?: InternationalizationType;
     }>;
   };

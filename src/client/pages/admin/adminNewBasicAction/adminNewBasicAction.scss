@@ -1,0 +1,55 @@
+@use '../../../assets/scss/mixins';
+
+.adminNewBasicAction {
+  @include mixins.basic-page;
+
+  &__content {
+    margin-bottom: 10vh;
+  }
+
+  &__head {
+    margin-bottom: 2rem;
+  }
+
+  &__bonus {
+    background-color: var(--primary-10);
+    border: 1px solid var(--primary);
+    border-radius: var(--border-radius);
+    box-shadow: 0 0 2rem var(--primary-20);
+    margin-bottom: 4rem;
+    padding: 1rem;
+    position: relative;
+
+    &__title {
+      margin-bottom: 2rem;
+    }
+
+    &__fields {
+      align-items: center;
+      display: flex;
+      gap: 5rem;
+
+      &--large {
+        flex-wrap: wrap;
+        gap: 1rem 5rem;
+        justify-content: space-between;
+      }
+    }
+
+    &__button {
+      position: absolute;
+      right: 1rem;
+      top: 1rem;
+    }
+
+    &__value {
+      &--s {
+        width: calc(50% - 2.5rem);
+      }
+
+      &--l {
+        width: 100%;
+      }
+    }
+  }
+}

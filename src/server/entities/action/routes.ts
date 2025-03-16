@@ -2,7 +2,7 @@ import type { Router } from 'express';
 
 import { adminNeeded, verifyToken } from '../../middlewares';
 
-import { create, deleteAction, findAll, findSingle, update } from './controller';
+import { create, deleteAction, findAll, findSingle, findAllBasics, update } from './controller';
 
 export default (app: Router): void => {
   app.use((req, res, next) => {
@@ -11,6 +11,8 @@ export default (app: Router): void => {
   });
 
   app.get('/actions/', [verifyToken], findAll);
+
+  app.get('/actions/basics', [verifyToken], findAllBasics);
 
   app.get('/actions/single', [verifyToken], findSingle);
 

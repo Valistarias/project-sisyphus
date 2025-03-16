@@ -119,7 +119,7 @@ const create = (req: Request, res: Response): void => {
     return;
   }
 
-  const program: HydratedIProgram = new Program({
+  const program = new Program({
     title,
     summary,
     rarity,

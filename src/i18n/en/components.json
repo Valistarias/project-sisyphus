@@ -192,7 +192,7 @@
     "close": "Close",
     "open": "Dices & Timeline"
   },
-  "characterActionBoard": {
+  "characterBoard": {
     "tabs": {
       "actions": "Actions",
       "programs": "Programs",
@@ -204,5 +204,9 @@
     "nodes": {
       "title": "Nodes"
     }
+  },
+  "characterAction": {
+    "duration": "Duration:",
+    "type": "Type:"
   }
 }

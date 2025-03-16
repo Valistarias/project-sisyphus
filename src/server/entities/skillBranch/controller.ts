@@ -10,7 +10,7 @@ import {
 } from '../../utils/globalErrorMessage';
 
 import type { InternationalizationType } from '../../utils/types';
-import type { HydratedINode, HydratedISkill, INode, ISkill, LeanINode } from '../index';
+import type { HydratedINode, HydratedISkill, ISkill, LeanINode } from '../index';
 import type { HydratedISkillBranch, LeanISkillBranch } from './model';
 
 import { curateI18n } from '../../utils';
@@ -22,7 +22,7 @@ const findSkillBranches = async (): Promise<LeanISkillBranch[]> =>
     SkillBranch.find()
       .lean()
       .populate<{ skill: ISkill }>('skill')
-      .populate<{ nodes: Array<INode<string>> }>({
+      .populate<{ nodes: LeanINode[] }>({
         path: 'nodes',
         select: '_id title summary icon',
         populate: ['effects', 'actions', 'skillBonuses', 'statBonuses', 'charParamBonuses'],
@@ -44,7 +44,7 @@ const findSkillBranchesBySkill = async (skillId: string): Promise<LeanISkillBran
     SkillBranch.find({ skill: skillId })
       .lean()
       .populate<{ skill: ISkill }>('skill')
-      .populate<{ nodes: Array<INode<string>> }>({
+      .populate<{ nodes: LeanINode[] }>({
         path: 'nodes',
         select: '_id title summary icon',
         populate: ['effects', 'actions', 'skillBonuses', 'statBonuses', 'charParamBonuses'],
@@ -66,7 +66,7 @@ const findSkillBranchById = async (id: string): Promise<LeanISkillBranch> =>
     SkillBranch.findById(id)
       .lean()
       .populate<{ skill: ISkill }>('skill')
-      .populate<{ nodes: Array<INode<string>> }>({
+      .populate<{ nodes: LeanINode[] }>({
         path: 'nodes',
         select: '_id title summary icon',
         populate: ['effects', 'actions', 'skillBonuses', 'statBonuses', 'charParamBonuses'],

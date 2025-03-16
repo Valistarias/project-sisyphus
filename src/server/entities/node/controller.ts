@@ -41,7 +41,7 @@ const findNodes = async (options?: findAllPayload): Promise<LeanINode[]> =>
     Node.find(options ?? {})
       .lean()
       .populate<{ effects: IEffect[] }>('effects')
-      .populate<{ actions: IAction[] }>('actions')
+      .populate<{ actions: Array<IAction<string>> }>('actions')
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
@@ -84,7 +84,7 @@ const findNodeById = async (id: string): Promise<LeanINode> =>
     Node.findById(id)
       .lean()
       .populate<{ effects: IEffect[] }>('effects')
-      .populate<{ actions: IAction[] }>('actions')
+      .populate<{ actions: Array<IAction<string>> }>('actions')
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
@@ -130,7 +130,7 @@ const create = (req: Request, res: Response): void => {
     return;
   }
 
-  const node: HydratedINode = new Node({
+  const node = new Node({
     title,
     summary,
     icon,
@@ -693,7 +693,7 @@ export interface CuratedINodeToSend {
       i18n?: InternationalizationType;
     }>;
     actions: Array<{
-      action: IAction;
+      action: IAction<string>;
       i18n?: InternationalizationType;
     }>;
   };

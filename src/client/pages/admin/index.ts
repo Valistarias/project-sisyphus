@@ -4,6 +4,7 @@ import AdminArmorsPage from './adminArmors';
 import AdminArmorTypesPage from './adminArmorTypes';
 import AdminBackgroundsPage from './adminBackgrounds';
 import AdminBagsPage from './adminBags';
+import AdminBasicActionsPage from './adminBasicActions';
 import AdminBodyPartsPage from './adminBodyParts';
 import AdminCharParamsPage from './adminCharParams';
 import AdminCyberFramesPage from './adminCyberFrames';
@@ -25,6 +26,7 @@ import AdminEditItemPage from './adminEditItem';
 import AdminEditItemModifierPage from './adminEditItemModifier';
 import AdminEditItemTypePage from './adminEditItemType';
 import AdminEditNodePage from './adminEditNode';
+import AdminEditBasicActionPage from './adminEditNode copy';
 import AdminEditNotionPage from './adminEditNotion';
 import AdminEditNPCPage from './adminEditNPC';
 import AdminEditPage from './adminEditPage';
@@ -50,6 +52,7 @@ import AdminNewArmorPage from './adminNewArmor';
 import AdminNewArmorTypePage from './adminNewArmorType';
 import AdminNewBackgroundPage from './adminNewBackground';
 import AdminNewBagPage from './adminNewBag';
+import AdminNewBasicActionPage from './adminNewBasicAction';
 import AdminNewBodyPartPage from './adminNewBodyPart';
 import AdminNewChapterPage from './adminNewChapter';
 import AdminNewCharParamPage from './adminNewCharParam';
@@ -97,6 +100,7 @@ export {
   AdminArmorTypesPage,
   AdminBackgroundsPage,
   AdminBagsPage,
+  AdminBasicActionsPage,
   AdminBodyPartsPage,
   AdminCharParamsPage,
   AdminCyberFramesPage,
@@ -106,6 +110,7 @@ export {
   AdminEditArmorTypePage,
   AdminEditBackgroundPage,
   AdminEditBagPage,
+  AdminNewBasicActionPage,
   AdminEditBodyPartPage,
   AdminEditChapterPage,
   AdminEditCharParamPage,
@@ -133,6 +138,7 @@ export {
   AdminEditWeaponScopePage,
   AdminEditWeaponStylePage,
   AdminEditWeaponTypePage,
+  AdminEditBasicActionPage,
   AdminGlobalValuesPage,
   AdminImplantsPage,
   AdminItemModifiersPage,

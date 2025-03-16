@@ -1,9 +1,12 @@
 import { addSymbol, capitalizeFirstLetter } from '.';
 
 import type {
+  IActionDuration,
+  IActionType,
   IBody,
   ICharacter,
   ICharacterNode,
+  ICuratedAction,
   ICuratedCharParam,
   ICuratedCyberFrame,
   ICuratedNode,
@@ -432,6 +435,26 @@ const curateCharacterParams = ({
   return Object.values(charParamsById);
 };
 
+const curateCharacterAction = ({
+  action,
+  actionTypes,
+  actionDurations,
+}: {
+  action: ICuratedAction;
+  actionTypes: IActionType[];
+  actionDurations: IActionDuration[];
+}): ICuratedAction => ({
+  ...action,
+  action: {
+    ...action.action,
+    duration:
+      actionDurations.find((actionDuration) => actionDuration._id === action.action.duration)
+        ?.name ?? 'free',
+    type:
+      actionTypes.find((actionType) => actionType._id === action.action.type)?.name ?? 'utility',
+  },
+});
+
 const getBaseSkillNode = (skill: ISkill): ICuratedNode | undefined => {
   const generalNodes = skill.branches.find((branch) => branch.skillBranch.title === '_general')
     ?.skillBranch.nodes;
@@ -449,6 +472,7 @@ export {
   calculateStatModToString,
   curateCharacterParams,
   curateCharacterSkills,
+  curateCharacterAction,
   getActualBody,
   getBaseSkillNode,
   getCharacterHpValues,

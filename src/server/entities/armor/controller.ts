@@ -38,7 +38,7 @@ const findArmors = async (options?: findAllPayload): Promise<LeanIArmor[]> =>
     Armor.find(options ?? {})
       .lean()
       .populate<{ effects: IEffect[] }>('effects')
-      .populate<{ actions: IAction[] }>('actions')
+      .populate<{ actions: Array<IAction<string>> }>('actions')
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
@@ -79,7 +79,7 @@ const findArmorById = async (id: string): Promise<LeanIArmor> =>
     Armor.findById(id)
       .lean()
       .populate<{ effects: IEffect[] }>('effects')
-      .populate<{ actions: IAction[] }>('actions')
+      .populate<{ actions: Array<IAction<string>> }>('actions')
       .populate<{ skillBonuses: ISkillBonus[] }>('skillBonuses')
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
@@ -125,7 +125,7 @@ const create = (req: Request, res: Response): void => {
     return;
   }
 
-  const armor: HydratedIArmor = new Armor({
+  const armor = new Armor({
     title,
     summary,
     rarity,
@@ -696,7 +696,7 @@ export interface CuratedIArmorToSend {
       i18n?: InternationalizationType;
     }>;
     actions: Array<{
-      action: IAction;
+      action: IAction<string>;
       i18n?: InternationalizationType;
     }>;
   };

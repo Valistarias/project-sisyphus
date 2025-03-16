@@ -116,6 +116,9 @@ import {
   RuleBookPage,
   RuleBooksPage,
   SignupPage,
+  AdminBasicActionsPage,
+  AdminEditBasicActionPage,
+  AdminNewBasicActionPage,
 } from './pages';
 
 // import { socket } from '../socket';
@@ -618,6 +621,18 @@ const App: FC = () => {
             {
               path: '/admin/background/:id',
               element: <AdminEditBackgroundPage />,
+            },
+            {
+              path: '/admin/basicactions',
+              element: <AdminBasicActionsPage />,
+            },
+            {
+              path: '/admin/basicaction/new',
+              element: <AdminNewBasicActionPage />,
+            },
+            {
+              path: '/admin/basicaction/:id',
+              element: <AdminEditBasicActionPage />,
             },
             // {
             //   path: '/admin/skillbranch/:id',

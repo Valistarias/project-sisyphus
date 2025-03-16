@@ -1,4 +1,4 @@
-import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
+import { type ObjectId, Schema, model, type HydratedDocument, type Model } from 'mongoose';
 
 import type { Lean } from '../../../utils/types';
 import type { HydratedIBackground, IBackground } from '../../background/model';

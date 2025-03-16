@@ -223,7 +223,7 @@ const AdminEditNode: FC = () => {
 
     // Init Bonus Skill
     const tempSkillBonusId: number[] = [];
-    node.skillBonuses?.forEach((skillBonus) => {
+    node.skillBonuses.forEach((skillBonus) => {
       if (defaultData.skillBonuses === undefined) {
         defaultData.skillBonuses = {};
       }
@@ -239,7 +239,7 @@ const AdminEditNode: FC = () => {
 
     // Init Bonus Stat
     const tempStatBonusId: number[] = [];
-    node.statBonuses?.forEach((statBonus) => {
+    node.statBonuses.forEach((statBonus) => {
       if (defaultData.statBonuses === undefined) {
         defaultData.statBonuses = {};
       }
@@ -255,7 +255,7 @@ const AdminEditNode: FC = () => {
 
     // Init Bonus CharParam
     const tempCharParamBonusId: number[] = [];
-    node.charParamBonuses?.forEach((charParamBonus) => {
+    node.charParamBonuses.forEach((charParamBonus) => {
       if (defaultData.charParamBonuses === undefined) {
         defaultData.charParamBonuses = {};
       }
@@ -271,7 +271,7 @@ const AdminEditNode: FC = () => {
 
     // Init Actions
     const tempActionId: number[] = [];
-    node.actions?.forEach(({ action }) => {
+    node.actions.forEach(({ action }) => {
       if (defaultData.actions === undefined) {
         defaultData.actions = {};
       }
@@ -300,7 +300,7 @@ const AdminEditNode: FC = () => {
 
     // Init Effects
     const tempEffectId: number[] = [];
-    node.effects?.forEach(({ effect }) => {
+    node.effects.forEach(({ effect }) => {
       if (defaultData.effects === undefined) {
         defaultData.effects = {};
       }

@@ -27,6 +27,7 @@ import type {
   IActionType,
   ICampaign,
   ICharacter,
+  ICuratedAction,
   ICuratedArmorType,
   ICuratedBodyPart,
   ICuratedCharParam,
@@ -103,6 +104,8 @@ interface IGlobalVarsContext {
   tipTexts: ICuratedTipText[];
   /** All the loaded global value rules */
   globalValues: IGlobalValue[];
+  /** All the loaded basic character actions */
+  basicActions: ICuratedAction[];
   /** Used to set the actual character */
   setCharacter: (character: ICharacter) => void;
   /** Used to set the actual character fron his id */
@@ -145,6 +148,8 @@ interface IGlobalVarsContext {
   reloadTipTexts: () => void;
   /** Used to trigger the reload of the global values */
   reloadGlobalValues: () => void;
+  /** Used to trigger the reload of the basic character actions */
+  reloadBasicActions: () => void;
   /** Used to trigger the reload of all dynamic elements */
   reloadAll: () => void;
 }
@@ -195,6 +200,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
   const [cyberFrames, setCyberFrames] = useState<ICuratedCyberFrame[]>([]);
   const [tipTexts, setTipTexts] = useState<ICuratedTipText[]>([]);
   const [globalValues, setGlobalValues] = useState<IGlobalValue[]>([]);
+  const [basicActions, setBasicActions] = useState<ICuratedAction[]>([]);
 
   // Items
   const [damageTypes, setDamageTypes] = useState<ICuratedDamageType[]>([]);
@@ -303,6 +309,19 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
     getAllFromApi('globalValues', setGlobalValues);
   }, [getAllFromApi]);
 
+  const loadBasicActions = useCallback(() => {
+    if (api !== undefined) {
+      api.actions
+        .getBasics()
+        .then((data) => {
+          setBasicActions(data);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  }, [api]);
+
   const setCharacterFromId = useCallback(
     (id: string) => {
       if (api !== undefined) {
@@ -359,6 +378,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
           loadActionDurations();
           loadActionTypes();
           loadArmorTypes();
+          loadBasicActions();
           loadBodyParts();
           loadCharParams();
           loadCyberFrames();
@@ -406,6 +426,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
     loadWeaponTypes,
     loadTipTexts,
     loadGlobalValues,
+    loadBasicActions,
   ]);
 
   useEffect(() => {
@@ -443,6 +464,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       armorTypes,
       tipTexts,
       globalValues,
+      basicActions,
       reloadAll: () => {
         loadActionDurations();
         loadActionTypes();
@@ -453,6 +475,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
         loadCyberFrames();
         loadDamageTypes();
         loadGlobalValues();
+        loadBasicActions();
         loadItemModifiers();
         loadItemTypes();
         loadProgramScopes();
@@ -483,6 +506,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       reloadArmorTypes: loadArmorTypes,
       reloadTipTexts: loadTipTexts,
       reloadGlobalValues: loadGlobalValues,
+      reloadBasicActions: loadBasicActions,
       setCharacter,
       setCharacterFromId,
       resetCharacter,
@@ -514,6 +538,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       armorTypes,
       tipTexts,
       globalValues,
+      basicActions,
       loadBodyParts,
       loadCampaigns,
       loadCharParams,
@@ -532,10 +557,11 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       loadArmorTypes,
       loadTipTexts,
       loadGlobalValues,
+      loadBasicActions,
       setCharacterFromId,
       resetCharacter,
-      loadActionTypes,
       loadActionDurations,
+      loadActionTypes,
     ]
   );
 

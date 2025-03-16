@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import type { HydratedDocument } from 'mongoose';
+import type { HydratedDocument, Types } from 'mongoose';
 
 import { getUserFromToken, type IVerifyTokenRequest } from '../../middlewares/authJwt';
 import db from '../../models';
@@ -24,7 +24,7 @@ import {
   replaceCyberFrameNodeByCharacter,
 } from './node/controller';
 
-import type { HydratedICharacter } from './index';
+import type { HydratedICharacter, HydratedICharacterNode, LeanICharacterNode } from './index';
 import type { Lean } from '../../utils/types';
 import type { CuratedIAmmo } from '../ammo/controller';
 import type { HydratedIBackground, IBackground } from '../background/model';
@@ -41,7 +41,6 @@ import type {
   LeanIBodyWeapon,
 } from '../body';
 import type { ICampaign } from '../campaign/model';
-import type { HydratedINode, LeanINode } from '../node/model';
 import type { IUser } from '../user/model';
 import type { LeanICharacter } from './id/model';
 
@@ -63,7 +62,7 @@ const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[
           .populate<{ player: HydratedDocument<IUser> }>('player')
           .populate<{ createdBy: HydratedDocument<IUser> }>('createdBy')
           .populate<{ campaign: HydratedDocument<ICampaign> }>('campaign')
-          .populate<{ nodes: HydratedINode[] }>({
+          .populate<{ nodes: HydratedICharacterNode[] }>({
             path: 'nodes',
             select: '_id character node used',
             populate: {
@@ -143,7 +142,7 @@ const findCompleteCharacterById = async (
           .populate<{ player: Lean<IUser> }>('player')
           .populate<{ createdBy: Lean<IUser> }>('createdBy')
           .populate<{ campaign: Lean<ICampaign> }>('campaign')
-          .populate<{ nodes: Array<Lean<LeanINode>> }>({
+          .populate<{ nodes: LeanICharacterNode[] }>({
             path: 'nodes',
             select: '_id character node used',
             populate: {
@@ -294,7 +293,7 @@ const findCharacterById = async (
           .populate<{ player: HydratedDocument<IUser> }>('player')
           .populate<{ createdBy: HydratedDocument<IUser> }>('createdBy')
           .populate<{ campaign: HydratedDocument<ICampaign> }>('campaign')
-          .populate<{ nodes: HydratedINode[] }>({
+          .populate<{ nodes: HydratedICharacterNode[] }>({
             path: 'nodes',
             select: '_id character node used',
           })
@@ -459,7 +458,7 @@ const createOrFindCharacter = async (req: Request): Promise<string> =>
             reject(gemNotFound('User'));
           } else {
             Character.create({ createdBy: user._id })
-              .then(({ _id }: HydratedICharacter) => {
+              .then(({ _id }: { _id: Types.ObjectId }) => {
                 resolve(_id.toString());
               })
               .catch((err: unknown) => {
@@ -494,7 +493,7 @@ const create = (req: Request, res: Response): void => {
 
         return;
       }
-      const character: HydratedICharacter = new Character({ createdBy: user._id });
+      const character = new Character({ createdBy: user._id });
 
       if (player !== null) {
         character.player = player;

@@ -80,7 +80,7 @@ type LeanINode = Omit<
   | 'cyberFrameBranch'
 > & {
   effects: IEffect[];
-  actions: IAction[];
+  actions: Array<IAction<string>>;
   skillBonuses: ISkillBonus[];
   statBonuses: IStatBonus[];
   charParamBonuses: ICharParamBonus[];

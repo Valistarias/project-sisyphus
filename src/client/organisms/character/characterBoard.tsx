@@ -8,9 +8,9 @@ import CharacterActionList from './characterActionList';
 
 import { classTrim } from '../../utils';
 
-import './characterActionBoard.scss';
+import './characterBoard.scss';
 
-const CharacterActionBoard: FC = () => {
+const CharacterBoard: FC = () => {
   const { t } = useTranslation();
 
   const [displayedTab, setDisplayedTab] = useState<string | null>(null);
@@ -18,17 +18,17 @@ const CharacterActionBoard: FC = () => {
   const tabs = useMemo(
     () => [
       {
-        label: t('characterActionBoard.tabs.actions', { ns: 'components' }),
+        label: t('characterBoard.tabs.actions', { ns: 'components' }),
         id: 'actions',
         content: <CharacterActionList />,
       },
       {
-        label: t('characterActionBoard.tabs.programs', { ns: 'components' }),
+        label: t('characterBoard.tabs.programs', { ns: 'components' }),
         id: 'programs',
         content: <p>This is test 2</p>,
       },
       {
-        label: t('characterActionBoard.tabs.inventory', { ns: 'components' }),
+        label: t('characterBoard.tabs.inventory', { ns: 'components' }),
         id: 'inventory',
         content: <p>This is test 3</p>,
       },
@@ -53,4 +53,4 @@ const CharacterActionBoard: FC = () => {
   );
 };
 
-export default CharacterActionBoard;
+export default CharacterBoard;

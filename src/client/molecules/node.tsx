@@ -57,7 +57,7 @@ const Node: FC<INode> = ({
     }>;
     bonusCount: number;
   }>(() => {
-    const curatedCharParams = node.node.charParamBonuses?.map(({ value, charParam }) => ({
+    const curatedCharParams = node.node.charParamBonuses.map(({ value, charParam }) => ({
       value,
       charParam:
         charParams.length > 0
@@ -65,7 +65,7 @@ const Node: FC<INode> = ({
           : undefined,
     }));
 
-    const curatedStats = node.node.statBonuses?.map(({ value, stat }) => ({
+    const curatedStats = node.node.statBonuses.map(({ value, stat }) => ({
       value,
       stat:
         stats.length > 0
@@ -73,7 +73,7 @@ const Node: FC<INode> = ({
           : undefined,
     }));
 
-    const curatedSkills = node.node.skillBonuses?.map(({ value, skill }) => ({
+    const curatedSkills = node.node.skillBonuses.map(({ value, skill }) => ({
       value,
       skill:
         skills.length > 0
@@ -82,13 +82,10 @@ const Node: FC<INode> = ({
     }));
 
     return {
-      charParamBonuses: curatedCharParams ?? [],
-      statBonuses: curatedStats ?? [],
-      skillBonuses: curatedSkills ?? [],
-      bonusCount:
-        (curatedSkills !== undefined ? curatedSkills.length : 0) +
-        (curatedStats !== undefined ? curatedStats.length : 0) +
-        (curatedCharParams !== undefined ? curatedCharParams.length : 0),
+      charParamBonuses: curatedCharParams,
+      statBonuses: curatedStats,
+      skillBonuses: curatedSkills,
+      bonusCount: curatedSkills.length + curatedStats.length + curatedCharParams.length,
     };
   }, [node, charParams, stats, skills]);
 
@@ -140,7 +137,7 @@ const Node: FC<INode> = ({
               <Ap className="node__content__main__quote">{`"${content.quote}"`}</Ap>
             ) : null}
           </div>
-          {nodeElt.actions !== undefined
+          {nodeElt.actions.length !== 0
             ? nodeElt.actions.map(({ action }) => (
                 <div className="node__content__action" key={`action-${action._id}`}>
                   <div className="node__content__action__title">
@@ -182,7 +179,7 @@ const Node: FC<INode> = ({
                 </div>
               ))
             : null}
-          {nodeElt.effects !== undefined
+          {nodeElt.effects.length !== 0
             ? nodeElt.effects.map(({ effect }) => (
                 <div className="node__content__effect" key={`effect-${effect._id}`}>
                   <div className="node__content__effect__title">

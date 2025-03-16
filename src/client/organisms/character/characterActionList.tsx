@@ -5,6 +5,9 @@ import { useTranslation } from 'react-i18next';
 import { useGlobalVars } from '../../providers';
 
 import { Ali, Atitle, Aul } from '../../atoms';
+import { curateCharacterAction } from '../../utils/character';
+
+import CharacterAction from './characterAction';
 
 import type { ICuratedAction } from '../../types';
 
@@ -14,17 +17,25 @@ import './characterActionList.scss';
 
 const CharacterActionList: FC = () => {
   const { t } = useTranslation();
-  const { character } = useGlobalVars();
+  const { character, actionTypes, actionDurations } = useGlobalVars();
 
   const curatedActionList = useMemo<{
     nodeActions: ICuratedAction[];
   }>(() => {
     const curatedNodeActions: ICuratedAction[] = [];
 
-    if (character !== null && character !== false) {
+    if (
+      character !== null &&
+      character !== false &&
+      actionTypes.length !== 0 &&
+      actionDurations.length !== 0
+    ) {
       character.nodes?.forEach(({ node }) => {
         if (node.actions.length !== 0) {
-          curatedNodeActions.push(...node.actions);
+          const cleanNodeAction = node.actions.map((action) =>
+            curateCharacterAction({ action, actionTypes, actionDurations })
+          );
+          curatedNodeActions.push(...cleanNodeAction);
         }
       });
     }
@@ -32,7 +43,7 @@ const CharacterActionList: FC = () => {
     return {
       nodeActions: curatedNodeActions,
     };
-  }, [character]);
+  }, [character, actionTypes, actionDurations]);
 
   return (
     <div
@@ -48,9 +59,7 @@ const CharacterActionList: FC = () => {
           <Aul noPoints className="char-action-list__nodes__list">
             {curatedActionList.nodeActions.map((nodeAction) => (
               <Ali key={nodeAction.action._id} className="char-action-list__nodes__list__elt">
-                <p className="char-action-list__nodes__list__elt__title">
-                  {nodeAction.action.title}
-                </p>
+                <CharacterAction action={nodeAction} />
               </Ali>
             ))}
           </Aul>

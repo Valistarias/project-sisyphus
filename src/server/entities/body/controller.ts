@@ -190,7 +190,7 @@ const create = (req: Request, res: Response): void => {
       findCharacterById(characterId, req)
         .then(({ char, canEdit }) => {
           if (canEdit) {
-            const body: HydratedIBody = new Body({
+            const body = new Body({
               character: characterId,
               hp,
             });

@@ -246,16 +246,12 @@ const findSingle = (req: Request, res: Response): void => {
 const findAll = (req: Request, res: Response): void => {
   findAmmos()
     .then((ammos) => {
-      const curatedAmmos: CuratedIAmmo[] = [];
-      ammos.forEach((ammoSent) => {
-        const ammo = ammoSent.toJSON();
-        curatedAmmos.push({
-          ammo,
+      res.send(
+        ammos.map((ammoSent) => ({
+          ammo: ammoSent.toJSON(),
           i18n: curateI18n(ammoSent.i18n),
-        });
-      });
-
-      res.send(curatedAmmos);
+        }))
+      );
     })
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };

@@ -10,7 +10,7 @@ import {
 } from '../../utils/globalErrorMessage';
 
 import type { InternationalizationType } from '../../utils/types';
-import type { HydratedINode, ICyberFrame, INode, LeanINode } from '../index';
+import type { HydratedICyberFrame, HydratedINode, ICyberFrame, LeanINode } from '../index';
 import type { HydratedICyberFrameBranch, LeanICyberFrameBranch } from './model';
 
 import { curateI18n } from '../../utils';
@@ -22,7 +22,7 @@ const findCyberFrameBranches = async (): Promise<LeanICyberFrameBranch[]> =>
     CyberFrameBranch.find()
       .lean()
       .populate<{ cyberFrame: ICyberFrame }>('cyberFrame')
-      .populate<{ nodes: Array<INode<string>> }>({
+      .populate<{ nodes: LeanINode[] }>({
         path: 'nodes',
         select: '_id title summary icon',
         populate: ['effects', 'actions', 'skillBonuses', 'statBonuses', 'charParamBonuses'],
@@ -46,7 +46,7 @@ const findCyberFrameBranchesByFrame = async (
     CyberFrameBranch.find({ cyberFrame: cyberFrameId })
       .lean()
       .populate<{ cyberFrame: ICyberFrame }>('cyberFrame')
-      .populate<{ nodes: Array<INode<string>> }>({
+      .populate<{ nodes: LeanINode[] }>({
         path: 'nodes',
         select: '_id title summary icon',
         populate: ['effects', 'actions', 'skillBonuses', 'statBonuses', 'charParamBonuses'],
@@ -66,7 +66,7 @@ const findCyberFrameBranchesByFrame = async (
 const findCompleteCyberFrameBranchById = async (id: string): Promise<HydratedICyberFrameBranch> =>
   await new Promise((resolve, reject) => {
     CyberFrameBranch.findById(id)
-      .populate<{ cyberFrame: ICyberFrame }>('cyberFrame')
+      .populate<{ cyberFrame: HydratedICyberFrame }>('cyberFrame')
       .populate<{ nodes: HydratedINode[] }>({
         path: 'nodes',
         select: '_id title summary icon',
@@ -88,7 +88,7 @@ const findCyberFrameBranchById = async (id: string): Promise<LeanICyberFrameBran
     CyberFrameBranch.findById(id)
       .lean()
       .populate<{ cyberFrame: ICyberFrame }>('cyberFrame')
-      .populate<{ nodes: Array<INode<string>> }>({
+      .populate<{ nodes: LeanINode[] }>({
         path: 'nodes',
         select: '_id title summary icon',
         populate: ['effects', 'actions', 'skillBonuses', 'statBonuses', 'charParamBonuses'],
