@@ -1,4 +1,4 @@
-import type { ICampaign } from './campaign';
+import type { ICampaign, IArcane, ICuratedArcane } from './campaign';
 import type {
   IBody,
   IBodyAmmo,
@@ -112,6 +112,8 @@ export type {
   IAction,
   IActionDuration,
   IActionType,
+  IArcane,
+  ICuratedArcane,
   IAmmo,
   IArmor,
   IArmorType,

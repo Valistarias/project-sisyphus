@@ -5,6 +5,7 @@ import {
   ActionModel,
   ActionTypeModel,
   AmmoModel,
+  ArcaneModel,
   ArmorModel,
   ArmorTypeModel,
   BackgroundModel,
@@ -33,6 +34,7 @@ import {
   EffectModel,
   EnnemyAttackModel,
   GlobalValueModel,
+  type IArcane,
   ImplantModel,
   ItemModel,
   ItemModifierModel,
@@ -248,6 +250,8 @@ interface DBType {
   Armor: Model<IArmor<CleanObjectId>>;
   /** The Item model */
   Item: Model<IItem<CleanObjectId>>;
+  /** The Arcane Model */
+  Arcane: Model<IArcane>;
   /** The possible Roles */
   ROLES: string[];
 }
@@ -268,6 +272,7 @@ const db: DBType = {
   // Campaign models
   Campaign: CampaignModel(),
   CampaignEvent: CampaignEventModel(),
+  Arcane: ArcaneModel(),
   // Character models
   Character: CharacterModel(),
   CharacterNode: CharacterNodeModel(),

@@ -19,6 +19,7 @@ import ActionRoutes from './entities/action/routes';
 import ActionDurationRoutes from './entities/actionDuration/routes';
 import ActionTypeRoutes from './entities/actionType/routes';
 import AmmoRoutes from './entities/ammo/routes';
+import ArcaneRoutes from './entities/arcane/routes';
 import ArmorRoutes from './entities/armor/routes';
 import ArmorTypeRoutes from './entities/armorType/routes';
 import { verifyTokenSingIn } from './entities/auth/controller';
@@ -151,6 +152,7 @@ RuleBookTypeRoutes(apiRouter);
 // Campaign routes
 CampaignRoutes(apiRouter);
 CampaignEventRoutes(apiRouter);
+ArcaneRoutes(apiRouter);
 
 // Character routes
 CharacterRoutes(apiRouter);

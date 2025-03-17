@@ -683,5 +683,16 @@
   },
   "hp": {
     "required": "HP value is required"
+  },
+  "nameArcane": {
+    "required": "A Name is required for the arcane",
+    "label": "Arcane Name"
+  },
+  "arcaneSummary": {
+    "title": "Arcane Effect"
+  },
+  "arcaneNumber": {
+    "label": "Arcane number",
+    "required": "You need to choose a arcane number"
   }
 }

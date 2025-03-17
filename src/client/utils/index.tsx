@@ -46,6 +46,9 @@ export const arraysEqual = (a: string[] | null, b: string[] | null): boolean => 
 };
 
 export const romanize = (num: number): string | boolean => {
+  if (num <= 0) {
+    return '0';
+  }
   const lookup = {
     M: 1000,
     CM: 900,

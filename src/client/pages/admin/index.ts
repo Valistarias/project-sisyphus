@@ -1,5 +1,6 @@
 import AdminPage from './admin';
 import AdminAmmosPage from './adminAmmos';
+import AdminArcanesPage from './adminArcanes';
 import AdminArmorsPage from './adminArmors';
 import AdminArmorTypesPage from './adminArmorTypes';
 import AdminBackgroundsPage from './adminBackgrounds';
@@ -10,6 +11,7 @@ import AdminCharParamsPage from './adminCharParams';
 import AdminCyberFramesPage from './adminCyberFrames';
 import AdminDamageTypesPage from './adminDamageTypes';
 import AdminEditAmmoPage from './adminEditAmmo';
+import AdminEditArcanePage from './adminEditArcane';
 import AdminEditArmorPage from './adminEditArmor';
 import AdminEditArmorTypePage from './adminEditArmorType';
 import AdminEditBackgroundPage from './adminEditBackground';
@@ -48,6 +50,7 @@ import AdminItemModifiersPage from './adminItemModifiers';
 import AdminItemsPage from './adminItems';
 import AdminItemTypesPage from './adminItemTypes';
 import AdminNewAmmoPage from './adminNewAmmo';
+import AdminNewArcanePage from './adminNewArcane';
 import AdminNewArmorPage from './adminNewArmor';
 import AdminNewArmorTypePage from './adminNewArmorType';
 import AdminNewBackgroundPage from './adminNewBackground';
@@ -95,6 +98,7 @@ import AdminWeaponStylesPage from './adminWeaponStyles';
 import AdminWeaponTypesPage from './adminWeaponTypes';
 
 export {
+  AdminArcanesPage,
   AdminAmmosPage,
   AdminArmorsPage,
   AdminArmorTypesPage,
@@ -130,6 +134,7 @@ export {
   AdminEditProgramScopePage,
   AdminEditRarityPage,
   AdminEditRuleBookPage,
+  AdminEditArcanePage,
   AdminEditSkillBranchPage,
   AdminEditSkillPage,
   AdminEditStatPage,
@@ -171,6 +176,7 @@ export {
   AdminNewSkillBranchPage,
   AdminNewSkillPage,
   AdminNewStatPage,
+  AdminNewArcanePage,
   AdminNewTipTextPage,
   AdminNewWeaponPage,
   AdminNewWeaponScopePage,

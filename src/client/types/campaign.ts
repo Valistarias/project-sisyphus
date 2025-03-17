@@ -1,4 +1,4 @@
-import type { IUser } from './global';
+import type { InternationalizationType, IUser } from './global';
 
 // Campaign ------------------------------------
 export interface ICampaign {
@@ -14,4 +14,25 @@ export interface ICampaign {
   players: IUser[];
   /** When the campaign was created */
   createdAt: Date;
+}
+
+// Arcane ------------------------------------
+export interface IArcane {
+  /** The ID of the arcane */
+  _id: string;
+  /** The title of the arcane */
+  title: string;
+  /** A summary of the arcane */
+  summary: string;
+  /** The number on the arcane */
+  number: number;
+  /** When the arcane was created */
+  createdAt: Date;
+  /** The internationalization */
+  i18n: InternationalizationType;
+}
+
+export interface ICuratedArcane {
+  i18n: InternationalizationType;
+  arcane: IArcane;
 }

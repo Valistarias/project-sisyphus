@@ -43,7 +43,13 @@ const findCampaigns = async (req: Request): Promise<HydratedICompleteCampaign[]>
       });
   });
 
-const findCampaignById = async (id: string, req: Request): Promise<HydratedICompleteCampaign> =>
+const findCampaignById = async (
+  id: string,
+  req: Request
+): Promise<{
+  campaign: HydratedICompleteCampaign;
+  isOwner: boolean;
+}> =>
   await new Promise((resolve, reject) => {
     getUserFromToken(req as IVerifyTokenRequest)
       .then((user) => {
@@ -64,7 +70,10 @@ const findCampaignById = async (id: string, req: Request): Promise<HydratedIComp
             if (res === undefined || res === null) {
               reject(gemNotFound('Campaign'));
             } else {
-              resolve(res);
+              resolve({
+                campaign: res,
+                isOwner: String(res.owner._id) === String(user._id),
+              });
             }
           })
           .catch((err) => {
@@ -146,7 +155,12 @@ const update = (req: Request, res: Response): void => {
     return;
   }
   findCampaignById(id as string, req)
-    .then((campaign) => {
+    .then(({ campaign, isOwner }) => {
+      if (!isOwner) {
+        res.status(400).send(gemInvalidField('User ID'));
+
+        return;
+      }
       if (name !== null && name !== campaign.name) {
         campaign.name = name;
       }
@@ -172,28 +186,24 @@ const generateCode = (req: Request, res: Response): void => {
 
     return;
   }
-  getUserFromToken(req as IVerifyTokenRequest)
-    .then((user) => {
-      findCampaignById(campaignId as string, req)
-        .then((campaign) => {
-          if (user !== null && String(campaign.owner._id) === String(user._id)) {
-            campaign.code = uuidv4();
-            campaign
-              .save()
-              .then(() => {
-                res.send({
-                  message: 'Campaign code was changed successfully!',
-                  campaign,
-                });
-              })
-              .catch((err: unknown) => {
-                res.status(500).send(gemServerError(err));
-              });
-          } else {
-            res.status(404).send(gemNotFound('Campaign'));
-          }
-        })
-        .catch((err: unknown) => res.status(500).send(gemServerError(err)));
+  findCampaignById(campaignId as string, req)
+    .then(({ campaign, isOwner }) => {
+      if (isOwner) {
+        campaign.code = uuidv4();
+        campaign
+          .save()
+          .then(() => {
+            res.send({
+              message: 'Campaign code was changed successfully!',
+              campaign,
+            });
+          })
+          .catch((err: unknown) => {
+            res.status(500).send(gemServerError(err));
+          });
+      } else {
+        res.status(404).send(gemNotFound('Campaign'));
+      }
     })
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
@@ -257,7 +267,7 @@ const unregister = (req: Request, res: Response): void => {
   getUserFromToken(req as IVerifyTokenRequest)
     .then((user) => {
       findCampaignById(campaignId as string, req)
-        .then((campaign: ICampaignPayload) => {
+        .then(({ campaign }: { campaign: ICampaignPayload }) => {
           const foundPlayer =
             user !== null
               ? Boolean(campaign.players.find((player) => String(player) === String(user._id)))
@@ -284,6 +294,35 @@ const unregister = (req: Request, res: Response): void => {
           }
         })
         .catch((err: unknown) => res.status(500).send(gemServerError(err)));
+    })
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
+};
+
+const createNewDeck = (req: Request, res: Response): void => {
+  const { campaignId } = req.body;
+  if (campaignId === undefined) {
+    res.status(400).send(gemInvalidField('Campaign ID'));
+
+    return;
+  }
+  findCampaignById(campaignId as string, req)
+    .then(({ campaign, isOwner }) => {
+      if (isOwner) {
+        // campaign.code = uuidv4();
+        // campaign
+        //   .save()
+        //   .then(() => {
+        //     res.send({
+        //       message: 'Campaign code was changed successfully!',
+        //       campaign,
+        //     });
+        //   })
+        //   .catch((err: unknown) => {
+        //     res.status(500).send(gemServerError(err));
+        //   });
+      } else {
+        res.status(404).send(gemNotFound('Campaign'));
+      }
     })
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
@@ -350,4 +389,5 @@ export {
   register,
   unregister,
   update,
+  createNewDeck,
 };

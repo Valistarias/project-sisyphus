@@ -8,6 +8,8 @@ interface ICampaign {
   name: string;
   /** The code to join the campaign */
   code: string;
+  /** The actual deck of the campaign, stringified */
+  deck?: string;
   /** When the campaign was created */
   createdAt: Date;
   /** The owner of the campaign */
@@ -32,6 +34,10 @@ const campaignSchema = new Schema<ICampaign>(
   {
     name: String,
     code: String,
+    deck: {
+      type: String,
+      default: 'never',
+    },
     owner: {
       type: Schema.Types.ObjectId,
       ref: 'User',

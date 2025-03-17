@@ -1214,5 +1214,32 @@
       "text": "Are you sure you want to delete {{elt}} ?",
       "confirmCta": "Delete Basic Action"
     }
+  },
+  "adminArcanes": {
+    "title": "Arcanes",
+    "list": "List",
+    "editArcane": "Edit"
+  },
+  "adminNewArcane": {
+    "title": "New Arcane",
+    "i18n": "Internationalization",
+    "button": "Create Arcane",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successCreate": "Arcane successfully created !"
+  },
+  "adminEditArcane": {
+    "edit": "Edit Arcane",
+    "delete": "Delete Arcane",
+    "return": "Return to all Arcanes",
+    "i18n": "Internationalization",
+    "button": "Update Arcane Data",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successUpdate": "Arcane successfully updated !",
+    "successDelete": "Arcane successfully deleted !",
+    "confirmDeletion": {
+      "title": "Arcane Deletion",
+      "text": "Are you sure you want to delete {{elt}} ? All the related branches will be lost !",
+      "confirmCta": "Delete Arcane"
+    }
   }
 }

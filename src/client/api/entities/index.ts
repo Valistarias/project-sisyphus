@@ -4,6 +4,7 @@ import ActionDurations from './actionDurations';
 import Actions from './actions';
 import ActionTypes from './actionTypes';
 import Ammos from './ammos';
+import Arcanes from './arcanes';
 import Armors from './armors';
 import ArmorTypes from './armorTypes';
 import Auth from './auth';
@@ -56,6 +57,7 @@ export {
   Actions,
   Ammos,
   ArmorTypes,
+  Arcanes,
   Armors,
   Auth,
   Backgrounds,

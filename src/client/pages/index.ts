@@ -94,6 +94,9 @@ import {
   AdminWeaponStylesPage,
   AdminWeaponTypesPage,
   AdminWeaponsPage,
+  AdminArcanesPage,
+  AdminEditArcanePage,
+  AdminNewArcanePage,
 } from './admin';
 import { CampaignPage, CampaignsPage, JoinCampaignPage, NewCampaignPage } from './campaign';
 import { CharacterEditPage, CharacterPage, CharactersPage, NewCharacterPage } from './character';
@@ -116,6 +119,9 @@ export {
   AdminCyberFramesPage,
   AdminDamageTypesPage,
   AdminEditAmmoPage,
+  AdminArcanesPage,
+  AdminEditArcanePage,
+  AdminNewArcanePage,
   AdminEditArmorPage,
   AdminEditArmorTypePage,
   AdminEditBackgroundPage,

@@ -2,6 +2,7 @@ export { ActionModel, type HydratedIAction, type IAction } from './action/model'
 export { ActionDurationModel, type IActionDuration } from './actionDuration/model';
 export { ActionTypeModel, type IActionType } from './actionType/model';
 export { AmmoModel, type HydratedIAmmo, type IAmmo } from './ammo/model';
+export { ArcaneModel, type HydratedIArcane, type IArcane } from './arcane/model';
 export { ArmorModel, type HydratedIArmor, type IArmor, type LeanIArmor } from './armor/model';
 export { ArmorTypeModel, type HydratedIArmorType, type IArmorType } from './armorType/model';
 export { BackgroundModel, type HydratedIBackground, type IBackground } from './background/model';

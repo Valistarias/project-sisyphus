@@ -28,6 +28,7 @@ import type {
   ICampaign,
   ICharacter,
   ICuratedAction,
+  ICuratedArcane,
   ICuratedArmorType,
   ICuratedBodyPart,
   ICuratedCharParam,
@@ -55,6 +56,8 @@ interface IGlobalVarsContext {
   setUser: React.Dispatch<React.SetStateAction<IUser | null>>;
   /** Is the provider loading */
   loading: boolean;
+  /** All the loaded arcanes */
+  arcanes: ICuratedArcane[];
   /** The actual character */
   character: ICharacter | null | false;
   /** The agregated stats and skills of the actual character */
@@ -112,6 +115,8 @@ interface IGlobalVarsContext {
   setCharacterFromId: (id: string) => void;
   /** Used to reset the actual character */
   resetCharacter: () => void;
+  /** Used to trigger the reload of the arcanes */
+  reloadArcanes: () => void;
   /** Used to trigger the reload of the program scopes */
   reloadBodyParts: () => void;
   /** Used to trigger the reload of the rulebooks */
@@ -213,6 +218,9 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
   const [programScopes, setProgramScopes] = useState<ICuratedProgramScope[]>([]);
   const [armorTypes, setArmorTypes] = useState<ICuratedArmorType[]>([]);
 
+  // Campaign
+  const [arcanes, setArcanes] = useState<ICuratedArcane[]>([]);
+
   const getAllFromApi = useCallback(
     (request: string, setState: React.Dispatch<React.SetStateAction<unknown>>) => {
       if (api !== undefined) {
@@ -239,6 +247,10 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
 
   const loadBodyParts = useCallback(() => {
     getAllFromApi('bodyParts', setBodyParts);
+  }, [getAllFromApi]);
+
+  const loadArcanes = useCallback(() => {
+    getAllFromApi('arcanes', setArcanes);
   }, [getAllFromApi]);
 
   const loadStats = useCallback(() => {
@@ -395,6 +407,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
           loadWeaponScopes();
           loadWeaponStyles();
           loadWeaponTypes();
+          loadArcanes();
           if (Object.keys(data).length > 0) {
             loadCampaigns();
           }
@@ -427,6 +440,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
     loadTipTexts,
     loadGlobalValues,
     loadBasicActions,
+    loadArcanes,
   ]);
 
   useEffect(() => {
@@ -439,6 +453,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
 
   const providerValues = useMemo(
     () => ({
+      arcanes,
       actionDurations,
       actionTypes,
       bodyParts,
@@ -466,6 +481,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       globalValues,
       basicActions,
       reloadAll: () => {
+        loadArcanes();
         loadActionDurations();
         loadActionTypes();
         loadArmorTypes();
@@ -488,6 +504,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
         loadWeaponStyles();
         loadWeaponTypes();
       },
+      reloadArcanes: loadArcanes,
       reloadBodyParts: loadBodyParts,
       reloadCampaigns: loadCampaigns,
       reloadCharParams: loadCharParams,
@@ -513,6 +530,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       setUser,
     }),
     [
+      arcanes,
       actionDurations,
       actionTypes,
       bodyParts,
@@ -539,6 +557,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       tipTexts,
       globalValues,
       basicActions,
+      loadArcanes,
       loadBodyParts,
       loadCampaigns,
       loadCharParams,

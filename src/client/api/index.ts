@@ -5,6 +5,7 @@ import {
   Ammos,
   ArmorTypes,
   Armors,
+  Arcanes,
   Auth,
   Backgrounds,
   Bags,
@@ -58,6 +59,7 @@ export default class Api {
   ammos: Ammos;
   armors: Armors;
   armorTypes: ArmorTypes;
+  arcanes: Arcanes;
   auth: Auth;
   backgrounds: Backgrounds;
   bags: Bags;
@@ -110,6 +112,7 @@ export default class Api {
     this.ammos = new Ammos();
     this.armors = new Armors();
     this.armorTypes = new ArmorTypes();
+    this.arcanes = new Arcanes();
     this.auth = new Auth();
     this.backgrounds = new Backgrounds();
     this.bags = new Bags();
