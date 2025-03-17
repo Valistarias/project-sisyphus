@@ -208,5 +208,8 @@
   "characterAction": {
     "duration": "Duration:",
     "type": "Type:"
+  },
+  "characterInventory": {
+    "main": "Inventory"
   }
 }

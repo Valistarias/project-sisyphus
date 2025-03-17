@@ -342,14 +342,19 @@ export const curateStringDamage = (
   return applyFormula(text, `${damages}+${formula}`, char);
 };
 
-export const countTrueInArray = (arr: boolean[]): number =>
-  arr.reduce((total: number, value: boolean) => {
+export const countTrueInArray = (arr: boolean[] | undefined): number => {
+  if (arr === undefined) {
+    return 0;
+  }
+
+  return arr.reduce((total: number, value: boolean) => {
     if (value) {
       return total + 1;
     }
 
     return total;
   }, 0);
+};
 
 export const getValuesFromGlobalValues = (
   namesSent: string[],

@@ -121,7 +121,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
     // If multiple sources for bonuses, we are borad in the phrasing
     nodesByCyberFrames.forEach(({ cyberFrame, chosenNodes }) => {
       chosenNodes.forEach((node) => {
-        if (node.statBonuses !== undefined && node.statBonuses.length > 0) {
+        if (node.statBonuses.length > 0) {
           node.statBonuses.forEach((statBonus) => {
             if ((statBonuses[statBonus.stat] as IStatBonuses | undefined) === undefined) {
               statBonuses[statBonus.stat] = {

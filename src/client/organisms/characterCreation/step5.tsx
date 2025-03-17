@@ -114,8 +114,9 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         defaultData.weapons[weapon._id] = weapon.starterKit === 'always';
         if (relevantBody?.weapons?.length !== 0) {
           defaultData.weapons[weapon._id] =
-            relevantBody?.weapons?.find((bodyWeapon) => bodyWeapon.weapon === weapon._id) !==
-            undefined;
+            relevantBody?.weapons?.find(
+              (bodyWeapon) => bodyWeapon.weapon.weapon._id === weapon._id
+            ) !== undefined;
         }
       });
 
@@ -126,7 +127,8 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         defaultData.armors[armor._id] = armor.starterKit === 'always';
         if (relevantBody?.armors?.length !== 0) {
           defaultData.armors[armor._id] =
-            relevantBody?.armors?.find((bodyArmor) => bodyArmor.armor === armor._id) !== undefined;
+            relevantBody?.armors?.find((bodyArmor) => bodyArmor.armor.armor._id === armor._id) !==
+            undefined;
         }
       });
 
@@ -137,7 +139,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         defaultData.bags[bag._id] = bag.starterKit === 'always';
         if (relevantBody?.bags?.length !== 0) {
           defaultData.bags[bag._id] =
-            relevantBody?.bags?.find((bodyBag) => bodyBag.bag === bag._id) !== undefined;
+            relevantBody?.bags?.find((bodyBag) => bodyBag.bag.bag._id === bag._id) !== undefined;
         }
       });
 
@@ -148,7 +150,8 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         defaultData.items[item._id] = item.starterKit === 'always';
         if (relevantBody?.items?.length !== 0) {
           defaultData.items[item._id] =
-            relevantBody?.items?.find((bodyItem) => bodyItem.item === item._id) !== undefined;
+            relevantBody?.items?.find((bodyItem) => bodyItem.item.item._id === item._id) !==
+            undefined;
         }
       });
 
@@ -159,8 +162,9 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         defaultData.programs[program._id] = program.starterKit === 'always';
         if (relevantBody?.programs?.length !== 0) {
           defaultData.programs[program._id] =
-            relevantBody?.programs?.find((bodyProgram) => bodyProgram.program === program._id) !==
-            undefined;
+            relevantBody?.programs?.find(
+              (bodyProgram) => bodyProgram.program.program._id === program._id
+            ) !== undefined;
         }
       });
 
@@ -171,8 +175,9 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         defaultData.implants[implant._id] = implant.starterKit === 'always';
         if (relevantBody?.implants?.length !== 0) {
           defaultData.implants[implant._id] =
-            relevantBody?.implants?.find((bodyImplant) => bodyImplant.implant === implant._id) !==
-            undefined;
+            relevantBody?.implants?.find(
+              (bodyImplant) => bodyImplant.implant.implant._id === implant._id
+            ) !== undefined;
         }
       });
 
@@ -586,13 +591,26 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
   };
 
   const elts: FormValues = watch();
+
   let canSubmitList = false;
-  const nbChosenArmors = countTrueInArray(Object.values(elts.armors));
-  const nbChosenPrograms = countTrueInArray(Object.values(elts.programs));
-  const nbChosenItems = countTrueInArray(Object.values(elts.items));
-  const nbChosenImplants = countTrueInArray(Object.values(elts.implants));
-  const nbChosenBags = countTrueInArray(Object.values(elts.bags));
-  const nbChosenWeapons = countTrueInArray(Object.values(elts.weapons));
+  const nbChosenArmors = countTrueInArray(
+    Object.values((elts.armors as Record<string, boolean> | undefined) ?? {})
+  );
+  const nbChosenPrograms = countTrueInArray(
+    Object.values((elts.programs as Record<string, boolean> | undefined) ?? {})
+  );
+  const nbChosenItems = countTrueInArray(
+    Object.values((elts.items as Record<string, boolean> | undefined) ?? {})
+  );
+  const nbChosenImplants = countTrueInArray(
+    Object.values((elts.implants as Record<string, boolean> | undefined) ?? {})
+  );
+  const nbChosenBags = countTrueInArray(
+    Object.values((elts.bags as Record<string, boolean> | undefined) ?? {})
+  );
+  const nbChosenWeapons = countTrueInArray(
+    Object.values((elts.weapons as Record<string, boolean> | undefined) ?? {})
+  );
 
   canSubmitList =
     nbChosenArmors === nbOptionnalArmorCharCreate &&

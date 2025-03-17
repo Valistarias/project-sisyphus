@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { TabsWindow } from '../../molecules';
 
 import CharacterActionList from './characterActionList';
+import CharacterInventory from './characterInventory';
+import CharacterProgramList from './characterProgramList';
 
 import { classTrim } from '../../utils';
 
@@ -25,12 +27,12 @@ const CharacterBoard: FC = () => {
       {
         label: t('characterBoard.tabs.programs', { ns: 'components' }),
         id: 'programs',
-        content: <p>This is test 2</p>,
+        content: <CharacterProgramList />,
       },
       {
         label: t('characterBoard.tabs.inventory', { ns: 'components' }),
         id: 'inventory',
-        content: <p>This is test 3</p>,
+        content: <CharacterInventory />,
       },
     ],
     [t]
