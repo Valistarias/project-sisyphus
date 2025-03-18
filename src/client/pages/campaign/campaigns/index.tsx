@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, type FC } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -22,6 +22,8 @@ const Campaigns: FC = () => {
   const { user, campaigns, reloadCampaigns } = useGlobalVars();
   const { setConfirmContent, removeConfirmEventListener, addConfirmEventListener } =
     useConfirmMessage();
+
+  const calledApi = useRef(false);
 
   const onDeleteCampaign = useCallback(
     (id: string, name: string) => {
@@ -136,6 +138,12 @@ const Campaigns: FC = () => {
       </Aul>
     );
   }, [campaigns, onDeleteCampaign, t, user?._id]);
+
+  useEffect(() => {
+    if (!calledApi.current) {
+      reloadCampaigns();
+    }
+  }, [reloadCampaigns]);
 
   return (
     <div className="campaigns">

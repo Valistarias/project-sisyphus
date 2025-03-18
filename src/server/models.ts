@@ -151,7 +151,7 @@ interface DBType {
   /** The Page Model */
   Page: Model<IPage>;
   /** The Campaign Model */
-  Campaign: Model<ICampaign>;
+  Campaign: Model<ICampaign<CleanObjectId>>;
   /** The Character Model */
   Character: Model<ICharacter<CleanObjectId>>;
   /** The Background Model */

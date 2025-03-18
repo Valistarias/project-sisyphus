@@ -2,6 +2,8 @@ import { Ariane, type IArianeElt } from './ariane';
 import Button from './button';
 import Checkbox from './checkbox';
 import ClickableText from './clickableText';
+import CopyField from './copyField';
+import DeckDisplay from './deckDisplay';
 import DetailsBonuses from './detailsBonuses';
 import DiceCard from './diceCard';
 import DropDownMenu from './dropDownMenu';
@@ -46,6 +48,8 @@ export {
   SkillDisplay,
   SmartSelect,
   TabsWindow,
+  CopyField,
+  DeckDisplay,
   defaultNodeIcon,
   type IArianeElt,
   type IGroupedOption,

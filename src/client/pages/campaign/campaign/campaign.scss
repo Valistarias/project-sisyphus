@@ -2,8 +2,39 @@
 
 .campaign {
   @include mixins.basic-page;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 2rem;
 
-  &__link {
-    margin-bottom: 10vh;
+  &__main {
+    flex: 2 0 1px;
+
+    &__deck {
+      &__details {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+      }
+    }
+  }
+
+  &__secondary {
+    flex: 1 0 1px;
+
+    &__join {
+      &__field {
+        margin: 2rem 0 1rem;
+      }
+
+      &__details {
+        font-size: 1.2rem;
+      }
+    }
+  }
+
+  .campaignBlock {
+    background: var(--primary-dark);
+    border: 1px solid var(--primary-20);
+    padding: 2rem;
   }
 }

@@ -1,0 +1,43 @@
+.deck-display {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+
+  &__piles {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+  }
+
+  &__pile {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    &__text {
+      font-size: 1.2rem;
+      text-transform: uppercase;
+    }
+
+    &__base {
+      align-items: center;
+      background: var(--primary-10);
+      border: 1px solid var(--primary-20);
+      border-radius: 2rem;
+      display: flex;
+      height: 33rem;
+      justify-content: center;
+      width: 18rem;
+
+      &__empty {
+        color: var(--primary-20);
+        font-size: 28rem;
+        position: relative;
+        top: -1rem;
+        user-select: none;
+      }
+    }
+  }
+}

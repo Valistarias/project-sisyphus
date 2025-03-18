@@ -183,7 +183,20 @@
     "successJoin": "Campaign successfully joined !"
   },
   "campaign": {
-    "inviteDetails": "Send this link to allow other players to join this campaign."
+    "invite": {
+      "title": "Invite Link",
+      "details": "Send this link to allow other players to join this campaign."
+    },
+    "deck": {
+      "title": "Deck",
+      "details": "Manage the deck associated with this campaign."
+    },
+    "confirmShuffle": {
+      "title": "Shuffling Deck",
+      "text": "Are you sure you wanna shuffle the deck ? All cards on player hands will be lost",
+      "confirmCta": "Shuffle"
+    },
+    "successShuffle": "Deck successfully shuffled"
   },
   "characters": {
     "title": "Characters",

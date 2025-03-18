@@ -46,7 +46,7 @@ type LeanICharacter = Omit<
 > & {
   player?: Lean<IUser>;
   createdBy: Lean<IUser>;
-  campaign?: Lean<ICampaign>;
+  campaign?: Lean<ICampaign<string>>;
   nodes?: LeanICharacterNode[];
   bodies?: LeanIBody[];
   background?: Lean<IBackground>;
@@ -56,7 +56,7 @@ type HydratedICharacter = HydratedDocument<
   Omit<ICharacter<string>, 'player' | 'campaign' | 'createdBy' | 'background'> & {
     player?: HydratedDocument<IUser>;
     createdBy: HydratedDocument<IUser>;
-    campaign?: HydratedDocument<ICampaign>;
+    campaign?: HydratedDocument<ICampaign<string>>;
     nodes?: HydratedICharacterNode[];
     bodies?: HydratedIBody[];
     background?: HydratedIBackground;

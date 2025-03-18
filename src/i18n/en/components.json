@@ -211,5 +211,10 @@
   },
   "characterInventory": {
     "main": "Inventory"
+  },
+  "deckDisplay": {
+    "drawPile": "Draw Pile",
+    "discardPile": "Discard Pile",
+    "shuffle": "Shuffle Cards"
   }
 }

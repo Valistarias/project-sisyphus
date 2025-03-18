@@ -1,4 +1,4 @@
-import type { ICampaign, IArcane, ICuratedArcane } from './campaign';
+import type { ICampaign, IArcane, ICuratedArcane, ICard, IDeck } from './campaign';
 import type {
   IBody,
   IBodyAmmo,
@@ -205,5 +205,7 @@ export type {
   IWeaponType,
   TypeCampaignEvent,
   TypeDice,
+  ICard,
+  IDeck,
   TypeStarterKitValues,
 };

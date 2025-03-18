@@ -1,21 +1,5 @@
 import type { InternationalizationType, IUser } from './global';
 
-// Campaign ------------------------------------
-export interface ICampaign {
-  /** The ID of the campaign */
-  _id: string;
-  /** The name of the campaign */
-  name: string;
-  /** The code of the campaign to connect to it */
-  code: string;
-  /** The owner of the campaign */
-  owner: IUser;
-  /** The players of the campaign */
-  players: IUser[];
-  /** When the campaign was created */
-  createdAt: Date;
-}
-
 // Arcane ------------------------------------
 export interface IArcane {
   /** The ID of the arcane */
@@ -35,4 +19,34 @@ export interface IArcane {
 export interface ICuratedArcane {
   i18n: InternationalizationType;
   arcane: IArcane;
+}
+
+export type ICard =
+  | ICuratedArcane
+  | {
+      suit?: string;
+      number?: number;
+      hiddenCard: boolean;
+    };
+
+export type IDeck = ICard[];
+
+// Campaign ------------------------------------
+export interface ICampaign {
+  /** The ID of the campaign */
+  _id: string;
+  /** The name of the campaign */
+  name: string;
+  /** The code of the campaign to connect to it */
+  code: string;
+  /** The owner of the campaign */
+  owner: IUser;
+  /** The players of the campaign */
+  players: IUser[];
+  /** When the campaign was created */
+  createdAt: Date;
+  /** The deck associated with the campaign */
+  deck: IDeck;
+  /** The discard pile associated with the cvampaign */
+  discard: IDeck;
 }

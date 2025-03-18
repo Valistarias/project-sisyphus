@@ -1,0 +1,14 @@
+.copy-field {
+  background: var(--primary-20);
+  border: 0;
+  box-shadow: 0 0 2rem var(--primary-05);
+  box-sizing: border-box;
+  color: var(--font-color);
+  font-family: var(--mono-font);
+  margin: 0;
+  outline: 0;
+  padding: 1rem;
+  resize: none;
+  text-overflow: ellipsis;
+  width: 100%;
+}

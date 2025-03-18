@@ -4,12 +4,18 @@ import type { HydratedDocument, ObjectId } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 
 import { getUserFromToken, type IVerifyTokenRequest } from '../../middlewares/authJwt';
+import { Deck } from '../../middlewares/deck';
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 import { deleteCampaignEventByCampaignId } from '../campaignEvent/controller';
 
+import type { Lean } from '../../utils/types';
 import type { ICharacter } from '../character';
-import type { HydratedICompleteCampaign, HydratedISimpleCampaign } from './model';
+import type {
+  HydratedICompleteCampaign,
+  HydratedISimpleCampaign,
+  LeanICompleteCampaign,
+} from './model';
 import type { IUser } from '../user/model';
 
 const { Campaign } = db;
@@ -85,6 +91,49 @@ const findCampaignById = async (
       });
   });
 
+const findCompleteCampaignById = async (
+  id: string,
+  req: Request
+): Promise<{
+  campaign: LeanICompleteCampaign;
+  isOwner: boolean;
+}> =>
+  await new Promise((resolve, reject) => {
+    getUserFromToken(req as IVerifyTokenRequest)
+      .then((user) => {
+        if (user === null) {
+          reject(gemNotFound('User'));
+
+          return;
+        }
+        Campaign.findById(id)
+          .or([{ owner: user._id }, { players: user._id }])
+          .lean()
+          .populate<{ owner: Lean<IUser> }>('owner')
+          .populate<{ players: Array<Lean<IUser>> }>('players')
+          .populate<{ characters: Array<Lean<ICharacter<string>>> }>({
+            path: 'characters',
+            select: '_id name campaign',
+          })
+          .then((res?: LeanICompleteCampaign | null) => {
+            if (res === undefined || res === null) {
+              reject(gemNotFound('Campaign'));
+            } else {
+              resolve({
+                campaign: res,
+                isOwner: String(res.owner._id) === String(user._id),
+              });
+            }
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      })
+      .catch((err) => {
+        reject(gemServerError(err));
+      });
+  });
+
 const findCampaignByCode = async (id: string, req: Request): Promise<HydratedISimpleCampaign> =>
   await new Promise((resolve, reject) => {
     getUserFromToken(req as IVerifyTokenRequest)
@@ -135,10 +184,7 @@ const create = (req: Request, res: Response): void => {
       campaign
         .save()
         .then(() => {
-          res.send({
-            message: 'Campaign was created successfully!',
-            campaign,
-          });
+          res.send(campaign);
         })
         .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
@@ -356,8 +402,14 @@ const findSingle = (req: Request, res: Response): void => {
 
     return;
   }
-  findCampaignById(campaignId, req)
-    .then((campaign) => res.send(campaign))
+  findCompleteCampaignById(campaignId, req)
+    .then(({ campaign, isOwner }) =>
+      res.send({
+        ...campaign,
+        deck: new Deck(isOwner, campaign.deck).deck,
+        discard: new Deck(isOwner, campaign.discard).deck,
+      })
+    )
     .catch((err) => res.status(404).send(err));
 };
 

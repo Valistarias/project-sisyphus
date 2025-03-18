@@ -77,7 +77,7 @@ const NewCampaign: FC = () => {
         ) : null}
         <Input
           control={control}
-          inputName="campaignName"
+          inputName="name"
           type="text"
           rules={{ required: t('campaignName.required', { ns: 'fields' }) }}
           label={t('campaignName.label', { ns: 'fields' })}
