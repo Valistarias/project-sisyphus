@@ -3,7 +3,7 @@ import type { Request, Response } from 'express';
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
-import type { HydratedIArcane } from './model';
+import type { HydratedIArcane, LeanIArcane } from './model';
 import type { InternationalizationType } from '../../utils/types';
 
 import { curateI18n } from '../../utils';
@@ -15,6 +15,23 @@ const findArcanes = async (): Promise<HydratedIArcane[]> =>
     Arcane.find()
       .sort({ number: 'asc' })
       .then((res: HydratedIArcane[]) => {
+        if (res.length === 0) {
+          reject(gemNotFound('Arcanes'));
+        } else {
+          resolve(res);
+        }
+      })
+      .catch((err) => {
+        reject(gemServerError(err));
+      });
+  });
+
+const findLeanArcanes = async (): Promise<LeanIArcane[]> =>
+  await new Promise((resolve, reject) => {
+    Arcane.find()
+      .sort({ number: 'asc' })
+      .lean()
+      .then((res: LeanIArcane[]) => {
         if (res.length === 0) {
           reject(gemNotFound('Arcanes'));
         } else {
@@ -49,7 +66,7 @@ const create = (req: Request, res: Response): void => {
     return;
   }
 
-  const arcane = new Arcane({
+  const arcane: HydratedIArcane = new Arcane({
     title,
     summary,
     number,
@@ -198,4 +215,4 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteArcane, findAll, findArcaneById, findSingle, update };
+export { create, deleteArcane, findAll, findArcaneById, findLeanArcanes, findSingle, update };

@@ -1,5 +1,7 @@
 import { Schema, model, type HydratedDocument, type Model } from 'mongoose';
 
+import type { Lean } from '../../utils/types';
+
 interface IArcane {
   /** The title of the arcane */
   title: string;
@@ -15,6 +17,8 @@ interface IArcane {
 
 type HydratedIArcane = HydratedDocument<IArcane>;
 
+type LeanIArcane = Lean<IArcane>;
+
 const bodyPart = new Schema<IArcane>({
   title: String,
   summary: String,
@@ -28,4 +32,4 @@ const bodyPart = new Schema<IArcane>({
 
 const ArcaneModel = (): Model<IArcane> => model('Arcane', bodyPart);
 
-export { ArcaneModel, type HydratedIArcane, type IArcane };
+export { ArcaneModel, type HydratedIArcane, type LeanIArcane, type IArcane };

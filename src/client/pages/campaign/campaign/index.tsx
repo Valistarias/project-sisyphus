@@ -31,7 +31,7 @@ const Campaign: FC = () => {
   const calledApi = useRef(false);
 
   const onShuffle = useCallback(() => {
-    if (api === undefined) {
+    if (api === undefined || id === undefined) {
       return;
     }
     setConfirmContent(
@@ -43,15 +43,47 @@ const Campaign: FC = () => {
       (evtId: string) => {
         const confirmDelete = ({ detail }: { detail: ConfirmMessageDetailData }): void => {
           if (detail.proceed) {
-            const newId = getNewId();
-            createAlert({
-              key: newId,
-              dom: (
-                <Alert key={newId} id={newId} timer={5}>
-                  <Ap>{t('campaign.successShuffle', { ns: 'pages' })}</Ap>
-                </Alert>
-              ),
-            });
+            api.campaigns
+              .shuffleDeck({ campaignId: id })
+              .then(({ deck, discard }) => {
+                setLoading(false);
+                setCampaign((prevCampaign) => {
+                  if (prevCampaign === null) {
+                    return null;
+                  }
+
+                  return {
+                    ...prevCampaign,
+                    deck,
+                    discard,
+                  };
+                });
+                const newId = getNewId();
+                createAlert({
+                  key: newId,
+                  dom: (
+                    <Alert key={newId} id={newId} timer={5}>
+                      <Ap>{t('campaign.successShuffle', { ns: 'pages' })}</Ap>
+                    </Alert>
+                  ),
+                });
+              })
+              .catch(({ response }: ErrorResponseType) => {
+                setLoading(false);
+                if (response.data.code === 'CYPU-104') {
+                  setNotFound(true);
+                } else {
+                  const newId = getNewId();
+                  createAlert({
+                    key: newId,
+                    dom: (
+                      <Alert key={newId} id={newId} timer={5}>
+                        <Ap>{t('serverErrors.CYPU-301')}</Ap>
+                      </Alert>
+                    ),
+                  });
+                }
+              });
           }
           removeConfirmEventListener(evtId, confirmDelete);
         };
@@ -63,6 +95,7 @@ const Campaign: FC = () => {
     api,
     createAlert,
     getNewId,
+    id,
     removeConfirmEventListener,
     setConfirmContent,
     t,

@@ -1,59 +1,79 @@
-import type { InternationalizationType } from '../utils/types';
+import type { LeanIArcane } from '../entities/arcane/model';
 
 // Arcane ------------------------------------
-export interface IArcane {
-  /** The ID of the arcane */
-  _id: string;
-  /** The title of the arcane */
-  title: string;
-  /** A summary of the arcane */
-  summary: string;
-  /** The number on the arcane */
-  number: number;
-  /** When the arcane was created */
-  createdAt: Date;
-  /** The internationalization */
-  i18n: InternationalizationType;
-}
-
-export interface ICuratedArcane {
-  i18n: InternationalizationType;
-  arcane: IArcane;
-}
 
 export type ICard =
-  | ICuratedArcane
   | {
-      suit?: string;
-      number?: number;
-      hiddenCard: boolean;
+      _id: string;
+    }
+  | {
+      suit: string;
+      number: number;
+    }
+  | {
+      hidden: true;
     };
 
 export type IDeck = ICard[];
 
 class Deck {
   deck: IDeck;
+  deckToString: string;
 
-  constructor(isOwner: boolean, content?: string) {
+  constructor(content?: string, arcanes?: LeanIArcane[]) {
     if (content === undefined) {
       // We need to create a new Deck
-    }
-    if (content === '') {
+
+      // Constructor parameters
+      const suits = ['wisdom', 'courage', 'justice', 'temperance'];
+      const nbCardPerSuit = 10;
+
+      const newDeck: IDeck = [];
+
+      suits.forEach((suit) => {
+        for (let index = 0; index < nbCardPerSuit; index++) {
+          newDeck.push({
+            suit,
+            number: index + 1,
+          });
+        }
+      });
+
+      arcanes?.forEach((arcane) => newDeck.push({ _id: String(arcane._id) }));
+
+      this.deck = newDeck;
+      this.deckToString = JSON.stringify(newDeck);
+    } else if (content === '') {
       // The deck is empty
       this.deck = [];
+    } else {
+      // The deck is a string, to be transformed
+      this.deckToString = content;
+      this.deck = JSON.parse(content);
     }
-    // Constructor parameters
-    const suits = ['wisdom', 'courage', 'justice', 'temperance'];
-    const nbCardPerSuit = 10;
   }
 
-  // hello(familiar) {
-  //   if(familiar) {
-  //     console.log(`Yo fam ! I'm ${this.surName} ${this.name} and I'm ${this.age}`)
-  //   } else {
-  //     console.log(`Hello ! My name is ${this.surName} ${this.name} and I have ${this.age} years old`)
-  //   }
-  // }
+  shuffle(): void {
+    this.deck = this.deck.reduce(
+      (card, _, i) => {
+        const random = Math.floor(Math.random() * (card.length - i)) + i;
+        [card[i], card[random]] = [card[random], card[i]];
+
+        return card;
+      },
+      [...this.deck]
+    );
+    this.deckToString = JSON.stringify(this.deck);
+  }
+
+  hideIfUser(isOwner: boolean): void {
+    if (!isOwner) {
+      this.deck = this.deck.map((card) => ({
+        hidden: true,
+      }));
+      this.deckToString = JSON.stringify(this.deck);
+    }
+  }
 }
 
 export { Deck };

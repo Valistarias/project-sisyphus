@@ -7,6 +7,7 @@ import { getUserFromToken, type IVerifyTokenRequest } from '../../middlewares/au
 import { Deck } from '../../middlewares/deck';
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import { findLeanArcanes } from '../arcane/controller';
 import { deleteCampaignEventByCampaignId } from '../campaignEvent/controller';
 
 import type { Lean } from '../../utils/types';
@@ -344,7 +345,7 @@ const unregister = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-const createNewDeck = (req: Request, res: Response): void => {
+const shuffleDeck = (req: Request, res: Response): void => {
   const { campaignId } = req.body;
   if (campaignId === undefined) {
     res.status(400).send(gemInvalidField('Campaign ID'));
@@ -354,18 +355,24 @@ const createNewDeck = (req: Request, res: Response): void => {
   findCampaignById(campaignId as string, req)
     .then(({ campaign, isOwner }) => {
       if (isOwner) {
-        // campaign.code = uuidv4();
-        // campaign
-        //   .save()
-        //   .then(() => {
-        //     res.send({
-        //       message: 'Campaign code was changed successfully!',
-        //       campaign,
-        //     });
-        //   })
-        //   .catch((err: unknown) => {
-        //     res.status(500).send(gemServerError(err));
-        //   });
+        findLeanArcanes()
+          .then((arcanes) => {
+            const deck = new Deck(undefined, arcanes);
+            deck.shuffle();
+            campaign.deck = deck.deckToString;
+            campaign.discard = '';
+            campaign
+              .save()
+              .then(() => {
+                res.send({ deck: deck.deck, discard: '' });
+              })
+              .catch((err: unknown) => {
+                res.status(500).send(gemServerError(err));
+              });
+          })
+          .catch(() => {
+            res.status(404).send(gemNotFound('Arcanes'));
+          });
       } else {
         res.status(404).send(gemNotFound('Campaign'));
       }
@@ -403,13 +410,18 @@ const findSingle = (req: Request, res: Response): void => {
     return;
   }
   findCompleteCampaignById(campaignId, req)
-    .then(({ campaign, isOwner }) =>
+    .then(({ campaign, isOwner }) => {
+      const deck = new Deck(campaign.deck);
+      deck.hideIfUser(isOwner);
+
+      const discard = new Deck(campaign.discard);
+      discard.hideIfUser(isOwner);
       res.send({
         ...campaign,
-        deck: new Deck(isOwner, campaign.deck).deck,
-        discard: new Deck(isOwner, campaign.discard).deck,
-      })
-    )
+        deck: deck.deck,
+        discard: discard.deck,
+      });
+    })
     .catch((err) => res.status(404).send(err));
 };
 
@@ -441,5 +453,5 @@ export {
   register,
   unregister,
   update,
-  createNewDeck,
+  shuffleDeck,
 };

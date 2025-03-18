@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { ICampaign } from '../../types';
+import type { ICampaign, IDeck } from '../../types';
 
 interface ICampaignPayload {
   campaignId: string;
@@ -17,6 +17,7 @@ export default class Campaigns extends Entity<ICampaignPayload, ICampaign, ICamp
   unregister: (payload: ICampaignPayload) => Promise<boolean>;
   find: (payload: ICampaignCodePayload) => Promise<ICampaign>;
   generateCode: (payload: ICampaignPayload) => Promise<ICampaign>;
+  shuffleDeck: (payload: ICampaignPayload) => Promise<{ deck: IDeck; discard: IDeck }>;
 
   constructor() {
     super('campaigns');
@@ -61,6 +62,18 @@ export default class Campaigns extends Entity<ICampaignPayload, ICampaign, ICamp
       await new Promise((resolve, reject) => {
         axios
           .post(`${this.url}/generatecode/`, payload)
+          .then((res) => {
+            resolve(res.data as ICampaign);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+
+    this.shuffleDeck = async (payload) =>
+      await new Promise((resolve, reject) => {
+        axios
+          .post(`${this.url}/shuffledeck/`, payload)
           .then((res) => {
             resolve(res.data as ICampaign);
           })

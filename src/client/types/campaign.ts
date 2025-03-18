@@ -22,11 +22,15 @@ export interface ICuratedArcane {
 }
 
 export type ICard =
-  | ICuratedArcane
   | {
-      suit?: string;
-      number?: number;
-      hiddenCard: boolean;
+      _id: string;
+    }
+  | {
+      suit: string;
+      number: number;
+    }
+  | {
+      hidden: true;
     };
 
 export type IDeck = ICard[];

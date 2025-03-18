@@ -12,7 +12,7 @@ import {
   register,
   unregister,
   update,
-  createNewDeck,
+  shuffleDeck,
 } from './controller';
 
 export default (app: Router): void => {
@@ -39,5 +39,5 @@ export default (app: Router): void => {
 
   app.post('/campaigns/delete', [verifyToken], deleteCampaign);
 
-  app.post('/campaigns/newdeck', [verifyToken], createNewDeck);
+  app.post('/campaigns/shuffledeck', [verifyToken], shuffleDeck);
 };
