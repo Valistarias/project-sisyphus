@@ -25,11 +25,11 @@
       align-items: center;
       background: var(--primary-10);
       border: 1px solid var(--primary-20);
-      border-radius: 2rem;
+      border-radius: var(--border-radius-card);
       display: flex;
-      height: 33rem;
+      height: var(--height-card-large);
       justify-content: center;
-      width: 18rem;
+      width: var(--width-card-large);
 
       &__empty {
         color: var(--primary-20);

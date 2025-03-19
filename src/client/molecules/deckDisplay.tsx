@@ -21,6 +21,8 @@ interface IDeckDisplay {
 const DeckDisplay: FC<IQuarkProps<IDeckDisplay>> = ({ campaign, onShuffle }) => {
   const { t } = useTranslation();
 
+  console.log('campaign', campaign);
+
   return (
     <div className="deck-display">
       <div className="deck-display__piles">
