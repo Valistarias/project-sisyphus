@@ -28,7 +28,6 @@ const ANodeIcon: FC<IQuarkProps<IANodeIcon>> = ({
   size = 'medium',
   className,
   rarity,
-  onClick,
   animated = false,
 }) => {
   const classes = useMemo<string>(

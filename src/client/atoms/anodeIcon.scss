@@ -68,16 +68,16 @@
 
   // Icons ----
 
-  &--artnet::before {
-    content: '\e900';
-  }
-
   &--adn::before {
     content: '\e901';
   }
 
   &--animalhandl::before {
     content: '\e902';
+  }
+
+  &--artnet::before {
+    content: '\e900';
   }
 
   &--arts::before {
@@ -104,6 +104,10 @@
     content: '\e908';
   }
 
+  &--cog::before {
+    content: '\e93f';
+  }
+
   &--connected::before {
     content: '\e909';
   }
@@ -120,287 +124,299 @@
     content: '\e90c';
   }
 
-  &--endu::before {
+  &--eidoloneye::before {
     content: '\e90d';
   }
 
-  &--energy::before {
+  &--endu::before {
     content: '\e90e';
   }
 
-  &--energyhammer::before {
+  &--energy::before {
     content: '\e90f';
   }
 
-  &--energyrifle::before {
+  &--energyhammer::before {
     content: '\e910';
   }
 
-  &--energysword::before {
+  &--energyrifle::before {
     content: '\e911';
   }
 
-  &--engine::before {
+  &--energysword::before {
     content: '\e912';
   }
 
-  &--expertise::before {
+  &--engine::before {
     content: '\e913';
   }
 
-  &--explosion::before {
+  &--expertise::before {
     content: '\e914';
   }
 
-  &--fight::before {
+  &--explosion::before {
     content: '\e915';
   }
 
-  &--finesse::before {
+  &--fight::before {
     content: '\e916';
   }
 
-  &--firearm::before {
+  &--finesse::before {
     content: '\e917';
   }
 
-  &--flask::before {
+  &--firearm::before {
     content: '\e918';
   }
 
-  &--formation::before {
+  &--flame::before {
     content: '\e919';
   }
 
-  &--gatling::before {
+  &--flask::before {
     content: '\e91a';
   }
 
-  &--genknow::before {
+  &--formation::before {
     content: '\e91b';
   }
 
-  &--gravity::before {
+  &--gatling::before {
     content: '\e91c';
   }
 
-  &--grenade::before {
+  &--genknow::before {
     content: '\e91d';
   }
 
-  &--harmonisation::before {
+  &--gravity::before {
     content: '\e91e';
   }
 
-  &--heart::before {
+  &--grenade::before {
     content: '\e91f';
   }
 
-  &--heavyhammer::before {
+  &--harmonisation::before {
     content: '\e920';
   }
 
-  &--heavysword::before {
+  &--heart::before {
     content: '\e921';
   }
 
-  &--heavyweapons::before {
+  &--heavyhammer::before {
     content: '\e922';
   }
 
-  &--improvised::before {
+  &--heavysword::before {
     content: '\e923';
   }
 
-  &--insigna::before {
+  &--heavyweapons::before {
     content: '\e924';
   }
 
-  &--intimidation::before {
+  &--hourglass::before {
     content: '\e925';
   }
 
-  &--jetset::before {
+  &--improvised::before {
     content: '\e926';
   }
 
-  &--katana::before {
+  &--insigna::before {
     content: '\e927';
   }
 
-  &--key::before {
+  &--intimidation::before {
     content: '\e928';
   }
 
-  &--knife::before {
+  &--jetset::before {
     content: '\e929';
   }
 
-  &--lance::before {
+  &--katana::before {
     content: '\e92a';
   }
 
-  &--languages::before {
+  &--key::before {
     content: '\e92b';
   }
 
-  &--leadership::before {
+  &--knife::before {
     content: '\e92c';
   }
 
-  &--logo::before {
+  &--lance::before {
     content: '\e92d';
   }
 
-  &--maitrisesoi::before {
+  &--languages::before {
     content: '\e92e';
   }
 
-  &--martial::before {
+  &--leadership::before {
     content: '\e92f';
   }
 
-  &--medicine::before {
+  &--logo::before {
     content: '\e930';
   }
 
-  &--missileweapon::before {
+  &--maitrisesoi::before {
     content: '\e931';
   }
 
-  &--orientation::before {
+  &--martial::before {
     content: '\e932';
   }
 
-  &--parkour::before {
+  &--medicine::before {
     content: '\e933';
   }
 
-  &--perception::before {
+  &--missileweapon::before {
     content: '\e934';
   }
 
-  &--persuade::before {
+  &--orientation::before {
     content: '\e935';
   }
 
-  &--pistol::before {
+  &--parkour::before {
     content: '\e936';
   }
 
-  &--psych::before {
+  &--perception::before {
     content: '\e937';
   }
 
-  &--raisonn::before {
+  &--persuade::before {
     content: '\e938';
   }
 
-  &--repair::before {
+  &--pistol::before {
     content: '\e939';
   }
 
-  &--rifle::before {
+  &--psych::before {
     content: '\e93a';
   }
 
-  &--rocket::before {
+  &--raisonn::before {
     content: '\e93b';
   }
 
-  &--run::before {
+  &--repair::before {
     content: '\e93c';
   }
 
-  &--scroll::before {
+  &--rifle::before {
     content: '\e93d';
   }
 
-  &--hourglass::before {
+  &--rocket::before {
     content: '\e93e';
   }
 
-  &--cog::before {
-    content: '\e93f';
-  }
-
-  &--shield::before {
+  &--run::before {
     content: '\e940';
   }
 
-  &--shotgun::before {
+  &--scale::before {
     content: '\e941';
   }
 
-  &--shotgunshells::before {
+  &--scroll::before {
     content: '\e942';
   }
 
-  &--shuriken::before {
+  &--shield::before {
     content: '\e943';
   }
 
-  &--smg::before {
+  &--shotgun::before {
     content: '\e944';
   }
 
-  &--sniper::before {
+  &--shotgunshells::before {
     content: '\e945';
   }
 
-  &--sof::before {
+  &--shuriken::before {
     content: '\e946';
   }
 
-  &--soh::before {
+  &--smg::before {
     content: '\e947';
   }
 
-  &--spark::before {
+  &--sniper::before {
     content: '\e948';
   }
 
-  &--spider::before {
+  &--sof::before {
     content: '\e949';
   }
 
-  &--star::before {
+  &--soh::before {
     content: '\e94a';
   }
 
-  &--stealth::before {
+  &--spark::before {
     content: '\e94b';
   }
 
-  &--survival::before {
+  &--spider::before {
     content: '\e94c';
   }
 
-  &--swim::before {
+  &--star::before {
     content: '\e94d';
   }
 
-  &--sword::before {
+  &--star2::before {
     content: '\e94e';
   }
 
-  &--syringe::before {
+  &--stealth::before {
     content: '\e94f';
   }
 
-  &--tactic::before {
+  &--survival::before {
     content: '\e950';
   }
 
-  &--throwable::before {
+  &--swim::before {
     content: '\e951';
   }
 
-  &--time::before {
+  &--sword::before {
     content: '\e952';
   }
 
-  &--vault::before {
+  &--syringe::before {
     content: '\e953';
+  }
+
+  &--tactic::before {
+    content: '\e954';
+  }
+
+  &--throwable::before {
+    content: '\e955';
+  }
+
+  &--time::before {
+    content: '\e956';
+  }
+
+  &--vault::before {
+    content: '\e957';
   }
 }
