@@ -16,6 +16,7 @@ import type {
   INode,
   ISkill,
 } from '../types';
+import type { TypeNodeIcons } from '../types/rules';
 
 export interface ICyberFrameLevels {
   cyberFrame: ICuratedCyberFrame;
@@ -462,6 +463,17 @@ const getBaseSkillNode = (skill: ISkill): ICuratedNode | undefined => {
   return generalNodes?.find(({ node }) => node.rank === 1);
 };
 
+const arcaneNameToNodeIcon = (arcanaName: string): TypeNodeIcons => {
+  const table: Record<string, TypeNodeIcons> = {
+    wisdom: 'star',
+    courage: 'flame',
+    justice: 'scale',
+    temperance: 'hourglass',
+  };
+
+  return table[arcanaName];
+};
+
 const malusStatMod = -5;
 const calculateStatMod = (val: number): number => val + malusStatMod;
 const calculateStatModToString = (val: number): string => addSymbol(calculateStatMod(val));
@@ -477,5 +489,6 @@ export {
   getBaseSkillNode,
   getCharacterHpValues,
   getCyberFrameLevelsByNodes,
+  arcaneNameToNodeIcon,
   malusStatMod,
 };

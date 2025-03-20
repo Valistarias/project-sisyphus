@@ -1,4 +1,13 @@
-import type { ICampaign, IArcane, ICuratedArcane, ICard, IDeck } from './campaign';
+import type {
+  ICampaign,
+  IArcane,
+  ICuratedArcane,
+  ICard,
+  IDeck,
+  IBasicArcaneCard,
+  INumberCard,
+  IHiddenCard,
+} from './campaign';
 import type {
   IBody,
   IBodyAmmo,
@@ -109,6 +118,9 @@ import type {
 
 export type {
   ErrorResponseType,
+  IBasicArcaneCard,
+  INumberCard,
+  IHiddenCard,
   IAction,
   IActionDuration,
   IActionType,

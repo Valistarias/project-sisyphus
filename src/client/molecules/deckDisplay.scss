@@ -27,6 +27,8 @@
       border: 1px solid var(--primary-20);
       border-radius: var(--border-radius-card);
       display: flex;
+      // Temp
+      flex-wrap: wrap;
       height: var(--height-card-large);
       justify-content: center;
       width: var(--width-card-large);

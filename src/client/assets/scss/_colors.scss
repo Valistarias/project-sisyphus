@@ -8,6 +8,7 @@ $green: #39f21d;
 $red: #ff3d3d;
 $blue: #3de8ff;
 $blue-dark: #092225;
+$blue-darker: #050f10;
 $purple: #bd47b3;
 $purple-dark: #59121f;
 
@@ -64,6 +65,7 @@ $purple-dark: #59121f;
   --primary-dark-10: #{$blue-dark}19;
   --primary-dark-05: #{$blue-dark}0d;
   --primary-dark-00: #{$blue-dark}00;
+  --primary-darker: #{$blue-darker};
   --secondary: #{$purple};
   --secondary-80: #{$purple}cc;
   --secondary-60: #{$purple}99;

@@ -1,5 +1,6 @@
 import { Ariane, type IArianeElt } from './ariane';
 import Button from './button';
+import Card from './card';
 import Checkbox from './checkbox';
 import ClickableText from './clickableText';
 import CopyField from './copyField';
@@ -31,6 +32,7 @@ export {
   ClickableText,
   DetailsBonuses,
   DiceCard,
+  Card,
   DropDownMenu,
   EmbedNotion,
   Helper,

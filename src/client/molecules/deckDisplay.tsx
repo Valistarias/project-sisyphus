@@ -1,10 +1,11 @@
-import React, { type FC } from 'react';
+import React, { useEffect, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { Ap } from '../atoms';
 
 import Button from './button';
+import Card from './card';
 
 import type { IQuarkProps } from '../quark';
 import type { ICampaign } from '../types';
@@ -21,7 +22,11 @@ interface IDeckDisplay {
 const DeckDisplay: FC<IQuarkProps<IDeckDisplay>> = ({ campaign, onShuffle }) => {
   const { t } = useTranslation();
 
-  console.log('campaign', campaign);
+  const [cardFlipped, setCardFlipped] = useState<boolean[]>([]);
+
+  useEffect(() => {
+    setCardFlipped(() => campaign.deck.map(() => false));
+  }, [campaign]);
 
   return (
     <div className="deck-display">
@@ -33,7 +38,28 @@ const DeckDisplay: FC<IQuarkProps<IDeckDisplay>> = ({ campaign, onShuffle }) => 
           <div className="deck-display__pile__base">
             {campaign.deck.length === 0 ? (
               <Ap className="deck-display__pile__base__empty">/</Ap>
-            ) : null}
+            ) : (
+              campaign.deck.map((card, i) => (
+                <Card
+                  card={card}
+                  key={i}
+                  flipped={!!cardFlipped[i]}
+                  onClick={() => {
+                    setCardFlipped((prev) => {
+                      const newArr = prev.map((prevBool, index) => {
+                        if (i === index) {
+                          return !prevBool;
+                        } else {
+                          return prevBool;
+                        }
+                      });
+
+                      return newArr;
+                    });
+                  }}
+                />
+              ))
+            )}
           </div>
         </div>
         <div className="deck-display__pile">

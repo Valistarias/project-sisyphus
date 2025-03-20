@@ -21,17 +21,20 @@ export interface ICuratedArcane {
   arcane: IArcane;
 }
 
-export type ICard =
-  | {
-      _id: string;
-    }
-  | {
-      suit: string;
-      number: number;
-    }
-  | {
-      hidden: true;
-    };
+export interface IBasicArcaneCard {
+  _id: string;
+}
+
+export interface INumberCard {
+  suit: string;
+  number: number;
+}
+
+export interface IHiddenCard {
+  hidden: true;
+}
+
+export type ICard = IBasicArcaneCard | INumberCard | IHiddenCard;
 
 export type IDeck = ICard[];
 
