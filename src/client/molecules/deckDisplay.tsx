@@ -42,8 +42,9 @@ const DeckDisplay: FC<IQuarkProps<IDeckDisplay>> = ({ campaign, onShuffle }) => 
               campaign.deck.map((card, i) => (
                 <Card
                   card={card}
-                  key={i}
                   flipped={!!cardFlipped[i]}
+                  key={i}
+                  className="deck-display__pile__base__elt"
                   onClick={() => {
                     setCardFlipped((prev) => {
                       const newArr = prev.map((prevBool, index) => {
