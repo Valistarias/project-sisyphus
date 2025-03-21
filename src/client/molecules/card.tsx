@@ -5,10 +5,12 @@ import { useGlobalVars } from '../providers';
 
 import holoBackground from '../assets/imgs/hologrambg.png';
 import { AnodeIcon, Ap } from '../atoms';
+import ANodeIcon from '../atoms/anodeIcon';
 import { arcaneNameToNodeIcon } from '../utils/character';
 
 import type { IQuarkProps } from '../quark';
 import type { IBasicArcaneCard, ICard, INumberCard } from '../types';
+import type { TypeNodeIcons } from '../types/rules';
 
 import { classTrim, romanize } from '../utils';
 
@@ -40,11 +42,21 @@ const Card: FC<IQuarkProps<ICardComponent>> = ({ card, onClick, flipped, classNa
         return <div className="card__front card__front--arcana" />;
       }
 
+      const roman = arcane.arcane.number !== 0 ? romanize(arcane.arcane.number) : ' ';
+
       return (
         <div className="card__front card__front--arcana">
           <div className="card__front__line" />
-          <Ap className="card__front__top-text">{romanize(arcane.arcane.number)}</Ap>
-          <Ap className="card__front__bottom-text">{romanize(arcane.arcane.number)}</Ap>
+          <Ap className="card__front__top-text">{roman}</Ap>
+          <Ap className="card__front__bottom-text">{roman}</Ap>
+          <ANodeIcon
+            className="card__front__image"
+            type={`tarot${arcane.arcane.number}` as TypeNodeIcons}
+          />
+          <ANodeIcon
+            className="card__front__image-accent"
+            type={`tarot${arcane.arcane.number}` as TypeNodeIcons}
+          />
         </div>
       );
     }

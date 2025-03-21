@@ -28,6 +28,7 @@
   &__front {
     background: var(--primary-darker);
     box-shadow: 0 0 1rem 0.2rem var(--primary-20);
+    overflow: hidden;
     transform: rotateY(180deg);
 
     &--arcana {
@@ -58,6 +59,27 @@
       .card__front__bottom-text {
         bottom: 5%;
         transform: translate3d(-50%, 50%, 0) rotate(180deg);
+      }
+
+      .card__front__image,
+      .card__front__image-accent {
+        align-items: center;
+        display: flex;
+        font-size: 1000%;
+        height: 100%;
+        justify-content: center;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+      }
+
+      .card__front__image {
+        text-shadow: 0 0 6rem var(--primary);
+      }
+
+      .card__front__image-accent {
+        text-shadow: 0 0 1rem var(--tertiary-40);
       }
     }
 
