@@ -7,6 +7,7 @@ import CopyField from './copyField';
 import DeckDisplay from './deckDisplay';
 import DetailsBonuses from './detailsBonuses';
 import DiceCard from './diceCard';
+import DiceRoller from './diceRoller';
 import DropDownMenu from './dropDownMenu';
 import EmbedNotion from './embedNotion';
 import Helper from './helper';
@@ -35,6 +36,7 @@ export {
   Card,
   DropDownMenu,
   EmbedNotion,
+  DiceRoller,
   Helper,
   Highlight,
   HintButton,

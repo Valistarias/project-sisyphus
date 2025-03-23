@@ -1,0 +1,87 @@
+.dice-roller {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  position: relative;
+
+  &__char {
+    align-items: center;
+    background: var(--primary-dark);
+    display: flex;
+    font-family: var(--mono-font);
+    justify-content: center;
+    letter-spacing: -0.2rem;
+    position: relative;
+
+    &__icon {
+      fill: var(--primary);
+      height: 20rem;
+      opacity: 0.1;
+      pointer-events: none;
+      position: absolute;
+      right: 0;
+      top: calc(50% - 10rem);
+      width: 20rem;
+      z-index: 1;
+    }
+
+    &--first,
+    &--last {
+      background: transparent;
+    }
+
+    &--rounding {
+      background: var(--primary-darker);
+      color: var(--font-color-50);
+    }
+
+    &--cursor {
+      background: var(--primary);
+      color: var(--primary);
+
+      .dice-roller__char__icon {
+        opacity: 0;
+      }
+    }
+
+    &--last {
+      opacity: 0;
+    }
+  }
+
+  &--small {
+    .dice-roller__char {
+      font-size: 2rem;
+      height: 3rem;
+      width: 2rem;
+    }
+  }
+
+  &--medium {
+    .dice-roller__char {
+      font-size: 3rem;
+      height: 5rem;
+      width: 3rem;
+    }
+  }
+
+  &--large {
+    gap: 2rem;
+
+    .dice-roller__char {
+      font-size: 5rem;
+      height: 8rem;
+      width: 5rem;
+    }
+  }
+
+  &--xlarge {
+    gap: 2rem;
+
+    .dice-roller__char {
+      font-size: 12rem;
+      height: 16rem;
+      width: 12rem;
+    }
+  }
+}

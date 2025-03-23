@@ -6,6 +6,7 @@ import { ConfirmMessageProvider, useConfirmMessage } from './confirmMessage';
 import { GlobalVarsProvider, useGlobalVars } from './globalVars';
 import { LangProvider, useLang } from './lang';
 import { SocketProvider, useSocket } from './socket';
+import { SoundSystemProvider, useSoundSystem } from './soundSystem';
 import { SystemAlertsProvider, useSystemAlerts } from './systemAlerts';
 import { ThemeProvider, useTheme } from './theme';
 
@@ -22,7 +23,9 @@ const Providers: FC<ProviderProps> = ({ children }) => (
           <SocketProvider>
             <SystemAlertsProvider>
               <ConfirmMessageProvider>
-                <CampaignEventWindowProvider>{children}</CampaignEventWindowProvider>
+                <SoundSystemProvider>
+                  <CampaignEventWindowProvider>{children}</CampaignEventWindowProvider>
+                </SoundSystemProvider>
               </ConfirmMessageProvider>
             </SystemAlertsProvider>
           </SocketProvider>
@@ -42,4 +45,5 @@ export {
   useSocket,
   useSystemAlerts,
   useTheme,
+  useSoundSystem,
 };

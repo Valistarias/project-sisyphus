@@ -3,10 +3,16 @@ import React, { useCallback, useEffect, useRef, useState, type FC } from 'react'
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
+import {
+  useApi,
+  useConfirmMessage,
+  useGlobalVars,
+  useSoundSystem,
+  useSystemAlerts,
+} from '../../../providers';
 
 import { Ap, Atitle } from '../../../atoms';
-import { CopyField, DeckDisplay } from '../../../molecules';
+import { Button, CopyField, DeckDisplay } from '../../../molecules';
 import { Alert } from '../../../organisms';
 import { ErrorPage } from '../../index';
 
@@ -21,6 +27,7 @@ const Campaign: FC = () => {
   const { createAlert, getNewId } = useSystemAlerts();
   const { id } = useParams();
   const { user } = useGlobalVars();
+  const { tone } = useSoundSystem();
   const { setConfirmContent, removeConfirmEventListener, addConfirmEventListener } =
     useConfirmMessage();
 
@@ -160,6 +167,7 @@ const Campaign: FC = () => {
           <Ap className="campaign__secondary__join__details">
             {t('campaign.invite.details', { ns: 'pages' })}
           </Ap>
+          <Button onClick={tone}>Test Sound</Button>
         </div>
       </div>
     </div>

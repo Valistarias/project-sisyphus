@@ -128,6 +128,15 @@ export interface DiceResult {
   offset: number;
 }
 
+export interface UniqueResultDiceData {
+  /** The ID of the dice element */
+  id: string;
+  /** The type of dice */
+  type: TypeDice;
+  /** The value of the dice */
+  value: number;
+}
+
 interface TotalResult {
   /** All the results, summed up */
   total: number;

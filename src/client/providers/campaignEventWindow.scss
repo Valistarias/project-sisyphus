@@ -7,166 +7,35 @@
   width: calc(100% - var(--header-width));
   z-index: 2;
 
+  &__window,
+  &__shadow {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
   &__shadow {
     background: var(--background-color);
     height: 100%;
     left: 0;
-    opacity: 0;
+
     position: absolute;
     top: 0;
-    transition: opacity 0.5s ease;
+
     width: 100%;
     z-index: 0;
   }
 
   &__window {
+    align-content: center;
     align-items: center;
     display: flex;
     flex-direction: column;
-    gap: 3rem;
+    gap: 6rem;
     height: 100%;
-    justify-content: space-evenly;
-    left: 50%;
-    opacity: 0;
-    padding: 2rem;
-    pointer-events: none;
-    position: absolute;
-    top: 50%;
-    transform: translate3d(-50%, -50%, 0);
-    transition: opacity 0.2s ease;
+    justify-content: center;
+    position: relative;
     width: 100%;
     z-index: 1;
-
-    &__close {
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s ease 0.2s;
-    }
-
-    &__content {
-      align-items: center;
-      display: flex;
-      gap: 5rem;
-    }
-
-    &__values {
-      align-items: center;
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      gap: 4rem;
-      justify-content: center;
-      max-height: 80vh;
-      max-width: 80rem;
-      overflow-x: none;
-      overflow-y: none;
-      padding: 3rem;
-      pointer-events: none;
-    }
-
-    &__results {
-      background-color: var(--primary-05);
-      border: 1px solid var(--primary);
-      border-radius: var(--border-radius);
-      box-shadow: 0 0 2rem var(--primary-10);
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      opacity: 0;
-      padding: 4rem;
-      position: relative;
-      transform: scale3d(1, 0, 1) skew(20deg, 10deg);
-      transition:
-        transform 0.5s ease-out,
-        opacity 0.01s ease;
-
-      &::before {
-        background: var(--background-color);
-        content: '';
-        height: 100%;
-        left: 0;
-        opacity: 0.9;
-        position: absolute;
-        top: 0;
-        width: 100%;
-        z-index: -1;
-      }
-
-      &__line {
-        background: var(--tertiary);
-        height: 1px;
-        margin-bottom: 3rem;
-        margin-top: 1rem;
-        width: 100%;
-      }
-
-      &__title {
-        font-size: 2rem;
-        font-weight: 100;
-        letter-spacing: 1.5rem;
-        margin-right: -1.5rem;
-        text-transform: uppercase;
-      }
-
-      &__value {
-        font-family: var(--mono-font);
-        font-size: 10rem;
-        font-weight: 300;
-      }
-
-      &__info {
-        align-items: center;
-        display: flex;
-        gap: 4rem;
-
-        .roll-window {
-          &__window__results__title {
-            font-size: 1.4rem;
-            margin-right: -1rem;
-          }
-
-          &__window__results__value {
-            font-size: 6rem;
-          }
-        }
-      }
-
-      &__info__block,
-      &__total {
-        align-items: center;
-        display: flex;
-        flex-direction: column;
-      }
-    }
-  }
-
-  // Changes ------------------------------------------------
-
-  &--card-small {
-    .roll-window__window {
-      &__values {
-        gap: 1rem;
-        max-width: 70rem;
-      }
-    }
-  }
-
-  &--card-large {
-    .roll-window__window {
-      &__values {
-        max-width: 85rem;
-        padding: 8rem;
-      }
-    }
-  }
-
-  &--card-single {
-    .roll-window__window {
-      &__values {
-        max-width: 85rem;
-        padding: 0;
-      }
-    }
   }
 
   // States ------------------------------------------------
@@ -175,7 +44,7 @@
     pointer-events: all;
 
     .roll-window__shadow {
-      opacity: 0.9;
+      opacity: 0.95;
       transition: opacity 1s ease;
     }
 
@@ -183,37 +52,6 @@
       opacity: 1;
 
       &__values {
-        pointer-events: all;
-      }
-    }
-  }
-
-  &--safe-mode.roll-window--open {
-    .roll-window__window {
-      &__values {
-        overflow-x: hidden;
-        overflow-y: hidden;
-      }
-    }
-  }
-
-  &--end.roll-window--open {
-    .roll-window__window {
-      &__values {
-        overflow-x: hidden;
-        overflow-y: auto;
-      }
-
-      &__results {
-        opacity: 1;
-        transform: scale3d(1, 1, 1) skew(0deg, 0deg);
-        transition:
-          transform 0.2s cubic-bezier(0.2, 0.99, 0.65, 1.17),
-          opacity 0.1s ease;
-      }
-
-      &__close {
-        opacity: 1;
         pointer-events: all;
       }
     }
