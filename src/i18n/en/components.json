@@ -85,10 +85,8 @@
     }
   },
   "rollWindow": {
-    "total": "Total",
-    "best": "Best",
-    "worst": "Worst",
-    "close": "Close"
+    "bonus": "Bonus",
+    "done": "Done"
   },
   "smartselect": {
     "placeholder": "Select one...",

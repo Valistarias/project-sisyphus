@@ -82,7 +82,7 @@ const CharacterSkills: FC<ICharacterSkills> = ({ className, onRollDices }) => {
                   [
                     {
                       qty: 2,
-                      type: 8,
+                      type: 10,
                       offset: calculateStatMod(stat.score.total),
                     },
                   ],
@@ -128,7 +128,7 @@ const CharacterSkills: FC<ICharacterSkills> = ({ className, onRollDices }) => {
                 [
                   {
                     qty: 2,
-                    type: 8,
+                    type: 10,
                     offset: skill.score.total,
                   },
                 ],

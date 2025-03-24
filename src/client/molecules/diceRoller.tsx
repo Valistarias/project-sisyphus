@@ -4,6 +4,8 @@ import { useSoundSystem } from '../providers';
 
 import { Aicon, type typeIcons } from '../atoms';
 
+import DiceRollerCharacter from './diceRollerCharacter';
+
 import { classTrim, type UniqueResultDiceData } from '../utils';
 
 import './diceRoller.scss';
@@ -17,12 +19,20 @@ interface IDiceRoller {
   onAnimationEnd: () => void;
   /** The size of the dice roller */
   size?: 'xlarge' | 'large' | 'medium' | 'small';
+  /** Is an icon present with the roller */
+  withIcon: boolean;
 }
 
 const speedTick = 80;
 const speedMidPause = 1000;
 
-const DiceRoller: FC<IDiceRoller> = ({ position, value, onAnimationEnd, size = 'medium' }) => {
+const DiceRoller: FC<IDiceRoller> = ({
+  position,
+  value,
+  onAnimationEnd,
+  size = 'medium',
+  withIcon,
+}) => {
   const [randomBinary, setRandomBinary] = useState<number[]>([]);
   const rollingRandom = useRef(true);
   const basicAnimationRolling = useRef(false);
@@ -144,21 +154,38 @@ const DiceRoller: FC<IDiceRoller> = ({ position, value, onAnimationEnd, size = '
       className={classTrim(`
         dice-roller
         dice-roller--${size}
+        ${withIcon ? 'dice-roller--with-icon' : ''}
       `)}
     >
-      <div
+      <DiceRollerCharacter
+        className="dice-roller__char dice-roller__char--first"
+        val={
+          withIcon ? (
+            <Aicon
+              type={`D${value.type}` as typeIcons}
+              className="dice-roller__char__icon"
+              size="large"
+            />
+          ) : null
+        }
+        cursor={cursorPos === 0}
+        size={size}
+      />
+      {/* <div
         className={classTrim(`
             dice-roller__char
             dice-roller__char--first
             ${cursorPos === 0 ? 'dice-roller__char--cursor' : ''}
           `)}
       >
-        <Aicon
-          type={`D${value.type}` as typeIcons}
-          className="dice-roller__char__icon"
-          size="large"
-        />
-      </div>
+        {withIcon && (
+          <Aicon
+            type={`D${value.type}` as typeIcons}
+            className="dice-roller__char__icon"
+            size="large"
+          />
+        )}
+      </div> */}
       {binaryCharacters.map((_, index) => {
         let val = 0;
         if (mode === 'randToBin') {
@@ -176,20 +203,16 @@ const DiceRoller: FC<IDiceRoller> = ({ position, value, onAnimationEnd, size = '
         }
 
         return (
-          <div
+          <DiceRollerCharacter
             key={index}
-            className={classTrim(`
-            dice-roller__char
-            ${cursorPos === index + 1 ? 'dice-roller__char--cursor' : ''}
-            ${
+            className="dice-roller__char"
+            val={val}
+            cursor={cursorPos === index + 1}
+            faded={
               mode === 'binToDec' && cursorPos >= index + 2 && decimalCharacters[index].rounding
-                ? 'dice-roller__char--rounding'
-                : ''
             }
-          `)}
-          >
-            {val}
-          </div>
+            size={size}
+          />
         );
       })}
       <div
@@ -199,6 +222,7 @@ const DiceRoller: FC<IDiceRoller> = ({ position, value, onAnimationEnd, size = '
           ${cursorPos === randomBinary.length + 1 ? 'dice-roller__char--cursor' : ''}
         `)}
       />
+      <DiceRollerCharacter className="dice-roller__char dice-roller__char--last" size={size} />
     </div>
   );
 };

@@ -26,7 +26,7 @@ const CharacterStatus: FC<ICharacterStatus> = ({ className, onRollDices }) => {
         [
           {
             qty: 2,
-            type: 8,
+            type: 10,
             offset,
           },
         ],

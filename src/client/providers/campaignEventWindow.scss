@@ -26,16 +26,112 @@
   }
 
   &__window {
-    align-content: center;
     align-items: center;
     display: flex;
     flex-direction: column;
-    gap: 6rem;
+    gap: 8rem;
     height: 100%;
     justify-content: center;
     position: relative;
     width: 100%;
     z-index: 1;
+
+    &__dices {
+      align-content: center;
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      gap: 6rem;
+      justify-content: center;
+    }
+
+    &__bonuses {
+      border: 0.1rem solid var(--primary);
+      opacity: 0;
+      padding: 2rem;
+      position: relative;
+      transition: opacity 0.5s ease;
+
+      &__text {
+        align-items: center;
+        display: flex;
+        font-family: var(--mono-font);
+        font-size: 2rem;
+        height: 4rem;
+        justify-content: center;
+        left: 2rem;
+        padding: 0 2rem;
+        position: absolute;
+        text-transform: uppercase;
+        top: -2rem;
+        z-index: 1;
+
+        &::before {
+          background: var(--vanta);
+          content: '';
+          height: 0.2rem;
+          left: 0;
+          position: absolute;
+          top: calc(50% - 0.1rem);
+          width: 100%;
+          z-index: -1;
+        }
+      }
+
+      &__total {
+        align-items: center;
+        display: flex;
+        flex-direction: row;
+        gap: 2rem;
+        justify-content: center;
+
+        &__plus {
+          color: var(--primary);
+          font-size: 6rem;
+          font-weight: 100;
+        }
+      }
+    }
+
+    &__total {
+      display: flex;
+      flex-direction: row;
+      gap: 4rem;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    &__interactions {
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+  }
+
+  &--bonus {
+    .roll-window__window__bonuses {
+      opacity: 1;
+    }
+  }
+
+  &--total {
+    .roll-window__window__total {
+      opacity: 1;
+    }
+  }
+
+  &--interact {
+    .roll-window__window__interactions {
+      opacity: 1;
+    }
+  }
+
+  &--large {
+    .roll-window__window {
+      &__dices {
+        flex-direction: row;
+        gap: 8rem;
+      }
+    }
   }
 
   // States ------------------------------------------------
@@ -44,7 +140,7 @@
     pointer-events: all;
 
     .roll-window__shadow {
-      opacity: 0.95;
+      opacity: 0.98;
       transition: opacity 1s ease;
     }
 

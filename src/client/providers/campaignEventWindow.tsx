@@ -9,6 +9,10 @@ import React, {
   type ReactNode,
 } from 'react';
 
+import { useTranslation } from 'react-i18next';
+
+import { Ap } from '../atoms';
+import { Button, DiceRoller, DiceRollerCharacter } from '../molecules';
 import CustomEventEmitter from '../utils/eventEmitter';
 
 import type { TypeCampaignEvent } from '../types';
@@ -22,8 +26,6 @@ import {
 } from '../utils';
 
 import './campaignEventWindow.scss';
-import { DiceRoller } from '../molecules';
-
 export interface CampaignEventDetailData {
   result: number;
   formula?: string;
@@ -52,10 +54,19 @@ const CampaignEventWindowContext = React.createContext<ICampaignEventWindowConte
 );
 
 export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> = ({ children }) => {
-  // const { t } = useTranslation();
+  const { t } = useTranslation();
   const CampaignEvent = useMemo(() => new CustomEventEmitter<CampaignEventDetailData>(), []);
 
   const [dicesToRoll, setDicesToRoll] = useState<DiceRequest[] | null>(null);
+
+  const [bonus, setBonus] = useState<string>('00');
+  const [displayBonus, setDisplayBonus] = useState<boolean>(false);
+
+  const [total, setTotal] = useState<string>('000');
+  const [displayTotal, setDisplayTotal] = useState<boolean>(false);
+
+  const [isInteractive, setIsInteractive] = useState<boolean>(false);
+  const [displayInteractiveButtons, setDisplayInteractiveButtons] = useState<boolean>(false);
 
   const [isWindowOpened, setWindowOpened] = useState<boolean>(false);
   // const [isCampaignEventFinished, setRollEventFinished] = useState<boolean>(false);
@@ -67,23 +78,23 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
   const rollResults = useRef<DiceResult[] | null>(null);
   // const tick = useRef<number>(0);
 
-  // const cardMode = useMemo(() => {
-  //   let diceCount = 0;
-  //   dicesToRoll?.forEach(({ qty }) => {
-  //     diceCount += qty;
-  //   });
-  //   if (diceCount === 1) {
-  //     return 'single';
-  //   }
-  //   if (diceCount <= 3) {
-  //     return 'large';
-  //   }
-  //   if (diceCount <= 6) {
-  //     return 'medium';
-  //   }
+  const diceRollerMode = useMemo(() => {
+    let diceCount = 0;
+    dicesToRoll?.forEach(({ qty }) => {
+      diceCount += qty;
+    });
+    if (diceCount === 1) {
+      return 'xlarge';
+    }
+    if (diceCount <= 3) {
+      return 'large';
+    }
+    if (diceCount <= 6) {
+      return 'medium';
+    }
 
-  //   return 'small';
-  // }, [dicesToRoll]);
+    return 'small';
+  }, [dicesToRoll]);
 
   // const diceCards = useMemo(() => {
   //   if (diceValues.length === 0) {
@@ -116,6 +127,7 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
 
   const setToRoll = useCallback((dices: DiceRequest[], mode: TypeCampaignEvent) => {
     setDicesToRoll(dices);
+    setIsInteractive(mode.startsWith('skill-'));
     typeRoll.current = mode;
   }, []);
 
@@ -198,29 +210,60 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
   //   );
   // }, [t]);
 
+  const closeWindow = useCallback(() => {
+    setWindowOpened(false);
+    setDisplayBonus(false);
+    setDisplayTotal(false);
+    setDisplayInteractiveButtons(false);
+    setTimeout(() => {
+      setDiceValues([]);
+      typeRoll.current = 'free';
+    }, 500);
+  }, []);
+
   const onDiceRollerAnimationEnd = useCallback(() => {
+    console.log('typeRoll.current', typeRoll.current);
     console.log('Dice Roller Animation End');
+    console.log('rollResults.current?.[0]', rollResults.current?.[0]);
     if (typeRoll.current === 'free') {
       setTimeout(() => {
-        setWindowOpened(false);
-        setTimeout(() => {
-          setDiceValues([]);
-          typeRoll.current = 'free';
-        }, 300);
+        closeWindow();
       }, 2000);
+    } else {
+      setTimeout(() => {
+        setDisplayBonus(true);
+        setTimeout(() => {
+          setDisplayTotal(true);
+          if (typeRoll.current.startsWith('skill-')) {
+            setTimeout(() => {
+              setDisplayInteractiveButtons(true);
+            }, 500);
+          } else {
+            setTimeout(() => {
+              closeWindow();
+            }, 2000);
+          }
+        }, 500);
+      }, 500);
     }
-  }, []);
+  }, [closeWindow]);
 
   useEffect(() => {
     if (dicesToRoll !== null) {
       // Init
       setWindowOpened(true);
-      // setRollEventFinished(false);
-      // tick.current = 0;
       rollResults.current = null;
+
       // CampaignEventing dices
       const totalResult = throwDices(dicesToRoll);
       rollResults.current = totalResult;
+
+      // Only take the first element in consideration for bonuses
+      const zeroToBeAddedBonus = totalResult[0].offset.toString().length < 2 ? '0' : '';
+      setBonus(zeroToBeAddedBonus + totalResult[0].offset.toString());
+
+      const resultWithZeroes = '000' + totalResult[0].total.toString();
+      setTotal(resultWithZeroes.slice(-3));
       // Curating Results and initialize diceValues
       const curatedDices: UniqueResultDiceData[] = [];
       totalResult.forEach((typeDiceRes) => {
@@ -264,23 +307,71 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
       <div
         className={classTrim(`
           roll-window
-            ${isWindowOpened ? 'roll-window--open' : ''}
-          `)}
+          roll-window--${diceRollerMode}
+          ${isWindowOpened ? 'roll-window--open' : ''}
+          ${displayBonus ? 'roll-window--bonus' : ''}
+          ${displayTotal ? 'roll-window--total' : ''}
+          ${displayInteractiveButtons ? 'roll-window--interact' : ''}
+        `)}
       >
         <div
           className="roll-window__shadow"
           // onClick={closeWindow}
         />
         <div className="roll-window__window">
-          {diceValues.map((diceValue, position) => (
-            <DiceRoller
-              key={diceValue.id}
-              position={position}
-              value={diceValue}
-              onAnimationEnd={onDiceRollerAnimationEnd}
-              size="xlarge"
-            />
-          ))}
+          <div className="roll-window__window__dices">
+            {diceValues.map((diceValue, position) => (
+              <DiceRoller
+                key={diceValue.id}
+                position={position}
+                value={diceValue}
+                onAnimationEnd={onDiceRollerAnimationEnd}
+                size={diceRollerMode}
+                withIcon
+              />
+            ))}
+          </div>
+          <div className="roll-window__window__bonuses">
+            <Ap className="roll-window__window__bonuses__text">
+              {t('rollWindow.bonus', { ns: 'components' })}
+            </Ap>
+            <div className="roll-window__window__bonuses__total">
+              <span className="roll-window__window__bonuses__total__plus">+</span>
+              <DiceRollerCharacter
+                val={bonus.charAt(0)}
+                faded={bonus.startsWith('0')}
+                size="large"
+              />
+              <DiceRollerCharacter val={bonus.charAt(1)} faded={Number(bonus) === 0} size="large" />
+            </div>
+          </div>
+          {isInteractive ? (
+            <div className="roll-window__window__total">
+              <DiceRollerCharacter
+                val={total.charAt(0)}
+                faded={total.startsWith('0')}
+                size="xlarge"
+              />
+              <DiceRollerCharacter
+                val={total.charAt(1)}
+                faded={total.startsWith('00')}
+                size="xlarge"
+              />
+              <DiceRollerCharacter
+                val={total.charAt(2)}
+                faded={total.startsWith('000')}
+                size="xlarge"
+              />
+            </div>
+          ) : null}
+
+          {isInteractive ? (
+            <div className="roll-window__window__interactions">
+              <Button size="large" onClick={closeWindow}>
+                {t('rollWindow.done', { ns: 'components' })}
+              </Button>
+            </div>
+          ) : null}
         </div>
       </div>
       {children}

@@ -1,0 +1,49 @@
+.dice-roller-char {
+  align-items: center;
+  background: var(--primary-dark);
+  border: 0.2rem solid var(--primary);
+  display: flex;
+  font-family: var(--mono-font);
+  justify-content: center;
+  letter-spacing: -0.2rem;
+  position: relative;
+
+  &--faded {
+    background: var(--primary-darker);
+    border-color: var(--primary-dark);
+    color: var(--font-color-50);
+  }
+
+  &--cursor {
+    background: var(--primary);
+    color: var(--primary);
+  }
+
+  // Sizes
+
+  &--small {
+    font-size: 2rem;
+    height: 3rem;
+    width: 2rem;
+  }
+
+  &--medium {
+    font-size: 3rem;
+    height: 5rem;
+    width: 3rem;
+  }
+
+  &--large {
+    font-size: 5rem;
+    height: 8rem;
+    letter-spacing: -0.4rem;
+    width: 5rem;
+  }
+
+  &--xlarge {
+    border-width: 0.4rem;
+    font-size: 12rem;
+    height: 16rem;
+    width: 12rem;
+  }
+}

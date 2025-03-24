@@ -8,6 +8,7 @@ import DeckDisplay from './deckDisplay';
 import DetailsBonuses from './detailsBonuses';
 import DiceCard from './diceCard';
 import DiceRoller from './diceRoller';
+import DiceRollerCharacter from './diceRollerCharacter';
 import DropDownMenu from './dropDownMenu';
 import EmbedNotion from './embedNotion';
 import Helper from './helper';
@@ -34,6 +35,7 @@ export {
   DetailsBonuses,
   DiceCard,
   Card,
+  DiceRollerCharacter,
   DropDownMenu,
   EmbedNotion,
   DiceRoller,
