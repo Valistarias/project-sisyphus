@@ -11,7 +11,7 @@ import React, {
 
 import { useTranslation } from 'react-i18next';
 
-import { Ap } from '../atoms';
+import { Aicon, Ap, type typeIcons } from '../atoms';
 import { Button, DiceRoller, DiceRollerCharacter } from '../molecules';
 import CustomEventEmitter from '../utils/eventEmitter';
 
@@ -56,6 +56,9 @@ const CampaignEventWindowContext = React.createContext<ICampaignEventWindowConte
 export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> = ({ children }) => {
   const { t } = useTranslation();
   const CampaignEvent = useMemo(() => new CustomEventEmitter<CampaignEventDetailData>(), []);
+
+  const [mode, setMode] = useState<'dice' | 'sacrifice' | 'addCard' | 'newCard'>('dice');
+  const [valueToSacrifice, setValueToSacrifice] = useState<number | null>(null);
 
   const [dicesToRoll, setDicesToRoll] = useState<DiceRequest[] | null>(null);
 
@@ -215,6 +218,7 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
     setDisplayBonus(false);
     setDisplayTotal(false);
     setDisplayInteractiveButtons(false);
+    setMode('dice');
     setTimeout(() => {
       setDiceValues([]);
       typeRoll.current = 'free';
@@ -222,9 +226,6 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
   }, []);
 
   const onDiceRollerAnimationEnd = useCallback(() => {
-    console.log('typeRoll.current', typeRoll.current);
-    console.log('Dice Roller Animation End');
-    console.log('rollResults.current?.[0]', rollResults.current?.[0]);
     if (typeRoll.current === 'free') {
       setTimeout(() => {
         closeWindow();
@@ -308,6 +309,7 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
         className={classTrim(`
           roll-window
           roll-window--${diceRollerMode}
+          roll-window--mode-${mode}
           ${isWindowOpened ? 'roll-window--open' : ''}
           ${displayBonus ? 'roll-window--bonus' : ''}
           ${displayTotal ? 'roll-window--total' : ''}
@@ -330,6 +332,21 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
                 withIcon
               />
             ))}
+
+            {isInteractive ? (
+              <div className="roll-window__window__dices__results">
+                {diceValues.map((diceValue) => (
+                  <div key={diceValue.id} className="roll-window__window__dices__results__elt">
+                    {diceValue.value}
+                    <Aicon
+                      type={`D${diceValue.type}` as typeIcons}
+                      className="dice-roller__char__icon"
+                      size="large"
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : null}
           </div>
           <div className="roll-window__window__bonuses">
             <Ap className="roll-window__window__bonuses__text">
@@ -367,9 +384,36 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
 
           {isInteractive ? (
             <div className="roll-window__window__interactions">
-              <Button size="large" onClick={closeWindow}>
-                {t('rollWindow.done', { ns: 'components' })}
-              </Button>
+              <div className="interactions-dice">
+                <Button size="large" onClick={closeWindow}>
+                  {t('rollWindow.done', { ns: 'components' })}
+                </Button>
+                <Button
+                  size="large"
+                  theme="line"
+                  onClick={() => {
+                    setMode('sacrifice');
+                  }}
+                >
+                  {t('rollWindow.sacrifice', { ns: 'components' })}
+                </Button>
+              </div>
+              <div className="interactions-sacrifice">
+                <Button size="large" theme="line">
+                  {t('rollWindow.sacrifice', { ns: 'components' })}
+                </Button>
+                <Button
+                  size="large"
+                  onClick={() => {
+                    setMode('dice');
+                  }}
+                >
+                  {t('rollWindow.cancel', { ns: 'components' })}
+                </Button>
+                <Button size="large" theme="line">
+                  {t('rollWindow.oathSacrifice', { ns: 'components' })}
+                </Button>
+              </div>
             </div>
           ) : null}
         </div>

@@ -86,7 +86,11 @@
   },
   "rollWindow": {
     "bonus": "Bonus",
-    "done": "Done"
+    "done": "Done",
+    "sacrifice": "Sacrifice",
+    "oathSacrifice": "Divine Sacrifice",
+    "cancel": "Cancel",
+    "addCard": "Add a Card"
   },
   "smartselect": {
     "placeholder": "Select one...",
