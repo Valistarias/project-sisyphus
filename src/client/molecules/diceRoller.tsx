@@ -21,6 +21,8 @@ interface IDiceRoller {
   size?: 'xlarge' | 'large' | 'medium' | 'small';
   /** Is an icon present with the roller */
   withIcon: boolean;
+  /** The added class to the element */
+  className?: string;
 }
 
 const speedTick = 80;
@@ -31,6 +33,7 @@ const DiceRoller: FC<IDiceRoller> = ({
   value,
   onAnimationEnd,
   size = 'medium',
+  className,
   withIcon,
 }) => {
   const [randomBinary, setRandomBinary] = useState<number[]>([]);
@@ -155,6 +158,7 @@ const DiceRoller: FC<IDiceRoller> = ({
         dice-roller
         dice-roller--${size}
         ${withIcon ? 'dice-roller--with-icon' : ''}
+        ${className ?? ''}
       `)}
     >
       <DiceRollerCharacter

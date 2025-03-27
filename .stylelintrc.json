@@ -4,7 +4,7 @@
     "order/order": ["custom-properties", "declarations"],
     "order/properties-alphabetical-order": true,
     "selector-class-pattern": null,
-    "max-nesting-depth": 5
+    "max-nesting-depth": 6
   },
   "extends": "stylelint-config-sass-guidelines"
 }

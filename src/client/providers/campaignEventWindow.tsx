@@ -15,6 +15,8 @@ import { Aicon, Ap, type typeIcons } from '../atoms';
 import { Button, DiceRoller, DiceRollerCharacter } from '../molecules';
 import CustomEventEmitter from '../utils/eventEmitter';
 
+import { useSoundSystem } from './soundSystem';
+
 import type { TypeCampaignEvent } from '../types';
 
 import {
@@ -26,6 +28,7 @@ import {
 } from '../utils';
 
 import './campaignEventWindow.scss';
+
 export interface CampaignEventDetailData {
   result: number;
   formula?: string;
@@ -55,10 +58,12 @@ const CampaignEventWindowContext = React.createContext<ICampaignEventWindowConte
 
 export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> = ({ children }) => {
   const { t } = useTranslation();
+  const { tone } = useSoundSystem();
+
   const CampaignEvent = useMemo(() => new CustomEventEmitter<CampaignEventDetailData>(), []);
 
   const [mode, setMode] = useState<'dice' | 'sacrifice' | 'addCard' | 'newCard'>('dice');
-  const [valueToSacrifice, setValueToSacrifice] = useState<number | null>(null);
+  const [valueToSacrificeIndex, setValueToSacrificeIndex] = useState<number | null>(null);
 
   const [dicesToRoll, setDicesToRoll] = useState<DiceRequest[] | null>(null);
 
@@ -324,6 +329,7 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
           <div className="roll-window__window__dices">
             {diceValues.map((diceValue, position) => (
               <DiceRoller
+                className="roll-window__window__dices__elt"
                 key={diceValue.id}
                 position={position}
                 value={diceValue}
@@ -335,12 +341,26 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
 
             {isInteractive ? (
               <div className="roll-window__window__dices__results">
-                {diceValues.map((diceValue) => (
-                  <div key={diceValue.id} className="roll-window__window__dices__results__elt">
+                {diceValues.map((diceValue, index) => (
+                  <div
+                    key={diceValue.id}
+                    className={classTrim(`
+                      roll-window__window__dices__results__elt
+                      ${valueToSacrificeIndex === index ? 'roll-window__window__dices__results__elt--active' : ''}
+                    `)}
+                    onClick={() => {
+                      tone();
+                      const resultWithZeroes =
+                        '000' +
+                        ((rollResults.current?.[0].total ?? 0) - diceValue.value).toString();
+                      setTotal(resultWithZeroes.slice(-3));
+                      setValueToSacrificeIndex(index);
+                    }}
+                  >
                     {diceValue.value}
                     <Aicon
                       type={`D${diceValue.type}` as typeIcons}
-                      className="dice-roller__char__icon"
+                      className="roll-window__window__dices__results__elt__icon"
                       size="large"
                     />
                   </div>
@@ -399,18 +419,22 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
                 </Button>
               </div>
               <div className="interactions-sacrifice">
-                <Button size="large" theme="line">
+                <Button size="large" theme="line" disabled={valueToSacrificeIndex === null}>
                   {t('rollWindow.sacrifice', { ns: 'components' })}
                 </Button>
                 <Button
                   size="large"
                   onClick={() => {
                     setMode('dice');
+                    setValueToSacrificeIndex(null);
+                    const resultWithZeroes =
+                      '000' + (rollResults.current?.[0].total ?? 0).toString();
+                    setTotal(resultWithZeroes.slice(-3));
                   }}
                 >
                   {t('rollWindow.cancel', { ns: 'components' })}
                 </Button>
-                <Button size="large" theme="line">
+                <Button size="large" theme="line" disabled={valueToSacrificeIndex === null}>
                   {t('rollWindow.oathSacrifice', { ns: 'components' })}
                 </Button>
               </div>

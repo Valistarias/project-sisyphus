@@ -43,6 +43,79 @@
       flex-direction: column;
       gap: 6rem;
       justify-content: center;
+      position: relative;
+
+      &__elt {
+        opacity: 1;
+        transition: opacity 0.5s ease;
+      }
+
+      &__results {
+        display: flex;
+        flex-direction: row;
+        gap: 8rem;
+        height: 100%;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        position: absolute;
+        transition: opacity 0.5s ease;
+        width: 100%;
+
+        &__elt {
+          align-items: center;
+          background: var(--primary-20);
+          border: 0.1rem solid var(--primary-20);
+          cursor: pointer;
+          display: flex;
+          font-family: var(--mono-font);
+          font-size: 6rem;
+          height: 100%;
+          justify-content: center;
+          position: relative;
+          text-shadow: 0 0 2rem var(--error-00);
+          transition:
+            border 0.2s ease,
+            color 0.2s ease,
+            text-shadow 0.2s ease,
+            background 0.2s ease;
+          width: 16rem;
+          z-index: 1;
+
+          &__icon {
+            fill: var(--primary-40);
+            height: 8rem;
+            left: calc(50% - 4rem);
+            pointer-events: none;
+            position: absolute;
+            top: calc(50% - 4rem);
+
+            transition: fill 0.2s ease;
+            width: 8rem;
+            z-index: -1;
+          }
+
+          &--active {
+            background: var(--error-20);
+            border: 0.1rem solid var(--error);
+            color: var(--error);
+            text-shadow: 0 0 2rem var(--error);
+
+            .roll-window__window__dices__results__elt__icon {
+              fill: var(--error-40);
+            }
+          }
+
+          &:hover {
+            background: var(--error-20);
+            border: 0.1rem solid var(--error);
+
+            .roll-window__window__dices__results__elt__icon {
+              fill: var(--error-40);
+            }
+          }
+        }
+      }
     }
 
     &__bonuses {
@@ -139,10 +212,23 @@
   }
 
   &--mode-sacrifice {
-    .roll-window__window__interactions {
-      .interactions-sacrifice {
-        opacity: 1;
-        pointer-events: all;
+    .roll-window__window {
+      &__interactions {
+        .interactions-sacrifice {
+          opacity: 1;
+          pointer-events: all;
+        }
+      }
+
+      &__dices {
+        &__elt {
+          opacity: 0;
+        }
+
+        &__results {
+          opacity: 1;
+          pointer-events: all;
+        }
       }
     }
   }
