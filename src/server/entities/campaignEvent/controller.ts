@@ -21,14 +21,10 @@ const findCampaignEventsByCampaignId = async (
       .sort({ createdAt: 'desc' })
       .limit(perRequest)
       .skip(offset)
-      .populate<{ character: HydratedDocument<ICharacter> }>('character')
-      .populate<{ campaign: HydratedDocument<ICampaign> }>('campaign')
+      .populate<{ character: HydratedDocument<ICharacter<string>> }>('character')
+      .populate<{ campaign: HydratedDocument<ICampaign<string>> }>('campaign')
       .then((res: LeanICampaignEvent[]) => {
-        if (res.length === 0) {
-          reject(gemNotFound('CampaignEvents'));
-        } else {
-          resolve(res);
-        }
+        resolve(res);
       })
       .catch((err) => {
         reject(gemServerError(err));

@@ -12,12 +12,16 @@ import React, {
 import { useTranslation } from 'react-i18next';
 
 import { Aicon, Ap, type typeIcons } from '../atoms';
-import { Button, DiceRoller, DiceRollerCharacter } from '../molecules';
+import { Button, Card, DiceRoller, DiceRollerCharacter } from '../molecules';
+import { Alert } from '../organisms';
 import CustomEventEmitter from '../utils/eventEmitter';
 
+import { useApi } from './api';
+import { useGlobalVars } from './globalVars';
 import { useSoundSystem } from './soundSystem';
+import { useSystemAlerts } from './systemAlerts';
 
-import type { TypeCampaignEvent } from '../types';
+import type { ErrorResponseType, ICard, TypeCampaignEvent } from '../types';
 
 import {
   classTrim,
@@ -58,7 +62,12 @@ const CampaignEventWindowContext = React.createContext<ICampaignEventWindowConte
 
 export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> = ({ children }) => {
   const { t } = useTranslation();
+  const { character } = useGlobalVars();
   const { tone } = useSoundSystem();
+  const { api } = useApi();
+  const { createAlert, getNewId } = useSystemAlerts();
+
+  const [loading, setLoading] = useState<boolean>(false);
 
   const CampaignEvent = useMemo(() => new CustomEventEmitter<CampaignEventDetailData>(), []);
 
@@ -66,6 +75,9 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
   const [valueToSacrificeIndex, setValueToSacrificeIndex] = useState<number | null>(null);
 
   const [dicesToRoll, setDicesToRoll] = useState<DiceRequest[] | null>(null);
+
+  const [newCards, setNewCards] = useState<ICard[]>([]);
+  const [cardFlipped, setCardFlipped] = useState<boolean[]>([]);
 
   const [bonus, setBonus] = useState<string>('00');
   const [displayBonus, setDisplayBonus] = useState<boolean>(false);
@@ -218,6 +230,35 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
   //   );
   // }, [t]);
 
+  const generateCards = useCallback(
+    (cardNumber: number) => {
+      if (api !== undefined && character !== false && character?.campaign !== undefined) {
+        setLoading(true);
+        api.campaigns
+          .getCard({ campaignId: character.campaign._id, cardNumber })
+          .then((card) => {
+            setLoading(false);
+            setNewCards(card);
+            setCardFlipped(() => card.map(() => false));
+            setMode('newCard');
+          })
+          .catch(({ response }: ErrorResponseType) => {
+            setLoading(false);
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{t('serverErrors.CYPU-301')}</Ap>
+                </Alert>
+              ),
+            });
+          });
+      }
+    },
+    [api, character, getNewId, createAlert, t]
+  );
+
   const closeWindow = useCallback(() => {
     setWindowOpened(false);
     setDisplayBonus(false);
@@ -240,7 +281,11 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
         setDisplayBonus(true);
         setTimeout(() => {
           setDisplayTotal(true);
-          if (typeRoll.current.startsWith('skill-')) {
+          if (
+            typeRoll.current.startsWith('skill-') &&
+            character !== false &&
+            character?.campaign !== undefined
+          ) {
             setTimeout(() => {
               setDisplayInteractiveButtons(true);
             }, 500);
@@ -252,7 +297,7 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
         }, 500);
       }, 500);
     }
-  }, [closeWindow]);
+  }, [closeWindow, character]);
 
   useEffect(() => {
     if (dicesToRoll !== null) {
@@ -326,47 +371,87 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
           // onClick={closeWindow}
         />
         <div className="roll-window__window">
-          <div className="roll-window__window__dices">
-            {diceValues.map((diceValue, position) => (
-              <DiceRoller
-                className="roll-window__window__dices__elt"
-                key={diceValue.id}
-                position={position}
-                value={diceValue}
-                onAnimationEnd={onDiceRollerAnimationEnd}
-                size={diceRollerMode}
-                withIcon
-              />
-            ))}
+          <div className="roll-window__window__new-cards">
+            <div className="roll-window__window__new-cards__cards">
+              {newCards.map((card, i) => (
+                <Card
+                  card={card}
+                  flipped={!!cardFlipped[i]}
+                  key={i}
+                  className="roll-window__window__new-cards__cards__elt"
+                  onClick={
+                    !cardFlipped[i]
+                      ? () => {
+                          setCardFlipped((prev) => {
+                            const newArr = prev.map((prevBool, index) => {
+                              if (i === index && !prevBool) {
+                                return !prevBool;
+                              } else {
+                                return prevBool;
+                              }
+                            });
 
-            {isInteractive ? (
-              <div className="roll-window__window__dices__results">
-                {diceValues.map((diceValue, index) => (
-                  <div
-                    key={diceValue.id}
-                    className={classTrim(`
+                            return newArr;
+                          });
+                        }
+                      : undefined
+                  }
+                />
+              ))}
+            </div>
+            <Button
+              size="large"
+              onClick={closeWindow}
+              disabled={cardFlipped.findIndex((elt) => !elt) !== -1}
+            >
+              {t('rollWindow.done', { ns: 'components' })}
+            </Button>
+          </div>
+          <div className="roll-window__window__dices">
+            <div className="roll-window__window__dices__text">
+              {t('rollWindow.sacrificeText', { ns: 'components' })}
+            </div>
+            <div className="roll-window__window__dices__elt">
+              {diceValues.map((diceValue, position) => (
+                <DiceRoller
+                  className="roll-window__window__dices__elt__dice"
+                  key={diceValue.id}
+                  position={position}
+                  value={diceValue}
+                  onAnimationEnd={onDiceRollerAnimationEnd}
+                  size={diceRollerMode}
+                  withIcon
+                />
+              ))}
+              {isInteractive ? (
+                <div className="roll-window__window__dices__results">
+                  {diceValues.map((diceValue, index) => (
+                    <div
+                      key={diceValue.id}
+                      className={classTrim(`
                       roll-window__window__dices__results__elt
                       ${valueToSacrificeIndex === index ? 'roll-window__window__dices__results__elt--active' : ''}
                     `)}
-                    onClick={() => {
-                      tone();
-                      const resultWithZeroes =
-                        '000' +
-                        ((rollResults.current?.[0].total ?? 0) - diceValue.value).toString();
-                      setTotal(resultWithZeroes.slice(-3));
-                      setValueToSacrificeIndex(index);
-                    }}
-                  >
-                    {diceValue.value}
-                    <Aicon
-                      type={`D${diceValue.type}` as typeIcons}
-                      className="roll-window__window__dices__results__elt__icon"
-                      size="large"
-                    />
-                  </div>
-                ))}
-              </div>
-            ) : null}
+                      onClick={() => {
+                        tone();
+                        const resultWithZeroes =
+                          '000' +
+                          ((rollResults.current?.[0].total ?? 0) - diceValue.value).toString();
+                        setTotal(resultWithZeroes.slice(-3));
+                        setValueToSacrificeIndex(index);
+                      }}
+                    >
+                      {diceValue.value}
+                      <Aicon
+                        type={`D${diceValue.type}` as typeIcons}
+                        className="roll-window__window__dices__results__elt__icon"
+                        size="large"
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+            </div>
           </div>
           <div className="roll-window__window__bonuses">
             <Ap className="roll-window__window__bonuses__text">
@@ -419,11 +504,19 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
                 </Button>
               </div>
               <div className="interactions-sacrifice">
-                <Button size="large" theme="line" disabled={valueToSacrificeIndex === null}>
+                <Button
+                  size="large"
+                  theme="line"
+                  disabled={valueToSacrificeIndex === null || loading}
+                  onClick={() => {
+                    generateCards(1);
+                  }}
+                >
                   {t('rollWindow.sacrifice', { ns: 'components' })}
                 </Button>
                 <Button
                   size="large"
+                  disabled={loading}
                   onClick={() => {
                     setMode('dice');
                     setValueToSacrificeIndex(null);
@@ -434,7 +527,14 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
                 >
                   {t('rollWindow.cancel', { ns: 'components' })}
                 </Button>
-                <Button size="large" theme="line" disabled={valueToSacrificeIndex === null}>
+                <Button
+                  size="large"
+                  theme="line"
+                  disabled={valueToSacrificeIndex === null || loading}
+                  onClick={() => {
+                    generateCards(2);
+                  }}
+                >
                   {t('rollWindow.oathSacrifice', { ns: 'components' })}
                 </Button>
               </div>

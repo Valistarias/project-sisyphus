@@ -56,6 +56,7 @@ const findCampaignById = async (
 ): Promise<{
   campaign: HydratedICompleteCampaign;
   isOwner: boolean;
+  isPlayer: boolean;
 }> =>
   await new Promise((resolve, reject) => {
     getUserFromToken(req as IVerifyTokenRequest)
@@ -80,6 +81,9 @@ const findCampaignById = async (
               resolve({
                 campaign: res,
                 isOwner: String(res.owner._id) === String(user._id),
+                isPlayer:
+                  res.players.find((player) => String(player._id) === String(user._id)) !==
+                  undefined,
               });
             }
           })
@@ -345,6 +349,28 @@ const unregister = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
+const deleteCampaign = (req: Request, res: Response): void => {
+  const { id }: { id?: string } = req.body;
+  if (id === undefined) {
+    res.status(400).send(gemInvalidField('Campaign ID'));
+
+    return;
+  }
+  deleteCampaignEventByCampaignId(id)
+    .then(() => {
+      Campaign.findByIdAndDelete(id)
+        .then(() => {
+          res.send({ message: 'Campaign was deleted successfully!' });
+        })
+        .catch((err: unknown) => {
+          res.status(500).send(gemServerError(err));
+        });
+    })
+    .catch((err: unknown) => {
+      res.status(500).send(gemServerError(err));
+    });
+};
+
 const shuffleDeck = (req: Request, res: Response): void => {
   const { campaignId } = req.body;
   if (campaignId === undefined) {
@@ -380,26 +406,31 @@ const shuffleDeck = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-const deleteCampaign = (req: Request, res: Response): void => {
-  const { id }: { id?: string } = req.body;
-  if (id === undefined) {
+const getCardFromDeck = (req: Request, res: Response): void => {
+  const {
+    campaignId,
+    cardNumber,
+  }: {
+    campaignId?: string;
+    cardNumber?: number;
+  } = req.body;
+  if (campaignId === undefined || cardNumber === undefined) {
     res.status(400).send(gemInvalidField('Campaign ID'));
 
     return;
   }
-  deleteCampaignEventByCampaignId(id)
-    .then(() => {
-      Campaign.findByIdAndDelete(id)
-        .then(() => {
-          res.send({ message: 'Campaign was deleted successfully!' });
-        })
-        .catch((err: unknown) => {
-          res.status(500).send(gemServerError(err));
-        });
+  findCampaignById(campaignId, req)
+    .then(({ campaign, isOwner, isPlayer }) => {
+      if (isOwner || isPlayer) {
+        const deck = new Deck(campaign.deck);
+        const firstCard = deck.draw(cardNumber);
+
+        res.send(firstCard);
+      } else {
+        res.status(404).send(gemNotFound('Campaign'));
+      }
     })
-    .catch((err: unknown) => {
-      res.status(500).send(gemServerError(err));
-    });
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const findSingle = (req: Request, res: Response): void => {
@@ -454,4 +485,5 @@ export {
   unregister,
   update,
   shuffleDeck,
+  getCardFromDeck,
 };

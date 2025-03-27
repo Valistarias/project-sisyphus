@@ -66,6 +66,10 @@ class Deck {
     this.deckToString = JSON.stringify(this.deck);
   }
 
+  draw(n: number): ICard[] {
+    return this.deck.slice(0, n);
+  }
+
   hideIfUser(isOwner: boolean): void {
     if (!isOwner) {
       this.deck = this.deck.map((card) => ({

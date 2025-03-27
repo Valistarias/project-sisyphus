@@ -19,8 +19,8 @@ interface ICampaignEvent {
 }
 
 type LeanICampaignEvent = Omit<ICampaignEvent, 'campaign' | 'character'> & {
-  campaign: HydratedDocument<ICampaign>;
-  character: HydratedDocument<ICharacter>;
+  campaign: HydratedDocument<ICampaign<string>>;
+  character: HydratedDocument<ICharacter<string>>;
 };
 
 type HydratedICampaignEvent = HydratedDocument<LeanICampaignEvent>;

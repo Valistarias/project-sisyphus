@@ -13,6 +13,7 @@ import {
   unregister,
   update,
   shuffleDeck,
+  getCardFromDeck,
 } from './controller';
 
 export default (app: Router): void => {
@@ -26,6 +27,8 @@ export default (app: Router): void => {
   app.get('/campaigns/single', [verifyToken], findSingle);
 
   app.get('/campaigns/find', [verifyToken], findByCode);
+
+  app.post('/campaigns/card', [verifyToken], getCardFromDeck);
 
   app.post('/campaigns/generatecode', [verifyToken], generateCode);
 
