@@ -2,17 +2,18 @@ import React, { useRef, useState, type FC, type ReactNode } from 'react';
 
 import { Quark } from '../quark';
 
-import Button, { type IButton } from './button';
+import LinkButton, { type ILinkButton } from './linkButton';
 
 import { classTrim, setHintPlacement } from '../utils';
-import './hintButton.scss';
 
-export type IHintButton = IButton & {
+import './hintButtonLink.scss';
+
+export type IHintButtonLink = ILinkButton & {
   /** The content of the hint */
   hint: ReactNode;
 };
 
-const HintButton: FC<IHintButton> = ({ className, hint, ...rest }) => {
+const HintButtonLink: FC<IHintButtonLink> = ({ className, hint, ...rest }) => {
   const [placement, setPlacement] = useState<string>('top-left');
 
   const domPosition = useRef<HTMLDivElement>(null);
@@ -29,20 +30,20 @@ const HintButton: FC<IHintButton> = ({ className, hint, ...rest }) => {
 
   return (
     <Quark
-      quarkType="div"
+      quarkType="span"
       className={classTrim(`
-        hint-button
-        hint-button--${placement}
+        hint-button-link
+        hint-button-link--${placement}
         ${className ?? ''}
       `)}
       ref={domPosition}
     >
-      <Button {...rest} onMouseEnter={handleMouseEnter} />
-      <span className="hint-button__hint" ref={hintPosition}>
+      <LinkButton {...rest} onMouseEnter={handleMouseEnter} />
+      <span className="hint-button-link__hint" ref={hintPosition}>
         {hint}
       </span>
     </Quark>
   );
 };
 
-export default HintButton;
+export default HintButtonLink;

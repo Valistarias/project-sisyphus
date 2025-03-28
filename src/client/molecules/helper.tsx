@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Aicon } from '../atoms';
 import { Quark, type IQuarkProps } from '../quark';
 
-import { classTrim } from '../utils';
+import { classTrim, setHintPlacement } from '../utils';
 
 import './helper.scss';
 
@@ -29,46 +29,17 @@ const Helper: FC<IQuarkProps<IHelper>> = ({
 }) => {
   const { t } = useTranslation();
 
-  const [delayHandler, setDelayHandler] = useState<NodeJS.Timeout | null>(null);
-  const [isHelperOpen, setHelperOpen] = useState<boolean>(false);
-  const [placement, setPlacement] = useState<string>('top-left');
+  const [placement, setPlacement] = useState<string>('bottom-left');
 
-  const domHelperContent = useRef<HTMLDivElement>(null);
+  const domPosition = useRef<HTMLDivElement>(null);
+  const hintPosition = useRef<HTMLDivElement>(null);
 
   const handleMouseEnter = (): void => {
-    if (domHelperContent.current !== null) {
-      const dimensions = domHelperContent.current.getBoundingClientRect();
-      const windowWidth = window.innerWidth;
-      const windowHeight = window.innerHeight;
-      let topBottom = placement.split('-')[0];
-      let leftRight = placement.split('-')[1];
+    if (domPosition.current !== null && hintPosition.current !== null) {
+      const domPos = domPosition.current.getBoundingClientRect();
+      const hintPos = hintPosition.current.getBoundingClientRect();
 
-      if (leftRight === 'left' && dimensions.right > windowWidth && dimensions.left > 60) {
-        leftRight = 'right';
-      } else if (leftRight === 'right' && dimensions.left < 0) {
-        leftRight = 'left';
-      }
-      if (topBottom === 'top' && dimensions.bottom + dimensions.height + 30 < windowHeight) {
-        topBottom = 'bottom';
-      } else if (
-        topBottom === 'bottom' &&
-        dimensions.bottom + dimensions.height + 30 > windowHeight
-      ) {
-        topBottom = 'top';
-      }
-      setPlacement(`${topBottom}-${leftRight}`);
-    }
-    setDelayHandler(
-      setTimeout(() => {
-        setHelperOpen(true);
-      }, 500)
-    );
-  };
-
-  const handleMouseLeave = (): void => {
-    if (delayHandler !== null) {
-      clearTimeout(delayHandler);
-      setHelperOpen(false);
+      setPlacement(setHintPlacement(domPos, hintPos, 'bottom-left'));
     }
   };
 
@@ -77,30 +48,28 @@ const Helper: FC<IQuarkProps<IHelper>> = ({
       quarkType="span"
       className={classTrim(`
         helper
-        ${isHelperOpen ? 'helper--open' : ''}
         ${onClick !== undefined ? 'helper--clickable' : ''}
         helper--${placement}
         helper--${size}
         helper--${theme}
       `)}
+      ref={domPosition}
     >
       <Aicon
         className="helper__icon"
         type="Question"
         size="small"
         onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
         onClick={(e) => {
           if (onClick !== undefined) {
             onClick(e);
-            handleMouseLeave();
           }
         }}
       />
-      <span className="helper__content" ref={domHelperContent}>
+      <span className="helper__hint" ref={hintPosition}>
         {children}
         {onClick !== undefined ? (
-          <span className="helper__content__info">{t('helper.more', { ns: 'components' })}</span>
+          <span className="helper__hint__info">{t('helper.more', { ns: 'components' })}</span>
         ) : null}
       </span>
     </Quark>

@@ -14,6 +14,7 @@ import EmbedNotion from './embedNotion';
 import Helper from './helper';
 import Highlight from './highlight';
 import HintButton from './hintButton';
+import HintButtonLink from './hintButtonLink';
 import Input from './input';
 import LinkButton from './linkButton';
 import Node from './node';
@@ -41,6 +42,7 @@ export {
   DiceRoller,
   Helper,
   Highlight,
+  HintButtonLink,
   HintButton,
   Input,
   LinkButton,

@@ -13,7 +13,7 @@ import {
 } from '../../providers';
 
 import { Aicon, Aloadbar, Ap, Atitle } from '../../atoms';
-import { Button, HintButton, Input } from '../../molecules';
+import { Button, HintButtonLink, Input } from '../../molecules';
 import { getActualBody, getCharacterHpValues } from '../../utils/character';
 import Alert from '../alert';
 
@@ -218,21 +218,21 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
           ) : null}
         </div>
         <div className="char-header__mid">
-          <HintButton
+          <HintButtonLink
             hint={t('character.buttons.editChar', { ns: 'pages' })}
             icon="Edit"
             size="small"
             theme="line"
             href={`/character/${character !== false ? (character?._id ?? '') : ''}/edit`}
           />
-          <HintButton
+          <HintButtonLink
             hint={t('character.buttons.editChar', { ns: 'pages' })}
             icon="Edit"
             size="small"
             theme="line"
             href={`/character/${character !== false ? (character?._id ?? '') : ''}/edit`}
           />
-          <HintButton
+          <HintButtonLink
             hint={t('character.buttons.editChar', { ns: 'pages' })}
             icon="Edit"
             size="small"

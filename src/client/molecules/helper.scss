@@ -1,3 +1,5 @@
+@use '../assets/scss/mixins';
+
 .helper {
   position: relative;
 
@@ -5,7 +7,7 @@
     cursor: help;
   }
 
-  &__content {
+  &__hint {
     background-color: var(--primary-dark);
     border: 1px solid var(--primary);
     box-shadow: 0 0 2rem var(--primary-10);
@@ -34,8 +36,14 @@
     }
   }
 
-  // Clickable
+  &:hover {
+    .helper__hint {
+      opacity: 1;
+      transition: opacity 0.3s ease 0.5s;
+    }
+  }
 
+  // Clickable
   &--clickable {
     .helper__icon {
       cursor: pointer;
@@ -43,45 +51,9 @@
   }
 
   // Positionning
-
-  &--top-right {
-    .helper__content {
-      right: 0;
-      top: -1rem;
-      transform: translate3d(0, -100%, 0);
-    }
-  }
-
-  &--bottom-right {
-    .helper__content {
-      right: 0;
-      top: calc(100% + 1rem);
-    }
-  }
-
-  &--top-left {
-    .helper__content {
-      left: 0;
-      top: -1rem;
-      transform: translate3d(0, -100%, 0);
-    }
-  }
-
-  &--bottom-left {
-    .helper__content {
-      left: 0;
-      top: calc(100% + 1rem);
-    }
-  }
-
-  &--open {
-    .helper__content {
-      opacity: 1;
-    }
-  }
+  @include mixins.hint-spacing;
 
   // Themes ---------------
-
   &--solid {
     .helper__icon {
       background-color: var(--primary-20);
@@ -101,7 +73,6 @@
   }
 
   // Sizes ----------------
-
   &--medium {
     .helper__icon {
       padding: 0.5rem;

@@ -380,4 +380,70 @@ export const getValuesFromGlobalValues = (
   return elt;
 };
 
+type verticalPositionning = 'top' | 'bottom';
+type horizontalPositionning = 'left' | 'right';
+
+type priorityPositionning =
+  | verticalPositionning
+  | horizontalPositionning
+  | `${verticalPositionning}-${horizontalPositionning}`;
+
+export const setHintPlacement = (
+  domPos: DOMRect,
+  hintPos: DOMRect,
+  priority: priorityPositionning
+): string => {
+  const [firstPriority, secondPriority]: Array<string | undefined> = priority.split('-');
+
+  // This needs to be changed with var(--hint-space), to be the same value
+  const offsetHint = 10;
+
+  let firstChoice = firstPriority;
+  let secondChoice: string | undefined;
+
+  if (firstPriority === 'top' || firstPriority === 'bottom') {
+    if (firstPriority === 'top') {
+      if (domPos.top < offsetHint + hintPos.height) {
+        firstChoice = 'bottom';
+      }
+    } else {
+      if (document.body.offsetHeight - domPos.bottom < offsetHint + hintPos.height) {
+        firstChoice = 'top';
+      }
+    }
+  } else if (firstPriority === 'left' || firstPriority === 'right') {
+    if (firstPriority === 'left') {
+      if (domPos.left < offsetHint + hintPos.width) {
+        firstChoice = 'right';
+      }
+    } else {
+      if (document.body.offsetWidth - domPos.right < offsetHint + hintPos.width) {
+        firstChoice = 'left';
+      }
+    }
+  }
+
+  if ((secondPriority as string | undefined) !== undefined) {
+    secondChoice = secondPriority;
+
+    const leftSpaceLeft = domPos.left;
+    const rightSpaceLeft = document.body.offsetWidth - domPos.right;
+    const offsetButtonHint = hintPos.width - domPos.width;
+
+    if (offsetButtonHint > 0) {
+      if (secondPriority === 'left') {
+        if (rightSpaceLeft < offsetButtonHint) {
+          secondChoice = 'right';
+        }
+      } else {
+        if (leftSpaceLeft < offsetButtonHint) {
+          secondChoice = 'left';
+        }
+      }
+    }
+  }
+
+  return `${firstChoice}${secondChoice !== undefined ? `-${secondChoice}` : ''}`;
+};
+
 export { getCyberFrameLevelsByNodes, type ICyberFrameLevels } from './character';

@@ -6,3 +6,50 @@
   padding-top: 10vh;
   width: 100%;
 }
+
+@mixin hint-spacing {
+  &--top &__hint {
+    left: 50%;
+    top: calc(var(--hint-space) * -1);
+    transform: translate3d(-50%, -100%, 0);
+  }
+
+  &--top-right &__hint {
+    right: 0;
+    top: calc(var(--hint-space) * -1);
+    transform: translate3d(0, -100%, 0);
+  }
+
+  &--top-left &__hint {
+    left: 0;
+    top: calc(var(--hint-space) * -1);
+    transform: translate3d(0, -100%, 0);
+  }
+
+  &--bottom &__hint {
+    left: 50%;
+    transform: translate3d(-50%, -100%, 0);
+  }
+
+  &--bottom-right &__hint {
+    right: 0;
+    top: calc(100% + var(--hint-space));
+  }
+
+  &--bottom-left &__hint {
+    left: 0;
+    top: calc(100% + var(--hint-space));
+  }
+
+  &--left &__hint {
+    left: calc(var(--hint-space) * -1);
+    top: 50%;
+    transform: translate3d(-100%, -50%, 0);
+  }
+
+  &--right &__hint {
+    right: calc(var(--hint-space) * -1);
+    top: 50%;
+    transform: translate3d(100%, -50%, 0);
+  }
+}

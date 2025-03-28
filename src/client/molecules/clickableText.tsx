@@ -5,7 +5,7 @@ import { Abutton, type IAButton } from '../atoms';
 
 import type { IQuarkProps } from '../quark';
 
-import { classTrim } from '../utils';
+import { classTrim, setHintPlacement } from '../utils';
 
 import './clickableText.scss';
 
@@ -19,48 +19,17 @@ interface IClickableText extends IQuarkProps<IAButton> {
 }
 
 const ClickableText: FC<IClickableText> = ({ text, onClick, className, hint }) => {
-  const [delayHandler, setDelayHandler] = useState<NodeJS.Timeout | null>(null);
-  const [isHintOpen, setHintOpen] = useState<boolean>(false);
-  const [placement, setPlacement] = useState<string>('top-left');
+  const [placement, setPlacement] = useState<string>('right');
 
-  const hintContent = useRef<HTMLDivElement>(null);
+  const domPosition = useRef<HTMLDivElement>(null);
+  const hintPosition = useRef<HTMLDivElement>(null);
 
   const handleMouseEnter = (): void => {
-    if (hint === undefined) return;
-    if (hintContent.current !== null) {
-      const dimensions = hintContent.current.getBoundingClientRect();
-      const windowWidth = window.innerWidth;
-      const windowHeight = window.innerHeight;
-      let topBottom = placement.split('-')[0];
-      let leftRight = placement.split('-')[1];
+    if (domPosition.current !== null && hintPosition.current !== null) {
+      const domPos = domPosition.current.getBoundingClientRect();
+      const hintPos = hintPosition.current.getBoundingClientRect();
 
-      if (leftRight === 'left' && dimensions.right > windowWidth && dimensions.left > 60) {
-        leftRight = 'right';
-      } else if (leftRight === 'right' && dimensions.left < 0) {
-        leftRight = 'left';
-      }
-      if (topBottom === 'top' && dimensions.bottom + dimensions.height + 30 < windowHeight) {
-        topBottom = 'bottom';
-      } else if (
-        topBottom === 'bottom' &&
-        dimensions.bottom + dimensions.height + 30 > windowHeight
-      ) {
-        topBottom = 'top';
-      }
-      setPlacement(`${topBottom}-${leftRight}`);
-    }
-    setDelayHandler(
-      setTimeout(() => {
-        setHintOpen(true);
-      }, 800)
-    );
-  };
-
-  const handleMouseLeave = (): void => {
-    if (hint === undefined) return;
-    if (delayHandler !== null) {
-      clearTimeout(delayHandler);
-      setHintOpen(false);
+      setPlacement(setHintPlacement(domPos, hintPos, 'right'));
     }
   };
 
@@ -68,22 +37,17 @@ const ClickableText: FC<IClickableText> = ({ text, onClick, className, hint }) =
     <div
       className={classTrim(`
       clickable-text
-      ${isHintOpen ? 'clickable-text--open' : ''}
       ${onClick === undefined ? 'clickable-text--unclickable' : ''}
       clickable-text--${placement}
       ${className ?? ''}
     `)}
+      ref={domPosition}
     >
-      <Abutton
-        className="clickable-text__button"
-        onClick={onClick}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
+      <Abutton className="clickable-text__button" onClick={onClick} onMouseEnter={handleMouseEnter}>
         {text}
       </Abutton>
       {hint !== undefined ? (
-        <span className="clickable-text__hint" ref={hintContent}>
+        <span className="clickable-text__hint" ref={hintPosition}>
           {hint}
         </span>
       ) : null}

@@ -1,3 +1,5 @@
+@use '../assets/scss/mixins';
+
 .clickable-text {
   position: relative;
 
@@ -11,8 +13,15 @@
     width: 100%;
   }
 
-  &:hover .clickable-text__button {
-    border: 1px solid var(--primary-80);
+  &:hover {
+    .clickable-text__button {
+      border: 1px solid var(--primary-80);
+    }
+
+    .clickable-text__hint {
+      opacity: 1;
+      transition: opacity 0.3s ease 1s;
+    }
   }
 
   &__hint {
@@ -42,49 +51,13 @@
     }
   }
 
-  // Positionning
-
-  &--top-right {
-    .clickable-text__hint {
-      right: 0;
-      top: -1.5rem;
-      transform: translate3d(0, -100%, 0);
-    }
-  }
-
-  &--bottom-right {
-    .clickable-text__hint {
-      right: 0;
-      top: calc(100% + 1.5rem);
-    }
-  }
-
-  &--top-left {
-    .clickable-text__hint {
-      left: 0;
-      top: -1.5rem;
-      transform: translate3d(0, -100%, 0);
-    }
-  }
-
-  &--bottom-left {
-    .clickable-text__hint {
-      left: 0;
-      top: calc(100% + 1.5rem);
-    }
-  }
-
-  &--open {
-    .clickable-text__hint {
-      opacity: 1;
-    }
-  }
-
   // States
-
   &--unclickable {
     .clickable-text__button {
       cursor: help;
     }
   }
+
+  // Positionning
+  @include mixins.hint-spacing;
 }

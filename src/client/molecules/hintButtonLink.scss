@@ -1,6 +1,6 @@
 @use '../assets/scss/mixins';
 
-.hint-button {
+.hint-button-link {
   height: max-content;
   position: relative;
   width: max-content;
@@ -32,10 +32,8 @@
     }
   }
 
-  &:hover {
-    .hint-button__hint {
-      opacity: 1;
-    }
+  &:hover &__hint {
+    opacity: 1;
   }
 
   // Positionning

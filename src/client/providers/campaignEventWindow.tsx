@@ -12,7 +12,7 @@ import React, {
 import { useTranslation } from 'react-i18next';
 
 import { Aicon, Ap, type typeIcons } from '../atoms';
-import { Button, Card, DiceRoller, DiceRollerCharacter } from '../molecules';
+import { Button, Card, DiceRoller, DiceRollerCharacter, HintButton } from '../molecules';
 import { Alert } from '../organisms';
 import CustomEventEmitter from '../utils/eventEmitter';
 
@@ -493,15 +493,16 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
                 <Button size="large" onClick={closeWindow}>
                   {t('rollWindow.done', { ns: 'components' })}
                 </Button>
-                <Button
+                <HintButton
                   size="large"
                   theme="line"
                   onClick={() => {
                     setMode('sacrifice');
                   }}
+                  hint="Hello"
                 >
                   {t('rollWindow.sacrifice', { ns: 'components' })}
-                </Button>
+                </HintButton>
               </div>
               <div className="interactions-sacrifice">
                 <Button
