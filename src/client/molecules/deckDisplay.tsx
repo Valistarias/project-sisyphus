@@ -39,7 +39,7 @@ const DeckDisplay: FC<IQuarkProps<IDeckDisplay>> = ({ campaign, onShuffle }) => 
             {campaign.deck.length === 0 ? (
               <Ap className="deck-display__pile__base__empty">/</Ap>
             ) : (
-              campaign.deck.map((card, i) => (
+              campaign.deck.toReversed().map((card, i) => (
                 <Card
                   card={card}
                   flipped={!!cardFlipped[i]}
@@ -58,6 +58,7 @@ const DeckDisplay: FC<IQuarkProps<IDeckDisplay>> = ({ campaign, onShuffle }) => 
                       return newArr;
                     });
                   }}
+                  withInfo
                 />
               ))
             )}

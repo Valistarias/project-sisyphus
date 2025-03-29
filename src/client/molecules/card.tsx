@@ -1,19 +1,21 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import type { FC, ReactNode } from 'react';
+
+import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../providers';
 
 import holoBackground from '../assets/imgs/hologrambg.png';
-import { AnodeIcon, Ap } from '../atoms';
+import { AnodeIcon, Ap, Atitle } from '../atoms';
 import ANodeIcon from '../atoms/anodeIcon';
+import { RichTextElement } from '../organisms';
 import { arcaneNameToNodeIcon } from '../utils/character';
 
 import type { IQuarkProps } from '../quark';
 import type { IBasicArcaneCard, ICard, INumberCard } from '../types';
 import type { TypeNodeIcons } from '../types/rules';
 
-import { classTrim, romanize } from '../utils';
-
+import { classTrim, romanize, setHintPlacement } from '../utils';
 import './card.scss';
 
 export interface ICardComponent {
@@ -23,10 +25,53 @@ export interface ICardComponent {
   onClick?: (e: React.MouseEvent<HTMLElement>) => void;
   /** Is the card flipped ? */
   flipped: boolean;
+  /** The size of the card */
+  size?: 'xlarge' | 'large' | 'medium' | 'small';
+  /** Is there the panel information attached ? */
+  withInfo?: boolean;
 }
 
-const Card: FC<IQuarkProps<ICardComponent>> = ({ card, onClick, flipped, className }) => {
+const Card: FC<IQuarkProps<ICardComponent>> = ({
+  card,
+  onClick,
+  flipped,
+  className,
+  size = 'medium',
+  withInfo = false,
+}) => {
   const { arcanes } = useGlobalVars();
+  const { t } = useTranslation();
+
+  const [placement, setPlacement] = useState<{ top: string; left: string }>({
+    top: '0px',
+    left: '0px',
+  });
+
+  const domPosition = useRef<HTMLDivElement>(null);
+  const hintPosition = useRef<HTMLDivElement>(null);
+
+  const handleMouseEnter = (): void => {
+    if (domPosition.current !== null && hintPosition.current !== null) {
+      const padding = 20;
+
+      const domPos = domPosition.current.getBoundingClientRect();
+      const hintPos = hintPosition.current.getBoundingClientRect();
+
+      const hintPlacement = setHintPlacement(domPos, hintPos, 'right');
+
+      if (hintPlacement === 'right') {
+        setPlacement({
+          top: `${domPos.top + domPos.height / 2 - hintPos.height / 2}px`,
+          left: `${domPos.right + padding}px`,
+        });
+      } else {
+        setPlacement({
+          top: `${domPos.top + domPos.height / 2 - hintPos.height / 2}px`,
+          left: `${domPos.left - padding - hintPos.width}px`,
+        });
+      }
+    }
+  };
 
   const cardFront = useMemo(() => {
     if ((card as { hidden?: true }).hidden) {
@@ -232,21 +277,71 @@ const Card: FC<IQuarkProps<ICardComponent>> = ({ card, onClick, flipped, classNa
     );
   }, [card, arcanes]);
 
+  const cardHintContent = useMemo(() => {
+    if ((card as { number?: number }).number !== undefined) {
+      const numberCard = card as INumberCard;
+
+      return (
+        <Ap className="card-hint__number">
+          <span className="card-hint__number__value">{numberCard.number}</span>
+          <span className="card-hint__number__liaison">{t('card.xOfy', { ns: 'components' })}</span>
+          <span className="card-hint__number__color">{t(`terms.suit.${numberCard.suit}`)}</span>
+        </Ap>
+      );
+    }
+
+    if ((card as { _id?: string })._id !== undefined) {
+      const arcane = arcanes.find((arcane) => arcane.arcane._id === (card as IBasicArcaneCard)._id);
+
+      if (arcane !== undefined) {
+        return (
+          <div className="card-hint__arcane">
+            <Atitle className="card-hint__arcane__title" level={3}>
+              <span className="card-hint__arcane__title__number">
+                {romanize(arcane.arcane.number)}
+              </span>
+              <span>{` - ${arcane.arcane.title}`}</span>
+            </Atitle>
+            <RichTextElement
+              className="card-hint__arcane__text"
+              rawStringContent={arcane.arcane.summary}
+              readOnly
+            />
+          </div>
+        );
+      }
+    }
+
+    return <Ap className="card-hint__unknown">???</Ap>;
+  }, [card, arcanes, t]);
+
   return (
     <div
       className={classTrim(`
-        card
-        ${onClick !== undefined ? 'card--clickable' : ''}
-        ${flipped ? 'card--flipped' : ''}
-        ${className ?? ''}
-      `)}
-      onClick={onClick}
+      card-block
+      ${flipped ? 'card-block--flipped' : ''}
+      ${withInfo ? 'card-block--info' : ''}
+    `)}
     >
-      <div className="card__inner">
-        <div className="card__back" style={{ backgroundImage: `url(${holoBackground})` }}>
-          <AnodeIcon className="card__back__icon" type="eidoloneye" />
+      <div
+        className={classTrim(`
+          card
+          card--${size}
+          ${onClick !== undefined ? 'card--clickable' : ''}
+          ${className ?? ''}
+        `)}
+        onClick={onClick}
+        ref={domPosition}
+      >
+        <div className="card__inner" onMouseEnter={handleMouseEnter}>
+          <div className="card__back" style={{ backgroundImage: `url(${holoBackground})` }}>
+            <AnodeIcon className="card__back__icon" type="eidoloneye" />
+          </div>
+          {cardFront}
         </div>
-        {cardFront}
+      </div>
+      <div className="card-hint" ref={hintPosition} style={placement}>
+        {cardHintContent}
       </div>
     </div>
   );

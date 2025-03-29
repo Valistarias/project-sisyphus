@@ -1,10 +1,12 @@
 import React, { useRef, useState, type FC, type ReactNode } from 'react';
 
+import { Aicon } from '../atoms';
 import { Quark } from '../quark';
 
 import Button, { type IButton } from './button';
 
 import { classTrim, setHintPlacement } from '../utils';
+
 import './hintButton.scss';
 
 export type IHintButton = IButton & {
@@ -37,7 +39,13 @@ const HintButton: FC<IHintButton> = ({ className, hint, ...rest }) => {
       `)}
       ref={domPosition}
     >
-      <Button {...rest} onMouseEnter={handleMouseEnter} />
+      <Button {...rest} />
+      <Aicon
+        className="hint-button__icon"
+        type="Question"
+        size="small"
+        onMouseEnter={handleMouseEnter}
+      />
       <span className="hint-button__hint" ref={hintPosition}>
         {hint}
       </span>

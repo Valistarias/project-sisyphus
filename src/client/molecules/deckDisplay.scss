@@ -25,14 +25,14 @@
       align-items: center;
       background: var(--primary-10);
       border: 1px solid var(--primary-20);
-      border-radius: var(--border-radius-card);
+      border-radius: var(--border-radius-card-medium);
       display: flex;
       // Temp
       flex-wrap: wrap;
-      height: var(--height-card-large);
+      height: var(--height-card-medium);
       justify-content: center;
       position: relative;
-      width: var(--width-card-large);
+      width: var(--width-card-medium);
 
       &__empty {
         color: var(--primary-20);

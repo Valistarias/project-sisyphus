@@ -88,8 +88,9 @@
     "bonus": "Bonus",
     "done": "Done",
     "sacrifice": "Sacrifice",
-    "oathSacrifice": "Divine Sacrifice",
     "sacrificeText": "Choose a die to be sacrified. You'll gain a card, but loose the dice value for the score total",
+    "oathSacrifice": "Divine Sacrifice",
+    "oathSacrificeText": "Gain two cards instead of one. Can only be used if the action is linked to your oaths",
     "cancel": "Cancel",
     "addCard": "Add a Card"
   },
@@ -219,5 +220,8 @@
     "drawPile": "Draw Pile",
     "discardPile": "Discard Pile",
     "shuffle": "Shuffle Cards"
+  },
+  "card": {
+    "xOfy": "of"
   }
 }

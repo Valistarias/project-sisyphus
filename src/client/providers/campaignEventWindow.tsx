@@ -265,8 +265,10 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
     setDisplayTotal(false);
     setDisplayInteractiveButtons(false);
     setMode('dice');
+    setValueToSacrificeIndex(null);
     setTimeout(() => {
       setDiceValues([]);
+      setCardFlipped([]);
       typeRoll.current = 'free';
     }, 500);
   }, []);
@@ -375,6 +377,7 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
             <div className="roll-window__window__new-cards__cards">
               {newCards.map((card, i) => (
                 <Card
+                  size="large"
                   card={card}
                   flipped={!!cardFlipped[i]}
                   key={i}
@@ -396,6 +399,7 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
                         }
                       : undefined
                   }
+                  withInfo
                 />
               ))}
             </div>
@@ -499,7 +503,7 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
                   onClick={() => {
                     setMode('sacrifice');
                   }}
-                  hint="Hello"
+                  hint={t('rollWindow.sacrificeText', { ns: 'components' })}
                 >
                   {t('rollWindow.sacrifice', { ns: 'components' })}
                 </HintButton>
@@ -528,16 +532,17 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
                 >
                   {t('rollWindow.cancel', { ns: 'components' })}
                 </Button>
-                <Button
+                <HintButton
                   size="large"
                   theme="line"
                   disabled={valueToSacrificeIndex === null || loading}
                   onClick={() => {
                     generateCards(2);
                   }}
+                  hint={t('rollWindow.oathSacrificeText', { ns: 'components' })}
                 >
                   {t('rollWindow.oathSacrifice', { ns: 'components' })}
-                </Button>
+                </HintButton>
               </div>
             </div>
           ) : null}

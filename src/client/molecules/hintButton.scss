@@ -5,6 +5,23 @@
   position: relative;
   width: max-content;
 
+  &__icon {
+    background-color: var(--primary-20);
+    border: 1px solid var(--primary);
+    border-radius: 100%;
+    bottom: -1rem;
+    box-shadow: 0 0 2rem var(--primary-10);
+    cursor: help;
+    fill: var(--tertiary);
+    padding: 0.3rem;
+    position: absolute;
+    right: -1rem;
+
+    &:hover ~ .hint-button__hint {
+      opacity: 1;
+    }
+  }
+
   &__hint {
     background-color: var(--primary-dark);
     border: 1px solid var(--primary);
@@ -21,7 +38,7 @@
     position: absolute;
     text-transform: none;
     transition: opacity 0.2s ease;
-    width: 18rem;
+    width: 50rem;
     z-index: 1;
 
     &__info {
@@ -29,12 +46,6 @@
       font-style: italic;
       text-align: right;
       text-decoration: underline;
-    }
-  }
-
-  &:hover {
-    .hint-button__hint {
-      opacity: 1;
     }
   }
 

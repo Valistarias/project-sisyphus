@@ -33,6 +33,12 @@
     "skill": {
       "name": "skill"
     },
+    "suit": {
+      "wisdom": "Wisdom",
+      "courage": "Courage",
+      "justice": "Justice",
+      "temperance": "Temperance"
+    },
     "stat": {
       "name": "stat",
       "descriptions": {
