@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 import type { HydratedDocument, Types } from 'mongoose';
 
 import { getUserFromToken, type IVerifyTokenRequest } from '../../middlewares/authJwt';
+import { Deck, type IDeck } from '../../middlewares/deck';
 import db from '../../models';
 import {
   gemInvalidField,
@@ -678,7 +679,7 @@ const deleteCharacter = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-type CuratedICharacterToSend = Omit<LeanICharacter, 'bodies' | 'nodes'> & {
+type CuratedICharacterToSend = Omit<LeanICharacter, 'bodies' | 'nodes' | 'hand'> & {
   bodies: Array<
     Pick<LeanIBody, 'alive' | 'hp' | 'character' | 'stats'> & {
       ammos: Array<
@@ -719,6 +720,7 @@ type CuratedICharacterToSend = Omit<LeanICharacter, 'bodies' | 'nodes'> & {
     }
   >;
   nodes: CuratedINodeToSend[];
+  hand: IDeck;
 };
 
 const curateSingleCharacter = (characterSent: LeanICharacter): CuratedICharacterToSend => {
@@ -770,9 +772,11 @@ const curateSingleCharacter = (characterSent: LeanICharacter): CuratedICharacter
   }));
 
   const curatedNodes = characterSent.nodes?.map((nodeSent) => curateSingleNode(nodeSent.node));
+  const curatedHand = new Deck({ deck: characterSent.hand ?? '', discard: '' });
 
   return {
     ...characterSent,
+    hand: curatedHand.deck,
     bodies: curatedBodies ?? [],
     nodes: curatedNodes ?? [],
   };

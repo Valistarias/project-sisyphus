@@ -1,4 +1,4 @@
-import type { ICampaign } from './campaign';
+import type { ICampaign, IDeck } from './campaign';
 import type { InternationalizationType, IUser } from './global';
 import type {
   ICuratedAmmo,
@@ -205,6 +205,8 @@ export interface ICharacter {
   level?: number;
   /** Is the character fully finished in the character editor ? */
   isReady: boolean;
+  /** The character hand */
+  hand: IDeck;
   /** The owner of the character */
   player?: IUser;
   /** The creator of the character */

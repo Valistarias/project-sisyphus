@@ -110,7 +110,7 @@ interface IGlobalVarsContext {
   /** All the loaded basic character actions */
   basicActions: ICuratedAction[];
   /** Used to set the actual character */
-  setCharacter: (character: ICharacter) => void;
+  setCharacter: React.Dispatch<React.SetStateAction<false | ICharacter | null>>;
   /** Used to set the actual character fron his id */
   setCharacterFromId: (id: string) => void;
   /** Used to reset the actual character */

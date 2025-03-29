@@ -458,17 +458,22 @@ const getCardFromDeck = (req: Request, res: Response): void => {
                           hand.addCards(firstCards);
 
                           char.hand = hand.deckToString;
-                          console.log('char', char);
                           char
                             .save()
                             .then(() => {
-                              res.send(firstCards);
+                              res.send({
+                                drawn: firstCards,
+                                addedToPlayer: true,
+                              });
                             })
                             .catch((err: unknown) => {
                               res.status(500).send(gemServerError(err));
                             });
                         } else {
-                          res.send(firstCards);
+                          res.send({
+                            drawn: firstCards,
+                            addedToPlayer: false,
+                          });
                         }
                       })
                       .catch((err: unknown) => {
@@ -477,14 +482,20 @@ const getCardFromDeck = (req: Request, res: Response): void => {
                   })
                   .catch((err: unknown) => res.status(500).send(gemServerError(err)));
               } else {
-                res.send(firstCards);
+                res.send({
+                  drawn: firstCards,
+                  addedToPlayer: false,
+                });
               }
             })
             .catch((err: unknown) => {
               res.status(500).send(gemServerError(err));
             });
         } else {
-          res.send(firstCards);
+          res.send({
+            drawn: firstCards,
+            addedToPlayer: false,
+          });
         }
       } else {
         res.status(404).send(gemNotFound('Campaign'));

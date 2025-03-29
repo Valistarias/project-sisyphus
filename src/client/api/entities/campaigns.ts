@@ -19,9 +19,10 @@ export default class Campaigns extends Entity<ICampaignPayload, ICampaign, ICamp
   generateCode: (payload: ICampaignPayload) => Promise<ICampaign>;
   shuffleDeck: (payload: ICampaignPayload) => Promise<{ deck: IDeck; discard: IDeck }>;
   wipePlayerHands: (payload: ICampaignPayload) => Promise<boolean>;
-  getCard: (
-    payload: ICampaignPayload & { cardNumber: number; characterId?: string }
-  ) => Promise<ICard[]>;
+  getCard: (payload: ICampaignPayload & { cardNumber: number; characterId?: string }) => Promise<{
+    drawn: ICard[];
+    addedToPlayer: boolean;
+  }>;
 
   constructor() {
     super('campaigns');
@@ -103,7 +104,12 @@ export default class Campaigns extends Entity<ICampaignPayload, ICampaign, ICamp
         axios
           .post(`${this.url}/card/`, payload)
           .then((res) => {
-            resolve(res.data as ICard[]);
+            resolve(
+              res.data as {
+                drawn: ICard[];
+                addedToPlayer: boolean;
+              }
+            );
           })
           .catch((err) => {
             reject(err);

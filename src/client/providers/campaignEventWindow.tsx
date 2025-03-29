@@ -21,7 +21,7 @@ import { useGlobalVars } from './globalVars';
 import { useSoundSystem } from './soundSystem';
 import { useSystemAlerts } from './systemAlerts';
 
-import type { ErrorResponseType, ICard, TypeCampaignEvent } from '../types';
+import type { ErrorResponseType, ICard, ICharacter, TypeCampaignEvent } from '../types';
 
 import {
   classTrim,
@@ -62,12 +62,10 @@ const CampaignEventWindowContext = React.createContext<ICampaignEventWindowConte
 
 export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> = ({ children }) => {
   const { t } = useTranslation();
-  const { character } = useGlobalVars();
+  const { character, setCharacter } = useGlobalVars();
   const { tone } = useSoundSystem();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
-
-  console.log('character', character);
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -238,11 +236,19 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
         setLoading(true);
         api.campaigns
           .getCard({ campaignId: character.campaign._id, characterId: character._id, cardNumber })
-          .then((card) => {
+          .then(({ drawn, addedToPlayer }) => {
             setLoading(false);
-            setNewCards(card);
-            setCardFlipped(() => card.map(() => false));
+            setNewCards(drawn);
+            setCardFlipped(() => drawn.map(() => false));
             setMode('newCard');
+            if (addedToPlayer) {
+              setCharacter((prev: ICharacter) => {
+                const next = { ...prev };
+                next.hand = next.hand.concat(drawn);
+
+                return next;
+              });
+            }
           })
           .catch(({ response }: ErrorResponseType) => {
             setLoading(false);
@@ -258,7 +264,7 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
           });
       }
     },
-    [api, character, getNewId, createAlert, t]
+    [api, character, getNewId, createAlert, t, setCharacter]
   );
 
   const closeWindow = useCallback(() => {
