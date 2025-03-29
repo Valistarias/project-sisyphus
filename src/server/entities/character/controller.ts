@@ -61,7 +61,7 @@ const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[
           .or([{ player: user._id }, { createdBy: user._id }])
           .populate<{ player: HydratedDocument<IUser> }>('player')
           .populate<{ createdBy: HydratedDocument<IUser> }>('createdBy')
-          .populate<{ campaign: HydratedDocument<ICampaign> }>('campaign')
+          .populate<{ campaign: HydratedDocument<ICampaign<string>> }>('campaign')
           .populate<{ nodes: HydratedICharacterNode[] }>({
             path: 'nodes',
             select: '_id character node used',
@@ -122,6 +122,17 @@ const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[
       });
   });
 
+const wipeCharactersHandsByCampaignId = async (campaignId: string): Promise<boolean> =>
+  await new Promise((resolve, reject) => {
+    Character.updateMany({ campaign: campaignId }, { hand: '' })
+      .then(() => {
+        resolve(true);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+
 const findCompleteCharacterById = async (
   id: string,
   req: Request
@@ -141,7 +152,7 @@ const findCompleteCharacterById = async (
           .lean()
           .populate<{ player: Lean<IUser> }>('player')
           .populate<{ createdBy: Lean<IUser> }>('createdBy')
-          .populate<{ campaign: Lean<ICampaign> }>('campaign')
+          .populate<{ campaign: Lean<ICampaign<string>> }>('campaign')
           .populate<{ nodes: LeanICharacterNode[] }>({
             path: 'nodes',
             select: '_id character node used',
@@ -292,7 +303,7 @@ const findCharacterById = async (
         Character.findById(id)
           .populate<{ player: HydratedDocument<IUser> }>('player')
           .populate<{ createdBy: HydratedDocument<IUser> }>('createdBy')
-          .populate<{ campaign: HydratedDocument<ICampaign> }>('campaign')
+          .populate<{ campaign: HydratedDocument<ICampaign<string>> }>('campaign')
           .populate<{ nodes: HydratedICharacterNode[] }>({
             path: 'nodes',
             select: '_id character node used',
@@ -798,4 +809,5 @@ export {
   quitCampaign,
   updateInfos,
   updateNodes,
+  wipeCharactersHandsByCampaignId,
 };

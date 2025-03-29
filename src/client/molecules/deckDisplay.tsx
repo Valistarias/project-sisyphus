@@ -17,9 +17,11 @@ interface IDeckDisplay {
   campaign: ICampaign;
   /** When the dungeon master re-shuffle the deck */
   onShuffle: (e: React.MouseEvent<HTMLElement>) => void;
+  /** When the dungeon master wipe all the player hands */
+  onWipePlayerHands: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
-const DeckDisplay: FC<IQuarkProps<IDeckDisplay>> = ({ campaign, onShuffle }) => {
+const DeckDisplay: FC<IQuarkProps<IDeckDisplay>> = ({ campaign, onShuffle, onWipePlayerHands }) => {
   const { t } = useTranslation();
 
   const [cardFlipped, setCardFlipped] = useState<boolean[]>([]);
@@ -76,6 +78,7 @@ const DeckDisplay: FC<IQuarkProps<IDeckDisplay>> = ({ campaign, onShuffle }) => 
         </div>
       </div>
       <Button onClick={onShuffle}>{t('deckDisplay.shuffle', { ns: 'components' })}</Button>
+      <Button onClick={onWipePlayerHands}>{t('deckDisplay.wipe', { ns: 'components' })}</Button>
     </div>
   );
 };

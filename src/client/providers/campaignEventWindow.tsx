@@ -67,6 +67,8 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
 
+  console.log('character', character);
+
   const [loading, setLoading] = useState<boolean>(false);
 
   const CampaignEvent = useMemo(() => new CustomEventEmitter<CampaignEventDetailData>(), []);
@@ -235,7 +237,7 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
       if (api !== undefined && character !== false && character?.campaign !== undefined) {
         setLoading(true);
         api.campaigns
-          .getCard({ campaignId: character.campaign._id, cardNumber })
+          .getCard({ campaignId: character.campaign._id, characterId: character._id, cardNumber })
           .then((card) => {
             setLoading(false);
             setNewCards(card);

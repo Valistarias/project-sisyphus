@@ -14,6 +14,7 @@ import {
   update,
   shuffleDeck,
   getCardFromDeck,
+  wipePlayerCards,
 } from './controller';
 
 export default (app: Router): void => {
@@ -43,4 +44,6 @@ export default (app: Router): void => {
   app.post('/campaigns/delete', [verifyToken], deleteCampaign);
 
   app.post('/campaigns/shuffledeck', [verifyToken], shuffleDeck);
+
+  app.post('/campaigns/wipeplayercards', [verifyToken], wipePlayerCards);
 };

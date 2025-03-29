@@ -26,6 +26,8 @@ interface ICharacter<IdType> {
   karma?: number;
   /** The level of the character */
   level?: number;
+  /** The player's hand */
+  hand?: string;
   /** Is the character fully finished in the character editor ? */
   isReady: boolean;
   /** When the character was created */
@@ -71,6 +73,10 @@ const characterSchema = new Schema<ICharacter<ObjectId>>(
     gender: String,
     pronouns: String,
     bio: String,
+    hand: {
+      type: String,
+      default: '',
+    },
     money: Number,
     karma: Number,
     level: Number,

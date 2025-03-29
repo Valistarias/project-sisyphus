@@ -291,6 +291,13 @@
           }
         }
       }
+
+      &--arcana {
+        .card__front__top-text,
+        .card__front__bottom-text {
+          font-size: 1.5rem;
+        }
+      }
     }
   }
 
@@ -368,6 +375,13 @@
           }
         }
       }
+
+      &--arcana {
+        .card__front__top-text,
+        .card__front__bottom-text {
+          font-size: 2rem;
+        }
+      }
     }
   }
 }
@@ -422,7 +436,7 @@
     line-height: normal;
   }
 
-  &__arcane {
+  &__arcana {
     &__title {
       font-size: 3rem;
       line-height: 1.2;

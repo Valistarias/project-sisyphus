@@ -101,6 +101,66 @@ const Campaign: FC = () => {
     t,
   ]);
 
+  const onWipePlayerHands = useCallback(() => {
+    if (api === undefined || id === undefined) {
+      return;
+    }
+    setConfirmContent(
+      {
+        title: t('campaign.confirmWipePlayerHands.title', { ns: 'pages' }),
+        text: t('campaign.confirmWipePlayerHands.text', { ns: 'pages' }),
+        confirmCta: t('campaign.confirmWipePlayerHands.confirmCta', { ns: 'pages' }),
+      },
+      (evtId: string) => {
+        const confirmDelete = ({ detail }: { detail: ConfirmMessageDetailData }): void => {
+          if (detail.proceed) {
+            api.campaigns
+              .wipePlayerHands({ campaignId: id })
+              .then(() => {
+                setLoading(false);
+                const newId = getNewId();
+                createAlert({
+                  key: newId,
+                  dom: (
+                    <Alert key={newId} id={newId} timer={5}>
+                      <Ap>{t('campaign.successWipePlayerHands', { ns: 'pages' })}</Ap>
+                    </Alert>
+                  ),
+                });
+              })
+              .catch(({ response }: ErrorResponseType) => {
+                setLoading(false);
+                if (response.data.code === 'CYPU-104') {
+                  setNotFound(true);
+                } else {
+                  const newId = getNewId();
+                  createAlert({
+                    key: newId,
+                    dom: (
+                      <Alert key={newId} id={newId} timer={5}>
+                        <Ap>{t('serverErrors.CYPU-301')}</Ap>
+                      </Alert>
+                    ),
+                  });
+                }
+              });
+          }
+          removeConfirmEventListener(evtId, confirmDelete);
+        };
+        addConfirmEventListener(evtId, confirmDelete);
+      }
+    );
+  }, [
+    addConfirmEventListener,
+    api,
+    createAlert,
+    getNewId,
+    id,
+    removeConfirmEventListener,
+    setConfirmContent,
+    t,
+  ]);
+
   useEffect(() => {
     if (api !== undefined && !calledApi.current && id !== undefined) {
       setLoading(true);
@@ -147,7 +207,11 @@ const Campaign: FC = () => {
           <Ap className="campaign__main__deck__details">
             {t('campaign.deck.details', { ns: 'pages' })}
           </Ap>
-          <DeckDisplay campaign={campaign} onShuffle={onShuffle} />
+          <DeckDisplay
+            campaign={campaign}
+            onShuffle={onShuffle}
+            onWipePlayerHands={onWipePlayerHands}
+          />
         </div>
       </div>
       <div className="campaign__secondary">

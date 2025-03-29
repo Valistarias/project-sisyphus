@@ -142,4 +142,4 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteGlobalValue, findAll, findSingle, update };
+export { create, deleteGlobalValue, findAll, findSingle, update, findGlobalValues };

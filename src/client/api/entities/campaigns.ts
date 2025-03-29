@@ -18,7 +18,10 @@ export default class Campaigns extends Entity<ICampaignPayload, ICampaign, ICamp
   find: (payload: ICampaignCodePayload) => Promise<ICampaign>;
   generateCode: (payload: ICampaignPayload) => Promise<ICampaign>;
   shuffleDeck: (payload: ICampaignPayload) => Promise<{ deck: IDeck; discard: IDeck }>;
-  getCard: (payload: ICampaignPayload & { cardNumber: number }) => Promise<ICard[]>;
+  wipePlayerHands: (payload: ICampaignPayload) => Promise<boolean>;
+  getCard: (
+    payload: ICampaignPayload & { cardNumber: number; characterId?: string }
+  ) => Promise<ICard[]>;
 
   constructor() {
     super('campaigns');
@@ -77,6 +80,18 @@ export default class Campaigns extends Entity<ICampaignPayload, ICampaign, ICamp
           .post(`${this.url}/shuffledeck/`, payload)
           .then((res) => {
             resolve(res.data as ICampaign);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+
+    this.wipePlayerHands = async (payload) =>
+      await new Promise((resolve, reject) => {
+        axios
+          .post(`${this.url}/wipeplayercards/`, payload)
+          .then((res) => {
+            resolve(res.data as boolean);
           })
           .catch((err) => {
             reject(err);

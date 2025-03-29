@@ -219,7 +219,8 @@
   "deckDisplay": {
     "drawPile": "Draw Pile",
     "discardPile": "Discard Pile",
-    "shuffle": "Shuffle Cards"
+    "shuffle": "Shuffle Cards",
+    "wipe": "Wipe Hands"
   },
   "card": {
     "xOfy": "of"

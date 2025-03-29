@@ -6,9 +6,16 @@ import { v4 as uuidv4 } from 'uuid';
 import { getUserFromToken, type IVerifyTokenRequest } from '../../middlewares/authJwt';
 import { Deck } from '../../middlewares/deck';
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemInvalidField,
+  gemNotFound,
+  gemServerError,
+  gemUnauthorized,
+} from '../../utils/globalErrorMessage';
 import { findLeanArcanes } from '../arcane/controller';
 import { deleteCampaignEventByCampaignId } from '../campaignEvent/controller';
+import { findCharacterById, wipeCharactersHandsByCampaignId } from '../character/controller';
+import { findGlobalValues } from '../globalValue/controller';
 
 import type { Lean } from '../../utils/types';
 import type { ICharacter } from '../character';
@@ -253,7 +260,7 @@ const generateCode = (req: Request, res: Response): void => {
             res.status(500).send(gemServerError(err));
           });
       } else {
-        res.status(404).send(gemNotFound('Campaign'));
+        res.status(404).send(gemUnauthorized());
       }
     })
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
@@ -372,13 +379,13 @@ const deleteCampaign = (req: Request, res: Response): void => {
 };
 
 const shuffleDeck = (req: Request, res: Response): void => {
-  const { campaignId } = req.body;
+  const { campaignId }: { campaignId?: string } = req.body;
   if (campaignId === undefined) {
     res.status(400).send(gemInvalidField('Campaign ID'));
 
     return;
   }
-  findCampaignById(campaignId as string, req)
+  findCampaignById(campaignId, req)
     .then(({ campaign, isOwner }) => {
       if (isOwner) {
         findLeanArcanes()
@@ -400,7 +407,7 @@ const shuffleDeck = (req: Request, res: Response): void => {
             res.status(404).send(gemNotFound('Arcanes'));
           });
       } else {
-        res.status(404).send(gemNotFound('Campaign'));
+        res.status(404).send(gemUnauthorized());
       }
     })
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
@@ -410,8 +417,10 @@ const getCardFromDeck = (req: Request, res: Response): void => {
   const {
     campaignId,
     cardNumber,
+    characterId,
   }: {
     campaignId?: string;
+    characterId?: string;
     cardNumber?: number;
   } = req.body;
   if (campaignId === undefined || cardNumber === undefined) {
@@ -422,15 +431,90 @@ const getCardFromDeck = (req: Request, res: Response): void => {
   findCampaignById(campaignId, req)
     .then(({ campaign, isOwner, isPlayer }) => {
       if (isOwner || isPlayer) {
-        const deck = new Deck(campaign.deck);
-        const firstCard = deck.draw(cardNumber);
+        const deck = new Deck({ deck: campaign.deck ?? '', discard: campaign.discard ?? '' });
+        const firstCards = deck.draw(cardNumber);
+        if (characterId !== undefined) {
+          findCharacterById(characterId, req)
+            .then(({ char, canEdit }) => {
+              if (canEdit) {
+                const hand = new Deck({ deck: char.hand ?? '', discard: '' });
+                findGlobalValues()
+                  .then((globalValues) => {
+                    campaign.deck = deck.deckToString;
+                    campaign.discard = deck.discardToString;
+                    campaign
+                      .save()
+                      .then(() => {
+                        const globalValueHandSize = globalValues.find(
+                          (globalValue) => globalValue.name === 'nbCardInHand'
+                        )?.value;
+                        const handSizeValue = Number(globalValueHandSize ?? 3);
 
-        res.send(firstCard);
+                        if (globalValueHandSize === undefined) {
+                          console.error('Attention: Applying default hand size: 3');
+                        }
+
+                        if (hand.deck.length + cardNumber <= handSizeValue) {
+                          hand.addCards(firstCards);
+
+                          char.hand = hand.deckToString;
+                          console.log('char', char);
+                          char
+                            .save()
+                            .then(() => {
+                              res.send(firstCards);
+                            })
+                            .catch((err: unknown) => {
+                              res.status(500).send(gemServerError(err));
+                            });
+                        } else {
+                          res.send(firstCards);
+                        }
+                      })
+                      .catch((err: unknown) => {
+                        res.status(500).send(gemServerError(err));
+                      });
+                  })
+                  .catch((err: unknown) => res.status(500).send(gemServerError(err)));
+              } else {
+                res.send(firstCards);
+              }
+            })
+            .catch((err: unknown) => {
+              res.status(500).send(gemServerError(err));
+            });
+        } else {
+          res.send(firstCards);
+        }
       } else {
         res.status(404).send(gemNotFound('Campaign'));
       }
     })
-    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => {
+      res.status(500).send(gemServerError(err));
+    });
+};
+
+const wipePlayerCards = (req: Request, res: Response): void => {
+  const { campaignId }: { campaignId?: string } = req.body;
+  if (campaignId === undefined) {
+    res.status(400).send(gemInvalidField('Campaign ID'));
+
+    return;
+  }
+  findCompleteCampaignById(campaignId, req)
+    .then(({ isOwner }) => {
+      if (isOwner) {
+        wipeCharactersHandsByCampaignId(campaignId)
+          .then(() => {
+            res.send(true);
+          })
+          .catch((err) => res.status(404).send(err));
+      } else {
+        res.status(404).send(gemUnauthorized());
+      }
+    })
+    .catch((err) => res.status(404).send(err));
 };
 
 const findSingle = (req: Request, res: Response): void => {
@@ -442,15 +526,13 @@ const findSingle = (req: Request, res: Response): void => {
   }
   findCompleteCampaignById(campaignId, req)
     .then(({ campaign, isOwner }) => {
-      const deck = new Deck(campaign.deck);
+      const deck = new Deck({ deck: campaign.deck ?? '', discard: campaign.discard ?? '' });
       deck.hideIfUser(isOwner);
 
-      const discard = new Deck(campaign.discard);
-      discard.hideIfUser(isOwner);
       res.send({
         ...campaign,
         deck: deck.deck,
-        discard: discard.deck,
+        discard: deck.discard,
       });
     })
     .catch((err) => res.status(404).send(err));
@@ -486,4 +568,5 @@ export {
   update,
   shuffleDeck,
   getCardFromDeck,
+  wipePlayerCards,
 };

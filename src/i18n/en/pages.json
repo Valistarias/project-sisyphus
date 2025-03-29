@@ -193,10 +193,16 @@
     },
     "confirmShuffle": {
       "title": "Shuffling Deck",
-      "text": "Are you sure you wanna shuffle the deck ? All cards on player hands will be lost",
+      "text": "Are you sure you wanna shuffle the deck ?",
       "confirmCta": "Shuffle"
     },
-    "successShuffle": "Deck successfully shuffled"
+    "confirmWipePlayerHands": {
+      "title": "Wiping all player hands",
+      "text": "Are you sure you wanna wipe player hands ?",
+      "confirmCta": "Wipe all"
+    },
+    "successShuffle": "Deck successfully shuffled",
+    "successWipePlayerHands": "Player hands successfully wiped"
   },
   "characters": {
     "title": "Characters",

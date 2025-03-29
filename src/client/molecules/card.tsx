@@ -295,15 +295,15 @@ const Card: FC<IQuarkProps<ICardComponent>> = ({
 
       if (arcane !== undefined) {
         return (
-          <div className="card-hint__arcane">
-            <Atitle className="card-hint__arcane__title" level={3}>
-              <span className="card-hint__arcane__title__number">
+          <div className="card-hint__arcana">
+            <Atitle className="card-hint__arcana__title" level={3}>
+              <span className="card-hint__arcana__title__number">
                 {romanize(arcane.arcane.number)}
               </span>
               <span>{` - ${arcane.arcane.title}`}</span>
             </Atitle>
             <RichTextElement
-              className="card-hint__arcane__text"
+              className="card-hint__arcana__text"
               rawStringContent={arcane.arcane.summary}
               readOnly
             />
