@@ -41,7 +41,7 @@
       fill 1s ease,
       filter 1s ease;
     width: 16rem;
-    z-index: 0;
+    z-index: var(--z-basis);
   }
 
   &__value {
@@ -54,7 +54,7 @@
     position: relative;
     text-shadow: 0 0 1rem var(--tertiary-20);
     transition: text-shadow 1s ease;
-    z-index: 1;
+    z-index: var(--z-forward);
   }
 
   // Sizes ------------------------------------

@@ -2,7 +2,7 @@
   background: var(--background-header);
   height: 100%;
   width: var(--header-width);
-  z-index: 2;
+  z-index: var(--z-header);
 
   &__content {
     display: flex;
@@ -62,7 +62,7 @@
     top: 0;
     transition: opacity 0.2s ease;
     width: calc(100% - var(--header-width));
-    z-index: 1;
+    z-index: var(--z-forward);
 
     &--visible {
       opacity: 0.8;

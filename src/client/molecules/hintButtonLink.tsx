@@ -14,7 +14,7 @@ export type IHintButtonLink = ILinkButton & {
 };
 
 const HintButtonLink: FC<IHintButtonLink> = ({ className, hint, ...rest }) => {
-  const [placement, setPlacement] = useState<string>('top-left');
+  const [placement, setPlacement] = useState<string>('bottom-left');
 
   const domPosition = useRef<HTMLDivElement>(null);
   const hintPosition = useRef<HTMLDivElement>(null);
@@ -24,7 +24,7 @@ const HintButtonLink: FC<IHintButtonLink> = ({ className, hint, ...rest }) => {
       const domPos = domPosition.current.getBoundingClientRect();
       const hintPos = hintPosition.current.getBoundingClientRect();
 
-      setPlacement(setHintPlacement(domPos, hintPos, 'top-left'));
+      setPlacement(setHintPlacement(domPos, hintPos, 'bottom-left'));
     }
   };
 

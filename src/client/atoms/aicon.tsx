@@ -5,6 +5,7 @@ import Add from '../assets/icons/add.svg?react';
 import Arrow from '../assets/icons/arrow.svg?react';
 import Check from '../assets/icons/check.svg?react';
 import Cross from '../assets/icons/cross.svg?react';
+import D10Bold from '../assets/icons/d10-bold.svg?react';
 import D10 from '../assets/icons/d10.svg?react';
 import D12 from '../assets/icons/d12.svg?react';
 import D20 from '../assets/icons/d20.svg?react';
@@ -31,6 +32,7 @@ const icons = {
   Check,
   Cross,
   D10,
+  D10Bold,
   D12,
   D20,
   D4,

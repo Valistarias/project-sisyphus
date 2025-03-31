@@ -26,7 +26,7 @@
     text-transform: none;
     transition: opacity 0.3s ease;
     width: 35rem;
-    z-index: 1;
+    z-index: var(--z-hints);
 
     &__info {
       color: var(--tertiary-40);

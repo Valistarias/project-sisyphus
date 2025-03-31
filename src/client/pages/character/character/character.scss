@@ -6,35 +6,38 @@
   height: 100%;
 
   &__body {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 1rem;
+    height: 100%;
+    margin: 0 auto;
+    max-width: var(--character-sheet-width);
     padding: 0 2rem;
     width: 100%;
 
-    &__content {
+    &__center {
       display: flex;
-      flex-direction: row;
-      flex-wrap: nowrap;
-      gap: 1rem;
-      height: 100%;
-      margin: 0 auto;
-      max-width: var(--character-sheet-width);
-      width: 100%;
+      flex-direction: column;
+      width: 28rem;
 
-      &__left,
-      &__right {
-        padding: 2rem 0;
-        width: 100%;
-      }
+      &__title {
+        position: relative;
 
-      &__left,
-      &__right {
-        display: flex;
-        flex-direction: column;
-        gap: 2rem;
-
-        .char-skills__skills {
-          height: 100%;
+        &__logo {
+          fill: #2e2e2e;
+          height: auto;
+          left: calc(50% - 14rem);
+          position: absolute;
+          top: 0;
+          width: 28rem;
         }
       }
+    }
+
+    &__left,
+    &__right {
+      flex-grow: 1;
     }
   }
 }

@@ -15,6 +15,28 @@
 
 @font-face {
   font-display: block;
+  font-family: 'MultitypePixel';
+  font-style: normal;
+  font-weight: normal;
+  src: url('../fonts/multitypePixels.woff') format('woff');
+  src: url('../fonts/multitypePixels.woff2') format('woff2');
+}
+
+@font-face {
+  font-display: block;
+  font-family: 'Stgotic';
+  font-style: normal;
+  font-weight: normal;
+  src: url('../fonts/Stgotic.eot');
+  src:
+    url('../fonts/Stgotic.eot') format('embedded-opentype'),
+    url('../fonts/Stgotic.ttf') format('truetype'),
+    url('../fonts/Stgotic.woff') format('woff'),
+    url('../fonts/Stgotic.svg') format('svg');
+}
+
+@font-face {
+  font-display: block;
   font-family: 'Dogica';
   font-style: normal;
   font-weight: normal;
@@ -26,6 +48,8 @@
 :root {
   --main-font: 'Noto Sans', sans-serif;
   --mono-font: 'Dogica', monospace;
+  --decor-serif-font: 'Stgotic', serif;
+  --decor-sans-font: 'MultitypePixel', sans-serif;
   --node-icon-font: 'NodeIcons';
 }
 

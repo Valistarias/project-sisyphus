@@ -91,7 +91,7 @@
       position: absolute;
       right: 2rem;
       top: 2rem;
-      z-index: 1;
+      z-index: var(--z-forward);
     }
   }
 
@@ -112,7 +112,7 @@
     top: 0;
     transform: translate3d(0, 0, 0);
     transition: opacity 0.3s ease;
-    z-index: 2;
+    z-index: var(--z-hints);
 
     &__shell {
       display: flex;
@@ -165,7 +165,7 @@
     right: 2rem;
     top: 2rem;
     transition: opacity 0.3s ease;
-    z-index: 2;
+    z-index: var(--z-hints);
   }
 
   &__form {

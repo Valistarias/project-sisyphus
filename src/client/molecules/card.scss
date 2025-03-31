@@ -405,7 +405,7 @@
   text-transform: none;
   top: 0;
   transition: opacity 0.2s ease;
-  z-index: 1;
+  z-index: var(--z-hints);
 
   &__number {
     align-items: center;

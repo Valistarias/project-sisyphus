@@ -4,12 +4,12 @@ import CharacterHeader from './characterHeader';
 import CharacterInventory from './characterInventory';
 import CharacterProgramList from './characterProgramList';
 import CharacterSkills from './characterSkills';
-import CharacterStatus from './characterStatus';
+import CharacterStats from './characterStats';
 
 export {
   CharacterHeader,
   CharacterSkills,
-  CharacterStatus,
+  CharacterStats,
   CharacterBoard,
   CharacterActionList,
   CharacterProgramList,

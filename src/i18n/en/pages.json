@@ -241,9 +241,9 @@
     "successEdit": "Character successfully updated !"
   },
   "character": {
-    "cyberframeLevel": "{{cyberFrame}} {{cyberFrameLevel}}, level {{level}}",
     "buttons": {
-      "editChar": "Edit Character Sheet"
+      "editChar": "Edit Character Sheet",
+      "openRollTab": "Open Roll Tab"
     }
   },
   "profile": {

@@ -4,21 +4,14 @@ import { useParams } from 'react-router-dom';
 
 import { useApi, useCampaignEventWindow, useGlobalVars } from '../../../providers';
 
-import {
-  CampaignEventTab,
-  CharacterHeader,
-  CharacterSkills,
-  CharacterStatus,
-  CharacterBoard,
-} from '../../../organisms';
+import { CampaignEventTab, CharacterHeader, CharacterStats } from '../../../organisms';
 import { ErrorPage } from '../../index';
-
-import type { TypeCampaignEvent } from '../../../types';
-
 // import { calculateDices, diceResultToStr, type DiceResult } from '../../utils';
-import type { DiceRequest } from '../../../utils';
 
 import './character.scss';
+import type { TypeCampaignEvent } from '../../../types';
+
+import type { DiceRequest } from '../../../utils';
 
 const Character: FC = () => {
   const { character, setCharacterFromId, resetCharacter } = useGlobalVars();
@@ -58,7 +51,24 @@ const Character: FC = () => {
         }}
         isTabOpen={eventTabOpen}
       />
-      <CharacterHeader
+      <div className="character__body">
+        <div className="character__body__left"></div>
+        <div className="character__body__center">
+          <CharacterHeader
+            onOpenTab={() => {
+              setEventTabOpen((prev) => !prev);
+            }}
+          />
+          <CharacterStats
+            onRollDices={(dices: DiceRequest[], id: TypeCampaignEvent) => {
+              setToRoll(dices, id);
+            }}
+          />
+        </div>
+        <div className="character__body__right"></div>
+      </div>
+
+      {/* <CharacterHeader
         onClickEventTab={() => {
           setEventTabOpen((prev) => !prev);
         }}
@@ -81,7 +91,7 @@ const Character: FC = () => {
             <CharacterBoard />
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

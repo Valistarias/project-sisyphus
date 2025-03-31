@@ -8,7 +8,7 @@
   position: fixed;
   right: -34rem;
   transition: right 0.4s ease;
-  z-index: 1;
+  z-index: var(--z-forward);
 
   &__content {
     background-color: var(--background-color);
@@ -27,7 +27,7 @@
       position: absolute;
       right: 1rem;
       top: 1rem;
-      z-index: 1;
+      z-index: var(--z-forward);
     }
   }
 

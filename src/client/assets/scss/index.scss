@@ -42,7 +42,7 @@ div {
     position: absolute;
     top: 0;
     width: 200%;
-    z-index: 0;
+    z-index: var(--z-basis);
   }
 
   &__content {
@@ -50,7 +50,7 @@ div {
     overflow-y: auto;
     position: relative;
     width: 100%;
-    z-index: 1;
+    z-index: var(--z-forward);
   }
 
   &__loader {

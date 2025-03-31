@@ -147,7 +147,7 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
 
   const setToRoll = useCallback((dices: DiceRequest[], mode: TypeCampaignEvent) => {
     setDicesToRoll(dices);
-    setIsInteractive(mode.startsWith('skill-'));
+    setIsInteractive(mode.startsWith('skill-') || mode.startsWith('stat-'));
     typeRoll.current = mode;
   }, []);
 
@@ -292,7 +292,7 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
         setTimeout(() => {
           setDisplayTotal(true);
           if (
-            typeRoll.current.startsWith('skill-') &&
+            (typeRoll.current.startsWith('skill-') || typeRoll.current.startsWith('stat-')) &&
             character !== false &&
             character?.campaign !== undefined
           ) {
@@ -511,7 +511,7 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
                   onClick={() => {
                     setMode('sacrifice');
                   }}
-                  hint={t('rollWindow.sacrificeText', { ns: 'components' })}
+                  question={t('rollWindow.sacrificeText', { ns: 'components' })}
                 >
                   {t('rollWindow.sacrifice', { ns: 'components' })}
                 </HintButton>
@@ -547,7 +547,7 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
                   onClick={() => {
                     generateCards(2);
                   }}
-                  hint={t('rollWindow.oathSacrificeText', { ns: 'components' })}
+                  question={t('rollWindow.oathSacrificeText', { ns: 'components' })}
                 >
                   {t('rollWindow.oathSacrifice', { ns: 'components' })}
                 </HintButton>

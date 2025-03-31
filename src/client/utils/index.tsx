@@ -19,6 +19,9 @@ export const arrSum = (elt: number[]): number =>
     return prev + cur;
   });
 
+export const decimal = (val: number, decimal: number): number =>
+  Math.round(val * decimal) / decimal;
+
 export const capitalizeFirstLetter = (string: string): string =>
   string.charAt(0).toUpperCase() + string.slice(1);
 
@@ -27,7 +30,7 @@ export const regexMail = /([A-z0-9._%-])+@([A-z0-9.-])+\.([A-z0-9]{2,})/g;
 export const regexDiceFormula = /^(\d+)d(\d+)$/g;
 
 export const addSymbol = (val: number): string => {
-  if (val >= 0) {
+  if (val > 0) {
     return `+${val}`;
   }
 

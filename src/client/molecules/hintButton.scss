@@ -17,8 +17,35 @@
     position: absolute;
     right: -1rem;
 
-    &:hover ~ .hint-button__hint {
+    &:hover ~ .hint-button__question {
       opacity: 1;
+    }
+  }
+
+  &__question {
+    background-color: var(--primary-dark);
+    border: 1px solid var(--primary);
+    box-shadow: 0 0 2rem var(--primary-10);
+    display: flex;
+    font-family: var(--main-font);
+    font-size: 1.4rem;
+    letter-spacing: normal;
+    line-height: 2rem;
+    opacity: 0;
+    overflow: hidden;
+    padding: 1rem 2rem;
+    pointer-events: none;
+    position: absolute;
+    text-transform: none;
+    transition: opacity 0.2s ease;
+    width: 50rem;
+    z-index: var(--z-hints);
+
+    &__info {
+      color: var(--tertiary-40);
+      font-style: italic;
+      text-align: right;
+      text-decoration: underline;
     }
   }
 
@@ -38,8 +65,8 @@
     position: absolute;
     text-transform: none;
     transition: opacity 0.2s ease;
-    width: 50rem;
-    z-index: 1;
+    width: 18rem;
+    z-index: var(--z-hints);
 
     &__info {
       color: var(--tertiary-40);
@@ -47,6 +74,10 @@
       text-align: right;
       text-decoration: underline;
     }
+  }
+
+  &:hover &__hint {
+    opacity: 1;
   }
 
   // Positionning

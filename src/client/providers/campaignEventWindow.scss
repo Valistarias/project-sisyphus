@@ -5,7 +5,7 @@
   position: absolute;
   top: 0;
   width: calc(100% - var(--header-width));
-  z-index: 2;
+  z-index: var(--z-overlay);
 
   &__window,
   &__shadow {
@@ -22,7 +22,7 @@
     top: 0;
 
     width: 100%;
-    z-index: 0;
+    z-index: var(--z-basis);
   }
 
   &__window {
@@ -34,7 +34,7 @@
     justify-content: center;
     position: relative;
     width: 100%;
-    z-index: 1;
+    z-index: var(--z-forward);
 
     &__new-cards {
       align-items: center;
@@ -122,7 +122,7 @@
             text-shadow 0.2s ease,
             background 0.2s ease;
           width: 16rem;
-          z-index: 1;
+          z-index: var(--z-forward);
 
           &__icon {
             fill: var(--primary-40);
@@ -179,7 +179,7 @@
         position: absolute;
         text-transform: uppercase;
         top: -2rem;
-        z-index: 1;
+        z-index: var(--z-forward);
 
         &::before {
           background: var(--vanta);

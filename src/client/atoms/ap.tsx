@@ -27,12 +27,14 @@ const AP: FC<IQuarkProps<IAp>> = ({
   lang,
   hyphens = false,
   onClick,
+  style,
 }) => (
   <Quark
     quarkType="p"
     reactProps={{ ...(lang !== undefined ? { lang } : {}) }}
     onClick={onClick}
     title={title}
+    style={style}
     className={classTrim(`
         ap
         ${hyphens ? 'ap--hyphens' : ''}

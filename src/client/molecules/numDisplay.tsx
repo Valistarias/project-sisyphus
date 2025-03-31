@@ -1,11 +1,9 @@
 import React, { type FC } from 'react';
 
 import { Ap } from '../atoms';
-import { RichTextElement } from '../organisms';
 
 import ClickableText from './clickableText';
 import DetailsBonuses from './detailsBonuses';
-import Helper from './helper';
 
 import type { ICuratedStat } from '../types';
 import type { ISourcePoints } from '../utils/character';
@@ -41,9 +39,9 @@ const NumDisplay: FC<INumDisplay> = ({ text, stat, value, bonuses, onClick }) =>
         ) : undefined
       }
     />
-    <Helper size="small">
+    {/* <Helper size="small">
       <RichTextElement rawStringContent={text.summary} readOnly />
-    </Helper>
+    </Helper> */}
     <div className="num-display__bg" />
   </div>
 );

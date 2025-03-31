@@ -1,7 +1,7 @@
 :root {
   --header-width: 6rem;
   --header-character-height: 10rem;
-  --character-sheet-width: 128rem;
+  --character-sheet-width: 132rem;
   --border-radius: 0.2rem;
   --hint-space: 10px;
   --width-card-medium: 18rem;
@@ -10,4 +10,10 @@
   --width-card-large: 27rem;
   --height-card-large: 52.5rem;
   --border-radius-card-large: 3rem;
+  --z-basis: 0;
+  --z-forward: 1;
+  --z-hints: 2;
+  --z-menus: 3;
+  --z-overlay: 4;
+  --z-header: 5;
 }

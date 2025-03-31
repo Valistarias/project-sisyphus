@@ -1,7 +1,6 @@
 import React from 'react';
-import { useCallback, useEffect, useMemo, type FC } from 'react';
+import { useMemo, type FC } from 'react';
 
-import { useForm, type SubmitHandler } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -12,38 +11,34 @@ import {
   useSystemAlerts,
 } from '../../providers';
 
-import { Aicon, Aloadbar, Ap, Atitle } from '../../atoms';
-import { Button, HintButtonLink, Input } from '../../molecules';
-import { getActualBody, getCharacterHpValues } from '../../utils/character';
-import Alert from '../alert';
-
-import type { ErrorResponseType } from '../../types';
+import { Aicon, Ap } from '../../atoms';
+import { getCharacterHpValues } from '../../utils/character';
 
 import {
   classTrim,
+  decimal,
   getCyberFrameLevelsByNodes,
   romanize,
   type ICyberFrameLevels,
 } from '../../utils';
 
 import './characterHeader.scss';
+import { HintButton, HintButtonLink } from '../../molecules';
 
-interface FormHpValues {
-  hp: number;
-}
+// interface FormHpValues {
+//   hp: number;
+// }
 
-interface FormKarmaValues {
-  karma: number;
-}
+// interface FormKarmaValues {
+//   karma: number;
+// }
 
 interface ICharacterHeader {
   /** When the "Dices and Timeline" is clicked */
-  onClickEventTab: (e: React.MouseEvent<HTMLElement>) => void;
-  /** Is the event tab open ? */
-  isEventTabOpen: boolean;
+  onOpenTab: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
-const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen }) => {
+const CharacterHeader: FC<ICharacterHeader> = ({ onOpenTab }) => {
   const { t } = useTranslation();
   const { createAlert, getNewId } = useSystemAlerts();
   const { api } = useApi();
@@ -71,10 +66,35 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
 
   const displayedName = useMemo(() => {
     if (character === null || character === false) {
-      return '';
+      return {
+        text: '',
+        maxLength: 0,
+      };
     }
 
-    return `${character.firstName !== undefined ? `${character.firstName} ` : ''}${character.nickName !== undefined ? `"${character.nickName}" ` : ''}${character.lastName ?? ''}`;
+    let text: string;
+    let maxLength = 0;
+
+    if (character.nickName !== undefined) {
+      text = character.nickName;
+    } else {
+      text = `${character.firstName ?? ''} ${character.lastName ?? ''}`;
+    }
+
+    text.split(' ').forEach((text) => {
+      if (maxLength < text.length) {
+        maxLength = text.length;
+      }
+    });
+
+    if (maxLength < 5) {
+      maxLength = 5;
+    }
+
+    return {
+      text,
+      maxLength,
+    };
   }, [character]);
 
   const hpValues = useMemo(
@@ -95,105 +115,105 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
     return character.karma ?? 0;
   }, [character]);
 
-  const {
-    handleSubmit: handleSubmitHp,
-    control: controlHp,
-    reset: resetHp,
-  } = useForm({
-    defaultValues: useMemo(() => ({ hp: hpValues.isLoading ? 0 : hpValues.hp }), [hpValues]),
-  });
+  // const {
+  //   handleSubmit: handleSubmitHp,
+  //   control: controlHp,
+  //   reset: resetHp,
+  // } = useForm({
+  //   defaultValues: useMemo(() => ({ hp: hpValues.isLoading ? 0 : hpValues.hp }), [hpValues]),
+  // });
 
-  const {
-    handleSubmit: handleSubmitKarma,
-    control: controlKarma,
-    reset: resetKarma,
-  } = useForm({ defaultValues: useMemo(() => ({ karma: charKarma }), [charKarma]) });
+  // const {
+  //   handleSubmit: handleSubmitKarma,
+  //   control: controlKarma,
+  //   reset: resetKarma,
+  // } = useForm({ defaultValues: useMemo(() => ({ karma: charKarma }), [charKarma]) });
 
-  const onSaveHp: SubmitHandler<FormHpValues> = useCallback(
-    ({ hp }) => {
-      if (api === undefined || character === null || character === false || socket === null) {
-        return;
-      }
+  // const onSaveHp: SubmitHandler<FormHpValues> = useCallback(
+  //   ({ hp }) => {
+  //     if (api === undefined || character === null || character === false || socket === null) {
+  //       return;
+  //     }
 
-      if (Number(hp) !== hpValues.hp) {
-        const actualHp = hpValues.hp;
-        const hpSent = Number(hp) > hpValues.total ? hpValues.total : Number(hp);
-        const gainedLife = hpSent > actualHp;
-        const { body } = getActualBody(character);
-        api.bodies
-          .update({
-            id: body?._id,
-            hp: hpSent,
-          })
-          .then(() => {
-            setCharacterFromId(character._id);
-            dispatchCampaignEvent({
-              result: (actualHp - hpSent) * -1,
-              mode: gainedLife ? 'hpGain' : 'hpLoss',
-            });
-          })
-          .catch(({ response }: ErrorResponseType) => {
-            const newId = getNewId();
-            createAlert({
-              key: newId,
-              dom: (
-                <Alert key={newId} id={newId} timer={5}>
-                  <Ap>{response.data.message}</Ap>
-                </Alert>
-              ),
-            });
-          });
-      }
-    },
-    [
-      api,
-      character,
-      createAlert,
-      dispatchCampaignEvent,
-      getNewId,
-      hpValues.hp,
-      hpValues.total,
-      setCharacterFromId,
-      socket,
-    ]
-  );
+  //     if (Number(hp) !== hpValues.hp) {
+  //       const actualHp = hpValues.hp;
+  //       const hpSent = Number(hp) > hpValues.total ? hpValues.total : Number(hp);
+  //       const gainedLife = hpSent > actualHp;
+  //       const { body } = getActualBody(character);
+  //       api.bodies
+  //         .update({
+  //           id: body?._id,
+  //           hp: hpSent,
+  //         })
+  //         .then(() => {
+  //           setCharacterFromId(character._id);
+  //           dispatchCampaignEvent({
+  //             result: (actualHp - hpSent) * -1,
+  //             mode: gainedLife ? 'hpGain' : 'hpLoss',
+  //           });
+  //         })
+  //         .catch(({ response }: ErrorResponseType) => {
+  //           const newId = getNewId();
+  //           createAlert({
+  //             key: newId,
+  //             dom: (
+  //               <Alert key={newId} id={newId} timer={5}>
+  //                 <Ap>{response.data.message}</Ap>
+  //               </Alert>
+  //             ),
+  //           });
+  //         });
+  //     }
+  //   },
+  //   [
+  //     api,
+  //     character,
+  //     createAlert,
+  //     dispatchCampaignEvent,
+  //     getNewId,
+  //     hpValues.hp,
+  //     hpValues.total,
+  //     setCharacterFromId,
+  //     socket,
+  //   ]
+  // );
 
-  const onSaveKarma: SubmitHandler<FormKarmaValues> = useCallback(
-    ({ karma }) => {
-      if (api === undefined || character === null || character === false || socket === null) {
-        return;
-      }
-      api.characters
-        .update({
-          id: character._id,
-          karma,
-        })
-        .then(() => {
-          setCharacterFromId(character._id);
-        })
-        .catch(({ response }: ErrorResponseType) => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{response.data.message}</Ap>
-              </Alert>
-            ),
-          });
-        });
-    },
-    [api, character, createAlert, getNewId, setCharacterFromId, socket]
-  );
+  // const onSaveKarma: SubmitHandler<FormKarmaValues> = useCallback(
+  //   ({ karma }) => {
+  //     if (api === undefined || character === null || character === false || socket === null) {
+  //       return;
+  //     }
+  //     api.characters
+  //       .update({
+  //         id: character._id,
+  //         karma,
+  //       })
+  //       .then(() => {
+  //         setCharacterFromId(character._id);
+  //       })
+  //       .catch(({ response }: ErrorResponseType) => {
+  //         const newId = getNewId();
+  //         createAlert({
+  //           key: newId,
+  //           dom: (
+  //             <Alert key={newId} id={newId} timer={5}>
+  //               <Ap>{response.data.message}</Ap>
+  //             </Alert>
+  //           ),
+  //         });
+  //       });
+  //   },
+  //   [api, character, createAlert, getNewId, setCharacterFromId, socket]
+  // );
 
   // To affect default data
-  useEffect(() => {
-    resetHp({ hp: hpValues.isLoading ? 0 : hpValues.hp });
-  }, [hpValues, resetHp]);
+  // useEffect(() => {
+  //   resetHp({ hp: hpValues.isLoading ? 0 : hpValues.hp });
+  // }, [hpValues, resetHp]);
 
-  useEffect(() => {
-    resetKarma({ karma: charKarma });
-  }, [charKarma, resetKarma]);
+  // useEffect(() => {
+  //   resetKarma({ karma: charKarma });
+  // }, [charKarma, resetKarma]);
 
   return (
     <div
@@ -201,7 +221,7 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
         char-header
       `)}
     >
-      <div className="char-header__content">
+      {/* <div className="char-header__content">
         <div className="char-header__left">
           <Atitle level={1} className="char-header__left__title">
             {displayedName}
@@ -309,6 +329,73 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onClickEventTab, isEventTabOpen
           <Button size="small" className="char-header__event-tab__btn" onClick={onClickEventTab}>
             <Aicon size="large" type="D8" />
           </Button>
+        </div>
+      </div> */}
+      <div className="char-header">
+        <Aicon className="char-header__logo" type="Eidolon" />
+        {mainCyberFrame !== null ? (
+          <Ap className="char-header__cyber-frame">
+            <span className="char-header__cyber-frame__name">
+              {mainCyberFrame.cyberFrame.cyberFrame.title}
+            </span>
+            <span className="char-header__cyber-frame__level">
+              {romanize(mainCyberFrame.level)}
+            </span>
+          </Ap>
+        ) : null}
+        <Ap
+          className="char-header__name"
+          style={{
+            fontSize: `${decimal(32 / displayedName.maxLength, 10)
+              .toString()
+              .replace(/,/g, '.')}rem`,
+          }}
+        >
+          {displayedName.text}
+        </Ap>
+        <div className="char-header__interactions">
+          <HintButtonLink
+            hint={t('character.buttons.editChar', { ns: 'pages' })}
+            icon="Edit"
+            size="small"
+            theme="line"
+            href={`/character/${character !== false ? (character?._id ?? '') : ''}/edit`}
+          />
+          <HintButton
+            hint={t('character.buttons.openRollTab', { ns: 'pages' })}
+            onClick={onOpenTab}
+            icon="D10Bold"
+            size="small"
+            theme="line"
+          />
+          <HintButtonLink
+            hint={t('character.buttons.editChar', { ns: 'pages' })}
+            icon="Edit"
+            size="small"
+            theme="line"
+            href={`/character/${character !== false ? (character?._id ?? '') : ''}/edit`}
+          />
+          <HintButtonLink
+            hint={t('character.buttons.editChar', { ns: 'pages' })}
+            icon="Edit"
+            size="small"
+            theme="line"
+            href={`/character/${character !== false ? (character?._id ?? '') : ''}/edit`}
+          />
+          <HintButtonLink
+            hint={t('character.buttons.editChar', { ns: 'pages' })}
+            icon="Edit"
+            size="small"
+            theme="line"
+            href={`/character/${character !== false ? (character?._id ?? '') : ''}/edit`}
+          />
+          <HintButtonLink
+            hint={t('character.buttons.editChar', { ns: 'pages' })}
+            icon="Edit"
+            size="small"
+            theme="line"
+            href={`/character/${character !== false ? (character?._id ?? '') : ''}/edit`}
+          />
         </div>
       </div>
     </div>
