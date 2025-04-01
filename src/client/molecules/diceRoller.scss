@@ -18,9 +18,11 @@
     &--last {
       background: transparent;
       border: 0;
+      border: 0.2rem solid transparent;
 
       &.dice-roller-char--cursor {
         background: var(--primary);
+        border: 0.2rem solid var(--primary);
 
         .dice-roller__char__icon {
           opacity: 0;
@@ -81,6 +83,8 @@
     gap: 2rem;
 
     .dice-roller__char {
+      border-width: 0.4rem;
+
       &__icon {
         height: 20rem;
         top: calc(50% - 10rem);
