@@ -4,14 +4,14 @@ import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../providers';
 
-import { NumDisplay, SearchBar, SkillDisplay } from '../../molecules';
-import { calculateStatMod, calculateStatModToString, malusStatMod } from '../../utils/character';
+import { SearchBar, SkillDisplay } from '../../molecules';
 
 import type { TypeCampaignEvent } from '../../types';
 
 import { classTrim, removeDiacritics, type DiceRequest } from '../../utils';
 
 import './characterSkills.scss';
+import { Ap } from '../../atoms';
 
 interface ICharacterSkills {
   /** The function sent to roll the dices */
@@ -53,50 +53,6 @@ const CharacterSkills: FC<ICharacterSkills> = ({ className, onRollDices }) => {
     });
   }, [characterStatSkills, searchWord]);
 
-  const statList = useMemo(
-    () => (
-      <div className="char-skills__stats">
-        {characterStatSkills?.stats.map((stat) => {
-          // TODO: Deal with i18n here
-          const { title, summary, short } = stat.stat;
-
-          return (
-            <NumDisplay
-              key={stat.stat._id}
-              stat={stat}
-              text={{
-                title,
-                summary,
-                short,
-              }}
-              value={calculateStatModToString(stat.score.total)}
-              bonuses={[
-                ...stat.score.sources,
-                {
-                  fromThrottleStat: true,
-                  value: malusStatMod,
-                },
-              ]}
-              onClick={() => {
-                onRollDices(
-                  [
-                    {
-                      qty: 2,
-                      type: 10,
-                      offset: calculateStatMod(stat.score.total),
-                    },
-                  ],
-                  `stat-${stat.stat._id}`
-                );
-              }}
-            />
-          );
-        })}
-      </div>
-    ),
-    [characterStatSkills, onRollDices]
-  );
-
   return (
     <div
       className={classTrim(`
@@ -104,8 +60,7 @@ const CharacterSkills: FC<ICharacterSkills> = ({ className, onRollDices }) => {
       ${className ?? ''}
     `)}
     >
-      {statList}
-
+      <Ap className="char-skills__title">{t('terms.skill.name', { count: 2 })}</Ap>
       <SearchBar
         placeholder={t('searchBar.placeholder', { ns: 'components' })}
         search={searchWord}

@@ -1,4 +1,24 @@
 .char-skills {
+  background-color: var(--primary-dark-40);
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 6rem;
+  padding: 2rem;
+  padding-top: 4rem;
+  position: relative;
+
+  &__title {
+    color: var(--primary);
+    font-family: var(--decor-serif-font);
+    font-size: 3rem;
+    position: absolute;
+    text-shadow: 0 0 2rem var(--primary-20);
+    text-transform: capitalize;
+    top: -2rem;
+  }
+
   &__stats {
     display: flex;
     flex-direction: row;
@@ -13,18 +33,16 @@
 
   &__skills {
     align-content: flex-start;
-    background: var(--primary-20);
-    border-radius: var(--border-radius);
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     gap: 1rem;
     justify-content: space-between;
-    padding: 2rem;
 
     .skill-display {
-      flex-grow: 1;
-      width: 28rem;
+      flex: 0.1rem 1 1;
+      max-width: calc(50% - 0.5rem);
+      min-width: 45%;
     }
   }
 }

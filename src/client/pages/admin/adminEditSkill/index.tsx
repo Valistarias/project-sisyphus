@@ -225,14 +225,14 @@ const AdminEditSkill: FC = () => {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.skill.name`), 'capitalize'),
+                      field: i18next.format(t('terms.skill.name', { count: 1 }), 'capitalize'),
                     }),
                   });
                 } else {
                   setError('root.serverError', {
                     type: 'server',
                     message: t(`serverErrors.${data.code}`, {
-                      field: i18next.format(t(`terms.skill.name`), 'capitalize'),
+                      field: i18next.format(t('terms.skill.name', { count: 1 }), 'capitalize'),
                     }),
                   });
                 }

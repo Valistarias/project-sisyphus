@@ -12,13 +12,15 @@ import './clickableText.scss';
 interface IClickableText extends IQuarkProps<IAButton> {
   /** The clickable text */
   text: string;
+  /** The theme of the clickable text */
+  theme?: 'decor' | 'mono';
   /** When the clickable text is clicked */
   onClick?: (e: React.MouseEvent<HTMLElement>) => void;
   /** Helper/details attached to this text */
   hint?: ReactNode;
 }
 
-const ClickableText: FC<IClickableText> = ({ text, onClick, className, hint }) => {
+const ClickableText: FC<IClickableText> = ({ text, theme = 'decor', onClick, className, hint }) => {
   const [placement, setPlacement] = useState<string>('right');
 
   const domPosition = useRef<HTMLDivElement>(null);
@@ -37,6 +39,7 @@ const ClickableText: FC<IClickableText> = ({ text, onClick, className, hint }) =
     <div
       className={classTrim(`
       clickable-text
+      clickable-text--${theme}
       ${onClick === undefined ? 'clickable-text--unclickable' : ''}
       clickable-text--${placement}
       ${className ?? ''}

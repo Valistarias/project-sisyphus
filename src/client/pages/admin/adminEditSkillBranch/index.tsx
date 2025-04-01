@@ -271,7 +271,7 @@ const AdminEditSkillBranch: FC = () => {
         </div>
         <div className="adminEditSkillBranch__ariane">
           <Ap className="adminEditSkillBranch__ariane__elt">
-            {`${t(`terms.skill.name`)}: `}
+            {`${t('terms.skill.name', { count: 1 })}: `}
             <Aa
               href={`/admin/skill/${typeof skillBranchData?.skillBranch.skill === 'string' ? skillBranchData.skillBranch.skill : skillBranchData?.skillBranch.skill._id}`}
             >

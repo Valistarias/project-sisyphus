@@ -1,13 +1,16 @@
 .search-bar {
+  background: var(--primary-10);
   position: relative;
 
   &__button {
+    left: 0.5rem;
     position: absolute;
-    right: 0;
     top: 0;
   }
 
   &__input {
-    padding-inline-end: 6rem;
+    background: none;
+    color: var(--primary);
+    padding-inline-start: 5rem;
   }
 }

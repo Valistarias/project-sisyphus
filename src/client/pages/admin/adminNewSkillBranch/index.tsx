@@ -155,7 +155,7 @@ const AdminNewSkillBranch: FC = () => {
         </Atitle>
         <div className="adminNewSkillBranch__ariane">
           <Ap className="adminNewSkillBranch__ariane__elt">
-            {`${t(`terms.skill.name`)}: ${skill?.skill.title}`}
+            {`${t('terms.skill.name', { count: 1 })}: ${skill?.skill.title}`}
           </Ap>
         </div>
         {errors.root?.serverError.message !== undefined ? (

@@ -4,7 +4,12 @@ import { useParams } from 'react-router-dom';
 
 import { useApi, useCampaignEventWindow, useGlobalVars } from '../../../providers';
 
-import { CampaignEventTab, CharacterHeader, CharacterStats } from '../../../organisms';
+import {
+  CampaignEventTab,
+  CharacterHeader,
+  CharacterSkills,
+  CharacterStats,
+} from '../../../organisms';
 import { ErrorPage } from '../../index';
 // import { calculateDices, diceResultToStr, type DiceResult } from '../../utils';
 
@@ -65,7 +70,13 @@ const Character: FC = () => {
             }}
           />
         </div>
-        <div className="character__body__right"></div>
+        <div className="character__body__right">
+          <CharacterSkills
+            onRollDices={(dices: DiceRequest[], id: TypeCampaignEvent) => {
+              setToRoll(dices, id);
+            }}
+          />
+        </div>
       </div>
 
       {/* <CharacterHeader

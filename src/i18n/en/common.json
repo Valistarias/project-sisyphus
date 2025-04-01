@@ -31,7 +31,8 @@
       "name": "cyber frame"
     },
     "skill": {
-      "name": "skill"
+      "name_one": "skill",
+      "name_other": "skills"
     },
     "suit": {
       "wisdom": "Wisdom",

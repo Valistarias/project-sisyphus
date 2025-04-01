@@ -10,20 +10,30 @@
     align-items: center;
     display: inline-flex;
     flex-direction: row;
-    font-size: 1.2rem;
-    font-weight: 500;
+    font-size: 1.3rem;
+    font-weight: 400;
     gap: 1rem;
-    text-transform: uppercase;
   }
 
   &__line {
     background: var(--primary-10);
-    flex-grow: 1;
+    bottom: 0;
     height: 0.2rem;
+    left: 0;
+    position: absolute;
+    transition: background 0.1s ease;
+    width: calc(100% - 7rem);
   }
 
   &__mod-value {
-    font-size: 1.5rem;
-    width: 8rem;
+    width: 7rem;
+
+    .clickable-text__button {
+      border-bottom-left-radius: 0;
+    }
+
+    &:hover ~ .skill-display__line {
+      background: var(--primary-20);
+    }
   }
 }

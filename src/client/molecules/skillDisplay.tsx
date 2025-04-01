@@ -39,15 +39,16 @@ const SkillDisplay: FC<ISkillDisplay> = ({ skill, onSkillClick }) => {
   return (
     <div className="skill-display">
       <Ap className="skill-display__title">{texts.title}</Ap>
-      <div className="skill-display__line" />
       <ClickableText
         className="skill-display__mod-value"
+        theme="mono"
         text={addSymbol(skill.score.total)}
         onClick={() => {
           onSkillClick(skill);
         }}
         hint={<DetailsBonuses bonuses={[...skill.score.sources]} stat={skill.stat} />}
       />
+      <div className="skill-display__line" />
     </div>
   );
 };

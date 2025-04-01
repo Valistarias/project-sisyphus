@@ -592,7 +592,7 @@ const AdminNewNode: FC = () => {
           <Ap className="adminEditNode__ariane__elt">
             {skill !== null ? (
               <>
-                {`${t(`terms.skill.name`)}:`}
+                {`${t('terms.skill.name', { count: 1 })}:`}
                 <Aa href={`/admin/skill/${skill.skill._id}`}>{skill.skill.title}</Aa>
               </>
             ) : (

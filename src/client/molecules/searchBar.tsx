@@ -36,6 +36,7 @@ const SearchBar: FC<ISearchBar> = ({ search, placeholder, onClean, onChange, cla
       placeholder={placeholder}
     />
     <Button
+      theme="bland"
       className="search-bar__button"
       icon={search !== '' ? 'Cross' : 'Search'}
       unclickable={search === ''}
