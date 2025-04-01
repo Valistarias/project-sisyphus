@@ -3,16 +3,10 @@ import { useMemo, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import {
-  useApi,
-  useCampaignEventWindow,
-  useGlobalVars,
-  useSocket,
-  useSystemAlerts,
-} from '../../providers';
+import { useGlobalVars } from '../../providers';
 
 import { Aicon, Ap } from '../../atoms';
-import { getCharacterHpValues } from '../../utils/character';
+import { HintButton, HintButtonLink } from '../../molecules';
 
 import {
   classTrim,
@@ -23,11 +17,6 @@ import {
 } from '../../utils';
 
 import './characterHeader.scss';
-import { HintButton, HintButtonLink } from '../../molecules';
-
-// interface FormHpValues {
-//   hp: number;
-// }
 
 // interface FormKarmaValues {
 //   karma: number;
@@ -40,11 +29,7 @@ interface ICharacterHeader {
 
 const CharacterHeader: FC<ICharacterHeader> = ({ onOpenTab }) => {
   const { t } = useTranslation();
-  const { createAlert, getNewId } = useSystemAlerts();
-  const { api } = useApi();
-  const { socket } = useSocket();
-  const { dispatchCampaignEvent } = useCampaignEventWindow();
-  const { character, setCharacterFromId, cyberFrames, globalValues, charParams } = useGlobalVars();
+  const { character, cyberFrames } = useGlobalVars();
 
   const mainCyberFrame = useMemo(() => {
     if (character === null || character === false) {
@@ -97,86 +82,19 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onOpenTab }) => {
     };
   }, [character]);
 
-  const hpValues = useMemo(
-    () =>
-      getCharacterHpValues(
-        character,
-        Number(globalValues.find(({ name }) => name === 'baseHp')?.value ?? 0),
-        charParams.find(({ charParam }) => charParam.short === 'HP')?.charParam._id ?? undefined
-      ),
-    [character, globalValues, charParams]
-  );
+  // const charKarma = useMemo(() => {
+  //   if (character === null || character === false) {
+  //     return 0;
+  //   }
 
-  const charKarma = useMemo(() => {
-    if (character === null || character === false) {
-      return 0;
-    }
-
-    return character.karma ?? 0;
-  }, [character]);
-
-  // const {
-  //   handleSubmit: handleSubmitHp,
-  //   control: controlHp,
-  //   reset: resetHp,
-  // } = useForm({
-  //   defaultValues: useMemo(() => ({ hp: hpValues.isLoading ? 0 : hpValues.hp }), [hpValues]),
-  // });
+  //   return character.karma ?? 0;
+  // }, [character]);
 
   // const {
   //   handleSubmit: handleSubmitKarma,
   //   control: controlKarma,
   //   reset: resetKarma,
   // } = useForm({ defaultValues: useMemo(() => ({ karma: charKarma }), [charKarma]) });
-
-  // const onSaveHp: SubmitHandler<FormHpValues> = useCallback(
-  //   ({ hp }) => {
-  //     if (api === undefined || character === null || character === false || socket === null) {
-  //       return;
-  //     }
-
-  //     if (Number(hp) !== hpValues.hp) {
-  //       const actualHp = hpValues.hp;
-  //       const hpSent = Number(hp) > hpValues.total ? hpValues.total : Number(hp);
-  //       const gainedLife = hpSent > actualHp;
-  //       const { body } = getActualBody(character);
-  //       api.bodies
-  //         .update({
-  //           id: body?._id,
-  //           hp: hpSent,
-  //         })
-  //         .then(() => {
-  //           setCharacterFromId(character._id);
-  //           dispatchCampaignEvent({
-  //             result: (actualHp - hpSent) * -1,
-  //             mode: gainedLife ? 'hpGain' : 'hpLoss',
-  //           });
-  //         })
-  //         .catch(({ response }: ErrorResponseType) => {
-  //           const newId = getNewId();
-  //           createAlert({
-  //             key: newId,
-  //             dom: (
-  //               <Alert key={newId} id={newId} timer={5}>
-  //                 <Ap>{response.data.message}</Ap>
-  //               </Alert>
-  //             ),
-  //           });
-  //         });
-  //     }
-  //   },
-  //   [
-  //     api,
-  //     character,
-  //     createAlert,
-  //     dispatchCampaignEvent,
-  //     getNewId,
-  //     hpValues.hp,
-  //     hpValues.total,
-  //     setCharacterFromId,
-  //     socket,
-  //   ]
-  // );
 
   // const onSaveKarma: SubmitHandler<FormKarmaValues> = useCallback(
   //   ({ karma }) => {
@@ -222,78 +140,7 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onOpenTab }) => {
       `)}
     >
       {/* <div className="char-header__content">
-        <div className="char-header__left">
-          <Atitle level={1} className="char-header__left__title">
-            {displayedName}
-          </Atitle>
-          {mainCyberFrame !== null ? (
-            <Ap className="char-header__left__sub">
-              {t('character.cyberframeLevel', {
-                ns: 'pages',
-                cyberFrame: mainCyberFrame.cyberFrame.cyberFrame.title,
-                cyberFrameLevel: romanize(mainCyberFrame.level),
-                level: character !== false ? (character?.level ?? 1) : 1,
-              })}
-            </Ap>
-          ) : null}
-        </div>
-        <div className="char-header__mid">
-          <HintButtonLink
-            hint={t('character.buttons.editChar', { ns: 'pages' })}
-            icon="Edit"
-            size="small"
-            theme="line"
-            href={`/character/${character !== false ? (character?._id ?? '') : ''}/edit`}
-          />
-          <HintButtonLink
-            hint={t('character.buttons.editChar', { ns: 'pages' })}
-            icon="Edit"
-            size="small"
-            theme="line"
-            href={`/character/${character !== false ? (character?._id ?? '') : ''}/edit`}
-          />
-          <HintButtonLink
-            hint={t('character.buttons.editChar', { ns: 'pages' })}
-            icon="Edit"
-            size="small"
-            theme="line"
-            href={`/character/${character !== false ? (character?._id ?? '') : ''}/edit`}
-          />
-        </div>
         <div className="char-header__right">
-          <div className="char-header__health">
-            <form
-              className="char-header__health__field"
-              onSubmit={(evt) => {
-                void handleSubmitHp(onSaveHp)(evt);
-              }}
-              noValidate
-            >
-              <Ap className="char-header__health__field__term">{t('terms.character.hp.short')}</Ap>
-              <div className="char-header__health__field__value">
-                <Input
-                  control={controlHp}
-                  inputName="hp"
-                  type="number"
-                  size="small"
-                  inline
-                  rules={{ required: t('hp.required', { ns: 'fields' }) }}
-                  className="char-header__health__field__input"
-                  onBlur={(evt) => {
-                    void handleSubmitHp(onSaveHp)(evt);
-                  }}
-                />
-                <Ap className="char-header__health__field__total">{`/ ${hpValues.total}`}</Ap>
-              </div>
-            </form>
-
-            <Aloadbar
-              progress={
-                hpValues.isLoading || hpValues.total === 0 ? 0 : hpValues.hp / hpValues.total
-              }
-              withDangerZone
-            />
-          </div>
           <div className="char-header__karma">
             <form
               className="char-header__karma__field"
@@ -324,11 +171,6 @@ const CharacterHeader: FC<ICharacterHeader> = ({ onOpenTab }) => {
 
             <Aloadbar color="tertiary" progress={charKarma === 0 ? 0 : 0.5} />
           </div>
-        </div>
-        <div className="char-header__event-tab">
-          <Button size="small" className="char-header__event-tab__btn" onClick={onClickEventTab}>
-            <Aicon size="large" type="D8" />
-          </Button>
         </div>
       </div> */}
       <div className="char-header">

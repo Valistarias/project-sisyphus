@@ -7,21 +7,21 @@
 
   &__hint {
     background-color: var(--primary-dark);
-    border: 1px solid var(--primary);
     box-shadow: 0 0 2rem var(--primary-10);
+    color: var(--primary);
     display: flex;
-    font-family: var(--main-font);
-    font-size: 1.4rem;
-    letter-spacing: normal;
+    font-family: var(--decor-sans-font);
+    font-size: 1.2rem;
+    letter-spacing: 0.2rem;
     line-height: 2rem;
     opacity: 0;
     overflow: hidden;
-    padding: 1rem 2rem;
+    padding: 1rem;
     pointer-events: none;
     position: absolute;
     text-transform: none;
     transition: opacity 0.2s ease;
-    width: 18rem;
+    white-space: nowrap;
     z-index: var(--z-hints);
 
     &__info {

@@ -22,6 +22,7 @@ import { NodeIconSelect, defaultNodeIcon } from './nodeIconSelect';
 import NodeTree from './nodeTree';
 import NumberSelect from './numberSelect';
 import NumDisplay from './numDisplay';
+import NumDisplayInput from './numDisplayInput';
 import PropDisplay from './propDisplay';
 import SearchBar from './searchBar';
 import { SmartSelect, type IGroupedOption, type ISingleValueSelect } from './select';
@@ -44,6 +45,7 @@ export {
   Highlight,
   HintButtonLink,
   HintButton,
+  NumDisplayInput,
   Input,
   LinkButton,
   Node,

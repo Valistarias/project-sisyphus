@@ -17,6 +17,7 @@ interface INumDisplay {
     short: string;
     summary?: string;
   };
+  /** The value of the Display */
   value: string;
   /** The stat element, if there is stat bonuses */
   stat?: ICuratedStat;
