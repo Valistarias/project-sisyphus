@@ -238,7 +238,7 @@ app.get('/reset/password/:userId/:token', (req: Request, res: Response, next: ()
 // ----------------------------------------------------------------------------------------
 
 // Checking user rights to open specific routes -------------------------------------------
-app.get('/*', (req: IVerifyTokenRequest, res: Response, next: () => void) => {
+app.get('/*splat', (req: IVerifyTokenRequest, res: Response, next: () => void) => {
   checkRouteRights(req, res, next);
 });
 // ----------------------------------------------------------------------------------------

@@ -2,6 +2,7 @@ import React, { useMemo, useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
+import { Ap } from '../../atoms';
 import { TabsWindow } from '../../molecules';
 
 import CharacterActionList from './characterActionList';
@@ -11,7 +12,6 @@ import CharacterProgramList from './characterProgramList';
 import { classTrim } from '../../utils';
 
 import './characterBoard.scss';
-import { Ap } from '../../atoms';
 
 const CharacterBoard: FC = () => {
   const { t } = useTranslation();

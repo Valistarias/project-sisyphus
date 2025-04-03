@@ -225,7 +225,7 @@ const AdminEditBasicAction: FC = () => {
       (evtId: string) => {
         const confirmDelete = ({ detail }: { detail: ConfirmMessageDetailData }): void => {
           if (detail.proceed) {
-            api.nodes
+            api.actions
               .delete({ id })
               .then(() => {
                 const newId = getNewId();

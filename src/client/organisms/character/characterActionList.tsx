@@ -1,10 +1,11 @@
-import React, { useMemo, type FC } from 'react';
+import React, { Fragment, useMemo, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../providers';
 
-import { Ali, Atitle, Aul } from '../../atoms';
+import { Ali, Ap, Atitle, Aul } from '../../atoms';
+import { HintText } from '../../molecules';
 import { curateCharacterAction } from '../../utils/character';
 
 import CharacterAction from './characterAction';
@@ -21,8 +22,12 @@ const CharacterActionList: FC = () => {
   const { t } = useTranslation();
   const { character, actionTypes, actionDurations, basicActions } = useGlobalVars();
 
-  const curatedActionList = useMemo<Record<string, ICuratedAction[]>>(() => {
+  const curatedActionList = useMemo<{
+    character: Record<string, ICuratedAction[]>;
+    basic: Record<string, ICuratedAction[]>;
+  }>(() => {
     const curatedNodeActions: Record<string, ICuratedAction[]> = {};
+    const curatedNodeBasicActions: Record<string, ICuratedAction[]> = {};
 
     if (
       character !== null &&
@@ -51,15 +56,18 @@ const CharacterActionList: FC = () => {
     basicActions.forEach((action) => {
       const curatedAction = curateCharacterAction({ action, actionTypes, actionDurations });
       if (
-        (curatedNodeActions[curatedAction.action.duration] as ICuratedAction[] | undefined) ===
+        (curatedNodeBasicActions[curatedAction.action.duration] as ICuratedAction[] | undefined) ===
         undefined
       ) {
-        curatedNodeActions[curatedAction.action.duration] = [];
+        curatedNodeBasicActions[curatedAction.action.duration] = [];
       }
-      curatedNodeActions[curatedAction.action.duration].push(curatedAction);
+      curatedNodeBasicActions[curatedAction.action.duration].push(curatedAction);
     });
 
-    return curatedNodeActions;
+    return {
+      character: curatedNodeActions,
+      basic: curatedNodeBasicActions,
+    };
   }, [character, actionTypes, actionDurations, basicActions]);
 
   return (
@@ -69,18 +77,36 @@ const CharacterActionList: FC = () => {
     `)}
     >
       {displayingOrder.map((eltOrder) =>
-        (curatedActionList[eltOrder] as ICuratedAction[] | undefined) !== undefined ? (
+        (curatedActionList.character[eltOrder] as ICuratedAction[] | undefined) !== undefined ||
+        (curatedActionList.basic[eltOrder] as ICuratedAction[] | undefined) !== undefined ? (
           <div className="char-action-list__nodes" key={eltOrder}>
             <Atitle level={3} className="char-action-list__nodes__title">
               {t(`terms.actionDuration.${eltOrder}`)}
+              <span className="char-action-list__nodes__title__line" />
             </Atitle>
-            <Aul noPoints className="char-action-list__nodes__list">
-              {curatedActionList[eltOrder].map((nodeAction) => (
-                <Ali key={nodeAction.action._id} className="char-action-list__nodes__list__elt">
-                  <CharacterAction action={nodeAction} />
-                </Ali>
-              ))}
-            </Aul>
+            {(curatedActionList.character[eltOrder] as ICuratedAction[] | undefined) !==
+            undefined ? (
+              <Aul noPoints className="char-action-list__nodes__list-char">
+                {curatedActionList.character[eltOrder].map((nodeAction) => (
+                  <Ali
+                    key={nodeAction.action._id}
+                    className="char-action-list__nodes__list-char__elt"
+                  >
+                    <CharacterAction action={nodeAction} />
+                  </Ali>
+                ))}
+              </Aul>
+            ) : null}
+            {(curatedActionList.basic[eltOrder] as ICuratedAction[] | undefined) !== undefined ? (
+              <Ap className="char-action-list__nodes__list-basic">
+                {curatedActionList.basic[eltOrder].map((nodeAction, index) => (
+                  <Fragment key={nodeAction.action._id}>
+                    <HintText hint={nodeAction.action.summary}>{nodeAction.action.title}</HintText>
+                    {index < curatedActionList.basic[eltOrder].length - 1 ? <span>, </span> : null}
+                  </Fragment>
+                ))}
+              </Ap>
+            ) : null}
           </div>
         ) : null
       )}

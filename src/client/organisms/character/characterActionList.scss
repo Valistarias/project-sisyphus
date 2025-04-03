@@ -3,4 +3,29 @@
   flex-direction: column;
   gap: 2rem;
   width: 100%;
+
+  &__nodes {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    &__title {
+      align-items: center;
+      display: flex;
+      font-family: var(--main-font);
+      font-size: 1.4rem;
+      gap: 1rem;
+      margin: 0;
+
+      &__line {
+        background: var(--primary-10);
+        height: 0.2rem;
+        width: 100%;
+      }
+    }
+
+    &__list-basic {
+      font-size: 1.4rem;
+    }
+  }
 }

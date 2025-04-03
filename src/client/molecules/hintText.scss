@@ -1,0 +1,56 @@
+@use '../assets/scss/mixins';
+
+.hint-text {
+  cursor: help;
+  height: max-content;
+  position: relative;
+  text-decoration: underline dotted var(--primary);
+  width: max-content;
+
+  &__icon {
+    background-color: var(--primary-20);
+    border: 1px solid var(--primary);
+    border-radius: 100%;
+    bottom: -1rem;
+    box-shadow: 0 0 2rem var(--primary-10);
+    cursor: help;
+    fill: var(--tertiary);
+    padding: 0.3rem;
+    position: absolute;
+    right: -1rem;
+  }
+
+  &__hint {
+    background-color: var(--primary-dark);
+    box-shadow: 0 0 2rem var(--primary-10);
+    display: flex;
+    font-size: 1.2rem;
+    letter-spacing: 0.2rem;
+    line-height: 2rem;
+    opacity: 0;
+    overflow: hidden;
+    padding: 1rem;
+    pointer-events: none;
+    position: absolute;
+    text-align: left;
+    text-transform: none;
+    transition: opacity 0.2s ease;
+    width: 40rem;
+    z-index: var(--z-hints);
+
+    &__info {
+      color: var(--tertiary-40);
+      font-style: italic;
+      text-align: right;
+      text-decoration: underline;
+    }
+  }
+
+  &:hover &__hint {
+    opacity: 1;
+    transition: opacity 0.2s ease 0.5s;
+  }
+
+  // Positionning
+  @include mixins.hint-spacing;
+}

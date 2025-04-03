@@ -15,6 +15,7 @@ import Helper from './helper';
 import Highlight from './highlight';
 import HintButton from './hintButton';
 import HintButtonLink from './hintButtonLink';
+import HintText from './hintText';
 import Input from './input';
 import LinkButton from './linkButton';
 import Node from './node';
@@ -32,6 +33,7 @@ import TabsWindow from './tabsWindow';
 export {
   Ariane,
   Button,
+  HintText,
   Checkbox,
   ClickableText,
   DetailsBonuses,

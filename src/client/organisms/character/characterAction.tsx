@@ -2,8 +2,7 @@ import React, { useState, type FC } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { Ap } from '../../atoms';
-import { Button } from '../../molecules';
+import { Abutton, Aicon, Ap } from '../../atoms';
 
 import type { ICuratedAction } from '../../types';
 
@@ -27,19 +26,15 @@ const CharacterAction: FC<ICharacterAction> = ({ action }) => {
       ${isOpened ? 'char-action--opened' : ''}
     `)}
     >
-      <div className="char-action__title">
-        <Ap>{action.action.title}</Ap>
-        <div className="char-action__title__line" />
-        <Button
-          icon="Arrow"
-          theme="bland"
-          size="small"
-          onClick={() => {
-            setOpen((prev) => !prev);
-          }}
-          className="char-action__title__button"
-        />
-      </div>
+      <Abutton
+        onClick={() => {
+          setOpen((prev) => !prev);
+        }}
+        className="char-action__title"
+      >
+        {action.action.title}
+        <Aicon type="Arrow" className="char-action__title__icon" size="small" />
+      </Abutton>
       <div className="char-action__details">
         <div className="char-action__details__categories">
           <Ap className="char-action-detail">
