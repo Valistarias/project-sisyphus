@@ -34,7 +34,7 @@
     overflow: hidden;
     transform: rotateY(180deg);
 
-    &--arcana {
+    &--arcane {
       .card__front__line {
         border: 1px solid var(--primary-40);
         border-radius: 1rem;
@@ -195,6 +195,66 @@
     }
   }
 
+  &__front-mini {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    justify-content: center;
+
+    &__value {
+      font-family: var(--mono-font);
+      font-size: 5rem;
+      letter-spacing: -1rem;
+      position: relative;
+      top: 0.2rem;
+    }
+
+    &__symbol {
+      align-items: center;
+      display: flex;
+      font-size: 6rem;
+      height: 6rem;
+      justify-content: center;
+      text-shadow: 0 0 2rem var(--primary);
+      width: 5rem;
+    }
+
+    &__arcane {
+      align-items: center;
+      display: flex;
+      font-size: 7rem;
+      height: 7rem;
+      justify-content: center;
+      padding-right: 3rem;
+      text-shadow: 0 0 2rem var(--primary);
+      width: 6rem;
+    }
+
+    &__right-text {
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      height: calc(100% - 2rem);
+      position: absolute;
+      right: 2rem;
+
+      &__lines {
+        background: var(--primary);
+        flex-grow: 1;
+        height: 0.1rem;
+        width: 0.1rem;
+      }
+
+      &__content {
+        font-family: var(--decor-sans-font);
+        font-size: 1.4rem;
+        writing-mode: sideways-lr;
+      }
+    }
+  }
+
   &__back {
     align-items: center;
     background: var(--primary-dark);
@@ -217,6 +277,22 @@
   }
 
   // Sizes
+  &--mini {
+    height: var(--height-card-mini);
+    width: var(--width-card-mini);
+
+    .card__front,
+    .card__back {
+      border-radius: var(--border-radius-card-mini);
+    }
+
+    .card__back {
+      &__icon {
+        font-size: 7rem;
+      }
+    }
+  }
+
   &--medium {
     height: var(--height-card-medium);
     width: var(--width-card-medium);
@@ -292,7 +368,7 @@
         }
       }
 
-      &--arcana {
+      &--arcane {
         .card__front__top-text,
         .card__front__bottom-text {
           font-size: 1.5rem;
@@ -376,7 +452,7 @@
         }
       }
 
-      &--arcana {
+      &--arcane {
         .card__front__top-text,
         .card__front__bottom-text {
           font-size: 2rem;
@@ -458,6 +534,12 @@
 
 .card-block {
   // Info state
+  &.card-block--flipped {
+    .card__inner {
+      transform: rotateY(180deg);
+    }
+  }
+
   &--info {
     &.card-block--flipped {
       &:hover {
@@ -465,10 +547,6 @@
           opacity: 1;
           transition: opacity 0.2s ease 0.3s;
         }
-      }
-
-      .card__inner {
-        transform: rotateY(180deg);
       }
     }
   }

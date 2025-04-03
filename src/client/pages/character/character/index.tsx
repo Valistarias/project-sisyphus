@@ -7,6 +7,7 @@ import { useApi, useCampaignEventWindow, useGlobalVars } from '../../../provider
 import {
   CampaignEventTab,
   CharacterBoard,
+  CharacterCards,
   CharacterHeader,
   CharacterSkills,
   CharacterStats,
@@ -59,6 +60,7 @@ const Character: FC = () => {
       />
       <div className="character__body">
         <div className="character__body__left">
+          <CharacterCards />
           <CharacterBoard />
         </div>
         <div className="character__body__center">

@@ -26,7 +26,7 @@ export interface ICardComponent {
   /** Is the card flipped ? */
   flipped: boolean;
   /** The size of the card */
-  size?: 'xlarge' | 'large' | 'medium' | 'small';
+  size?: 'xlarge' | 'large' | 'medium' | 'small' | 'mini';
   /** Is there the panel information attached ? */
   withInfo?: boolean;
 }
@@ -83,14 +83,36 @@ const Card: FC<IQuarkProps<ICardComponent>> = ({
       // Arcane Card
       const arcane = arcanes.find((arcane) => arcane.arcane._id === (card as IBasicArcaneCard)._id);
 
+      if (size === 'mini') {
+        if (arcane === undefined) {
+          return <div className="card__front card__front-mini card__front--arcane" />;
+        }
+
+        const roman = arcane.arcane.number !== 0 ? romanize(arcane.arcane.number) : ' ';
+
+        return (
+          <div className="card__front card__front-mini card__front--arcane">
+            <ANodeIcon
+              className="card__front-mini__arcane"
+              type={`tarot${arcane.arcane.number}` as TypeNodeIcons}
+            />
+            <Ap className="card__front-mini__right-text">
+              <span className="card__front-mini__right-text__lines" />
+              <span className="card__front-mini__right-text__content">{roman}</span>
+              <span className="card__front-mini__right-text__lines" />
+            </Ap>
+          </div>
+        );
+      }
+
       if (arcane === undefined) {
-        return <div className="card__front card__front--arcana" />;
+        return <div className="card__front card__front--arcane" />;
       }
 
       const roman = arcane.arcane.number !== 0 ? romanize(arcane.arcane.number) : ' ';
 
       return (
-        <div className="card__front card__front--arcana">
+        <div className="card__front card__front--arcane">
           <div className="card__front__line" />
           <Ap className="card__front__top-text">{roman}</Ap>
           <Ap className="card__front__bottom-text">{roman}</Ap>
@@ -109,6 +131,18 @@ const Card: FC<IQuarkProps<ICardComponent>> = ({
     // Numbered Card
 
     const numberCard = card as INumberCard;
+
+    if (size === 'mini') {
+      return (
+        <div className="card__front card__front-mini">
+          <Ap className="card__front-mini__value">{numberCard.number}</Ap>
+          <AnodeIcon
+            className="card__front-mini__symbol"
+            type={arcaneNameToNodeIcon(numberCard.suit)}
+          />
+        </div>
+      );
+    }
 
     const sideColumnsContent: ReactNode[] = [];
     const centerColumnContent: ReactNode[] = [];
@@ -275,7 +309,7 @@ const Card: FC<IQuarkProps<ICardComponent>> = ({
         <div className="card__front__side">{sideColumnsContent}</div>
       </div>
     );
-  }, [card, arcanes]);
+  }, [card, size, arcanes]);
 
   const cardHintContent = useMemo(() => {
     if ((card as { number?: number }).number !== undefined) {

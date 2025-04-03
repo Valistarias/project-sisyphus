@@ -1,0 +1,23 @@
+.char-cards {
+  background-color: var(--primary-dark-40);
+  border-radius: var(--border-radius);
+  box-sizing: content-box;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  margin-top: 6rem;
+  min-height: var(--height-card-mini);
+  padding: 2rem;
+  padding-top: 4rem;
+  position: relative;
+
+  &__title {
+    color: var(--primary);
+    font-family: var(--decor-serif-font);
+    font-size: 3rem;
+    position: absolute;
+    text-shadow: 0 0 2rem var(--primary-20);
+    text-transform: capitalize;
+    top: -2rem;
+  }
+}

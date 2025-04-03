@@ -38,6 +38,10 @@
       "name_one": "action",
       "name_other": "actions"
     },
+    "card": {
+      "name_one": "card",
+      "name_other": "cards"
+    },
     "suit": {
       "wisdom": "Wisdom",
       "courage": "Courage",
