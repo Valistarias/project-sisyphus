@@ -11,6 +11,7 @@ import CharacterProgramList from './characterProgramList';
 import { classTrim } from '../../utils';
 
 import './characterBoard.scss';
+import { Ap } from '../../atoms';
 
 const CharacterBoard: FC = () => {
   const { t } = useTranslation();
@@ -42,15 +43,18 @@ const CharacterBoard: FC = () => {
     <div
       className={classTrim(`
       char-action-board
+      
     `)}
     >
       <TabsWindow
         displayedTab={displayedTab}
+        className="char-action-board__tabs"
         onClick={(tabId) => {
           setDisplayedTab(tabId);
         }}
         tabs={tabs}
       />
+      <Ap className="char-action-board__title">{t('terms.action.name', { count: 2 })}</Ap>
     </div>
   );
 };

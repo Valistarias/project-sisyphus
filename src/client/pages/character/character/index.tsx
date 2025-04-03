@@ -6,6 +6,7 @@ import { useApi, useCampaignEventWindow, useGlobalVars } from '../../../provider
 
 import {
   CampaignEventTab,
+  CharacterBoard,
   CharacterHeader,
   CharacterSkills,
   CharacterStats,
@@ -57,7 +58,9 @@ const Character: FC = () => {
         isTabOpen={eventTabOpen}
       />
       <div className="character__body">
-        <div className="character__body__left"></div>
+        <div className="character__body__left">
+          <CharacterBoard />
+        </div>
         <div className="character__body__center">
           <CharacterHeader
             onOpenTab={() => {

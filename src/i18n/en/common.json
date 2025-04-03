@@ -34,6 +34,10 @@
       "name_one": "skill",
       "name_other": "skills"
     },
+    "action": {
+      "name_one": "action",
+      "name_other": "actions"
+    },
     "suit": {
       "wisdom": "Wisdom",
       "courage": "Courage",

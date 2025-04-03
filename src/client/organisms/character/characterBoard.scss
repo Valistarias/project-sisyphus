@@ -1,4 +1,21 @@
 .char-action-board {
-  height: 100%;
+  position: relative;
   width: 100%;
+
+  &__tabs {
+    .tabs-window__window {
+      padding-bottom: 4rem;
+    }
+  }
+
+  &__title {
+    bottom: -2rem;
+    color: var(--primary);
+    font-family: var(--decor-serif-font);
+    font-size: 3rem;
+    position: absolute;
+    right: 0;
+    text-shadow: 0 0 2rem var(--primary-20);
+    text-transform: capitalize;
+  }
 }

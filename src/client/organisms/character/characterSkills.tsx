@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useGlobalVars } from '../../providers';
 
+import { Ap } from '../../atoms';
 import { SearchBar, SkillDisplay } from '../../molecules';
 
 import type { TypeCampaignEvent } from '../../types';
@@ -11,7 +12,6 @@ import type { TypeCampaignEvent } from '../../types';
 import { classTrim, removeDiacritics, type DiceRequest } from '../../utils';
 
 import './characterSkills.scss';
-import { Ap } from '../../atoms';
 
 interface ICharacterSkills {
   /** The function sent to roll the dices */

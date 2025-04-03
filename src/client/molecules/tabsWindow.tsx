@@ -2,6 +2,8 @@ import React, { type ReactNode, type FC } from 'react';
 
 import Button from './button';
 
+import { classTrim } from '../utils';
+
 import './tabsWindow.scss';
 
 interface ITabsWindow {
@@ -15,10 +17,22 @@ interface ITabsWindow {
   }>;
   /** When a tab button is clicked */
   onClick: (tabId: string) => void;
+  /** Are the tabs having an inherited className */
+  className?: string;
 }
 
-const TabsWindow: FC<ITabsWindow> = ({ displayedTab, tabs, onClick: onTabLabelClick }) => (
-  <div className="tabs-window">
+const TabsWindow: FC<ITabsWindow> = ({
+  displayedTab,
+  className,
+  tabs,
+  onClick: onTabLabelClick,
+}) => (
+  <div
+    className={classTrim(`
+      tabs-window
+      ${className ?? ''}
+    `)}
+  >
     <div className="tabs-window__buttons">
       {tabs.map(({ label, id }, index) => (
         <Button
