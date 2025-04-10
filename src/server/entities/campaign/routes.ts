@@ -14,6 +14,7 @@ import {
   update,
   shuffleDeck,
   getCardFromDeck,
+  discardCardsFromPlayer,
   wipePlayerCards,
 } from './controller';
 
@@ -30,6 +31,8 @@ export default (app: Router): void => {
   app.get('/campaigns/find', [verifyToken], findByCode);
 
   app.post('/campaigns/card', [verifyToken], getCardFromDeck);
+
+  app.post('/campaigns/discardcards', [verifyToken], discardCardsFromPlayer);
 
   app.post('/campaigns/generatecode', [verifyToken], generateCode);
 

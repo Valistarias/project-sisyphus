@@ -4,7 +4,7 @@ import type { HydratedDocument, ObjectId } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 
 import { getUserFromToken, type IVerifyTokenRequest } from '../../middlewares/authJwt';
-import { Deck } from '../../middlewares/deck';
+import { Deck, type ICard } from '../../middlewares/deck';
 import db from '../../models';
 import {
   gemInvalidField,
@@ -506,6 +506,70 @@ const getCardFromDeck = (req: Request, res: Response): void => {
     });
 };
 
+const discardCardsFromPlayer = (req: Request, res: Response): void => {
+  const {
+    campaignId,
+    cards,
+    characterId,
+  }: {
+    campaignId?: string;
+    characterId?: string;
+    cards: ICard[];
+  } = req.body;
+  if (campaignId === undefined || characterId === undefined || cards.length === 0) {
+    res.status(400).send(gemInvalidField('Campaign ID'));
+
+    return;
+  }
+  findCampaignById(campaignId, req)
+    .then(({ campaign, isOwner, isPlayer }) => {
+      if (isOwner || isPlayer) {
+        const campaignDeck = new Deck({
+          deck: campaign.deck ?? '',
+          discard: campaign.discard ?? '',
+        });
+
+        findCharacterById(characterId, req)
+          .then(({ char, canEdit }) => {
+            if (canEdit) {
+              const hand = new Deck({ deck: char.hand ?? '', discard: '' });
+              hand.removeCards(cards);
+              campaignDeck.addCardsToDiscard(cards);
+
+              campaign.deck = campaignDeck.deckToString;
+              campaign.discard = campaignDeck.discardToString;
+              campaign
+                .save()
+                .then(() => {
+                  char.hand = hand.deckToString;
+                  char
+                    .save()
+                    .then(() => {
+                      res.send(hand.deck);
+                    })
+                    .catch((err: unknown) => {
+                      res.status(500).send(gemServerError(err));
+                    });
+                })
+                .catch((err: unknown) => {
+                  res.status(500).send(gemServerError(err));
+                });
+            } else {
+              res.status(404).send(gemUnauthorized());
+            }
+          })
+          .catch((err: unknown) => {
+            res.status(500).send(gemServerError(err));
+          });
+      } else {
+        res.status(404).send(gemNotFound('Campaign'));
+      }
+    })
+    .catch((err: unknown) => {
+      res.status(500).send(gemServerError(err));
+    });
+};
+
 const wipePlayerCards = (req: Request, res: Response): void => {
   const { campaignId }: { campaignId?: string } = req.body;
   if (campaignId === undefined) {
@@ -579,5 +643,6 @@ export {
   update,
   shuffleDeck,
   getCardFromDeck,
+  discardCardsFromPlayer,
   wipePlayerCards,
 };

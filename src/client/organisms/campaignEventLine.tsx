@@ -6,6 +6,7 @@ import { useGlobalVars } from '../providers';
 
 import holoBackground from '../assets/imgs/tvbg2.gif';
 import { Ap } from '../atoms';
+import { Card } from '../molecules';
 import DiceCard from '../molecules/diceCard';
 
 import type { TypeCampaignEvent, TypeDice } from '../types';
@@ -35,7 +36,7 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
   type,
 }) => {
   const { t } = useTranslation();
-  const { skills, stats } = useGlobalVars();
+  const { skills, stats, arcanes } = useGlobalVars();
 
   const [isOpen, setOpen] = useState(false);
 
@@ -116,6 +117,17 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
       }
     }
 
+    if (type.includes('card-')) {
+      return (
+        <Ap className="campaign-event-line__result__type__text">
+          <span className="campaign-event-line__result__type__text__long">
+            {t(`campaignEventResults.type.arcane.line1`, { ns: 'components' })}
+          </span>
+          {t(`campaignEventResults.type.arcane.line2`, { ns: 'components' })}
+        </Ap>
+      );
+    }
+
     return (
       <Ap className="campaign-event-line__result__type__text">
         <span className="campaign-event-line__result__type__text__long">
@@ -127,15 +139,47 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
   }, [t, type, skills, stats]);
 
   const resultText = useMemo(() => {
-    if (type === 'hpLoss') {
-      return `${result} ${t(`terms.character.hp.short`)}`;
-    }
-    if (type === 'hpGain') {
-      return `+${result} ${t(`terms.character.hp.short`)}`;
+    if (type.includes('card-')) {
+      const cardId = type.split('-')[1];
+      const arcana = arcanes.find(({ arcane }) => arcane._id === cardId);
+
+      if (arcana !== undefined) {
+        return <Card card={{ _id: cardId }} flipped size="mini" withInfo />;
+      }
     }
 
-    return result.toString();
-  }, [result, t, type]);
+    if (type === 'hpLoss') {
+      return (
+        <Ap
+          onClick={() => {
+            setOpen((prev) => !prev);
+          }}
+          className="campaign-event-line__result__content__score"
+        >{`${result} ${t(`terms.character.hp.short`)}`}</Ap>
+      );
+    }
+    if (type === 'hpGain') {
+      return (
+        <Ap
+          onClick={() => {
+            setOpen((prev) => !prev);
+          }}
+          className="campaign-event-line__result__content__score"
+        >{`+${result} ${t(`terms.character.hp.short`)}`}</Ap>
+      );
+    }
+
+    return (
+      <Ap
+        onClick={() => {
+          setOpen((prev) => !prev);
+        }}
+        className="campaign-event-line__result__content__score"
+      >
+        {result.toString()}
+      </Ap>
+    );
+  }, [arcanes, result, t, type]);
 
   return (
     <div
@@ -154,14 +198,7 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
         <div className="campaign-event-line__result__type">{typeCampaignEventText}</div>
         <div className="campaign-event-line__result__content">
           <Ap className="campaign-event-line__result__content__character">{authorName}</Ap>
-          <Ap
-            onClick={() => {
-              setOpen((prev) => !prev);
-            }}
-            className="campaign-event-line__result__content__score"
-          >
-            {resultText}
-          </Ap>
+          {resultText}
         </div>
       </div>
       {isOpen && detailScores !== null ? (

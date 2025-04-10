@@ -5,6 +5,7 @@ import { CampaignEventWindowProvider, useCampaignEventWindow } from './campaignE
 import { ConfirmMessageProvider, useConfirmMessage } from './confirmMessage';
 import { GlobalVarsProvider, useGlobalVars } from './globalVars';
 import { LangProvider, useLang } from './lang';
+import { SingleCardWindowProvider, useSingleCardWindow } from './singleCardWindow';
 import { SocketProvider, useSocket } from './socket';
 import { SoundSystemProvider, useSoundSystem } from './soundSystem';
 import { SystemAlertsProvider, useSystemAlerts } from './systemAlerts';
@@ -24,7 +25,9 @@ const Providers: FC<ProviderProps> = ({ children }) => (
             <SystemAlertsProvider>
               <ConfirmMessageProvider>
                 <SoundSystemProvider>
-                  <CampaignEventWindowProvider>{children}</CampaignEventWindowProvider>
+                  <CampaignEventWindowProvider>
+                    <SingleCardWindowProvider>{children}</SingleCardWindowProvider>
+                  </CampaignEventWindowProvider>
                 </SoundSystemProvider>
               </ConfirmMessageProvider>
             </SystemAlertsProvider>
@@ -39,6 +42,7 @@ export {
   Providers,
   useApi,
   useCampaignEventWindow,
+  useSingleCardWindow,
   useConfirmMessage,
   useGlobalVars,
   useLang,

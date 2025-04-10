@@ -4,7 +4,9 @@
   box-sizing: content-box;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   gap: 1rem;
+  justify-content: center;
   margin-top: 6rem;
   min-height: var(--height-card-mini);
   padding: 2rem;
@@ -15,6 +17,7 @@
     color: var(--primary);
     font-family: var(--decor-serif-font);
     font-size: 3rem;
+    left: 1rem;
     position: absolute;
     text-shadow: 0 0 2rem var(--primary-20);
     text-transform: capitalize;

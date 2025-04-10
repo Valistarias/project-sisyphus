@@ -61,12 +61,12 @@ const Card: FC<IQuarkProps<ICardComponent>> = ({
 
       if (hintPlacement === 'right') {
         setPlacement({
-          top: `${domPos.top + domPos.height / 2 - hintPos.height / 2}px`,
+          top: `${domPos.top}px`,
           left: `${domPos.right + padding}px`,
         });
       } else {
         setPlacement({
-          top: `${domPos.top + domPos.height / 2 - hintPos.height / 2}px`,
+          top: `${domPos.top}px`,
           left: `${domPos.left - padding - hintPos.width}px`,
         });
       }
@@ -315,44 +315,56 @@ const Card: FC<IQuarkProps<ICardComponent>> = ({
     if ((card as { number?: number }).number !== undefined) {
       const numberCard = card as INumberCard;
 
-      return (
-        <Ap className="card-hint__number">
-          <span className="card-hint__number__value">{numberCard.number}</span>
-          <span className="card-hint__number__liaison">{t('card.xOfy', { ns: 'components' })}</span>
-          <span className="card-hint__number__color">{t(`terms.suit.${numberCard.suit}`)}</span>
-        </Ap>
-      );
+      return {
+        dom: (
+          <Ap className="card-hint__number">
+            <span className="card-hint__number__value">{numberCard.number}</span>
+            <span className="card-hint__number__liaison">
+              {t('card.xOfy', { ns: 'components' })}
+            </span>
+            <span className="card-hint__number__color">{t(`terms.suit.${numberCard.suit}`)}</span>
+          </Ap>
+        ),
+        type: 'number',
+      };
     }
 
     if ((card as { _id?: string })._id !== undefined) {
       const arcane = arcanes.find((arcane) => arcane.arcane._id === (card as IBasicArcaneCard)._id);
 
       if (arcane !== undefined) {
-        return (
-          <div className="card-hint__arcana">
-            <Atitle className="card-hint__arcana__title" level={3}>
-              <span className="card-hint__arcana__title__number">
-                {romanize(arcane.arcane.number)}
-              </span>
-              <span>{` - ${arcane.arcane.title}`}</span>
-            </Atitle>
-            <RichTextElement
-              className="card-hint__arcana__text"
-              rawStringContent={arcane.arcane.summary}
-              readOnly
-            />
-          </div>
-        );
+        return {
+          dom: (
+            <div className="card-hint__arcana">
+              <Atitle className="card-hint__arcana__title" level={3}>
+                <span className="card-hint__arcana__title__number">
+                  {romanize(arcane.arcane.number)}
+                </span>
+                <span className="card-hint__arcana__title__text">{` - ${arcane.arcane.title}`}</span>
+              </Atitle>
+              <RichTextElement
+                className="card-hint__arcana__text"
+                rawStringContent={arcane.arcane.summary}
+                readOnly
+              />
+            </div>
+          ),
+          type: 'arcane',
+        };
       }
     }
 
-    return <Ap className="card-hint__unknown">???</Ap>;
+    return {
+      dom: <Ap className="card-hint__unknown">???</Ap>,
+      type: 'unknown',
+    };
   }, [card, arcanes, t]);
 
   return (
     <div
       className={classTrim(`
       card-block
+      card-block--${size}
       ${flipped ? 'card-block--flipped' : ''}
       ${withInfo ? 'card-block--info' : ''}
     `)}
@@ -361,6 +373,7 @@ const Card: FC<IQuarkProps<ICardComponent>> = ({
         className={classTrim(`
           card
           card--${size}
+          ${withInfo ? 'card--info' : ''}
           ${onClick !== undefined ? 'card--clickable' : ''}
           ${className ?? ''}
         `)}
@@ -374,8 +387,15 @@ const Card: FC<IQuarkProps<ICardComponent>> = ({
           {cardFront}
         </div>
       </div>
-      <div className="card-hint" ref={hintPosition} style={placement}>
-        {cardHintContent}
+      <div
+        className={classTrim(`
+          card-hint
+          card-hint--${cardHintContent.type}
+        `)}
+        ref={hintPosition}
+        style={placement}
+      >
+        {cardHintContent.dom}
       </div>
     </div>
   );

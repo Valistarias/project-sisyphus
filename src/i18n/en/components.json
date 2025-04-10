@@ -79,6 +79,10 @@
         "line1": "HP",
         "line2": "Gain"
       },
+      "arcane": {
+        "line1": "Card",
+        "line2": "used"
+      },
       "global": {
         "line2": "Roll"
       }
@@ -93,6 +97,10 @@
     "oathSacrificeText": "Gain two cards instead of one. Can only be used if the action is linked to your oaths",
     "cancel": "Cancel",
     "addCard": "Add a Card"
+  },
+  "cardWindow": {
+    "use": "Use Arcane",
+    "cancel": "Close"
   },
   "smartselect": {
     "placeholder": "Select one...",

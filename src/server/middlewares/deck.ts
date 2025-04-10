@@ -106,6 +106,11 @@ class Deck {
     this.deckToString = JSON.stringify(this.deck);
   }
 
+  addCardsToDiscard(cards: ICard[]): void {
+    this.deck = this.deck.concat(cards);
+    this.deckToString = JSON.stringify(this.deck);
+  }
+
   removeCards(cardsToDiscard: ICard[]): void {
     this.deck = this.deck.reduce<ICard[]>((cards, currentCard) => {
       // Arcana Condition

@@ -55,7 +55,8 @@ export type TypeCampaignEvent =
   | 'hpLoss'
   | 'init'
   | `skill-${string}`
-  | `stat-${string}`;
+  | `stat-${string}`
+  | `card-${string}`;
 
 export interface ICampaignEvent {
   /** The ID of the roll */

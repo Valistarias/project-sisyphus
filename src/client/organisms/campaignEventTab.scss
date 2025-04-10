@@ -6,7 +6,7 @@
   gap: 2rem;
   height: 100%;
   position: fixed;
-  right: -34rem;
+  right: -30rem;
   transition: right 0.4s ease;
   z-index: var(--z-forward);
 
@@ -21,7 +21,7 @@
     transition:
       box-shadow 0.4s ease 0.2s,
       border 0.6s ease 0.1s;
-    width: 34rem;
+    width: 30rem;
 
     &__close {
       position: absolute;

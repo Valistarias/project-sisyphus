@@ -14,11 +14,21 @@ interface ICampaignCodePayload {
 
 export default class Campaigns extends Entity<ICampaignPayload, ICampaign, ICampaign> {
   register: (payload: ICampaignCodePayload) => Promise<{ campaignId: string }>;
+
   unregister: (payload: ICampaignPayload) => Promise<boolean>;
+
   find: (payload: ICampaignCodePayload) => Promise<ICampaign>;
+
   generateCode: (payload: ICampaignPayload) => Promise<ICampaign>;
+
   shuffleDeck: (payload: ICampaignPayload) => Promise<{ deck: IDeck; discard: IDeck }>;
+
   wipePlayerHands: (payload: ICampaignPayload) => Promise<boolean>;
+
+  discardCards: (
+    payload: ICampaignPayload & { cards: ICard[]; characterId: string }
+  ) => Promise<IDeck>;
+
   getCard: (payload: ICampaignPayload & { cardNumber: number; characterId?: string }) => Promise<{
     drawn: ICard[];
     addedToPlayer: boolean;
@@ -110,6 +120,18 @@ export default class Campaigns extends Entity<ICampaignPayload, ICampaign, ICamp
                 addedToPlayer: boolean;
               }
             );
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+
+    this.discardCards = async (payload) =>
+      await new Promise((resolve, reject) => {
+        axios
+          .post(`${this.url}/discardcards/`, payload)
+          .then((res) => {
+            resolve(res.data as IDeck);
           })
           .catch((err) => {
             reject(err);
