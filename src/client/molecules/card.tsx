@@ -28,7 +28,7 @@ export interface ICardComponent {
   /** The size of the card */
   size?: 'xlarge' | 'large' | 'medium' | 'small' | 'mini';
   /** The theme of the card */
-  theme?: 'primary' | 'error';
+  theme?: 'primary' | 'error' | 'silver';
   /** Is there the panel information attached ? */
   withInfo?: boolean;
 }

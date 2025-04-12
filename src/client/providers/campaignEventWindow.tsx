@@ -21,7 +21,13 @@ import { useGlobalVars } from './globalVars';
 import { useSoundSystem } from './soundSystem';
 import { useSystemAlerts } from './systemAlerts';
 
-import type { ErrorResponseType, ICard, ICharacter, TypeCampaignEvent } from '../types';
+import type {
+  ErrorResponseType,
+  ICard,
+  ICharacter,
+  INumberCard,
+  TypeCampaignEvent,
+} from '../types';
 
 import {
   classTrim,
@@ -86,6 +92,7 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
 
   const [bonus, setBonus] = useState<string>('00');
   const [displayBonus, setDisplayBonus] = useState<boolean>(false);
+  const [cardOffset, setCardOffset] = useState<INumberCard | null>(null);
 
   const [total, setTotal] = useState<string>('000');
   const [displayTotal, setDisplayTotal] = useState<boolean>(false);
@@ -290,12 +297,68 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
     setMode('dice');
     setValueToSacrificeIndex(null);
     setNbToDiscard(null);
+    setLoading(false);
+    setCardOffset(null);
     setTimeout(() => {
       setDiceValues([]);
       setCardFlipped([]);
       typeRoll.current = 'free';
     }, 500);
   }, []);
+
+  const sendResult = useCallback(() => {
+    if (api !== undefined && character !== false && character?.campaign !== undefined) {
+      setLoading(true);
+      const cardsToAdd: ICard[] = [];
+      newCards.forEach((newCard) => {
+        if (cardsDiscarded.find((cardDiscarded) => cardDiscarded === newCard) === undefined) {
+          cardsToAdd.push(newCard);
+        }
+      });
+      if (cardOffset !== null) {
+        api.campaigns
+          .changeCards({
+            campaignId: character.campaign._id,
+            characterId: character._id,
+            cardsToDiscard: [cardOffset],
+          })
+          .then((newHand) => {
+            setCharacter((prev: ICharacter) => {
+              const next = { ...prev };
+              next.hand = newHand;
+
+              return next;
+            });
+            closeWindow();
+          })
+          .catch(({ response }: ErrorResponseType) => {
+            setLoading(false);
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{t('serverErrors.CYPU-301')}</Ap>
+                </Alert>
+              ),
+            });
+          });
+      } else {
+        closeWindow();
+      }
+    }
+  }, [
+    api,
+    character,
+    newCards,
+    cardOffset,
+    cardsDiscarded,
+    setCharacter,
+    closeWindow,
+    getNewId,
+    createAlert,
+    t,
+  ]);
 
   const discardCards = useCallback(() => {
     if (api !== undefined && character !== false && character?.campaign !== undefined) {
@@ -374,6 +437,29 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
       }, 500);
     }
   }, [closeWindow, character]);
+
+  const numberedCharacterCards: INumberCard[] = useMemo(() => {
+    if (character === false || character === null) {
+      return [];
+    }
+
+    const numberedCards: INumberCard[] = [];
+
+    character.hand.forEach((card) => {
+      if ((card as Partial<INumberCard>).suit !== undefined) {
+        numberedCards.push(card as INumberCard);
+      }
+    });
+
+    return numberedCards;
+  }, [character]);
+
+  const totalWithCardOffset = useMemo(() => {
+    const numberedResult = Number(total) + (cardOffset?.number ?? 0);
+    const resultWithZeroes = '000' + numberedResult.toString();
+
+    return resultWithZeroes.slice(-3);
+  }, [total, cardOffset]);
 
   useEffect(() => {
     if (dicesToRoll !== null) {
@@ -614,34 +700,70 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
             </div>
           </div>
           <div className="roll-window__window__bonuses">
-            <Ap className="roll-window__window__bonuses__text">
-              {t('rollWindow.bonus', { ns: 'components' })}
-            </Ap>
-            <div className="roll-window__window__bonuses__total">
-              <span className="roll-window__window__bonuses__total__plus">+</span>
-              <DiceRollerCharacter
-                val={bonus.charAt(0)}
-                faded={bonus.startsWith('0')}
-                size="large"
-              />
-              <DiceRollerCharacter val={bonus.charAt(1)} faded={Number(bonus) === 0} size="large" />
+            <div className="roll-window__window__bonuses__flat">
+              <Ap className="roll-window__window__bonuses__flat__text">
+                {t('rollWindow.bonus', { ns: 'components' })}
+              </Ap>
+              <div className="roll-window__window__bonuses__flat__total">
+                <span className="roll-window__window__bonuses__flat__total__plus">+</span>
+                <DiceRollerCharacter
+                  val={bonus.charAt(0)}
+                  faded={bonus.startsWith('0')}
+                  size="large"
+                />
+                <DiceRollerCharacter
+                  val={bonus.charAt(1)}
+                  faded={Number(bonus) === 0}
+                  size="large"
+                />
+              </div>
             </div>
+            {numberedCharacterCards.length !== 0 ? (
+              <div className="roll-window__window__bonuses__card">
+                <Ap className="roll-window__window__bonuses__card__text">
+                  {t('rollWindow.addCard', { ns: 'components' })}
+                </Ap>
+                <div className="roll-window__window__bonuses__card__list">
+                  {numberedCharacterCards.map((card) => (
+                    <Card
+                      size="mini"
+                      card={card}
+                      flipped
+                      theme={cardOffset === card ? 'silver' : 'primary'}
+                      key={`${card.suit}-${card.number}`}
+                      className="roll-window__window__new-cards__cards__elt"
+                      onClick={() => {
+                        setCardOffset((prev) => {
+                          if (prev === card) {
+                            return null;
+                          }
+
+                          return card;
+                        });
+                      }}
+                      withInfo
+                    />
+                  ))}
+                </div>
+              </div>
+            ) : null}
           </div>
+
           {isInteractive ? (
             <div className="roll-window__window__total">
               <DiceRollerCharacter
-                val={total.charAt(0)}
-                faded={total.startsWith('0')}
+                val={totalWithCardOffset.charAt(0)}
+                faded={totalWithCardOffset.startsWith('0')}
                 size="xlarge"
               />
               <DiceRollerCharacter
-                val={total.charAt(1)}
-                faded={total.startsWith('00')}
+                val={totalWithCardOffset.charAt(1)}
+                faded={totalWithCardOffset.startsWith('00')}
                 size="xlarge"
               />
               <DiceRollerCharacter
-                val={total.charAt(2)}
-                faded={total.startsWith('000')}
+                val={totalWithCardOffset.charAt(2)}
+                faded={totalWithCardOffset.startsWith('000')}
                 size="xlarge"
               />
             </div>
@@ -649,7 +771,7 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
           {isInteractive ? (
             <div className="roll-window__window__interactions">
               <div className="interactions-dice">
-                <Button size="large" onClick={closeWindow}>
+                <Button size="large" onClick={sendResult}>
                   {t('rollWindow.done', { ns: 'components' })}
                 </Button>
                 <HintButton
@@ -659,6 +781,7 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
                     setMode('sacrifice');
                   }}
                   question={t('rollWindow.sacrificeText', { ns: 'components' })}
+                  disabled={cardOffset !== null}
                 >
                   {t('rollWindow.sacrifice', { ns: 'components' })}
                 </HintButton>

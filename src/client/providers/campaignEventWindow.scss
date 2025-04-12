@@ -184,49 +184,69 @@
     }
 
     &__bonuses {
-      border: 0.1rem solid var(--primary);
-      opacity: 0;
-      padding: 2rem;
-      position: relative;
-      transition: opacity 0.5s ease;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 4rem;
+      justify-content: center;
 
-      &__text {
+      &__flat,
+      &__card {
         align-items: center;
+        border: 0.1rem solid var(--primary);
         display: flex;
-        font-family: var(--mono-font);
-        font-size: 2rem;
-        height: 4rem;
-        justify-content: center;
-        left: 2rem;
-        padding: 0 2rem;
-        position: absolute;
-        text-transform: uppercase;
-        top: -2rem;
-        z-index: var(--z-forward);
+        flex-direction: row;
+        opacity: 0;
+        padding: 2rem;
+        position: relative;
+        transition: opacity 0.5s ease;
 
-        &::before {
-          background: var(--vanta);
-          content: '';
-          height: 0.2rem;
-          left: 0;
+        &__text {
+          align-items: center;
+          display: flex;
+          font-family: var(--mono-font);
+          font-size: 2rem;
+          height: 4rem;
+          justify-content: center;
+          left: 2rem;
+          padding: 0 2rem;
           position: absolute;
-          top: calc(50% - 0.1rem);
-          width: 100%;
-          z-index: -1;
+          text-transform: uppercase;
+          top: -2rem;
+          z-index: var(--z-forward);
+
+          &::before {
+            background: var(--vanta);
+            content: '';
+            height: 0.2rem;
+            left: 0;
+            position: absolute;
+            top: calc(50% - 0.1rem);
+            width: 100%;
+            z-index: -1;
+          }
+        }
+
+        &__total {
+          align-items: center;
+          display: flex;
+          flex-direction: row;
+          gap: 2rem;
+          justify-content: center;
+
+          &__plus {
+            color: var(--primary);
+            font-size: 6rem;
+            font-weight: 100;
+          }
         }
       }
 
-      &__total {
-        align-items: center;
-        display: flex;
-        flex-direction: row;
-        gap: 2rem;
-        justify-content: center;
-
-        &__plus {
-          color: var(--primary);
-          font-size: 6rem;
-          font-weight: 100;
+      &__card {
+        &__list {
+          display: flex;
+          flex-direction: row;
+          gap: 1rem;
         }
       }
     }
@@ -270,7 +290,8 @@
   &--mode-dice,
   &--mode-sacrifice {
     &.roll-window--bonus {
-      .roll-window__window__bonuses {
+      .roll-window__window__bonuses__flat,
+      .roll-window__window__bonuses__card {
         opacity: 1;
       }
     }
@@ -343,7 +364,8 @@
   &--mode-discardCard {
     .roll-window__window {
       &__dices,
-      &__bonuses,
+      &__bonuses__flat,
+      &__bonuses__card,
       &__total,
       &__interactions {
         pointer-events: none;

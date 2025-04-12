@@ -607,6 +607,15 @@
     --card-main-color-40: var(--error-40);
     --card-main-color-80: var(--error-80);
   }
+
+  &--silver {
+    --card-main-color: var(--tertiary);
+    --card-main-color-darker: var(--primary-darker);
+    --card-main-color-10: var(--tertiary-10);
+    --card-main-color-20: var(--tertiary-20);
+    --card-main-color-40: var(--tertiary-40);
+    --card-main-color-80: var(--tertiary-80);
+  }
 }
 
 @keyframes pulse {
