@@ -169,6 +169,38 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
       );
     }
 
+    if (type === 'free' && formula !== undefined) {
+      const results: number[] = [];
+
+      strToDiceResult(formula).forEach((diceCat) => {
+        if (diceCat.results.length > 0) {
+          diceCat.results.forEach((result) => {
+            results.push(result);
+          });
+        }
+      });
+
+      let resultsToStr = '';
+
+      results.forEach((res, id) => {
+        resultsToStr += res;
+        if (id !== results.length - 1) {
+          resultsToStr += ' ';
+        }
+      });
+
+      return (
+        <Ap
+          onClick={() => {
+            setOpen((prev) => !prev);
+          }}
+          className="campaign-event-line__result__content__score"
+        >
+          {resultsToStr}
+        </Ap>
+      );
+    }
+
     return (
       <Ap
         onClick={() => {
@@ -179,7 +211,7 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
         {result.toString()}
       </Ap>
     );
-  }, [arcanes, result, t, type]);
+  }, [arcanes, result, formula, t, type]);
 
   return (
     <div

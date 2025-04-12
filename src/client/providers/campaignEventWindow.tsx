@@ -35,6 +35,8 @@ import {
   throwDices,
   type DiceRequest,
   type UniqueResultDiceData,
+  calculateDices,
+  diceResultToStr,
 } from '../utils';
 
 import './campaignEventWindow.scss';
@@ -108,6 +110,7 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
   // const intervalEvt = useRef<NodeJS.Timeout | null>(null);
   // const endRollEvt = useRef<NodeJS.Timeout | null>(null);
   const rollResults = useRef<DiceResult[] | null>(null);
+  const rollsEnded = useRef<number>(0);
   // const tick = useRef<number>(0);
 
   const diceRollerMode = useMemo(() => {
@@ -118,7 +121,7 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
     if (diceCount === 1) {
       return 'xlarge';
     }
-    if (diceCount <= 3) {
+    if (diceCount <= 2) {
       return 'large';
     }
     if (diceCount <= 6) {
@@ -203,45 +206,6 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
   //   }, 1000);
   // }, [CampaignEvent]);
 
-  // const totalDom = useMemo(() => {
-  //   if (diceCards.length <= 1 || rollResults.current === null) {
-  //     return null;
-  //   }
-  //   const dataDices = calculateDices(rollResults.current);
-
-  //   return (
-  //     <div className="roll-window__window__results">
-  //       <div className="roll-window__window__results__total">
-  //         <Ap className="roll-window__window__results__title">
-  //           {t('rollWindow.total', { ns: 'components' })}
-  //         </Ap>
-  //         <Ap className="roll-window__window__results__value">{dataDices.total.toString()}</Ap>
-  //       </div>
-  //       {dataDices.best != null && dataDices.worst != null ? (
-  //         <>
-  //           <div className="roll-window__window__results__line" />
-  //           <div className="roll-window__window__results__info">
-  //             <div className="roll-window__window__results__info__block">
-  //               <Ap className="roll-window__window__results__title">
-  //                 {t('rollWindow.best', { ns: 'components' })}
-  //               </Ap>
-  //               <Ap className="roll-window__window__results__value">{dataDices.best.toString()}</Ap>
-  //             </div>
-  //             <div className="roll-window__window__results__info__block">
-  //               <Ap className="roll-window__window__results__title">
-  //                 {t('rollWindow.worst', { ns: 'components' })}
-  //               </Ap>
-  //               <Ap className="roll-window__window__results__value">
-  //                 {dataDices.worst.toString()}
-  //               </Ap>
-  //             </div>
-  //           </div>
-  //         </>
-  //       ) : null}
-  //     </div>
-  //   );
-  // }, [t]);
-
   const generateCards = useCallback(
     (cardNumber: number) => {
       if (api !== undefined && character !== false && character?.campaign !== undefined) {
@@ -299,6 +263,7 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
     setNbToDiscard(null);
     setLoading(false);
     setCardOffset(null);
+    rollsEnded.current = 0;
     setTimeout(() => {
       setDiceValues([]);
       setCardFlipped([]);
@@ -411,32 +376,54 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
   ]);
 
   const onDiceRollerAnimationEnd = useCallback(() => {
-    if (typeRoll.current === 'free') {
-      setTimeout(() => {
-        closeWindow();
-      }, 2000);
+    let nbDicesToRoll = 0;
+    dicesToRoll?.forEach((dice) => {
+      nbDicesToRoll += dice.qty;
+    });
+    if (rollsEnded.current < nbDicesToRoll - 1) {
+      rollsEnded.current += 1;
     } else {
-      setTimeout(() => {
-        setDisplayBonus(true);
+      if (typeRoll.current === 'free') {
         setTimeout(() => {
-          setDisplayTotal(true);
-          if (
-            (typeRoll.current.startsWith('skill-') || typeRoll.current.startsWith('stat-')) &&
-            character !== false &&
-            character?.campaign !== undefined
-          ) {
-            setTimeout(() => {
-              setDisplayInteractiveButtons(true);
-            }, 500);
-          } else {
-            setTimeout(() => {
-              closeWindow();
-            }, 2000);
-          }
+          closeWindow();
+        }, 2000);
+        if (rollResults.current !== null) {
+          CampaignEvent.dispatchEvent('addCampaignEvent', {
+            result: calculateDices(rollResults.current).total,
+            formula: diceResultToStr(rollResults.current),
+            mode: typeRoll.current,
+          });
+        }
+      } else {
+        setTimeout(() => {
+          setDisplayBonus(true);
+          setTimeout(() => {
+            setDisplayTotal(true);
+            if (
+              (typeRoll.current.startsWith('skill-') || typeRoll.current.startsWith('stat-')) &&
+              character !== false &&
+              character?.campaign !== undefined
+            ) {
+              setTimeout(() => {
+                setDisplayInteractiveButtons(true);
+              }, 500);
+            } else {
+              setTimeout(() => {
+                closeWindow();
+              }, 2000);
+              if (rollResults.current !== null) {
+                CampaignEvent.dispatchEvent('addCampaignEvent', {
+                  result: calculateDices(rollResults.current).total,
+                  formula: diceResultToStr(rollResults.current),
+                  mode: typeRoll.current,
+                });
+              }
+            }
+          }, 500);
         }, 500);
-      }, 500);
+      }
     }
-  }, [closeWindow, character]);
+  }, [closeWindow, character, CampaignEvent, dicesToRoll]);
 
   const numberedCharacterCards: INumberCard[] = useMemo(() => {
     if (character === false || character === null) {
