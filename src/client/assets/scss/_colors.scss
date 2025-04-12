@@ -6,6 +6,7 @@ $bone: #999;
 $white: #fff;
 $green: #39f21d;
 $red: #ff3d3d;
+$red-darker: #140404;
 $blue: #3de8ff;
 $blue-dark: #092225;
 $blue-darker: #050f10;
@@ -40,6 +41,7 @@ $purple-dark: #59121f;
   --error-10: #{$red}19;
   --error-05: #{$red}0d;
   --error-00: #{$red}00;
+  --error-darker: #{$red-darker};
   --rarity-1: #{$green};
 }
 

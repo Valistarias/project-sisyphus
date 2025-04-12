@@ -506,17 +506,19 @@ const getCardFromDeck = (req: Request, res: Response): void => {
     });
 };
 
-const discardCardsFromPlayer = (req: Request, res: Response): void => {
+const changeCardsFromPlayer = (req: Request, res: Response): void => {
   const {
     campaignId,
-    cards,
+    cardsToDiscard,
+    cardsToAdd,
     characterId,
   }: {
     campaignId?: string;
     characterId?: string;
-    cards: ICard[];
+    cardsToDiscard: ICard[];
+    cardsToAdd?: ICard[];
   } = req.body;
-  if (campaignId === undefined || characterId === undefined || cards.length === 0) {
+  if (campaignId === undefined || characterId === undefined || cardsToDiscard.length === 0) {
     res.status(400).send(gemInvalidField('Campaign ID'));
 
     return;
@@ -533,8 +535,11 @@ const discardCardsFromPlayer = (req: Request, res: Response): void => {
           .then(({ char, canEdit }) => {
             if (canEdit) {
               const hand = new Deck({ deck: char.hand ?? '', discard: '' });
-              hand.removeCards(cards);
-              campaignDeck.addCardsToDiscard(cards);
+              hand.removeCards(cardsToDiscard);
+              if (cardsToAdd !== undefined && cardsToAdd.length !== 0) {
+                hand.addCards(cardsToAdd);
+              }
+              campaignDeck.addCardsToDiscard(cardsToDiscard);
 
               campaign.deck = campaignDeck.deckToString;
               campaign.discard = campaignDeck.discardToString;
@@ -643,6 +648,6 @@ export {
   update,
   shuffleDeck,
   getCardFromDeck,
-  discardCardsFromPlayer,
+  changeCardsFromPlayer,
   wipePlayerCards,
 };

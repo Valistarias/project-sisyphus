@@ -25,8 +25,12 @@ export default class Campaigns extends Entity<ICampaignPayload, ICampaign, ICamp
 
   wipePlayerHands: (payload: ICampaignPayload) => Promise<boolean>;
 
-  discardCards: (
-    payload: ICampaignPayload & { cards: ICard[]; characterId: string }
+  changeCards: (
+    payload: ICampaignPayload & {
+      cardsToDiscard: ICard[];
+      cardsToAdd?: ICard[];
+      characterId: string;
+    }
   ) => Promise<IDeck>;
 
   getCard: (payload: ICampaignPayload & { cardNumber: number; characterId?: string }) => Promise<{
@@ -126,10 +130,10 @@ export default class Campaigns extends Entity<ICampaignPayload, ICampaign, ICamp
           });
       });
 
-    this.discardCards = async (payload) =>
+    this.changeCards = async (payload) =>
       await new Promise((resolve, reject) => {
         axios
-          .post(`${this.url}/discardcards/`, payload)
+          .post(`${this.url}/changecards/`, payload)
           .then((res) => {
             resolve(res.data as IDeck);
           })

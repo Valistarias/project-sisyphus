@@ -68,10 +68,10 @@ export const SingleCardWindowProvider: FC<SingleCardWindowProviderProps> = ({ ch
     ) {
       setLoading(true);
       api.campaigns
-        .discardCards({
+        .changeCards({
           campaignId: character.campaign._id,
           characterId: character._id,
-          cards: [{ _id: selectedCard.arcane._id }],
+          cardsToDiscard: [{ _id: selectedCard.arcane._id }],
         })
         .then((newHand) => {
           setLoading(false);

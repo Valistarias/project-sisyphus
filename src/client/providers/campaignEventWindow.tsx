@@ -62,7 +62,7 @@ const CampaignEventWindowContext = React.createContext<ICampaignEventWindowConte
 
 export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> = ({ children }) => {
   const { t } = useTranslation();
-  const { character, setCharacter } = useGlobalVars();
+  const { character, setCharacter, globalValues } = useGlobalVars();
   const { tone } = useSoundSystem();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
@@ -71,13 +71,18 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
 
   const CampaignEvent = useMemo(() => new CustomEventEmitter<CampaignEventDetailData>(), []);
 
-  const [mode, setMode] = useState<'dice' | 'sacrifice' | 'addCard' | 'newCard'>('dice');
+  const [mode, setMode] = useState<'dice' | 'sacrifice' | 'addCard' | 'newCard' | 'discardCard'>(
+    'dice'
+  );
   const [valueToSacrificeIndex, setValueToSacrificeIndex] = useState<number | null>(null);
 
   const [dicesToRoll, setDicesToRoll] = useState<DiceRequest[] | null>(null);
 
   const [newCards, setNewCards] = useState<ICard[]>([]);
   const [cardFlipped, setCardFlipped] = useState<boolean[]>([]);
+
+  const [nbToDiscard, setNbToDiscard] = useState<number | null>(null);
+  const [cardsDiscarded, setCardsDiscarded] = useState<ICard[]>([]);
 
   const [bonus, setBonus] = useState<string>('00');
   const [displayBonus, setDisplayBonus] = useState<boolean>(false);
@@ -248,6 +253,16 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
 
                 return next;
               });
+            } else {
+              // Checking global value, or rerouting to default value of three
+              let nbCardInHand = Number(
+                globalValues.find((val) => val.name === 'nbCardInHand')?.value
+              );
+              if (Number.isNaN(nbCardInHand)) {
+                console.error('No nbCardInHand global value defined, defaulting to 3...');
+                nbCardInHand = 3;
+              }
+              setNbToDiscard(character.hand.length + drawn.length - nbCardInHand);
             }
           })
           .catch(({ response }: ErrorResponseType) => {
@@ -264,7 +279,7 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
           });
       }
     },
-    [api, character, getNewId, createAlert, t, setCharacter]
+    [api, character, setCharacter, globalValues, getNewId, createAlert, t]
   );
 
   const closeWindow = useCallback(() => {
@@ -274,12 +289,63 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
     setDisplayInteractiveButtons(false);
     setMode('dice');
     setValueToSacrificeIndex(null);
+    setNbToDiscard(null);
     setTimeout(() => {
       setDiceValues([]);
       setCardFlipped([]);
       typeRoll.current = 'free';
     }, 500);
   }, []);
+
+  const discardCards = useCallback(() => {
+    if (api !== undefined && character !== false && character?.campaign !== undefined) {
+      setLoading(true);
+      const cardsToAdd: ICard[] = [];
+      newCards.forEach((newCard) => {
+        if (cardsDiscarded.find((cardDiscarded) => cardDiscarded === newCard) === undefined) {
+          cardsToAdd.push(newCard);
+        }
+      });
+      api.campaigns
+        .changeCards({
+          campaignId: character.campaign._id,
+          characterId: character._id,
+          cardsToDiscard: cardsDiscarded,
+          cardsToAdd,
+        })
+        .then((newHand) => {
+          setCharacter((prev: ICharacter) => {
+            const next = { ...prev };
+            next.hand = newHand;
+
+            return next;
+          });
+          closeWindow();
+        })
+        .catch(({ response }: ErrorResponseType) => {
+          setLoading(false);
+          const newId = getNewId();
+          createAlert({
+            key: newId,
+            dom: (
+              <Alert key={newId} id={newId} timer={5}>
+                <Ap>{t('serverErrors.CYPU-301')}</Ap>
+              </Alert>
+            ),
+          });
+        });
+    }
+  }, [
+    api,
+    character,
+    cardsDiscarded,
+    setCharacter,
+    closeWindow,
+    getNewId,
+    newCards,
+    createAlert,
+    t,
+  ]);
 
   const onDiceRollerAnimationEnd = useCallback(() => {
     if (typeRoll.current === 'free') {
@@ -363,6 +429,12 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
     }
   }, [dicesToRoll]);
 
+  useEffect(() => {
+    if (mode === 'newCard' && cardFlipped.findIndex((elt) => !elt) === -1 && nbToDiscard !== null) {
+      setMode('discardCard');
+    }
+  }, [cardFlipped, nbToDiscard, mode]);
+
   return (
     <CampaignEventWindowContext.Provider value={providerValues}>
       <div
@@ -381,40 +453,116 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
           // onClick={closeWindow}
         />
         <div className="roll-window__window">
+          {/* TODO: Get all the new card logic in a separate file */}
           <div className="roll-window__window__new-cards">
+            <Ap
+              className={classTrim(`
+                roll-window__window__new-cards__text
+                ${mode === 'newCard' && cardFlipped.findIndex((elt) => !elt) === -1 ? 'roll-window__window__new-cards__text--hidden' : ''}
+              `)}
+            >
+              {t(mode === 'newCard' ? 'rollWindow.flipText' : 'rollWindow.dicardText', {
+                ns: 'components',
+                count: newCards.length,
+              })}
+            </Ap>
             <div className="roll-window__window__new-cards__cards">
-              {newCards.map((card, i) => (
-                <Card
-                  size="large"
-                  card={card}
-                  flipped={!!cardFlipped[i]}
-                  key={i}
-                  className="roll-window__window__new-cards__cards__elt"
-                  onClick={
-                    !cardFlipped[i]
-                      ? () => {
-                          setCardFlipped((prev) => {
-                            const newArr = prev.map((prevBool, index) => {
-                              if (i === index && !prevBool) {
-                                return !prevBool;
-                              } else {
-                                return prevBool;
-                              }
-                            });
+              {newCards.map((card, i) => {
+                let theme: 'primary' | 'error' = 'primary';
+                if (
+                  mode === 'discardCard' &&
+                  cardsDiscarded.find((cardDiscarded) => cardDiscarded === card) !== undefined
+                ) {
+                  theme = 'error';
+                }
 
-                            return newArr;
-                          });
+                let onClickFunc: (() => void) | undefined = undefined;
+                if (mode === 'discardCard') {
+                  onClickFunc = () => {
+                    setCardsDiscarded((prev) => {
+                      const next = [...prev];
+                      const foundCardIndex = cardsDiscarded.findIndex(
+                        (cardDiscarded) => cardDiscarded === card
+                      );
+                      if (foundCardIndex !== -1) {
+                        next.splice(foundCardIndex, 1);
+                      } else {
+                        next.push(card);
+                      }
+
+                      return next;
+                    });
+                  };
+                } else if (mode === 'newCard' && !cardFlipped[i]) {
+                  onClickFunc = () => {
+                    setCardFlipped((prev) => {
+                      const newArr = prev.map((prevBool, index) => {
+                        if (i === index && !prevBool) {
+                          return !prevBool;
+                        } else {
+                          return prevBool;
                         }
-                      : undefined
-                  }
-                  withInfo
-                />
-              ))}
+                      });
+
+                      return newArr;
+                    });
+                  };
+                }
+
+                return (
+                  <Card
+                    size={nbToDiscard !== null ? 'medium' : 'large'}
+                    card={card}
+                    flipped={!!cardFlipped[i]}
+                    theme={theme}
+                    key={i}
+                    className="roll-window__window__new-cards__cards__elt"
+                    onClick={onClickFunc}
+                    withInfo
+                  />
+                );
+              })}
+              {nbToDiscard !== null && character !== null && character !== false
+                ? character.hand.map((card, i) => (
+                    <Card
+                      size="medium"
+                      card={card}
+                      theme={
+                        cardsDiscarded.find((cardDiscarded) => cardDiscarded === card) !== undefined
+                          ? 'error'
+                          : 'primary'
+                      }
+                      flipped
+                      key={i + newCards.length}
+                      className="roll-window__window__new-cards__cards__hand"
+                      onClick={() => {
+                        setCardsDiscarded((prev) => {
+                          const next = [...prev];
+                          const foundCardIndex = cardsDiscarded.findIndex(
+                            (cardDiscarded) => cardDiscarded === card
+                          );
+                          if (foundCardIndex !== -1) {
+                            next.splice(foundCardIndex, 1);
+                          } else {
+                            next.push(card);
+                          }
+
+                          return next;
+                        });
+                      }}
+                      withInfo
+                    />
+                  ))
+                : null}
             </div>
             <Button
               size="large"
-              onClick={closeWindow}
-              disabled={cardFlipped.findIndex((elt) => !elt) !== -1}
+              disabled={
+                mode === 'newCard'
+                  ? cardFlipped.findIndex((elt) => !elt) !== -1
+                  : cardsDiscarded.length !== nbToDiscard
+              }
+              onClick={mode === 'newCard' ? closeWindow : discardCards}
             >
               {t('rollWindow.done', { ns: 'components' })}
             </Button>
@@ -498,7 +646,6 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
               />
             </div>
           ) : null}
-
           {isInteractive ? (
             <div className="roll-window__window__interactions">
               <div className="interactions-dice">

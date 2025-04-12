@@ -15,21 +15,22 @@
   &__back {
     backface-visibility: hidden;
     backface-visibility: hidden;
-    border: 0.2rem solid var(--primary-80);
+    border: 0.2rem solid var(--card-main-color-80);
     height: 100%;
     position: absolute;
     width: 100%;
   }
 
   &__front {
-    background: var(--primary-darker);
-    box-shadow: 0 0 1rem 0.2rem var(--primary-20);
+    background: var(--card-main-color-darker);
+    box-shadow: 0 0 1rem 0.2rem var(--card-main-color-20);
     overflow: hidden;
     transform: rotateY(180deg);
+    transition: background 0.3s ease;
 
     &--arcane {
       .card__front__line {
-        border: 1px solid var(--primary-40);
+        border: 1px solid var(--card-main-color-40);
         border-radius: 1rem;
         height: 90%;
         left: 9%;
@@ -40,7 +41,7 @@
 
       .card__front__top-text,
       .card__front__bottom-text {
-        background-color: var(--primary-darker);
+        background-color: var(--card-main-color-darker);
         font-family: var(--mono-font);
         left: 50%;
         padding: 0 1rem;
@@ -100,15 +101,15 @@
 
       .card__front__line-dot {
         align-items: center;
-        background-color: var(--primary);
-        box-shadow: 0 0 1rem 0.2rem var(--primary-20);
+        background-color: var(--card-main-color);
+        box-shadow: 0 0 1rem 0.2rem var(--card-main-color-20);
         display: flex;
         flex-direction: column;
         justify-content: space-between;
 
         &::after,
         &::before {
-          background-color: var(--primary);
+          background-color: var(--card-main-color);
           border-radius: 100%;
           content: '';
         }
@@ -116,10 +117,11 @@
 
       .card__front__line-dot-center {
         animation: pulse 3s infinite;
-        background: var(--primary);
+        background: var(--card-main-color);
         border-radius: 100%;
         box-shadow: 0 0 0 0 rgba(0, 0, 0, 1);
         transform: scale(1);
+        transition: background 0.3s ease;
       }
 
       &--1,
@@ -168,7 +170,7 @@
 
       &::before,
       &::after {
-        background-color: var(--primary);
+        background-color: var(--card-main-color);
         content: '';
         height: 20%;
         position: absolute;
@@ -210,7 +212,7 @@
       font-size: 6rem;
       height: 6rem;
       justify-content: center;
-      text-shadow: 0 0 2rem var(--primary);
+      text-shadow: 0 0 2rem var(--card-main-color);
       width: 5rem;
     }
 
@@ -221,7 +223,7 @@
       height: 7rem;
       justify-content: center;
       padding-right: 2rem;
-      text-shadow: 0 0 2rem var(--primary);
+      text-shadow: 0 0 2rem var(--card-main-color);
       width: 6rem;
     }
 
@@ -235,7 +237,7 @@
       right: 1.5rem;
 
       &__lines {
-        background: var(--primary);
+        background: var(--card-main-color);
         flex-grow: 1;
         height: 0.1rem;
         width: 0.1rem;
@@ -262,7 +264,7 @@
     &__icon {
       color: var(--tertiary);
       height: auto;
-      text-shadow: 0 0 10rem var(--primary);
+      text-shadow: 0 0 10rem var(--card-main-color);
       width: auto;
     }
   }
@@ -321,7 +323,7 @@
       }
 
       &__image {
-        text-shadow: 0 0 6rem var(--primary);
+        text-shadow: 0 0 6rem var(--card-main-color);
       }
 
       &__image-accent {
@@ -405,7 +407,7 @@
       }
 
       &__image {
-        text-shadow: 0 0 9rem var(--primary);
+        text-shadow: 0 0 9rem var(--card-main-color);
       }
 
       &__image-accent {
@@ -468,97 +470,6 @@
   }
 }
 
-.card-hint {
-  background-color: var(--primary-darker);
-  box-shadow: 0 0 2rem var(--primary-10);
-  display: flex;
-  font-family: var(--main-font);
-  font-size: 1.4rem;
-  left: 0;
-  letter-spacing: normal;
-  line-height: 2rem;
-  margin-right: 2rem;
-  max-width: 30rem;
-  opacity: 0;
-  overflow: hidden;
-  pointer-events: none;
-  position: fixed;
-  text-transform: none;
-  top: 0;
-  transition: opacity 0.2s ease;
-  z-index: var(--z-hints);
-
-  &__number {
-    align-items: center;
-    display: flex;
-    font-family: var(--mono-font);
-    gap: 1rem;
-    justify-content: center;
-    line-height: normal;
-
-    &__value {
-      color: var(--primary);
-      font-size: 4rem;
-      font-weight: bold;
-    }
-
-    &__liaison {
-      font-size: 1.5rem;
-      text-transform: uppercase;
-    }
-
-    &__color {
-      color: var(--primary);
-      font-family: var(--decor-serif-font);
-      font-size: 1.6rem;
-    }
-  }
-
-  &__unknown {
-    font-family: var(--mono-font);
-    font-size: 4rem;
-    line-height: normal;
-  }
-
-  &__arcana {
-    &__title {
-      font-size: 3rem;
-      line-height: 1.2;
-      margin-bottom: 1em;
-      padding-top: 2rem;
-      text-align: center;
-
-      &__number {
-        color: var(--primary);
-        text-shadow: 0 0 1.5rem var(--primary);
-      }
-
-      &__text {
-        font-family: var(--decor-serif-font);
-        font-size: 1.8rem;
-        line-height: 2;
-        text-transform: none;
-      }
-    }
-
-    &__text {
-      font-size: 1.4rem;
-      letter-spacing: 0.1rem;
-      line-height: 1.8;
-      margin-bottom: 3rem;
-      padding: 0 2rem;
-    }
-  }
-
-  &--number {
-    padding: 1rem 2rem;
-  }
-
-  &--arcane {
-    padding: 1rem;
-  }
-}
-
 .card-block {
   // Info state
   &.card-block--flipped {
@@ -585,12 +496,122 @@
         }
       }
     }
+
+    .card-hint {
+      background-color: var(--card-main-color-darker);
+      box-shadow: 0 0 2rem var(--card-main-color-10);
+      display: flex;
+      font-family: var(--main-font);
+      font-size: 1.4rem;
+      left: 0;
+      letter-spacing: normal;
+      line-height: 2rem;
+      margin-right: 2rem;
+      max-width: 30rem;
+      opacity: 0;
+      overflow: hidden;
+      pointer-events: none;
+      position: fixed;
+      text-transform: none;
+      top: 0;
+      transition: opacity 0.2s ease;
+      z-index: var(--z-hints);
+
+      &__number {
+        align-items: center;
+        display: flex;
+        font-family: var(--mono-font);
+        gap: 1rem;
+        justify-content: center;
+        line-height: normal;
+
+        &__value {
+          color: var(--card-main-color);
+          font-size: 4rem;
+          font-weight: bold;
+        }
+
+        &__liaison {
+          font-size: 1.5rem;
+          text-transform: uppercase;
+        }
+
+        &__color {
+          color: var(--card-main-color);
+          font-family: var(--decor-serif-font);
+          font-size: 1.6rem;
+        }
+      }
+
+      &__unknown {
+        font-family: var(--mono-font);
+        font-size: 4rem;
+        line-height: normal;
+      }
+
+      &__arcana {
+        &__title {
+          font-size: 3rem;
+          line-height: 1.2;
+          margin-bottom: 1em;
+          padding-top: 2rem;
+          text-align: center;
+
+          &__number {
+            color: var(--card-main-color);
+            text-shadow: 0 0 1.5rem var(--card-main-color);
+          }
+
+          &__text {
+            font-family: var(--decor-serif-font);
+            font-size: 1.8rem;
+            line-height: 2;
+            text-transform: none;
+          }
+        }
+
+        &__text {
+          font-size: 1.4rem;
+          letter-spacing: 0.1rem;
+          line-height: 1.8;
+          margin-bottom: 3rem;
+          padding: 0 2rem;
+        }
+      }
+
+      &--number {
+        padding: 1rem 2rem;
+      }
+
+      &--arcane {
+        padding: 1rem;
+      }
+    }
+  }
+
+  // Themes
+  &--primary {
+    --card-main-color: var(--primary);
+    --card-main-color-darker: var(--primary-darker);
+    --card-main-color-10: var(--primary-10);
+    --card-main-color-20: var(--primary-20);
+    --card-main-color-40: var(--primary-40);
+    --card-main-color-80: var(--primary-80);
+  }
+
+  &--error {
+    --card-main-color: var(--error);
+    --card-main-color-darker: var(--error-darker);
+    --card-main-color-10: var(--error-10);
+    --card-main-color-20: var(--error-20);
+    --card-main-color-40: var(--error-40);
+    --card-main-color-80: var(--error-80);
   }
 }
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 0 0 var(--primary-80);
+    box-shadow: 0 0 0 0 var(--card-main-color-80);
     transform: scale(0.75);
   }
 

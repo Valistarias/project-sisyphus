@@ -27,6 +27,8 @@ export interface ICardComponent {
   flipped: boolean;
   /** The size of the card */
   size?: 'xlarge' | 'large' | 'medium' | 'small' | 'mini';
+  /** The theme of the card */
+  theme?: 'primary' | 'error';
   /** Is there the panel information attached ? */
   withInfo?: boolean;
 }
@@ -37,6 +39,7 @@ const Card: FC<IQuarkProps<ICardComponent>> = ({
   flipped,
   className,
   size = 'medium',
+  theme = 'primary',
   withInfo = false,
 }) => {
   const { arcanes } = useGlobalVars();
@@ -365,6 +368,7 @@ const Card: FC<IQuarkProps<ICardComponent>> = ({
       className={classTrim(`
       card-block
       card-block--${size}
+      card-block--${theme}
       ${flipped ? 'card-block--flipped' : ''}
       ${withInfo ? 'card-block--info' : ''}
     `)}
@@ -373,6 +377,7 @@ const Card: FC<IQuarkProps<ICardComponent>> = ({
         className={classTrim(`
           card
           card--${size}
+          
           ${withInfo ? 'card--info' : ''}
           ${onClick !== undefined ? 'card--clickable' : ''}
           ${className ?? ''}

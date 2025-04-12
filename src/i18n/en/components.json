@@ -96,7 +96,11 @@
     "oathSacrifice": "Divine Sacrifice",
     "oathSacrificeText": "Gain two cards instead of one. Can only be used if the action is linked to your oaths",
     "cancel": "Cancel",
-    "addCard": "Add a Card"
+    "addCard": "Add a Card",
+    "flipText_one": "Flip the drawn card",
+    "flipText_other": "Flip the drawn cards",
+    "dicardText_one": "Select {{count}} card to be discarded",
+    "dicardText_other": "Select {{count}} cards to be discarded"
   },
   "cardWindow": {
     "use": "Use Arcane",
