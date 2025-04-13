@@ -9,7 +9,7 @@ import { Ap } from '../atoms';
 import { Card } from '../molecules';
 import DiceCard from '../molecules/diceCard';
 
-import type { TypeCampaignEvent, TypeDice } from '../types';
+import type { INumberCard, TypeCampaignEvent, TypeDice } from '../types';
 
 import { addSymbol, classTrim, strToDiceResult } from '../utils';
 
@@ -51,6 +51,7 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
     }> = [];
     let idDie = 0;
     let totalOffset = 0;
+    let cardOffset: INumberCard | undefined;
     strToDiceResult(formula).forEach((diceCat) => {
       if (diceCat.results.length > 0) {
         diceCat.results.forEach((result) => {
@@ -62,6 +63,9 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
           idDie += 1;
         });
         totalOffset += diceCat.offset;
+        if (diceCat.card !== null) {
+          cardOffset = diceCat.card;
+        }
       }
     });
 
@@ -70,6 +74,7 @@ const CampaignEventResult: FC<ICampaignEventResult> = ({
         {dicesToUse.map(({ id, type, value }, index) => (
           <DiceCard key={id} type={type} value={value} size="xsmall" skip />
         ))}
+        {cardOffset !== undefined ? <Card card={cardOffset} flipped size="mini" withInfo /> : null}
         {totalOffset !== 0 ? (
           <Ap className="campaign-event-line__info__content__offset">{addSymbol(totalOffset)}</Ap>
         ) : null}

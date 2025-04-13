@@ -103,15 +103,11 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
   const [displayInteractiveButtons, setDisplayInteractiveButtons] = useState<boolean>(false);
 
   const [isWindowOpened, setWindowOpened] = useState<boolean>(false);
-  // const [isCampaignEventFinished, setRollEventFinished] = useState<boolean>(false);
   const [diceValues, setDiceValues] = useState<UniqueResultDiceData[]>([]);
   const typeRoll = useRef<TypeCampaignEvent>('free');
 
-  // const intervalEvt = useRef<NodeJS.Timeout | null>(null);
-  // const endRollEvt = useRef<NodeJS.Timeout | null>(null);
   const rollResults = useRef<DiceResult[] | null>(null);
   const rollsEnded = useRef<number>(0);
-  // const tick = useRef<number>(0);
 
   const diceRollerMode = useMemo(() => {
     let diceCount = 0;
@@ -130,35 +126,6 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
 
     return 'small';
   }, [dicesToRoll]);
-
-  // const diceCards = useMemo(() => {
-  //   if (diceValues.length === 0) {
-  //     return [];
-  //   }
-
-  //   return diceValues.map(({ id, type, value }) => (
-  //     <DiceCard key={id} type={type} value={value} size={cardMode} />
-  //   ));
-  // }, [diceValues, cardMode]);
-
-  // const closeWindow = useCallback(() => {
-  //   if (isCampaignEventFinished) {
-  //     setWindowOpened(false);
-  //     tick.current = 0;
-  //     if (intervalEvt.current !== null) {
-  //       clearTimeout(intervalEvt.current);
-  //       intervalEvt.current = null;
-  //     }
-  //     if (endRollEvt.current !== null) {
-  //       clearTimeout(endRollEvt.current);
-  //       endRollEvt.current = null;
-  //     }
-  //     setTimeout(() => {
-  //       setDiceValues([]);
-  //       typeRoll.current = 'free';
-  //     }, 300);
-  //   }
-  // }, [isCampaignEventFinished]);
 
   const setToRoll = useCallback((dices: DiceRequest[], mode: TypeCampaignEvent) => {
     setDicesToRoll(dices);
@@ -182,34 +149,34 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
     [setToRoll, CampaignEvent]
   );
 
-  // const affectDiceValueAtIndex = useCallback((curatedDices: DiceData[], index: number) => {
-  //   const newCuratedDices = curatedDices.map((curatedDice, indexTab) => ({
-  //     ...curatedDice,
-  //     value: indexTab <= tick.current ? curatedDice.def : null,
-  //   }));
-  //   setDiceValues([...newCuratedDices]);
-  //   tick.current += 1;
-  // }, []);
-
-  // const endRollTriggerEvent = useCallback(() => {
-  //   endRollEvt.current = setTimeout(() => {
-  //     if (endRollEvt.current !== null && rollResults.current !== null) {
-  //       clearTimeout(endRollEvt.current);
-  //       endRollEvt.current = null;
-  //       setRollEventFinished(true);
-  //       CampaignEvent.dispatchEvent('addCampaignEvent', {
-  //         result: calculateDices(rollResults.current).total,
-  //         formula: diceResultToStr(rollResults.current),
-  //         mode: typeRoll.current,
-  //       });
-  //     }
-  //   }, 1000);
-  // }, [CampaignEvent]);
-
   const generateCards = useCallback(
     (cardNumber: number) => {
       if (api !== undefined && character !== false && character?.campaign !== undefined) {
         setLoading(true);
+        if (rollResults.current !== null && valueToSacrificeIndex !== null) {
+          let total = 0;
+          const offsettedRollResults = rollResults.current.map((rollRes) => {
+            if (rollRes.type === 10) {
+              const newResults = [...rollRes.results];
+              const offsetToRemove = rollRes.results[valueToSacrificeIndex];
+              newResults.splice(valueToSacrificeIndex, 1);
+              total = rollRes.total - offsetToRemove;
+
+              return {
+                ...rollRes,
+                results: newResults,
+                total,
+              };
+            }
+
+            return rollRes;
+          });
+          CampaignEvent.dispatchEvent('addCampaignEvent', {
+            result: total,
+            formula: diceResultToStr(offsettedRollResults),
+            mode: typeRoll.current,
+          });
+        }
         api.campaigns
           .getCard({ campaignId: character.campaign._id, characterId: character._id, cardNumber })
           .then(({ drawn, addedToPlayer }) => {
@@ -250,7 +217,17 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
           });
       }
     },
-    [api, character, setCharacter, globalValues, getNewId, createAlert, t]
+    [
+      api,
+      character,
+      CampaignEvent,
+      valueToSacrificeIndex,
+      setCharacter,
+      globalValues,
+      getNewId,
+      createAlert,
+      t,
+    ]
   );
 
   const closeWindow = useCallback(() => {
@@ -294,6 +271,13 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
 
               return next;
             });
+            if (rollResults.current !== null) {
+              CampaignEvent.dispatchEvent('addCampaignEvent', {
+                result: calculateDices(rollResults.current).total + cardOffset.number,
+                formula: diceResultToStr(rollResults.current, cardOffset),
+                mode: typeRoll.current,
+              });
+            }
             closeWindow();
           })
           .catch(({ response }: ErrorResponseType) => {
@@ -309,6 +293,13 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
             });
           });
       } else {
+        if (rollResults.current !== null) {
+          CampaignEvent.dispatchEvent('addCampaignEvent', {
+            result: calculateDices(rollResults.current).total,
+            formula: diceResultToStr(rollResults.current),
+            mode: typeRoll.current,
+          });
+        }
         closeWindow();
       }
     }
@@ -322,6 +313,7 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
     closeWindow,
     getNewId,
     createAlert,
+    CampaignEvent,
     t,
   ]);
 
@@ -476,29 +468,6 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
         });
       });
       setDiceValues(curatedDices);
-      // // Adding timing here, for beauty purposes
-      // setTimeout(() => {
-      //   // Affect Dice value instantly, then each timeout event
-      //   // as long as necessary
-      //   affectDiceValueAtIndex(curatedDices, 0);
-      //   if (curatedDices.length > 1) {
-      //     intervalEvt.current = setInterval(
-      //       () => {
-      //         affectDiceValueAtIndex(curatedDices, tick.current);
-      //         if (curatedDices.length <= tick.current && intervalEvt.current !== null) {
-      //           clearTimeout(intervalEvt.current);
-      //           tick.current = 0;
-      //           // Last timeout based on animation duration on css
-      //           endRollTriggerEvent();
-      //         }
-      //       },
-      //       500 / (curatedDices.length / 2)
-      //     );
-      //   } else {
-      //     // Last timeout based on animation duration on css
-      //     endRollTriggerEvent();
-      //   }
-      // }, 100);
     }
   }, [dicesToRoll]);
 

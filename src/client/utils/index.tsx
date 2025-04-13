@@ -1,6 +1,6 @@
 import { diacriticsMap } from './diacriticsMap';
 
-import type { ICharacter, IGlobalValue, TypeDice } from '../types';
+import type { ICharacter, IGlobalValue, INumberCard, TypeDice } from '../types';
 
 export const degToRad = (degrees: number): number => degrees * (Math.PI / 180);
 
@@ -129,6 +129,8 @@ export interface DiceResult {
   average: number;
   /** The offset value on the result */
   offset: number;
+  /** The associated card to offset the result */
+  card: INumberCard | null;
 }
 
 export interface UniqueResultDiceData {
@@ -214,13 +216,17 @@ export const throwDices = (dices: DiceRequest[]): DiceResult[] => {
       worst,
       offset,
       average: Math.floor((total / qty) * 10) / 10,
+      card: null,
     });
   });
 
   return resultsThrows;
 };
 
-export const diceResultToStr = (diceCats: DiceResult[] | null): string => {
+export const diceResultToStr = (
+  diceCats: DiceResult[] | null,
+  offsetCard?: INumberCard
+): string => {
   if (diceCats === null) {
     return '';
   }
@@ -230,6 +236,12 @@ export const diceResultToStr = (diceCats: DiceResult[] | null): string => {
 
   curatedCats.forEach((diceCat, catIndex) => {
     const catRolls = diceCat.results;
+    let relevantCard: INumberCard | null;
+    if (catIndex === 0 && offsetCard !== undefined) {
+      relevantCard = offsetCard;
+    } else {
+      relevantCard = diceCat.card;
+    }
     if (catRolls.length > 0) {
       stringified += `${diceCat.type}:`;
       catRolls.forEach((roll, indexRoll) => {
@@ -238,7 +250,7 @@ export const diceResultToStr = (diceCats: DiceResult[] | null): string => {
           stringified += ',';
         }
       });
-      stringified += `+${diceCat.offset}`;
+      stringified += `+${diceCat.offset}${relevantCard !== null ? `*${relevantCard.suit}-${relevantCard.number}` : ''}`;
       if (catIndex < curatedCats.length - 1) {
         stringified += ';';
       }
@@ -255,7 +267,8 @@ export const strToDiceResult = (text: string): DiceResult[] => {
       string,
       {
         dices: number[];
-        offset: string;
+        offset?: string;
+        card?: string;
       }
     >
   > = {};
@@ -264,7 +277,8 @@ export const strToDiceResult = (text: string): DiceResult[] => {
     const [dices, offset] = dicesText.split('+');
     catRollObj[Number(type)] = {
       dices: dices.split(',').map((diceText) => Number(diceText)),
-      offset,
+      offset: offset.split('*')[0],
+      card: offset.split('*')[1],
     };
   });
 
@@ -285,6 +299,14 @@ export const strToDiceResult = (text: string): DiceResult[] => {
       });
     }
 
+    let cleanCard: INumberCard | undefined;
+    if (data?.card !== undefined) {
+      cleanCard = {
+        suit: data.card.split('-')[0],
+        number: Number(data.card.split('-')[1]),
+      };
+    }
+
     return {
       type,
       results: data?.dices ?? [],
@@ -293,6 +315,7 @@ export const strToDiceResult = (text: string): DiceResult[] => {
       worst,
       offset: data?.offset !== undefined ? Number(data.offset) : 0,
       average: Math.floor((total / (data !== undefined ? data.dices.length : 1)) * 10) / 10,
+      card: cleanCard ?? null,
     };
   });
 };
