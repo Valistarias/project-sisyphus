@@ -78,7 +78,8 @@ const httpServer = http.createServer(app as (req: unknown, res: unknown) => void
 const io = new Server(httpServer);
 
 // Env vars
-const port = process.env.PORT ?? 3000;
+const env = (process.env.NODE_ENV ?? 'development').trim();
+const port = 3000;
 const mailgunApi = process.env.MAILGUN_API_KEY ?? '';
 const { COOKIE_SECRET: cookieSecret } = process.env;
 const { DB_USER: user, DB_PASS: pass } = process.env;
@@ -263,9 +264,10 @@ io.on('connection', (socket) => {
 
 // ----------------------------------------------------------------------------------------
 
-const server = httpServer.listen(3000, '0.0.0.0', () => {
+const server = httpServer.listen(port, '0.0.0.0', () => {
   console.log('Server is listening...');
 });
 
+ViteExpress.config({ mode: env === 'development' || env === 'production' ? env : 'development' });
 void ViteExpress.bind(app, server);
 // ----------------------------------------------------------------------------------------
