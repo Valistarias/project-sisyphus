@@ -79,7 +79,7 @@ const io = new Server(httpServer);
 
 // Env vars
 const env = (process.env.NODE_ENV ?? 'development').trim();
-const port = 3000;
+const port = (process.env.NODE_ENV ?? 'development') === 'development' ? 3000 : 80;
 const mailgunApi = process.env.MAILGUN_API_KEY ?? '';
 const { COOKIE_SECRET: cookieSecret } = process.env;
 const { DB_USER: user, DB_PASS: pass } = process.env;

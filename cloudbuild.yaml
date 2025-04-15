@@ -1,0 +1,3 @@
+steps:
+  - name: 'grc.io/cloud-builders/gcloud'
+    args: ['app', 'deploy', '--quiet']
