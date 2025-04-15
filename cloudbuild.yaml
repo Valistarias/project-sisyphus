@@ -1,5 +1,5 @@
 steps:
-  - name: 'grc.io/cloud-builders/gcloud'
+  - name: 'eu.grc.io/cloud-builders/gcloud'
     args: ['app', 'deploy', '--quiet']
 
 options:
