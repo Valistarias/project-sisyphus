@@ -265,7 +265,7 @@ io.on('connection', (socket) => {
 // ----------------------------------------------------------------------------------------
 
 const server = httpServer.listen(port, '0.0.0.0', () => {
-  console.log('Server is listening...');
+  console.log('Server is listening.....');
 });
 
 ViteExpress.config({ mode: env === 'development' || env === 'production' ? env : 'development' });
