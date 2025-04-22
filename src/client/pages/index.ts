@@ -107,6 +107,7 @@ import LoginPage from './login';
 import NewPassPage from './newPass';
 import { ChapterPage, RuleBookPage, RuleBooksPage } from './ruleBook';
 import SignupPage from './signup';
+import { UserEditPage } from './user';
 
 export {
   AdminAmmosPage,
@@ -114,6 +115,7 @@ export {
   AdminArmorsPage,
   AdminBackgroundsPage,
   AdminBagsPage,
+  UserEditPage,
   AdminBodyPartsPage,
   AdminCharParamsPage,
   AdminCyberFramesPage,

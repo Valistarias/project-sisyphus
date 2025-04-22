@@ -1,0 +1,35 @@
+@use '../../../assets/scss/mixins';
+
+.edituser {
+  @include mixins.basic-page;
+  padding-bottom: 5vh;
+
+  &__title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+
+    &__text {
+      margin: 0;
+    }
+  }
+
+  &__return-btn {
+    margin-bottom: 4rem;
+  }
+
+  &__form {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+
+    &__basics {
+      align-items: center;
+      display: flex;
+      gap: 2rem;
+      width: 100%;
+    }
+  }
+}

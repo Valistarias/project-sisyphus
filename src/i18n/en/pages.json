@@ -1260,5 +1260,12 @@
       "text": "Are you sure you want to delete {{elt}} ? All the related branches will be lost !",
       "confirmCta": "Delete Arcane"
     }
+  },
+  "editUser": {
+    "title": "Edit Profile",
+    "general": "General Information",
+    "checkCreationTips": "Display Character Creation Tips",
+    "password": "Password",
+    "cta": "Save changes"
   }
 }

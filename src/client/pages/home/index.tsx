@@ -41,7 +41,7 @@ const Home: FC = () => {
       <div className="home__intro" style={{ backgroundImage: `url(${tvBackground})` }}>
         <Avideo video="logo" className="home__intro__logo" />
         <Atitle level={1} className="home__intro__title">
-          <TypeAnimation sequence={['Sisyphus']} cursor={true} speed={10} />
+          <TypeAnimation sequence={['Sisyphusse']} cursor={true} speed={10} />
         </Atitle>
         <div className="home__intro__line" />
         <Ap className="home__intro__text">

@@ -122,6 +122,7 @@ import {
   AdminArcanesPage,
   AdminEditArcanePage,
   AdminNewArcanePage,
+  UserEditPage,
 } from './pages';
 
 // import { socket } from '../socket';
@@ -208,6 +209,10 @@ const App: FC = () => {
               element: <NewPassPage />,
             },
             // Logged
+            {
+              path: '/profile/edit',
+              element: <UserEditPage />,
+            },
             {
               path: '/rulebooks',
               element: <RuleBooksPage />,

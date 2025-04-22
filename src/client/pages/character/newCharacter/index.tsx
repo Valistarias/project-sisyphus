@@ -534,7 +534,7 @@ const NewCharacter: FC = () => {
           const idHpCharParam = charParams.find(({ charParam }) => charParam.formulaId === 'hp')
             ?.charParam._id;
           character.nodes?.forEach(({ node }) => {
-            node.charParamBonuses?.forEach((charParamBonus) => {
+            node.charParamBonuses.forEach((charParamBonus) => {
               if (charParamBonus.charParam === idHpCharParam) {
                 hpVal += charParamBonus.value;
               }

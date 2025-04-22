@@ -326,6 +326,10 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
               }}
               content={[
                 {
+                  href: '/profile/edit',
+                  text: t('editUser.title', { ns: 'pages' }),
+                },
+                {
                   onClick: onLogout,
                   text: t('headerBar.logout', { ns: 'components' }),
                 },
