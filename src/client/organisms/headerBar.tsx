@@ -10,7 +10,7 @@ import { Button, DropDownMenu } from '../molecules';
 
 import Alert from './alert';
 
-import { classTrim } from '../utils';
+import { checkIfAdminFromRolesFront, classTrim } from '../utils';
 
 import './headerBar.scss';
 
@@ -33,7 +33,7 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
     if (user?.roles === undefined) {
       return 'unlogged';
     }
-    if (user.roles.find((role) => role.name === 'admin') !== undefined) {
+    if (checkIfAdminFromRolesFront(user.roles)) {
       return 'admin';
     }
 
@@ -134,6 +134,15 @@ const HeaderBar: FC<IHeaderBar> = ({ className }) => {
                 text: t('admin.title', { ns: 'pages' }),
               }}
               content={[
+                {
+                  title: t('headerBar.cat.global', { ns: 'components' }),
+                  list: [
+                    {
+                      href: '/admin/users',
+                      text: t('adminUsers.title', { ns: 'pages' }),
+                    },
+                  ],
+                },
                 {
                   title: t('headerBar.cat.texts', { ns: 'components' }),
                   list: [

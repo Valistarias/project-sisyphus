@@ -92,6 +92,7 @@ import AdminSkillsPage from './adminSkills';
 import AdminStatsPage from './adminStats';
 import AdminTestDiceCompPage from './adminTestDiceComp';
 import AdminTipTextsPage from './adminTipTexts';
+import AdminUsersPage from './adminUsers';
 import AdminWeaponsPage from './adminWeapons';
 import AdminWeaponScopesPage from './adminWeaponScopes';
 import AdminWeaponStylesPage from './adminWeaponStyles';
@@ -168,6 +169,7 @@ export {
   AdminNewNodePage,
   AdminNewNotionPage,
   AdminNewNPCPage,
+  AdminUsersPage,
   AdminNewPage,
   AdminNewProgramPage,
   AdminNewProgramScopePage,

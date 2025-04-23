@@ -19,6 +19,8 @@ import { findUserById } from '../user/controller';
 import type { HydratedIUser, IRole, IUser } from '../index';
 import type { Interfaces } from 'mailgun.js/definitions';
 
+import { curateUser } from '../../utils';
+
 const { User, Role } = db;
 
 interface IVerifyTokenRequest extends Request {
@@ -137,7 +139,7 @@ const signIn = (req: ISigninRequest, res: Response): void => {
         req.session.token = token;
       }
 
-      res.status(200).send(user);
+      res.status(200).send(curateUser(user));
     })
     .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
@@ -191,7 +193,7 @@ const verifyTokenSingIn = async (token: string): Promise<boolean> =>
 const getLogged = (req: IVerifyTokenRequest, res: Response): void => {
   findUserById(req.userId)
     .then((user) => {
-      res.send(user);
+      res.send(curateUser(user));
     })
     .catch(() => {
       res.status(404).send(gemNotFound('User'));
@@ -214,7 +216,7 @@ const updatePassword = (req: Request, res: Response): void => {
               user
                 .save()
                 .then(() => {
-                  res.send({ message: 'User was updated successfully!', user });
+                  res.send({ message: 'User was updated successfully!', user: curateUser(user) });
                 })
                 .catch((err: unknown) => {
                   res.status(500).send(gemServerError(err));

@@ -14,6 +14,8 @@ import {
 
 import type { HydratedIUser } from '../entities';
 
+import { checkIfAdminFromRoles } from '../utils';
+
 interface IVerifyTokenRequest extends Request {
   userId: string;
   session: { token: string } | null;
@@ -136,11 +138,7 @@ const isAdmin = async (req: IVerifyTokenRequest): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     getUserFromToken(req)
       .then((user) => {
-        if (
-          user !== null &&
-          user.roles.length > 0 &&
-          user.roles.some((role) => role.name === 'admin')
-        ) {
+        if (user !== null && user.roles.length > 0 && checkIfAdminFromRoles(user.roles)) {
           resolve(true);
         } else {
           resolve(false);
@@ -184,7 +182,7 @@ const checkRouteRights = (req: IVerifyTokenRequest, res: Response, next: () => v
       .then((user) => {
         if (user !== null && user.roles.length > 0) {
           rights = ['logged'];
-          if (user.roles.some((role) => role.name === 'admin')) {
+          if (checkIfAdminFromRoles(user.roles)) {
             rights.push('admin');
           }
         }

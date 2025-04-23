@@ -30,6 +30,7 @@ import type {
   TypeCampaignEvent,
   TypeDice,
   ErrorResponseType,
+  IRole,
 } from './global';
 import type {
   IAmmo,
@@ -175,6 +176,7 @@ export type {
   ICuratedProgramScope,
   ICuratedRarity,
   ICuratedRuleBook,
+  IRole,
   ICuratedSkill,
   ICuratedSkillBranch,
   ICuratedStat,

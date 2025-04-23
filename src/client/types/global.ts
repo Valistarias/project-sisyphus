@@ -18,6 +18,13 @@ export interface ErrorResponseType {
 }
 
 // User ------------------------------------
+export interface IRole {
+  /** The ID of the role */
+  _id: string;
+  /** The string associated to the role */
+  name: string;
+}
+
 export interface IUser {
   /** The ID of the user */
   _id: string;
@@ -25,8 +32,6 @@ export interface IUser {
   username: string;
   /** The mail of the user */
   mail: string;
-  /** The user password (encrypted) */
-  password: string;
   /** The name of the user */
   name: string;
   /** The chosen language for the UI */
@@ -40,10 +45,7 @@ export interface IUser {
   /** Is the tips automatically displays in the character creation */
   charCreationTips: boolean;
   /** The user roles */
-  roles: Array<{
-    _id: string;
-    name: string;
-  }>;
+  roles: IRole[];
 }
 
 // Dices and CampaignEvents ------------------------------------

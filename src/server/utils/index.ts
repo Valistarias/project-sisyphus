@@ -1,3 +1,4 @@
+import type { HydratedIUser, IRole } from '../entities';
 import type { InternationalizationType } from './types';
 
 /* eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
@@ -20,3 +21,26 @@ export const curateI18n = (i18n?: string): InternationalizationType | undefined 
 
   return safeJsonParse<InternationalizationType>(i18n);
 };
+
+export const curateUser = (
+  user: HydratedIUser
+): Pick<
+  HydratedIUser,
+  'username' | 'mail' | 'name' | 'lang' | 'theme' | 'scale' | 'charCreationTips' | 'roles'
+> => {
+  const { username, mail, name, lang, theme, scale, charCreationTips, roles } = user;
+
+  return {
+    username,
+    mail,
+    name,
+    lang,
+    theme,
+    scale,
+    charCreationTips,
+    roles,
+  };
+};
+
+export const checkIfAdminFromRoles = (roles: IRole[]): boolean =>
+  roles.find((role) => role.name === 'admin' || role.name === 'super') !== undefined;

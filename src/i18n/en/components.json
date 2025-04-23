@@ -5,6 +5,7 @@
   "headerBar": {
     "logout": "Log out",
     "cat": {
+      "global": "Global",
       "texts": "Texts",
       "core": "Core Rules",
       "item": "Items",

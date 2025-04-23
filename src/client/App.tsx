@@ -79,6 +79,7 @@ import {
   AdminNewRarityPage,
   AdminNewRuleBookPage,
   AdminNewSkillBranchPage,
+  AdminUsersPage,
   AdminNewSkillPage,
   AdminNewStatPage,
   AdminNewTipTextPage,
@@ -265,6 +266,10 @@ const App: FC = () => {
             {
               path: '/admin',
               element: <AdminPage />,
+            },
+            {
+              path: '/admin/users',
+              element: <AdminUsersPage />,
             },
             {
               path: '/admin/dicecomp',

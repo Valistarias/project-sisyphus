@@ -271,12 +271,10 @@ const curateCharacterSkills = (
       ({ skill: bgSkill }) => bgSkill === skill._id
     );
     if (relatedStat !== undefined) {
-      if (charStats[skill.stat._id] === undefined) {
-        charStats[skill.stat._id] = {
-          ...relatedStat,
-          score: relatedStatBonuses,
-        };
-      }
+      charStats[skill.stat._id] ??= {
+        ...relatedStat,
+        score: relatedStatBonuses,
+      };
 
       const score: IScore = {
         total:

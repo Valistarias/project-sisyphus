@@ -1,6 +1,6 @@
 import { diacriticsMap } from './diacriticsMap';
 
-import type { ICharacter, IGlobalValue, INumberCard, TypeDice } from '../types';
+import type { ICharacter, IGlobalValue, INumberCard, IRole, TypeDice } from '../types';
 
 export const degToRad = (degrees: number): number => degrees * (Math.PI / 180);
 
@@ -471,5 +471,8 @@ export const setHintPlacement = (
 
   return `${firstChoice}${secondChoice !== undefined ? `-${secondChoice}` : ''}`;
 };
+
+export const checkIfAdminFromRolesFront = (roles: IRole[]): boolean =>
+  roles.find((role) => role.name === 'admin' || role.name === 'super') !== undefined;
 
 export { getCyberFrameLevelsByNodes, type ICyberFrameLevels } from './character';

@@ -9,7 +9,25 @@ import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/global
 import type { HydratedIUser } from './model';
 import type { IRole } from '../role/model';
 
+import { checkIfAdminFromRoles, curateUser } from '../../utils';
+
 const { User } = db;
+
+const findUsers = async (): Promise<HydratedIUser[]> =>
+  await new Promise((resolve, reject) => {
+    User.find()
+      .populate<{ roles: IRole[] }>('roles')
+      .then((res?: HydratedIUser[] | null) => {
+        if (res === undefined || res === null) {
+          reject(gemNotFound('User'));
+        } else {
+          resolve(res);
+        }
+      })
+      .catch((err) => {
+        reject(gemServerError(err));
+      });
+  });
 
 const findUserById = async (id: string): Promise<HydratedIUser> =>
   await new Promise((resolve, reject) => {
@@ -52,7 +70,7 @@ const findCompleteUserById = async (
               resolve({
                 user: res,
                 canEdit: String(res._id) === String(userSent._id),
-                isAdmin: userSent.roles.find((role) => role.name === 'admin') !== undefined,
+                isAdmin: checkIfAdminFromRoles(userSent.roles),
               });
             }
           })
@@ -136,7 +154,7 @@ const update = (req: Request, res: Response): void => {
             }
           }
 
-          res.send(user);
+          res.send(curateUser(user));
         })
         .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
@@ -147,4 +165,12 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
-export { findUserById, update };
+const findAll = (req: Request, res: Response): void => {
+  findUsers()
+    .then((users) => {
+      res.send(users.map((user) => curateUser(user)));
+    })
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
+};
+
+export { findUserById, update, findAll };

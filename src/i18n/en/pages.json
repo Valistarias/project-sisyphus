@@ -249,6 +249,11 @@
   "profile": {
     "title": "Profile"
   },
+  "adminUsers": {
+    "title": "Users",
+    "list": "List",
+    "editUser": "Edit"
+  },
   "adminTestDiceComp": {
     "title": "Test Dice Composition",
     "formCTA": "Launch",
