@@ -16,6 +16,7 @@ import {
 import { removeToken } from '../mailToken/controller';
 import { findUserById } from '../user/controller';
 
+import type { Lean } from '../../utils/types';
 import type { HydratedIUser, IRole, IUser } from '../index';
 import type { Interfaces } from 'mailgun.js/definitions';
 
@@ -105,7 +106,7 @@ const registerRoleByName = async (): Promise<string[]> =>
 const signIn = (req: ISigninRequest, res: Response): void => {
   const { mail, password }: { mail: string; password: string } = req.body;
   User.findOne({ mail })
-    .populate<{ roles: IRole[] }>('roles', '-__v')
+    .populate<{ roles: Array<Lean<IRole>> }>('roles', '-__v')
     .then((user?: HydratedIUser | null) => {
       if (user === null || user === undefined) {
         res.status(404).send(gemNotFound('User'));
