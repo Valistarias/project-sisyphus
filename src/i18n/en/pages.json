@@ -1265,7 +1265,9 @@
     "title": "Edit Profile",
     "general": "General Information",
     "checkCreationTips": "Display Character Creation Tips",
-    "password": "Password",
-    "cta": "Save changes"
+    "password": "Change Password",
+    "cta": "Save changes",
+    "successEdit": "Profile successfully updated !",
+    "successPassword": "Password successfully changed !"
   }
 }

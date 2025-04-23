@@ -118,6 +118,7 @@ const getUserFromToken = async (req: IVerifyTokenRequest): Promise<HydratedIUser
         }
         // Re-sign the token
         jwt.sign({ id: decoded.id }, secret, { expiresIn: 86400 }); // 24 hours
+
         findUserById(decoded.id)
           .then((user) => {
             resolve(user);

@@ -12,6 +12,14 @@
     "required": "Password is required",
     "label": "Password"
   },
+  "oldPassword": {
+    "required": "Password is required",
+    "label": "Old Password"
+  },
+  "newPassword": {
+    "required": "Password is required",
+    "label": "New Password"
+  },
   "confirmPassword": {
     "required": "Password is required",
     "validate": "Your passwords do no match",

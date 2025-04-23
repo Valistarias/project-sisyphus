@@ -46,7 +46,7 @@ const Input: FC<IInput> = ({
   className,
   placeholder,
   label,
-  readOnly,
+  readOnly = false,
   hidden,
   autoComplete,
   onBlur,
@@ -58,6 +58,7 @@ const Input: FC<IInput> = ({
       className={classTrim(`
       input
       ${isFocus ? 'input--focus' : ''}
+      ${readOnly ? 'input--readOnly' : ''}
       ${className ?? ''}
     `)}
     >

@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 
 import bcrypt from 'bcryptjs';
 
+import { getUserFromToken, type IVerifyTokenRequest } from '../../middlewares/authJwt';
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
@@ -26,13 +27,51 @@ const findUserById = async (id: string): Promise<HydratedIUser> =>
       });
   });
 
+const findCompleteUserById = async (
+  id: string,
+  req: Request
+): Promise<{
+  user: HydratedIUser;
+  canEdit: boolean;
+  isAdmin: boolean;
+}> =>
+  await new Promise((resolve, reject) => {
+    getUserFromToken(req as IVerifyTokenRequest)
+      .then((userSent) => {
+        if (userSent === null) {
+          reject(gemNotFound('User'));
+
+          return;
+        }
+        User.findById(id)
+          .populate<{ roles: IRole[] }>('roles')
+          .then((res?: HydratedIUser | null) => {
+            if (res === undefined || res === null) {
+              reject(gemNotFound('User'));
+            } else {
+              resolve({
+                user: res,
+                canEdit: String(res._id) === String(userSent._id),
+                isAdmin: userSent.roles.find((role) => role.name === 'admin') !== undefined,
+              });
+            }
+          })
+          .catch((err) => {
+            reject(gemServerError(err));
+          });
+      })
+      .catch((err: unknown) => {
+        reject(err);
+      });
+  });
+
 const update = (req: Request, res: Response): void => {
   const {
     id,
     username = null,
     lang = null,
-    oldPass = null,
-    newPass = null,
+    oldPassword = null,
+    password = null,
     theme = null,
     charCreationTips = null,
     scale = null,
@@ -40,8 +79,8 @@ const update = (req: Request, res: Response): void => {
     id?: string;
     username: string | null;
     lang: string | null;
-    oldPass: string | null;
-    newPass: string | null;
+    oldPassword: string | null;
+    password: string | null;
     theme: string | null;
     charCreationTips: boolean | null;
     scale: number | null;
@@ -51,24 +90,30 @@ const update = (req: Request, res: Response): void => {
 
     return;
   }
-  findUserById(id)
-    .then((user) => {
+  findCompleteUserById(id, req)
+    .then(({ user, canEdit, isAdmin }) => {
+      if (!canEdit && !isAdmin) {
+        res.status(404).send(gemNotFound('User'));
+
+        return;
+      }
+
       if (username !== null) {
         user.username = username;
       }
       if (lang !== null) {
         user.lang = lang;
       }
-      if (newPass !== null && oldPass !== null) {
-        const passwordIsValid = bcrypt.compareSync(oldPass, user.password);
-        if (!passwordIsValid) {
+      if (password !== null && (oldPassword !== null || (isAdmin && !canEdit))) {
+        const passwordIsValid = bcrypt.compareSync(oldPassword ?? '', user.password);
+        if (!passwordIsValid && !isAdmin) {
           res.status(400).send(gemInvalidField('password'));
 
           return;
         }
         const salt = bcrypt.genSaltSync(8);
 
-        user.password = bcrypt.hashSync(newPass, salt);
+        user.password = bcrypt.hashSync(password, salt);
       }
       if (theme !== null) {
         user.theme = theme;

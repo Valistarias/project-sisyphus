@@ -49,4 +49,13 @@
       text-shadow: 0 0 1rem var(--tertiary-20);
     }
   }
+
+  // Read Only ----------------------------------
+  &--readOnly {
+    pointer-events: none;
+
+    .input__field {
+      opacity: 0.3;
+    }
+  }
 }

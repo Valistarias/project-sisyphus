@@ -62,7 +62,9 @@ const Checkbox: FC<ICheckbox> = ({
               type="checkbox"
               className="checkbox__leg-field"
               autoComplete={autoComplete ?? undefined}
-              onChange={disabled ? undefined : onChange}
+              onChange={() => {
+                onChange(!(value as boolean));
+              }}
               value={value ?? ''}
             />
             <div className="checkbox__label">{label}</div>
