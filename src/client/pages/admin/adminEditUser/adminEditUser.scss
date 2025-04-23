@@ -1,0 +1,43 @@
+@use '../../../assets/scss/mixins';
+
+.adminEditUser {
+  @include mixins.basic-page;
+  padding-bottom: 5vh;
+
+  &__title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+
+    &__text {
+      &__name {
+        margin: 1rem 0;
+      }
+
+      &__role {
+        font-family: var(--decor-sans-font);
+      }
+    }
+  }
+
+  &__cat {
+    margin-top: 4rem;
+  }
+
+  &__return-btn {
+    margin-bottom: 4rem;
+  }
+
+  &__form {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 2rem;
+
+    &__hidden-mail {
+      display: none;
+    }
+  }
+}

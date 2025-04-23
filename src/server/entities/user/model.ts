@@ -1,5 +1,6 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
+import type { Lean } from '../../utils/types';
 import type { IRole } from '../index';
 
 interface IUser {
@@ -27,7 +28,9 @@ interface IUser {
   createdAt: Date;
 }
 
-type HydratedIUser = HydratedDocument<Omit<IUser, 'roles'> & { roles: IRole[] }>;
+type HydratedIUser = HydratedDocument<
+  Omit<IUser, 'roles'> & { roles: Array<Lean<IRole>> | string[] }
+>;
 
 const userSchema = new Schema<IUser>({
   username: String,

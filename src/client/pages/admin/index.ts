@@ -40,6 +40,7 @@ import AdminEditSkillPage from './adminEditSkill';
 import AdminEditSkillBranchPage from './adminEditSkillBranch';
 import AdminEditStatPage from './adminEditStat';
 import AdminEditTipTextPage from './adminEditTipText';
+import AdminEditUserPage from './adminEditUser';
 import AdminEditWeaponPage from './adminEditWeapon';
 import AdminEditWeaponScopePage from './adminEditWeaponScope';
 import AdminEditWeaponStylePage from './adminEditWeaponStyle';
@@ -153,6 +154,7 @@ export {
   AdminNewAmmoPage,
   AdminNewArmorPage,
   AdminNewArmorTypePage,
+  AdminEditUserPage,
   AdminNewBackgroundPage,
   AdminNewBagPage,
   AdminNewBodyPartPage,

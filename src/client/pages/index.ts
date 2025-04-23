@@ -98,6 +98,7 @@ import {
   AdminArcanesPage,
   AdminEditArcanePage,
   AdminNewArcanePage,
+  AdminEditUserPage,
 } from './admin';
 import { CampaignPage, CampaignsPage, JoinCampaignPage, NewCampaignPage } from './campaign';
 import { CharacterEditPage, CharacterPage, CharactersPage, NewCharacterPage } from './character';
@@ -142,6 +143,7 @@ export {
   AdminEditImplantPage,
   AdminEditItemModifierPage,
   AdminEditItemPage,
+  AdminEditUserPage,
   AdminEditItemTypePage,
   AdminEditNPCPage,
   AdminEditNodePage,

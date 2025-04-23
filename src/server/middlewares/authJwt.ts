@@ -12,7 +12,8 @@ import {
   gemUnauthorized,
 } from '../utils/globalErrorMessage';
 
-import type { HydratedIUser } from '../entities';
+import type { HydratedIUser, IRole } from '../entities';
+import type { Lean } from '../utils/types';
 
 import { checkIfAdminFromRoles } from '../utils';
 
@@ -138,7 +139,11 @@ const isAdmin = async (req: IVerifyTokenRequest): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     getUserFromToken(req)
       .then((user) => {
-        if (user !== null && user.roles.length > 0 && checkIfAdminFromRoles(user.roles)) {
+        if (
+          user !== null &&
+          user.roles.length > 0 &&
+          checkIfAdminFromRoles(user.roles as Array<Lean<IRole>>)
+        ) {
           resolve(true);
         } else {
           resolve(false);
@@ -182,7 +187,7 @@ const checkRouteRights = (req: IVerifyTokenRequest, res: Response, next: () => v
       .then((user) => {
         if (user !== null && user.roles.length > 0) {
           rights = ['logged'];
-          if (checkIfAdminFromRoles(user.roles)) {
+          if (checkIfAdminFromRoles(user.roles as Array<Lean<IRole>>)) {
             rights.push('admin');
           }
         }

@@ -4,19 +4,25 @@ import bcrypt from 'bcryptjs';
 
 import { getUserFromToken, type IVerifyTokenRequest } from '../../middlewares/authJwt';
 import db from '../../models';
-import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import {
+  gemInvalidField,
+  gemNotAllowed,
+  gemNotFound,
+  gemServerError,
+} from '../../utils/globalErrorMessage';
 
 import type { HydratedIUser } from './model';
+import type { Lean } from '../../utils/types';
 import type { IRole } from '../role/model';
 
 import { checkIfAdminFromRoles, curateUser } from '../../utils';
 
-const { User } = db;
+const { User, Role } = db;
 
 const findUsers = async (): Promise<HydratedIUser[]> =>
   await new Promise((resolve, reject) => {
     User.find()
-      .populate<{ roles: IRole[] }>('roles')
+      .populate<{ roles: Array<Lean<IRole>> }>('roles')
       .then((res?: HydratedIUser[] | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('User'));
@@ -32,7 +38,7 @@ const findUsers = async (): Promise<HydratedIUser[]> =>
 const findUserById = async (id: string): Promise<HydratedIUser> =>
   await new Promise((resolve, reject) => {
     User.findById(id)
-      .populate<{ roles: IRole[] }>('roles')
+      .populate<{ roles: Array<Lean<IRole>> }>('roles')
       .then((res?: HydratedIUser | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('User'));
@@ -62,7 +68,7 @@ const findCompleteUserById = async (
           return;
         }
         User.findById(id)
-          .populate<{ roles: IRole[] }>('roles')
+          .populate<{ roles: Array<Lean<IRole>> }>('roles')
           .then((res?: HydratedIUser | null) => {
             if (res === undefined || res === null) {
               reject(gemNotFound('User'));
@@ -70,7 +76,7 @@ const findCompleteUserById = async (
               resolve({
                 user: res,
                 canEdit: String(res._id) === String(userSent._id),
-                isAdmin: checkIfAdminFromRoles(userSent.roles),
+                isAdmin: checkIfAdminFromRoles(userSent.roles as Array<Lean<IRole>>),
               });
             }
           })
@@ -165,6 +171,170 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
+const promote = (req: Request, res: Response): void => {
+  const {
+    userId,
+  }: {
+    userId?: string;
+  } = req.body;
+  if (userId === undefined) {
+    res.status(400).send(gemInvalidField('User ID'));
+
+    return;
+  }
+  findCompleteUserById(userId, req)
+    .then(({ user, isAdmin }) => {
+      if (!isAdmin) {
+        res.status(404).send(gemNotFound('User'));
+
+        return;
+      }
+
+      Role.find()
+        .then((roles?: Array<Lean<IRole>> | null) => {
+          const adminRole = roles?.find((role) => role.name === 'admin');
+          if (adminRole === undefined) {
+            res.status(403).send(gemNotAllowed());
+
+            return;
+          }
+          if (checkIfAdminFromRoles(user.roles as Array<Lean<IRole>>)) {
+            res.send(curateUser(user));
+
+            return;
+          }
+
+          const fullRoles: Array<Lean<IRole>> = [...(user.roles as Array<Lean<IRole>>)];
+          const rolesId = (user.roles as Array<Lean<IRole>>).map((role) => String(role._id));
+          rolesId.push(String(adminRole._id));
+
+          user.roles = rolesId;
+          fullRoles.push(adminRole);
+
+          user
+            .save()
+            .then(() => {
+              const authorities: string[] = [];
+
+              for (const role of fullRoles) {
+                if (typeof role === 'object') {
+                  authorities.push(`ROLE_${role.name.toUpperCase()}`);
+                }
+              }
+
+              res.send({
+                ...curateUser(user),
+                roles: fullRoles,
+              });
+            })
+            .catch((err: unknown) => {
+              res.status(500).send(gemServerError(err));
+            });
+        })
+        .catch(() => {
+          res.status(403).send(gemNotAllowed());
+        });
+    })
+    .catch(() => {
+      res.status(404).send(gemNotFound('User'));
+    });
+};
+
+const demote = (req: Request, res: Response): void => {
+  const {
+    userId,
+  }: {
+    userId?: string;
+  } = req.body;
+  if (userId === undefined) {
+    res.status(400).send(gemInvalidField('User ID'));
+
+    return;
+  }
+  findCompleteUserById(userId, req)
+    .then(({ user, isAdmin }) => {
+      if (!isAdmin) {
+        res.status(404).send(gemNotFound('User'));
+
+        return;
+      }
+
+      Role.find()
+        .then((roles?: Array<Lean<IRole>> | null) => {
+          const adminRole = roles?.find((role) => role.name === 'admin');
+          if (
+            adminRole === undefined ||
+            (user.roles as Array<Lean<IRole>>).find((role) => role.name === 'super') !== undefined
+          ) {
+            res.status(403).send(gemNotAllowed());
+
+            return;
+          }
+          if (
+            (user.roles as Array<Lean<IRole>>).find((role) => role.name === 'admin') === undefined
+          ) {
+            res.send(curateUser(user));
+
+            return;
+          }
+
+          const fullRoles: Array<Lean<IRole>> = [];
+          const rolesId: string[] = [];
+
+          (user.roles as Array<Lean<IRole>>).forEach((role) => {
+            if (role.name !== 'admin') {
+              rolesId.push(String(role._id));
+              fullRoles.push(role);
+            }
+          });
+
+          user.roles = rolesId;
+
+          user
+            .save()
+            .then((userClean) => {
+              const authorities: string[] = [];
+
+              for (const role of fullRoles) {
+                if (typeof role === 'object') {
+                  authorities.push(`ROLE_${role.name.toUpperCase()}`);
+                }
+              }
+
+              res.send({
+                ...curateUser(user),
+                roles: fullRoles,
+              });
+            })
+            .catch((err: unknown) => {
+              res.status(500).send(gemServerError(err));
+            });
+        })
+        .catch(() => {
+          res.status(403).send(gemNotAllowed());
+        });
+    })
+    .catch(() => {
+      res.status(404).send(gemNotFound('User'));
+    });
+};
+
+const findSingle = (req: Request, res: Response): void => {
+  const { userId } = req.query;
+  if (userId === undefined || typeof userId !== 'string') {
+    res.status(400).send(gemInvalidField('Weapon ID'));
+
+    return;
+  }
+  findUserById(userId)
+    .then((userSent) => {
+      res.send(curateUser(userSent));
+    })
+    .catch((err: unknown) => {
+      res.status(404).send(err);
+    });
+};
+
 const findAll = (req: Request, res: Response): void => {
   findUsers()
     .then((users) => {
@@ -173,4 +343,4 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { findUserById, update, findAll };
+export { findUserById, update, findSingle, findAll, promote, demote };

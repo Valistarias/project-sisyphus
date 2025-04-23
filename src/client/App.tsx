@@ -124,6 +124,7 @@ import {
   AdminEditArcanePage,
   AdminNewArcanePage,
   UserEditPage,
+  AdminEditUserPage,
 } from './pages';
 
 // import { socket } from '../socket';
@@ -270,6 +271,10 @@ const App: FC = () => {
             {
               path: '/admin/users',
               element: <AdminUsersPage />,
+            },
+            {
+              path: '/admin/user/:id',
+              element: <AdminEditUserPage />,
             },
             {
               path: '/admin/dicecomp',

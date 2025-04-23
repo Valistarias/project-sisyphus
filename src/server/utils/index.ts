@@ -26,11 +26,12 @@ export const curateUser = (
   user: HydratedIUser
 ): Pick<
   HydratedIUser,
-  'username' | 'mail' | 'name' | 'lang' | 'theme' | 'scale' | 'charCreationTips' | 'roles'
+  'username' | 'mail' | 'name' | 'lang' | 'theme' | 'scale' | 'charCreationTips' | 'roles' | '_id'
 > => {
-  const { username, mail, name, lang, theme, scale, charCreationTips, roles } = user;
+  const { _id, username, mail, name, lang, theme, scale, charCreationTips, roles } = user;
 
   return {
+    _id,
     username,
     mail,
     name,
@@ -44,3 +45,18 @@ export const curateUser = (
 
 export const checkIfAdminFromRoles = (roles: IRole[]): boolean =>
   roles.find((role) => role.name === 'admin' || role.name === 'super') !== undefined;
+
+export const checkIfSuperFromRoles = (roles: IRole[]): boolean =>
+  roles.find((role) => role.name === 'super') !== undefined;
+
+export const getHighestRole = (roles: IRole[]): string => {
+  if (checkIfSuperFromRoles(roles)) {
+    return 'super';
+  }
+
+  if (checkIfAdminFromRoles(roles)) {
+    return 'admin';
+  }
+
+  return 'user';
+};

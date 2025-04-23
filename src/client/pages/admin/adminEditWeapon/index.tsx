@@ -136,9 +136,7 @@ const AdminEditWeapon: FC = () => {
     // Init Bonus Skill
     const damageIds: number[] = [];
     weapon.damages.forEach((damage) => {
-      if (defaultData.damages === undefined) {
-        defaultData.damages = {};
-      }
+      defaultData.damages ??= {};
       defaultData.damages[`damage-${idIncrement.current}`] = {
         damageType: damage.damageType,
         dices: damage.dices,
@@ -152,9 +150,7 @@ const AdminEditWeapon: FC = () => {
     // Init Actions
     const tempActionId: number[] = [];
     weapon.actions?.forEach((action) => {
-      if (defaultData.actions === undefined) {
-        defaultData.actions = {};
-      }
+      defaultData.actions ??= {};
       defaultData.actions[`action-${idIncrement.current}`] = {
         id: action._id,
         title: action.title,
@@ -181,9 +177,7 @@ const AdminEditWeapon: FC = () => {
     // Init Effects
     const tempEffectId: number[] = [];
     weapon.effects?.forEach((effect) => {
-      if (defaultData.effects === undefined) {
-        defaultData.effects = {};
-      }
+      defaultData.effects ??= {};
       defaultData.effects[`effect-${idIncrement.current}`] = {
         id: effect._id,
         title: effect.title,
