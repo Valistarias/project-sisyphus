@@ -13,14 +13,13 @@ import {
   Button,
   Input,
   LinkButton,
-  NodeTree,
   SmartSelect,
   type ISingleValueSelect,
 } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
-import type { ErrorResponseType, ICuratedNode, ICuratedSkill, ISkillBranch } from '../../../types';
+import type { ErrorResponseType, ICuratedSkill } from '../../../types';
 import type { InternationalizationType } from '../../../types/global';
 
 import { classTrim } from '../../../utils';
@@ -58,25 +57,6 @@ const AdminEditSkill: FC = () => {
   const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
-
-  const nodeTree = useMemo(() => {
-    const branches = skillData?.skill.branches;
-    const tempTree: Record<
-      string,
-      {
-        branch: ISkillBranch;
-        nodes: ICuratedNode[];
-      }
-    > = {};
-    branches?.forEach(({ skillBranch }) => {
-      tempTree[skillBranch._id] = {
-        branch: skillBranch,
-        nodes: skillBranch.nodes,
-      };
-    });
-
-    return Object.values(tempTree);
-  }, [skillData]);
 
   const statSelect = useMemo<ISingleValueSelect[]>(
     () =>
@@ -408,26 +388,6 @@ const AdminEditSkill: FC = () => {
               rawStringContent={skillTextFr}
               small
             />
-          </div>
-        </div>
-        <div className="adminEditSkill__nodes">
-          <Atitle level={2}>{t('adminEditSkill.nodes', { ns: 'pages' })}</Atitle>
-          <div className="adminEditSkill__nodes__list">
-            <NodeTree
-              tree={nodeTree}
-              onNodeClick={(id) => {
-                void navigate(`/admin/node/${id}`);
-              }}
-              isAdmin
-            />
-          </div>
-          <div className="adminEditSkill__nodes__btns">
-            <LinkButton href={`/admin/node/new?skillId=${id}`}>
-              {t('adminNewNode.title', { ns: 'pages' })}
-            </LinkButton>
-            <LinkButton href={`/admin/skillbranch/new?skillId=${id}`}>
-              {t('adminNewSkillBranch.title', { ns: 'pages' })}
-            </LinkButton>
           </div>
         </div>
         <Button type="submit">{t('adminEditSkill.button', { ns: 'pages' })}</Button>

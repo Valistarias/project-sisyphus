@@ -7,7 +7,6 @@ import {
   Armors,
   Arcanes,
   Auth,
-  Backgrounds,
   Bags,
   Bodies,
   BodyParts,
@@ -18,7 +17,6 @@ import {
   CharParamBonuses,
   CharParams,
   Characters,
-  CyberFrameBranches,
   CyberFrames,
   DamageTypes,
   Damages,
@@ -40,7 +38,6 @@ import {
   RuleBookTypes,
   RuleBooks,
   SkillBonuses,
-  SkillBranches,
   Skills,
   StatBonuses,
   Stats,
@@ -61,7 +58,6 @@ export default class Api {
   armorTypes: ArmorTypes;
   arcanes: Arcanes;
   auth: Auth;
-  backgrounds: Backgrounds;
   bags: Bags;
   bodies: Bodies;
   bodyParts: BodyParts;
@@ -71,7 +67,6 @@ export default class Api {
   characters: Characters;
   charParamBonuses: CharParamBonuses;
   charParams: CharParams;
-  cyberFrameBranches: CyberFrameBranches;
   cyberFrames: CyberFrames;
   damages: Damages;
   damageTypes: DamageTypes;
@@ -94,7 +89,6 @@ export default class Api {
   ruleBooks: RuleBooks;
   ruleBookTypes: RuleBookTypes;
   skillBonuses: SkillBonuses;
-  skillBranches: SkillBranches;
   skills: Skills;
   statBonuses: StatBonuses;
   stats: Stats;
@@ -114,7 +108,6 @@ export default class Api {
     this.armorTypes = new ArmorTypes();
     this.arcanes = new Arcanes();
     this.auth = new Auth();
-    this.backgrounds = new Backgrounds();
     this.bags = new Bags();
     this.bodies = new Bodies();
     this.bodyParts = new BodyParts();
@@ -124,7 +117,6 @@ export default class Api {
     this.characters = new Characters();
     this.charParamBonuses = new CharParamBonuses();
     this.charParams = new CharParams();
-    this.cyberFrameBranches = new CyberFrameBranches();
     this.cyberFrames = new CyberFrames();
     this.damages = new Damages();
     this.damageTypes = new DamageTypes();
@@ -147,7 +139,6 @@ export default class Api {
     this.ruleBooks = new RuleBooks();
     this.ruleBookTypes = new RuleBookTypes();
     this.skillBonuses = new SkillBonuses();
-    this.skillBranches = new SkillBranches();
     this.skills = new Skills();
     this.statBonuses = new StatBonuses();
     this.stats = new Stats();

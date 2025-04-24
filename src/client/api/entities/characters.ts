@@ -21,25 +21,12 @@ interface ICharacterUpdateNodesPayload {
 
 export default class Characters extends Entity<ICharacterPayload, ICharacter, ICharacter> {
   addNode: (payload: ICharacterAddNodePayload) => Promise<ICharacter>;
-  addFirstCyberFrameNode: (payload: ICharacterAddNodePayload) => Promise<ICharacter>;
 
   updateNodes: (payload: ICharacterUpdateNodesPayload) => Promise<ICharacter>;
   quitCampaign: (payload: ICharacterPayload) => Promise<boolean>;
 
   constructor() {
     super('characters');
-
-    this.addFirstCyberFrameNode = async (payload) =>
-      await new Promise((resolve, reject) => {
-        axios
-          .post(`${this.url}/addfirstcyberframenode/`, payload)
-          .then((res) => {
-            resolve(res.data as ICharacter);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      });
 
     this.addNode = async (payload) =>
       await new Promise((resolve, reject) => {

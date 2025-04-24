@@ -8,7 +8,7 @@ export default class Entity<Payload, T, CuratedT> {
   url: string;
   get: (payload: Payload) => Promise<CuratedT>;
   getAll: () => Promise<CuratedT[]>;
-  create: IBasicRequests<T>;
+  create: IBasicRequests<unknown>;
   update: (payload: unknown) => Promise<T>;
   delete: IBasicRequests<T>;
   basicPost: (target: string, payload: unknown) => Promise<CuratedT>;

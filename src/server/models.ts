@@ -8,7 +8,6 @@ import {
   ArcaneModel,
   ArmorModel,
   ArmorTypeModel,
-  BackgroundModel,
   BagModel,
   BodyAmmoModel,
   BodyArmorModel,
@@ -27,7 +26,6 @@ import {
   CharParamModel,
   CharacterModel,
   CharacterNodeModel,
-  CyberFrameBranchModel,
   CyberFrameModel,
   DamageModel,
   DamageTypeModel,
@@ -51,7 +49,6 @@ import {
   RuleBookModel,
   RuleBookTypeModel,
   SkillBonusModel,
-  SkillBranchModel,
   SkillModel,
   StatBonusModel,
   StatModel,
@@ -67,7 +64,6 @@ import {
   type IAmmo,
   type IArmor,
   type IArmorType,
-  type IBackground,
   type IBag,
   type IBody,
   type IBodyAmmo,
@@ -87,7 +83,6 @@ import {
   type ICharacter,
   type ICharacterNode,
   type ICyberFrame,
-  type ICyberFrameBranch,
   type IDamage,
   type IDamageType,
   type IEffect,
@@ -110,7 +105,6 @@ import {
   type IRuleBookType,
   type ISkill,
   type ISkillBonus,
-  type ISkillBranch,
   type IStat,
   type IStatBonus,
   type ITipText,
@@ -154,8 +148,6 @@ interface DBType {
   Campaign: Model<ICampaign<CleanObjectId>>;
   /** The Character Model */
   Character: Model<ICharacter<CleanObjectId>>;
-  /** The Background Model */
-  Background: Model<IBackground>;
   /** The CharacterNode Model */
   CharacterNode: Model<ICharacterNode>;
   /** The Body Model */
@@ -200,8 +192,6 @@ interface DBType {
   StatBonus: Model<IStatBonus>;
   /** The Skill Model */
   Skill: Model<ISkill>;
-  /** The Skill branch Model */
-  SkillBranch: Model<ISkillBranch<CleanObjectId>>;
   /** The Skill bonus Model */
   SkillBonus: Model<ISkillBonus>;
   /** The CharParam Model */
@@ -210,8 +200,6 @@ interface DBType {
   CharParamBonus: Model<ICharParamBonus>;
   /** The CyberFrame Model */
   CyberFrame: Model<ICyberFrame>;
-  /** The CyberFramebranch Model */
-  CyberFrameBranch: Model<ICyberFrameBranch<CleanObjectId>>;
   /** The Node Model */
   Node: Model<INode<CleanObjectId>>;
   /** The ItemType Model */
@@ -293,17 +281,14 @@ const db: DBType = {
   CharParam: CharParamModel(),
   CharParamBonus: CharParamBonusModel(),
   CyberFrame: CyberFrameModel(),
-  CyberFrameBranch: CyberFrameBranchModel(),
   Effect: EffectModel(),
   Node: NodeModel(),
   Skill: SkillModel(),
   SkillBonus: SkillBonusModel(),
-  SkillBranch: SkillBranchModel(),
   Stat: StatModel(),
   StatBonus: StatBonusModel(),
   TipText: TipTextModel(),
   GlobalValue: GlobalValueModel(),
-  Background: BackgroundModel(),
   // Items models
   Ammo: AmmoModel(),
   Bag: BagModel(),

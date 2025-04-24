@@ -22,13 +22,11 @@ import {
   createNodesByCharacter,
   deleteNodesByCharacter,
   deleteSpecificNodesByCharacter,
-  replaceCyberFrameNodeByCharacter,
 } from './node/controller';
 
 import type { HydratedICharacter, HydratedICharacterNode, LeanICharacterNode } from './index';
 import type { Lean } from '../../utils/types';
 import type { CuratedIAmmo } from '../ammo/controller';
-import type { HydratedIBackground, IBackground } from '../background/model';
 import type { CuratedIBag } from '../bag/controller';
 import type {
   HydratedIBody,
@@ -110,7 +108,6 @@ const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[
               },
             ],
           })
-          .populate<{ background: HydratedIBackground }>('background')
           .then((res: HydratedICharacter[]) => {
             resolve(res);
           })
@@ -262,11 +259,6 @@ const findCompleteCharacterById = async (
               },
             ],
           })
-          .populate<{ background: Lean<IBackground> }>({
-            path: 'background',
-            select: '_id title summary i18n skillBonuses statBonuses charParamBonuses createdAt',
-            populate: ['skillBonuses', 'statBonuses', 'charParamBonuses'],
-          })
           .then((res?: LeanICharacter | null) => {
             if (res === undefined || res === null) {
               reject(gemNotFound('Character'));
@@ -347,7 +339,6 @@ const findCharacterById = async (
               },
             ],
           })
-          .populate<{ background: HydratedIBackground }>('background')
           .then((res?: HydratedICharacter | null) => {
             if (res === null || res === undefined) {
               reject(gemNotFound('Character'));
@@ -369,33 +360,6 @@ const findCharacterById = async (
         reject(err);
       });
   });
-
-const addFirstCyberFrameNode = (req: Request, res: Response): void => {
-  const { nodeId } = req.body;
-  if (nodeId === undefined) {
-    res.status(400).send(gemInvalidField('Character'));
-
-    return;
-  }
-  createOrFindCharacter(req)
-    .then((characterIdSent) => {
-      replaceCyberFrameNodeByCharacter({
-        characterId: characterIdSent,
-        nodeIds: [nodeId],
-      })
-        .then(() => {
-          findCompleteCharacterById(characterIdSent, req)
-            .then(({ char }) => res.send(char))
-            .catch((err: unknown) => res.status(404).send(err));
-        })
-        .catch((err: unknown) => {
-          res.status(500).send(gemServerError(err));
-        });
-    })
-    .catch((err: unknown) => {
-      res.status(500).send(gemServerError(err));
-    });
-};
 
 const addNode = (req: Request, res: Response): void => {
   const { nodeId } = req.body;
@@ -539,7 +503,6 @@ const updateInfos = (req: Request, res: Response): void => {
     money = null,
     karma = null,
     campaignId = null,
-    backgroundId = null,
     gender = null,
     pronouns = null,
     bio = null,
@@ -576,9 +539,6 @@ const updateInfos = (req: Request, res: Response): void => {
         }
         if (karma !== null && karma !== char.karma) {
           char.karma = karma;
-        }
-        if (backgroundId !== null && backgroundId !== char.background) {
-          char.background = backgroundId;
         }
         if (isReady !== null && isReady !== char.isReady) {
           char.isReady = isReady;
@@ -803,10 +763,10 @@ const findAll = (req: Request, res: Response): void => {
 };
 
 export {
-  addFirstCyberFrameNode,
   addNode,
   create,
   deleteCharacter,
+  createOrFindCharacter,
   findAll,
   findCharacterById,
   findSingle,

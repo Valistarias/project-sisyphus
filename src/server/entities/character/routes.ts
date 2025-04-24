@@ -3,7 +3,6 @@ import type { Router } from 'express';
 import { verifyToken } from '../../middlewares';
 
 import {
-  addFirstCyberFrameNode,
   addNode,
   deleteCharacter,
   findAll,
@@ -28,8 +27,6 @@ export default (app: Router): void => {
   app.post('/characters/addnode', [verifyToken], addNode);
 
   app.post('/characters/updatenodes', [verifyToken], updateNodes);
-
-  app.post('/characters/addfirstcyberframenode', [verifyToken], addFirstCyberFrameNode);
 
   app.post('/characters/update', [verifyToken], updateInfos);
 

@@ -9,7 +9,7 @@ import type {
   ICuratedProgram,
   ICuratedWeapon,
 } from './items';
-import type { IBackground, INode } from './rules';
+import type { INode } from './rules';
 
 // Body Stat ------------------------------------
 export interface IBodyStat {
@@ -217,8 +217,6 @@ export interface ICharacter {
   nodes?: ICharacterNode[];
   /** All the bodies used by this character */
   bodies?: IBody[];
-  /** The background of the character */
-  background?: IBackground;
   /** When the character was created */
   createdAt: Date;
 }

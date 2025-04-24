@@ -4,6 +4,11 @@ import Entity from './entity';
 
 import type { IBody } from '../../types';
 
+interface ICreateBodyPayload {
+  characterId?: string;
+  cyberframeId: string;
+}
+
 interface IUpdateStatsPayload {
   id: string;
   stats: Array<{
@@ -24,7 +29,8 @@ interface IBodyPayload {
   characterId: string;
 }
 
-export default class Bodys extends Entity<IBodyPayload, IBody, IBody> {
+export default class Bodies extends Entity<IBodyPayload, IBody, IBody> {
+  create: (payload: ICreateBodyPayload) => Promise<string>;
   updateStats: (payload: IUpdateStatsPayload) => Promise<IBody>;
   resetItems: (payload: IResetItemsPayload) => Promise<IBody>;
 
@@ -49,6 +55,18 @@ export default class Bodys extends Entity<IBodyPayload, IBody, IBody> {
           .post(`${this.url}/resetitems/`, payload)
           .then((res) => {
             resolve(res.data as IBody);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+
+    this.create = async (payload) =>
+      await new Promise((resolve, reject) => {
+        axios
+          .post(`${this.url}/create/`, payload)
+          .then((res) => {
+            resolve(res.data as string);
           })
           .catch((err) => {
             reject(err);

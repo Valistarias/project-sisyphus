@@ -1,15 +1,9 @@
-import React, { useEffect, useMemo, useState, type FC } from 'react';
+import React, { type FC } from 'react';
 
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
-import { useGlobalVars } from '../../providers';
-
-import { Abutton, Aicon, Ali, Ap, Atitle, Aul } from '../../atoms';
-import { Button } from '../../molecules';
-import { RichTextElement } from '../richTextElement';
-
-import type { ICuratedBackground } from '../../types';
+import { Ap } from '../../atoms';
 
 import { classTrim } from '../../utils';
 
@@ -17,59 +11,59 @@ import './characterCreation.scss';
 
 interface ICharacterCreationStep4 {
   /** All the available backgrounds */
-  backgrounds: ICuratedBackground[];
+  // backgrounds: ICuratedBackground[];
   /** When the user click send and the data is send perfectly */
-  onSubmitBackground: (id: string) => void;
+  onSubmitVows: (id: string) => void;
 }
 
 const CharacterCreationStep4: FC<ICharacterCreationStep4> = ({
-  backgrounds,
-  onSubmitBackground,
+  // backgrounds,
+  onSubmitVows,
 }) => {
   const { t } = useTranslation();
-  const { skills, character } = useGlobalVars();
-  const [selectedBg, setSelectedBg] = useState<ICuratedBackground | null>(null);
+  // const { skills, character } = useGlobalVars();
+  // const [selectedBg, setSelectedBg] = useState<ICuratedBackground | null>(null);
 
-  const bonuses = useMemo(() => {
-    const bonuses = selectedBg?.background.skillBonuses?.map((skillBonus) => ({
-      ...skillBonus,
-      skill: skills.find((skill) => skill.skill._id === skillBonus.skill),
-    }));
+  // const bonuses = useMemo(() => {
+  //   const bonuses = selectedBg?.background.skillBonuses?.map((skillBonus) => ({
+  //     ...skillBonus,
+  //     skill: skills.find((skill) => skill.skill._id === skillBonus.skill),
+  //   }));
 
-    return (
-      <Aul noPoints className="characterCreation-step4__view__chosen-background__bonuses">
-        {bonuses?.map((bonus) => (
-          <Ali
-            className="characterCreation-step4__view__chosen-background__bonuses__elt"
-            key={bonus._id}
-          >
-            {`+${bonus.value} ${bonus.skill?.skill.title}`}
-          </Ali>
-        ))}
-      </Aul>
-    );
-  }, [selectedBg, skills]);
+  //   return (
+  //     <Aul noPoints className="characterCreation-step4__view__chosen-background__bonuses">
+  //       {bonuses?.map((bonus) => (
+  //         <Ali
+  //           className="characterCreation-step4__view__chosen-background__bonuses__elt"
+  //           key={bonus._id}
+  //         >
+  //           {`+${bonus.value} ${bonus.skill?.skill.title}`}
+  //         </Ali>
+  //       ))}
+  //     </Aul>
+  //   );
+  // }, [selectedBg, skills]);
 
-  useEffect(() => {
-    if (
-      backgrounds.length > 0 &&
-      character !== null &&
-      character !== false &&
-      character.background !== undefined &&
-      selectedBg === null
-    ) {
-      const findBg = backgrounds.find(
-        ({ background }) => background._id === character.background?._id
-      );
-      if (findBg !== undefined) {
-        setSelectedBg(findBg);
-      } else {
-        setSelectedBg(backgrounds[0]);
-      }
-    } else if (backgrounds.length > 0 && selectedBg === null) {
-      setSelectedBg(backgrounds[0]);
-    }
-  }, [backgrounds, selectedBg, character]);
+  // useEffect(() => {
+  //   if (
+  //     backgrounds.length > 0 &&
+  //     character !== null &&
+  //     character !== false &&
+  //     character.background !== undefined &&
+  //     selectedBg === null
+  //   ) {
+  //     const findBg = backgrounds.find(
+  //       ({ background }) => background._id === character.background?._id
+  //     );
+  //     if (findBg !== undefined) {
+  //       setSelectedBg(findBg);
+  //     } else {
+  //       setSelectedBg(backgrounds[0]);
+  //     }
+  //   } else if (backgrounds.length > 0 && selectedBg === null) {
+  //     setSelectedBg(backgrounds[0]);
+  //   }
+  // }, [backgrounds, selectedBg, character]);
 
   return (
     <motion.div
@@ -93,7 +87,7 @@ const CharacterCreationStep4: FC<ICharacterCreationStep4> = ({
       <Ap className="characterCreation-step4__sub">
         {t('characterCreation.step4.sub', { ns: 'components' })}
       </Ap>
-      <div className="characterCreation-step4__view">
+      {/* <div className="characterCreation-step4__view">
         <Aul noPoints className="characterCreation-step4__view__list">
           <Ali className="characterCreation-step4__view__list__title">Choose one</Ali>
           {backgrounds.map((background) => (
@@ -134,7 +128,7 @@ const CharacterCreationStep4: FC<ICharacterCreationStep4> = ({
           <Button
             onClick={() => {
               if (selectedBg?.background._id !== undefined) {
-                onSubmitBackground(selectedBg.background._id);
+                onSubmitVows();
               }
             }}
             size="large"
@@ -143,7 +137,7 @@ const CharacterCreationStep4: FC<ICharacterCreationStep4> = ({
             {t('characterCreation.step4.select', { ns: 'components' })}
           </Button>
         </div>
-      </div>
+      </div> */}
     </motion.div>
   );
 };

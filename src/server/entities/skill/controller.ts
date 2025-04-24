@@ -7,19 +7,10 @@ import {
   gemNotFound,
   gemServerError,
 } from '../../utils/globalErrorMessage';
-import { type CuratedINodeToSend, curateSingleNode } from '../node/controller';
-import { createGeneralForSkillId, deleteSkillBranchesBySkillId } from '../skillBranch/controller';
 import { checkDuplicateStatFormulaId } from '../stat/controller';
 
-import type { InternationalizationType, Lean } from '../../utils/types';
-import type {
-  HydratedINode,
-  HydratedIStat,
-  ISkillBranch,
-  IStat,
-  LeanINode,
-  LeanISkillBranch,
-} from '../index';
+import type { InternationalizationType } from '../../utils/types';
+import type { HydratedIStat, IStat } from '../index';
 import type { HydratedISkill, LeanISkill } from './model';
 
 import { curateI18n } from '../../utils';
@@ -31,29 +22,6 @@ const findSkills = async (): Promise<LeanISkill[]> =>
     Skill.find()
       .lean()
       .populate<{ stat: IStat }>('stat')
-      .populate<{
-        branches: Array<
-          Lean<ISkillBranch<string>> & {
-            nodes: LeanINode[];
-          }
-        >;
-      }>({
-        path: 'branches',
-        select: '_id title skill summary i18n',
-        populate: {
-          path: 'nodes',
-          select:
-            '_id title summary icon i18n rank quote skillBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses',
-          populate: [
-            'effects',
-            'actions',
-            'skillBonuses',
-            'skillBonuses',
-            'statBonuses',
-            'charParamBonuses',
-          ],
-        },
-      })
       .then((res) => {
         if (res.length === 0) {
           reject(gemNotFound('Skills'));
@@ -71,29 +39,6 @@ const findSkillById = async (id: string): Promise<LeanISkill> =>
     Skill.findById(id)
       .lean()
       .populate<{ stat: IStat }>('stat')
-      .populate<{
-        branches: Array<
-          Lean<ISkillBranch<string>> & {
-            nodes: LeanINode[];
-          }
-        >;
-      }>({
-        path: 'branches',
-        select: '_id title skill summary i18n',
-        populate: {
-          path: 'nodes',
-          select:
-            '_id title summary icon i18n rank quote skillBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses',
-          populate: [
-            'effects',
-            'actions',
-            'skillBonuses',
-            'skillBonuses',
-            'statBonuses',
-            'charParamBonuses',
-          ],
-        },
-      })
       .then((res: LeanISkill | null) => {
         if (res === null) {
           reject(gemNotFound('Skill'));
@@ -110,29 +55,6 @@ const findCompleteSkillById = async (id: string): Promise<HydratedISkill> =>
   await new Promise((resolve, reject) => {
     Skill.findById(id)
       .populate<{ stat: HydratedIStat }>('stat')
-      .populate<{
-        branches: Array<
-          ISkillBranch<string> & {
-            nodes: HydratedINode[];
-          }
-        >;
-      }>({
-        path: 'branches',
-        select: '_id title skill summary i18n',
-        populate: {
-          path: 'nodes',
-          select:
-            '_id title summary icon i18n rank quote skillBranch effects actions skillBonuses skillBonuses statBonuses charParamBonuses',
-          populate: [
-            'effects',
-            'actions',
-            'skillBonuses',
-            'skillBonuses',
-            'statBonuses',
-            'charParamBonuses',
-          ],
-        },
-      })
       .then((res: HydratedISkill | null) => {
         if (res === null) {
           reject(gemNotFound('Skill'));
@@ -237,13 +159,7 @@ const create = (req: Request, res: Response): void => {
         skill
           .save()
           .then(() => {
-            createGeneralForSkillId(String(skill._id))
-              .then(() => {
-                res.send(skill);
-              })
-              .catch((err: unknown) => {
-                res.status(500).send(gemServerError(err));
-              });
+            res.send(skill);
           })
           .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));
@@ -340,15 +256,9 @@ const deleteSkillById = async (id?: string): Promise<boolean> =>
 
       return;
     }
-    deleteSkillBranchesBySkillId(id)
+    Skill.findByIdAndDelete(id)
       .then(() => {
-        Skill.findByIdAndDelete(id)
-          .then(() => {
-            resolve(true);
-          })
-          .catch((err: unknown) => {
-            reject(gemServerError(err));
-          });
+        resolve(true);
       })
       .catch((err: unknown) => {
         reject(gemServerError(err));
@@ -367,34 +277,12 @@ const deleteSkill = (req: Request, res: Response): void => {
 };
 
 export interface CuratedISkillToSend {
-  skill: Omit<LeanISkill, 'branches'> & {
-    branches: Array<{
-      skillBranch: Omit<LeanISkillBranch, 'skill' | 'nodes'> & {
-        skill: string;
-        nodes: CuratedINodeToSend[];
-      };
-      i18n?: InternationalizationType;
-    }>;
-  };
+  skill: LeanISkill;
   i18n?: InternationalizationType;
 }
 
 const curateSingleSkill = (skillSent: LeanISkill): CuratedISkillToSend => ({
-  skill: {
-    ...skillSent,
-    branches: skillSent.branches.map((skillBranch) => {
-      const curatedNodes =
-        skillBranch.nodes.length > 0 ? skillBranch.nodes.map((node) => curateSingleNode(node)) : [];
-
-      return {
-        skillBranch: {
-          ...skillBranch,
-          nodes: curatedNodes,
-        },
-        i18n: curateI18n(skillBranch.i18n),
-      };
-    }),
-  },
+  skill: skillSent,
   i18n: curateI18n(skillSent.i18n),
 });
 

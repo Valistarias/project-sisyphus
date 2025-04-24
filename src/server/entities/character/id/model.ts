@@ -1,7 +1,6 @@
 import { type ObjectId, Schema, model, type HydratedDocument, type Model } from 'mongoose';
 
 import type { Lean } from '../../../utils/types';
-import type { HydratedIBackground, IBackground } from '../../background/model';
 import type { HydratedIBody, LeanIBody } from '../../body';
 import type { ICampaign } from '../../campaign/model';
 import type { IUser } from '../../user/model';
@@ -38,8 +37,6 @@ interface ICharacter<IdType> {
   createdBy: IdType;
   /** The campaign where the character plays */
   campaign?: IdType;
-  /** The background of this character */
-  background?: IdType;
 }
 
 type LeanICharacter = Omit<
@@ -51,7 +48,6 @@ type LeanICharacter = Omit<
   campaign?: Lean<ICampaign<string>>;
   nodes?: LeanICharacterNode[];
   bodies?: LeanIBody[];
-  background?: Lean<IBackground>;
 };
 
 type HydratedICharacter = HydratedDocument<
@@ -61,7 +57,6 @@ type HydratedICharacter = HydratedDocument<
     campaign?: HydratedDocument<ICampaign<string>>;
     nodes?: HydratedICharacterNode[];
     bodies?: HydratedIBody[];
-    background?: HydratedIBackground;
   }
 >;
 
@@ -95,10 +90,6 @@ const characterSchema = new Schema<ICharacter<ObjectId>>(
     campaign: {
       type: Schema.Types.ObjectId,
       ref: 'Campaign',
-    },
-    background: {
-      type: Schema.Types.ObjectId,
-      ref: 'Background',
     },
     createdAt: {
       type: Date,

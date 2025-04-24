@@ -1,6 +1,7 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
 import type { ICharacter } from '../../character';
+import type { ICyberFrame, LeanICyberFrame } from '../../cyberFrame/model';
 import type { HydratedIBodyAmmo, LeanIBodyAmmo } from '../ammo/model';
 import type { HydratedIBodyArmor, LeanIBodyArmor } from '../armor/model';
 import type { HydratedIBodyBag, LeanIBodyBag } from '../bag/model';
@@ -17,11 +18,14 @@ interface IBody<IdType> {
   hp: number;
   /** The character associated to this body */
   character: IdType;
+  /** The cyberframe associated to this body */
+  cyberframe: IdType;
   /** When the body was created */
   createdAt: Date;
 }
 
-type LeanIBody = IBody<string> & {
+type LeanIBody = Omit<IBody<string>, 'cyberframe'> & {
+  cyberframe: LeanICyberFrame;
   stats: IBodyStat[];
   ammos: LeanIBodyAmmo[];
   armors: LeanIBodyArmor[];
@@ -33,8 +37,9 @@ type LeanIBody = IBody<string> & {
 };
 
 type HydratedIBody = HydratedDocument<
-  Omit<IBody<string>, 'character'> & {
+  Omit<IBody<string>, 'character' | 'cyberframe'> & {
     character: HydratedDocument<ICharacter<string>>;
+    cyberframe: HydratedDocument<ICyberFrame>;
     stats: HydratedIBodyStat[];
     ammos: HydratedIBodyAmmo[];
     armors: HydratedIBodyArmor[];
@@ -55,6 +60,10 @@ const bodySchema = new Schema<IBody<ObjectId>>({
   character: {
     type: Schema.Types.ObjectId,
     ref: 'Character',
+  },
+  cyberframe: {
+    type: Schema.Types.ObjectId,
+    ref: 'Cyberframe',
   },
   createdAt: {
     type: Date,

@@ -46,8 +46,6 @@ export interface ISkill {
   formulaId: string;
   /** The correlated stat */
   stat: IStat;
-  /** The correlated branches */
-  branches: ICuratedSkillBranch[];
   /** When the Skill was created */
   createdAt: Date;
 }
@@ -67,27 +65,6 @@ export interface ISkillBonus {
   value: number;
   /** When the skill bonus was created */
   createdAt: Date;
-}
-
-// Skill Branch ------------------------------------
-export interface ISkillBranch {
-  /** The ID of the Skill Branch */
-  _id: string;
-  /** The title of the Skill Branch */
-  title: string;
-  /** The summary of the Skill Branch */
-  summary: string;
-  /** The skill linked to this branch */
-  skill: ISkill | string;
-  /** The nodes of this branch */
-  nodes: ICuratedNode[];
-  /** When the skill Branch was created */
-  createdAt: Date;
-}
-
-export interface ICuratedSkillBranch {
-  i18n: InternationalizationType;
-  skillBranch: ISkillBranch;
 }
 
 // Actions ------------------------------------
@@ -207,8 +184,6 @@ export interface ICyberFrame {
   summary: string;
   /** The rulebook where the CyberFrame is present */
   ruleBook: IRuleBook;
-  /** The correlated branches */
-  branches: ICuratedCyberFrameBranch[];
   /** When the CyberFrame was created */
   createdAt: Date;
 }
@@ -216,27 +191,6 @@ export interface ICyberFrame {
 export interface ICuratedCyberFrame {
   i18n: InternationalizationType;
   cyberFrame: ICyberFrame;
-}
-
-// CyberFrame Branch ------------------------------------
-export interface ICyberFrameBranch {
-  /** The ID of the CyberFrame Branch */
-  _id: string;
-  /** The title of the CyberFrame Branch */
-  title: string;
-  /** The summary of the CyberFrame Branch */
-  summary: string;
-  /** The cyberframe of this branch */
-  cyberFrame: ICyberFrame | string;
-  /** The nodes of this branch */
-  nodes: ICuratedNode[];
-  /** When the cyberFrame Branch was created */
-  createdAt: Date;
-}
-
-export interface ICuratedCyberFrameBranch {
-  i18n: InternationalizationType;
-  cyberFrameBranch: ICyberFrameBranch;
 }
 
 // Node ------------------------------------
@@ -366,10 +320,6 @@ export interface INode {
   icon: TypeNodeIcons;
   /** Some lore for this node, MTG style */
   quote?: string;
-  /** The correlated skill branch, id any */
-  skillBranch?: ISkillBranch | string;
-  /** The correlated cyberFrame branch, id any */
-  cyberFrameBranch?: ICyberFrameBranch | string;
   /** The position/rank where the node is located */
   rank: number;
   /** The effects related to the node */
@@ -423,27 +373,4 @@ export interface IGlobalValue {
   name: string;
   /** The value of the parameter */
   value: string;
-}
-
-// Backgrounds ------------------------------------
-export interface IBackground {
-  /** The ID of the background */
-  _id: string;
-  /** The title of the background */
-  title: string;
-  /** The summary of the background */
-  summary: string;
-  /** The skill bonuses related to the background */
-  skillBonuses?: ISkillBonus[];
-  /** The stat bonuses related to the background */
-  statBonuses?: IStatBonus[];
-  /** The charParam bonuses related to the background */
-  charParamBonuses?: ICharParamBonus[];
-  /** When the background was created */
-  createdAt: Date;
-}
-
-export interface ICuratedBackground {
-  i18n: InternationalizationType;
-  background: IBackground;
 }

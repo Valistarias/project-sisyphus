@@ -3,13 +3,8 @@ import type { HydratedDocument } from 'mongoose';
 
 import { getUserFromToken, type IVerifyTokenRequest } from '../../middlewares/authJwt';
 import db from '../../models';
-import {
-  gemInvalidField,
-  gemNotFound,
-  gemServerError,
-  gemUnauthorizedGlobal,
-} from '../../utils/globalErrorMessage';
-import { findCharacterById } from '../character/controller';
+import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import { createOrFindCharacter } from '../character/controller';
 
 import { deleteAmmosByBody } from './ammo/controller';
 import { deleteArmorsByBody, replaceArmorByBody } from './armor/controller';
@@ -32,6 +27,7 @@ import type {
   HydratedIBodyStat,
   HydratedIBodyWeapon,
 } from './index';
+import type { ICyberFrame } from '../cyberFrame/model';
 
 const { Body } = db;
 
@@ -48,6 +44,7 @@ const findBodiesByCharacter = async (req: Request): Promise<HydratedIBody[]> =>
 
         Body.find({ character: characterId })
           .populate<{ character: HydratedDocument<ICharacter<string>> }>('character')
+          .populate<{ cyberframe: HydratedDocument<ICyberFrame> }>('cyberframe')
           .populate<{ stats: HydratedIBodyStat[] }>({
             path: 'stats',
             select: '_id body stat value',
@@ -113,6 +110,7 @@ const findBodyById = async (
         }
         Body.findById(id)
           .populate<{ character: HydratedDocument<ICharacter<string>> }>('character')
+          .populate<{ cyberframe: HydratedDocument<ICyberFrame> }>('cyberframe')
           .populate<{ stats: HydratedIBodyStat[] }>({
             path: 'stats',
             select: '_id body stat value',
@@ -169,65 +167,50 @@ const findBodyById = async (
 
 const create = (req: Request, res: Response): void => {
   const {
-    characterId,
+    cyberFrameId,
     hp,
     stats,
   }: {
-    characterId?: string;
+    cyberFrameId?: string;
     hp?: number;
     stats: Array<{
       id: string;
       value: number;
     }>;
   } = req.body;
-  getUserFromToken(req as IVerifyTokenRequest)
-    .then((user) => {
-      if (user === null || characterId === undefined) {
-        res.status(404).send(gemNotFound('User'));
+  createOrFindCharacter(req)
+    .then((characterIdSent) => {
+      const body = new Body({
+        character: characterIdSent,
+        cyberframe: cyberFrameId,
+        hp,
+      });
 
-        return;
-      }
-      findCharacterById(characterId, req)
-        .then(({ char, canEdit }) => {
-          if (canEdit) {
-            const body = new Body({
-              character: characterId,
-              hp,
+      body
+        .save()
+        .then(() => {
+          createStatsByBody({
+            bodyId: body._id.toString(),
+            stats,
+          })
+            .then(() => {
+              res.send(characterIdSent);
+            })
+            .catch((err: unknown) => {
+              res.status(500).send(gemServerError(err));
             });
-
-            body
-              .save()
-              .then(() => {
-                createStatsByBody({
-                  bodyId: body._id.toString(),
-                  stats,
-                })
-                  .then(() => {
-                    res.send({
-                      message: 'Body was created successfully!',
-                      bodyId: body._id,
-                    });
-                  })
-                  .catch((err: unknown) => {
-                    res.status(500).send(gemServerError(err));
-                  });
-              })
-              .catch((err: unknown) => {
-                res.status(500).send(gemServerError(err));
-              });
-          } else {
-            res.status(401).send(gemUnauthorizedGlobal());
-          }
         })
         .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
         });
     })
-    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
+    .catch((err: unknown) => {
+      res.status(500).send(gemServerError(err));
+    });
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, hp = null, alive = null } = req.body;
+  const { id, hp = null, alive = null, cyberframeId = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Body ID'));
 
@@ -241,6 +224,9 @@ const update = (req: Request, res: Response): void => {
         }
         if (alive !== null && alive !== body.alive) {
           body.alive = alive;
+        }
+        if (cyberframeId !== null && cyberframeId !== String(body.cyberframe)) {
+          body.cyberframe = cyberframeId;
         }
         body
           .save()

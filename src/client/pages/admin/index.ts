@@ -3,7 +3,6 @@ import AdminAmmosPage from './adminAmmos';
 import AdminArcanesPage from './adminArcanes';
 import AdminArmorsPage from './adminArmors';
 import AdminArmorTypesPage from './adminArmorTypes';
-import AdminBackgroundsPage from './adminBackgrounds';
 import AdminBagsPage from './adminBags';
 import AdminBasicActionsPage from './adminBasicActions';
 import AdminBodyPartsPage from './adminBodyParts';
@@ -14,14 +13,12 @@ import AdminEditAmmoPage from './adminEditAmmo';
 import AdminEditArcanePage from './adminEditArcane';
 import AdminEditArmorPage from './adminEditArmor';
 import AdminEditArmorTypePage from './adminEditArmorType';
-import AdminEditBackgroundPage from './adminEditBackground';
 import AdminEditBagPage from './adminEditBag';
 import AdminEditBasicActionPage from './adminEditBasicAction';
 import AdminEditBodyPartPage from './adminEditBodyPart';
 import AdminEditChapterPage from './adminEditChapter';
 import AdminEditCharParamPage from './adminEditCharParam';
 import AdminEditCyberFramePage from './adminEditCyberFrame';
-import AdminEditCyberFrameBranchPage from './adminEditCyberFrameBranch';
 import AdminEditDamageTypePage from './adminEditDamageType';
 import AdminEditGlobalValuePage from './adminEditGlobalValue';
 import AdminEditImplantPage from './adminEditImplant';
@@ -37,7 +34,6 @@ import AdminEditProgramScopePage from './adminEditProgramScope';
 import AdminEditRarityPage from './adminEditRarity';
 import AdminEditRuleBookPage from './adminEditRuleBook';
 import AdminEditSkillPage from './adminEditSkill';
-import AdminEditSkillBranchPage from './adminEditSkillBranch';
 import AdminEditStatPage from './adminEditStat';
 import AdminEditTipTextPage from './adminEditTipText';
 import AdminEditUserPage from './adminEditUser';
@@ -54,14 +50,12 @@ import AdminNewAmmoPage from './adminNewAmmo';
 import AdminNewArcanePage from './adminNewArcane';
 import AdminNewArmorPage from './adminNewArmor';
 import AdminNewArmorTypePage from './adminNewArmorType';
-import AdminNewBackgroundPage from './adminNewBackground';
 import AdminNewBagPage from './adminNewBag';
 import AdminNewBasicActionPage from './adminNewBasicAction';
 import AdminNewBodyPartPage from './adminNewBodyPart';
 import AdminNewChapterPage from './adminNewChapter';
 import AdminNewCharParamPage from './adminNewCharParam';
 import AdminNewCyberFramePage from './adminNewCyberFrame';
-import AdminNewCyberFrameBranchPage from './adminNewCyberFrameBranch';
 import AdminNewDamageTypePage from './adminNewDamageType';
 import AdminNewGlobalValuePage from './adminNewGlobalValue';
 import AdminNewImplantPage from './adminNewImplant';
@@ -77,7 +71,6 @@ import AdminNewProgramScopePage from './adminNewProgramScope';
 import AdminNewRarityPage from './adminNewRarity';
 import AdminNewRuleBookPage from './adminNewRuleBook';
 import AdminNewSkillPage from './adminNewSkill';
-import AdminNewSkillBranchPage from './adminNewSkillBranch';
 import AdminNewStatPage from './adminNewStat';
 import AdminNewTipTextPage from './adminNewTipText';
 import AdminNewWeaponPage from './adminNewWeapon';
@@ -104,7 +97,6 @@ export {
   AdminAmmosPage,
   AdminArmorsPage,
   AdminArmorTypesPage,
-  AdminBackgroundsPage,
   AdminBagsPage,
   AdminBasicActionsPage,
   AdminBodyPartsPage,
@@ -114,13 +106,11 @@ export {
   AdminEditAmmoPage,
   AdminEditArmorPage,
   AdminEditArmorTypePage,
-  AdminEditBackgroundPage,
   AdminEditBagPage,
   AdminNewBasicActionPage,
   AdminEditBodyPartPage,
   AdminEditChapterPage,
   AdminEditCharParamPage,
-  AdminEditCyberFrameBranchPage,
   AdminEditCyberFramePage,
   AdminEditDamageTypePage,
   AdminEditGlobalValuePage,
@@ -137,7 +127,6 @@ export {
   AdminEditRarityPage,
   AdminEditRuleBookPage,
   AdminEditArcanePage,
-  AdminEditSkillBranchPage,
   AdminEditSkillPage,
   AdminEditStatPage,
   AdminEditTipTextPage,
@@ -155,12 +144,10 @@ export {
   AdminNewArmorPage,
   AdminNewArmorTypePage,
   AdminEditUserPage,
-  AdminNewBackgroundPage,
   AdminNewBagPage,
   AdminNewBodyPartPage,
   AdminNewChapterPage,
   AdminNewCharParamPage,
-  AdminNewCyberFrameBranchPage,
   AdminNewCyberFramePage,
   AdminNewDamageTypePage,
   AdminNewGlobalValuePage,
@@ -177,7 +164,6 @@ export {
   AdminNewProgramScopePage,
   AdminNewRarityPage,
   AdminNewRuleBookPage,
-  AdminNewSkillBranchPage,
   AdminNewSkillPage,
   AdminNewStatPage,
   AdminNewArcanePage,

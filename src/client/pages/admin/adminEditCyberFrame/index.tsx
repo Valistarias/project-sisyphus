@@ -9,23 +9,11 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
 
 import { Aerror, Ap, Atitle } from '../../../atoms';
-import {
-  Button,
-  Input,
-  LinkButton,
-  NodeTree,
-  SmartSelect,
-  type ISingleValueSelect,
-} from '../../../molecules';
+import { Button, Input, SmartSelect, type ISingleValueSelect } from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
-import type {
-  ErrorResponseType,
-  ICuratedCyberFrame,
-  ICuratedNode,
-  ICyberFrameBranch,
-} from '../../../types';
+import type { ErrorResponseType, ICuratedCyberFrame } from '../../../types';
 import type { InternationalizationType } from '../../../types/global';
 
 import { classTrim } from '../../../utils';
@@ -62,25 +50,6 @@ const AdminEditCyberFrame: FC = () => {
   const textEditor = useEditor({ extensions: completeRichTextElementExtentions });
 
   const textFrEditor = useEditor({ extensions: completeRichTextElementExtentions });
-
-  const nodeTree = useMemo(() => {
-    const branches = cyberFrameData?.cyberFrame.branches;
-    const tempTree: Record<
-      string,
-      {
-        branch: ICyberFrameBranch;
-        nodes: ICuratedNode[];
-      }
-    > = {};
-    branches?.forEach(({ cyberFrameBranch }) => {
-      tempTree[cyberFrameBranch._id] = {
-        branch: cyberFrameBranch,
-        nodes: cyberFrameBranch.nodes,
-      };
-    });
-
-    return Object.values(tempTree);
-  }, [cyberFrameData]);
 
   const ruleBookSelect = useMemo(
     () =>
@@ -406,26 +375,6 @@ const AdminEditCyberFrame: FC = () => {
               small
               complete
             />
-          </div>
-        </div>
-        <div className="adminEditCyberFrame__nodes">
-          <Atitle level={2}>{t('adminEditCyberFrame.nodes', { ns: 'pages' })}</Atitle>
-          <div className="adminEditCyberFrame__nodes__list">
-            <NodeTree
-              tree={nodeTree}
-              onNodeClick={(id) => {
-                void navigate(`/admin/node/${id}`);
-              }}
-              isAdmin
-            />
-          </div>
-          <div className="adminEditCyberFrame__nodes__btns">
-            <LinkButton href={`/admin/node/new?cyberFrameId=${id}`}>
-              {t('adminNewNode.title', { ns: 'pages' })}
-            </LinkButton>
-            <LinkButton href={`/admin/cyberframebranch/new?cyberFrameId=${id}`}>
-              {t('adminNewCyberFrameBranch.title', { ns: 'pages' })}
-            </LinkButton>
           </div>
         </div>
         <Button type="submit">{t('adminEditCyberFrame.button', { ns: 'pages' })}</Button>

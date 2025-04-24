@@ -61,30 +61,6 @@
     display: none;
   }
 
-  &__nodes {
-    margin-bottom: 10rem;
-    width: 100%;
-
-    &__list {
-      margin-bottom: 2rem;
-    }
-  }
-
-  &__nodes {
-    &__list {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-    }
-
-    &__btns {
-      display: flex;
-      flex-direction: row;
-      gap: 1rem;
-      justify-content: center;
-    }
-  }
-
   &--int-visible {
     .adminEditCyberFrame__intl {
       display: block;

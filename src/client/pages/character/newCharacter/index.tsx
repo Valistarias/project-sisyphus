@@ -27,8 +27,8 @@ import { introSequence } from './introSequence';
 
 import type {
   ErrorResponseType,
+  IBody,
   ICuratedArmor,
-  ICuratedBackground,
   ICuratedBag,
   ICuratedImplant,
   ICuratedItem,
@@ -48,18 +48,8 @@ const NewCharacter: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
-  const {
-    user,
-    setUser,
-    tipTexts,
-    cyberFrames,
-    setCharacter,
-    character,
-    resetCharacter,
-    setCharacterFromId,
-    charParams,
-    globalValues,
-  } = useGlobalVars();
+  const { user, setUser, tipTexts, setCharacter, character, resetCharacter, setCharacterFromId } =
+    useGlobalVars();
   const { id } = useParams();
 
   const [displayLoading, setDisplayLoading] = useState(true);
@@ -67,7 +57,6 @@ const NewCharacter: FC = () => {
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const [forcedCharState, setForcedCharState] = useState<number | null>(null);
 
-  const [backgrounds, setBackgrounds] = useState<ICuratedBackground[]>([]);
   const [weapons, setWeapons] = useState<ICuratedWeapon[]>([]);
   const [programs, setPrograms] = useState<ICuratedProgram[]>([]);
   const [items, setItems] = useState<ICuratedItem[]>([]);
@@ -146,22 +135,6 @@ const NewCharacter: FC = () => {
   const getData = useCallback(() => {
     setIntroState(1);
     if (api !== undefined) {
-      api.backgrounds
-        .getAll()
-        .then((curatedBackgrounds) => {
-          setBackgrounds(curatedBackgrounds);
-        })
-        .catch(() => {
-          const newId = getNewId();
-          createAlert({
-            key: newId,
-            dom: (
-              <Alert key={newId} id={newId} timer={5}>
-                <Ap>{t('serverErrors.CYPU-301')}</Ap>
-              </Alert>
-            ),
-          });
-        });
       api.weapons
         .getStarters()
         .then((curatedWeapons) => {
@@ -264,23 +237,22 @@ const NewCharacter: FC = () => {
   const onSubmitCyberFrame = useCallback(
     (cyberFrameId: string) => {
       if (api !== undefined && user !== null) {
-        const firstCyberFrameNode = cyberFrames
-          .find(({ cyberFrame }) => cyberFrame._id === cyberFrameId)
-          ?.cyberFrame.branches.find(
-            ({ cyberFrameBranch }) => cyberFrameBranch.title === '_general'
-          )?.cyberFrameBranch.nodes[0];
-        if (firstCyberFrameNode !== undefined) {
-          api.characters
-            .addFirstCyberFrameNode({
-              characterId: character !== false && character !== null ? character._id : undefined,
-              nodeId: firstCyberFrameNode.node._id,
+        let relevantBody: IBody | undefined = undefined;
+        if (character !== false && character?.bodies !== undefined) {
+          relevantBody = character.bodies.find((body) => body.alive);
+        }
+
+        if (relevantBody === undefined) {
+          api.bodies
+            .create({
+              cyberframeId: cyberFrameId,
             })
-            .then((sentCharacter) => {
+            .then((sentCharacterId) => {
               if (character === null || character === false) {
                 window.history.replaceState(
                   {},
                   'Sisyphus',
-                  `/character/${sentCharacter._id}/continue`
+                  `/character/${sentCharacterId}/continue`
                 );
               } else {
                 const newId = getNewId();
@@ -293,7 +265,40 @@ const NewCharacter: FC = () => {
                   ),
                 });
               }
-              setCharacter(sentCharacter);
+              setCharacterFromId(sentCharacterId);
+            })
+            .catch(({ response }: ErrorResponseType) => {
+              const { data } = response;
+              const newId = getNewId();
+              createAlert({
+                key: newId,
+                dom: (
+                  <Alert key={newId} id={newId} timer={5}>
+                    <Ap>{data.message}</Ap>
+                  </Alert>
+                ),
+              });
+            });
+        } else {
+          api.bodies
+            .update({
+              id: relevantBody._id,
+              cyberFrameId,
+            })
+            .then(() => {
+              if (character !== false && character !== null) {
+                setCharacterFromId(character._id);
+              }
+
+              const newId = getNewId();
+              createAlert({
+                key: newId,
+                dom: (
+                  <Alert key={newId} id={newId} timer={5}>
+                    <Ap>{t('newCharacter.successUpdateStats', { ns: 'pages' })}</Ap>
+                  </Alert>
+                ),
+              });
             })
             .catch(({ response }: ErrorResponseType) => {
               const { data } = response;
@@ -310,44 +315,16 @@ const NewCharacter: FC = () => {
         }
       }
     },
-    [api, user, cyberFrames, character, setCharacter, getNewId, createAlert, t]
+    [api, user, character, setCharacterFromId, getNewId, createAlert, t]
   );
 
-  const onSubmitBackground = useCallback(
+  const onSubmitVows = useCallback(
     (backgroundId: string) => {
       if (api !== undefined && user !== null && character !== null && character !== false) {
-        api.characters
-          .update({
-            id: character._id,
-            backgroundId,
-          })
-          .then(() => {
-            const newId = getNewId();
-            createAlert({
-              key: newId,
-              dom: (
-                <Alert key={newId} id={newId} timer={5}>
-                  <Ap>{t('newCharacter.successUpdatebackground', { ns: 'pages' })}</Ap>
-                </Alert>
-              ),
-            });
-            setCharacterFromId(character._id);
-          })
-          .catch(({ response }: ErrorResponseType) => {
-            const { data } = response;
-            const newId = getNewId();
-            createAlert({
-              key: newId,
-              dom: (
-                <Alert key={newId} id={newId} timer={5}>
-                  <Ap>{data.message}</Ap>
-                </Alert>
-              ),
-            });
-          });
+        // TODO
       }
     },
-    [api, character, createAlert, getNewId, setCharacterFromId, t, user]
+    [api, character, user]
   );
 
   const onSubmitItems = useCallback(
@@ -529,42 +506,10 @@ const NewCharacter: FC = () => {
                 });
               });
           }
-        } else {
-          let hpVal = Number(globalValues.find(({ name }) => name === 'baseHp')?.value ?? 0);
-          const idHpCharParam = charParams.find(({ charParam }) => charParam.formulaId === 'hp')
-            ?.charParam._id;
-          character.nodes?.forEach(({ node }) => {
-            node.charParamBonuses.forEach((charParamBonus) => {
-              if (charParamBonus.charParam === idHpCharParam) {
-                hpVal += charParamBonus.value;
-              }
-            });
-          });
-          api.bodies
-            .create({
-              characterId: character._id,
-              hp: hpVal,
-              stats,
-            })
-            .then(() => {
-              setCharacterFromId(character._id);
-            })
-            .catch(({ response }: ErrorResponseType) => {
-              const { data } = response;
-              const newId = getNewId();
-              createAlert({
-                key: newId,
-                dom: (
-                  <Alert key={newId} id={newId} timer={5}>
-                    <Ap>{data.message}</Ap>
-                  </Alert>
-                ),
-              });
-            });
         }
       }
     },
-    [api, user, character, setCharacterFromId, getNewId, createAlert, t, globalValues, charParams]
+    [api, user, character, setCharacterFromId, getNewId, createAlert, t]
   );
 
   const onSubmitIdentification = useCallback(
@@ -665,8 +610,8 @@ const NewCharacter: FC = () => {
       return (
         <CharCreationStep4
           key="step4"
-          onSubmitBackground={onSubmitBackground}
-          backgrounds={backgrounds}
+          onSubmitVows={onSubmitVows}
+          // backgrounds={backgrounds}
         />
       );
     }
@@ -693,8 +638,7 @@ const NewCharacter: FC = () => {
     implants,
     bags,
     armors,
-    onSubmitBackground,
-    backgrounds,
+    onSubmitVows,
     onSubmitSkills,
     onSubmitStats,
   ]);
@@ -731,7 +675,6 @@ const NewCharacter: FC = () => {
       setLoading(true);
     } else if (
       (id === undefined || (character !== false && character !== null)) &&
-      backgrounds.length > 0 &&
       weapons.length > 0 &&
       programs.length > 0 &&
       implants.length > 0 &&
@@ -745,7 +688,6 @@ const NewCharacter: FC = () => {
       }
     }
   }, [
-    backgrounds.length,
     character,
     weapons,
     id,
