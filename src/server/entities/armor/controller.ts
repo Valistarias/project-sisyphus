@@ -43,11 +43,7 @@ const findArmors = async (options?: findAllPayload): Promise<LeanIArmor[]> =>
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
       .then((res: LeanIArmor[]) => {
-        if (res.length === 0) {
-          reject(gemNotFound('Armors'));
-        } else {
-          resolve(res);
-        }
+        resolve(res);
       })
       .catch((err: unknown) => {
         reject(err);

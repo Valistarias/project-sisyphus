@@ -41,11 +41,7 @@ const findItems = async (options?: findAllPayload): Promise<LeanIItem[]> =>
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
       .then((res: LeanIItem[]) => {
-        if (res.length === 0) {
-          reject(gemNotFound('Items'));
-        } else {
-          resolve(res);
-        }
+        resolve(res);
       })
       .catch((err: unknown) => {
         reject(err);

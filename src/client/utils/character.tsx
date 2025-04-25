@@ -9,14 +9,17 @@ import type {
   ICuratedAction,
   ICuratedCharParam,
   ICuratedCyberFrame,
-  ICuratedNode,
   ICuratedSkill,
   ICuratedStat,
   IGlobalValue,
   INode,
-  ISkill,
 } from '../types';
-import type { TypeNodeIcons } from '../types/rules';
+import type {
+  ICompleteCyberFrame,
+  ICuratedCyberFrameCharParam,
+  ICuratedCyberFrameStat,
+  TypeNodeIcons,
+} from '../types/rules';
 
 export interface ICyberFrameLevels {
   cyberFrame: ICuratedCyberFrame;
@@ -27,31 +30,33 @@ export interface ICyberFrameLevels {
 const getCyberFrameLevelsByNodes = (
   nodes: ICharacterNode[] | undefined,
   cyberFrames: ICuratedCyberFrame[]
+  // eslint-disable-next-line arrow-body-style --- temporary
 ): ICyberFrameLevels[] => {
-  if (nodes === undefined) {
-    return [];
-  }
-  const tempFrames: Partial<Record<string, ICyberFrameLevels>> = {};
-  nodes.forEach(({ node }) => {
-    if (node.cyberFrameBranch !== undefined) {
-      const foundCyberFrame = cyberFrames.find(
-        ({ cyberFrame }) =>
-          cyberFrame.branches.find(
-            ({ cyberFrameBranch }) => cyberFrameBranch._id === node.cyberFrameBranch
-          ) !== undefined
-      );
+  // if (nodes === undefined) {
+  //   return [];
+  // }
+  // const tempFrames: Partial<Record<string, ICyberFrameLevels>> = {};
+  // nodes.forEach(({ node }) => {
+  //   if (node.cyberFrameBranch !== undefined) {
+  //     const foundCyberFrame = cyberFrames.find(
+  //       ({ cyberFrame }) =>
+  //         cyberFrame.branches.find(
+  //           ({ cyberFrameBranch }) => cyberFrameBranch._id === node.cyberFrameBranch
+  //         ) !== undefined
+  //     );
 
-      if (foundCyberFrame !== undefined) {
-        tempFrames[foundCyberFrame.cyberFrame._id] = {
-          cyberFrame: foundCyberFrame,
-          level: (tempFrames[foundCyberFrame.cyberFrame._id]?.level ?? 0) + 1,
-          chosenNodes: [...(tempFrames[foundCyberFrame.cyberFrame._id]?.chosenNodes ?? []), node],
-        };
-      }
-    }
-  });
+  //     if (foundCyberFrame !== undefined) {
+  //       tempFrames[foundCyberFrame.cyberFrame._id] = {
+  //         cyberFrame: foundCyberFrame,
+  //         level: (tempFrames[foundCyberFrame.cyberFrame._id]?.level ?? 0) + 1,
+  //         chosenNodes: [...(tempFrames[foundCyberFrame.cyberFrame._id]?.chosenNodes ?? []), node],
+  //       };
+  //     }
+  //   }
+  // });
 
-  return Object.values(tempFrames).filter((tempFrame) => tempFrame !== undefined);
+  // return Object.values(tempFrames).filter((tempFrame) => tempFrame !== undefined);
+  return [];
 };
 
 interface IHpValues {
@@ -201,7 +206,7 @@ const curateCharacterSkills = (
   const skillNodesById: Record<string, IScore | undefined> = {};
   const statNodesById: Record<string, IScore> = {};
 
-  body.stats.forEach(({ stat, value }) => {
+  character.stats.forEach(({ stat, value }) => {
     statNodesById[stat] = {
       total: value,
       sources: [
@@ -213,53 +218,54 @@ const curateCharacterSkills = (
     };
   });
 
-  character.nodes?.forEach(({ node }) => {
-    let foundCyberFrame: ICuratedCyberFrame | undefined;
-    let foundSkill: ICuratedSkill | undefined;
-    if (node.cyberFrameBranch !== undefined) {
-      foundCyberFrame = cyberFrames.find(
-        ({ cyberFrame }) =>
-          cyberFrame.branches.find(
-            ({ cyberFrameBranch }) => cyberFrameBranch._id === node.cyberFrameBranch
-          ) !== undefined
-      );
-    }
-    if (node.skillBranch !== undefined) {
-      foundSkill = skills.find(
-        ({ skill }) =>
-          skill.branches.find(({ skillBranch }) => skillBranch._id === node.skillBranch) !==
-          undefined
-      );
-    }
-    node.skillBonuses.forEach((skillBonus) => {
-      const actualSkillNode = skillNodesById[skillBonus.skill];
-      skillNodesById[skillBonus.skill] = {
-        total: (actualSkillNode?.total ?? 0) + skillBonus.value,
-        sources: [
-          ...(actualSkillNode?.sources ?? []),
-          {
-            value: skillBonus.value,
-            origin: {
-              ...node,
-              cyberFrame: foundCyberFrame,
-              skill: foundSkill,
-            },
-          },
-        ],
-      };
-    });
-    node.statBonuses.forEach((statBonus) => {
-      statNodesById[statBonus.stat].total += statBonus.value;
-      statNodesById[statBonus.stat].sources.push({
-        value: statBonus.value,
-        origin: {
-          ...node,
-          cyberFrame: foundCyberFrame,
-          skill: foundSkill,
-        },
-      });
-    });
-  });
+  // TODO: Reactivate this when we know what we will do about nodes
+  // character.nodes?.forEach(({ node }) => {
+  //   let foundCyberFrame: ICuratedCyberFrame | undefined;
+  //   let foundSkill: ICuratedSkill | undefined;
+  //   if (node.cyberFrameBranch !== undefined) {
+  //     foundCyberFrame = cyberFrames.find(
+  //       ({ cyberFrame }) =>
+  //         cyberFrame.branches.find(
+  //           ({ cyberFrameBranch }) => cyberFrameBranch._id === node.cyberFrameBranch
+  //         ) !== undefined
+  //     );
+  //   }
+  //   if (node.skillBranch !== undefined) {
+  //     foundSkill = skills.find(
+  //       ({ skill }) =>
+  //         skill.branches.find(({ skillBranch }) => skillBranch._id === node.skillBranch) !==
+  //         undefined
+  //     );
+  //   }
+  //   node.skillBonuses.forEach((skillBonus) => {
+  //     const actualSkillNode = skillNodesById[skillBonus.skill];
+  //     skillNodesById[skillBonus.skill] = {
+  //       total: (actualSkillNode?.total ?? 0) + skillBonus.value,
+  //       sources: [
+  //         ...(actualSkillNode?.sources ?? []),
+  //         {
+  //           value: skillBonus.value,
+  //           origin: {
+  //             ...node,
+  //             cyberFrame: foundCyberFrame,
+  //             skill: foundSkill,
+  //           },
+  //         },
+  //       ],
+  //     };
+  //   });
+  //   node.statBonuses.forEach((statBonus) => {
+  //     statNodesById[statBonus.stat].total += statBonus.value;
+  //     statNodesById[statBonus.stat].sources.push({
+  //       value: statBonus.value,
+  //       origin: {
+  //         ...node,
+  //         cyberFrame: foundCyberFrame,
+  //         skill: foundSkill,
+  //       },
+  //     });
+  //   });
+  // });
 
   const charStats: Record<string, ICuratedStatWithScore | undefined> = {};
   const charSkills: ICuratedSkillWithScore[] = [];
@@ -267,9 +273,6 @@ const curateCharacterSkills = (
     const relatedStat = stats.find(({ stat }) => stat._id === skill.stat._id);
     const relatedStatBonuses = statNodesById[skill.stat._id];
     const relatedSkillBonuses = skillNodesById[skill._id];
-    const relatedSkillBackground = character.background?.skillBonuses?.find(
-      ({ skill: bgSkill }) => bgSkill === skill._id
-    );
     if (relatedStat !== undefined) {
       charStats[skill.stat._id] ??= {
         ...relatedStat,
@@ -277,25 +280,13 @@ const curateCharacterSkills = (
       };
 
       const score: IScore = {
-        total:
-          calculateStatMod(relatedStatBonuses.total) +
-          (relatedSkillBonuses?.total ?? 0) +
-          (relatedSkillBackground?.value ?? 0),
+        total: calculateStatMod(relatedStatBonuses.total) + (relatedSkillBonuses?.total ?? 0),
         sources: [
           {
             value: calculateStatMod(relatedStatBonuses.total),
             fromStat: true,
           },
           ...(relatedSkillBonuses?.sources ?? []),
-          ...(relatedSkillBackground !== undefined
-            ? [
-                {
-                  value: relatedSkillBackground.value,
-                  fromBackground: true,
-                  details: character.background?.title,
-                },
-              ]
-            : []),
         ],
       };
       charSkills.push({
@@ -395,41 +386,42 @@ const curateCharacterParams = ({
     }
   });
 
-  character.nodes?.forEach(({ node }) => {
-    let foundCyberFrame: ICuratedCyberFrame | undefined;
-    let foundSkill: ICuratedSkill | undefined;
-    if (node.cyberFrameBranch !== undefined) {
-      foundCyberFrame = cyberFrames.find(
-        ({ cyberFrame }) =>
-          cyberFrame.branches.find(
-            ({ cyberFrameBranch }) => cyberFrameBranch._id === node.cyberFrameBranch
-          ) !== undefined
-      );
-    }
-    if (node.skillBranch !== undefined) {
-      foundSkill = skills.find(
-        ({ skill }) =>
-          skill.branches.find(({ skillBranch }) => skillBranch._id === node.skillBranch) !==
-          undefined
-      );
-    }
-    node.charParamBonuses.forEach((charParamBonus) => {
-      if (
-        (charParamsById[charParamBonus.charParam] as ICuratedCharParamWithScore | undefined) !==
-        undefined
-      ) {
-        charParamsById[charParamBonus.charParam].score.total += charParamBonus.value;
-        charParamsById[charParamBonus.charParam].score.sources.push({
-          value: charParamBonus.value,
-          origin: {
-            ...node,
-            cyberFrame: foundCyberFrame,
-            skill: foundSkill,
-          },
-        });
-      }
-    });
-  });
+  // TODO: Reactivate this when we know what we will do about nodes
+  // character.nodes?.forEach(({ node }) => {
+  //   let foundCyberFrame: ICuratedCyberFrame | undefined;
+  //   let foundSkill: ICuratedSkill | undefined;
+  //   if (node.cyberFrameBranch !== undefined) {
+  //     foundCyberFrame = cyberFrames.find(
+  //       ({ cyberFrame }) =>
+  //         cyberFrame.branches.find(
+  //           ({ cyberFrameBranch }) => cyberFrameBranch._id === node.cyberFrameBranch
+  //         ) !== undefined
+  //     );
+  //   }
+  //   if (node.skillBranch !== undefined) {
+  //     foundSkill = skills.find(
+  //       ({ skill }) =>
+  //         skill.branches.find(({ skillBranch }) => skillBranch._id === node.skillBranch) !==
+  //         undefined
+  //     );
+  //   }
+  //   node.charParamBonuses.forEach((charParamBonus) => {
+  //     if (
+  //       (charParamsById[charParamBonus.charParam] as ICuratedCharParamWithScore | undefined) !==
+  //       undefined
+  //     ) {
+  //       charParamsById[charParamBonus.charParam].score.total += charParamBonus.value;
+  //       charParamsById[charParamBonus.charParam].score.sources.push({
+  //         value: charParamBonus.value,
+  //         origin: {
+  //           ...node,
+  //           cyberFrame: foundCyberFrame,
+  //           skill: foundSkill,
+  //         },
+  //       });
+  //     }
+  //   });
+  // });
 
   return Object.values(charParamsById);
 };
@@ -454,11 +446,48 @@ const curateCharacterAction = ({
   },
 });
 
-const getBaseSkillNode = (skill: ISkill): ICuratedNode | undefined => {
-  const generalNodes = skill.branches.find((branch) => branch.skillBranch.title === '_general')
-    ?.skillBranch.nodes;
+const curateCyberFrame = ({
+  cyberFrame,
+  charParams,
+  stats,
+}: {
+  cyberFrame: ICuratedCyberFrame;
+  charParams: ICuratedCharParam[];
+  stats: ICuratedStat[];
+}): ICompleteCyberFrame => {
+  const curatedCyberFrameCharParams: ICuratedCyberFrameCharParam[] = [];
+  const curatedCyberFrameStats: ICuratedCyberFrameStat[] = [];
 
-  return generalNodes?.find(({ node }) => node.rank === 1);
+  cyberFrame.cyberFrame.charParams.forEach((cFrameCharParam) => {
+    const foundCharParam = charParams.find(
+      (charParam) => charParam.charParam._id === cFrameCharParam.charParam
+    );
+    if (foundCharParam !== undefined) {
+      curatedCyberFrameCharParams.push({
+        ...cFrameCharParam,
+        charParam: foundCharParam,
+      });
+    }
+  });
+
+  cyberFrame.cyberFrame.stats.forEach((cFrameStat) => {
+    const foundStat = stats.find((stat) => stat.stat._id === cFrameStat.stat);
+    if (foundStat !== undefined) {
+      curatedCyberFrameStats.push({
+        ...cFrameStat,
+        stat: foundStat,
+      });
+    }
+  });
+
+  return {
+    i18n: cyberFrame.i18n,
+    cyberFrame: {
+      ...cyberFrame.cyberFrame,
+      charParams: curatedCyberFrameCharParams,
+      stats: curatedCyberFrameStats,
+    },
+  };
 };
 
 const arcaneNameToNodeIcon = (arcanaName: string): TypeNodeIcons => {
@@ -483,8 +512,8 @@ export {
   curateCharacterParams,
   curateCharacterSkills,
   curateCharacterAction,
+  curateCyberFrame,
   getActualBody,
-  getBaseSkillNode,
   getCharacterHpValues,
   getCyberFrameLevelsByNodes,
   arcaneNameToNodeIcon,

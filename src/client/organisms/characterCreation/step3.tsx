@@ -11,7 +11,6 @@ import {
   aggregateSkillsByStats,
   calculateStatMod,
   getActualBody,
-  getBaseSkillNode,
   getCyberFrameLevelsByNodes,
 } from '../../utils/character';
 import { RichTextElement } from '../richTextElement';
@@ -37,22 +36,8 @@ const CharacterCreationStep3: FC<ICharacterCreationStep3> = ({ onSubmitSkills })
   const [detailsOpened, setDetailsOpened] = useState<boolean>(false);
 
   const handleSubmitSkills = useCallback(() => {
-    const nodeIdToSend: string[] = [];
-    selectedSkills.forEach((skillId) => {
-      const linkedSkill = skills.find(({ skill }) => skill._id === skillId);
-      if (linkedSkill !== undefined) {
-        const baseSkillNode = getBaseSkillNode(linkedSkill.skill);
-        if (baseSkillNode !== undefined) {
-          nodeIdToSend.push(baseSkillNode.node._id);
-        }
-      }
-    });
-    if (nodeIdToSend.length !== selectedSkills.length) {
-      console.error('The nodes sent and the selected skills dont match at step 3');
-    } else {
-      onSubmitSkills(nodeIdToSend);
-    }
-  }, [skills, selectedSkills, onSubmitSkills]);
+    onSubmitSkills(selectedSkills);
+  }, [selectedSkills, onSubmitSkills]);
 
   const aggregatedSkills = useMemo(() => aggregateSkillsByStats(skills, stats), [skills, stats]);
 

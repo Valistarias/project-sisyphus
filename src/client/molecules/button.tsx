@@ -15,7 +15,7 @@ export type IButton = IQuarkProps<IAButton> & {
   /** The main color of the button */
   color?: 'primary' | 'secondary' | 'tertiary' | 'error';
   /** The size of the button */
-  size?: 'xlarge' | 'large' | 'medium' | 'small';
+  size?: 'xlarge' | 'large' | 'medium' | 'small' | 'xsmall';
   /** Similar to disabled, but without the opacity */
   unclickable?: boolean;
   /** Is the button activated by any means ? */

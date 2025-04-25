@@ -19,11 +19,7 @@ const findBags = async (options?: findAllPayload): Promise<HydratedIBag[]> =>
   await new Promise((resolve, reject) => {
     Bag.find(options ?? {})
       .then((res: HydratedIBag[]) => {
-        if (res.length === 0) {
-          reject(gemNotFound('Bags'));
-        } else {
-          resolve(res);
-        }
+        resolve(res);
       })
       .catch((err: unknown) => {
         reject(err);

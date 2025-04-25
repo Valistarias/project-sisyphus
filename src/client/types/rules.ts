@@ -225,6 +225,22 @@ export interface ICuratedCyberFrame {
   cyberFrame: ICyberFrame;
 }
 
+export type ICuratedCyberFrameStat = Omit<ICyberFrameStat, 'stat'> & {
+  stat: ICuratedStat;
+};
+
+export type ICuratedCyberFrameCharParam = Omit<ICyberFrameCharParam, 'charParam'> & {
+  charParam: ICuratedCharParam;
+};
+
+export interface ICompleteCyberFrame {
+  i18n: InternationalizationType;
+  cyberFrame: Omit<ICyberFrame, 'stats' | 'charParams'> & {
+    stats: ICuratedCyberFrameStat[];
+    charParams: ICuratedCyberFrameCharParam[];
+  };
+}
+
 // Node ------------------------------------
 
 export const possibleNodeIcons = [

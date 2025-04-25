@@ -24,8 +24,8 @@
 
   // Sizes -----------------------------------
   &--xlarge {
-    height: 7rem;
     letter-spacing: 0.8rem;
+    min-height: 7rem;
 
     .button__content {
       font-size: 3rem;
@@ -43,8 +43,8 @@
   }
 
   &--large {
-    height: 5rem;
     letter-spacing: 0.4rem;
+    min-height: 5rem;
 
     .button__content {
       font-size: 1.4rem;
@@ -63,8 +63,8 @@
   }
 
   &--medium {
-    height: 4rem;
     letter-spacing: 0.1rem;
+    min-height: 4rem;
 
     .button__content {
       font-size: 1.4rem;
@@ -82,8 +82,9 @@
     }
   }
 
-  &--small {
-    height: 3rem;
+  &--small,
+  &--xsmall {
+    min-height: 3rem;
 
     .button__content {
       font-size: 1.2rem;
@@ -101,8 +102,14 @@
     }
 
     .button__icon {
-      height: 2rem;
+      min-height: 2rem;
       width: 2rem;
+    }
+  }
+
+  &--xsmall {
+    .button__content {
+      padding: 0;
     }
   }
 

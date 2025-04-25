@@ -34,11 +34,7 @@ const findWeapons = async (options?: findAllPayload): Promise<LeanIWeapon[]> =>
       .populate<{ actions: Array<IAction<string>> }>('actions')
       .populate<{ damages: IDamage[] }>('damages')
       .then((res: LeanIWeapon[]) => {
-        if (res.length === 0) {
-          reject(gemNotFound('Weapons'));
-        } else {
-          resolve(res);
-        }
+        resolve(res);
       })
       .catch((err: unknown) => {
         reject(err);

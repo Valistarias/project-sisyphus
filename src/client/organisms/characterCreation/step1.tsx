@@ -6,10 +6,11 @@ import { useTranslation } from 'react-i18next';
 import { useGlobalVars } from '../../providers';
 
 import { Ap, Atitle } from '../../atoms';
-import { Button, NodeTree } from '../../molecules';
+import { Button } from '../../molecules';
+import { curateCyberFrame } from '../../utils/character';
 import { RichTextElement } from '../richTextElement';
 
-import type { ICuratedCyberFrame, ICuratedNode, ICyberFrameBranch } from '../../types';
+import type { ICuratedCyberFrame } from '../../types';
 
 import { classTrim, getCyberFrameLevelsByNodes } from '../../utils';
 
@@ -22,7 +23,7 @@ interface ICharacterCreationStep1 {
 
 const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFrame }) => {
   const { t } = useTranslation();
-  const { cyberFrames, character } = useGlobalVars();
+  const { cyberFrames, character, charParams, stats } = useGlobalVars();
 
   const [openedCFrame, setOpenedCFrame] = useState<ICuratedCyberFrame | null>(null);
   const [detailsOpened, setDetailsOpened] = useState<boolean>(false);
@@ -50,26 +51,26 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
       return <div className="characterCreation-step1__detail-block" />;
     }
     const { cyberFrame } = openedCFrame;
-    const tempTree: Record<
-      string,
-      {
-        branch: ICyberFrameBranch;
-        nodes: ICuratedNode[];
-      }
-    > = {};
-    cyberFrame.branches.forEach(({ cyberFrameBranch }) => {
-      tempTree[cyberFrameBranch._id] = {
-        branch: cyberFrameBranch,
-        nodes: cyberFrameBranch.nodes,
-      };
-    });
+    // const tempTree: Record<
+    //   string,
+    //   {
+    //     branch: ICyberFrameBranch;
+    //     nodes: ICuratedNode[];
+    //   }
+    // > = {};
+    // cyberFrame.branches.forEach(({ cyberFrameBranch }) => {
+    //   tempTree[cyberFrameBranch._id] = {
+    //     branch: cyberFrameBranch,
+    //     nodes: cyberFrameBranch.nodes,
+    //   };
+    // });
 
     return (
       <div className="characterCreation-step1__detail-block">
-        <NodeTree
+        {/* <NodeTree
           className="characterCreation-step1__detail-block__tree"
           tree={Object.values(tempTree)}
-        />
+        /> */}
         <div className="characterCreation-step1__detail-block__vertical">
           <div className="characterCreation-step1__detail-block__main">
             <Atitle level={2} className="characterCreation-step1__detail-block__title">
@@ -112,49 +113,63 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
   const cyberFrameList = useMemo(() => {
     const cFrameElts: ReactNode[] = [];
     cyberFrames.forEach((cyberFrameElt) => {
-      const { cyberFrame } = cyberFrameElt;
+      const { cyberFrame } = curateCyberFrame({ cyberFrame: cyberFrameElt, charParams, stats });
+      console.log('cyberFrame', cyberFrame);
 
       cFrameElts.push(
-        <div
+        <Button
+          size="xsmall"
+          theme="afterglow"
           key={cyberFrame._id}
           className={classTrim(`
             characterCreation-step1__cFrame
             ${openedCFrame?.cyberFrame._id === cyberFrame._id && detailsOpened ? 'characterCreation-step1__cFrame--opened' : ''}
           `)}
+          onClick={() => {
+            onOpenDetails(cyberFrame._id);
+            setDetailsOpened(true);
+          }}
         >
-          <div className="characterCreation-step1__cFrame__title">
-            <Atitle level={2} className="characterCreation-step1__cFrame__title__content">
-              {cyberFrame.title}
-            </Atitle>
-            {chosenCyberFrame?.cyberFrame._id === cyberFrame._id ? (
-              <Ap className="characterCreation-step1__cFrame__title__text">
-                {t('characterCreation.step1.chosen', { ns: 'components' })}
-              </Ap>
-            ) : null}
+          <div className="characterCreation-step1__cFrame__content">
+            <div className="characterCreation-step1__cFrame__title">
+              <Atitle level={2} className="characterCreation-step1__cFrame__title__content">
+                {cyberFrame.title}
+              </Atitle>
+              {chosenCyberFrame?.cyberFrame._id === cyberFrame._id ? (
+                <Ap className="characterCreation-step1__cFrame__title__text">
+                  {t('characterCreation.step1.chosen', { ns: 'components' })}
+                </Ap>
+              ) : null}
+            </div>
+
+            <div className="characterCreation-step1__cFrame__stats">
+              {cyberFrame.charParams.map((charParam) => (
+                <div key={charParam._id} className="characterCreation-step1__cFrame__stat">
+                  <Ap className="characterCreation-step1__cFrame__stat__title">
+                    {charParam.charParam.charParam.short}
+                  </Ap>
+                  <Ap className="characterCreation-step1__cFrame__stat__value">
+                    {charParam.value}
+                  </Ap>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <RichTextElement
+          {/* <RichTextElement
             className="characterCreation-step1__cFrame__text"
             rawStringContent={cyberFrame.summary}
             readOnly
-          />
-          <Button
-            theme="afterglow"
-            className="characterCreation-step1__cFrame__btn"
-            onClick={() => {
-              onOpenDetails(cyberFrame._id);
-              setDetailsOpened(true);
-            }}
-          >
-            {t('characterCreation.step1.cFrameDetailsBtn', { ns: 'components' })}
-          </Button>
-        </div>
+          /> */}
+        </Button>
       );
     });
 
     return cFrameElts;
   }, [
     cyberFrames,
+    charParams,
+    stats,
     openedCFrame?.cyberFrame._id,
     detailsOpened,
     chosenCyberFrame?.cyberFrame._id,

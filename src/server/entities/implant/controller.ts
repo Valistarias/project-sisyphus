@@ -41,11 +41,7 @@ const findImplants = async (options?: findAllPayload): Promise<LeanIImplant[]> =
       .populate<{ statBonuses: IStatBonus[] }>('statBonuses')
       .populate<{ charParamBonuses: ICharParamBonus[] }>('charParamBonuses')
       .then((res: LeanIImplant[]) => {
-        if (res.length === 0) {
-          reject(gemNotFound('Implants'));
-        } else {
-          resolve(res);
-        }
+        resolve(res);
       })
       .catch((err: unknown) => {
         reject(err);

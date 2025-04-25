@@ -24,11 +24,7 @@ const findPrograms = async (options?: findAllPayload): Promise<LeanIProgram[]> =
       .populate<{ damages: IDamage[] }>('damages')
       .populate<{ ai: INPC }>('ai')
       .then((res: LeanIProgram[]) => {
-        if (res.length === 0) {
-          reject(gemNotFound('Programs'));
-        } else {
-          resolve(res);
-        }
+        resolve(res);
       })
       .catch((err: unknown) => {
         reject(err);

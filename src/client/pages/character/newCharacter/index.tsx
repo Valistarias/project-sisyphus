@@ -22,6 +22,7 @@ import {
   CharCreationStep7,
   RichTextElement,
 } from '../../../organisms';
+import { getActualBody } from '../../../utils/character';
 
 import { introSequence } from './introSequence';
 
@@ -100,8 +101,18 @@ const NewCharacter: FC = () => {
         return 2;
       }
 
-      if (character.bodies?.skills.length === 0) {
-        return 3;
+      if (character.bodies?.length !== 0) {
+        const { body } = getActualBody(character);
+
+        if (body !== undefined) {
+          if (body.skills.length === 0) {
+            return 3;
+          }
+
+          if (character.firstName === undefined) {
+            return 7;
+          }
+        }
       }
     }
 
@@ -415,57 +426,58 @@ const NewCharacter: FC = () => {
   const onSubmitSkills = useCallback(
     (nodeIds: string[]) => {
       if (api !== undefined && user !== null && character !== null && character !== false) {
-        let nodeToAdd: string[] = [];
-        const nodeToRemove: string[] = [];
-        if (character.nodes !== undefined && character.nodes.length > 1) {
-          const selectedNodeSkillIds = character.nodes
-            .filter(({ node }) => node.skillBranch !== undefined)
-            .map(({ node }) => node._id);
+        console.log('onSubmitSkills');
+        // let nodeToAdd: string[] = [];
+        // const nodeToRemove: string[] = [];
+        // if (character.nodes !== undefined && character.nodes.length > 1) {
+        //   const selectedNodeSkillIds = character.nodes
+        //     .filter(({ node }) => node.skillBranch !== undefined)
+        //     .map(({ node }) => node._id);
 
-          selectedNodeSkillIds.forEach((selectedNodeSkillId) => {
-            if (!nodeIds.includes(selectedNodeSkillId)) {
-              nodeToRemove.push(selectedNodeSkillId);
-            }
-          });
+        //   selectedNodeSkillIds.forEach((selectedNodeSkillId) => {
+        //     if (!nodeIds.includes(selectedNodeSkillId)) {
+        //       nodeToRemove.push(selectedNodeSkillId);
+        //     }
+        //   });
 
-          nodeIds.forEach((nodeId) => {
-            if (!selectedNodeSkillIds.includes(nodeId)) {
-              nodeToAdd.push(nodeId);
-            }
-          });
-        } else {
-          nodeToAdd = nodeIds;
-        }
-        api.characters
-          .updateNodes({
-            characterId: character._id,
-            toAdd: nodeToAdd,
-            toRemove: nodeToRemove,
-          })
-          .then((sentCharacter) => {
-            const newId = getNewId();
-            createAlert({
-              key: newId,
-              dom: (
-                <Alert key={newId} id={newId} timer={5}>
-                  <Ap>{t('newCharacter.successUpdateSkills', { ns: 'pages' })}</Ap>
-                </Alert>
-              ),
-            });
-            setCharacter(sentCharacter);
-          })
-          .catch(({ response }: ErrorResponseType) => {
-            const { data } = response;
-            const newId = getNewId();
-            createAlert({
-              key: newId,
-              dom: (
-                <Alert key={newId} id={newId} timer={5}>
-                  <Ap>{data.message}</Ap>
-                </Alert>
-              ),
-            });
-          });
+        //   nodeIds.forEach((nodeId) => {
+        //     if (!selectedNodeSkillIds.includes(nodeId)) {
+        //       nodeToAdd.push(nodeId);
+        //     }
+        //   });
+        // } else {
+        //   nodeToAdd = nodeIds;
+        // }
+        // api.characters
+        //   .updateNodes({
+        //     characterId: character._id,
+        //     toAdd: nodeToAdd,
+        //     toRemove: nodeToRemove,
+        //   })
+        //   .then((sentCharacter) => {
+        //     const newId = getNewId();
+        //     createAlert({
+        //       key: newId,
+        //       dom: (
+        //         <Alert key={newId} id={newId} timer={5}>
+        //           <Ap>{t('newCharacter.successUpdateSkills', { ns: 'pages' })}</Ap>
+        //         </Alert>
+        //       ),
+        //     });
+        //     setCharacter(sentCharacter);
+        //   })
+        //   .catch(({ response }: ErrorResponseType) => {
+        //     const { data } = response;
+        //     const newId = getNewId();
+        //     createAlert({
+        //       key: newId,
+        //       dom: (
+        //         <Alert key={newId} id={newId} timer={5}>
+        //           <Ap>{data.message}</Ap>
+        //         </Alert>
+        //       ),
+        //     });
+        //   });
       }
     },
     [api, character, createAlert, getNewId, setCharacter, t, user]
@@ -674,15 +686,7 @@ const NewCharacter: FC = () => {
   useEffect(() => {
     if ((character === false || character === null) && id !== undefined) {
       setLoading(true);
-    } else if (
-      (id === undefined || (character !== false && character !== null)) &&
-      weapons.length > 0 &&
-      programs.length > 0 &&
-      implants.length > 0 &&
-      items.length > 0 &&
-      bags.length > 0 &&
-      armors.length > 0
-    ) {
+    } else if (id === undefined || (character !== false && character !== null)) {
       setLoading(false);
       if (id !== undefined && character !== false && character !== null) {
         setDisplayLoading(false);
