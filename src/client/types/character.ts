@@ -11,15 +11,15 @@ import type {
 } from './items';
 import type { INode } from './rules';
 
-// Body Stat ------------------------------------
-export interface IBodyStat {
-  /** The ID of the body stat */
+// Body Skill ------------------------------------
+export interface IBodySkill {
+  /** The ID of the body skill */
   _id: string;
   /** The body targeted */
   body: string;
-  /** The linked Stat */
-  stat: string;
-  /** What is the actual value of this stat */
+  /** The linked Skill */
+  skill: string;
+  /** What is the actual value of this skill */
   value: number;
   /** When the body was created */
   createdAt: Date;
@@ -147,8 +147,10 @@ export interface IBody {
   hp: number;
   /** The character associated to this body */
   character: string;
-  /** The associated stats to this body */
-  stats: IBodyStat[];
+  /** The cyberframe associated to this body */
+  cyberframe: string;
+  /** The associated skills to this body */
+  skills: IBodySkill[];
   /** The associated ammos to this body */
   ammos?: IBodyAmmo[];
   /** The associated armors to this body */
@@ -179,6 +181,20 @@ export interface ICharacterNode {
   node: INode;
   /** How many time this node was used */
   used?: number;
+}
+
+// Character Stat ------------------------------------
+export interface ICharacterStat {
+  /** The ID of the body stat */
+  _id: string;
+  /** The cg-haracter targeted */
+  character: string;
+  /** The linked Stat */
+  stat: string;
+  /** What is the actual value of this stat */
+  value: number;
+  /** When the body was created */
+  createdAt: Date;
 }
 
 // Character ------------------------------------
@@ -215,6 +231,8 @@ export interface ICharacter {
   campaign?: ICampaign;
   /** The nodes of the character */
   nodes?: ICharacterNode[];
+  /** The associated stats to this character */
+  stats: ICharacterStat[];
   /** All the bodies used by this character */
   bodies?: IBody[];
   /** When the character was created */

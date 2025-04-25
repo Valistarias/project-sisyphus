@@ -1,14 +1,12 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
 import type { ICharacter } from '../../character';
-import type { ICyberFrame, LeanICyberFrame } from '../../cyberFrame/model';
 import type { HydratedIBodyAmmo, LeanIBodyAmmo } from '../ammo/model';
 import type { HydratedIBodyArmor, LeanIBodyArmor } from '../armor/model';
 import type { HydratedIBodyBag, LeanIBodyBag } from '../bag/model';
 import type { HydratedIBodyImplant, LeanIBodyImplant } from '../implant/model';
 import type { HydratedIBodyItem, LeanIBodyItem } from '../item/model';
 import type { HydratedIBodyProgram, LeanIBodyProgram } from '../program/model';
-import type { HydratedIBodyStat, IBodyStat } from '../stat/model';
 import type { HydratedIBodyWeapon, LeanIBodyWeapon } from '../weapon/model';
 
 interface IBody<IdType> {
@@ -24,9 +22,7 @@ interface IBody<IdType> {
   createdAt: Date;
 }
 
-type LeanIBody = Omit<IBody<string>, 'cyberframe'> & {
-  cyberframe: LeanICyberFrame;
-  stats: IBodyStat[];
+type LeanIBody = IBody<string> & {
   ammos: LeanIBodyAmmo[];
   armors: LeanIBodyArmor[];
   bags: LeanIBodyBag[];
@@ -37,10 +33,8 @@ type LeanIBody = Omit<IBody<string>, 'cyberframe'> & {
 };
 
 type HydratedIBody = HydratedDocument<
-  Omit<IBody<string>, 'character' | 'cyberframe'> & {
+  Omit<IBody<string>, 'character'> & {
     character: HydratedDocument<ICharacter<string>>;
-    cyberframe: HydratedDocument<ICyberFrame>;
-    stats: HydratedIBodyStat[];
     ammos: HydratedIBodyAmmo[];
     armors: HydratedIBodyArmor[];
     bags: HydratedIBodyBag[];
@@ -73,8 +67,8 @@ const bodySchema = new Schema<IBody<ObjectId>>({
 
 // Virtuals -------------------------
 
-bodySchema.virtual('stats', {
-  ref: 'BodyStat',
+bodySchema.virtual('skills', {
+  ref: 'BodySkill',
   localField: '_id',
   foreignField: 'body',
 });

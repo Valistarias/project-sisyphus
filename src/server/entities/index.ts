@@ -14,7 +14,7 @@ export {
   BodyItemModel,
   BodyModel,
   BodyProgramModel,
-  BodyStatModel,
+  BodySkillModel,
   BodyWeaponModel,
   type HydratedIBody,
   type HydratedIBodyAmmo,
@@ -22,7 +22,7 @@ export {
   type HydratedIBodyBag,
   type HydratedIBodyImplant,
   type HydratedIBodyProgram,
-  type HydratedIBodyStat,
+  type HydratedIBodySkill,
   type HydratedIBodyWeapon,
   type IBody,
   type LeanIBody,
@@ -35,7 +35,7 @@ export {
   type IBodyImplant,
   type IBodyProgram,
   type LeanIBodyProgram,
-  type IBodyStat,
+  type IBodySkill,
   type IBodyWeapon,
   type LeanIBodyWeapon,
 } from './body';
@@ -52,10 +52,13 @@ export { ChapterTypeModel, type IChapterType } from './chapterType/model';
 export {
   CharacterModel,
   CharacterNodeModel,
+  CharacterStatModel,
   type HydratedICharacter,
   type HydratedICharacterNode,
+  type HydratedICharacterStat,
   type ICharacter,
   type ICharacterNode,
+  type ICharacterStat,
   type LeanICharacterNode,
 } from './character';
 export { CharParamModel, type HydratedICharParam, type ICharParam } from './charParam/model';

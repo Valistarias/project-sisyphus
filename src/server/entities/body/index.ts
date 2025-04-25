@@ -30,7 +30,7 @@ export {
   type IBodyProgram,
   type LeanIBodyProgram,
 } from './program/model';
-export { BodyStatModel, type HydratedIBodyStat, type IBodyStat } from './stat/model';
+export { BodySkillModel, type HydratedIBodySkill, type IBodySkill } from './skill/model';
 export {
   BodyWeaponModel,
   type HydratedIBodyWeapon,

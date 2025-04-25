@@ -10,6 +10,7 @@ import {
   quitCampaign,
   updateInfos,
   updateNodes,
+  updateStats,
 } from './controller';
 
 export default (app: Router): void => {
@@ -29,6 +30,8 @@ export default (app: Router): void => {
   app.post('/characters/updatenodes', [verifyToken], updateNodes);
 
   app.post('/characters/update', [verifyToken], updateInfos);
+
+  app.post('/characters/updatestats', [verifyToken], updateStats);
 
   app.post('/characters/delete', [verifyToken], deleteCharacter);
 };

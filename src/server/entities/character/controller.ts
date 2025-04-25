@@ -23,8 +23,15 @@ import {
   deleteNodesByCharacter,
   deleteSpecificNodesByCharacter,
 } from './node/controller';
+import { deleteStatsByCharacter, replaceStatByCharacter } from './stat/controller';
 
-import type { HydratedICharacter, HydratedICharacterNode, LeanICharacterNode } from './index';
+import type {
+  HydratedICharacter,
+  HydratedICharacterNode,
+  HydratedICharacterStat,
+  ICharacterStat,
+  LeanICharacterNode,
+} from './index';
 import type { Lean } from '../../utils/types';
 import type { CuratedIAmmo } from '../ammo/controller';
 import type { CuratedIBag } from '../bag/controller';
@@ -61,6 +68,10 @@ const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[
           .populate<{ player: HydratedDocument<IUser> }>('player')
           .populate<{ createdBy: HydratedDocument<IUser> }>('createdBy')
           .populate<{ campaign: HydratedDocument<ICampaign<string>> }>('campaign')
+          .populate<{ stats: HydratedICharacterStat[] }>({
+            path: 'stats',
+            select: '_id character stat value',
+          })
           .populate<{ nodes: HydratedICharacterNode[] }>({
             path: 'nodes',
             select: '_id character node used',
@@ -74,10 +85,6 @@ const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[
             path: 'bodies',
             select: '_id character alive hp stats createdAt',
             populate: [
-              {
-                path: 'stats',
-                select: '_id body stat value',
-              },
               {
                 path: 'ammos',
                 select: '_id body ammo bag qty',
@@ -151,6 +158,10 @@ const findCompleteCharacterById = async (
           .populate<{ player: Lean<IUser> }>('player')
           .populate<{ createdBy: Lean<IUser> }>('createdBy')
           .populate<{ campaign: Lean<ICampaign<string>> }>('campaign')
+          .populate<{ stats: ICharacterStat[] }>({
+            path: 'stats',
+            select: '_id character stat value',
+          })
           .populate<{ nodes: LeanICharacterNode[] }>({
             path: 'nodes',
             select: '_id character node used',
@@ -297,6 +308,10 @@ const findCharacterById = async (
           .populate<{ player: HydratedDocument<IUser> }>('player')
           .populate<{ createdBy: HydratedDocument<IUser> }>('createdBy')
           .populate<{ campaign: HydratedDocument<ICampaign<string>> }>('campaign')
+          .populate<{ stats: HydratedICharacterStat[] }>({
+            path: 'stats',
+            select: '_id character stat value',
+          })
           .populate<{ nodes: HydratedICharacterNode[] }>({
             path: 'nodes',
             select: '_id character node used',
@@ -422,6 +437,36 @@ const updateNodes = (req: Request, res: Response): void => {
     .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
+};
+
+const updateStats = (req: Request, res: Response): void => {
+  const { id, stats } = req.body;
+  if (id === undefined || stats === undefined) {
+    res.status(400).send(gemInvalidField('Body ID'));
+
+    return;
+  }
+  findCharacterById(id as string, req)
+    .then(({ char, canEdit }) => {
+      if (canEdit) {
+        replaceStatByCharacter({
+          characterId: id,
+          stats,
+        })
+          .then(() => {
+            res.send({
+              message: 'Body was updated successfully!',
+              char,
+            });
+          })
+          .catch((err: unknown) => {
+            res.status(500).send(gemServerError(err));
+          });
+      } else {
+        res.status(404).send(gemNotFound('Body'));
+      }
+    })
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const createOrFindCharacter = async (req: Request): Promise<string> =>
@@ -617,9 +662,15 @@ const deleteCharacter = (req: Request, res: Response): void => {
           .then(() => {
             deleteNodesByCharacter(id)
               .then(() => {
-                Character.findByIdAndDelete(id)
+                deleteStatsByCharacter(id)
                   .then(() => {
-                    res.send({ message: 'Character was deleted successfully!' });
+                    Character.findByIdAndDelete(id)
+                      .then(() => {
+                        res.send({ message: 'Character was deleted successfully!' });
+                      })
+                      .catch((err: unknown) => {
+                        res.status(500).send(gemServerError(err));
+                      });
                   })
                   .catch((err: unknown) => {
                     res.status(500).send(gemServerError(err));
@@ -641,7 +692,7 @@ const deleteCharacter = (req: Request, res: Response): void => {
 
 type CuratedICharacterToSend = Omit<LeanICharacter, 'bodies' | 'nodes' | 'hand'> & {
   bodies: Array<
-    Pick<LeanIBody, 'alive' | 'hp' | 'character' | 'stats'> & {
+    Pick<LeanIBody, 'alive' | 'hp' | 'character'> & {
       ammos: Array<
         Omit<LeanIBodyAmmo, 'ammo'> & {
           ammo: CuratedIAmmo;
@@ -773,5 +824,6 @@ export {
   quitCampaign,
   updateInfos,
   updateNodes,
+  updateStats,
   wipeCharactersHandsByCampaignId,
 };

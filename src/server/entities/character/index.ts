@@ -5,3 +5,4 @@ export {
   type ICharacterNode,
   type LeanICharacterNode,
 } from './node/model';
+export { CharacterStatModel, type HydratedICharacterStat, type ICharacterStat } from './stat/model';

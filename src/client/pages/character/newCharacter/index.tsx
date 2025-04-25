@@ -71,34 +71,38 @@ const NewCharacter: FC = () => {
   const { handleSubmit: submitTips, control: toolTipControl } = useForm();
 
   const charCreationState = useMemo(() => {
-    if (character !== null && character !== false) {
-      if (character.firstName !== undefined) {
-        return 7;
-      }
-
-      if (character.money !== undefined && character.money > 0) {
-        return 6;
-      }
-
-      if (character.background !== undefined) {
-        return 5;
-      }
-
-      if (character.nodes !== undefined && character.nodes.length > 1) {
-        return 4;
-      }
-
-      if (character.bodies !== undefined && character.bodies.length > 0) {
-        return 3;
-      }
-
-      if (character.nodes !== undefined && character.nodes.length === 1) {
-        return 2;
-      }
-    }
     if (id === undefined) {
       // Nothing defined yet
       return 1;
+    }
+    if (character !== null && character !== false) {
+      // if (character.firstName !== undefined) {
+      //   return 7;
+      // }
+
+      // if (character.money !== undefined && character.money > 0) {
+      //   return 6;
+      // }
+
+      // if (character.background !== undefined) {
+      //   return 5;
+      // }
+
+      // if (character.nodes !== undefined && character.nodes.length > 1) {
+      //   return 4;
+      // }
+
+      // if (character.bodies !== undefined && character.bodies.length > 0) {
+      //   return 3;
+      // }
+
+      if (character.stats.length === 0) {
+        return 2;
+      }
+
+      if (character.bodies?.skills.length === 0) {
+        return 3;
+      }
     }
 
     return 0;
@@ -246,6 +250,8 @@ const NewCharacter: FC = () => {
           api.bodies
             .create({
               cyberframeId: cyberFrameId,
+              // TODO: add HP HERE
+              hp: 40,
             })
             .then((sentCharacterId) => {
               if (character === null || character === false) {
@@ -473,40 +479,35 @@ const NewCharacter: FC = () => {
       }>
     ) => {
       if (api !== undefined && user !== null && character !== null && character !== false) {
-        if (character.bodies !== undefined && character.bodies.length !== 0) {
-          const relevantBody = character.bodies.find((body) => body.alive);
-          if (relevantBody !== undefined) {
-            api.bodies
-              .updateStats({
-                id: relevantBody._id,
-                stats,
-              })
-              .then(() => {
-                setCharacterFromId(character._id);
-                const newId = getNewId();
-                createAlert({
-                  key: newId,
-                  dom: (
-                    <Alert key={newId} id={newId} timer={5}>
-                      <Ap>{t('newCharacter.successUpdateStats', { ns: 'pages' })}</Ap>
-                    </Alert>
-                  ),
-                });
-              })
-              .catch(({ response }: ErrorResponseType) => {
-                const { data } = response;
-                const newId = getNewId();
-                createAlert({
-                  key: newId,
-                  dom: (
-                    <Alert key={newId} id={newId} timer={5}>
-                      <Ap>{data.message}</Ap>
-                    </Alert>
-                  ),
-                });
-              });
-          }
-        }
+        api.characters
+          .updateStats({
+            id: character._id,
+            stats,
+          })
+          .then(() => {
+            setCharacterFromId(character._id);
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{t('newCharacter.successUpdateStats', { ns: 'pages' })}</Ap>
+                </Alert>
+              ),
+            });
+          })
+          .catch(({ response }: ErrorResponseType) => {
+            const { data } = response;
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{data.message}</Ap>
+                </Alert>
+              ),
+            });
+          });
       }
     },
     [api, user, character, setCharacterFromId, getNewId, createAlert, t]

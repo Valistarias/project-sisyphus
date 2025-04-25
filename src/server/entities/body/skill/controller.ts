@@ -1,19 +1,19 @@
 import db from '../../../models';
 
-const { BodyStat } = db;
+const { BodySkill } = db;
 
-const replaceStatByBody = async (req: {
+const replaceSkillByBody = async (req: {
   bodyId: string;
-  stats: Array<{
+  skills: Array<{
     id: string;
     value: number;
   }>;
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     const { bodyId } = req;
-    BodyStat.deleteMany({ body: bodyId })
+    BodySkill.deleteMany({ body: bodyId })
       .then(() => {
-        createStatsByBody(req)
+        createSkillsByBody(req)
           .then(() => {
             resolve(true);
           })
@@ -26,19 +26,19 @@ const replaceStatByBody = async (req: {
       });
   });
 
-const createStatsByBody = async (req: {
+const createSkillsByBody = async (req: {
   bodyId: string;
-  stats: Array<{
+  skills: Array<{
     id: string;
     value: number;
   }>;
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    const { bodyId, stats } = req;
-    BodyStat.create(
-      stats.map(({ id, value }) => ({
+    const { bodyId, skills } = req;
+    BodySkill.create(
+      skills.map(({ id, value }) => ({
         body: bodyId,
-        stat: id,
+        skill: id,
         value,
       }))
     )
@@ -50,17 +50,17 @@ const createStatsByBody = async (req: {
       });
   });
 
-const updateStatByBody = async (req: {
+const updateSkillByBody = async (req: {
   bodyId: string;
-  statId: string;
+  skillId: string;
   value: number;
 }): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    const { bodyId, statId, value } = req;
-    BodyStat.findOneAndUpdate(
+    const { bodyId, skillId, value } = req;
+    BodySkill.findOneAndUpdate(
       {
         body: bodyId,
-        stat: statId,
+        skill: skillId,
       },
       { value }
     )
@@ -72,9 +72,9 @@ const updateStatByBody = async (req: {
       });
   });
 
-const deleteStatsByBody = async (bodyId: string): Promise<boolean> =>
+const deleteSkillsByBody = async (bodyId: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
-    BodyStat.deleteMany({ body: bodyId })
+    BodySkill.deleteMany({ body: bodyId })
       .then(() => {
         resolve(true);
       })
@@ -83,4 +83,4 @@ const deleteStatsByBody = async (bodyId: string): Promise<boolean> =>
       });
   });
 
-export { createStatsByBody, deleteStatsByBody, replaceStatByBody, updateStatByBody };
+export { createSkillsByBody, deleteSkillsByBody, replaceSkillByBody, updateSkillByBody };

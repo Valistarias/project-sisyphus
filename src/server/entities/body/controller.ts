@@ -12,7 +12,7 @@ import { deleteBagsByBody, replaceBagByBody } from './bag/controller';
 import { deleteImplantsByBody, replaceImplantByBody } from './implant/controller';
 import { deleteItemsByBody, replaceItemByBody } from './item/controller';
 import { deleteProgramsByBody, replaceProgramByBody } from './program/controller';
-import { createStatsByBody, deleteStatsByBody, replaceStatByBody } from './stat/controller';
+import { createSkillsByBody, deleteSkillsByBody, replaceSkillByBody } from './skill/controller';
 import { deleteWeaponsByBody, replaceWeaponByBody } from './weapon/controller';
 
 import type { ICharacter } from '../character';
@@ -24,10 +24,9 @@ import type {
   HydratedIBodyImplant,
   HydratedIBodyItem,
   HydratedIBodyProgram,
-  HydratedIBodyStat,
+  HydratedIBodySkill,
   HydratedIBodyWeapon,
 } from './index';
-import type { ICyberFrame } from '../cyberFrame/model';
 
 const { Body } = db;
 
@@ -44,9 +43,8 @@ const findBodiesByCharacter = async (req: Request): Promise<HydratedIBody[]> =>
 
         Body.find({ character: characterId })
           .populate<{ character: HydratedDocument<ICharacter<string>> }>('character')
-          .populate<{ cyberframe: HydratedDocument<ICyberFrame> }>('cyberframe')
-          .populate<{ stats: HydratedIBodyStat[] }>({
-            path: 'stats',
+          .populate<{ skills: HydratedIBodySkill[] }>({
+            path: 'skills',
             select: '_id body stat value',
           })
           .populate<{ ammos: HydratedIBodyAmmo[] }>({
@@ -110,9 +108,8 @@ const findBodyById = async (
         }
         Body.findById(id)
           .populate<{ character: HydratedDocument<ICharacter<string>> }>('character')
-          .populate<{ cyberframe: HydratedDocument<ICyberFrame> }>('cyberframe')
-          .populate<{ stats: HydratedIBodyStat[] }>({
-            path: 'stats',
+          .populate<{ skills: HydratedIBodySkill[] }>({
+            path: 'skills',
             select: '_id body stat value',
           })
           .populate<{ ammos: HydratedIBodyAmmo[] }>({
@@ -169,11 +166,11 @@ const create = (req: Request, res: Response): void => {
   const {
     cyberFrameId,
     hp,
-    stats,
+    skills,
   }: {
     cyberFrameId?: string;
     hp?: number;
-    stats: Array<{
+    skills: Array<{
       id: string;
       value: number;
     }>;
@@ -189,9 +186,9 @@ const create = (req: Request, res: Response): void => {
       body
         .save()
         .then(() => {
-          createStatsByBody({
+          createSkillsByBody({
             bodyId: body._id.toString(),
-            stats,
+            skills,
           })
             .then(() => {
               res.send(characterIdSent);
@@ -246,9 +243,9 @@ const update = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-const updateStats = (req: Request, res: Response): void => {
-  const { id, stats } = req.body;
-  if (id === undefined || stats === undefined) {
+const updateSkills = (req: Request, res: Response): void => {
+  const { id, skills } = req.body;
+  if (id === undefined || skills === undefined) {
     res.status(400).send(gemInvalidField('Body ID'));
 
     return;
@@ -256,9 +253,9 @@ const updateStats = (req: Request, res: Response): void => {
   findBodyById(id as string, req)
     .then(({ body, canEdit }) => {
       if (canEdit) {
-        replaceStatByBody({
+        replaceSkillByBody({
           bodyId: id,
-          stats,
+          skills,
         })
           .then(() => {
             res.send({
@@ -397,7 +394,7 @@ const deleteBodyById = async (id?: string): Promise<boolean> =>
                           .then(() => {
                             deleteWeaponsByBody(id)
                               .then(() => {
-                                deleteStatsByBody(id)
+                                deleteSkillsByBody(id)
                                   .then(() => {
                                     Body.findByIdAndDelete(id)
                                       .then(() => {
@@ -513,5 +510,5 @@ export {
   findSingle,
   resetItems,
   update,
-  updateStats,
+  updateSkills,
 };

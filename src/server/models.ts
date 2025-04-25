@@ -16,7 +16,8 @@ import {
   BodyModel,
   BodyPartModel,
   BodyProgramModel,
-  BodyStatModel,
+  BodySkillModel,
+  CharacterStatModel,
   BodyWeaponModel,
   CampaignEventModel,
   CampaignModel,
@@ -72,7 +73,8 @@ import {
   type IBodyImplant,
   type IBodyPart,
   type IBodyProgram,
-  type IBodyStat,
+  type IBodySkill,
+  type ICharacterStat,
   type IBodyWeapon,
   type ICampaign,
   type ICampaignEvent,
@@ -150,10 +152,12 @@ interface DBType {
   Character: Model<ICharacter<CleanObjectId>>;
   /** The CharacterNode Model */
   CharacterNode: Model<ICharacterNode>;
+  /** The CharacterStat Model */
+  CharacterStat: Model<ICharacterStat>;
   /** The Body Model */
   Body: Model<IBody<CleanObjectId>>;
   /** The BodyStat Model */
-  BodyStat: Model<IBodyStat>;
+  BodySkill: Model<IBodySkill>;
   /** The BodyAmmo Model */
   BodyAmmo: Model<IBodyAmmo<CleanObjectId>>;
   /** The BodyItem Model */
@@ -264,8 +268,9 @@ const db: DBType = {
   // Character models
   Character: CharacterModel(),
   CharacterNode: CharacterNodeModel(),
+  CharacterStat: CharacterStatModel(),
   Body: BodyModel(),
-  BodyStat: BodyStatModel(),
+  BodySkill: BodySkillModel(),
   BodyAmmo: BodyAmmoModel(),
   BodyArmor: BodyArmorModel(),
   BodyBag: BodyBagModel(),

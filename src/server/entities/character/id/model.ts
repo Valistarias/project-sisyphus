@@ -5,6 +5,7 @@ import type { HydratedIBody, LeanIBody } from '../../body';
 import type { ICampaign } from '../../campaign/model';
 import type { IUser } from '../../user/model';
 import type { HydratedICharacterNode, LeanICharacterNode } from '../node/model';
+import type { HydratedICharacterStat, ICharacterStat } from '../stat/model';
 
 interface ICharacter<IdType> {
   /** The first name of the character */
@@ -45,6 +46,7 @@ type LeanICharacter = Omit<
 > & {
   player?: Lean<IUser>;
   createdBy: Lean<IUser>;
+  stats: ICharacterStat[];
   campaign?: Lean<ICampaign<string>>;
   nodes?: LeanICharacterNode[];
   bodies?: LeanIBody[];
@@ -54,6 +56,7 @@ type HydratedICharacter = HydratedDocument<
   Omit<ICharacter<string>, 'player' | 'campaign' | 'createdBy' | 'background'> & {
     player?: HydratedDocument<IUser>;
     createdBy: HydratedDocument<IUser>;
+    stats: HydratedICharacterStat[];
     campaign?: HydratedDocument<ICampaign<string>>;
     nodes?: HydratedICharacterNode[];
     bodies?: HydratedIBody[];
@@ -103,6 +106,12 @@ const characterSchema = new Schema<ICharacter<ObjectId>>(
 );
 
 // Virtuals -------------------------
+
+characterSchema.virtual('stats', {
+  ref: 'CharacterStat',
+  localField: '_id',
+  foreignField: 'character',
+});
 
 characterSchema.virtual('nodes', {
   ref: 'CharacterNode',
