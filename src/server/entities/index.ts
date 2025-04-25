@@ -67,7 +67,18 @@ export {
   type HydratedICharParamBonus,
   type ICharParamBonus,
 } from './charParamBonus/model';
-export { CyberFrameModel, type HydratedICyberFrame, type ICyberFrame } from './cyberFrame/model';
+export {
+  CyberFrameModel,
+  CyberFrameStatModel,
+  CyberFrameCharParamModel,
+  type HydratedICyberFrame,
+  type HydratedICyberFrameStat,
+  type HydratedICyberFrameCharParam,
+  type ICyberFrame,
+  type LeanICyberFrame,
+  type ICyberFrameStat,
+  type ICyberFrameCharParam,
+} from './cyberFrame/index';
 export { DamageModel, type HydratedIDamage, type IDamage } from './damage/model';
 export { DamageTypeModel, type HydratedIDamageType, type IDamageType } from './damageType/model';
 export { EffectModel, type HydratedIEffect, type IEffect } from './effect/model';

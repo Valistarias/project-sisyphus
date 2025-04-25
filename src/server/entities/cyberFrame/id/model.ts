@@ -1,6 +1,13 @@
 import { Schema, model, type HydratedDocument, type Model, type ObjectId } from 'mongoose';
 
-import type { HydratedIRuleBook, IRuleBook } from '../index';
+import type {
+  HydratedICyberFrameCharParam,
+  HydratedICyberFrameStat,
+  HydratedIRuleBook,
+  ICyberFrameCharParam,
+  ICyberFrameStat,
+  IRuleBook,
+} from '../../index';
 
 interface ICyberFrame {
   /** The title of the Character Param */
@@ -17,10 +24,14 @@ interface ICyberFrame {
 
 type LeanICyberFrame = Omit<ICyberFrame, 'ruleBook'> & {
   ruleBook: IRuleBook;
+  stats: ICyberFrameStat[];
+  charParams: ICyberFrameCharParam[];
 };
 
 type HydratedICyberFrame = HydratedDocument<Omit<ICyberFrame, 'ruleBook'>> & {
   ruleBook: HydratedIRuleBook | string;
+  stats: HydratedICyberFrameStat[];
+  charParams: HydratedICyberFrameCharParam[];
 };
 
 const cyberFrameSchema = new Schema<ICyberFrame>(
@@ -42,6 +53,20 @@ const cyberFrameSchema = new Schema<ICyberFrame>(
     toObject: { virtuals: true },
   }
 );
+
+// Virtuals -------------------------
+
+cyberFrameSchema.virtual('stats', {
+  ref: 'CyberFrameStat',
+  localField: '_id',
+  foreignField: 'cyberFrame',
+});
+
+cyberFrameSchema.virtual('charParams', {
+  ref: 'CyberFrameCharParam',
+  localField: '_id',
+  foreignField: 'cyberFrame',
+});
 
 const CyberFrameModel = (): Model<ICyberFrame> => model('CyberFrame', cyberFrameSchema);
 

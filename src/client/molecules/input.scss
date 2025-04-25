@@ -32,6 +32,14 @@
     }
   }
 
+  &__field {
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      appearance: none;
+      margin: 0;
+    }
+  }
+
   // Types -----------------------------------
   &.input--textarea .input__field {
     height: 10rem;

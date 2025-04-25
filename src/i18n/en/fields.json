@@ -71,11 +71,11 @@
     "label": "Rulebook Name"
   },
   "nameCyberFrame": {
-    "required": "A CyberFrame Name is required",
-    "label": "CyberFrame Name"
+    "required": "A BioFrame Name is required",
+    "label": "BioFrame Name"
   },
   "cyberFrameText": {
-    "title": "CyberFrame Details"
+    "title": "BioFrame Details"
   },
   "typePage": {
     "required": "A Rulebook Type is required",
@@ -150,11 +150,11 @@
     "title": "Character Parameter Details"
   },
   "nameCyberFrameBranch": {
-    "required": "A CyberFrame Branch Name is required",
-    "label": "CyberFrame Branch Name"
+    "required": "A BioFrame Branch Name is required",
+    "label": "BioFrame Branch Name"
   },
   "cyberFrameBranchSummary": {
-    "title": "CyberFrame Branch Details"
+    "title": "BioFrame Branch Details"
   },
   "skillBranchSummary": {
     "title": "Skill Branch Details"
@@ -203,6 +203,9 @@
   "statBonusStat": {
     "required": "A stat is required for this bonus",
     "label": "Stat"
+  },
+  "charParamCyberFrameValue": {
+    "required": "A value is required for this parameter"
   },
   "charParamBonusValue": {
     "required": "A value is required for this bonus",

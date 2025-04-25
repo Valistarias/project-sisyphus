@@ -174,6 +174,34 @@ export interface ICharParamBonus {
   createdAt: Date;
 }
 
+// CyberFrame Stat ------------------------------------
+export interface ICyberFrameStat {
+  /** The ID of the cyberFrame stat */
+  _id: string;
+  /** The cyberFrame targeted */
+  cyberFrame: string;
+  /** The linked Stat */
+  stat: string;
+  /** What is the actual value of this stat */
+  value: number;
+  /** When the cyberFrame was created */
+  createdAt: Date;
+}
+
+// CyberFrame CharParam ------------------------------------
+export interface ICyberFrameCharParam {
+  /** The ID of the cyberFrame charParam */
+  _id: string;
+  /** The cyberFrame targeted */
+  cyberFrame: string;
+  /** The linked CharParam */
+  charParam: string;
+  /** What is the actual value of this charParam */
+  value: number;
+  /** When the cyberFrame was created */
+  createdAt: Date;
+}
+
 // CyberFrame ------------------------------------
 export interface ICyberFrame {
   /** The ID of the CyberFrame */
@@ -182,6 +210,10 @@ export interface ICyberFrame {
   title: string;
   /** The summary of the CyberFrame */
   summary: string;
+  /** The associated stats bonuses to this cyberframe */
+  stats: ICyberFrameStat[];
+  /** The associated charParams bonuses to this cyberframe */
+  charParams: ICyberFrameCharParam[];
   /** The rulebook where the CyberFrame is present */
   ruleBook: IRuleBook;
   /** When the CyberFrame was created */

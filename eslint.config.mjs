@@ -1,10 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument
-  -- For eslint purposes, specifically the hooks element
-*/
-/* eslint-disable @typescript-eslint/no-unsafe-member-access
-  -- For eslint purposes, specifically the hooks element
-  */
-
 import js from '@eslint/js';
 import stylistic from '@stylistic/eslint-plugin';
 import love from 'eslint-config-love';
@@ -30,7 +23,7 @@ export default tseslint.config(
   tseslint.configs.recommended,
   love,
   stylistic.configs['recommended-flat'],
-  pluginReact.configs.flat?.recommended,
+  pluginReact.configs.flat.recommended,
   eslintConfigPrettier,
   {
     plugins: { 'react-hooks': reactHooks },
@@ -96,10 +89,11 @@ export default tseslint.config(
       ],
       complexity: 'off',
       'init-declarations': 'off',
+      'no-magic-numbers': 'off',
       '@typescript-eslint/init-declarations': 'off',
       '@typescript-eslint/no-base-to-string': 'off',
       '@typescript-eslint/no-unsafe-type-assertion': 'off',
-      'no-magic-numbers': 'off',
+      '@typescript-eslint/no-non-null-assertion': 'off',
       '@typescript-eslint/prefer-promise-reject-errors': 'off',
       '@typescript-eslint/no-magic-numbers': 'off',
       '@typescript-eslint/use-unknown-in-catch-callback-variable': 'off',

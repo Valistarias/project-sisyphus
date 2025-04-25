@@ -3,9 +3,28 @@ import type { Request, Response } from 'express';
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
+import {
+  createCharParamsByCyberFrame,
+  deleteCharParamsByCyberFrame,
+  replaceCharParamByCyberFrame,
+} from './charParam/controller';
+import {
+  createStatsByCyberFrame,
+  deleteStatsByCyberFrame,
+  replaceStatByCyberFrame,
+} from './stat/controller';
+
 import type { InternationalizationType } from '../../utils/types';
-import type { HydratedIRuleBook, IRuleBook } from '../index';
-import type { HydratedICyberFrame, LeanICyberFrame } from './model';
+import type {
+  HydratedIRuleBook,
+  ICyberFrameStat,
+  LeanICyberFrame,
+  IRuleBook,
+  HydratedICyberFrame,
+  HydratedICyberFrameStat,
+  ICyberFrameCharParam,
+  HydratedICyberFrameCharParam,
+} from '../index';
 
 import { curateI18n } from '../../utils';
 
@@ -16,12 +35,16 @@ const findCyberFrames = async (): Promise<LeanICyberFrame[]> =>
     CyberFrame.find()
       .lean()
       .populate<{ ruleBook: IRuleBook }>('ruleBook')
+      .populate<{ stats: ICyberFrameStat[] }>({
+        path: 'stats',
+        select: '_id cyberFrame stat value',
+      })
+      .populate<{ charParams: ICyberFrameCharParam[] }>({
+        path: 'charParams',
+        select: '_id cyberFrame charParam value',
+      })
       .then((res: LeanICyberFrame[]) => {
-        if (res.length === 0) {
-          reject(gemNotFound('CyberFrames'));
-        } else {
-          resolve(res);
-        }
+        resolve(res);
       })
       .catch((err) => {
         reject(gemServerError(err));
@@ -33,6 +56,14 @@ const findCyberFrameById = async (id: string): Promise<LeanICyberFrame> =>
     CyberFrame.findById(id)
       .lean()
       .populate<{ ruleBook: IRuleBook }>('ruleBook')
+      .populate<{ stats: ICyberFrameStat[] }>({
+        path: 'stats',
+        select: '_id cyberFrame stat value',
+      })
+      .populate<{ charParams: ICyberFrameCharParam[] }>({
+        path: 'charParams',
+        select: '_id cyberFrame charParam value',
+      })
       .then((res?: LeanICyberFrame | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('CyberFrame'));
@@ -49,6 +80,14 @@ const findCompleteCyberFrameById = async (id: string): Promise<HydratedICyberFra
   await new Promise((resolve, reject) => {
     CyberFrame.findById(id)
       .populate<{ ruleBook: HydratedIRuleBook }>('ruleBook')
+      .populate<{ stats: HydratedICyberFrameStat[] }>({
+        path: 'stats',
+        select: '_id cyberFrame stat value',
+      })
+      .populate<{ charParams: HydratedICyberFrameCharParam[] }>({
+        path: 'charParams',
+        select: '_id cyberFrame charParam value',
+      })
       .then((res?: HydratedICyberFrame | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('CyberFrame'));
@@ -62,7 +101,27 @@ const findCompleteCyberFrameById = async (id: string): Promise<HydratedICyberFra
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, summary, i18n = null, ruleBook } = req.body;
+  const {
+    title,
+    summary,
+    i18n = null,
+    ruleBook,
+    stats,
+    charParams,
+  }: {
+    title?: string;
+    summary?: string;
+    i18n: InternationalizationType | null;
+    ruleBook?: string;
+    stats: Array<{
+      id: string;
+      value: number;
+    }>;
+    charParams: Array<{
+      id: string;
+      value: number;
+    }>;
+  } = req.body;
   if (title === undefined || summary === undefined || ruleBook === undefined) {
     res.status(400).send(gemInvalidField('CyberFrame'));
 
@@ -82,7 +141,25 @@ const create = (req: Request, res: Response): void => {
   cyberFrame
     .save()
     .then(() => {
-      res.send(cyberFrame);
+      createStatsByCyberFrame({
+        cyberFrameId: cyberFrame._id.toString(),
+        stats,
+      })
+        .then(() => {
+          createCharParamsByCyberFrame({
+            cyberFrameId: cyberFrame._id.toString(),
+            charParams,
+          })
+            .then(() => {
+              res.send(cyberFrame);
+            })
+            .catch((err: unknown) => {
+              res.status(500).send(gemServerError(err));
+            });
+        })
+        .catch((err: unknown) => {
+          res.status(500).send(gemServerError(err));
+        });
     })
     .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
@@ -96,12 +173,22 @@ const update = (req: Request, res: Response): void => {
     summary = null,
     ruleBook = null,
     i18n,
+    stats,
+    charParams,
   }: {
     id?: string;
     title: string | null;
     summary: string | null;
     ruleBook: string | null;
     i18n: InternationalizationType | null;
+    stats: Array<{
+      id: string;
+      value: number;
+    }>;
+    charParams: Array<{
+      id: string;
+      value: number;
+    }>;
   } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('CyberFrame ID'));
@@ -137,10 +224,28 @@ const update = (req: Request, res: Response): void => {
       cyberFrame
         .save()
         .then(() => {
-          res.send({
-            message: 'CyberFrame was updated successfully!',
-            cyberFrame,
-          });
+          replaceStatByCyberFrame({
+            cyberFrameId: id,
+            stats,
+          })
+            .then(() => {
+              replaceCharParamByCyberFrame({
+                cyberFrameId: id,
+                charParams,
+              })
+                .then(() => {
+                  res.send({
+                    message: 'CyberFrame was updated successfully!',
+                    cyberFrame,
+                  });
+                })
+                .catch((err: unknown) => {
+                  res.status(500).send(gemServerError(err));
+                });
+            })
+            .catch((err: unknown) => {
+              res.status(500).send(gemServerError(err));
+            });
         })
         .catch((err: unknown) => {
           res.status(500).send(gemServerError(err));
@@ -158,9 +263,21 @@ const deleteCyberFrameById = async (id?: string): Promise<boolean> =>
 
       return;
     }
-    CyberFrame.findByIdAndDelete(id)
+    deleteCharParamsByCyberFrame(id)
       .then(() => {
-        resolve(true);
+        deleteStatsByCyberFrame(id)
+          .then(() => {
+            CyberFrame.findByIdAndDelete(id)
+              .then(() => {
+                resolve(true);
+              })
+              .catch((err: unknown) => {
+                reject(gemServerError(err));
+              });
+          })
+          .catch((err: unknown) => {
+            reject(gemServerError(err));
+          });
       })
       .catch((err: unknown) => {
         reject(gemServerError(err));

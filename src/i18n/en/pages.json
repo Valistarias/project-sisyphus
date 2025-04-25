@@ -239,7 +239,7 @@
     "checkCloseTip": "Never open the tips in the character creation again (don't worry, you can still access it in the top right corner)",
     "closeTip": "Close",
     "successCreate": "Character successfully created !",
-    "successUpdateCyberFrame": "Character CyberFrame updated",
+    "successUpdateCyberFrame": "Character BioFrame updated",
     "successUpdateStats": "Character Stats updated",
     "successUpdateSkills": "Character Skills updated",
     "successUpdatebackground": "Character Background updated",
@@ -283,26 +283,35 @@
     "editCyberFrame": "Edit"
   },
   "adminNewCyberFrame": {
-    "title": "New CyberFrame",
+    "title": "New BioFrame",
     "i18n": "Internationalization",
-    "button": "Create CyberFrame",
+    "charParams": "Character Parameters",
+    "stats": "Bonus Skill Points",
+    "button": "Create BioFrame",
+    "charParamsInfo": "You need to profide all of the associated character parameters to be passed on each character with the linked BioFrame",
+    "statsInfo": "You can add bonus skill points for the associated stat when the player create a character with this Bioframe",
     "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
-    "successCreate": "CyberFrame successfully created !"
+    "successCreate": "BioFrame successfully created !"
   },
   "adminEditCyberFrame": {
-    "branches": "CyberFrame Specialisations",
-    "edit": "Edit CyberFrame",
+    "branches": "BioFrame Specialisations",
+    "edit": "Edit BioFrame",
     "nodes": "Node Tree",
-    "delete": "Delete CyberFrame",
+    "delete": "Delete BioFrame",
+    "return": "Return to BioFrames",
     "i18n": "Internationalization",
-    "button": "Update CyberFrame Data",
+    "charParams": "Character Parameters",
+    "stats": "Bonus Skill Points",
+    "button": "Update BioFrame Data",
+    "charParamsInfo": "You need to profide all of the associated character parameters to be passed on each character with the linked BioFrame",
+    "statsInfo": "You can add bonus skill points for the associated stat when the player create a character with this Bioframe",
     "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
-    "successUpdate": "CyberFrame successfully updated !",
-    "successDelete": "CyberFrame successfully deleted !",
+    "successUpdate": "BioFrame successfully updated !",
+    "successDelete": "BioFrame successfully deleted !",
     "confirmDeletion": {
-      "title": "CyberFrame Deletion",
+      "title": "BioFrame Deletion",
       "text": "Are you sure you want to delete {{elt}} ? All the related branches will be lost !",
-      "confirmCta": "Delete CyberFrame"
+      "confirmCta": "Delete BioFrame"
     }
   },
   "adminStats": {
@@ -385,48 +394,6 @@
       "title": "Character Parameter Deletion",
       "text": "Are you sure you want to delete {{elt}} ?",
       "confirmCta": "Delete Character Parameter"
-    }
-  },
-  "adminNewCyberFrameBranch": {
-    "title": "New CyberFrame Branch",
-    "i18n": "Internationalization",
-    "button": "Create CyberFrame Branch",
-    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
-    "successCreate": "CyberFrame Branch successfully created !"
-  },
-  "adminEditCyberFrameBranch": {
-    "title": "Edit CyberFrame Branch",
-    "delete": "Delete CyberFrame Branch",
-    "i18n": "Internationalization",
-    "button": "Update CyberFrame Branch Data",
-    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
-    "successUpdate": "CyberFrame Branch successfully updated !",
-    "successDelete": "CyberFrame Branch successfully deleted !",
-    "confirmDeletion": {
-      "title": "CyberFrame Branch Deletion",
-      "text": "Are you sure you want to delete {{elt}} ?",
-      "confirmCta": "Delete CyberFrame Branch"
-    }
-  },
-  "adminNewSkillBranch": {
-    "title": "New Skill Branch",
-    "i18n": "Internationalization",
-    "button": "Create Skill Branch",
-    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
-    "successCreate": "Skill Branch successfully created !"
-  },
-  "adminEditSkillBranch": {
-    "title": "Edit Skill Branch",
-    "delete": "Delete Skill Branch",
-    "i18n": "Internationalization",
-    "button": "Update Skill branch Data",
-    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
-    "successUpdate": "Skill Branch successfully updated !",
-    "successDelete": "Skill Branch successfully deleted !",
-    "confirmDeletion": {
-      "title": "Skill Branch Deletion",
-      "text": "Are you sure you want to delete {{elt}} ?",
-      "confirmCta": "Delete Skill Branch"
     }
   },
   "adminNewNode": {

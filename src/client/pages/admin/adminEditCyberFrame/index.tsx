@@ -9,7 +9,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useApi, useConfirmMessage, useGlobalVars, useSystemAlerts } from '../../../providers';
 
 import { Aerror, Ap, Atitle } from '../../../atoms';
-import { Button, Input, SmartSelect, type ISingleValueSelect } from '../../../molecules';
+import {
+  Button,
+  Input,
+  LinkButton,
+  SmartSelect,
+  type ISingleValueSelect,
+} from '../../../molecules';
 import { Alert, RichTextElement, completeRichTextElementExtentions } from '../../../organisms';
 
 import type { ConfirmMessageDetailData } from '../../../providers/confirmMessage';
@@ -24,6 +30,8 @@ interface FormValues {
   name: string;
   nameFr: string;
   ruleBook: string;
+  stats: Record<string, number | undefined>;
+  charParams: Record<string, number>;
 }
 
 const AdminEditCyberFrame: FC = () => {
@@ -33,7 +41,7 @@ const AdminEditCyberFrame: FC = () => {
   const { setConfirmContent, removeConfirmEventListener, addConfirmEventListener } =
     useConfirmMessage();
   const { id } = useParams();
-  const { ruleBooks, reloadCyberFrames } = useGlobalVars();
+  const { ruleBooks, reloadCyberFrames, charParams, stats } = useGlobalVars();
   const navigate = useNavigate();
 
   const calledApi = useRef(false);
@@ -68,8 +76,21 @@ const AdminEditCyberFrame: FC = () => {
         return {};
       }
       const { cyberFrame, i18n } = cyberFrameData;
+
       const defaultData: Partial<FormValues> = {};
       defaultData.name = cyberFrame.title;
+
+      defaultData.charParams ??= {};
+      defaultData.stats ??= {};
+
+      cyberFrameData.cyberFrame.charParams.forEach((charParam) => {
+        defaultData.charParams![`charParam-${charParam.charParam}`] = charParam.value;
+      });
+
+      cyberFrameData.cyberFrame.stats.forEach((stat) => {
+        defaultData.stats![`stat-${stat.stat}`] = stat.value;
+      });
+
       const selectedfield = ruleBookSelect.find(
         (singleSelect) => singleSelect.value === cyberFrame.ruleBook._id
       );
@@ -101,10 +122,34 @@ const AdminEditCyberFrame: FC = () => {
   const ruleBook = useMemo(() => cyberFrameData?.cyberFrame.ruleBook, [cyberFrameData]);
 
   const onSaveCyberFrame: SubmitHandler<FormValues> = useCallback(
-    ({ name, nameFr, ruleBook }) => {
+    ({ name, nameFr, ruleBook, stats: sentStats, charParams: sentCharParams }) => {
       if (textEditor === null || textFrEditor === null || api === undefined) {
         return;
       }
+
+      const relevantStats: Array<{
+        id: string;
+        value: number;
+      }> = [];
+      Object.keys(sentStats).forEach((statId) => {
+        if (sentStats[statId] !== undefined && sentStats[statId] > 0) {
+          relevantStats.push({
+            id: statId.split('-')[1],
+            value: sentStats[statId],
+          });
+        }
+      });
+      const relevantCharParams: Array<{
+        id: string;
+        value: number;
+      }> = [];
+      Object.keys(sentCharParams).forEach((charParamId) => {
+        relevantCharParams.push({
+          id: charParamId.split('-')[1],
+          value: sentCharParams[charParamId],
+        });
+      });
+
       let htmlText: string | null = textEditor.getHTML();
 
       const htmlTextFr = textFrEditor.getHTML();
@@ -131,6 +176,8 @@ const AdminEditCyberFrame: FC = () => {
           ruleBook,
           summary: htmlText,
           i18n,
+          stats: relevantStats,
+          charParams: relevantCharParams,
         })
         .then(() => {
           const newId = getNewId();
@@ -305,7 +352,13 @@ const AdminEditCyberFrame: FC = () => {
             {t('adminEditCyberFrame.delete', { ns: 'pages' })}
           </Button>
         </div>
-        <Atitle level={2}>{t('adminEditCyberFrame.edit', { ns: 'pages' })}</Atitle>
+        <LinkButton
+          className="adminEditCyberFrame__return-btn"
+          href="/admin/cyberframes"
+          size="small"
+        >
+          {t('adminEditCyberFrame.return', { ns: 'pages' })}
+        </LinkButton>
         {errors.root?.serverError.message !== undefined ? (
           <Aerror className="adminEditCyberFrame__error">{errors.root.serverError.message}</Aerror>
         ) : null}
@@ -338,6 +391,51 @@ const AdminEditCyberFrame: FC = () => {
           />
         </div>
 
+        <div className="adminEditCyberFrame__params">
+          <div className="adminEditCyberFrame__params__content">
+            <Atitle className="adminEditCyberFrame__params__title" level={2}>
+              {t('adminEditCyberFrame.charParams', { ns: 'pages' })}
+            </Atitle>
+            <Ap className="adminEditCyberFrame__params__info">
+              {t('adminEditCyberFrame.charParamsInfo', { ns: 'pages' })}
+            </Ap>
+          </div>
+          <div className="adminEditCyberFrame__params__list">
+            {charParams.map((charParam) => (
+              <Input
+                key={charParam.charParam._id}
+                control={control}
+                inputName={`charParams.charParam-${charParam.charParam._id}`}
+                type="number"
+                rules={{ required: t('charParamCyberFrameValue.required', { ns: 'fields' }) }}
+                label={charParam.charParam.title}
+                className="adminEditCyberFrame__params__list__value"
+              />
+            ))}
+          </div>
+        </div>
+        <div className="adminEditCyberFrame__stats">
+          <div className="adminEditCyberFrame__stats__content">
+            <Atitle className="adminEditCyberFrame__stats__title" level={2}>
+              {t('adminEditCyberFrame.stats', { ns: 'pages' })}
+            </Atitle>
+            <Ap className="adminEditCyberFrame__stats__info">
+              {t('adminEditCyberFrame.statsInfo', { ns: 'pages' })}
+            </Ap>
+          </div>
+          <div className="adminEditCyberFrame__stats__list">
+            {stats.map((stat) => (
+              <Input
+                key={stat.stat._id}
+                control={control}
+                inputName={`stats.stat-${stat.stat._id}`}
+                type="number"
+                label={stat.stat.title}
+                className="adminNewCyberFrame__stats__list__value"
+              />
+            ))}
+          </div>
+        </div>
         <div className="adminEditCyberFrame__intl-title">
           <div className="adminEditCyberFrame__intl-title__content">
             <Atitle className="adminEditCyberFrame__intl-title__title" level={2}>

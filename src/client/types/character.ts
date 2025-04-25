@@ -147,8 +147,8 @@ export interface IBody {
   hp: number;
   /** The character associated to this body */
   character: string;
-  /** The cyberframe associated to this body */
-  cyberframe: string;
+  /** The cyberFrame associated to this body */
+  cyberFrame: string;
   /** The associated skills to this body */
   skills: IBodySkill[];
   /** The associated ammos to this body */

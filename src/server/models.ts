@@ -17,7 +17,6 @@ import {
   BodyPartModel,
   BodyProgramModel,
   BodySkillModel,
-  CharacterStatModel,
   BodyWeaponModel,
   CampaignEventModel,
   CampaignModel,
@@ -26,14 +25,15 @@ import {
   CharParamBonusModel,
   CharParamModel,
   CharacterModel,
+  CharacterStatModel,
   CharacterNodeModel,
   CyberFrameModel,
+  CyberFrameStatModel,
   DamageModel,
   DamageTypeModel,
   EffectModel,
   EnnemyAttackModel,
   GlobalValueModel,
-  type IArcane,
   ImplantModel,
   ItemModel,
   ItemModifierModel,
@@ -59,6 +59,7 @@ import {
   WeaponScopeModel,
   WeaponStyleModel,
   WeaponTypeModel,
+  type IArcane,
   type IAction,
   type IActionDuration,
   type IActionType,
@@ -85,6 +86,7 @@ import {
   type ICharacter,
   type ICharacterNode,
   type ICyberFrame,
+  type ICyberFrameStat,
   type IDamage,
   type IDamageType,
   type IEffect,
@@ -115,6 +117,8 @@ import {
   type IWeaponScope,
   type IWeaponStyle,
   type IWeaponType,
+  type ICyberFrameCharParam,
+  CyberFrameCharParamModel,
 } from './entities';
 import { BodyItemModel, type IBodyItem } from './entities/body';
 
@@ -204,6 +208,10 @@ interface DBType {
   CharParamBonus: Model<ICharParamBonus>;
   /** The CyberFrame Model */
   CyberFrame: Model<ICyberFrame>;
+  /** The CyberFrameStat Model */
+  CyberFrameStat: Model<ICyberFrameStat>;
+  /** The CyberFrameStat Model */
+  CyberFrameCharParam: Model<ICyberFrameCharParam>;
   /** The Node Model */
   Node: Model<INode<CleanObjectId>>;
   /** The ItemType Model */
@@ -286,6 +294,8 @@ const db: DBType = {
   CharParam: CharParamModel(),
   CharParamBonus: CharParamBonusModel(),
   CyberFrame: CyberFrameModel(),
+  CyberFrameStat: CyberFrameStatModel(),
+  CyberFrameCharParam: CyberFrameCharParamModel(),
   Effect: EffectModel(),
   Node: NodeModel(),
   Skill: SkillModel(),

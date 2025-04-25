@@ -41,14 +41,8 @@ interface FormHpValues {
 
 const CharacterStats: FC<ICharacterStats> = ({ className, onRollDices }) => {
   const { t } = useTranslation();
-  const {
-    character,
-    setCharacterFromId,
-    globalValues,
-    charParams,
-    characterStatSkills,
-    characterParams,
-  } = useGlobalVars();
+  const { character, setCharacterFromId, charParams, characterStatSkills, characterParams } =
+    useGlobalVars();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { socket } = useSocket();
@@ -58,10 +52,10 @@ const CharacterStats: FC<ICharacterStats> = ({ className, onRollDices }) => {
     () =>
       getCharacterHpValues(
         character,
-        Number(globalValues.find(({ name }) => name === 'baseHp')?.value ?? 0),
+        0,
         charParams.find(({ charParam }) => charParam.short === 'HP')?.charParam._id ?? undefined
       ),
-    [character, globalValues, charParams]
+    [character, charParams]
   );
 
   const {

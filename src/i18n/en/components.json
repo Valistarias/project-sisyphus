@@ -117,21 +117,21 @@
   "autosave": "Autosaved the {{date}} at {{hour}}",
   "characterCreation": {
     "step1": {
-      "cat": "CyberFrame",
-      "text": "Choose a CyberFrame below",
-      "sub": "By doing so, you will unlock the first rank of this CyberFrame",
+      "cat": "BioFrame",
+      "text": "Choose a BioFrame below",
+      "sub": "By doing so, you will unlock the first rank of this BioFrame",
       "cFrameDetailsBtn": "See Details",
       "cFramebranches": "Specialisations",
       "cFrameTree": "See Node Tree",
-      "chooseCta": "Choose CyberFrame",
+      "chooseCta": "Choose BioFrame",
       "return": "Back",
-      "chosen": "Chosen CyberFrame"
+      "chosen": "Chosen BioFrame"
     },
     "step2": {
       "cat": "Stats",
       "text": "Character Stats",
       "sub": "Choose the characteristics of your new body",
-      "cFrameBonus": "+ {{points}} from CyberFrame",
+      "cFrameBonus": "+ {{points}} from BioFrame",
       "generalBonus": "+ {{points}} from your past and experiences",
       "pointsLeft": "Points left to spend:",
       "next": "Next"
