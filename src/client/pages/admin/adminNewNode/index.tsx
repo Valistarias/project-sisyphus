@@ -226,7 +226,7 @@ const AdminNewNode: FC = () => {
           elt: ICuratedSkillBranch | ICuratedCyberFrameBranch
         ) => {
           const relevantElt =
-            (elt as ICuratedCyberFrameBranch | undefined)?.cyberFrameBranch !== undefined
+            elt?.cyberFrameBranch !== undefined
               ? (elt as ICuratedCyberFrameBranch).cyberFrameBranch
               : (elt as ICuratedSkillBranch).skillBranch;
 
@@ -589,7 +589,7 @@ const AdminNewNode: FC = () => {
           {t('adminNewNode.title', { ns: 'pages' })}
         </Atitle>
         <div className="adminNewNode__ariane">
-          <Ap className="adminEditNode__ariane__elt">
+          <Ap className="adminNewNode__ariane__elt">
             {skill !== null ? (
               <>
                 {`${t('terms.skill.name', { count: 1 })}:`}
@@ -635,8 +635,7 @@ const AdminNewNode: FC = () => {
               let titleBranch: string | null = null;
               branches.forEach((elt: ICuratedSkillBranch | ICuratedCyberFrameBranch) => {
                 const relevantElt =
-                  (elt as ICuratedCyberFrameBranch | undefined)?.cyberFrameBranch ??
-                  (elt as ICuratedSkillBranch).skillBranch;
+                  elt?.cyberFrameBranch ?? (elt as ICuratedSkillBranch).skillBranch;
                 if (relevantElt._id === e.value) {
                   titleBranch = relevantElt.title;
                 }

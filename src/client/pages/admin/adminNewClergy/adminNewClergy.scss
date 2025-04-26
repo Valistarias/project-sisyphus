@@ -1,0 +1,58 @@
+@use '../../../assets/scss/mixins';
+
+.adminNewClergy {
+  @include mixins.basic-page;
+
+  &__content {
+    margin-bottom: 10vh;
+  }
+
+  &__basics {
+    display: flex;
+    flex-direction: row;
+    gap: 10rem;
+    margin-bottom: 2em;
+
+    &__name {
+      width: 100%;
+    }
+
+    &__type {
+      flex-shrink: 0;
+      width: 20rem;
+    }
+  }
+
+  &__details {
+    margin-bottom: 2rem;
+  }
+
+  &__error {
+    margin-bottom: 2rem;
+  }
+
+  &__intl-title {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin: 4rem 0;
+
+    &__title {
+      margin: 0;
+    }
+  }
+
+  &__intl {
+    display: none;
+  }
+
+  &--int-visible {
+    .adminNewClergy__intl {
+      display: block;
+    }
+
+    .adminNewClergy__intl-title__btn {
+      transform: rotate(180deg);
+    }
+  }
+}

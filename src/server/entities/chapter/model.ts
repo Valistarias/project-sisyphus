@@ -7,7 +7,7 @@ interface IChapter {
   title: string;
   /** A summary of the ruleBook */
   summary: string;
-  /** The position of this chapter, in reference with others */
+  /** The position of this chapter, in reference with others in a ruleBook */
   position: number;
   /** The rulebook where this chapter is */
   ruleBook: ObjectId;

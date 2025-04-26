@@ -40,56 +40,72 @@ const findVowById = async (id: string): Promise<HydratedIVow> =>
       });
   });
 
+const findVowssByClergy = async (clergyId: string): Promise<HydratedIVow[]> =>
+  await new Promise((resolve, reject) => {
+    Vow.find({ clergy: clergyId })
+      .then((res?: HydratedIVow[] | null) => {
+        if (res === undefined || res === null) {
+          reject(gemNotFound('Chapters'));
+        } else {
+          resolve(res);
+        }
+      })
+      .catch((err) => {
+        reject(gemServerError(err));
+      });
+  });
+
 const create = (req: Request, res: Response): void => {
   const {
     title,
-    summary,
     clergy,
     i18n = null,
   }: {
     id?: string;
     title?: string;
-    summary?: string;
     clergy?: string;
     i18n?: string | null;
   } = req.body;
-  if (title === undefined || summary === undefined || clergy === undefined) {
+
+  if (title === undefined || clergy === undefined) {
     res.status(400).send(gemInvalidField('Vow'));
 
     return;
   }
 
-  const vow = new Vow({
-    title,
-    summary,
-    clergy,
-  });
+  findVowssByClergy(clergy)
+    .then((vows) => {
+      const vow = new Vow({
+        title,
+        clergy,
+        position: vows.length,
+      });
 
-  if (i18n !== null) {
-    vow.i18n = JSON.stringify(i18n);
-  }
+      if (i18n !== null) {
+        vow.i18n = JSON.stringify(i18n);
+      }
 
-  vow
-    .save()
-    .then(() => {
-      res.send(vow);
+      vow
+        .save()
+        .then(() => {
+          res.send(vow);
+        })
+        .catch((err: unknown) => {
+          res.status(500).send(gemServerError(err));
+        });
     })
-    .catch((err: unknown) => {
-      res.status(500).send(gemServerError(err));
-    });
+    .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
 const update = (req: Request, res: Response): void => {
   const {
     id,
     title = null,
-    summary = null,
     clergy = null,
     i18n,
   }: {
     id?: string;
     title: string | null;
-    summary: string | null;
     clergy: string | null;
     i18n: InternationalizationType | null;
   } = req.body;
@@ -102,9 +118,6 @@ const update = (req: Request, res: Response): void => {
     .then((vow) => {
       if (title !== null) {
         vow.title = title;
-      }
-      if (summary !== null) {
-        vow.summary = summary;
       }
       if (clergy !== null) {
         vow.clergy = clergy;
@@ -139,6 +152,27 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
+const updateMultipleVowsPosition = (
+  order: Array<{
+    id: string;
+    position: number;
+  }>,
+  cb: (res: Error | null) => void
+): void => {
+  Vow.findOneAndUpdate({ _id: order[0].id }, { position: order[0].position })
+    .then(() => {
+      if (order.length > 1) {
+        order.shift();
+        updateMultipleVowsPosition([...order], cb);
+      } else {
+        cb(null);
+      }
+    })
+    .catch(() => {
+      cb(new Error('Rulebook not found'));
+    });
+};
+
 const deleteVowById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
@@ -166,19 +200,30 @@ const deleteVow = (req: Request, res: Response): void => {
     });
 };
 
+const deleteVowsByClergy = async (clergyId: string): Promise<boolean> =>
+  await new Promise((resolve, reject) => {
+    Vow.deleteMany({ clergy: clergyId })
+      .then(() => {
+        resolve(true);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+
 interface CuratedIVow {
   i18n?: InternationalizationType;
   vow: HydratedIVow;
 }
 
 const findSingle = (req: Request, res: Response): void => {
-  const { statId } = req.query;
-  if (statId === undefined || typeof statId !== 'string') {
+  const { vowId } = req.query;
+  if (vowId === undefined || typeof vowId !== 'string') {
     res.status(400).send(gemInvalidField('Vow ID'));
 
     return;
   }
-  findVowById(statId)
+  findVowById(vowId)
     .then((vow) => {
       const sentObj = {
         vow,
@@ -193,10 +238,10 @@ const findSingle = (req: Request, res: Response): void => {
 
 const findAll = (req: Request, res: Response): void => {
   findVows()
-    .then((stats) => {
+    .then((vows) => {
       const curatedVows: CuratedIVow[] = [];
 
-      stats.forEach((vow) => {
+      vows.forEach((vow) => {
         curatedVows.push({
           vow,
           i18n: curateI18n(vow.i18n),
@@ -208,4 +253,13 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteVow, findAll, findSingle, findVowById, update };
+export {
+  create,
+  deleteVow,
+  findAll,
+  findSingle,
+  findVowById,
+  deleteVowsByClergy,
+  update,
+  updateMultipleVowsPosition,
+};

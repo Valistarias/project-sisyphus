@@ -35,6 +35,9 @@
     "cyberFrame": {
       "name": "cyber frame"
     },
+    "clergy": {
+      "name": "clergy"
+    },
     "skill": {
       "name_one": "skill",
       "name_other": "skills"

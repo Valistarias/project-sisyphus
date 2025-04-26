@@ -199,9 +199,9 @@ interface DBType {
   /** The Stat Model */
   Stat: Model<IStat>;
   /** The Clergy Model */
-  Clergy: Model<IClergy>;
+  Clergy: Model<IClergy<CleanObjectId>>;
   /** The Vow Model */
-  Vow: Model<IVow>;
+  Vow: Model<IVow<CleanObjectId>>;
   /** The Tip Text Model */
   TipText: Model<ITipText>;
   /** The Stat bonus Model */

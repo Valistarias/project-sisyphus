@@ -118,9 +118,12 @@ import {
   AdminNewArcanePage,
   UserEditPage,
   AdminEditUserPage,
+  AdminClergiesPage,
+  AdminNewClergyPage,
+  AdminEditClergyPage,
+  AdminNewVowPage,
+  AdminEditVowPage,
 } from './pages';
-
-// import { socket } from '../socket';
 
 import arrowBackground from './assets/imgs/arrowbg.png';
 import mainBackground from './assets/imgs/twinkle.png';
@@ -629,10 +632,26 @@ const App: FC = () => {
               path: '/admin/arcane/:id',
               element: <AdminEditArcanePage />,
             },
-            // {
-            //   path: '/admin/skillbranch/:id',
-            //   element: <AdminEditSkillBranchPage />,
-            // },
+            {
+              path: '/admin/clergies',
+              element: <AdminClergiesPage />,
+            },
+            {
+              path: '/admin/clergy/new',
+              element: <AdminNewClergyPage />,
+            },
+            {
+              path: '/admin/clergy/:id',
+              element: <AdminEditClergyPage />,
+            },
+            {
+              path: '/admin/vow/new',
+              element: <AdminNewVowPage />,
+            },
+            {
+              path: '/admin/vow/:id',
+              element: <AdminEditVowPage />,
+            },
             // All
             {
               path: '/*',

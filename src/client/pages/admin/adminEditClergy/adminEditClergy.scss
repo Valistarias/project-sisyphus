@@ -1,0 +1,110 @@
+@use '../../../assets/scss/mixins';
+
+.adminEditClergy {
+  @include mixins.basic-page;
+
+  &__content {
+    margin-bottom: 4vh;
+
+    &__lists {
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      gap: 4rem;
+      margin-bottom: 10vh;
+      width: 100%;
+
+      .draglist__elt {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+
+        &__title {
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  &__head {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+
+    .atitle {
+      margin: 0;
+    }
+  }
+
+  &__return-btn {
+    margin-bottom: 4rem;
+  }
+
+  &__basics {
+    display: flex;
+    flex-direction: row;
+    gap: 10rem;
+    margin-bottom: 2em;
+
+    &__name {
+      width: 100%;
+    }
+
+    &__type {
+      flex-shrink: 0;
+      width: 20rem;
+    }
+  }
+
+  &__details {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  &__error {
+    margin-bottom: 2rem;
+  }
+
+  &__vows {
+    .atitle {
+      margin-top: 0;
+    }
+
+    &__buttons {
+      display: flex;
+      gap: 1rem;
+    }
+  }
+
+  &__draglist {
+    margin: 2rem 0;
+  }
+
+  &__intl-title {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin: 4rem 0;
+
+    &__title {
+      margin: 0;
+    }
+  }
+
+  &__intl {
+    display: none;
+  }
+
+  &--int-visible {
+    .adminEditClergy__intl {
+      display: block;
+    }
+
+    .adminEditClergy__intl-title__btn {
+      transform: rotate(180deg);
+    }
+  }
+}

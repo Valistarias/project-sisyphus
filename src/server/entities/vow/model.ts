@@ -1,24 +1,28 @@
 import { type ObjectId, Schema, model, type HydratedDocument, type Model } from 'mongoose';
 
-interface IVow {
-  /** The title of the vow */
+import type { Lean } from '../../utils/types';
+
+interface IVow<IdType> {
+  /** The content of the vow */
   title: string;
-  /** A summary of the vow */
-  summary: string;
   /** The internationnal content, as a json, stringified */
   i18n?: string;
   /** The associated Clergy */
-  clergy: ObjectId | string;
+  clergy: IdType;
+  /** The position of this vow, in reference with others in a clergy */
+  position: number;
   /** When the vow was created */
   createdAt: Date;
 }
 
-type HydratedIVow = HydratedDocument<IVow>;
+type HydratedIVow = HydratedDocument<IVow<string>>;
 
-const vowSchema = new Schema<IVow>({
+type LeanIVow = Lean<IVow<string>>;
+
+const vowSchema = new Schema<IVow<ObjectId>>({
   title: String,
-  summary: String,
   i18n: String,
+  position: Number,
   clergy: {
     type: Schema.Types.ObjectId,
     ref: 'Clergy',
@@ -29,6 +33,6 @@ const vowSchema = new Schema<IVow>({
   },
 });
 
-const VowModel = (): Model<IVow> => model('Vow', vowSchema);
+const VowModel = (): Model<IVow<ObjectId>> => model('Vow', vowSchema);
 
-export { VowModel, type HydratedIVow, type IVow };
+export { VowModel, type HydratedIVow, type IVow, type LeanIVow };

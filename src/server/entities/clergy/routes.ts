@@ -2,7 +2,7 @@ import type { Router } from 'express';
 
 import { adminNeeded, verifyToken } from '../../middlewares';
 
-import { create, deleteClergy, findAll, findSingle, update } from './controller';
+import { create, deleteClergy, findAll, findSingle, update, changeVowsOrder } from './controller';
 
 export default (app: Router): void => {
   app.use((req, res, next) => {
@@ -17,6 +17,8 @@ export default (app: Router): void => {
   app.post('/clergies/create', [verifyToken, adminNeeded], create);
 
   app.post('/clergies/update', [verifyToken, adminNeeded], update);
+
+  app.post('/clergies/changevowsorder', [verifyToken, adminNeeded], changeVowsOrder);
 
   app.post('/clergies/delete', [verifyToken, adminNeeded], deleteClergy);
 };

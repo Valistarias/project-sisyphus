@@ -2,18 +2,26 @@ import type { Request, Response } from 'express';
 
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
+import { deleteVowsByClergy, updateMultipleVowsPosition } from '../vow/controller';
 
-import type { HydratedIClergy } from './model';
+import type { HydratedIClergy, LeanIClergy } from './model';
 import type { InternationalizationType } from '../../utils/types';
+import type { HydratedIVow, LeanIVow } from '../vow/model';
 
 import { curateI18n } from '../../utils';
 
 const { Clergy } = db;
 
-const findClergies = async (): Promise<HydratedIClergy[]> =>
+const findClergies = async (): Promise<LeanIClergy[]> =>
   await new Promise((resolve, reject) => {
     Clergy.find()
-      .then((res: HydratedIClergy[]) => {
+      .lean()
+      .populate<{ vows: LeanIVow[] }>({
+        path: 'vows',
+        select: '_id title clergy position i18n',
+        options: { sort: { position: 'asc' } },
+      })
+      .then((res: LeanIClergy[]) => {
         resolve(res);
       })
       .catch((err) => {
@@ -21,10 +29,36 @@ const findClergies = async (): Promise<HydratedIClergy[]> =>
       });
   });
 
-const findClergyById = async (id: string): Promise<HydratedIClergy> =>
+const findCompleteClergyById = async (id: string): Promise<HydratedIClergy> =>
   await new Promise((resolve, reject) => {
     Clergy.findById(id)
+      .populate<{ vows: HydratedIVow[] }>({
+        path: 'vows',
+        select: '_id title clergy position i18n',
+        options: { sort: { position: 'asc' } },
+      })
       .then((res?: HydratedIClergy | null) => {
+        if (res === undefined || res === null) {
+          reject(gemNotFound('Clergy'));
+        } else {
+          resolve(res);
+        }
+      })
+      .catch((err) => {
+        reject(gemServerError(err));
+      });
+  });
+
+const findClergyById = async (id: string): Promise<LeanIClergy> =>
+  await new Promise((resolve, reject) => {
+    Clergy.findById(id)
+      .lean()
+      .populate<{ vows: LeanIVow[] }>({
+        path: 'vows',
+        select: '_id title clergy position i18n',
+        options: { sort: { position: 'asc' } },
+      })
+      .then((res?: LeanIClergy | null) => {
         if (res === undefined || res === null) {
           reject(gemNotFound('Clergy'));
         } else {
@@ -41,15 +75,22 @@ const create = (req: Request, res: Response): void => {
     title,
     summary,
     ruleBook,
+    icon,
     i18n = null,
   }: {
     id?: string;
     title?: string;
     summary?: string;
     ruleBook?: string;
+    icon?: string;
     i18n?: string | null;
   } = req.body;
-  if (title === undefined || summary === undefined || ruleBook === undefined) {
+  if (
+    title === undefined ||
+    summary === undefined ||
+    ruleBook === undefined ||
+    icon === undefined
+  ) {
     res.status(400).send(gemInvalidField('Clergy'));
 
     return;
@@ -59,6 +100,7 @@ const create = (req: Request, res: Response): void => {
     title,
     summary,
     ruleBook,
+    icon,
   });
 
   if (i18n !== null) {
@@ -81,12 +123,14 @@ const update = (req: Request, res: Response): void => {
     title = null,
     summary = null,
     ruleBook = null,
+    icon = null,
     i18n,
   }: {
     id?: string;
     title: string | null;
     summary: string | null;
     ruleBook: string | null;
+    icon: string | null;
     i18n: InternationalizationType | null;
   } = req.body;
   if (id === undefined) {
@@ -94,7 +138,7 @@ const update = (req: Request, res: Response): void => {
 
     return;
   }
-  findClergyById(id)
+  findCompleteClergyById(id)
     .then((clergy) => {
       if (title !== null) {
         clergy.title = title;
@@ -104,6 +148,9 @@ const update = (req: Request, res: Response): void => {
       }
       if (ruleBook !== null) {
         clergy.ruleBook = ruleBook;
+      }
+      if (icon !== null) {
+        clergy.icon = icon;
       }
 
       if (i18n !== null) {
@@ -135,6 +182,31 @@ const update = (req: Request, res: Response): void => {
     });
 };
 
+const changeVowsOrder = (req: Request, res: Response): void => {
+  const {
+    id,
+    order,
+  }: {
+    id?: string;
+    order?: Array<{
+      id: string;
+      position: number;
+    }>;
+  } = req.body;
+  if (id === undefined || order === undefined) {
+    res.status(400).send(gemInvalidField('Clergy Vows Reordering'));
+
+    return;
+  }
+  updateMultipleVowsPosition(order, (err) => {
+    if (err !== null) {
+      res.status(404).send(gemNotFound('Clergy Vows'));
+    } else {
+      res.send({ message: 'Clergy Vows were updated successfully!' });
+    }
+  });
+};
+
 const deleteClergyById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
@@ -142,9 +214,15 @@ const deleteClergyById = async (id?: string): Promise<boolean> =>
 
       return;
     }
-    Clergy.findByIdAndDelete(id)
+    deleteVowsByClergy(id)
       .then(() => {
-        resolve(true);
+        Clergy.findByIdAndDelete(id)
+          .then(() => {
+            resolve(true);
+          })
+          .catch((err: unknown) => {
+            reject(gemServerError(err));
+          });
       })
       .catch((err: unknown) => {
         reject(gemServerError(err));
@@ -162,42 +240,51 @@ const deleteClergy = (req: Request, res: Response): void => {
     });
 };
 
-interface CuratedIClergy {
+export interface CuratedIClergyToSend {
+  clergy: Omit<LeanIClergy, 'vows'> & {
+    vows: Array<{
+      vow: LeanIVow;
+      i18n?: InternationalizationType;
+    }>;
+  };
   i18n?: InternationalizationType;
-  clergy: HydratedIClergy;
 }
 
+export const curateSingleClergy = (clergySent: LeanIClergy): CuratedIClergyToSend => ({
+  clergy: {
+    ...clergySent,
+    vows: clergySent.vows.map((vow) => ({
+      vow,
+      i18n: curateI18n(vow.i18n),
+    })),
+  },
+  i18n: curateI18n(clergySent.i18n),
+});
+
 const findSingle = (req: Request, res: Response): void => {
-  const { statId } = req.query;
-  if (statId === undefined || typeof statId !== 'string') {
+  const { clergyId } = req.query;
+  if (clergyId === undefined || typeof clergyId !== 'string') {
     res.status(400).send(gemInvalidField('Clergy ID'));
 
     return;
   }
-  findClergyById(statId)
+  findClergyById(clergyId)
     .then((clergy) => {
-      const sentObj = {
-        clergy,
-        i18n: curateI18n(clergy.i18n),
-      };
-      res.send(sentObj);
+      res.send(curateSingleClergy(clergy));
     })
     .catch((err: unknown) => {
       res.status(404).send(err);
     });
 };
 
-const findAllPromise = async (): Promise<CuratedIClergy[]> =>
+const findAllPromise = async (): Promise<CuratedIClergyToSend[]> =>
   await new Promise((resolve, reject) => {
     findClergies()
       .then((clergies) => {
-        const curatedClergies: CuratedIClergy[] = [];
+        const curatedClergies: CuratedIClergyToSend[] = [];
 
         clergies.forEach((clergy) => {
-          curatedClergies.push({
-            clergy,
-            i18n: curateI18n(clergy.i18n),
-          });
+          curatedClergies.push(curateSingleClergy(clergy));
         });
 
         resolve(curatedClergies);
@@ -215,4 +302,13 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteClergy, findAll, findAllPromise, findSingle, findClergyById, update };
+export {
+  create,
+  deleteClergy,
+  findAll,
+  findAllPromise,
+  findSingle,
+  findClergyById,
+  update,
+  changeVowsOrder,
+};

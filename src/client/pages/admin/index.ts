@@ -7,6 +7,7 @@ import AdminBagsPage from './adminBags';
 import AdminBasicActionsPage from './adminBasicActions';
 import AdminBodyPartsPage from './adminBodyParts';
 import AdminCharParamsPage from './adminCharParams';
+import AdminClergiesPage from './adminClergies';
 import AdminCyberFramesPage from './adminCyberFrames';
 import AdminDamageTypesPage from './adminDamageTypes';
 import AdminEditAmmoPage from './adminEditAmmo';
@@ -18,6 +19,7 @@ import AdminEditBasicActionPage from './adminEditBasicAction';
 import AdminEditBodyPartPage from './adminEditBodyPart';
 import AdminEditChapterPage from './adminEditChapter';
 import AdminEditCharParamPage from './adminEditCharParam';
+import AdminEditClergyPage from './adminEditClergy';
 import AdminEditCyberFramePage from './adminEditCyberFrame';
 import AdminEditDamageTypePage from './adminEditDamageType';
 import AdminEditGlobalValuePage from './adminEditGlobalValue';
@@ -37,6 +39,7 @@ import AdminEditSkillPage from './adminEditSkill';
 import AdminEditStatPage from './adminEditStat';
 import AdminEditTipTextPage from './adminEditTipText';
 import AdminEditUserPage from './adminEditUser';
+import AdminEditVowPage from './adminEditVow';
 import AdminEditWeaponPage from './adminEditWeapon';
 import AdminEditWeaponScopePage from './adminEditWeaponScope';
 import AdminEditWeaponStylePage from './adminEditWeaponStyle';
@@ -55,6 +58,7 @@ import AdminNewBasicActionPage from './adminNewBasicAction';
 import AdminNewBodyPartPage from './adminNewBodyPart';
 import AdminNewChapterPage from './adminNewChapter';
 import AdminNewCharParamPage from './adminNewCharParam';
+import AdminNewClergyPage from './adminNewClergy';
 import AdminNewCyberFramePage from './adminNewCyberFrame';
 import AdminNewDamageTypePage from './adminNewDamageType';
 import AdminNewGlobalValuePage from './adminNewGlobalValue';
@@ -73,6 +77,7 @@ import AdminNewRuleBookPage from './adminNewRuleBook';
 import AdminNewSkillPage from './adminNewSkill';
 import AdminNewStatPage from './adminNewStat';
 import AdminNewTipTextPage from './adminNewTipText';
+import AdminNewVowPage from './adminNewVow';
 import AdminNewWeaponPage from './adminNewWeapon';
 import AdminNewWeaponScopePage from './adminNewWeaponScope';
 import AdminNewWeaponStylePage from './adminNewWeaponStyle';
@@ -93,24 +98,27 @@ import AdminWeaponStylesPage from './adminWeaponStyles';
 import AdminWeaponTypesPage from './adminWeaponTypes';
 
 export {
-  AdminArcanesPage,
   AdminAmmosPage,
+  AdminArcanesPage,
   AdminArmorsPage,
   AdminArmorTypesPage,
   AdminBagsPage,
   AdminBasicActionsPage,
   AdminBodyPartsPage,
   AdminCharParamsPage,
+  AdminClergiesPage,
   AdminCyberFramesPage,
   AdminDamageTypesPage,
   AdminEditAmmoPage,
+  AdminEditArcanePage,
   AdminEditArmorPage,
   AdminEditArmorTypePage,
   AdminEditBagPage,
-  AdminNewBasicActionPage,
+  AdminEditBasicActionPage,
   AdminEditBodyPartPage,
   AdminEditChapterPage,
   AdminEditCharParamPage,
+  AdminEditClergyPage,
   AdminEditCyberFramePage,
   AdminEditDamageTypePage,
   AdminEditGlobalValuePage,
@@ -126,28 +134,30 @@ export {
   AdminEditProgramScopePage,
   AdminEditRarityPage,
   AdminEditRuleBookPage,
-  AdminEditArcanePage,
   AdminEditSkillPage,
   AdminEditStatPage,
   AdminEditTipTextPage,
+  AdminEditUserPage,
+  AdminEditVowPage,
   AdminEditWeaponPage,
   AdminEditWeaponScopePage,
   AdminEditWeaponStylePage,
   AdminEditWeaponTypePage,
-  AdminEditBasicActionPage,
   AdminGlobalValuesPage,
   AdminImplantsPage,
   AdminItemModifiersPage,
   AdminItemsPage,
   AdminItemTypesPage,
   AdminNewAmmoPage,
+  AdminNewArcanePage,
   AdminNewArmorPage,
   AdminNewArmorTypePage,
-  AdminEditUserPage,
   AdminNewBagPage,
+  AdminNewBasicActionPage,
   AdminNewBodyPartPage,
   AdminNewChapterPage,
   AdminNewCharParamPage,
+  AdminNewClergyPage,
   AdminNewCyberFramePage,
   AdminNewDamageTypePage,
   AdminNewGlobalValuePage,
@@ -158,7 +168,6 @@ export {
   AdminNewNodePage,
   AdminNewNotionPage,
   AdminNewNPCPage,
-  AdminUsersPage,
   AdminNewPage,
   AdminNewProgramPage,
   AdminNewProgramScopePage,
@@ -166,8 +175,8 @@ export {
   AdminNewRuleBookPage,
   AdminNewSkillPage,
   AdminNewStatPage,
-  AdminNewArcanePage,
   AdminNewTipTextPage,
+  AdminNewVowPage,
   AdminNewWeaponPage,
   AdminNewWeaponScopePage,
   AdminNewWeaponStylePage,
@@ -182,6 +191,7 @@ export {
   AdminStatsPage,
   AdminTestDiceCompPage,
   AdminTipTextsPage,
+  AdminUsersPage,
   AdminWeaponScopesPage,
   AdminWeaponsPage,
   AdminWeaponStylesPage,

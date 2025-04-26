@@ -299,7 +299,7 @@ const getGlobal = (req: IVerifyTokenRequest, res: Response): void => {
         });
       }
     )
-    .catch((err) => {
+    .catch(() => {
       res.status(404).send(gemNotFound('User'));
     });
 };

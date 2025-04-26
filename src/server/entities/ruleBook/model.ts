@@ -52,9 +52,7 @@ const ruleBookSchema = new Schema<IRuleBook>(
     },
   },
   {
-    // So `res.json()` and other `JSON.stringify()` functions include virtuals
     toJSON: { virtuals: true },
-    // So `console.log()` and other functions that use `toObject()` include virtuals
     toObject: { virtuals: true },
   }
 );

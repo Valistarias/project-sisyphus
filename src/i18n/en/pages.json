@@ -278,7 +278,7 @@
     "caption": "Roll results for {{formula}}. Total possible throws: {{variations}}"
   },
   "adminCyberFrames": {
-    "title": "Cyberframes",
+    "title": "BioFrames",
     "list": "List",
     "editCyberFrame": "Edit"
   },
@@ -312,6 +312,59 @@
       "title": "BioFrame Deletion",
       "text": "Are you sure you want to delete {{elt}} ? All the related branches will be lost !",
       "confirmCta": "Delete BioFrame"
+    }
+  },
+  "adminClergies": {
+    "title": "Clergies",
+    "list": "List",
+    "editClergy": "Edit"
+  },
+  "adminNewClergy": {
+    "title": "New Clergy",
+    "i18n": "Internationalization",
+    "button": "Create Clergy",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successCreate": "Clergy successfully created !"
+  },
+  "adminEditClergy": {
+    "edit": "Edit Clergy",
+    "delete": "Delete Clergy",
+    "return": "Return to Clergies",
+    "updateOrder": "Update Vows Order",
+    "vows": "Vows",
+    "createVow": "Create Linked Vow",
+    "editVow": "Edit Vow",
+    "i18n": "Internationalization",
+    "button": "Update Clergy Data",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successUpdate": "Clergy successfully updated !",
+    "successDelete": "Clergy successfully deleted !",
+    "confirmDeletion": {
+      "title": "Clergy Deletion",
+      "text": "Are you sure you want to delete {{elt}} ? All the related branches will be lost !",
+      "confirmCta": "Delete Clergy"
+    }
+  },
+  "adminNewVow": {
+    "title": "New Vow",
+    "i18n": "Internationalization",
+    "button": "Create Vow",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successCreate": "Vow successfully created !"
+  },
+  "adminEditVow": {
+    "edit": "Edit Vow",
+    "delete": "Delete Vow",
+    "return": "Return to Clergies",
+    "i18n": "Internationalization",
+    "button": "Update Vow Data",
+    "i18nInfo": "Internationalization is optionnal, but we will need to fill them all in the long run",
+    "successUpdate": "Vow successfully updated !",
+    "successDelete": "Vow successfully deleted !",
+    "confirmDeletion": {
+      "title": "Vow Deletion",
+      "text": "Are you sure you want to delete {{elt}} ? All the related branches will be lost !",
+      "confirmCta": "Delete Vow"
     }
   },
   "adminStats": {

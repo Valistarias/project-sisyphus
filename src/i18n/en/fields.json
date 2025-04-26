@@ -77,6 +77,21 @@
   "cyberFrameText": {
     "title": "BioFrame Details"
   },
+  "nameClergy": {
+    "required": "A Clergy Name is required",
+    "label": "Clergy Name"
+  },
+  "clergyText": {
+    "title": "Clergy History"
+  },
+  "iconClergy": {
+    "required": "A Clergy Symbol is required",
+    "label": "Clergy Symbol"
+  },
+  "nameVow": {
+    "required": "A tennet text is required",
+    "label": "Tennet"
+  },
   "typePage": {
     "required": "A Rulebook Type is required",
     "label": "Rulebook Type",

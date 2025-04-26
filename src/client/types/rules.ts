@@ -31,7 +31,9 @@ export interface IClergy {
   /** The summary of the Clergy */
   summary: string;
   /** The associated rulebook */
-  ruleBook: IRuleBook;
+  ruleBook: string;
+  /** The icon of the Clergy */
+  icon: string;
   /** The associated vows */
   vows: ICuratedVow[];
   /** When the Clergy was created */
@@ -49,10 +51,10 @@ export interface IVow {
   _id: string;
   /** The title of the Vow */
   title: string;
-  /** The summary of the Vow */
-  summary: string;
   /** The associated rulebook */
   clergy: string;
+  /** The position of this vow, in reference with other vows in clergy */
+  position: number;
   /** When the Vow was created */
   createdAt: Date;
 }

@@ -44,6 +44,7 @@ import {
   Stats,
   TipTexts,
   Users,
+  Vows,
   Weapons,
   WeaponScopes,
   WeaponStyles,
@@ -96,6 +97,7 @@ export default class Api {
   stats: Stats;
   tipTexts: TipTexts;
   users: Users;
+  vows: Vows;
   weapons: Weapons;
   weaponScopes: WeaponScopes;
   weaponStyles: WeaponStyles;
@@ -147,6 +149,7 @@ export default class Api {
     this.stats = new Stats();
     this.tipTexts = new TipTexts();
     this.users = new Users();
+    this.vows = new Vows();
     this.weapons = new Weapons();
     this.weaponScopes = new WeaponScopes();
     this.weaponStyles = new WeaponStyles();
