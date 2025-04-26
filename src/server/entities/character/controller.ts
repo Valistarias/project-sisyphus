@@ -32,7 +32,7 @@ import type {
   ICharacterStat,
   LeanICharacterNode,
 } from './index';
-import type { Lean } from '../../utils/types';
+import type { InternationalizationType, Lean } from '../../utils/types';
 import type { CuratedIAmmo } from '../ammo/controller';
 import type { CuratedIBag } from '../bag/controller';
 import type {
@@ -48,6 +48,7 @@ import type {
 } from '../body';
 import type { ICampaign } from '../campaign/model';
 import type { IUser } from '../user/model';
+import type { HydratedIVow, LeanIVow } from '../vow/model';
 import type { LeanICharacter } from './id/model';
 
 import { curateI18n } from '../../utils';
@@ -66,6 +67,7 @@ const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[
         Character.find()
           .or([{ player: user._id }, { createdBy: user._id }])
           .populate<{ player: HydratedDocument<IUser> }>('player')
+          .populate<{ vows: HydratedIVow[] }>('vows')
           .populate<{ createdBy: HydratedDocument<IUser> }>('createdBy')
           .populate<{ campaign: HydratedDocument<ICampaign<string>> }>('campaign')
           .populate<{ stats: HydratedICharacterStat[] }>({
@@ -156,6 +158,7 @@ const findCompleteCharacterById = async (
         Character.findById(id)
           .lean()
           .populate<{ player: Lean<IUser> }>('player')
+          .populate<{ vows: LeanIVow[] }>('vows')
           .populate<{ createdBy: Lean<IUser> }>('createdBy')
           .populate<{ campaign: Lean<ICampaign<string>> }>('campaign')
           .populate<{ stats: ICharacterStat[] }>({
@@ -306,6 +309,7 @@ const findCharacterById = async (
         }
         Character.findById(id)
           .populate<{ player: HydratedDocument<IUser> }>('player')
+          .populate<{ vows: HydratedIVow[] }>('vows')
           .populate<{ createdBy: HydratedDocument<IUser> }>('createdBy')
           .populate<{ campaign: HydratedDocument<ICampaign<string>> }>('campaign')
           .populate<{ stats: HydratedICharacterStat[] }>({
@@ -548,6 +552,7 @@ const updateInfos = (req: Request, res: Response): void => {
     money = null,
     karma = null,
     campaignId = null,
+    vows = null,
     gender = null,
     pronouns = null,
     bio = null,
@@ -584,6 +589,9 @@ const updateInfos = (req: Request, res: Response): void => {
         }
         if (karma !== null && karma !== char.karma) {
           char.karma = karma;
+        }
+        if (vows !== null && vows !== char.vows) {
+          char.vows = vows;
         }
         if (isReady !== null && isReady !== char.isReady) {
           char.isReady = isReady;
@@ -690,7 +698,7 @@ const deleteCharacter = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-type CuratedICharacterToSend = Omit<LeanICharacter, 'bodies' | 'nodes' | 'hand'> & {
+type CuratedICharacterToSend = Omit<LeanICharacter, 'bodies' | 'nodes' | 'hand' | 'vows'> & {
   bodies: Array<
     Pick<LeanIBody, 'alive' | 'hp' | 'character'> & {
       ammos: Array<
@@ -732,6 +740,10 @@ type CuratedICharacterToSend = Omit<LeanICharacter, 'bodies' | 'nodes' | 'hand'>
   >;
   nodes: CuratedINodeToSend[];
   hand: IDeck;
+  vows: Array<{
+    vow: LeanIVow;
+    i18n?: InternationalizationType;
+  }>;
 };
 
 const curateSingleCharacter = (characterSent: LeanICharacter): CuratedICharacterToSend => {
@@ -788,6 +800,10 @@ const curateSingleCharacter = (characterSent: LeanICharacter): CuratedICharacter
   return {
     ...characterSent,
     hand: curatedHand.deck,
+    vows: characterSent.vows.map((vow) => ({
+      vow,
+      i18n: curateI18n(vow.i18n),
+    })),
     bodies: curatedBodies ?? [],
     nodes: curatedNodes ?? [],
   };

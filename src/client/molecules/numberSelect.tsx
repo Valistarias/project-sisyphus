@@ -33,7 +33,7 @@ const NumberSelect: FC<IQuarkProps<INumberSelect>> = ({
   control,
   minimum = 0,
   maximum,
-  offset,
+  offset = 0,
   maxed = false,
   theme = 'vertical',
 }) => (
@@ -63,7 +63,7 @@ const NumberSelect: FC<IQuarkProps<INumberSelect>> = ({
               onChange(value + 1);
             }}
           />
-          <Ap className="number-select__value">{value + (offset ?? 0)}</Ap>
+          <Ap className="number-select__value">{value + offset}</Ap>
           <Button
             className={classTrim(`
                 number-select__btn-minus

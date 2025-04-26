@@ -7,16 +7,17 @@ import { useGlobalVars } from '../../providers';
 
 import { Ap, Atitle } from '../../atoms';
 import { Button, HintText } from '../../molecules';
-import { curateCyberFrame } from '../../utils/character';
+import { curateCharacterBody, curateCyberFrame, getActualBody } from '../../utils/character';
 import { RichTextElement } from '../richTextElement';
 
 import type {
+  ICompleteCyberFrame,
   ICuratedCyberFrame,
   ICuratedCyberFrameCharParam,
   ICuratedCyberFrameStat,
 } from '../../types';
 
-import { classTrim, getCyberFrameLevelsByNodes } from '../../utils';
+import { classTrim } from '../../utils';
 
 import './characterCreation.scss';
 
@@ -45,13 +46,19 @@ const CharacterCreationStep1: FC<ICharacterCreationStep1> = ({ onSubmitCyberFram
     [cyberFrames]
   );
 
-  const chosenCyberFrame = useMemo<ICuratedCyberFrame | null>(() => {
+  const chosenCyberFrame = useMemo<ICompleteCyberFrame | null>(() => {
     if (character === null || character === false) {
       return null;
     }
+    const { body } = getActualBody(character);
 
-    return getCyberFrameLevelsByNodes(character.nodes, cyberFrames)[0]?.cyberFrame;
-  }, [character, cyberFrames]);
+    if (body === undefined) {
+      return null;
+    }
+    const curatedBody = curateCharacterBody({ body, cyberFrames, charParams, stats });
+
+    return curatedBody.cyberFrame;
+  }, [charParams, character, cyberFrames, stats]);
 
   const detailsBlock = useMemo(() => {
     if (openedCFrame === null) {

@@ -146,10 +146,16 @@
       "next": "Next"
     },
     "step4": {
-      "cat": "Background",
-      "text": "Background",
-      "sub": "Your Past Life",
-      "select": "Select Background"
+      "cat": "Clergy",
+      "text": "Clergy",
+      "sub": "How do you define Good ? Pick a Clergy to learn more",
+      "selectTenets_one": "Select {{count}} tennet from your chosen clergy",
+      "selectTenets_other": "Select {{count}} tennets from your chosen clergy",
+      "select": "Select Clergy",
+      "randomizeCta": "Randomize",
+      "chooseCta": "Continue",
+      "return": "Back",
+      "chosen": "Chosen Clergy"
     },
     "step5": {
       "cat": "Inventory",

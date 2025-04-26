@@ -9,7 +9,7 @@ import type {
   ICuratedProgram,
   ICuratedWeapon,
 } from './items';
-import type { ICompleteCyberFrame, INode } from './rules';
+import type { ICompleteCyberFrame, ICuratedVow, INode } from './rules';
 
 // Body Skill ------------------------------------
 export interface IBodySkill {
@@ -241,6 +241,8 @@ export interface ICharacter {
   stats: ICharacterStat[];
   /** All the bodies used by this character */
   bodies?: IBody[];
+  /** All the bodies used by this character */
+  vows?: ICuratedVow[];
   /** When the character was created */
   createdAt: Date;
 }

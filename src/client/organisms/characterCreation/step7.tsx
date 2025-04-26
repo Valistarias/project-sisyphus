@@ -8,26 +8,33 @@ import { useGlobalVars } from '../../providers';
 
 import { Aicon } from '../../atoms';
 import { LinkButton } from '../../molecules';
+import { curateCharacterBody, getActualBody } from '../../utils/character';
 
-import type { ICuratedCyberFrame } from '../../types';
+import type { ICompleteCyberFrame } from '../../types';
 
-import { classTrim, getCyberFrameLevelsByNodes } from '../../utils';
+import { classTrim } from '../../utils';
 
 import './characterCreation.scss';
 
 const CharacterCreationStep7: FC = () => {
   const { t } = useTranslation();
-  const { character, cyberFrames } = useGlobalVars();
+  const { character, cyberFrames, charParams, stats } = useGlobalVars();
 
   const [displayNext, setDisplayNext] = useState<boolean>(false);
 
-  const chosenCyberFrame = useMemo<ICuratedCyberFrame | null>(() => {
+  const chosenCyberFrame = useMemo<ICompleteCyberFrame | null>(() => {
     if (character === null || character === false) {
       return null;
     }
+    const { body } = getActualBody(character);
 
-    return getCyberFrameLevelsByNodes(character.nodes, cyberFrames)[0]?.cyberFrame;
-  }, [character, cyberFrames]);
+    if (body === undefined) {
+      return null;
+    }
+    const curatedBody = curateCharacterBody({ body, cyberFrames, charParams, stats });
+
+    return curatedBody.cyberFrame;
+  }, [charParams, character, cyberFrames, stats]);
 
   let name = '';
   let id = '';

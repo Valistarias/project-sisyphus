@@ -263,4 +263,24 @@
       transform: translate3d(-50%, -50%, 0) rotate(180deg);
     }
   }
+
+  @keyframes rotatingYTranslate {
+    from {
+      transform: translate3d(-50%, -50%, 0) rotateY(0);
+    }
+
+    to {
+      transform: translate3d(-50%, -50%, 0) rotateY(360deg);
+    }
+  }
+
+  @keyframes rotatingY {
+    from {
+      transform: rotateY(0);
+    }
+
+    to {
+      transform: rotateY(360deg);
+    }
+  }
 }

@@ -4,6 +4,7 @@ import type { Lean } from '../../../utils/types';
 import type { HydratedIBody, LeanIBody } from '../../body';
 import type { ICampaign } from '../../campaign/model';
 import type { IUser } from '../../user/model';
+import type { HydratedIVow, LeanIVow } from '../../vow/model';
 import type { HydratedICharacterNode, LeanICharacterNode } from '../node/model';
 import type { HydratedICharacterStat, ICharacterStat } from '../stat/model';
 
@@ -34,6 +35,8 @@ interface ICharacter<IdType> {
   createdAt: Date;
   /** The player of the character */
   player?: IdType;
+  /** The character vows */
+  vows?: IdType[];
   /** Who has created this character */
   createdBy: IdType;
   /** The campaign where the character plays */
@@ -42,7 +45,7 @@ interface ICharacter<IdType> {
 
 type LeanICharacter = Omit<
   ICharacter<string>,
-  'player' | 'campaign' | 'createdBy' | 'background'
+  'player' | 'campaign' | 'createdBy' | 'background' | 'vows'
 > & {
   player?: Lean<IUser>;
   createdBy: Lean<IUser>;
@@ -50,16 +53,18 @@ type LeanICharacter = Omit<
   campaign?: Lean<ICampaign<string>>;
   nodes?: LeanICharacterNode[];
   bodies?: LeanIBody[];
+  vows: LeanIVow[];
 };
 
 type HydratedICharacter = HydratedDocument<
-  Omit<ICharacter<string>, 'player' | 'campaign' | 'createdBy' | 'background'> & {
+  Omit<ICharacter<string>, 'player' | 'campaign' | 'createdBy' | 'background' | 'vows'> & {
     player?: HydratedDocument<IUser>;
     createdBy: HydratedDocument<IUser>;
     stats: HydratedICharacterStat[];
     campaign?: HydratedDocument<ICampaign<string>>;
     nodes?: HydratedICharacterNode[];
     bodies?: HydratedIBody[];
+    vows: HydratedIVow[];
   }
 >;
 
@@ -86,6 +91,12 @@ const characterSchema = new Schema<ICharacter<ObjectId>>(
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
+    vows: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Vow',
+      },
+    ],
     createdBy: {
       type: Schema.Types.ObjectId,
       ref: 'User',

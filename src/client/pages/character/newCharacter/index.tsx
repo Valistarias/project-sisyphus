@@ -52,6 +52,8 @@ const NewCharacter: FC = () => {
     useGlobalVars();
   const { id } = useParams();
 
+  console.log('character', character);
+
   const [displayLoading, setDisplayLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [tooltipOpen, setTooltipOpen] = useState(false);
@@ -70,8 +72,6 @@ const NewCharacter: FC = () => {
 
   const { handleSubmit: submitTips, control: toolTipControl } = useForm();
 
-  console.log('character', character);
-
   const charCreationState = useMemo(() => {
     if (character === null || character === false) {
       return 1;
@@ -89,13 +89,19 @@ const NewCharacter: FC = () => {
           return 3;
         }
 
-        if (body.skills.length >= 0) {
+        if (character.vows === undefined || character.vows.length === 0) {
           return 4;
         }
 
-        if (character.firstName === undefined) {
-          return 7;
+        if (character.money === undefined || character.money === 0) {
+          return 5;
         }
+
+        if (character.firstName === undefined) {
+          return 6;
+        }
+
+        return 7;
       }
     }
 
@@ -301,12 +307,40 @@ const NewCharacter: FC = () => {
   );
 
   const onSubmitVows = useCallback(
-    (backgroundId: string) => {
+    (vowsId: string[]) => {
       if (api !== undefined && user !== null && character !== null && character !== false) {
-        // TODO
+        api.characters
+          .update({
+            id: character._id,
+            vows: vowsId,
+          })
+          .then(() => {
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{t('newCharacter.successUpdateItems', { ns: 'pages' })}</Ap>
+                </Alert>
+              ),
+            });
+            setCharacterFromId(character._id);
+          })
+          .catch(({ response }: ErrorResponseType) => {
+            const { data } = response;
+            const newId = getNewId();
+            createAlert({
+              key: newId,
+              dom: (
+                <Alert key={newId} id={newId} timer={5}>
+                  <Ap>{data.message}</Ap>
+                </Alert>
+              ),
+            });
+          });
       }
     },
-    [api, character, user]
+    [api, character, createAlert, getNewId, setCharacterFromId, t, user]
   );
 
   const onSubmitItems = useCallback(
