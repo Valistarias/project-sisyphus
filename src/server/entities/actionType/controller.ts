@@ -130,10 +130,21 @@ const findSingle = (req: Request, res: Response): void => {
     .catch((err) => res.status(404).send(err));
 };
 
+const findAllPromise = async (): Promise<IActionType[]> =>
+  await new Promise((resolve, reject) => {
+    findActionTypes()
+      .then((actionTypes) => {
+        resolve(actionTypes);
+      })
+      .catch((err: unknown) => {
+        reject(gemServerError(err));
+      });
+  });
+
 const findAll = (req: Request, res: Response): void => {
-  findActionTypes()
+  findAllPromise()
     .then((actionTypes) => res.send(actionTypes))
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteActionType, findAll, findSingle, update };
+export { create, deleteActionType, findAll, findAllPromise, findSingle, update };

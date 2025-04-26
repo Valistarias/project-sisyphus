@@ -198,21 +198,40 @@ const findSingle = (req: Request, res: Response): void => {
     });
 };
 
-const findAll = (req: Request, res: Response): void => {
-  findArcanes()
-    .then((arcanes) => {
-      const curatedArcanes: CuratedIArcane[] = [];
+const findAllPromise = async (): Promise<CuratedIArcane[]> =>
+  await new Promise((resolve, reject) => {
+    findArcanes()
+      .then((arcanes) => {
+        const curatedArcanes: CuratedIArcane[] = [];
 
-      arcanes.forEach((arcane) => {
-        curatedArcanes.push({
-          arcane,
-          i18n: curateI18n(arcane.i18n),
+        arcanes.forEach((arcane) => {
+          curatedArcanes.push({
+            arcane,
+            i18n: curateI18n(arcane.i18n),
+          });
         });
+        resolve(curatedArcanes);
+      })
+      .catch((err: unknown) => {
+        reject(gemServerError(err));
       });
+  });
 
-      res.send(curatedArcanes);
+const findAll = (req: Request, res: Response): void => {
+  findAllPromise()
+    .then((arcanes) => {
+      res.send(arcanes);
     })
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteArcane, findAll, findArcaneById, findLeanArcanes, findSingle, update };
+export {
+  create,
+  deleteArcane,
+  findAll,
+  findAllPromise,
+  findArcaneById,
+  findLeanArcanes,
+  findSingle,
+  update,
+};

@@ -224,21 +224,41 @@ const findSingle = (req: Request, res: Response): void => {
     });
 };
 
-const findAll = (req: Request, res: Response): void => {
-  findRarities()
-    .then((rarities) => {
-      const curatedRarities: CuratedIRarity[] = [];
+const findAllPromise = async (): Promise<CuratedIRarity[]> =>
+  await new Promise((resolve, reject) => {
+    findRarities()
+      .then((rarities) => {
+        const curatedRarities: CuratedIRarity[] = [];
 
-      rarities.forEach((rarity) => {
-        curatedRarities.push({
-          rarity,
-          i18n: curateI18n(rarity.i18n),
+        rarities.forEach((rarity) => {
+          curatedRarities.push({
+            rarity,
+            i18n: curateI18n(rarity.i18n),
+          });
         });
-      });
 
-      res.send(curatedRarities);
+        resolve(curatedRarities);
+      })
+      .catch((err: unknown) => {
+        reject(gemServerError(err));
+      });
+  });
+
+const findAll = (req: Request, res: Response): void => {
+  findAllPromise()
+    .then((rarities) => {
+      res.send(rarities);
     })
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { changeRaritiesOrder, create, deleteRarity, findAll, findRarityById, findSingle, update };
+export {
+  changeRaritiesOrder,
+  create,
+  deleteRarity,
+  findAll,
+  findAllPromise,
+  findRarityById,
+  findSingle,
+  update,
+};

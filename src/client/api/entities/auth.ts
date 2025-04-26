@@ -2,7 +2,31 @@ import axios from 'axios';
 
 import Entity from './entity';
 
-import type { IUser } from '../../types';
+import type {
+  IActionDuration,
+  IActionType,
+  ICuratedAction,
+  ICuratedArcane,
+  ICuratedArmorType,
+  ICuratedBodyPart,
+  ICuratedCharParam,
+  ICuratedClergy,
+  ICuratedCyberFrame,
+  ICuratedDamageType,
+  ICuratedItemModifier,
+  ICuratedProgramScope,
+  ICuratedRarity,
+  ICuratedRuleBook,
+  ICuratedSkill,
+  ICuratedStat,
+  ICuratedTipText,
+  ICuratedWeaponScope,
+  ICuratedWeaponStyle,
+  ICuratedWeaponType,
+  IGlobalValue,
+  IItemType,
+  IUser,
+} from '../../types';
 import type { ErrorResponseType } from '../../types/global';
 
 interface ISignInUserPayload {
@@ -21,11 +45,37 @@ interface INewPassPayload {
   confirmPass: string;
 }
 
+interface GlobalResponseObject {
+  actionDurations: IActionDuration[];
+  actionTypes: IActionType[];
+  arcanes: ICuratedArcane[];
+  armorTypes: ICuratedArmorType[];
+  basicActions: ICuratedAction[];
+  bodyParts: ICuratedBodyPart[];
+  charParams: ICuratedCharParam[];
+  clergies: ICuratedClergy[];
+  cyberFrames: ICuratedCyberFrame[];
+  damageTypes: ICuratedDamageType[];
+  globalValues: IGlobalValue[];
+  itemModifiers: ICuratedItemModifier[];
+  itemTypes: IItemType[];
+  programScopes: ICuratedProgramScope[];
+  rarities: ICuratedRarity[];
+  ruleBooks: ICuratedRuleBook[];
+  skills: ICuratedSkill[];
+  stats: ICuratedStat[];
+  tipTexts: ICuratedTipText[];
+  weaponScopes: ICuratedWeaponScope[];
+  weaponStyles: ICuratedWeaponStyle[];
+  weaponTypes: ICuratedWeaponType[];
+}
+
 export default class Auth extends Entity<unknown, IUser, IUser> {
   signup: (payload: ISignUpUserPayload) => Promise<boolean>;
   signin: (payload: ISignInUserPayload) => Promise<IUser>;
   signout: () => Promise<boolean>;
   check: () => Promise<IUser>;
+  getGlobal: () => Promise<GlobalResponseObject>;
   passUpdate: (payload: INewPassPayload) => Promise<IUser>;
 
   constructor() {
@@ -92,6 +142,18 @@ export default class Auth extends Entity<unknown, IUser, IUser> {
           .post(`${this.url}/passupdate/`, payload)
           .then((res) => {
             resolve(res.data as IUser);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+
+    this.getGlobal = async () =>
+      await new Promise((resolve, reject) => {
+        axios
+          .get(`${this.url}/getglobal/`)
+          .then((res) => {
+            resolve(res.data as GlobalResponseObject);
           })
           .catch((err) => {
             reject(err);

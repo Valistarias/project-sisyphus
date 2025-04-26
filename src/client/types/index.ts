@@ -113,6 +113,10 @@ import type {
   ISkillBonus,
   IStat,
   IStatBonus,
+  IClergy,
+  ICuratedClergy,
+  IVow,
+  ICuratedVow,
 } from './rules';
 
 export type {
@@ -172,6 +176,8 @@ export type {
   ICuratedProgramScope,
   ICuratedRarity,
   ICuratedRuleBook,
+  IClergy,
+  ICuratedClergy,
   IRole,
   ICuratedSkill,
   ICuratedStat,
@@ -218,4 +224,6 @@ export type {
   ICard,
   IDeck,
   TypeStarterKitValues,
+  IVow,
+  ICuratedVow,
 };

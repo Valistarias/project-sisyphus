@@ -254,19 +254,30 @@ const findSingle = (req: Request, res: Response): void => {
     });
 };
 
-const findAll = (req: Request, res: Response): void => {
-  findBodyParts()
-    .then((bodyParts) => {
-      const curatedBodyParts: CuratedIBodyPart[] = [];
+const findAllPromise = async (): Promise<CuratedIBodyPart[]> =>
+  await new Promise((resolve, reject) => {
+    findBodyParts()
+      .then((bodyParts) => {
+        const curatedBodyParts: CuratedIBodyPart[] = [];
 
-      bodyParts.forEach((bodyPart) => {
-        curatedBodyParts.push({
-          bodyPart,
-          i18n: curateI18n(bodyPart.i18n),
+        bodyParts.forEach((bodyPart) => {
+          curatedBodyParts.push({
+            bodyPart,
+            i18n: curateI18n(bodyPart.i18n),
+          });
         });
-      });
 
-      res.send(curatedBodyParts);
+        resolve(curatedBodyParts);
+      })
+      .catch((err: unknown) => {
+        reject(gemServerError(err));
+      });
+  });
+
+const findAll = (req: Request, res: Response): void => {
+  findAllPromise()
+    .then((bodyParts) => {
+      res.send(bodyParts);
     })
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
@@ -276,6 +287,7 @@ export {
   create,
   deleteBodyPart,
   findAll,
+  findAllPromise,
   findBodyPartById,
   findSingle,
   update,

@@ -3,34 +3,30 @@ import type { Request, Response } from 'express';
 import db from '../../models';
 import { gemInvalidField, gemNotFound, gemServerError } from '../../utils/globalErrorMessage';
 
-import type { HydratedIDamageType } from './model';
+import type { HydratedIClergy } from './model';
 import type { InternationalizationType } from '../../utils/types';
 
 import { curateI18n } from '../../utils';
 
-const { DamageType } = db;
+const { Clergy } = db;
 
-const findDamageTypes = async (): Promise<HydratedIDamageType[]> =>
+const findClergies = async (): Promise<HydratedIClergy[]> =>
   await new Promise((resolve, reject) => {
-    DamageType.find()
-      .then((res: HydratedIDamageType[]) => {
-        if (res.length === 0) {
-          reject(gemNotFound('DamageTypes'));
-        } else {
-          resolve(res);
-        }
+    Clergy.find()
+      .then((res: HydratedIClergy[]) => {
+        resolve(res);
       })
       .catch((err) => {
         reject(gemServerError(err));
       });
   });
 
-const findDamageTypeById = async (id: string): Promise<HydratedIDamageType> =>
+const findClergyById = async (id: string): Promise<HydratedIClergy> =>
   await new Promise((resolve, reject) => {
-    DamageType.findById(id)
-      .then((res?: HydratedIDamageType | null) => {
+    Clergy.findById(id)
+      .then((res?: HydratedIClergy | null) => {
         if (res === undefined || res === null) {
-          reject(gemNotFound('DamageType'));
+          reject(gemNotFound('Clergy'));
         } else {
           resolve(res);
         }
@@ -41,26 +37,38 @@ const findDamageTypeById = async (id: string): Promise<HydratedIDamageType> =>
   });
 
 const create = (req: Request, res: Response): void => {
-  const { title, summary, i18n = null } = req.body;
-  if (title === undefined || summary === undefined) {
-    res.status(400).send(gemInvalidField('Damage Type'));
+  const {
+    title,
+    summary,
+    ruleBook,
+    i18n = null,
+  }: {
+    id?: string;
+    title?: string;
+    summary?: string;
+    ruleBook?: string;
+    i18n?: string | null;
+  } = req.body;
+  if (title === undefined || summary === undefined || ruleBook === undefined) {
+    res.status(400).send(gemInvalidField('Clergy'));
 
     return;
   }
 
-  const damageType = new DamageType({
+  const clergy = new Clergy({
     title,
     summary,
+    ruleBook,
   });
 
   if (i18n !== null) {
-    damageType.i18n = JSON.stringify(i18n);
+    clergy.i18n = JSON.stringify(i18n);
   }
 
-  damageType
+  clergy
     .save()
     .then(() => {
-      res.send(damageType);
+      res.send(clergy);
     })
     .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
@@ -72,47 +80,50 @@ const update = (req: Request, res: Response): void => {
     id,
     title = null,
     summary = null,
+    ruleBook = null,
     i18n,
   }: {
     id?: string;
     title: string | null;
     summary: string | null;
+    ruleBook: string | null;
     i18n: InternationalizationType | null;
   } = req.body;
   if (id === undefined) {
-    res.status(400).send(gemInvalidField('Damage Type ID'));
+    res.status(400).send(gemInvalidField('Clergy ID'));
 
     return;
   }
-  findDamageTypeById(id)
-    .then((damageType) => {
+  findClergyById(id)
+    .then((clergy) => {
       if (title !== null) {
-        damageType.title = title;
+        clergy.title = title;
       }
       if (summary !== null) {
-        damageType.summary = summary;
+        clergy.summary = summary;
+      }
+      if (ruleBook !== null) {
+        clergy.ruleBook = ruleBook;
       }
 
       if (i18n !== null) {
         const newIntl: InternationalizationType = {
-          ...(damageType.i18n !== undefined && damageType.i18n !== ''
-            ? JSON.parse(damageType.i18n)
-            : {}),
+          ...(clergy.i18n !== undefined && clergy.i18n !== '' ? JSON.parse(clergy.i18n) : {}),
         };
 
         Object.keys(i18n).forEach((lang) => {
           newIntl[lang] = i18n[lang];
         });
 
-        damageType.i18n = JSON.stringify(newIntl);
+        clergy.i18n = JSON.stringify(newIntl);
       }
 
-      damageType
+      clergy
         .save()
         .then(() => {
           res.send({
-            message: 'Damage Type was updated successfully!',
-            damageType,
+            message: 'Clergy was updated successfully!',
+            clergy,
           });
         })
         .catch((err: unknown) => {
@@ -120,18 +131,18 @@ const update = (req: Request, res: Response): void => {
         });
     })
     .catch(() => {
-      res.status(404).send(gemNotFound('Damage Type'));
+      res.status(404).send(gemNotFound('Clergy'));
     });
 };
 
-const deleteDamageTypeById = async (id?: string): Promise<boolean> =>
+const deleteClergyById = async (id?: string): Promise<boolean> =>
   await new Promise((resolve, reject) => {
     if (id === undefined) {
-      reject(gemInvalidField('Damage Type ID'));
+      reject(gemInvalidField('Clergy ID'));
 
       return;
     }
-    DamageType.findByIdAndDelete(id)
+    Clergy.findByIdAndDelete(id)
       .then(() => {
         resolve(true);
       })
@@ -140,34 +151,34 @@ const deleteDamageTypeById = async (id?: string): Promise<boolean> =>
       });
   });
 
-const deleteDamageType = (req: Request, res: Response): void => {
+const deleteClergy = (req: Request, res: Response): void => {
   const { id }: { id: string } = req.body;
-  deleteDamageTypeById(id)
+  deleteClergyById(id)
     .then(() => {
-      res.send({ message: 'Damage Type was deleted successfully!' });
+      res.send({ message: 'Clergy was deleted successfully!' });
     })
     .catch((err: unknown) => {
       res.status(500).send(gemServerError(err));
     });
 };
 
-interface CuratedIDamageType {
+interface CuratedIClergy {
   i18n?: InternationalizationType;
-  damageType: HydratedIDamageType;
+  clergy: HydratedIClergy;
 }
 
 const findSingle = (req: Request, res: Response): void => {
-  const { damageTypeId } = req.query;
-  if (damageTypeId === undefined || typeof damageTypeId !== 'string') {
-    res.status(400).send(gemInvalidField('DamageType ID'));
+  const { statId } = req.query;
+  if (statId === undefined || typeof statId !== 'string') {
+    res.status(400).send(gemInvalidField('Clergy ID'));
 
     return;
   }
-  findDamageTypeById(damageTypeId)
-    .then((damageType) => {
+  findClergyById(statId)
+    .then((clergy) => {
       const sentObj = {
-        damageType,
-        i18n: curateI18n(damageType.i18n),
+        clergy,
+        i18n: curateI18n(clergy.i18n),
       };
       res.send(sentObj);
     })
@@ -176,20 +187,20 @@ const findSingle = (req: Request, res: Response): void => {
     });
 };
 
-const findAllPromise = async (): Promise<CuratedIDamageType[]> =>
+const findAllPromise = async (): Promise<CuratedIClergy[]> =>
   await new Promise((resolve, reject) => {
-    findDamageTypes()
-      .then((damageTypes) => {
-        const curatedDamageTypes: CuratedIDamageType[] = [];
+    findClergies()
+      .then((clergies) => {
+        const curatedClergies: CuratedIClergy[] = [];
 
-        damageTypes.forEach((damageType) => {
-          curatedDamageTypes.push({
-            damageType,
-            i18n: curateI18n(damageType.i18n),
+        clergies.forEach((clergy) => {
+          curatedClergies.push({
+            clergy,
+            i18n: curateI18n(clergy.i18n),
           });
         });
 
-        resolve(curatedDamageTypes);
+        resolve(curatedClergies);
       })
       .catch((err: unknown) => {
         reject(gemServerError(err));
@@ -198,18 +209,10 @@ const findAllPromise = async (): Promise<CuratedIDamageType[]> =>
 
 const findAll = (req: Request, res: Response): void => {
   findAllPromise()
-    .then((damageTypes) => {
-      res.send(damageTypes);
+    .then((clergies) => {
+      res.send(clergies);
     })
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export {
-  create,
-  deleteDamageType,
-  findAll,
-  findAllPromise,
-  findDamageTypeById,
-  findSingle,
-  update,
-};
+export { create, deleteClergy, findAll, findAllPromise, findSingle, findClergyById, update };

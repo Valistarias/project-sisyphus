@@ -22,6 +22,46 @@ export interface ICuratedStat {
   stat: IStat;
 }
 
+// Clergy ------------------------------------
+export interface IClergy {
+  /** The ID of the Clergy */
+  _id: string;
+  /** The title of the Clergy */
+  title: string;
+  /** The summary of the Clergy */
+  summary: string;
+  /** The associated rulebook */
+  ruleBook: IRuleBook;
+  /** The associated vows */
+  vows: ICuratedVow[];
+  /** When the Clergy was created */
+  createdAt: Date;
+}
+
+export interface ICuratedClergy {
+  i18n: InternationalizationType;
+  clergy: IClergy;
+}
+
+// Vow ------------------------------------
+export interface IVow {
+  /** The ID of the Vow */
+  _id: string;
+  /** The title of the Vow */
+  title: string;
+  /** The summary of the Vow */
+  summary: string;
+  /** The associated rulebook */
+  clergy: string;
+  /** When the Vow was created */
+  createdAt: Date;
+}
+
+export interface ICuratedVow {
+  i18n: InternationalizationType;
+  vow: IVow;
+}
+
 // Stat Bonus ------------------------------------
 export interface IStatBonus {
   /** The ID of the stat bonus */

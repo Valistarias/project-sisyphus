@@ -34,6 +34,7 @@ import ChapterTypeRoutes from './entities/chapterType/routes';
 import CharacterRoutes from './entities/character/routes';
 import CharParamRoutes from './entities/charParam/routes';
 import CharParamBonusRoutes from './entities/charParamBonus/routes';
+import ClergyRoutes from './entities/clergy/routes';
 import CyberFrameRoutes from './entities/cyberFrame/routes';
 import DamageRoutes from './entities/damage/routes';
 import DamageTypeRoutes from './entities/damageType/routes';
@@ -61,6 +62,7 @@ import StatRoutes from './entities/stat/routes';
 import StatBonusRoutes from './entities/statBonus/routes';
 import TiptextRoutes from './entities/tipText/routes';
 import UserRoutes from './entities/user/routes';
+import VowRoutes from './entities/vow/routes';
 import WeaponRoutes from './entities/weapon/routes';
 import WeaponScopeRoutes from './entities/weaponScope/routes';
 import WeaponStyleRoutes from './entities/weaponStyle/routes';
@@ -171,6 +173,8 @@ SkillBonusRoutes(apiRouter);
 SkillRoutes(apiRouter);
 StatBonusRoutes(apiRouter);
 StatRoutes(apiRouter);
+ClergyRoutes(apiRouter);
+VowRoutes(apiRouter);
 TiptextRoutes(apiRouter);
 
 // Items routes

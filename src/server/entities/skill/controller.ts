@@ -302,16 +302,27 @@ const findSingle = (req: Request, res: Response): void => {
     });
 };
 
-const findAll = (req: Request, res: Response): void => {
-  findSkills()
-    .then((skills) => {
-      const curatedSkills: CuratedISkillToSend[] = [];
+const findAllPromise = async (): Promise<CuratedISkillToSend[]> =>
+  await new Promise((resolve, reject) => {
+    findSkills()
+      .then((skills) => {
+        const curatedSkills: CuratedISkillToSend[] = [];
 
-      skills.forEach((skillSent) => {
-        curatedSkills.push(curateSingleSkill(skillSent));
+        skills.forEach((skillSent) => {
+          curatedSkills.push(curateSingleSkill(skillSent));
+        });
+
+        resolve(curatedSkills);
+      })
+      .catch((err: unknown) => {
+        reject(gemServerError(err));
       });
+  });
 
-      res.send(curatedSkills);
+const findAll = (req: Request, res: Response): void => {
+  findAllPromise()
+    .then((skills) => {
+      res.send(skills);
     })
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
@@ -321,6 +332,7 @@ export {
   create,
   deleteSkill,
   findAll,
+  findAllPromise,
   findSingle,
   findSkillById,
   update,

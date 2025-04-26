@@ -249,19 +249,30 @@ const findSingle = (req: Request, res: Response): void => {
     });
 };
 
-const findAll = (req: Request, res: Response): void => {
-  findItemModifiers()
-    .then((itemModifiers) => {
-      const curatedItemModifiers: CuratedIItemModifier[] = [];
+const findAllPromise = async (): Promise<CuratedIItemModifier[]> =>
+  await new Promise((resolve, reject) => {
+    findItemModifiers()
+      .then((itemModifiers) => {
+        const curatedItemModifiers: CuratedIItemModifier[] = [];
 
-      itemModifiers.forEach((itemModifier) => {
-        curatedItemModifiers.push({
-          itemModifier,
-          i18n: curateI18n(itemModifier.i18n),
+        itemModifiers.forEach((itemModifier) => {
+          curatedItemModifiers.push({
+            itemModifier,
+            i18n: curateI18n(itemModifier.i18n),
+          });
         });
-      });
 
-      res.send(curatedItemModifiers);
+        resolve(curatedItemModifiers);
+      })
+      .catch((err: unknown) => {
+        reject(gemServerError(err));
+      });
+  });
+
+const findAll = (req: Request, res: Response): void => {
+  findAllPromise()
+    .then((itemModifiers) => {
+      res.send(itemModifiers);
     })
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
@@ -271,6 +282,7 @@ export {
   create,
   deleteItemModifier,
   findAll,
+  findAllPromise,
   findItemModifierById,
   findSingle,
   update,

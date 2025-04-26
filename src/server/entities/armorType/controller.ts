@@ -176,21 +176,31 @@ const findSingle = (req: Request, res: Response): void => {
     });
 };
 
-const findAll = (req: Request, res: Response): void => {
-  findArmorTypes()
-    .then((armorTypes) => {
-      const curatedArmorTypes: CuratedIArmorType[] = [];
+const findAllPromise = async (): Promise<CuratedIArmorType[]> =>
+  await new Promise((resolve, reject) => {
+    findArmorTypes()
+      .then((armorTypes) => {
+        const curatedArmorTypes: CuratedIArmorType[] = [];
 
-      armorTypes.forEach((armorType) => {
-        curatedArmorTypes.push({
-          armorType,
-          i18n: curateI18n(armorType.i18n),
+        armorTypes.forEach((armorType) => {
+          curatedArmorTypes.push({
+            armorType,
+            i18n: curateI18n(armorType.i18n),
+          });
         });
+        resolve(curatedArmorTypes);
+      })
+      .catch((err: unknown) => {
+        reject(gemServerError(err));
       });
+  });
 
-      res.send(curatedArmorTypes);
+const findAll = (req: Request, res: Response): void => {
+  findAllPromise()
+    .then((armorTypes) => {
+      res.send(armorTypes);
     })
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteArmorType, findAll, findArmorTypeById, findSingle, update };
+export { create, deleteArmorType, findAll, findAllPromise, findArmorTypeById, findSingle, update };

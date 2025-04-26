@@ -13,8 +13,30 @@ import {
   gemServerError,
   gemUnverifiedUser,
 } from '../../utils/globalErrorMessage';
+import { findAllBasicsPromise as findAllBasicActions } from '../action/controller';
+import { findAllPromise as findAllActionDurations } from '../actionDuration/controller';
+import { findAllPromise as findAllActionTypes } from '../actionType/controller';
+import { findAllPromise as findAllArcanes } from '../arcane/controller';
+import { findAllPromise as findAllArmorTypes } from '../armorType/controller';
+import { findAllPromise as findAllBodyParts } from '../bodyPart/controller';
+import { findAllPromise as findAllCharParams } from '../charParam/controller';
+import { findAllPromise as findAllClergies } from '../clergy/controller';
+import { findAllPromise as findAllCyberFrames } from '../cyberFrame/controller';
+import { findAllPromise as findAllDamageTypes } from '../damageType/controller';
+import { findAllPromise as findAllGlobalValues } from '../globalValue/controller';
+import { findAllPromise as findAllItemModifiers } from '../itemModifier/controller';
+import { findAllPromise as findAllItemTypes } from '../itemType/controller';
 import { removeToken } from '../mailToken/controller';
+import { findAllPromise as findAllProgramScopes } from '../programScope/controller';
+import { findAllPromise as findAllRarities } from '../rarity/controller';
+import { findAllPromise as findAllRuleBooks } from '../ruleBook/controller';
+import { findAllPromise as findAllSkills } from '../skill/controller';
+import { findAllPromise as findAllStats } from '../stat/controller';
+import { findAllPromise as findAllTipTexts } from '../tipText/controller';
 import { findUserById } from '../user/controller';
+import { findAllPromise as findAllWeaponScopes } from '../weaponScope/controller';
+import { findAllPromise as findAllWeaponStyles } from '../weaponStyle/controller';
+import { findAllPromise as findAllWeaponTypes } from '../weaponType/controller';
 
 import type { Lean } from '../../utils/types';
 import type { HydratedIUser, IRole, IUser } from '../index';
@@ -201,6 +223,87 @@ const getLogged = (req: IVerifyTokenRequest, res: Response): void => {
     });
 };
 
+const getGlobal = (req: IVerifyTokenRequest, res: Response): void => {
+  Promise.all([
+    findAllActionDurations(),
+    findAllActionTypes(),
+    findAllArcanes(),
+    findAllArmorTypes(),
+    findAllBasicActions(),
+    findAllBodyParts(),
+    findAllCharParams(),
+    findAllClergies(),
+    findAllCyberFrames(),
+    findAllDamageTypes(),
+    findAllGlobalValues(),
+    findAllItemModifiers(),
+    findAllItemTypes(),
+    findAllProgramScopes(),
+    findAllRarities(),
+    findAllRuleBooks(req),
+    findAllSkills(),
+    findAllStats(),
+    findAllTipTexts(),
+    findAllWeaponScopes(),
+    findAllWeaponStyles(),
+    findAllWeaponTypes(),
+  ])
+    .then(
+      ([
+        actionDurations,
+        actionTypes,
+        arcanes,
+        armorTypes,
+        basicActions,
+        bodyParts,
+        charParams,
+        clergies,
+        cyberFrames,
+        damageTypes,
+        globalValues,
+        itemModifiers,
+        itemTypes,
+        programScopes,
+        rarities,
+        ruleBooks,
+        skills,
+        stats,
+        tipTexts,
+        weaponScopes,
+        weaponStyles,
+        weaponTypes,
+      ]) => {
+        res.send({
+          actionDurations,
+          actionTypes,
+          arcanes,
+          armorTypes,
+          basicActions,
+          bodyParts,
+          charParams,
+          clergies,
+          cyberFrames,
+          damageTypes,
+          globalValues,
+          itemModifiers,
+          itemTypes,
+          programScopes,
+          rarities,
+          ruleBooks,
+          skills,
+          stats,
+          tipTexts,
+          weaponScopes,
+          weaponStyles,
+          weaponTypes,
+        });
+      }
+    )
+    .catch((err) => {
+      res.status(404).send(gemNotFound('User'));
+    });
+};
+
 const updatePassword = (req: Request, res: Response): void => {
   const { userId, pass, confirmPass } = req.body;
   if (pass !== confirmPass || pass === undefined || confirmPass === undefined) {
@@ -234,4 +337,4 @@ const updatePassword = (req: Request, res: Response): void => {
   }
 };
 
-export { getLogged, signIn, signOut, signUp, updatePassword, verifyTokenSingIn };
+export { getLogged, signIn, signOut, signUp, updatePassword, verifyTokenSingIn, getGlobal };

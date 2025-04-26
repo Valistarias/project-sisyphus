@@ -321,18 +321,37 @@ const findSingle = (req: Request, res: Response): void => {
     });
 };
 
-const findAll = (req: Request, res: Response): void => {
-  findCyberFrames()
-    .then((cyberFrames) => {
-      const curatedCyberFrames: CuratedICyberFrameToSend[] = [];
+const findAllPromise = async (): Promise<CuratedICyberFrameToSend[]> =>
+  await new Promise((resolve, reject) => {
+    findCyberFrames()
+      .then((cyberFrames) => {
+        const curatedCyberFrames: CuratedICyberFrameToSend[] = [];
 
-      cyberFrames.forEach((cyberFrameSent) => {
-        curatedCyberFrames.push(curateSingleCyberFrame(cyberFrameSent));
+        cyberFrames.forEach((cyberFrameSent) => {
+          curatedCyberFrames.push(curateSingleCyberFrame(cyberFrameSent));
+        });
+
+        resolve(curatedCyberFrames);
+      })
+      .catch((err: unknown) => {
+        reject(gemServerError(err));
       });
+  });
 
-      res.send(curatedCyberFrames);
+const findAll = (req: Request, res: Response): void => {
+  findAllPromise()
+    .then((cyberFrames) => {
+      res.send(cyberFrames);
     })
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteCyberFrame, findAll, findCyberFrameById, findSingle, update };
+export {
+  create,
+  deleteCyberFrame,
+  findAll,
+  findAllPromise,
+  findCyberFrameById,
+  findSingle,
+  update,
+};

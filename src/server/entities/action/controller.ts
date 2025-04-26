@@ -435,19 +435,30 @@ const findAll = (req: Request, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-const findAllBasics = (req: Request, res: Response): void => {
-  findActions({ isBasic: true })
-    .then((actions) => {
-      const curatedActions: CuratedIAction[] = [];
+const findAllBasicsPromise = async (): Promise<CuratedIAction[]> =>
+  await new Promise((resolve, reject) => {
+    findActions({ isBasic: true })
+      .then((actions) => {
+        const curatedActions: CuratedIAction[] = [];
 
-      actions.forEach((action) => {
-        curatedActions.push({
-          action,
-          i18n: curateI18n(action.i18n),
+        actions.forEach((action) => {
+          curatedActions.push({
+            action,
+            i18n: curateI18n(action.i18n),
+          });
         });
-      });
 
-      res.send(curatedActions);
+        resolve(curatedActions);
+      })
+      .catch((err: unknown) => {
+        reject(gemServerError(err));
+      });
+  });
+
+const findAllBasics = (req: Request, res: Response): void => {
+  findAllBasicsPromise()
+    .then((actions) => {
+      res.send(actions);
     })
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
@@ -458,6 +469,7 @@ export {
   findActionById,
   findAll,
   findAllBasics,
+  findAllBasicsPromise,
   findSingle,
   smartUpdateActions,
   update,

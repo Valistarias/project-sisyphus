@@ -18,6 +18,7 @@ import ChapterTypes from './chapterTypes';
 import Characters from './characters';
 import CharParamBonuses from './charParamBonuses';
 import CharParams from './charParams';
+import Clergies from './clergies';
 import CyberFrames from './cyberFrames';
 import Damages from './damages';
 import DamageTypes from './damageTypes';
@@ -67,6 +68,7 @@ export {
   CharParamBonuses,
   CharParams,
   Characters,
+  Clergies,
   CyberFrames,
   DamageTypes,
   Damages,

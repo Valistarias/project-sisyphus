@@ -258,19 +258,30 @@ const findSingle = (req: Request, res: Response): void => {
     });
 };
 
-const findAll = (req: Request, res: Response): void => {
-  findProgramScopes()
-    .then((programScopes) => {
-      const curatedProgramScopes: CuratedIProgramScope[] = [];
+const findAllPromise = async (): Promise<CuratedIProgramScope[]> =>
+  await new Promise((resolve, reject) => {
+    findProgramScopes()
+      .then((programScopes) => {
+        const curatedProgramScopes: CuratedIProgramScope[] = [];
 
-      programScopes.forEach((programScope) => {
-        curatedProgramScopes.push({
-          programScope,
-          i18n: curateI18n(programScope.i18n),
+        programScopes.forEach((programScope) => {
+          curatedProgramScopes.push({
+            programScope,
+            i18n: curateI18n(programScope.i18n),
+          });
         });
-      });
 
-      res.send(curatedProgramScopes);
+        resolve(curatedProgramScopes);
+      })
+      .catch((err: unknown) => {
+        reject(gemServerError(err));
+      });
+  });
+
+const findAll = (req: Request, res: Response): void => {
+  findAllPromise()
+    .then((programScopes) => {
+      res.send(programScopes);
     })
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
@@ -280,6 +291,7 @@ export {
   create,
   deleteProgramScope,
   findAll,
+  findAllPromise,
   findProgramScopeById,
   findSingle,
   update,

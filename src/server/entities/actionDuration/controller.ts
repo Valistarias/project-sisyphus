@@ -132,10 +132,21 @@ const findSingle = (req: Request, res: Response): void => {
     .catch((err) => res.status(404).send(err));
 };
 
+const findAllPromise = async (): Promise<IActionDuration[]> =>
+  await new Promise((resolve, reject) => {
+    findActionDurations()
+      .then((actionDurations) => {
+        resolve(actionDurations);
+      })
+      .catch((err: unknown) => {
+        reject(gemServerError(err));
+      });
+  });
+
 const findAll = (req: Request, res: Response): void => {
-  findActionDurations()
+  findAllPromise()
     .then((actionDurations) => res.send(actionDurations))
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteActionDuration, findAll, findSingle, update };
+export { create, deleteActionDuration, findAll, findAllPromise, findSingle, update };

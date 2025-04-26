@@ -32,6 +32,7 @@ import type {
   ICuratedArmorType,
   ICuratedBodyPart,
   ICuratedCharParam,
+  ICuratedClergy,
   ICuratedCyberFrame,
   ICuratedDamageType,
   ICuratedItemModifier,
@@ -77,6 +78,8 @@ interface IGlobalVarsContext {
   damageTypes: ICuratedDamageType[];
   /** All the loaded stats */
   stats: ICuratedStat[];
+  /** All the loaded clergies */
+  clergies: ICuratedClergy[];
   /** All the loaded skills */
   skills: ICuratedSkill[];
   /** All the loaded character parameters */
@@ -127,6 +130,8 @@ interface IGlobalVarsContext {
   reloadSkills: () => void;
   /** Used to trigger the reload of the stats */
   reloadStats: () => void;
+  /** Used to trigger the reload of the stats */
+  reloadClergies: () => void;
   /** Used to trigger the reload of the character parameters */
   reloadCharParams: () => void;
   /** Used to trigger the reload of the cyber frames */
@@ -200,6 +205,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
   const [actionTypes, setActionTypes] = useState<IActionType[]>([]);
   const [actionDurations, setActionDurations] = useState<IActionDuration[]>([]);
   const [stats, setStats] = useState<ICuratedStat[]>([]);
+  const [clergies, setClergies] = useState<ICuratedClergy[]>([]);
   const [skills, setSkills] = useState<ICuratedSkill[]>([]);
   const [charParams, setCharParams] = useState<ICuratedCharParam[]>([]);
   const [cyberFrames, setCyberFrames] = useState<ICuratedCyberFrame[]>([]);
@@ -255,6 +261,10 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
 
   const loadStats = useCallback(() => {
     getAllFromApi('stats', setStats);
+  }, [getAllFromApi]);
+
+  const loadClergies = useCallback(() => {
+    getAllFromApi('clergies', setClergies);
   }, [getAllFromApi]);
 
   const loadSkills = useCallback(() => {
@@ -387,31 +397,64 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
         .check()
         .then((data: IUser) => {
           setUser(data);
-          loadActionDurations();
-          loadActionTypes();
-          loadArmorTypes();
-          loadBasicActions();
-          loadBodyParts();
-          loadCharParams();
-          loadCyberFrames();
-          loadDamageTypes();
-          loadGlobalValues();
-          loadItemModifiers();
-          loadItemTypes();
-          loadProgramScopes();
-          loadRarities();
-          loadRuleBooks();
-          loadSkills();
-          loadStats();
-          loadTipTexts();
-          loadWeaponScopes();
-          loadWeaponStyles();
-          loadWeaponTypes();
-          loadArcanes();
           if (Object.keys(data).length > 0) {
             loadCampaigns();
           }
-          setLoading(false);
+          api.auth
+            .getGlobal()
+            .then(
+              ({
+                actionDurations,
+                actionTypes,
+                arcanes,
+                armorTypes,
+                basicActions,
+                bodyParts,
+                charParams,
+                clergies,
+                cyberFrames,
+                damageTypes,
+                globalValues,
+                itemModifiers,
+                itemTypes,
+                programScopes,
+                rarities,
+                ruleBooks,
+                skills,
+                stats,
+                tipTexts,
+                weaponScopes,
+                weaponStyles,
+                weaponTypes,
+              }) => {
+                setActionDurations(actionDurations);
+                setActionTypes(actionTypes);
+                setArcanes(arcanes);
+                setArmorTypes(armorTypes);
+                setBasicActions(basicActions);
+                setBodyParts(bodyParts);
+                setCharParams(charParams);
+                setClergies(clergies);
+                setCyberFrames(cyberFrames);
+                setDamageTypes(damageTypes);
+                setGlobalValues(globalValues);
+                setItemModifiers(itemModifiers);
+                setItemTypes(itemTypes);
+                setLoading(false);
+                setProgramScopes(programScopes);
+                setRarities(rarities);
+                setRuleBooks(ruleBooks);
+                setSkills(skills);
+                setStats(stats);
+                setTipTexts(tipTexts);
+                setWeaponScopes(weaponScopes);
+                setWeaponStyles(weaponStyles);
+                setWeaponTypes(weaponTypes);
+              }
+            )
+            .catch((err) => {
+              console.error(err);
+            });
         })
         .catch((err) => {
           console.error(err);
@@ -434,6 +477,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
     loadRuleBooks,
     loadSkills,
     loadStats,
+    loadClergies,
     loadWeaponScopes,
     loadWeaponStyles,
     loadWeaponTypes,
@@ -472,6 +516,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       ruleBooks,
       skills,
       stats,
+      clergies,
       user,
       weaponScopes,
       weaponStyles,
@@ -499,6 +544,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
         loadRuleBooks();
         loadSkills();
         loadStats();
+        loadClergies();
         loadTipTexts();
         loadWeaponScopes();
         loadWeaponStyles();
@@ -517,6 +563,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       reloadRuleBooks: loadRuleBooks,
       reloadSkills: loadSkills,
       reloadStats: loadStats,
+      reloadClergies: loadClergies,
       reloadWeaponScopes: loadWeaponScopes,
       reloadWeaponStyles: loadWeaponStyles,
       reloadWeaponTypes: loadWeaponTypes,
@@ -549,6 +596,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       ruleBooks,
       skills,
       stats,
+      clergies,
       user,
       weaponScopes,
       weaponStyles,
@@ -570,6 +618,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       loadRuleBooks,
       loadSkills,
       loadStats,
+      loadClergies,
       loadWeaponScopes,
       loadWeaponStyles,
       loadWeaponTypes,

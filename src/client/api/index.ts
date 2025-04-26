@@ -1,52 +1,53 @@
 import {
   ActionDurations,
-  ActionTypes,
   Actions,
+  ActionTypes,
   Ammos,
-  ArmorTypes,
-  Armors,
   Arcanes,
+  Armors,
+  ArmorTypes,
   Auth,
   Bags,
   Bodies,
   BodyParts,
   CampaignEvents,
   Campaigns,
-  ChapterTypes,
   Chapters,
+  ChapterTypes,
+  Characters,
   CharParamBonuses,
   CharParams,
-  Characters,
+  Clergies,
   CyberFrames,
-  DamageTypes,
   Damages,
+  DamageTypes,
   Effects,
   EnnemyAttacks,
   GlobalValues,
   Implants,
   ItemModifiers,
-  ItemTypes,
   Items,
+  ItemTypes,
   MailToken,
-  NPCs,
   Nodes,
   Notions,
+  NPCs,
   Pages,
-  ProgramScopes,
   Programs,
+  ProgramScopes,
   Rarities,
-  RuleBookTypes,
   RuleBooks,
+  RuleBookTypes,
   SkillBonuses,
   Skills,
   StatBonuses,
   Stats,
   TipTexts,
   Users,
+  Weapons,
   WeaponScopes,
   WeaponStyles,
   WeaponTypes,
-  Weapons,
 } from './entities/index';
 
 export default class Api {
@@ -54,19 +55,21 @@ export default class Api {
   actions: Actions;
   actionTypes: ActionTypes;
   ammos: Ammos;
+  arcanes: Arcanes;
   armors: Armors;
   armorTypes: ArmorTypes;
-  arcanes: Arcanes;
   auth: Auth;
   bags: Bags;
   bodies: Bodies;
   bodyParts: BodyParts;
+  campaignEvents: CampaignEvents;
   campaigns: Campaigns;
   chapters: Chapters;
   chapterTypes: ChapterTypes;
   characters: Characters;
   charParamBonuses: CharParamBonuses;
   charParams: CharParams;
+  clergies: Clergies;
   cyberFrames: CyberFrames;
   damages: Damages;
   damageTypes: DamageTypes;
@@ -85,7 +88,6 @@ export default class Api {
   programs: Programs;
   programScopes: ProgramScopes;
   rarities: Rarities;
-  campaignEvents: CampaignEvents;
   ruleBooks: RuleBooks;
   ruleBookTypes: RuleBookTypes;
   skillBonuses: SkillBonuses;
@@ -104,19 +106,21 @@ export default class Api {
     this.actions = new Actions();
     this.actionTypes = new ActionTypes();
     this.ammos = new Ammos();
+    this.arcanes = new Arcanes();
     this.armors = new Armors();
     this.armorTypes = new ArmorTypes();
-    this.arcanes = new Arcanes();
     this.auth = new Auth();
     this.bags = new Bags();
     this.bodies = new Bodies();
     this.bodyParts = new BodyParts();
+    this.campaignEvents = new CampaignEvents();
     this.campaigns = new Campaigns();
     this.chapters = new Chapters();
     this.chapterTypes = new ChapterTypes();
     this.characters = new Characters();
     this.charParamBonuses = new CharParamBonuses();
     this.charParams = new CharParams();
+    this.clergies = new Clergies();
     this.cyberFrames = new CyberFrames();
     this.damages = new Damages();
     this.damageTypes = new DamageTypes();
@@ -135,7 +139,6 @@ export default class Api {
     this.programs = new Programs();
     this.programScopes = new ProgramScopes();
     this.rarities = new Rarities();
-    this.campaignEvents = new CampaignEvents();
     this.ruleBooks = new RuleBooks();
     this.ruleBookTypes = new RuleBookTypes();
     this.skillBonuses = new SkillBonuses();

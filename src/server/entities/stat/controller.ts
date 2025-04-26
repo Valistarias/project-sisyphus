@@ -292,19 +292,30 @@ const findSingle = (req: Request, res: Response): void => {
     });
 };
 
-const findAll = (req: Request, res: Response): void => {
-  findStats()
-    .then((stats) => {
-      const curatedStats: CuratedIStat[] = [];
+const findAllPromise = async (): Promise<CuratedIStat[]> =>
+  await new Promise((resolve, reject) => {
+    findStats()
+      .then((stats) => {
+        const curatedStats: CuratedIStat[] = [];
 
-      stats.forEach((stat) => {
-        curatedStats.push({
-          stat,
-          i18n: curateI18n(stat.i18n),
+        stats.forEach((stat) => {
+          curatedStats.push({
+            stat,
+            i18n: curateI18n(stat.i18n),
+          });
         });
-      });
 
-      res.send(curatedStats);
+        resolve(curatedStats);
+      })
+      .catch((err: unknown) => {
+        reject(gemServerError(err));
+      });
+  });
+
+const findAll = (req: Request, res: Response): void => {
+  findAllPromise()
+    .then((stats) => {
+      res.send(stats);
     })
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
@@ -314,6 +325,7 @@ export {
   create,
   deleteStat,
   findAll,
+  findAllPromise,
   findSingle,
   findStatById,
   update,

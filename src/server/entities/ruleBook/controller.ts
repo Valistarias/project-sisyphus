@@ -305,65 +305,78 @@ const findSingle = (req: IVerifyTokenRequest, res: Response): void => {
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-const findAll = (req: IVerifyTokenRequest, res: Response): void => {
-  isAdmin(req)
-    .then((isUserAdmin) => {
-      findRuleBooks()
-        .then((ruleBooks) => {
-          const curatedRuleBooks: CuratedIRuleBook[] = [];
+const findAllPromise = async (req: IVerifyTokenRequest): Promise<CuratedIRuleBook[]> =>
+  await new Promise((resolve, reject) => {
+    isAdmin(req)
+      .then((isUserAdmin) => {
+        findRuleBooks()
+          .then((ruleBooks) => {
+            const curatedRuleBooks: CuratedIRuleBook[] = [];
 
-          if (!isUserAdmin) {
-            ruleBooks = ruleBooks.filter((ruleBook) => !ruleBook.archived && !ruleBook.draft);
-          }
+            if (!isUserAdmin) {
+              ruleBooks = ruleBooks.filter((ruleBook) => !ruleBook.archived && !ruleBook.draft);
+            }
 
-          // Sorting by state first (draft, archived)
-          // Then by type
-          ruleBooks
-            .sort((rb1, rb2) => {
-              let ptRb1 = 0;
-              let ptRb2 = 0;
-              if (rb1.draft) {
-                ptRb1++;
-              }
-              if (rb1.archived) {
-                ptRb1 += 2;
-              }
-              if (rb2.draft) {
-                ptRb2++;
-              }
-              if (rb2.archived) {
-                ptRb2 += 2;
-              }
-              if (ptRb1 < ptRb2) {
-                return -1;
-              } else if (ptRb1 > ptRb2) {
-                return 1;
-              }
+            // Sorting by state first (draft, archived)
+            // Then by type
+            ruleBooks
+              .sort((rb1, rb2) => {
+                let ptRb1 = 0;
+                let ptRb2 = 0;
+                if (rb1.draft) {
+                  ptRb1++;
+                }
+                if (rb1.archived) {
+                  ptRb1 += 2;
+                }
+                if (rb2.draft) {
+                  ptRb2++;
+                }
+                if (rb2.archived) {
+                  ptRb2 += 2;
+                }
+                if (ptRb1 < ptRb2) {
+                  return -1;
+                } else if (ptRb1 > ptRb2) {
+                  return 1;
+                }
 
-              if (
-                ruleBookOrder.findIndex((el) => el === rb1.type.name) >
-                ruleBookOrder.findIndex((el) => el === rb2.type.name)
-              ) {
-                return 1;
-              } else if (
-                ruleBookOrder.findIndex((el) => el === rb1.type.name) <
-                ruleBookOrder.findIndex((el) => el === rb2.type.name)
-              ) {
-                return -1;
-              }
+                if (
+                  ruleBookOrder.findIndex((el) => el === rb1.type.name) >
+                  ruleBookOrder.findIndex((el) => el === rb2.type.name)
+                ) {
+                  return 1;
+                } else if (
+                  ruleBookOrder.findIndex((el) => el === rb1.type.name) <
+                  ruleBookOrder.findIndex((el) => el === rb2.type.name)
+                ) {
+                  return -1;
+                }
 
-              return 0;
-            })
-            .forEach((ruleBook) => {
-              curatedRuleBooks.push({
-                ruleBook,
-                i18n: curateI18n(ruleBook.i18n),
+                return 0;
+              })
+              .forEach((ruleBook) => {
+                curatedRuleBooks.push({
+                  ruleBook,
+                  i18n: curateI18n(ruleBook.i18n),
+                });
               });
-            });
 
-          res.send(curatedRuleBooks);
-        })
-        .catch((err: unknown) => res.status(500).send(gemServerError(err)));
+            resolve(curatedRuleBooks);
+          })
+          .catch((err: unknown) => {
+            reject(gemServerError(err));
+          });
+      })
+      .catch((err: unknown) => {
+        reject(gemServerError(err));
+      });
+  });
+
+const findAll = (req: IVerifyTokenRequest, res: Response): void => {
+  findAllPromise(req)
+    .then((ruleBooks) => {
+      res.send(ruleBooks);
     })
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
@@ -374,6 +387,7 @@ export {
   create,
   deleteRuleBook,
   findAll,
+  findAllPromise,
   findRuleBookById,
   findSingle,
   update,

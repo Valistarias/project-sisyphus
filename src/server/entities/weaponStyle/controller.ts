@@ -187,21 +187,40 @@ const findSingle = (req: Request, res: Response): void => {
     });
 };
 
-const findAll = (req: Request, res: Response): void => {
-  findWeaponStyles()
-    .then((weaponStyles) => {
-      const curatedWeaponStyles: CuratedIWeaponStyle[] = [];
+const findAllPromise = async (): Promise<CuratedIWeaponStyle[]> =>
+  await new Promise((resolve, reject) => {
+    findWeaponStyles()
+      .then((weaponStyles) => {
+        const curatedWeaponStyles: CuratedIWeaponStyle[] = [];
 
-      weaponStyles.forEach((weaponStyle) => {
-        curatedWeaponStyles.push({
-          weaponStyle,
-          i18n: curateI18n(weaponStyle.i18n),
+        weaponStyles.forEach((weaponStyle) => {
+          curatedWeaponStyles.push({
+            weaponStyle,
+            i18n: curateI18n(weaponStyle.i18n),
+          });
         });
-      });
 
-      res.send(curatedWeaponStyles);
+        resolve(curatedWeaponStyles);
+      })
+      .catch((err: unknown) => {
+        reject(gemServerError(err));
+      });
+  });
+
+const findAll = (req: Request, res: Response): void => {
+  findAllPromise()
+    .then((weaponStyles) => {
+      res.send(weaponStyles);
     })
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteWeaponStyle, findAll, findSingle, findWeaponStyleById, update };
+export {
+  create,
+  deleteWeaponStyle,
+  findAll,
+  findAllPromise,
+  findSingle,
+  findWeaponStyleById,
+  update,
+};

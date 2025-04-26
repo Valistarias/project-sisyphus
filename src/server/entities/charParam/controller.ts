@@ -280,19 +280,30 @@ const findSingle = (req: Request, res: Response): void => {
     });
 };
 
-const findAll = (req: Request, res: Response): void => {
-  findCharParams()
-    .then((charParams) => {
-      const curatedCharParams: CuratedICharParam[] = [];
+const findAllPromise = async (): Promise<CuratedICharParam[]> =>
+  await new Promise((resolve, reject) => {
+    findCharParams()
+      .then((charParams) => {
+        const curatedCharParams: CuratedICharParam[] = [];
 
-      charParams.forEach((charParam) => {
-        curatedCharParams.push({
-          charParam,
-          i18n: curateI18n(charParam.i18n),
+        charParams.forEach((charParam) => {
+          curatedCharParams.push({
+            charParam,
+            i18n: curateI18n(charParam.i18n),
+          });
         });
-      });
 
-      res.send(curatedCharParams);
+        resolve(curatedCharParams);
+      })
+      .catch((err: unknown) => {
+        reject(gemServerError(err));
+      });
+  });
+
+const findAll = (req: Request, res: Response): void => {
+  findAllPromise()
+    .then((charParams) => {
+      res.send(charParams);
     })
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
@@ -302,6 +313,7 @@ export {
   create,
   deleteCharParam,
   findAll,
+  findAllPromise,
   findCharParamById,
   findSingle,
   update,

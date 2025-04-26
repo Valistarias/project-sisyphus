@@ -124,6 +124,8 @@ export { RuleBookTypeModel, type IRuleBookType } from './ruleBookType/model';
 export { SkillModel, type HydratedISkill, type ISkill } from './skill/model';
 export { SkillBonusModel, type HydratedISkillBonus, type ISkillBonus } from './skillBonus/model';
 export { StatModel, type HydratedIStat, type IStat } from './stat/model';
+export { ClergyModel, type HydratedIClergy, type IClergy } from './clergy/model';
+export { VowModel, type HydratedIVow, type IVow } from './vow/model';
 export { StatBonusModel, type HydratedIStatBonus, type IStatBonus } from './statBonus/model';
 export { TipTextModel, type HydratedITipText, type ITipText } from './tipText/model';
 export { UserModel, type HydratedIUser, type IUser } from './user/model';

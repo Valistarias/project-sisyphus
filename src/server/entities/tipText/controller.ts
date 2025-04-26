@@ -259,19 +259,30 @@ const findSingle = (req: Request, res: Response): void => {
     });
 };
 
-const findAll = (req: Request, res: Response): void => {
-  findTipTexts()
-    .then((tipTexts) => {
-      const curatedTipTexts: CuratedITipText[] = [];
+const findAllPromise = async (): Promise<CuratedITipText[]> =>
+  await new Promise((resolve, reject) => {
+    findTipTexts()
+      .then((tipTexts) => {
+        const curatedTipTexts: CuratedITipText[] = [];
 
-      tipTexts.forEach((tipText) => {
-        curatedTipTexts.push({
-          tipText,
-          i18n: curateI18n(tipText.i18n),
+        tipTexts.forEach((tipText) => {
+          curatedTipTexts.push({
+            tipText,
+            i18n: curateI18n(tipText.i18n),
+          });
         });
-      });
 
-      res.send(curatedTipTexts);
+        resolve(curatedTipTexts);
+      })
+      .catch((err: unknown) => {
+        reject(gemServerError(err));
+      });
+  });
+
+const findAll = (req: Request, res: Response): void => {
+  findAllPromise()
+    .then((tipTexts) => {
+      res.send(tipTexts);
     })
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
@@ -281,6 +292,7 @@ export {
   create,
   deleteTipText,
   findAll,
+  findAllPromise,
   findSingle,
   findTipTextById,
   update,

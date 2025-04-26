@@ -136,10 +136,21 @@ const findSingle = (req: Request, res: Response): void => {
     .catch((err) => res.status(404).send(err));
 };
 
+const findAllPromise = async (): Promise<IGlobalValue[]> =>
+  await new Promise((resolve, reject) => {
+    findGlobalValues()
+      .then((globalValues) => {
+        resolve(globalValues);
+      })
+      .catch((err: unknown) => {
+        reject(gemServerError(err));
+      });
+  });
+
 const findAll = (req: Request, res: Response): void => {
-  findGlobalValues()
-    .then((items) => res.send(items))
+  findAllPromise()
+    .then((globalValues) => res.send(globalValues))
     .catch((err: unknown) => res.status(500).send(gemServerError(err)));
 };
 
-export { create, deleteGlobalValue, findAll, findSingle, update, findGlobalValues };
+export { create, deleteGlobalValue, findAll, findAllPromise, findSingle, update, findGlobalValues };
