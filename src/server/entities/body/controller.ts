@@ -170,7 +170,7 @@ const create = (req: Request, res: Response): void => {
   }: {
     cyberFrameId?: string;
     hp?: number;
-    skills: Array<{
+    skills?: Array<{
       id: string;
       value: number;
     }>;
@@ -179,7 +179,7 @@ const create = (req: Request, res: Response): void => {
     .then((characterIdSent) => {
       const body = new Body({
         character: characterIdSent,
-        cyberframe: cyberFrameId,
+        cyberFrame: cyberFrameId,
         hp,
       });
 
@@ -188,7 +188,7 @@ const create = (req: Request, res: Response): void => {
         .then(() => {
           createSkillsByBody({
             bodyId: body._id.toString(),
-            skills,
+            skills: skills ?? [],
           })
             .then(() => {
               res.send(characterIdSent);
@@ -207,7 +207,7 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, hp = null, alive = null, cyberframeId = null } = req.body;
+  const { id, hp = null, alive = null, cyberFrameId = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Body ID'));
 
@@ -222,8 +222,8 @@ const update = (req: Request, res: Response): void => {
         if (alive !== null && alive !== body.alive) {
           body.alive = alive;
         }
-        if (cyberframeId !== null && cyberframeId !== String(body.cyberframe)) {
-          body.cyberframe = cyberframeId;
+        if (cyberFrameId !== null && cyberFrameId !== String(body.cyberFrame)) {
+          body.cyberFrame = cyberFrameId;
         }
         body
           .save()
@@ -258,10 +258,7 @@ const updateSkills = (req: Request, res: Response): void => {
           skills,
         })
           .then(() => {
-            res.send({
-              message: 'Body was updated successfully!',
-              body,
-            });
+            res.send(body);
           })
           .catch((err: unknown) => {
             res.status(500).send(gemServerError(err));

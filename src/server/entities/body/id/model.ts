@@ -16,8 +16,8 @@ interface IBody<IdType> {
   hp: number;
   /** The character associated to this body */
   character: IdType;
-  /** The cyberframe associated to this body */
-  cyberframe: IdType;
+  /** The cyberFrame associated to this body */
+  cyberFrame: IdType;
   /** When the body was created */
   createdAt: Date;
 }
@@ -55,9 +55,9 @@ const bodySchema = new Schema<IBody<ObjectId>>({
     type: Schema.Types.ObjectId,
     ref: 'Character',
   },
-  cyberframe: {
+  cyberFrame: {
     type: Schema.Types.ObjectId,
-    ref: 'Cyberframe',
+    ref: 'CyberFrame',
   },
   createdAt: {
     type: Date,

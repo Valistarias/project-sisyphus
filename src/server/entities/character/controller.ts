@@ -78,12 +78,12 @@ const findCharactersByPlayer = async (req: Request): Promise<HydratedICharacter[
             populate: {
               path: 'node',
               select:
-                '_id title summary icon i18n rank quote cyberFrameBranch skillBranch effects actions skillBonuses statBonuses charParamBonuses',
+                '_id title summary icon i18n rank quote effects actions skillBonuses statBonuses charParamBonuses',
             },
           })
           .populate<{ bodies: HydratedIBody[] }>({
             path: 'bodies',
-            select: '_id character alive hp stats createdAt',
+            select: '_id character alive hp stats cyberFrame createdAt',
             populate: [
               {
                 path: 'ammos',
@@ -174,11 +174,11 @@ const findCompleteCharacterById = async (
           })
           .populate<{ bodies: LeanIBody[] }>({
             path: 'bodies',
-            select: '_id character alive hp stats createdAt',
+            select: '_id character alive hp stats cyberFrame createdAt',
             populate: [
               {
-                path: 'stats',
-                select: '_id body stat value',
+                path: 'skills',
+                select: '_id body skill value',
               },
               {
                 path: 'ammos',
@@ -321,8 +321,8 @@ const findCharacterById = async (
             select: '_id character alive hp stats createdAt',
             populate: [
               {
-                path: 'stats',
-                select: '_id body stat value',
+                path: 'skills',
+                select: '_id body skill value',
               },
               {
                 path: 'ammos',

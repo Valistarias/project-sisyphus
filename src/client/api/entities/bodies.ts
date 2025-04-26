@@ -6,8 +6,16 @@ import type { IBody } from '../../types';
 
 interface ICreateBodyPayload {
   characterId?: string;
-  cyberframeId: string;
+  cyberFrameId: string;
   hp: number;
+}
+
+interface IUpdateSkillsPayload {
+  id: string;
+  skills: Array<{
+    id: string;
+    value: number;
+  }>;
 }
 
 interface IResetItemsPayload {
@@ -25,10 +33,23 @@ interface IBodyPayload {
 
 export default class Bodies extends Entity<IBodyPayload, unknown, IBody> {
   create: (payload: ICreateBodyPayload) => Promise<string>;
+  updateSkills: (payload: IUpdateSkillsPayload) => Promise<IBody>;
   resetItems: (payload: IResetItemsPayload) => Promise<IBody>;
 
   constructor() {
     super('bodies');
+
+    this.updateSkills = async (payload) =>
+      await new Promise((resolve, reject) => {
+        axios
+          .post(`${this.url}/updateskills/`, payload)
+          .then((res) => {
+            resolve(res.data as IBody);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
 
     this.resetItems = async (payload) =>
       await new Promise((resolve, reject) => {

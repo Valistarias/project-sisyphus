@@ -11,11 +11,13 @@ export interface IHintText {
   hint: ReactNode;
   /** The text displayed for the hint */
   children: ReactNode;
+  /** Is the hint to be without style ? */
+  noDecor?: boolean;
   /** The associated className inherited */
   className?: string;
 }
 
-const HintText: FC<IHintText> = ({ className, hint, children }) => {
+const HintText: FC<IHintText> = ({ className, hint, noDecor = false, children }) => {
   const [placement, setPlacement] = useState<string>('top-left');
 
   const domPosition = useRef<HTMLDivElement>(null);
@@ -36,6 +38,7 @@ const HintText: FC<IHintText> = ({ className, hint, children }) => {
       className={classTrim(`
         hint-text
         hint-text--${placement}
+        ${!noDecor ? 'hint-text--decor' : ''}
         ${className ?? ''}
       `)}
       ref={domPosition}

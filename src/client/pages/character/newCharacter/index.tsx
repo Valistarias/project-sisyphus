@@ -28,7 +28,6 @@ import { introSequence } from './introSequence';
 
 import type {
   ErrorResponseType,
-  IBody,
   ICuratedArmor,
   ICuratedBag,
   ICuratedImplant,
@@ -49,7 +48,7 @@ const NewCharacter: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
-  const { user, setUser, tipTexts, setCharacter, character, resetCharacter, setCharacterFromId } =
+  const { user, setUser, tipTexts, character, resetCharacter, setCharacterFromId } =
     useGlobalVars();
   const { id } = useParams();
 
@@ -71,53 +70,37 @@ const NewCharacter: FC = () => {
 
   const { handleSubmit: submitTips, control: toolTipControl } = useForm();
 
+  console.log('character', character);
+
   const charCreationState = useMemo(() => {
-    if (id === undefined) {
-      // Nothing defined yet
+    if (character === null || character === false) {
       return 1;
     }
-    if (character !== null && character !== false) {
-      // if (character.firstName !== undefined) {
-      //   return 7;
-      // }
 
-      // if (character.money !== undefined && character.money > 0) {
-      //   return 6;
-      // }
+    if (character.stats.length === 0) {
+      return 2;
+    }
 
-      // if (character.background !== undefined) {
-      //   return 5;
-      // }
+    if (character.bodies?.length !== 0) {
+      const { body } = getActualBody(character);
 
-      // if (character.nodes !== undefined && character.nodes.length > 1) {
-      //   return 4;
-      // }
+      if (body !== undefined) {
+        if (body.skills.length === 0) {
+          return 3;
+        }
 
-      // if (character.bodies !== undefined && character.bodies.length > 0) {
-      //   return 3;
-      // }
+        if (body.skills.length >= 0) {
+          return 4;
+        }
 
-      if (character.stats.length === 0) {
-        return 2;
-      }
-
-      if (character.bodies?.length !== 0) {
-        const { body } = getActualBody(character);
-
-        if (body !== undefined) {
-          if (body.skills.length === 0) {
-            return 3;
-          }
-
-          if (character.firstName === undefined) {
-            return 7;
-          }
+        if (character.firstName === undefined) {
+          return 7;
         }
       }
     }
 
     return 0;
-  }, [character, id]);
+  }, [character]);
 
   // TODO: Internationalization
   const relevantTipsData = useMemo(() => {
@@ -250,38 +233,20 @@ const NewCharacter: FC = () => {
   }, [api, getNewId, createAlert, t]);
 
   const onSubmitCyberFrame = useCallback(
-    (cyberFrameId: string) => {
+    (cyberFrameId: string, hp: number) => {
       if (api !== undefined && user !== null) {
-        let relevantBody: IBody | undefined = undefined;
-        if (character !== false && character?.bodies !== undefined) {
-          relevantBody = character.bodies.find((body) => body.alive);
-        }
+        const { body: relevantBody } = getActualBody(
+          character === null || character === false ? undefined : character
+        );
 
         if (relevantBody === undefined) {
           api.bodies
             .create({
-              cyberframeId: cyberFrameId,
-              // TODO: add HP HERE
-              hp: 40,
+              cyberFrameId,
+              hp,
             })
             .then((sentCharacterId) => {
-              if (character === null || character === false) {
-                window.history.replaceState(
-                  {},
-                  'Sisyphus',
-                  `/character/${sentCharacterId}/continue`
-                );
-              } else {
-                const newId = getNewId();
-                createAlert({
-                  key: newId,
-                  dom: (
-                    <Alert key={newId} id={newId} timer={5}>
-                      <Ap>{t('newCharacter.successUpdateCyberFrame', { ns: 'pages' })}</Ap>
-                    </Alert>
-                  ),
-                });
-              }
+              window.history.replaceState({}, 'Sisyphus', `/character/${sentCharacterId}/continue`);
               setCharacterFromId(sentCharacterId);
             })
             .catch(({ response }: ErrorResponseType) => {
@@ -361,7 +326,7 @@ const NewCharacter: FC = () => {
         character !== false &&
         character.bodies !== undefined
       ) {
-        const relevantBody = character.bodies.find((body) => body.alive);
+        const { body: relevantBody } = getActualBody(character);
         if (relevantBody !== undefined) {
           setLoading(true);
           api.bodies
@@ -424,63 +389,65 @@ const NewCharacter: FC = () => {
   );
 
   const onSubmitSkills = useCallback(
-    (nodeIds: string[]) => {
-      if (api !== undefined && user !== null && character !== null && character !== false) {
-        console.log('onSubmitSkills');
-        // let nodeToAdd: string[] = [];
-        // const nodeToRemove: string[] = [];
-        // if (character.nodes !== undefined && character.nodes.length > 1) {
-        //   const selectedNodeSkillIds = character.nodes
-        //     .filter(({ node }) => node.skillBranch !== undefined)
-        //     .map(({ node }) => node._id);
-
-        //   selectedNodeSkillIds.forEach((selectedNodeSkillId) => {
-        //     if (!nodeIds.includes(selectedNodeSkillId)) {
-        //       nodeToRemove.push(selectedNodeSkillId);
-        //     }
-        //   });
-
-        //   nodeIds.forEach((nodeId) => {
-        //     if (!selectedNodeSkillIds.includes(nodeId)) {
-        //       nodeToAdd.push(nodeId);
-        //     }
-        //   });
-        // } else {
-        //   nodeToAdd = nodeIds;
-        // }
-        // api.characters
-        //   .updateNodes({
-        //     characterId: character._id,
-        //     toAdd: nodeToAdd,
-        //     toRemove: nodeToRemove,
-        //   })
-        //   .then((sentCharacter) => {
-        //     const newId = getNewId();
-        //     createAlert({
-        //       key: newId,
-        //       dom: (
-        //         <Alert key={newId} id={newId} timer={5}>
-        //           <Ap>{t('newCharacter.successUpdateSkills', { ns: 'pages' })}</Ap>
-        //         </Alert>
-        //       ),
-        //     });
-        //     setCharacter(sentCharacter);
-        //   })
-        //   .catch(({ response }: ErrorResponseType) => {
-        //     const { data } = response;
-        //     const newId = getNewId();
-        //     createAlert({
-        //       key: newId,
-        //       dom: (
-        //         <Alert key={newId} id={newId} timer={5}>
-        //           <Ap>{data.message}</Ap>
-        //         </Alert>
-        //       ),
-        //     });
-        //   });
+    (
+      skillsToSend: Array<{
+        id: string;
+        value: number;
+      }>
+    ) => {
+      if (
+        api !== undefined &&
+        user !== null &&
+        character !== null &&
+        character !== false &&
+        character.bodies !== undefined
+      ) {
+        const { body: relevantBody } = getActualBody(character);
+        if (relevantBody !== undefined) {
+          setLoading(true);
+          const curatedSkillsToSend: Array<{
+            id: string;
+            value: number;
+          }> = [];
+          skillsToSend.forEach((skill) => {
+            if (skill.value > 0) {
+              curatedSkillsToSend.push(skill);
+            }
+          });
+          api.bodies
+            .updateSkills({
+              id: relevantBody._id,
+              skills: curatedSkillsToSend,
+            })
+            .then(() => {
+              const newId = getNewId();
+              createAlert({
+                key: newId,
+                dom: (
+                  <Alert key={newId} id={newId} timer={5}>
+                    <Ap>{t('newCharacter.successUpdateStats', { ns: 'pages' })}</Ap>
+                  </Alert>
+                ),
+              });
+              setCharacterFromId(character._id);
+              setLoading(false);
+            })
+            .catch(({ response }: ErrorResponseType) => {
+              const { data } = response;
+              const newId = getNewId();
+              createAlert({
+                key: newId,
+                dom: (
+                  <Alert key={newId} id={newId} timer={5}>
+                    <Ap>{data.message}</Ap>
+                  </Alert>
+                ),
+              });
+            });
+        }
       }
     },
-    [api, character, createAlert, getNewId, setCharacter, t, user]
+    [api, character, createAlert, getNewId, setCharacterFromId, t, user]
   );
 
   const onSubmitStats = useCallback(

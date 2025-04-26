@@ -1,7 +1,6 @@
 .number-select {
   align-items: center;
   display: flex;
-  flex-direction: column;
   min-width: 6.5rem;
   width: fit-content;
 
@@ -19,7 +18,37 @@
 
   &__value {
     font-family: var(--mono-font);
-    font-size: 4rem;
     user-select: none;
+  }
+
+  &--vertical {
+    flex-direction: column;
+
+    .number-select__btn-plus {
+      transform: rotate(180deg);
+    }
+
+    .number-select__value {
+      font-size: 4rem;
+      left: 0.2rem;
+      position: relative;
+    }
+  }
+
+  &--horizontal {
+    flex-direction: row-reverse;
+    gap: 1rem;
+
+    .number-select__btn-plus {
+      transform: rotate(-90deg);
+    }
+
+    .number-select__btn-minus {
+      transform: rotate(90deg);
+    }
+
+    .number-select__value {
+      font-size: 2rem;
+    }
   }
 }

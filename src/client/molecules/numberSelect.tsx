@@ -14,6 +14,8 @@ import { classTrim } from '../utils';
 import './numberSelect.scss';
 
 interface INumberSelect extends IReactHookFormInputs {
+  /** The theme of the number select */
+  theme?: 'vertical' | 'horizontal';
   /** The minimim value the stat can go */
   minimum?: number;
   /** The maximum value the stat can go */
@@ -33,11 +35,13 @@ const NumberSelect: FC<IQuarkProps<INumberSelect>> = ({
   maximum,
   offset,
   maxed = false,
+  theme = 'vertical',
 }) => (
   <Quark
     quarkType="div"
     className={classTrim(`
         number-select
+        number-select--${theme}
         ${className ?? ''}
       `)}
   >
@@ -50,10 +54,11 @@ const NumberSelect: FC<IQuarkProps<INumberSelect>> = ({
           <Button
             className={classTrim(`
                 number-select__btn-plus
-                ${(maximum !== undefined && value >= maximum) || maxed ? 'number-select__btn-plus--hide' : ''}
+                ${(maximum !== undefined && value + offset >= maximum) || maxed ? 'number-select__btn-plus--hide' : ''}
               `)}
             icon="Arrow"
             theme="text-only"
+            size={theme === 'vertical' ? 'medium' : 'small'}
             onClick={() => {
               onChange(value + 1);
             }}
@@ -66,6 +71,7 @@ const NumberSelect: FC<IQuarkProps<INumberSelect>> = ({
               `)}
             icon="Arrow"
             theme="text-only"
+            size={theme === 'vertical' ? 'medium' : 'small'}
             onClick={() => {
               onChange(value - 1);
             }}

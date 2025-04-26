@@ -8,17 +8,12 @@ import { useGlobalVars } from '../../providers';
 
 import { Ap, Atitle } from '../../atoms';
 import { Button, Helper, NumberSelect } from '../../molecules';
-import { calculateStatMod, getActualBody } from '../../utils/character';
+import { calculateStatMod } from '../../utils/character';
 import { RichTextElement } from '../richTextElement';
 
 import type { ICharacter, ICuratedStat } from '../../types';
 
-import {
-  arrSum,
-  classTrim,
-  getCyberFrameLevelsByNodes,
-  getValuesFromGlobalValues,
-} from '../../utils';
+import { arrSum, classTrim, getValuesFromGlobalValues } from '../../utils';
 
 import './characterCreation.scss';
 
@@ -45,7 +40,7 @@ interface ICharacterCreationStep2 {
 
 const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) => {
   const { t } = useTranslation();
-  const { stats, globalValues, cyberFrames, character } = useGlobalVars();
+  const { stats, globalValues, character } = useGlobalVars();
 
   const createDefaultData = useCallback(
     (stats: ICuratedStat[], character: ICharacter | null | false) => {
@@ -54,16 +49,12 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
       }
       const defaultData: Partial<FormValues> = {};
       if (character !== null && character !== false) {
-        // const relevantBody = character.bodies?.find((body) => body.alive);
-        const relevantBody = getActualBody(character);
-        if (relevantBody.body !== undefined && !relevantBody.duplicate) {
-          relevantBody.body.stats.forEach(({ stat, value }) => {
-            if (defaultData.stats === undefined) {
-              defaultData.stats = {};
-            }
-            defaultData.stats[stat] = value;
-          });
-        }
+        character.stats.forEach(({ stat, value }) => {
+          if (defaultData.stats === undefined) {
+            defaultData.stats = {};
+          }
+          defaultData.stats[stat] = value;
+        });
       }
 
       if (Object.keys(defaultData).length === 0) {
@@ -71,7 +62,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
           if (defaultData.stats === undefined) {
             defaultData.stats = {};
           }
-          defaultData.stats[stat._id] = 2;
+          defaultData.stats[stat._id] = 0;
         });
       }
 
@@ -106,44 +97,6 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
     [globalValues]
   );
 
-  // Only send CyberFrame bonuses for the moment
-  // TODO : When level up / death, reuse this function more globally
-  const bonusesByStat = useMemo(() => {
-    if (character === null || character === false) {
-      return [];
-    }
-
-    const nodesByCyberFrames = getCyberFrameLevelsByNodes(character.nodes, cyberFrames);
-
-    const statBonuses: Record<string, IStatBonuses> = {};
-
-    // If only one source for the list, we'll be precise
-    // If multiple sources for bonuses, we are borad in the phrasing
-    nodesByCyberFrames.forEach(({ cyberFrame, chosenNodes }) => {
-      chosenNodes.forEach((node) => {
-        if (node.statBonuses.length > 0) {
-          node.statBonuses.forEach((statBonus) => {
-            if ((statBonuses[statBonus.stat] as IStatBonuses | undefined) === undefined) {
-              statBonuses[statBonus.stat] = {
-                bonus: statBonus.value,
-                source: cyberFrame.cyberFrame.title,
-                sourceId: cyberFrame.cyberFrame._id,
-                broad: false,
-              };
-            } else {
-              statBonuses[statBonus.stat].bonus += statBonus.value;
-              if (statBonuses[statBonus.stat].sourceId !== cyberFrame.cyberFrame._id) {
-                statBonuses[statBonus.stat].broad = true;
-              }
-            }
-          });
-        }
-      });
-    });
-
-    return statBonuses;
-  }, [character, cyberFrames]);
-
   const watchedStats = watch('stats');
 
   const pointSpent = arrSum(watchedStats !== undefined ? Object.values(watchedStats) : []);
@@ -154,20 +107,15 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
     let statBlock: ReactNode[] = [];
     stats.forEach(({ stat }, index) => {
       const valStat = watch(`stats.${stat._id}`);
-      const valMod = calculateStatMod(
-        Number(valStat + ((bonusesByStat[stat._id] as IStatBonuses | undefined)?.bonus ?? 0))
-      );
-      const bonusByStat: IStatBonuses | undefined = bonusesByStat[stat._id];
-
+      const valMod = calculateStatMod(Number(valStat));
       statBlock.push(
         <div key={stat._id} className="characterCreation-step2__stats__field">
           <NumberSelect
             inputName={`stats.${stat._id}`}
             control={control}
             minimum={minStatAtCreation ?? 0}
-            maximum={8}
+            maximum={5}
             maxed={pointsLeft === 0}
-            offset={bonusByStat?.bonus}
           />
           <div className="characterCreation-step2__stats__content">
             <Atitle className="characterCreation-step2__stats__content__title" level={3}>
@@ -176,29 +124,11 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
                 <RichTextElement rawStringContent={stat.summary} readOnly />
               </Helper>
             </Atitle>
-            {bonusByStat !== undefined ? (
-              <Ap className="characterCreation-step2__stats__content__bonus">
-                {bonusByStat.broad
-                  ? t('characterCreation.step2.generalBonus', {
-                      ns: 'components',
-                      points: bonusByStat.bonus,
-                    })
-                  : t('characterCreation.step2.cFrameBonus', {
-                      ns: 'components',
-                      points: bonusByStat.bonus,
-                      cFrameName: bonusByStat.source,
-                    })}
-              </Ap>
-            ) : null}
             <Ap className="characterCreation-step2__stats__content__text">
               <span className="characterCreation-step2__stats__content__text__title">
-                {t(
-                  `terms.stat.descriptions.${stat.title.toLowerCase()}-${valStat + (bonusByStat?.bonus ?? 0)}.title`
-                )}
+                {t(`terms.stat.descriptions.${stat.title.toLowerCase()}-${valStat}.title`)}
               </span>
-              {t(
-                `terms.stat.descriptions.${stat.title.toLowerCase()}-${valStat + (bonusByStat?.bonus ?? 0)}.text`
-              )}
+              {t(`terms.stat.descriptions.${stat.title.toLowerCase()}-${valStat}.text`)}
             </Ap>
             <Ap className="characterCreation-step2__stats__content__mod">
               {`${t('terms.general.modifierShort')}: `}
@@ -245,7 +175,7 @@ const CharacterCreationStep2: FC<ICharacterCreationStep2> = ({ onSubmitStats }) 
     });
 
     return cStatElts;
-  }, [bonusesByStat, control, minStatAtCreation, pointsLeft, stats, t, watch]);
+  }, [control, minStatAtCreation, pointsLeft, stats, t, watch]);
 
   return (
     <motion.div

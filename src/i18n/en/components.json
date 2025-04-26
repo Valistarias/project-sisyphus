@@ -119,8 +119,8 @@
     "step1": {
       "cat": "BioFrame",
       "text": "Choose a BioFrame below",
-      "sub": "By doing so, you will unlock the first rank of this BioFrame",
-      "cFrameDetailsBtn": "See Details",
+      "sub": "By doing so, you will gain the following elements",
+      "cFrameSkillPoints": "+{{count}} to {{carac}} skill points",
       "cFramebranches": "Specialisations",
       "cFrameTree": "See Node Tree",
       "chooseCta": "Choose BioFrame",
@@ -140,7 +140,8 @@
       "cat": "Skills",
       "text": "Character Skills",
       "sub": "Select your begining skills",
-      "pointsLeft": "Skill left to choose:",
+      "pointsLeft": "General Skill Points To Use:",
+      "bonusFramePoints": "BioFrame bonus skill points to use:",
       "return": "Back",
       "next": "Next"
     },

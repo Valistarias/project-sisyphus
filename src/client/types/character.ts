@@ -9,7 +9,7 @@ import type {
   ICuratedProgram,
   ICuratedWeapon,
 } from './items';
-import type { INode } from './rules';
+import type { ICompleteCyberFrame, INode } from './rules';
 
 // Body Skill ------------------------------------
 export interface IBodySkill {
@@ -168,6 +168,12 @@ export interface IBody {
   /** When the body was created */
   createdAt: Date;
 }
+
+// Curated Body ------------------------------------
+export type ICuratedBody = Omit<IBody, 'cyberFrame'> & {
+  /** The cyberFrame associated to this body */
+  cyberFrame: ICompleteCyberFrame;
+};
 
 // Character Nodes ------------------------------------
 export interface ICharacterNode {

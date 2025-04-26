@@ -7,6 +7,7 @@ import type {
   ICharacter,
   ICharacterNode,
   ICuratedAction,
+  ICuratedBody,
   ICuratedCharParam,
   ICuratedCyberFrame,
   ICuratedSkill,
@@ -136,11 +137,17 @@ const aggregateSkillsByStats = (skills: ICuratedSkill[], stats: ICuratedStat[]):
 };
 
 const getActualBody = (
-  character: ICharacter
+  character?: ICharacter
 ): {
   body: IBody | undefined;
   duplicate: boolean;
 } => {
+  if (character === undefined) {
+    return {
+      body: undefined,
+      duplicate: false,
+    };
+  }
   const relevantBodies = character.bodies?.filter((body) => body.alive);
 
   return {
@@ -203,11 +210,11 @@ const curateCharacterSkills = (
     };
   }
 
-  const skillNodesById: Record<string, IScore | undefined> = {};
-  const statNodesById: Record<string, IScore> = {};
+  const skillsById: Record<string, IScore | undefined> = {};
+  const statsById: Record<string, IScore | undefined> = {};
 
   character.stats.forEach(({ stat, value }) => {
-    statNodesById[stat] = {
+    statsById[stat] = {
       total: value,
       sources: [
         {
@@ -271,8 +278,14 @@ const curateCharacterSkills = (
   const charSkills: ICuratedSkillWithScore[] = [];
   skills.forEach(({ skill, i18n }) => {
     const relatedStat = stats.find(({ stat }) => stat._id === skill.stat._id);
-    const relatedStatBonuses = statNodesById[skill.stat._id];
-    const relatedSkillBonuses = skillNodesById[skill._id];
+    const relatedStatBonuses = statsById[skill.stat._id] ?? {
+      total: 0,
+      sources: [],
+    };
+    const relatedSkillBonuses = skillsById[skill._id] ?? {
+      total: 0,
+      sources: [],
+    };
     if (relatedStat !== undefined) {
       charStats[skill.stat._id] ??= {
         ...relatedStat,
@@ -280,13 +293,13 @@ const curateCharacterSkills = (
       };
 
       const score: IScore = {
-        total: calculateStatMod(relatedStatBonuses.total) + (relatedSkillBonuses?.total ?? 0),
+        total: calculateStatMod(relatedStatBonuses.total) + relatedSkillBonuses.total,
         sources: [
           {
             value: calculateStatMod(relatedStatBonuses.total),
             fromStat: true,
           },
-          ...(relatedSkillBonuses?.sources ?? []),
+          ...relatedSkillBonuses.sources,
         ],
       };
       charSkills.push({
@@ -490,6 +503,34 @@ const curateCyberFrame = ({
   };
 };
 
+const curateCharacterBody = ({
+  body,
+  cyberFrames,
+  charParams,
+  stats,
+}: {
+  body: IBody;
+  cyberFrames: ICuratedCyberFrame[];
+  charParams: ICuratedCharParam[];
+  stats: ICuratedStat[];
+}): ICuratedBody => {
+  const foundCyberFrame = cyberFrames.find((cFrame) => cFrame.cyberFrame._id === body.cyberFrame);
+  if (foundCyberFrame === undefined) {
+    console.error(
+      'No BioFrame found on curateCharacterBody. Using the first cyberframe as a fallback...'
+    );
+  }
+
+  return {
+    ...body,
+    cyberFrame: curateCyberFrame({
+      cyberFrame: foundCyberFrame ?? cyberFrames[0],
+      charParams,
+      stats,
+    }),
+  };
+};
+
 const arcaneNameToNodeIcon = (arcanaName: string): TypeNodeIcons => {
   const table: Record<string, TypeNodeIcons> = {
     wisdom: 'star',
@@ -501,7 +542,7 @@ const arcaneNameToNodeIcon = (arcanaName: string): TypeNodeIcons => {
   return table[arcanaName];
 };
 
-const malusStatMod = -5;
+const malusStatMod = 0;
 const calculateStatMod = (val: number): number => val + malusStatMod;
 const calculateStatModToString = (val: number): string => addSymbol(calculateStatMod(val));
 
@@ -512,6 +553,7 @@ export {
   curateCharacterParams,
   curateCharacterSkills,
   curateCharacterAction,
+  curateCharacterBody,
   curateCyberFrame,
   getActualBody,
   getCharacterHpValues,
