@@ -11,6 +11,7 @@ import {
   CharacterHeader,
   CharacterSkills,
   CharacterStats,
+  CharacterVows,
 } from '../../../organisms';
 import { ErrorPage } from '../../index';
 // import { calculateDices, diceResultToStr, type DiceResult } from '../../utils';
@@ -60,6 +61,7 @@ const Character: FC = () => {
       <div className="character__body">
         <div className="character__body__left">
           <CharacterCards />
+          <CharacterVows />
           <CharacterBoard />
         </div>
         <div className="character__body__center">
@@ -82,31 +84,6 @@ const Character: FC = () => {
           />
         </div>
       </div>
-
-      {/* <CharacterHeader
-        onClickEventTab={() => {
-          setEventTabOpen((prev) => !prev);
-        }}
-        isEventTabOpen={eventTabOpen}
-      />
-      <div className="character__body">
-        <div className="character__body__content">
-          <CharacterSkills
-            className="character__body__content__left"
-            onRollDices={(dices: DiceRequest[], id: TypeCampaignEvent) => {
-              setToRoll(dices, id);
-            }}
-          />
-          <div className="character__body__content__right">
-            <CharacterStatus
-              onRollDices={(dices: DiceRequest[], id: TypeCampaignEvent) => {
-                setToRoll(dices, id);
-              }}
-            />
-            <CharacterBoard />
-          </div>
-        </div>
-      </div> */}
     </div>
   );
 };

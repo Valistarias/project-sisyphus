@@ -43,7 +43,6 @@ const CharacterBoard: FC = () => {
     <div
       className={classTrim(`
       char-action-board
-      
     `)}
     >
       <TabsWindow

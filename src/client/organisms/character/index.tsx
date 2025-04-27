@@ -6,6 +6,7 @@ import CharacterInventory from './characterInventory';
 import CharacterProgramList from './characterProgramList';
 import CharacterSkills from './characterSkills';
 import CharacterStats from './characterStats';
+import CharacterVows from './characterVows';
 
 export {
   CharacterHeader,
@@ -16,4 +17,5 @@ export {
   CharacterProgramList,
   CharacterInventory,
   CharacterCards,
+  CharacterVows,
 };

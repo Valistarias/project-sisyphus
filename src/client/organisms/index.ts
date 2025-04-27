@@ -9,6 +9,7 @@ import {
   CharacterBoard,
   CharacterStats,
   CharacterCards,
+  CharacterVows,
 } from './character';
 import {
   CharCreationStep1,
@@ -49,6 +50,7 @@ export {
   CharacterCards,
   DragList,
   CharacterStats,
+  CharacterVows,
   HeaderBar,
   ImplantDisplay,
   ItemDisplay,
