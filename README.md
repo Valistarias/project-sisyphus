@@ -2,6 +2,12 @@
 
 This project is a character sheet generator for a brand new tabletop role-playing game. It provides a convenient way to create and manage character sheets for players and game masters.
 
+### To Deploy
+
+docker build -t sisyphus/prod -f Dockerfile.production .
+docker tag sisyphus/prod <the-.pkg.dev-on-gcp/project-id/name>/prod
+docker push <the-.pkg.dev-on-gcp/project-id/name>/prod
+
 ## Features
 
 ### For Players

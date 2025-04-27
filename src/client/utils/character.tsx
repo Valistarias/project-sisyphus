@@ -286,6 +286,16 @@ const curateCharacterSkills = (
       total: 0,
       sources: [],
     };
+
+    const bodySkillBonus = body.skills.find((bodySkill) => bodySkill.skill === skill._id);
+    if (bodySkillBonus !== undefined) {
+      relatedSkillBonuses.total += bodySkillBonus.value;
+      relatedSkillBonuses.sources.push({
+        value: bodySkillBonus.value,
+        fromBody: true,
+      });
+    }
+
     if (relatedStat !== undefined) {
       charStats[skill.stat._id] ??= {
         ...relatedStat,
