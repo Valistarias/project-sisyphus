@@ -243,14 +243,6 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
     [api]
   );
 
-  const loadActionTypes = useCallback(() => {
-    getAllFromApi('actionTypes', setActionTypes);
-  }, [getAllFromApi]);
-
-  const loadActionDurations = useCallback(() => {
-    getAllFromApi('actionDurations', setActionDurations);
-  }, [getAllFromApi]);
-
   const loadBodyParts = useCallback(() => {
     getAllFromApi('bodyParts', setBodyParts);
   }, [getAllFromApi]);
@@ -390,102 +382,83 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
     setCharacter(null);
   }, []);
 
-  useEffect(() => {
-    if (api !== undefined && !calledApi.current) {
-      calledApi.current = true;
+  const loadAllAvailableData = useCallback(() => {
+    if (api !== undefined) {
       api.auth
         .check()
         .then((data: IUser) => {
           setUser(data);
           if (Object.keys(data).length > 0) {
             loadCampaigns();
+            api.auth
+              .getGlobal()
+              .then(
+                ({
+                  actionDurations,
+                  actionTypes,
+                  arcanes,
+                  armorTypes,
+                  basicActions,
+                  bodyParts,
+                  charParams,
+                  clergies,
+                  cyberFrames,
+                  damageTypes,
+                  globalValues,
+                  itemModifiers,
+                  itemTypes,
+                  programScopes,
+                  rarities,
+                  ruleBooks,
+                  skills,
+                  stats,
+                  tipTexts,
+                  weaponScopes,
+                  weaponStyles,
+                  weaponTypes,
+                }) => {
+                  setActionDurations(actionDurations);
+                  setActionTypes(actionTypes);
+                  setArcanes(arcanes);
+                  setArmorTypes(armorTypes);
+                  setBasicActions(basicActions);
+                  setBodyParts(bodyParts);
+                  setCharParams(charParams);
+                  setClergies(clergies);
+                  setCyberFrames(cyberFrames);
+                  setDamageTypes(damageTypes);
+                  setGlobalValues(globalValues);
+                  setItemModifiers(itemModifiers);
+                  setItemTypes(itemTypes);
+                  setLoading(false);
+                  setProgramScopes(programScopes);
+                  setRarities(rarities);
+                  setRuleBooks(ruleBooks);
+                  setSkills(skills);
+                  setStats(stats);
+                  setTipTexts(tipTexts);
+                  setWeaponScopes(weaponScopes);
+                  setWeaponStyles(weaponStyles);
+                  setWeaponTypes(weaponTypes);
+                }
+              )
+              .catch((err) => {
+                console.error(err);
+              });
           }
-          api.auth
-            .getGlobal()
-            .then(
-              ({
-                actionDurations,
-                actionTypes,
-                arcanes,
-                armorTypes,
-                basicActions,
-                bodyParts,
-                charParams,
-                clergies,
-                cyberFrames,
-                damageTypes,
-                globalValues,
-                itemModifiers,
-                itemTypes,
-                programScopes,
-                rarities,
-                ruleBooks,
-                skills,
-                stats,
-                tipTexts,
-                weaponScopes,
-                weaponStyles,
-                weaponTypes,
-              }) => {
-                setActionDurations(actionDurations);
-                setActionTypes(actionTypes);
-                setArcanes(arcanes);
-                setArmorTypes(armorTypes);
-                setBasicActions(basicActions);
-                setBodyParts(bodyParts);
-                setCharParams(charParams);
-                setClergies(clergies);
-                setCyberFrames(cyberFrames);
-                setDamageTypes(damageTypes);
-                setGlobalValues(globalValues);
-                setItemModifiers(itemModifiers);
-                setItemTypes(itemTypes);
-                setLoading(false);
-                setProgramScopes(programScopes);
-                setRarities(rarities);
-                setRuleBooks(ruleBooks);
-                setSkills(skills);
-                setStats(stats);
-                setTipTexts(tipTexts);
-                setWeaponScopes(weaponScopes);
-                setWeaponStyles(weaponStyles);
-                setWeaponTypes(weaponTypes);
-              }
-            )
-            .catch((err) => {
-              console.error(err);
-            });
         })
         .catch((err) => {
           console.error(err);
         });
     }
-  }, [
-    api,
-    loadActionDurations,
-    loadArmorTypes,
-    loadActionTypes,
-    loadBodyParts,
-    loadCampaigns,
-    loadCharParams,
-    loadCyberFrames,
-    loadDamageTypes,
-    loadItemModifiers,
-    loadItemTypes,
-    loadProgramScopes,
-    loadRarities,
-    loadRuleBooks,
-    loadSkills,
-    loadStats,
-    loadClergies,
-    loadWeaponScopes,
-    loadWeaponStyles,
-    loadWeaponTypes,
-    loadTipTexts,
-    loadGlobalValues,
-    loadBasicActions,
-    loadArcanes,
-  ]);
+  }, [api, loadCampaigns]);
+
+  useEffect(() => {
+    if (api !== undefined && !calledApi.current) {
+      calledApi.current = true;
+      loadAllAvailableData();
+    }
+  }, [api, loadAllAvailableData]);
 
   useEffect(() => {
     if (user !== null) {
@@ -526,29 +499,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       globalValues,
       basicActions,
       reloadAll: () => {
-        loadArcanes();
-        loadActionDurations();
-        loadActionTypes();
-        loadArmorTypes();
-        loadBodyParts();
-        loadCampaigns();
-        loadCharParams();
-        loadCyberFrames();
-        loadDamageTypes();
-        loadGlobalValues();
-        loadBasicActions();
-        loadItemModifiers();
-        loadItemTypes();
-        loadProgramScopes();
-        loadRarities();
-        loadRuleBooks();
-        loadSkills();
-        loadStats();
-        loadClergies();
-        loadTipTexts();
-        loadWeaponScopes();
-        loadWeaponStyles();
-        loadWeaponTypes();
+        loadAllAvailableData();
       },
       reloadArcanes: loadArcanes,
       reloadBodyParts: loadBodyParts,
@@ -628,8 +579,7 @@ export const GlobalVarsProvider: FC<GlobalVarsProviderProps> = ({ children }) =>
       loadBasicActions,
       setCharacterFromId,
       resetCharacter,
-      loadActionDurations,
-      loadActionTypes,
+      loadAllAvailableData,
     ]
   );
 

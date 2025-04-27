@@ -42,6 +42,8 @@ export interface IDamage {
   damageType: string;
   /** The dices formula of the damage (ex: 2d6 + 1) */
   dices: string;
+  /** The base damage, always inflicted */
+  baseDamage: number;
   /** When the damage was created */
   createdAt: Date;
 }
@@ -253,6 +255,8 @@ export interface IWeapon {
   itemModifiers?: string[];
   /** The cost of the weapon */
   cost: number;
+  /** The challenge to use the weapon */
+  challenge: number;
   /** The size of the magasine */
   magasine?: number;
   /** Is this weapon in the starter kit ?
@@ -317,6 +321,8 @@ export interface IProgram {
   programScope: string;
   /** How many times the program is usable before detroying itseld (undefined | 0 = no limits) */
   uses: number;
+  /** The challenge to use the program */
+  challenge: number;
   /** How many RAM it costs */
   ram: number;
   /** How many meters it blasts (in meter) */

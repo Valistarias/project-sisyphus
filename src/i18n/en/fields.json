@@ -363,6 +363,10 @@
     "label": "Damage Type",
     "required": "A Damage Type is required"
   },
+  "baseDamage": {
+    "label": "Base damage (always inflicted)",
+    "required": "A Base Damage is required"
+  },
   "damagesValue": {
     "label": "Value (in dices)",
     "required": "A Damage Value is required"
@@ -370,6 +374,10 @@
   "nameWeapon": {
     "required": "A Weapon Name is required",
     "label": "Name"
+  },
+  "challengeWeapon": {
+    "required": "A challenge value is required",
+    "label": "Challenge"
   },
   "weaponSummary": {
     "title": "Weapon Details"
@@ -535,6 +543,10 @@
   "nameProgram": {
     "required": "A Program Name is required",
     "label": "Name"
+  },
+  "challengeProgram": {
+    "required": "A challenge value is required",
+    "label": "Challenge"
   },
   "programSummary": {
     "title": "Program Details"

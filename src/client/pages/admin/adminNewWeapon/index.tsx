@@ -30,12 +30,14 @@ interface FormValues {
   magasine?: number;
   ammoPerShot?: number;
   cost: number;
+  challenge: number;
   rarity: string;
   itemModifiers: string[];
   damages?: Record<
     string,
     {
       damageType: string;
+      baseDamage: number;
       dices: string;
     }
   >;
@@ -241,6 +243,7 @@ const AdminNewWeapon: FC = () => {
       weaponType,
       rarity,
       cost,
+      challenge,
       quote,
       quoteFr,
       weaponScope,
@@ -271,8 +274,9 @@ const AdminNewWeapon: FC = () => {
         return;
       }
 
-      const curatedDamages = sortedDamages.map(({ damageType, dices }) => ({
+      const curatedDamages = sortedDamages.map(({ damageType, dices, baseDamage }) => ({
         damageType,
+        baseDamage,
         dices,
       }));
 
@@ -365,6 +369,7 @@ const AdminNewWeapon: FC = () => {
           weaponScope,
           rarity,
           cost: Number(cost),
+          challenge: Number(challenge),
           itemModifiers,
           starterKit,
           summary: html,
@@ -456,14 +461,15 @@ const AdminNewWeapon: FC = () => {
             small
             complete
           />
-          <Input
-            control={control}
-            inputName="quote"
-            type="text"
-            label={t('quoteWeapon.label', { ns: 'fields' })}
-            className="adminNewWeapon__details__quote"
-          />
           <div className="adminNewWeapon__details__fields">
+            <Input
+              control={control}
+              inputName="challenge"
+              type="number"
+              rules={{ required: t('challengeWeapon.required', { ns: 'fields' }) }}
+              label={t('challengeWeapon.label', { ns: 'fields' })}
+              className="adminNewWeapon__details__fields__elt"
+            />
             <Input
               control={control}
               inputName="cost"
@@ -510,6 +516,13 @@ const AdminNewWeapon: FC = () => {
               className="adminNewWeapon__details__fields__elt"
             />
           </div>
+          <Input
+            control={control}
+            inputName="quote"
+            type="text"
+            label={t('quoteWeapon.label', { ns: 'fields' })}
+            className="adminNewWeapon__details__fields__elt"
+          />
         </div>
         <Atitle className="adminNewWeapon__bonus-title" level={2}>
           {t('adminNewWeapon.values', { ns: 'pages' })}
@@ -529,6 +542,14 @@ const AdminNewWeapon: FC = () => {
                     label={t('damagesType.label', { ns: 'fields' })}
                     options={damageTypeList}
                     className="adminNewWeapon__bonus__select"
+                  />
+                  <Input
+                    control={control}
+                    inputName={`damages.damage-${damagesId}.baseDamage`}
+                    type="number"
+                    rules={{ required: t('baseDamage.required', { ns: 'fields' }) }}
+                    label={t('baseDamage.label', { ns: 'fields' })}
+                    className="adminNewWeapon__bonus__value"
                   />
                   <Input
                     control={control}

@@ -27,6 +27,8 @@ interface IProgram<IdType> {
   radius?: number;
   /** The cost of the program */
   cost: number;
+  /** The challenge to use the program */
+  challenge: number;
   /** The summon of the program */
   ai?: IdType;
   /** How many AIs the program summons */
@@ -84,6 +86,7 @@ const programSchema = new Schema<IProgram<ObjectId>>({
   ],
   uses: Number,
   cost: Number,
+  challenge: Number,
   createdAt: {
     type: Date,
     default: Date.now,

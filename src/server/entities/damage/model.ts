@@ -5,6 +5,8 @@ import type { IDamageType } from '../damageType/model';
 interface IDamage {
   /** The associated damageType */
   damageType: ObjectId;
+  /** The base damage, always inflicted */
+  baseDamage: number;
   /** The dices formula of the damage (ex: 2d6 + 1) */
   dices: string;
   /** When the damageType branch was created */
@@ -19,6 +21,7 @@ const damageSchema = new Schema<IDamage>({
     ref: 'DamageType',
   },
   dices: String,
+  baseDamage: Number,
   createdAt: {
     type: Date,
     default: Date.now,

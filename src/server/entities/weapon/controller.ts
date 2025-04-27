@@ -90,6 +90,7 @@ const create = (req: Request, res: Response): void => {
     itemModifiers,
     starterKit,
     cost,
+    challenge,
     magasine,
     ammoPerShot,
     effects,
@@ -106,12 +107,14 @@ const create = (req: Request, res: Response): void => {
     itemModifiers?: ObjectId[];
     starterKit?: string;
     cost?: number;
+    challenge?: number;
     magasine?: number;
     ammoPerShot?: number;
     effects?: ISentEffect[];
     actions?: ISentAction[];
     damages?: Array<{
       damageType: string;
+      baseDamage: number;
       dices: string;
     }>;
   } = req.body;
@@ -122,6 +125,7 @@ const create = (req: Request, res: Response): void => {
     rarity === undefined ||
     weaponScope === undefined ||
     cost === undefined ||
+    challenge === undefined ||
     damages === undefined
   ) {
     res.status(400).send(gemInvalidField('Weapon'));
@@ -137,6 +141,7 @@ const create = (req: Request, res: Response): void => {
     rarity,
     weaponScope,
     cost,
+    challenge,
     magasine,
     ammoPerShot,
     itemModifiers,
@@ -206,6 +211,7 @@ const update = (req: Request, res: Response): void => {
     weaponScope = null,
     itemModifiers = null,
     cost = null,
+    challenge = null,
     magasine = null,
     ammoPerShot = null,
     starterKit = null,
@@ -224,12 +230,14 @@ const update = (req: Request, res: Response): void => {
     itemModifiers: string[] | null;
     starterKit: 'always' | 'never' | 'option' | null;
     cost: number | null;
+    challenge: number | null;
     magasine: number | null;
     ammoPerShot: number | null;
     effects: ISentEffect[] | null;
     actions: ISentAction[] | null;
     damages: Array<{
       damageType: string;
+      baseDamage: number;
       dices: string;
     }> | null;
   } = req.body;
@@ -268,6 +276,9 @@ const update = (req: Request, res: Response): void => {
       if (cost !== null) {
         weapon.cost = cost;
       }
+      if (challenge !== null) {
+        weapon.challenge = challenge;
+      }
       if (magasine !== null) {
         weapon.magasine = magasine;
       }
@@ -279,13 +290,17 @@ const update = (req: Request, res: Response): void => {
       let damagesToRemove: string[] = [];
       let damagesToAdd: Array<{
         damageType: string;
+        baseDamage: number;
         dices: string;
       }> = [];
 
       if (damages !== null) {
         damagesToRemove = weapon.damages.reduce((result: string[], elt: HydratedIDamage) => {
           const foundDamage = damages.find(
-            (damage) => damage.damageType === String(elt.damageType) && damage.dices === elt.dices
+            (damage) =>
+              damage.damageType === String(elt.damageType) &&
+              damage.dices === elt.dices &&
+              damage.baseDamage === elt.baseDamage
           );
           if (foundDamage === undefined) {
             result.push(String(elt._id));
@@ -300,10 +315,12 @@ const update = (req: Request, res: Response): void => {
           (
             result: Array<{
               damageType: string;
+              baseDamage: number;
               dices: string;
             }>,
             elt: {
               damageType: string;
+              baseDamage: number;
               dices: string;
             }
           ) => {
@@ -311,7 +328,8 @@ const update = (req: Request, res: Response): void => {
               (damage) =>
                 typeof damage !== 'string' &&
                 String(damage.damageType) === elt.damageType &&
-                damage.dices === elt.dices
+                damage.dices === elt.dices &&
+                damage.baseDamage === elt.baseDamage
             );
             if (foundDamage === undefined) {
               result.push(elt);

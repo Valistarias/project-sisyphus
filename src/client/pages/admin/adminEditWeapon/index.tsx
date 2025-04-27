@@ -32,12 +32,14 @@ interface FormValues {
   magasine?: number;
   ammoPerShot?: number;
   cost: number;
+  challenge: number;
   rarity: string;
   itemModifiers: string[];
   damages?: Record<
     string,
     {
       damageType: string;
+      baseDamage: number;
       dices: string;
     }
   >;
@@ -125,6 +127,7 @@ const AdminEditWeapon: FC = () => {
     defaultData.magasine = weapon.magasine;
     defaultData.ammoPerShot = weapon.ammoPerShot;
     defaultData.cost = weapon.cost;
+    defaultData.challenge = weapon.challenge;
     defaultData.rarity = weapon.rarity;
     defaultData.itemModifiers = weapon.itemModifiers;
     defaultData.starterKit = weapon.starterKit ?? 'never';
@@ -139,6 +142,7 @@ const AdminEditWeapon: FC = () => {
       defaultData.damages ??= {};
       defaultData.damages[`damage-${idIncrement.current}`] = {
         damageType: damage.damageType,
+        baseDamage: damage.baseDamage,
         dices: damage.dices,
       };
 
@@ -341,6 +345,7 @@ const AdminEditWeapon: FC = () => {
       weaponType,
       rarity,
       cost,
+      challenge,
       quote,
       quoteFr,
       weaponScope,
@@ -371,8 +376,9 @@ const AdminEditWeapon: FC = () => {
         return;
       }
 
-      const curatedDamages = sortedDamages.map(({ damageType, dices }) => ({
+      const curatedDamages = sortedDamages.map(({ damageType, baseDamage, dices }) => ({
         damageType,
+        baseDamage,
         dices,
       }));
 
@@ -466,6 +472,7 @@ const AdminEditWeapon: FC = () => {
           weaponScope,
           rarity,
           cost: Number(cost),
+          challenge: Number(challenge),
           itemModifiers,
           starterKit,
           summary: html,
@@ -664,14 +671,15 @@ const AdminEditWeapon: FC = () => {
             small
             complete
           />
-          <Input
-            control={control}
-            inputName="quote"
-            type="text"
-            label={t('quoteWeapon.label', { ns: 'fields' })}
-            className="adminEditWeapon__details__quote"
-          />
           <div className="adminEditWeapon__details__fields">
+            <Input
+              control={control}
+              inputName="challenge"
+              type="number"
+              rules={{ required: t('challengeWeapon.required', { ns: 'fields' }) }}
+              label={t('challengeWeapon.label', { ns: 'fields' })}
+              className="adminEditWeapon__details__fields__elt"
+            />
             <Input
               control={control}
               inputName="cost"
@@ -718,6 +726,13 @@ const AdminEditWeapon: FC = () => {
               className="adminEditWeapon__details__fields__elt"
             />
           </div>
+          <Input
+            control={control}
+            inputName="quote"
+            type="text"
+            label={t('quoteWeapon.label', { ns: 'fields' })}
+            className="adminEditWeapon__details__quote"
+          />
         </div>
         <Atitle className="adminEditWeapon__bonus-title" level={2}>
           {t('adminEditWeapon.values', { ns: 'pages' })}
@@ -737,6 +752,14 @@ const AdminEditWeapon: FC = () => {
                     label={t('damagesType.label', { ns: 'fields' })}
                     options={damageTypeList}
                     className="adminEditWeapon__bonus__select"
+                  />
+                  <Input
+                    control={control}
+                    inputName={`damages.damage-${damagesId}.baseDamage`}
+                    type="number"
+                    rules={{ required: t('baseDamage.required', { ns: 'fields' }) }}
+                    label={t('baseDamage.label', { ns: 'fields' })}
+                    className="adminEditWeapon__bonus__value"
                   />
                   <Input
                     control={control}

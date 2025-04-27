@@ -23,6 +23,8 @@ interface IWeapon<IdType> {
   itemModifiers?: IdType[];
   /** The cost of the weapon */
   cost: number;
+  /** The challenge to use the weapon */
+  challenge: number;
   /** The size of the magasine */
   magasine?: number;
   /** How many ammos are usef for each shot */
@@ -78,6 +80,7 @@ const weaponSchema = new Schema<IWeapon<ObjectId>>({
     },
   ],
   cost: Number,
+  challenge: Number,
   magasine: Number,
   ammoPerShot: Number,
   starterKit: {

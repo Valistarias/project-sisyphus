@@ -29,6 +29,7 @@ interface FormValues {
   radius?: number;
   ram: number;
   cost: number;
+  challenge: number;
   rarity: string;
   ai: string;
   aiSummoned?: number;
@@ -36,6 +37,7 @@ interface FormValues {
     string,
     {
       damageType: string;
+      baseDamage: number;
       dices: string;
     }
   >;
@@ -155,6 +157,7 @@ const AdminNewProgram: FC = () => {
       radius,
       ram,
       cost,
+      challenge,
       rarity,
       ai,
       aiSummoned,
@@ -180,8 +183,9 @@ const AdminNewProgram: FC = () => {
         return;
       }
 
-      const curatedDamages = sortedDamages.map(({ damageType, dices }) => ({
+      const curatedDamages = sortedDamages.map(({ damageType, dices, baseDamage }) => ({
         damageType,
+        baseDamage,
         dices,
       }));
 
@@ -210,6 +214,7 @@ const AdminNewProgram: FC = () => {
           rarity,
           starterKit,
           cost: Number(cost),
+          challenge: Number(challenge),
           ram: Number(ram),
           summary: html,
           itemType: itemTypes.find((itemType) => itemType.name === 'pro')?._id ?? undefined,
@@ -299,13 +304,21 @@ const AdminNewProgram: FC = () => {
         </div>
         <div className="adminNewProgram__details">
           <RichTextElement
-            label={t('programTypeSummary.title', { ns: 'fields' })}
+            label={t('programSummary.title', { ns: 'fields' })}
             editor={introEditor}
             rawStringContent=""
             small
             complete
           />
           <div className="adminNewProgram__details__fields">
+            <Input
+              control={control}
+              inputName="challenge"
+              type="number"
+              rules={{ required: t('challengeProgram.required', { ns: 'fields' }) }}
+              label={t('challengeProgram.label', { ns: 'fields' })}
+              className="adminNewProgram__details__fields__elt"
+            />
             <Input
               control={control}
               inputName="cost"
@@ -373,6 +386,14 @@ const AdminNewProgram: FC = () => {
                   />
                   <Input
                     control={control}
+                    inputName={`damages.damage-${damagesId}.baseDamage`}
+                    type="number"
+                    rules={{ required: t('baseDamage.required', { ns: 'fields' }) }}
+                    label={t('baseDamage.label', { ns: 'fields' })}
+                    className="adminNewProgram__bonus__select"
+                  />
+                  <Input
+                    control={control}
                     inputName={`damages.damage-${damagesId}.dices`}
                     type="text"
                     rules={{ required: t('damagesValue.required', { ns: 'fields' }) }}
@@ -423,18 +444,11 @@ const AdminNewProgram: FC = () => {
         </div>
         <div className="adminNewProgram__details">
           <RichTextElement
-            label={`${t('programTypeSummary.title', { ns: 'fields' })} (FR)`}
+            label={`${t('programSummary.title', { ns: 'fields' })} (FR)`}
             editor={introFrEditor}
             rawStringContent=""
             small
             complete
-          />
-          <Input
-            control={control}
-            inputName="quoteFr"
-            type="text"
-            label={`${t('quoteProgram.label', { ns: 'fields' })} (FR)`}
-            className="adminNewProgram__details__quote"
           />
         </div>
         <Button type="submit">{t('adminNewProgram.button', { ns: 'pages' })}</Button>

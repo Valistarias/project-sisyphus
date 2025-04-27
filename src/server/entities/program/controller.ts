@@ -77,6 +77,7 @@ const create = (req: Request, res: Response): void => {
     programScope,
     itemType,
     cost,
+    challenge,
     ai,
     aiSummoned,
     uses,
@@ -92,12 +93,14 @@ const create = (req: Request, res: Response): void => {
     itemType?: ObjectId;
     starterKit?: string;
     cost?: number;
+    challenge?: number;
     ai?: ObjectId;
     aiSummoned?: number;
     uses?: number;
     radius?: number;
     damages?: Array<{
       damageType: string;
+      baseDamage: number;
       dices: string;
     }>;
   } = req.body;
@@ -108,7 +111,8 @@ const create = (req: Request, res: Response): void => {
     rarity === undefined ||
     programScope === undefined ||
     itemType === undefined ||
-    cost === undefined
+    cost === undefined ||
+    challenge === undefined
   ) {
     res.status(400).send(gemInvalidField('Program'));
 
@@ -120,6 +124,7 @@ const create = (req: Request, res: Response): void => {
     summary,
     rarity,
     cost,
+    challenge,
     ram,
     radius,
     ai,
@@ -168,6 +173,7 @@ const update = (req: Request, res: Response): void => {
     starterKit = null,
     programScope = null,
     cost = null,
+    challenge = null,
     ai = null,
     aiSummoned = null,
     uses = null,
@@ -185,12 +191,14 @@ const update = (req: Request, res: Response): void => {
     itemType: string | null;
     starterKit?: 'always' | 'never' | 'option' | null;
     cost: number | null;
+    challenge: number | null;
     ai?: string | null;
     aiSummoned?: number | null;
     uses: number | null;
     radius: number | null;
     damages?: Array<{
       damageType: string;
+      baseDamage: number;
       dices: string;
     }> | null;
   } = req.body;
@@ -235,6 +243,9 @@ const update = (req: Request, res: Response): void => {
       if (cost !== null) {
         program.cost = cost;
       }
+      if (challenge !== null) {
+        program.challenge = challenge;
+      }
       if (itemType !== null) {
         program.itemType = itemType;
       }
@@ -243,13 +254,17 @@ const update = (req: Request, res: Response): void => {
       let damagesToRemove: string[] = [];
       let damagesToAdd: Array<{
         damageType: string;
+        baseDamage: number;
         dices: string;
       }> = [];
 
       if (damages !== null) {
         damagesToRemove = program.damages.reduce((result: string[], elt: HydratedIDamage) => {
           const foundDamage = damages.find(
-            (damage) => damage.damageType === String(elt.damageType) && damage.dices === elt.dices
+            (damage) =>
+              damage.damageType === String(elt.damageType) &&
+              damage.dices === elt.dices &&
+              damage.baseDamage === elt.baseDamage
           );
           if (foundDamage === undefined) {
             result.push(String(elt._id));
@@ -264,10 +279,12 @@ const update = (req: Request, res: Response): void => {
           (
             result: Array<{
               damageType: string;
+              baseDamage: number;
               dices: string;
             }>,
             elt: {
               damageType: string;
+              baseDamage: number;
               dices: string;
             }
           ) => {

@@ -29,6 +29,7 @@ interface FormValues {
   radius?: number;
   ram: number;
   cost: number;
+  challenge: number;
   rarity: string;
   starterKit: string;
   ai: string;
@@ -37,6 +38,7 @@ interface FormValues {
     string,
     {
       damageType: string;
+      baseDamage: number;
       dices: string;
     }
   >;
@@ -81,6 +83,7 @@ const AdminEditProgram: FC = () => {
     defaultData.radius = program.radius;
     defaultData.ram = program.ram;
     defaultData.cost = program.cost;
+    defaultData.challenge = program.challenge;
     defaultData.rarity = program.rarity;
     defaultData.ai = program.ai?.nPC._id;
     defaultData.aiSummoned = program.aiSummoned;
@@ -97,6 +100,7 @@ const AdminEditProgram: FC = () => {
       }
       defaultData.damages[`damage-${idIncrement.current}`] = {
         damageType: damage.damageType,
+        baseDamage: damage.baseDamage,
         dices: damage.dices,
       };
 
@@ -186,6 +190,7 @@ const AdminEditProgram: FC = () => {
       radius,
       ram,
       cost,
+      challenge,
       rarity,
       ai,
       aiSummoned,
@@ -211,8 +216,9 @@ const AdminEditProgram: FC = () => {
         return;
       }
 
-      const curatedDamages = sortedDamages.map(({ damageType, dices }) => ({
+      const curatedDamages = sortedDamages.map(({ damageType, dices, baseDamage }) => ({
         damageType,
+        baseDamage,
         dices,
       }));
 
@@ -242,6 +248,7 @@ const AdminEditProgram: FC = () => {
           rarity,
           starterKit,
           cost: Number(cost),
+          challenge: Number(challenge),
           ram: Number(ram),
           summary: html,
           itemType: programData?.program.itemType,
@@ -472,6 +479,14 @@ const AdminEditProgram: FC = () => {
           <div className="adminEditProgram__details__fields">
             <Input
               control={control}
+              inputName="challenge"
+              type="number"
+              rules={{ required: t('challengeProgram.required', { ns: 'fields' }) }}
+              label={t('challengeProgram.label', { ns: 'fields' })}
+              className="adminEditProgram__details__fields__elt"
+            />
+            <Input
+              control={control}
               inputName="cost"
               type="number"
               rules={{ required: t('programCost.required', { ns: 'fields' }) }}
@@ -533,6 +548,14 @@ const AdminEditProgram: FC = () => {
                     rules={{ required: t('damagesType.required', { ns: 'fields' }) }}
                     label={t('damagesType.label', { ns: 'fields' })}
                     options={damageTypeList}
+                    className="adminEditProgram__bonus__select"
+                  />
+                  <Input
+                    control={control}
+                    inputName={`damages.damage-${damagesId}.baseDamage`}
+                    type="number"
+                    rules={{ required: t('baseDamage.required', { ns: 'fields' }) }}
+                    label={t('baseDamage.label', { ns: 'fields' })}
                     className="adminEditProgram__bonus__select"
                   />
                   <Input
@@ -605,13 +628,6 @@ const AdminEditProgram: FC = () => {
               rawStringContent={programTextFr}
               small
               complete
-            />
-            <Input
-              control={control}
-              inputName="quoteFr"
-              type="text"
-              label={`${t('quoteProgram.label', { ns: 'fields' })} (FR)`}
-              className="adminEditProgram__details__quote"
             />
           </div>
         </div>

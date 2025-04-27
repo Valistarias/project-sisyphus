@@ -45,11 +45,12 @@ const createReadDamage = (
   elts: Array<{
     damageType: string;
     dices: string;
+    baseDamage: number;
   }>,
   ids: string[],
   cb: (err: unknown, res?: string[]) => void
 ): void => {
-  if (elts.length === 0) {
+  if (elts.length === 0 || Object.keys(elts[0]).length === 0) {
     cb(null, ids);
 
     return;
@@ -96,7 +97,7 @@ const smartDeleteDamage = (elts: string[], cb: (err: unknown) => void): void => 
   const actualElt = elts[0];
   let counter = 0;
   Weapon.find({ damages: actualElt })
-    .then((sentWeapons: IWeapon[]) => {
+    .then((sentWeapons: Array<IWeapon<string>>) => {
       counter += sentWeapons.length;
       if (counter <= 1) {
         Damage.findByIdAndDelete(actualElt)
@@ -126,6 +127,7 @@ const curateDamageIds = async ({
   damagesToAdd?: Array<{
     damageType: string;
     dices: string;
+    baseDamage: number;
   }>;
   damagesToStay: string[];
 }): Promise<string[]> =>
@@ -150,8 +152,8 @@ const curateDamageIds = async ({
   });
 
 const create = (req: Request, res: Response): void => {
-  const { damageType, dices } = req.body;
-  if (damageType === undefined || dices === undefined) {
+  const { damageType, dices, baseDamage } = req.body;
+  if (damageType === undefined || dices === undefined || baseDamage === undefined) {
     res.status(400).send(gemInvalidField('Damage'));
 
     return;
@@ -160,6 +162,7 @@ const create = (req: Request, res: Response): void => {
   const damage = new Damage({
     damageType,
     dices,
+    baseDamage,
   });
 
   damage
@@ -173,7 +176,7 @@ const create = (req: Request, res: Response): void => {
 };
 
 const update = (req: Request, res: Response): void => {
-  const { id, damageType = null, dices = null } = req.body;
+  const { id, damageType = null, dices = null, baseDamage = null } = req.body;
   if (id === undefined) {
     res.status(400).send(gemInvalidField('Damage ID'));
 
@@ -186,6 +189,9 @@ const update = (req: Request, res: Response): void => {
       }
       if (dices !== null) {
         damage.dices = dices;
+      }
+      if (baseDamage !== null) {
+        damage.baseDamage = baseDamage;
       }
 
       damage

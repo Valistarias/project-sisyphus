@@ -52,8 +52,6 @@ const NewCharacter: FC = () => {
     useGlobalVars();
   const { id } = useParams();
 
-  console.log('character', character);
-
   const [displayLoading, setDisplayLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [tooltipOpen, setTooltipOpen] = useState(false);
