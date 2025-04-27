@@ -21,7 +21,7 @@ import type { TypeCampaignEvent } from '../../../types';
 import type { DiceRequest } from '../../../utils';
 
 const Character: FC = () => {
-  const { character, setCharacterFromId, resetCharacter } = useGlobalVars();
+  const { character, setCharacterFromId } = useGlobalVars();
   const { api } = useApi();
   const { id } = useParams();
   const { setToRoll } = useCampaignEventWindow();
@@ -32,14 +32,13 @@ const Character: FC = () => {
 
   useEffect(() => {
     if (!calledApi.current && id !== undefined) {
-      setCharacterFromId(id);
+      if (character === false || character === null || character._id !== id) {
+        setCharacterFromId(id);
+      }
+
       calledApi.current = true;
     }
-
-    return () => {
-      resetCharacter();
-    };
-  }, [api, id, setCharacterFromId, resetCharacter]);
+  }, [api, id, setCharacterFromId, character]);
 
   if (character === false) {
     return <ErrorPage />;

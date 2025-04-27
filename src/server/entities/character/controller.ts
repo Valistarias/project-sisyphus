@@ -254,7 +254,7 @@ const findCompleteCharacterById = async (
                   {
                     path: 'program',
                     select:
-                      '_id title summary i18n rarity itemType programScope uses ram radius ai aiSummoned damages',
+                      '_id title summary i18n rarity challenge itemType programScope uses ram radius ai aiSummoned damages',
                     populate: ['ai', 'damages'],
                   },
                 ],
@@ -266,7 +266,7 @@ const findCompleteCharacterById = async (
                   {
                     path: 'weapon',
                     select:
-                      '_id title summary quote i18n weaponType rarity weaponScope itemModifiers magasine ammoPerShot effects actions damages',
+                      '_id title summary quote i18n challenge weaponType rarity weaponScope itemModifiers magasine ammoPerShot effects actions damages',
                     populate: ['effects', 'actions', 'damages'],
                   },
                 ],

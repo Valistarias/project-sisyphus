@@ -47,7 +47,8 @@ interface ICuratedCompleteWeapon extends Omit<ICuratedWeapon, 'weapon'> {
 
 const WeaponDisplay: FC<IQuarkProps<IWeaponDisplay>> = ({ weapon, mode = 'basic' }) => {
   const { t } = useTranslation();
-  const { weaponTypes, weaponScopes, itemModifiers, rarities, damageTypes } = useGlobalVars();
+  const { weaponTypes, weaponStyles, weaponScopes, itemModifiers, rarities, damageTypes } =
+    useGlobalVars();
 
   const [placement, setPlacement] = useState<string>('left');
   const domBlockContent = useRef<HTMLDivElement>(null);
@@ -114,6 +115,10 @@ const WeaponDisplay: FC<IQuarkProps<IWeaponDisplay>> = ({ weapon, mode = 'basic'
     const { weapon } = curatedWeapon;
     const { rarity } = weapon;
 
+    const linkedWeaponStyle = weaponStyles.find(
+      (weaponStyle) => weaponStyle.weaponStyle._id === type?.weaponType.weaponStyle._id
+    );
+
     return (
       <PropDisplay
         ref={domBlockContent}
@@ -127,17 +132,37 @@ const WeaponDisplay: FC<IQuarkProps<IWeaponDisplay>> = ({ weapon, mode = 'basic'
         itemModifiers={weapon.itemModifiers}
         mainNode={
           <div className="weapon-display__block__main">
-            <Atitle className="weapon-display__block__main__title" level={4}>
+            <Atitle className="weapon-display__block__main__title" level={3}>
               {t('display.cat.damages', { ns: 'components' })}
             </Atitle>
-            <Aul noPoints className="weapon-display__block__damages">
+            <div className="weapon-display__block__main__titles">
+              <Atitle className="weapon-display__block__main__base-dmg" level={4}>
+                {t('display.cat.baseDamages', { ns: 'components' })}
+              </Atitle>
+              <Atitle className="weapon-display__block__main__main-dmg" level={4}>
+                {t('display.cat.challengeDamages', { ns: 'components' })}
+              </Atitle>
+            </div>
+
+            <Aul noPoints className="weapon-display__block__main__damages">
               {weapon.damages.map((damage) => (
-                <Ali key={damage._id} className="weapon-display__block__damages__elt">
-                  {damage.dices}
-                  <span className="weapon-display__block__damages__elt__type">{`(${damage.damageType?.damageType.title})`}</span>
+                <Ali key={damage._id} className="weapon-display__block__main__damages__elt">
+                  <div className="weapon-display__block__main__base-dmg">{damage.baseDamage}</div>
+                  <div className="weapon-display__block__main__main-dmg">
+                    {damage.dices}
+                    <span className="weapon-display__block__main__damages__elt__type">{`(${damage.damageType?.damageType.title})`}</span>
+                  </div>
                 </Ali>
               ))}
             </Aul>
+
+            <Atitle className="weapon-display__block__main__title" level={3}>
+              {t('display.cat.challenge', { ns: 'components' })}
+            </Atitle>
+            <Ap className="weapon-display__block__main__challenge">
+              {weapon.challenge}
+              <span className="weapon-display__block__main__challenge__type">{`(${linkedWeaponStyle?.weaponStyle.skill.title})`}</span>
+            </Ap>
           </div>
         }
         subNode={
@@ -156,7 +181,7 @@ const WeaponDisplay: FC<IQuarkProps<IWeaponDisplay>> = ({ weapon, mode = 'basic'
         }
       />
     );
-  }, [curatedWeapon, t]);
+  }, [curatedWeapon, t, weaponStyles]);
 
   if (mode === 'hover') {
     return (

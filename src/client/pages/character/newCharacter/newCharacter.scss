@@ -26,7 +26,7 @@
     transform: translate3d(0, 0, 0);
     transition: opacity 1s ease;
     width: 100%;
-    z-index: 3;
+    z-index: var(--z-header);
 
     &__accent {
       animation: rotating 15s ease infinite;
@@ -112,7 +112,7 @@
     top: 0;
     transform: translate3d(0, 0, 0);
     transition: opacity 0.3s ease;
-    z-index: var(--z-hints);
+    z-index: var(--z-overlay);
 
     &__shell {
       display: flex;
@@ -165,7 +165,7 @@
     right: 2rem;
     top: 2rem;
     transition: opacity 0.3s ease;
-    z-index: var(--z-hints);
+    z-index: var(--z-overlay);
   }
 
   &__form {

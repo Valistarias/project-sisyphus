@@ -92,6 +92,8 @@ const NewCharacter: FC = () => {
         }
 
         if (character.money === undefined || character.money === 0) {
+          setLoading(false);
+
           return 5;
         }
 
@@ -665,10 +667,6 @@ const NewCharacter: FC = () => {
       calledApi.current = true;
       getData();
     }
-
-    return () => {
-      resetCharacter();
-    };
   }, [api, user, createAlert, getNewId, getData, t, id, resetCharacter, setCharacterFromId]);
 
   useEffect(() => {
@@ -691,16 +689,7 @@ const NewCharacter: FC = () => {
         setDisplayLoading(false);
       }
     }
-  }, [
-    character,
-    weapons,
-    id,
-    programs.length,
-    implants.length,
-    items.length,
-    bags.length,
-    armors.length,
-  ]);
+  }, [character, weapons, id, programs, implants, items, bags, armors]);
 
   return (
     <div

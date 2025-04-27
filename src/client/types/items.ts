@@ -186,7 +186,7 @@ export interface ICuratedWeaponScope {
 }
 
 // WeaponStyles ------------------------------------
-export interface IWeaponStyle {
+export interface IWeaponStyle<SkillType> {
   /** The ID of the weapon scope */
   _id: string;
   /** The title of the weapon scope */
@@ -194,7 +194,7 @@ export interface IWeaponStyle {
   /** A summary of the weapon scope */
   summary: string;
   /** The associated skill */
-  skill: ISkill;
+  skill: SkillType;
   /** When the weapon scope was created */
   createdAt: Date;
   /** The internationalization */
@@ -203,7 +203,7 @@ export interface IWeaponStyle {
 
 export interface ICuratedWeaponStyle {
   i18n: InternationalizationType;
-  weaponStyle: IWeaponStyle;
+  weaponStyle: IWeaponStyle<ISkill>;
 }
 
 // WeaponTypes ------------------------------------
@@ -215,7 +215,7 @@ export interface IWeaponType {
   /** A summary of the weapon scope */
   summary: string;
   /** The associated weapon style */
-  weaponStyle: IWeaponStyle;
+  weaponStyle: IWeaponStyle<string>;
   /** The associated item type */
   itemType: IItemType;
   /** The icon of the weapon */
@@ -307,7 +307,7 @@ export interface IProgram {
   /** The title of the program */
   title: string;
   /** A summary of the program */
-  summary: string;
+  summary: string | null;
   /** The internationnal content, as a json, stringified */
   i18n?: string;
   /** The rarity of the program */

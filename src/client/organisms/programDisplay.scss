@@ -1,7 +1,68 @@
-.weapon-display {
+.program-display {
+  position: relative;
+  z-index: var(--z-hints);
+
   &__block {
     &__main {
       width: 100%;
+
+      &__titles,
+      &__damages__elt {
+        display: flex;
+        flex-direction: row;
+        gap: 2rem;
+
+        .program-display__block__main__base-dmg {
+          width: 6rem;
+        }
+
+        .program-display__block__main__main-dmg {
+          flex: 0.1rem 1 1;
+        }
+      }
+
+      &__desc {
+        font-family: var(--main-font);
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+        text-transform: none;
+      }
+
+      &__challenge {
+        align-items: center;
+        border: 1px solid var(--primary);
+        display: flex;
+        font-size: 2rem;
+        gap: 1rem;
+        justify-content: center;
+        letter-spacing: 0.5rem;
+        padding: 1rem;
+
+        &__type {
+          font-size: 1.4rem;
+        }
+      }
+
+      &__damages {
+        margin-bottom: 1rem;
+
+        &__elt {
+          .program-display__block__main__main-dmg,
+          .program-display__block__main__base-dmg {
+            align-items: center;
+            border: 1px solid var(--primary);
+            display: flex;
+            font-size: 2rem;
+            gap: 1rem;
+            letter-spacing: 0.5rem;
+            padding: 1rem;
+          }
+
+          &__type {
+            font-size: 1.4rem;
+          }
+        }
+      }
     }
 
     &__damages {
@@ -48,7 +109,7 @@
   &--mode-hover {
     position: relative;
 
-    .weapon-display__block {
+    .program-display__block {
       opacity: 0;
       pointer-events: none;
       position: absolute;
@@ -57,16 +118,16 @@
       transition: opacity 0.2s ease;
     }
 
-    &.weapon-display--left .weapon-display__block {
+    &.program-display--left .program-display__block {
       left: 0;
     }
 
-    &.weapon-display--right .weapon-display__block {
+    &.program-display--right .program-display__block {
       right: 0;
     }
 
     &:hover {
-      .weapon-display__block {
+      .program-display__block {
         animation: delay-pointer-events 0.5s linear;
         opacity: 1;
         pointer-events: all;

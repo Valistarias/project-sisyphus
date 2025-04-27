@@ -8,6 +8,8 @@ import { Ali, Ap, Atitle, Aul } from '../atoms';
 import { PropDisplay } from '../molecules';
 import { Quark, type IQuarkProps } from '../quark';
 
+import { RichTextElement } from './richTextElement';
+
 import type { ICuratedProgram, ICuratedProgramScope, ICuratedRarity } from '../types';
 import type { ICuratedDamageType, IDamage, IProgram } from '../types/items';
 
@@ -106,17 +108,58 @@ const ProgramDisplay: FC<IQuarkProps<IProgramDisplay>> = ({ program, mode = 'bas
         type={t('itemTypeNames.pro')}
         mainNode={
           <div className="program-display__block__main">
-            <Atitle className="program-display__block__main__title" level={4}>
-              {t('display.cat.damages', { ns: 'components' })}
+            {program.summary !== null ? (
+              <RichTextElement
+                className="program-display__block__main__desc"
+                rawStringContent={program.summary}
+                readOnly
+              />
+            ) : null}
+            {program.damages.length !== 0 ? (
+              <>
+                <Atitle className="program-display__block__main__title" level={3}>
+                  {t(
+                    scope?.programScope.scopeId !== 'htg'
+                      ? 'display.cat.damages'
+                      : 'display.cat.heals',
+                    { ns: 'components' }
+                  )}
+                </Atitle>
+                <div className="program-display__block__main__titles">
+                  {program.damages[0]?.baseDamage !== 0 ? (
+                    <>
+                      <Atitle className="program-display__block__main__base-dmg" level={4}>
+                        {t('display.cat.baseDamages', { ns: 'components' })}
+                      </Atitle>
+                      <Atitle className="program-display__block__main__main-dmg" level={4}>
+                        {t('display.cat.challengeDamages', { ns: 'components' })}
+                      </Atitle>
+                    </>
+                  ) : null}
+                </div>
+
+                <Aul noPoints className="program-display__block__main__damages">
+                  {program.damages.map((damage) => (
+                    <Ali key={damage._id} className="program-display__block__main__damages__elt">
+                      {damage.baseDamage !== 0 ? (
+                        <div className="program-display__block__main__base-dmg">
+                          {damage.baseDamage}
+                        </div>
+                      ) : null}
+                      <div className="program-display__block__main__main-dmg">
+                        {damage.dices}
+                        <span className="program-display__block__main__damages__elt__type">{`(${damage.damageType?.damageType.title})`}</span>
+                      </div>
+                    </Ali>
+                  ))}
+                </Aul>
+              </>
+            ) : null}
+
+            <Atitle className="program-display__block__main__title" level={3}>
+              {t('display.cat.challenge', { ns: 'components' })}
             </Atitle>
-            <Aul noPoints className="program-display__block__damages">
-              {program.damages.map((damage) => (
-                <Ali key={damage._id} className="program-display__block__damages__elt">
-                  {damage.dices}
-                  <span className="program-display__block__damages__elt__type">{`(${damage.damageType?.damageType.title})`}</span>
-                </Ali>
-              ))}
-            </Aul>
+            <Ap className="program-display__block__main__challenge">{program.challenge}</Ap>
           </div>
         }
       />

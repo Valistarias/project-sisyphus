@@ -190,7 +190,11 @@
   },
   "display": {
     "cat": {
+      "challenge": "Challenge",
       "damages": "Damages",
+      "heals": "Heals",
+      "baseDamages": "Base",
+      "challengeDamages": "If challenge",
       "modifiers": "Modifiers",
       "clip": "Clip / Shot",
       "bonuses": "Bonuses"

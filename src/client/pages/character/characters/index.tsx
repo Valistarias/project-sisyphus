@@ -11,7 +11,7 @@ import React, {
 import i18next from 'i18next';
 import { useTranslation } from 'react-i18next';
 
-import { useApi, useSystemAlerts } from '../../../providers';
+import { useApi, useGlobalVars, useSystemAlerts } from '../../../providers';
 
 import holoBackground from '../../../assets/imgs/tvbg2.gif';
 import { Ali, Ap, Atitle, Aul, Avideo } from '../../../atoms';
@@ -28,7 +28,7 @@ const Characters: FC = () => {
   const { t } = useTranslation();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
-  // const { cyberFrames } = useGlobalVars();
+  const { resetCharacter } = useGlobalVars();
 
   const [characters, setCharacters] = useState<ICharacter[]>([]);
   // const [loading, setLoading] = useState(true);
@@ -140,8 +140,9 @@ const Characters: FC = () => {
     if (api !== undefined && !calledApi.current) {
       calledApi.current = true;
       characterReload();
+      resetCharacter();
     }
-  }, [api, createAlert, getNewId, characterReload, t]);
+  }, [api, createAlert, getNewId, characterReload, resetCharacter, t]);
 
   return (
     <div className="characters">

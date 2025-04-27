@@ -32,6 +32,7 @@ import { classTrim, countTrueInArray, getValuesFromGlobalValues } from '../../ut
 
 import './characterCreation.scss';
 
+type UndefinedProp = Record<string, boolean> | undefined;
 interface FormValues {
   weapons: Record<string, boolean>;
   armors: Record<string, boolean>;
@@ -80,7 +81,6 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
 }) => {
   const { t } = useTranslation();
   const { globalValues, character } = useGlobalVars();
-
   const createDefaultData = useCallback(
     ({
       weapons,
@@ -245,37 +245,37 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
     ({ weapons, armors, bags, items, programs, implants }) => {
       if (onSubmitItems !== undefined) {
         const weaponIds: string[] = [];
-        Object.keys(weapons).forEach((weaponId) => {
+        Object.keys((weapons as UndefinedProp) ?? {}).forEach((weaponId) => {
           if (weapons[weaponId]) {
             weaponIds.push(weaponId);
           }
         });
         const armorIds: string[] = [];
-        Object.keys(armors).forEach((armorId) => {
+        Object.keys((armors as UndefinedProp) ?? {}).forEach((armorId) => {
           if (armors[armorId]) {
             armorIds.push(armorId);
           }
         });
         const bagIds: string[] = [];
-        Object.keys(bags).forEach((bagId) => {
+        Object.keys((bags as UndefinedProp) ?? {}).forEach((bagId) => {
           if (bags[bagId]) {
             bagIds.push(bagId);
           }
         });
         const itemIds: string[] = [];
-        Object.keys(items).forEach((itemId) => {
+        Object.keys((items as UndefinedProp) ?? {}).forEach((itemId) => {
           if (items[itemId]) {
             itemIds.push(itemId);
           }
         });
         const programIds: string[] = [];
-        Object.keys(programs).forEach((programId) => {
+        Object.keys((programs as UndefinedProp) ?? {}).forEach((programId) => {
           if (programs[programId]) {
             programIds.push(programId);
           }
         });
         const implantIds: string[] = [];
-        Object.keys(implants).forEach((implantId) => {
+        Object.keys((implants as UndefinedProp) ?? {}).forEach((implantId) => {
           if (implants[implantId]) {
             implantIds.push(implantId);
           }
@@ -308,7 +308,9 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
       }
     });
     const weaponSelected = watch('weapons');
-    const countSelected = countTrueInArray(Object.values(weaponSelected));
+    const countSelected = countTrueInArray(
+      Object.values((weaponSelected as Record<string, boolean> | undefined) ?? {})
+    );
 
     return (
       <div className="characterCreation-step5__choices__main__weapons">
@@ -518,7 +520,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
   };
 
   const specializedChoices = (): ReactNode => {
-    if (items.length === 0) {
+    if (items.length === 0 && programs.length === 0 && implants.length === 0) {
       return null;
     }
     const optionnalPrograms: ICuratedProgram[] = [];
@@ -526,8 +528,12 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
     const programSelected = watch('programs');
     const implantSelected = watch('implants');
     const countSelected =
-      countTrueInArray(Object.values(programSelected)) +
-      countTrueInArray(Object.values(implantSelected));
+      countTrueInArray(
+        Object.values((programSelected as Record<string, boolean> | undefined) ?? {})
+      ) +
+      countTrueInArray(
+        Object.values((implantSelected as Record<string, boolean> | undefined) ?? {})
+      );
     programs.forEach((program) => {
       if (program.program.starterKit !== 'always') {
         optionnalPrograms.push(program);
@@ -544,7 +550,7 @@ const CharacterCreationStep5: FC<ICharacterCreationStep5> = ({
         <Atitle className="characterCreation-step5__choices__main__specialized__title" level={3}>
           {t('itemTypeNames.spe')}
         </Atitle>
-        <Atitle level={4}>
+        <Atitle className="characterCreation-step5__choices__main__specialized__info" level={4}>
           {t('characterCreation.step5.choose', {
             ns: 'components',
             qty: nbOptionnalOtherCharCreate,
