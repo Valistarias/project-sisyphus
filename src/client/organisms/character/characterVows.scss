@@ -8,8 +8,18 @@
   }
 
   &__icon {
-    opacity: 0.1;
+    align-items: center;
+    color: var(--primary-20);
+    display: flex;
+    font-size: 11rem;
+    height: 100%;
+    justify-content: center;
+    opacity: 0.5;
+    pointer-events: none;
     position: absolute;
+    text-shadow: 0 0 3rem var(--primary-20);
+    top: 1rem;
+    width: 100%;
   }
 
   &__list {
@@ -19,11 +29,18 @@
 
     &__vow {
       border: 0.1rem solid var(--tertiary-20);
+      cursor: default;
       font-family: var(--mono-font);
       font-size: 1.4rem;
       letter-spacing: 0;
       padding: 1rem;
       text-align: left;
+      text-shadow: 0 0 2rem var(--primary-00);
+      transition: text-shadow 0.3s ease;
+
+      &:hover {
+        text-shadow: 0.1rem 0.1rem 0.4rem var(--primary);
+      }
     }
   }
 }
