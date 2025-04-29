@@ -6,11 +6,10 @@ import { useGlobalVars } from '../../providers';
 
 import { Ali, Ap, Atitle, Aul } from '../../atoms';
 import { HintText } from '../../molecules';
-import { curateCharacterAction } from '../../utils/character';
+import { curateCharacterAction, getActualBody } from '../../utils/character';
+import { CharacterAction, WeaponAction } from '../actionLine';
 
-import CharacterAction from './characterAction';
-
-import type { ICuratedAction } from '../../types';
+import type { IBodyWeapon, ICuratedAction } from '../../types';
 
 import { classTrim } from '../../utils';
 
@@ -23,9 +22,11 @@ const CharacterActionList: FC = () => {
   const { character, actionTypes, actionDurations, basicActions } = useGlobalVars();
 
   const curatedActionList = useMemo<{
+    weapons: IBodyWeapon[];
     character: Record<string, ICuratedAction[]>;
     basic: Record<string, ICuratedAction[]>;
   }>(() => {
+    const curatedWeapons: IBodyWeapon[] = [];
     const curatedNodeActions: Record<string, ICuratedAction[]> = {};
     const curatedNodeBasicActions: Record<string, ICuratedAction[]> = {};
 
@@ -35,6 +36,13 @@ const CharacterActionList: FC = () => {
       actionTypes.length !== 0 &&
       actionDurations.length !== 0
     ) {
+      // Weapons
+      const { body } = getActualBody(character);
+      if (body?.weapons !== undefined && body.weapons.length > 0) {
+        curatedWeapons.push(...body.weapons);
+      }
+
+      // Nodes
       character.nodes?.forEach(({ node }) => {
         if (node.actions.length !== 0) {
           node.actions.forEach((action) => {
@@ -65,6 +73,7 @@ const CharacterActionList: FC = () => {
     });
 
     return {
+      weapons: curatedWeapons,
       character: curatedNodeActions,
       basic: curatedNodeBasicActions,
     };
@@ -84,6 +93,15 @@ const CharacterActionList: FC = () => {
               {t(`terms.actionDuration.${eltOrder}`)}
               <span className="char-action-list__nodes__title__line" />
             </Atitle>
+            {eltOrder === 'action' ? (
+              <Aul className="char-action-list__nodes__weapons" noPoints>
+                {curatedActionList.weapons.map((bodyWeapon) => (
+                  <Ali key={bodyWeapon._id} className="char-action-list__nodes__list-char__elt">
+                    <WeaponAction weapon={bodyWeapon} />
+                  </Ali>
+                ))}
+              </Aul>
+            ) : null}
             {(curatedActionList.character[eltOrder] as ICuratedAction[] | undefined) !==
             undefined ? (
               <Aul noPoints className="char-action-list__nodes__list-char">

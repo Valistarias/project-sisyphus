@@ -42,6 +42,7 @@ const ClickableText: FC<IClickableText> = ({ text, theme = 'decor', onClick, cla
       clickable-text--${theme}
       ${onClick === undefined ? 'clickable-text--unclickable' : ''}
       clickable-text--${placement}
+      ${hint !== undefined ? 'clickable-text--hint' : ''}
       ${className ?? ''}
     `)}
       ref={domPosition}

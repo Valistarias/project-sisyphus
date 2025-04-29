@@ -10,10 +10,18 @@ import type {
   ICuratedBody,
   ICuratedCharParam,
   ICuratedCyberFrame,
+  ICuratedDamageType,
+  ICuratedItemModifier,
+  ICuratedRarity,
   ICuratedSkill,
   ICuratedStat,
+  ICuratedWeapon,
+  ICuratedWeaponScope,
+  ICuratedWeaponType,
+  IDamage,
   IGlobalValue,
   INode,
+  IWeapon,
 } from '../types';
 import type {
   ICompleteCyberFrame,
@@ -66,12 +74,18 @@ interface IHpValues {
   isLoading: boolean;
 }
 
-const getCharacterHpValues = (
-  character: ICharacter | null | false,
-  baseHp: number,
-  hpParamId: string | undefined
-): IHpValues => {
-  if (character === null || character === false || hpParamId === undefined) {
+const getCharacterHpValues = ({
+  character,
+  cyberFrames,
+  charParams,
+  stats,
+}: {
+  character: ICharacter | null | false;
+  cyberFrames: ICuratedCyberFrame[];
+  charParams: ICuratedCharParam[];
+  stats: ICuratedStat[];
+}): IHpValues => {
+  if (character === null || character === false) {
     return {
       hp: 0,
       total: 0,
@@ -83,20 +97,25 @@ const getCharacterHpValues = (
 
   let hpValue = 0;
   let isLoading = true;
-  let totalHpValue = baseHp;
+  let totalHpValue = 0;
 
   if (body !== undefined) {
+    const curatedBody = curateCharacterBody({ body, cyberFrames, charParams, stats });
     hpValue = body.hp;
+    totalHpValue +=
+      curatedBody.cyberFrame.cyberFrame.charParams.find(
+        ({ charParam }) => charParam.charParam.formulaId === 'hp'
+      )?.value ?? 0;
     isLoading = false;
   }
 
-  character.nodes?.forEach(({ node }) => {
-    node.charParamBonuses.forEach((charParamBonus) => {
-      if (charParamBonus.charParam === hpParamId) {
-        totalHpValue += charParamBonus.value;
-      }
-    });
-  });
+  // character.nodes?.forEach(({ node }) => {
+  //   node.charParamBonuses.forEach((charParamBonus) => {
+  //     if (charParamBonus.charParam === hpParamId) {
+  //       totalHpValue += charParamBonus.value;
+  //     }
+  //   });
+  // });
 
   return {
     hp: hpValue,
@@ -449,6 +468,70 @@ const curateCharacterParams = ({
   return Object.values(charParamsById);
 };
 
+export interface ICompleteDamage extends Omit<IDamage, 'damageType'> {
+  damageType: ICuratedDamageType | undefined;
+}
+
+interface ICompleteWeapon
+  extends Omit<IWeapon, 'weaponType' | 'weaponScope' | 'itemModifiers' | 'rarity' | 'damages'> {
+  weaponType: ICuratedWeaponType | undefined;
+  weaponScope: ICuratedWeaponScope | undefined;
+  itemModifiers: ICuratedItemModifier[] | undefined;
+  rarity: ICuratedRarity | undefined;
+  damages: ICompleteDamage[];
+}
+
+interface ICuratedCompleteWeapon extends Omit<ICuratedWeapon, 'weapon'> {
+  weapon: ICompleteWeapon;
+}
+
+const curateWeapon = ({
+  weapon,
+  weaponTypes,
+  weaponScopes,
+  rarities,
+  itemModifiers,
+  damageTypes,
+}: {
+  weapon: ICuratedWeapon;
+  weaponTypes: ICuratedWeaponType[];
+  weaponScopes: ICuratedWeaponScope[];
+  rarities: ICuratedRarity[];
+  itemModifiers: ICuratedItemModifier[];
+  damageTypes: ICuratedDamageType[];
+}): ICuratedCompleteWeapon | null => {
+  if (weaponTypes.length === 0 || weaponScopes.length === 0) {
+    return null;
+  }
+  const { weapon: weaponObj, i18n } = weapon;
+
+  return {
+    weapon: {
+      ...weaponObj,
+      weaponScope: weaponScopes.find(
+        (weaponScope) => weaponScope.weaponScope._id === weaponObj.weaponScope
+      ),
+      weaponType: weaponTypes.find(
+        (weaponType) => weaponType.weaponType._id === weaponObj.weaponType
+      ),
+      rarity: rarities.find((rarity) => rarity.rarity._id === weaponObj.rarity),
+      // itemModifiers[0] should never occurs. wath out for this
+      itemModifiers: weaponObj.itemModifiers?.map(
+        (itemModifierId) =>
+          itemModifiers.find((itemModifier) => itemModifier.itemModifier._id === itemModifierId) ??
+          itemModifiers[0]
+      ),
+      damages: weaponObj.damages.map((weaponDamage) => ({
+        ...weaponDamage,
+        damageType: damageTypes.find(
+          (damageType) => damageType.damageType._id === weaponDamage.damageType
+        ),
+      })),
+    },
+    i18n,
+  };
+};
+
 const curateCharacterAction = ({
   action,
   actionTypes,
@@ -565,6 +648,7 @@ export {
   curateCharacterAction,
   curateCharacterBody,
   curateCyberFrame,
+  curateWeapon,
   getActualBody,
   getCharacterHpValues,
   getCyberFrameLevelsByNodes,

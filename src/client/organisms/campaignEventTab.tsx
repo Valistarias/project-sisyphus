@@ -45,10 +45,6 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
   const { socket } = useSocket();
   const campaignEvt = useCampaignEventWindow();
 
-  // const [loading, setLoading] = useState(true);
-  // const [isOpen, setOpen] = useState(false);
-  // const [notFound, setNotFound] = useState(false);
-
   const [diceValues, setDiceValues] = useState<DiceRequest[]>(createBasicDiceRequest());
   const [dataPrevCampaignEvents, setDataPrevCampaignEvents] = useState<ICampaignEvent[]>([]);
 
@@ -139,6 +135,9 @@ const CampaignEventTab: FC<ICampaignEventTab> = ({
   const logCampaignEvents = useMemo(
     () =>
       dataPrevCampaignEvents.map(({ _id, character, createdAt, formula, result, type }) => {
+        if ((character as ICharacter | null) === null) {
+          return null;
+        }
         const authorName = `${character.firstName !== undefined ? `${character.firstName} ` : ''}${character.nickName !== undefined ? `"${character.nickName}" ` : ''}${character.lastName ?? ''}`;
 
         return (

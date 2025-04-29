@@ -192,6 +192,7 @@
     "cat": {
       "challenge": "Challenge",
       "damages": "Damages",
+      "toHit": "To Hit",
       "heals": "Heals",
       "baseDamages": "Base",
       "challengeDamages": "If challenge",

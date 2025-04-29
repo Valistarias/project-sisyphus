@@ -9,12 +9,15 @@ import type { ICuratedStat } from '../types';
 import type { ISourcePoints } from '../utils/character';
 
 import './numDisplay.scss';
+import { classTrim } from '../utils';
 
 interface INumDisplay {
+  /** The size of the Display */
+  size?: 'medium' | 'small';
   /** The text of the Display */
-  text: {
-    title: string;
-    short: string;
+  text?: {
+    title?: string;
+    short?: string;
     summary?: string;
   };
   /** The value of the Display */
@@ -27,9 +30,16 @@ interface INumDisplay {
   bonuses?: ISourcePoints[];
 }
 
-const NumDisplay: FC<INumDisplay> = ({ text, stat, value, bonuses, onClick }) => (
-  <div className="num-display">
-    <Ap className="num-display__title">{text.title.length < 12 ? text.title : text.short}</Ap>
+const NumDisplay: FC<INumDisplay> = ({ text, stat, size = 'medium', value, bonuses, onClick }) => (
+  <div
+    className={classTrim(`
+      num-display
+      num-display--${size}
+    `)}
+  >
+    {text?.title !== undefined && text.short !== undefined && (
+      <Ap className="num-display__title">{text.title.length < 12 ? text.title : text.short}</Ap>
+    )}
     <ClickableText
       className="num-display__mod-value"
       text={value}

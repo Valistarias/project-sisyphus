@@ -1,3 +1,4 @@
+import { CharacterAction, WeaponAction } from './actionLine';
 import Alert from './alert';
 import ArmorDisplay from './armorDisplay';
 import BagDisplay from './bagDisplay';
@@ -45,6 +46,7 @@ export {
   CharCreationStep5,
   CharCreationStep6,
   CharCreationStep7,
+  CharacterAction,
   CharacterHeader,
   CharacterSkills,
   CharacterCards,
@@ -60,5 +62,6 @@ export {
   basicRichTextElementExtentions,
   completeRichTextElementExtentions,
   CharacterBoard,
+  WeaponAction,
   type IDragElt,
 };

@@ -41,8 +41,15 @@ interface FormHpValues {
 
 const CharacterStats: FC<ICharacterStats> = ({ className, onRollDices }) => {
   const { t } = useTranslation();
-  const { character, setCharacterFromId, charParams, characterStatSkills, characterParams } =
-    useGlobalVars();
+  const {
+    character,
+    setCharacterFromId,
+    characterStatSkills,
+    characterParams,
+    cyberFrames,
+    charParams,
+    stats,
+  } = useGlobalVars();
   const { api } = useApi();
   const { createAlert, getNewId } = useSystemAlerts();
   const { socket } = useSocket();
@@ -50,12 +57,13 @@ const CharacterStats: FC<ICharacterStats> = ({ className, onRollDices }) => {
 
   const hpValues = useMemo(
     () =>
-      getCharacterHpValues(
+      getCharacterHpValues({
         character,
-        0,
-        charParams.find(({ charParam }) => charParam.short === 'HP')?.charParam._id ?? undefined
-      ),
-    [character, charParams]
+        cyberFrames,
+        charParams,
+        stats,
+      }),
+    [character, cyberFrames, charParams, stats]
   );
 
   const {

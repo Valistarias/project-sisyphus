@@ -69,7 +69,7 @@
   }
 
   // States
-  &--unclickable {
+  &--unclickable.clickable-text--hint {
     .clickable-text__button {
       cursor: help;
     }
