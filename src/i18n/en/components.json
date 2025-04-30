@@ -193,6 +193,7 @@
       "challenge": "Challenge",
       "damages": "Damages",
       "toHit": "To Hit",
+      "toHeal": "To heal",
       "heals": "Heals",
       "baseDamages": "Base",
       "challengeDamages": "If challenge",

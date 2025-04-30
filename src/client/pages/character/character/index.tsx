@@ -61,7 +61,7 @@ const Character: FC = () => {
       <div className="character__body">
         <div className="character__body__left">
           <CharacterCards />
-          <CharacterVows />
+
           <CharacterBoard />
         </div>
         <div className="character__body__center">
@@ -82,6 +82,7 @@ const Character: FC = () => {
               setToRoll(dices, id);
             }}
           />
+          <CharacterVows />
         </div>
       </div>
     </div>

@@ -24,7 +24,8 @@
       }
     }
 
-    &__weapons {
+    &__weapons,
+    &__programs {
       display: flex;
       flex-direction: column;
       gap: 1rem;

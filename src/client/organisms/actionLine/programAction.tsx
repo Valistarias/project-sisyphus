@@ -5,19 +5,20 @@ import { useTranslation } from 'react-i18next';
 import { useGlobalVars } from '../../providers';
 
 import { Ap, Atitle } from '../../atoms';
-
-import type { IBodyProgram } from '../../types';
-
-import { classTrim } from '../../utils';
-
-import './programAction.scss';
+import { NumDisplay } from '../../molecules';
 import {
   calculateStatModToString,
   curateProgram,
   type ICompleteDamage,
   type ICuratedSkillWithScore,
 } from '../../utils/character';
-import { NumDisplay } from '../../molecules';
+
+import type { IBodyProgram } from '../../types';
+
+import { classTrim } from '../../utils';
+
+import './programAction.scss';
+import { RichTextElement } from '../richTextElement';
 
 interface IProgramAction {
   /** The action to display */
@@ -40,20 +41,14 @@ const ProgramAction: FC<IProgramAction> = ({ program }) => {
   );
 
   const correlatedCharacterSkill = useMemo<ICuratedSkillWithScore | undefined>(() => {
-    if (characterStatSkills === undefined || curatedProgram === null) {
+    if (characterStatSkills === undefined) {
       return undefined;
     }
 
     return characterStatSkills.skills.find(
       (charStatSkill) => charStatSkill.skill.formulaId === 'ars'
     );
-  }, [curatedProgram, characterStatSkills]);
-
-  console.log('correlatedCharacterSkill', correlatedCharacterSkill);
-
-  // if (curatedProgram === null) {
-  //   return null;
-  // }
+  }, [characterStatSkills]);
 
   return (
     <div
@@ -66,16 +61,28 @@ const ProgramAction: FC<IProgramAction> = ({ program }) => {
           <Atitle className="program-action__main__designation__title" level={3}>
             {program.program.program.title}
           </Atitle>
-          <Ap className="program-action__main__designation__sub">{`${curatedProgram.program.programType?.programType.title} - ${curatedProgram.program.programScope.programScope.title}`}</Ap>
+          <Ap className="program-action__main__designation__sub">{`${t('itemTypeNames.pro', { count: 1 })} - ${curatedProgram.program.programScope?.programScope.title}`}</Ap>
         </div>
+        {curatedProgram.program.summary !== null ? (
+          <RichTextElement
+            className="program-action__main__desc"
+            rawStringContent={curatedProgram.program.summary}
+            readOnly
+          />
+        ) : null}
         {curatedProgram.program.damages !== undefined ? (
           <div className="program-action__main__damages">
             {(curatedProgram.program.damages[0] as ICompleteDamage | undefined) !== undefined ? (
               <>
-                <Ap className="program-action__main__damages__base">
-                  {curatedProgram.program.damages[0].baseDamage}
-                </Ap>
-                <Ap className="program-action__main__damages__plus">+</Ap>
+                {curatedProgram.program.damages[0].baseDamage > 0 ? (
+                  <>
+                    <Ap className="program-action__main__damages__base">
+                      {curatedProgram.program.damages[0].baseDamage}
+                    </Ap>
+                    <Ap className="program-action__main__damages__plus">+</Ap>
+                  </>
+                ) : null}
+
                 <NumDisplay size="small" value={curatedProgram.program.damages[0].dices} />
                 <Ap className="program-action__main__damages__element">{`(${curatedProgram.program.damages[0].damageType?.damageType.title})`}</Ap>
               </>
@@ -85,7 +92,12 @@ const ProgramAction: FC<IProgramAction> = ({ program }) => {
       </div>
       <div className="program-action__challenge">
         <Ap className="program-action__challenge__text">
-          {t('display.cat.toHit', { ns: 'components' })}
+          {t(
+            curatedProgram.program.programScope?.programScope.scopeId === 'htg'
+              ? 'display.cat.toHeal'
+              : 'display.cat.toHit',
+            { ns: 'components' }
+          )}
         </Ap>
         {correlatedCharacterSkill !== undefined ? (
           <NumDisplay
