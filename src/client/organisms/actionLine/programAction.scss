@@ -1,0 +1,83 @@
+.program-action {
+  border: 0.2rem solid var(--primary-20);
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-direction: row;
+  padding: 1rem;
+
+  &__main {
+    display: flex;
+    flex: 0.1rem 1 1;
+    flex-direction: column;
+    gap: 1rem;
+
+    &__designation {
+      align-items: flex-start;
+      display: flex;
+      flex: 0.1rem 1 1;
+      flex-direction: column;
+      gap: 1rem;
+      justify-content: flex-start;
+
+      &__title {
+        font-family: var(--decor-serif-font);
+        font-size: 1.8rem;
+        line-height: 2;
+        margin: 0;
+        text-transform: none;
+      }
+
+      &__sub {
+        font-size: 1.4rem;
+      }
+    }
+
+    &__damages {
+      align-items: center;
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+
+      &__base,
+      &__plus {
+        position: relative;
+      }
+
+      &__base {
+        font-family: var(--decor-sans-font);
+        font-size: 3rem;
+        top: -0.1em;
+      }
+
+      &__plus {
+        font-family: var(--decor-serif-font);
+        top: -0.3em;
+      }
+
+      &__element {
+        font-family: var(--mono-font);
+        font-size: 1.4rem;
+        letter-spacing: 0;
+      }
+    }
+  }
+
+  &__challenge {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 12rem;
+
+    &__text {
+      font-family: var(--mono-font);
+      font-size: 1.2rem;
+      text-transform: uppercase;
+    }
+
+    &__to-hit-value {
+      font-family: var(--decor-sans-font);
+      font-size: 2.5rem;
+    }
+  }
+}

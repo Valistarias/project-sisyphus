@@ -7,9 +7,9 @@ import { useGlobalVars } from '../../providers';
 import { Ali, Ap, Atitle, Aul } from '../../atoms';
 import { HintText } from '../../molecules';
 import { curateCharacterAction, getActualBody } from '../../utils/character';
-import { CharacterAction, WeaponAction } from '../actionLine';
+import { CharacterAction, ProgramAction, WeaponAction } from '../actionLine';
 
-import type { IBodyWeapon, ICuratedAction } from '../../types';
+import type { IBodyProgram, IBodyWeapon, ICuratedAction } from '../../types';
 
 import { classTrim } from '../../utils';
 
@@ -23,10 +23,12 @@ const CharacterActionList: FC = () => {
 
   const curatedActionList = useMemo<{
     weapons: IBodyWeapon[];
+    programs: IBodyProgram[];
     character: Record<string, ICuratedAction[]>;
     basic: Record<string, ICuratedAction[]>;
   }>(() => {
     const curatedWeapons: IBodyWeapon[] = [];
+    const curatedPrograms: IBodyProgram[] = [];
     const curatedNodeActions: Record<string, ICuratedAction[]> = {};
     const curatedNodeBasicActions: Record<string, ICuratedAction[]> = {};
 
@@ -40,6 +42,9 @@ const CharacterActionList: FC = () => {
       const { body } = getActualBody(character);
       if (body?.weapons !== undefined && body.weapons.length > 0) {
         curatedWeapons.push(...body.weapons);
+      }
+      if (body?.programs !== undefined && body.programs.length > 0) {
+        curatedPrograms.push(...body.programs);
       }
 
       // Nodes
@@ -74,6 +79,7 @@ const CharacterActionList: FC = () => {
 
     return {
       weapons: curatedWeapons,
+      programs: curatedPrograms,
       character: curatedNodeActions,
       basic: curatedNodeBasicActions,
     };
@@ -94,13 +100,22 @@ const CharacterActionList: FC = () => {
               <span className="char-action-list__nodes__title__line" />
             </Atitle>
             {eltOrder === 'action' ? (
-              <Aul className="char-action-list__nodes__weapons" noPoints>
-                {curatedActionList.weapons.map((bodyWeapon) => (
-                  <Ali key={bodyWeapon._id} className="char-action-list__nodes__list-char__elt">
-                    <WeaponAction weapon={bodyWeapon} />
-                  </Ali>
-                ))}
-              </Aul>
+              <>
+                <Aul className="char-action-list__nodes__weapons" noPoints>
+                  {curatedActionList.weapons.map((bodyWeapon) => (
+                    <Ali key={bodyWeapon._id} className="char-action-list__nodes__list-char__elt">
+                      <WeaponAction weapon={bodyWeapon} />
+                    </Ali>
+                  ))}
+                </Aul>
+                <Aul className="char-action-list__nodes__programs" noPoints>
+                  {curatedActionList.programs.map((bodyProgram) => (
+                    <Ali key={bodyProgram._id} className="char-action-list__nodes__list-char__elt">
+                      <ProgramAction program={bodyProgram} />
+                    </Ali>
+                  ))}
+                </Aul>
+              </>
             ) : null}
             {(curatedActionList.character[eltOrder] as ICuratedAction[] | undefined) !==
             undefined ? (

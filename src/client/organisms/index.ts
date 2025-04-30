@@ -1,4 +1,4 @@
-import { CharacterAction, WeaponAction } from './actionLine';
+import { CharacterAction, WeaponAction, ProgramAction } from './actionLine';
 import Alert from './alert';
 import ArmorDisplay from './armorDisplay';
 import BagDisplay from './bagDisplay';
@@ -46,6 +46,7 @@ export {
   CharCreationStep5,
   CharCreationStep6,
   CharCreationStep7,
+  ProgramAction,
   CharacterAction,
   CharacterHeader,
   CharacterSkills,

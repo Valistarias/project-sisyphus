@@ -12,6 +12,8 @@ import type {
   ICuratedCyberFrame,
   ICuratedDamageType,
   ICuratedItemModifier,
+  ICuratedProgram,
+  ICuratedProgramScope,
   ICuratedRarity,
   ICuratedSkill,
   ICuratedStat,
@@ -21,6 +23,7 @@ import type {
   IDamage,
   IGlobalValue,
   INode,
+  IProgram,
   IWeapon,
 } from '../types';
 import type {
@@ -85,7 +88,7 @@ const getCharacterHpValues = ({
   charParams: ICuratedCharParam[];
   stats: ICuratedStat[];
 }): IHpValues => {
-  if (character === null || character === false) {
+  if (character === null || character === false || cyberFrames.length === 0) {
     return {
       hp: 0,
       total: 0,
@@ -474,10 +477,10 @@ export interface ICompleteDamage extends Omit<IDamage, 'damageType'> {
 
 interface ICompleteWeapon
   extends Omit<IWeapon, 'weaponType' | 'weaponScope' | 'itemModifiers' | 'rarity' | 'damages'> {
-  weaponType: ICuratedWeaponType | undefined;
-  weaponScope: ICuratedWeaponScope | undefined;
-  itemModifiers: ICuratedItemModifier[] | undefined;
-  rarity: ICuratedRarity | undefined;
+  weaponType?: ICuratedWeaponType;
+  weaponScope?: ICuratedWeaponScope;
+  itemModifiers?: ICuratedItemModifier[];
+  rarity?: ICuratedRarity;
   damages: ICompleteDamage[];
 }
 
@@ -527,6 +530,50 @@ const curateWeapon = ({
           (damageType) => damageType.damageType._id === weaponDamage.damageType
         ),
       })),
+    },
+    i18n,
+  };
+};
+
+interface ICompleteProgram extends Omit<IProgram, 'rarity' | 'programScope' | 'damages'> {
+  rarity?: ICuratedRarity;
+  programScope?: ICuratedProgramScope;
+  damages?: ICompleteDamage[];
+}
+
+interface ICuratedCompleteProgram extends Omit<ICuratedProgram, 'program'> {
+  program: ICompleteProgram;
+}
+
+const curateProgram = ({
+  program,
+  rarities,
+  programScopes,
+  damageTypes,
+}: {
+  program: ICuratedProgram;
+  rarities: ICuratedRarity[];
+  programScopes: ICuratedProgramScope[];
+  damageTypes: ICuratedDamageType[];
+}): ICuratedCompleteProgram => {
+  const { program: programObj, i18n } = program;
+
+  return {
+    program: {
+      ...programObj,
+      programScope: programScopes.find(
+        (programScope) => programScope.programScope._id === programObj.programScope
+      ),
+      rarity: rarities.find((rarity) => rarity.rarity._id === programObj.rarity),
+      damages:
+        programObj.damages !== undefined
+          ? programObj.damages.map((programDamage) => ({
+              ...programDamage,
+              damageType: damageTypes.find(
+                (damageType) => damageType.damageType._id === programDamage.damageType
+              ),
+            }))
+          : undefined,
     },
     i18n,
   };
@@ -649,6 +696,7 @@ export {
   curateCharacterBody,
   curateCyberFrame,
   curateWeapon,
+  curateProgram,
   getActualBody,
   getCharacterHpValues,
   getCyberFrameLevelsByNodes,
