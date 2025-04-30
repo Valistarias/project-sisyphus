@@ -43,4 +43,10 @@
       gap: 4rem;
     }
   }
+
+  &--no-campaign {
+    .character__body__left {
+      padding-top: 4rem;
+    }
+  }
 }

@@ -33,7 +33,7 @@ const EditCharacter: FC = () => {
   const { createAlert, getNewId } = useSystemAlerts();
   const { setConfirmContent, removeConfirmEventListener, addConfirmEventListener } =
     useConfirmMessage();
-  const { user } = useGlobalVars();
+  const { user, setCharacterFromId } = useGlobalVars();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -136,7 +136,7 @@ const EditCharacter: FC = () => {
 
   const onSubmit: SubmitHandler<FormValues> = useCallback(
     ({ firstName, lastName, nickName, gender, pronouns, campaign }) => {
-      if (api !== undefined) {
+      if (api !== undefined && id !== undefined) {
         api.characters
           .update({
             id,
@@ -157,6 +157,7 @@ const EditCharacter: FC = () => {
                 </Alert>
               ),
             });
+            setCharacterFromId(id);
           })
           .catch(({ response }: ErrorResponseType) => {
             const { data } = response;
@@ -169,7 +170,7 @@ const EditCharacter: FC = () => {
           });
       }
     },
-    [api, createAlert, getNewId, id, setError, t]
+    [api, createAlert, getNewId, id, setError, t, setCharacterFromId]
   );
 
   const onDeleteCharacter = useCallback(() => {

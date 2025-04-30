@@ -260,6 +260,17 @@ export const diceResultToStr = (
   return stringified;
 };
 
+export const strToDiceRequest = (text: string): DiceRequest => {
+  const [dice, offset] = text.split('+');
+  const [qty, type] = dice.split('d');
+
+  return {
+    qty: Number(qty),
+    type: Number(type) as TypeDice,
+    offset: (offset as string | undefined) !== undefined ? Number(offset) : 0,
+  };
+};
+
 export const strToDiceResult = (text: string): DiceResult[] => {
   const basicMold = createBasicDiceRequest();
   const catRollObj: Partial<

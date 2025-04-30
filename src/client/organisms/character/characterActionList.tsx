@@ -9,15 +9,20 @@ import { HintText } from '../../molecules';
 import { curateCharacterAction, getActualBody } from '../../utils/character';
 import { CharacterAction, ProgramAction, WeaponAction } from '../actionLine';
 
-import type { IBodyProgram, IBodyWeapon, ICuratedAction } from '../../types';
+import type { IBodyProgram, IBodyWeapon, ICuratedAction, TypeCampaignEvent } from '../../types';
 
-import { classTrim } from '../../utils';
+import { classTrim, type DiceRequest } from '../../utils';
 
 import './characterActionList.scss';
 
 const displayingOrder = ['action', 'free', 'long'];
 
-const CharacterActionList: FC = () => {
+interface ICharacterActionList {
+  /** The function sent to roll the dices */
+  onRollDices: (diceValues: DiceRequest[], id: TypeCampaignEvent) => void;
+}
+
+const CharacterActionList: FC<ICharacterActionList> = ({ onRollDices }) => {
   const { t } = useTranslation();
   const { character, actionTypes, actionDurations, basicActions } = useGlobalVars();
 
@@ -104,14 +109,14 @@ const CharacterActionList: FC = () => {
                 <Aul className="char-action-list__nodes__weapons" noPoints>
                   {curatedActionList.weapons.map((bodyWeapon) => (
                     <Ali key={bodyWeapon._id} className="char-action-list__nodes__list-char__elt">
-                      <WeaponAction weapon={bodyWeapon} />
+                      <WeaponAction weapon={bodyWeapon} onRollDices={onRollDices} />
                     </Ali>
                   ))}
                 </Aul>
                 <Aul className="char-action-list__nodes__programs" noPoints>
                   {curatedActionList.programs.map((bodyProgram) => (
                     <Ali key={bodyProgram._id} className="char-action-list__nodes__list-char__elt">
-                      <ProgramAction program={bodyProgram} />
+                      <ProgramAction program={bodyProgram} onRollDices={onRollDices} />
                     </Ali>
                   ))}
                 </Aul>

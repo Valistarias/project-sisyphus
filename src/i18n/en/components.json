@@ -68,6 +68,22 @@
         "line1": "Free",
         "line2": "Roll"
       },
+      "weapon": {
+        "line1": "Weapon",
+        "line2": "Roll"
+      },
+      "program": {
+        "line1": "Program",
+        "line2": "Roll"
+      },
+      "damage": {
+        "line1": "Damage",
+        "line2": "Roll"
+      },
+      "heal": {
+        "line1": "Heal",
+        "line2": "Roll"
+      },
       "init": {
         "line1": "Init",
         "line2": "Roll"

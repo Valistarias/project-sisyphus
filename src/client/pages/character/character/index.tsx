@@ -19,7 +19,7 @@ import { ErrorPage } from '../../index';
 import './character.scss';
 import type { TypeCampaignEvent } from '../../../types';
 
-import type { DiceRequest } from '../../../utils';
+import { classTrim, type DiceRequest } from '../../../utils';
 
 const Character: FC = () => {
   const { character, setCharacterFromId } = useGlobalVars();
@@ -46,7 +46,12 @@ const Character: FC = () => {
   }
 
   return (
-    <div className="character">
+    <div
+      className={classTrim(`
+        character
+        ${character?.campaign === undefined ? 'character--no-campaign' : ''}
+      `)}
+    >
       <CampaignEventTab
         campaignId={character?.campaign?._id}
         character={character ?? undefined}
@@ -60,9 +65,13 @@ const Character: FC = () => {
       />
       <div className="character__body">
         <div className="character__body__left">
-          <CharacterCards />
+          {character?.campaign !== undefined ? <CharacterCards /> : null}
 
-          <CharacterBoard />
+          <CharacterBoard
+            onRollDices={(dices: DiceRequest[], id: TypeCampaignEvent) => {
+              setToRoll(dices, id);
+            }}
+          />
         </div>
         <div className="character__body__center">
           <CharacterHeader

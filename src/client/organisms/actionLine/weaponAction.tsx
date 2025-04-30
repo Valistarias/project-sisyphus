@@ -13,17 +13,19 @@ import {
   calculateStatModToString,
 } from '../../utils/character';
 
-import type { IBodyWeapon } from '../../types';
+import type { IBodyWeapon, TypeCampaignEvent } from '../../types';
 
-import { classTrim } from '../../utils';
+import { classTrim, strToDiceRequest, type DiceRequest } from '../../utils';
 import './weaponAction.scss';
 
 interface IWeaponAction {
   /** The action to display */
   weapon: IBodyWeapon;
+  /** The function sent to roll the dices */
+  onRollDices: (diceValues: DiceRequest[], id: TypeCampaignEvent) => void;
 }
 
-const WeaponAction: FC<IWeaponAction> = ({ weapon }) => {
+const WeaponAction: FC<IWeaponAction> = ({ weapon, onRollDices }) => {
   const { t } = useTranslation();
   const { weaponTypes, weaponScopes, itemModifiers, rarities, damageTypes, characterStatSkills } =
     useGlobalVars();
@@ -76,7 +78,13 @@ const WeaponAction: FC<IWeaponAction> = ({ weapon }) => {
                 {curatedWeapon.weapon.damages[0].baseDamage}
               </Ap>
               <Ap className="weapon-action__main__damages__plus">+</Ap>
-              <NumDisplay size="small" value={curatedWeapon.weapon.damages[0].dices} />
+              <NumDisplay
+                size="small"
+                value={curatedWeapon.weapon.damages[0].dices}
+                onClick={() => {
+                  onRollDices([strToDiceRequest(curatedWeapon.weapon.damages[0].dices)], 'damage');
+                }}
+              />
               <Ap className="weapon-action__main__damages__element">{`(${curatedWeapon.weapon.damages[0].damageType?.damageType.title})`}</Ap>
             </>
           ) : null}
@@ -91,6 +99,18 @@ const WeaponAction: FC<IWeaponAction> = ({ weapon }) => {
             size="small"
             value={calculateStatModToString(correlatedCharacterSkill.score.total)}
             bonuses={correlatedCharacterSkill.score.sources}
+            onClick={() => {
+              onRollDices(
+                [
+                  {
+                    qty: 2,
+                    type: 10,
+                    offset: correlatedCharacterSkill.score.total,
+                  },
+                ],
+                'weapon'
+              );
+            }}
           />
         ) : null}
         <Ap className="weapon-action__challenge__text">

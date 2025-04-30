@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { Aicon, Ap, type typeIcons } from '../atoms';
 import { Button, Card, DiceRoller, DiceRollerCharacter, HintButton } from '../molecules';
 import { Alert } from '../organisms';
+import { isInteractiveDiceThrow } from '../utils/character';
 import CustomEventEmitter from '../utils/eventEmitter';
 
 import { useApi } from './api';
@@ -129,7 +130,7 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
 
   const setToRoll = useCallback((dices: DiceRequest[], mode: TypeCampaignEvent) => {
     setDicesToRoll(dices);
-    setIsInteractive(mode.startsWith('skill-') || mode.startsWith('stat-'));
+    setIsInteractive(isInteractiveDiceThrow(mode));
     typeRoll.current = mode;
   }, []);
 
@@ -392,7 +393,7 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
           setTimeout(() => {
             setDisplayTotal(true);
             if (
-              (typeRoll.current.startsWith('skill-') || typeRoll.current.startsWith('stat-')) &&
+              isInteractiveDiceThrow(typeRoll.current) &&
               character !== false &&
               character?.campaign !== undefined
             ) {
@@ -505,7 +506,7 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
             >
               {t(mode === 'newCard' ? 'rollWindow.flipText' : 'rollWindow.dicardText', {
                 ns: 'components',
-                count: newCards.length,
+                count: nbToDiscard ?? 1,
               })}
             </Ap>
             <div className="roll-window__window__new-cards__cards">
@@ -737,7 +738,11 @@ export const CampaignEventWindowProvider: FC<CampaignEventWindowProviderProps> =
                     setMode('sacrifice');
                   }}
                   question={t('rollWindow.sacrificeText', { ns: 'components' })}
-                  disabled={cardOffset !== null}
+                  disabled={
+                    cardOffset !== null ||
+                    typeRoll.current === 'weapon' ||
+                    typeRoll.current === 'program'
+                  }
                 >
                   {t('rollWindow.sacrifice', { ns: 'components' })}
                 </HintButton>

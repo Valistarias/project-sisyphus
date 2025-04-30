@@ -12,20 +12,22 @@ import {
   type ICompleteDamage,
   type ICuratedSkillWithScore,
 } from '../../utils/character';
+import { RichTextElement } from '../richTextElement';
 
-import type { IBodyProgram } from '../../types';
+import type { IBodyProgram, TypeCampaignEvent } from '../../types';
 
-import { classTrim } from '../../utils';
+import { classTrim, strToDiceRequest, type DiceRequest } from '../../utils';
 
 import './programAction.scss';
-import { RichTextElement } from '../richTextElement';
 
 interface IProgramAction {
   /** The action to display */
   program: IBodyProgram;
+  /** The function sent to roll the dices */
+  onRollDices: (diceValues: DiceRequest[], id: TypeCampaignEvent) => void;
 }
 
-const ProgramAction: FC<IProgramAction> = ({ program }) => {
+const ProgramAction: FC<IProgramAction> = ({ program, onRollDices }) => {
   const { t } = useTranslation();
   const { programScopes, rarities, damageTypes, characterStatSkills } = useGlobalVars();
 
@@ -83,7 +85,18 @@ const ProgramAction: FC<IProgramAction> = ({ program }) => {
                   </>
                 ) : null}
 
-                <NumDisplay size="small" value={curatedProgram.program.damages[0].dices} />
+                <NumDisplay
+                  size="small"
+                  value={curatedProgram.program.damages[0].dices}
+                  onClick={() => {
+                    onRollDices(
+                      [strToDiceRequest(curatedProgram.program.damages![0].dices)],
+                      curatedProgram.program.programScope?.programScope.scopeId === 'htg'
+                        ? 'heal'
+                        : 'damage'
+                    );
+                  }}
+                />
                 <Ap className="program-action__main__damages__element">{`(${curatedProgram.program.damages[0].damageType?.damageType.title})`}</Ap>
               </>
             ) : null}
@@ -104,6 +117,18 @@ const ProgramAction: FC<IProgramAction> = ({ program }) => {
             size="small"
             value={calculateStatModToString(correlatedCharacterSkill.score.total)}
             bonuses={correlatedCharacterSkill.score.sources}
+            onClick={() => {
+              onRollDices(
+                [
+                  {
+                    qty: 2,
+                    type: 10,
+                    offset: correlatedCharacterSkill.score.total,
+                  },
+                ],
+                'program'
+              );
+            }}
           />
         ) : null}
         <Ap className="program-action__challenge__text">

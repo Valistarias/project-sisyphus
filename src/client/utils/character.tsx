@@ -77,6 +77,12 @@ interface IHpValues {
   isLoading: boolean;
 }
 
+const isInteractiveDiceThrow = (roleDiceThrow: string): boolean =>
+  roleDiceThrow.startsWith('skill-') ||
+  roleDiceThrow.startsWith('stat-') ||
+  roleDiceThrow === 'weapon' ||
+  roleDiceThrow === 'program';
+
 const getCharacterHpValues = ({
   character,
   cyberFrames,
@@ -698,6 +704,7 @@ export {
   curateWeapon,
   curateProgram,
   getActualBody,
+  isInteractiveDiceThrow,
   getCharacterHpValues,
   getCyberFrameLevelsByNodes,
   arcaneNameToNodeIcon,

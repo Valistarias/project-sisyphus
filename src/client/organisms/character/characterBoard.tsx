@@ -9,11 +9,18 @@ import CharacterActionList from './characterActionList';
 import CharacterInventory from './characterInventory';
 import CharacterProgramList from './characterProgramList';
 
-import { classTrim } from '../../utils';
+import type { TypeCampaignEvent } from '../../types';
+
+import { classTrim, type DiceRequest } from '../../utils';
 
 import './characterBoard.scss';
 
-const CharacterBoard: FC = () => {
+interface ICharacterBoard {
+  /** The function sent to roll the dices */
+  onRollDices: (diceValues: DiceRequest[], id: TypeCampaignEvent) => void;
+}
+
+const CharacterBoard: FC<ICharacterBoard> = ({ onRollDices }) => {
   const { t } = useTranslation();
 
   const [displayedTab, setDisplayedTab] = useState<string | null>(null);
@@ -23,7 +30,7 @@ const CharacterBoard: FC = () => {
       {
         label: t('characterBoard.tabs.actions', { ns: 'components' }),
         id: 'actions',
-        content: <CharacterActionList />,
+        content: <CharacterActionList onRollDices={onRollDices} />,
       },
       {
         label: t('characterBoard.tabs.programs', { ns: 'components' }),
@@ -36,14 +43,14 @@ const CharacterBoard: FC = () => {
         content: <CharacterInventory />,
       },
     ],
-    [t]
+    [onRollDices, t]
   );
 
   return (
     <div
       className={classTrim(`
-      char-action-board
-    `)}
+        char-action-board
+      `)}
     >
       <TabsWindow
         displayedTab={displayedTab}

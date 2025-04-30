@@ -56,6 +56,10 @@ export type TypeCampaignEvent =
   | 'hpGain'
   | 'hpLoss'
   | 'init'
+  | 'weapon'
+  | 'program'
+  | 'damage'
+  | 'heal'
   | `skill-${string}`
   | `stat-${string}`
   | `card-${string}`;

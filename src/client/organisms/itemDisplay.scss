@@ -3,6 +3,9 @@
   width: 100%;
 
   &__block {
+    position: relative;
+    z-index: var(--z-menus);
+
     &__main {
       text-transform: none;
       width: 100%;

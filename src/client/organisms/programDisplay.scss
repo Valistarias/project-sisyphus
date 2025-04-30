@@ -1,8 +1,8 @@
 .program-display {
-  position: relative;
-  z-index: var(--z-hints);
-
   &__block {
+    position: relative;
+    z-index: var(--z-hints);
+
     &__main {
       width: 100%;
 
